@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.pgalise</groupId>
+		<artifactId>simulation</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>de.pgalise.simulation</groupId>
+	<artifactId>traffic-impl</artifactId>
+	<version>${applicationVersion}</version>
+
+	<packaging>ejb</packaging>
+
+	<name>de.pgalise.simulation.traffic-impl</name>
+
+	<!-- Hier die Abh??ngigkeiten definieren -->
+	<dependencies>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>sensorFramework-impl</artifactId>
+			<type>ejb</type>
+			<scope>test</scope>
+		</dependency>	
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>staticSensors</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+		</dependency>
+		<!-- 
+		<dependency>
+		    <groupId>com.ibm.db2</groupId>
+		    <artifactId>driver</artifactId>
+		</dependency>
+ 		-->		
+		<dependency>
+			<groupId>pcingola</groupId>
+			<artifactId>jfuzzy</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.ostermiller</groupId>
+			<artifactId>utils</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>weather-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>staticSensors-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>		
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>services-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-ejb-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

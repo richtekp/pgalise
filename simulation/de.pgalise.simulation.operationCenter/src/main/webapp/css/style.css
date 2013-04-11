@@ -1,0 +1,313 @@
+body {
+	margin: 0px;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	overflow-x: auto;
+	overflow-y: scroll;
+}
+
+.crop { 
+	overflow: hidden; 
+	white-space: nowrap; 
+	text-overflow: ellipsis; 
+	width: 100px; 
+}
+
+.noWrap { 
+	white-space: nowrap; 
+	width: 100px; 
+}
+.wrap { 
+	white-space: normal; 
+}
+
+/* http://css-tricks.com/examples/WebKitScrollbars/ */
+/* Let's get this party started */
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+/* Track */
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background-color: #8ECD89; 
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+::-webkit-scrollbar-thumb:window-inactive {
+	background-color: #9EDD99; 
+}
+
+.sensorIdSpan {
+	width: 215px;
+}
+
+div#div_all {
+  background-image: url(../img/bg_hor3.png);
+  background-repeat: repeat-y;
+  background-position: right;
+}
+
+.red {
+	color: #FF0000;
+}
+
+.green {
+	color: #9DBD8C;
+}
+
+.orange {
+	color: #FFB68E;
+}
+
+div#layout_top {
+  height: 25px;
+  background-image: url(../img/bg_top.png);
+  border-bottom: 1px solid black;
+  -webkit-box-shadow: 5px 5px 50px #000;
+  -moz-box-shadow: 5px 5px 50px #000;
+  box-shadow: 5px 5px 50px #000;
+  z-index: 20;
+  color: white;
+  font-weight: bolder;
+  font-size: 10px;
+  padding-left: 100px;
+  vertical-align: middle;
+  padding-top: 7px;
+}
+
+div#layout_top > span {
+	border-left: 1px solid white; 
+	padding-left: 5px; 
+	padding-right: 5px;
+}
+
+#div_top {
+	height: 110px;
+}
+
+#div_logo {
+	float: left;
+	width: 200px;
+	height: 100px;
+}
+
+div#headline {  
+	line-height: 1.0;
+	letter-spacing: 5px;
+  	color: #333;
+  	font-size: 40px;
+	font-weight: bold;
+	font-family: "Copperplate Gothic Bold","Times New Roman",serif;
+}
+
+div#div_simulationInfo {
+	float: left;
+}
+
+div#simulationProgress {
+	display: inline-block;
+	width: 100%;
+}
+
+div#simulationProgress span {
+    position:absolute; 
+    margin-left:10px; 
+    margin-top:3px;
+    font-weight: bold;
+}
+
+div#div_simulationTimeControl {
+	text-align: right;
+	padding-right: 20px;
+	font-weight: bold;
+}
+
+.heading {
+	padding-left: 10px;
+	font-size: 14px;
+	font-weight: bolder;
+}
+
+#div_control {
+	clear: left;
+	float: left;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	width: 300px;
+}
+
+div#div_content {
+	display: block;
+    float: right;
+}
+
+div#map {
+    padding: 0;
+}
+#basic-modal-content {display:none;}
+#simplemodal-overlay {background-color:#000; cursor:wait;}
+#simplemodal-container {color:#bbb; background-color:#333; border:4px solid #444; padding:12px;}
+#simplemodal-container code {background:#141414; border-left:3px solid #65B43D; color:#bbb; display:block; margin-bottom:12px; padding:4px 6px 6px;}
+#simplemodal-container a {color:#ddd;}
+#simplemodal-container a.modalCloseImg {background:url(../img/x.png) no-repeat; width:25px; height:29px; display:inline; z-index:3200; position:absolute; top:-15px; right:-16px; cursor:pointer;}
+#simplemodal-container #basic-modal-content {padding:8px;}
+
+.left {
+	text-align: left;
+	float: left;
+}
+
+
+.right {
+	text-align: right;
+}
+
+li div {
+	font-size: 12px;
+}
+
+div#slaveDiv {
+	position: absolute;
+	display: none;
+}
+
+.invisible {
+	display: none;
+}
+
+.fullWidth {
+	width: 100%;
+}
+.fullHeight {
+    height: 100%;
+}
+.halfWidth {
+    width: 50%;
+}
+.tinyWidth {
+    width:50px;
+}
+.smallWidth {
+    width: 75px;
+}
+.normalWidth {
+    width:150px;
+}
+.largeWidth {
+    width:300px;
+}
+
+.slider {
+	width: 165px;
+}
+
+.mouseOverRed:hover {
+	color: red;
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.link:hover {
+	cursor: hand;
+	text-decoration: underline;
+}
+
+.sensorFav-true {
+	font-weight: bold;
+}
+
+.sensorAct-false {
+    font-style: italic;
+}
+
+div#loadingArea {
+	height: 8px;
+}
+
+div#loadingArea.notLoading {
+	background-image: url(../img/notloading.gif);
+}
+div#loadingArea.loading {
+	background-image: url(../img/loading.gif);
+}
+div.favorite {
+	float:left;
+	width:17px;
+	height:15px;
+	text-indent:-999em;
+	cursor:pointer;
+	display:block;
+	background:transparent;
+	overflow:hidden;
+}
+div.favorite a {
+	display:block;
+	width:16px;
+	height:100%;
+	background-position:0 0px;
+	border:0
+}
+div.favorite a {
+	background-position:0 -16px!important
+}
+div.favorite a {
+	background-position:0 -32px
+}
+div.deleteIcon:hover {
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+	background-image: url(../img/deleteH.png);
+	float: left;
+}
+div.favorizeIcon:hover {
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+	background-image: url(../img/favorizeH.png);
+	float: left;
+}
+
+.margin {
+	padding-left: 15px;
+}
+
+img#consoleImg {
+	position: absolute;
+	right: 7px;
+	top: 2px;
+}
+
+.dialog {
+    display: none;
+    z-index: 3000;
+}
+
+tr.footer td {
+    border-top: 1px solid black;
+}
+tr.footer + tr {
+    font-weight: bold;
+    font-size: larger;
+}
+
+table.gate th, table.gate td {
+    text-align: left;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+h3.help {
+    font-size: 12px;
+    padding-left: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

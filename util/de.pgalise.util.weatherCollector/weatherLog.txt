@@ -1,0 +1,8 @@
+2013-03-26 12:33:32 INFO ### PROGRAMM START ###
+2013-03-26 12:33:33 INFO ### --- Wetterdienste --- ###
+2013-03-26 12:33:33 INFO Laden der Staedte aus der Datenbank.
+2013-03-26 12:33:42 INFO 0 Staedte wurden geladen.
+2013-03-26 12:33:42 INFO ### --- Wetterstationen --- ###
+2013-03-26 12:33:42 INFO Lesen der Datei: http://www.uni-oldenburg.de/dezernat4/wetter/ausgabe.php?datei=Wetter1303.txt
+2013-03-26 12:33:42 WARNING getSingleResult() did not retrieve any entities.
+2013-03-26 12:33:42 INFO ### PROGRAMM END ###

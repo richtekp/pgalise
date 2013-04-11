@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- Here are all strategies of the weather services -->
+<strategies>
+	<strategy>de.pgalise.weathercollector.weatherservice.strategy.YahooWeather</strategy>
+	<strategy>de.pgalise.weathercollector.weatherservice.strategy.MSNWeather</strategy>
+</strategies>

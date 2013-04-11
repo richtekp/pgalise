@@ -1,0 +1,65 @@
+/* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+ 
+package de.pgalise.simulation;
+
+import de.pgalise.simulation.event.EventInitiator;
+import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
+import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+
+/**
+ * The simulation controller inits, starts, stops, resets and updates the whole simulation. 
+ * It's the only touch point for the control center.
+ * @author Kamil
+ * @auther Jens
+ * @auther Timo
+ */
+public interface SimulationController extends SensorManagerController {
+
+	/**
+	 * Adds an event list. The other controllers will be updated with the given events.
+	 * @param simulationEventList
+	 * 			an event list with a timestamp and events
+	 */
+	public void addSimulationEventList(SimulationEventList simulationEventList);
+
+	/**
+	 * Returns the current simulation timestamp.
+	 * 
+	 * @return
+	 */
+	public long getSimulationTimestamp();
+	
+	/**
+	 * Use this only for testing.
+	 * @param operationCenterController
+	 */
+	public void _setOperationCenterController(OperationCenterController operationCenterController);
+	
+	/**
+	 * Use this only for testing.
+	 * @param controlCenterController
+	 */
+	public void _setControlCenterController(ControlCenterController controlCenterController);
+	
+	/**
+	 * Use this only for testing.
+	 * @return
+	 */
+	public EventInitiator _getEventInitiator();
+}

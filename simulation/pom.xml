@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>de.pgalise</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>de.pgalise</groupId>
+	<artifactId>simulation</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>de.pgalise.simulation</name>
+
+	<!-- Reihenfolge muss beachtet werden, wenn die Packages voneinander abhängigen -->
+	<modules>
+		<module>de.pgalise.simulation.shared</module>
+		<module>de.pgalise.simulation.services</module>
+		<module>de.pgalise.simulation.services-impl</module>
+		<module>de.pgalise.simulation.sensorFramework</module>
+		<module>de.pgalise.simulation.sensorFramework-impl</module>
+		<module>de.pgalise.simulation.weather</module>
+		<module>de.pgalise.simulation.weather-impl</module>
+		<module>de.pgalise.simulation.energy</module>
+		<module>de.pgalise.simulation.energy-impl</module>
+		<module>de.pgalise.simulation.traffic</module>
+		<module>de.pgalise.simulation.staticSensors</module>
+		<module>de.pgalise.simulation.staticSensors-impl</module>
+		<module>de.pgalise.simulation.traffic-impl</module>
+		<module>de.pgalise.simulation.simulationController</module>
+		<module>de.pgalise.simulation.simulationController-impl</module>
+		<!-- Implementierungen -->
+		<!-- Web Module -->
+		<module>de.pgalise.simulation.operationCenter</module>
+		<module>de.pgalise.simulation.controlCenter</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-client</artifactId>
+        </dependency>  
+	</dependencies>
+</project>

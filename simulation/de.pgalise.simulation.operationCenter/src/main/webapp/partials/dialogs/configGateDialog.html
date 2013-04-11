@@ -1,0 +1,33 @@
+<div ng-controller="GateDialogCtrl">
+    <table class="fullWidth gate">
+        <tr>
+            <th class="normalWidth"></th>
+            <th>total</th>
+            <th>current</th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="gateInfo in gateMap">
+            <td><b>{{gateInfo.name}}</b></td>
+            <td>{{count(gateInfo.set)}}</td>
+            <td>{{parseInt(count(gateInfo.set) / 100 * gateInfo.percentage)}}</td>
+            <td><div slider class="slider" ng-model="gateInfo.percentage" min="0" max="100"></div></td>
+            <td>{{gateInfo.percentage}}&nbsp;%</td>
+            <td><button button ng-click="reset(gateInfo)" ng-disabled="!valueChanged(gateInfo)">reset</button></td>
+        </tr>
+        <tr class="footer">
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td><b>Total:</b></td>
+            <td>{{sensorAmount()}}</td>
+            <td>{{overallNumber())}}</td>
+            <td></td>
+            <td>{{overallPercentage()}}&nbsp;%</td>
+            <td></td>
+        </tr>
+    </table>
+    <hr />
+    <button button class="fullWidth" ng-click="applyGate()" ng-disabled="!changed">Apply</button>
+</div>

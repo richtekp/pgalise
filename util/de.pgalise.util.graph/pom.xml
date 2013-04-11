@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.pgalise</groupId>
+		<artifactId>util</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>de.pgalise.util</groupId>
+	<artifactId>graph</artifactId>
+	<version>${applicationVersion}</version>
+
+	<packaging>jar</packaging>
+	
+	<name>de.pgalise.util.graph</name>
+	
+	<!-- Hier die Abhängigkeiten definieren -->
+	<dependencies>
+		<dependency>
+			<groupId>de.pgalise.util</groupId>
+			<artifactId>btree</artifactId>
+		</dependency>	
+	    <dependency>
+			<groupId>org.graphstream</groupId>
+			<artifactId>gs-core</artifactId>
+		</dependency>
+	    <dependency>
+			<groupId>org.graphstream</groupId>
+			<artifactId>gs-algo</artifactId>
+	    </dependency>		
+	    <dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared</artifactId>
+	    </dependency>
+	    <dependency>
+	    	<groupId>de.pgalise.util</groupId>
+			<artifactId>generic</artifactId>
+	    </dependency>
+	    <dependency>
+			<groupId>de.pgalise.util</groupId>
+			<artifactId>vector</artifactId>
+	 	</dependency>
+	 </dependencies>
+</project>

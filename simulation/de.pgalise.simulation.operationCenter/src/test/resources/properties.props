@@ -1,0 +1,16 @@
+#Properties for OC
+InfoSphereIPStaticSensors=127.0.0.1
+InfoSphereIPDynamicSensors=127.0.0.1
+InfoSphereIPTopoRadarSensors=127.0.0.1
+InfoSphereIPTrafficLightSensors=127.0.0.1
+InfoSpherePortStaticSensor=2600
+InfoSpherePortDynamicSensor=2601
+InfoSpherePortTrafficLightSensor=2603
+InfoSpherePortTopoRadarSensor=2603
+InfoSphereGateMessageIP=127.0.0.1
+InfoSphereGateMessageAddKeysPort=2345
+InfoSphereGateMessageRemoveKeysPort=2346
+MissedGPSUpdateStepsBeforeTimeout=2
+InfoSpherePortHQFData=2602
+MaxSensorDataInOneMessage=100
+MaxSensorHelperInOneMessage=100

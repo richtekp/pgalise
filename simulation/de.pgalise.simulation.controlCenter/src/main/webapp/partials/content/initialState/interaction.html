@@ -1,0 +1,39 @@
+<!-- INTERACTION (INIT) -->
+<div class="contentDiv" ng-controller="InteractionCtrl">
+	<h2>Interaction</h2>
+	<div class="block">
+		<table class="noWrap">
+		    <tr class="head">
+		        <td colspan="2"><h3>Scheduling logic</h3></td>
+		    </tr>
+            <tr>
+                <td colspan="2">
+                    <div help>
+                        Choose the parameter for the Fuzzy Logic. The tolerance in percentage, Timebuffer is the range in which new added cars will start driving and he steps how often the TrafficFuzzyGoverner will be called.
+                    </div>
+                </td>
+            </tr>
+            <tr title="set the intervall for sensors to send data">
+                <td>Update steps:</td>
+                <td>
+                    <input class="smallWidth" type="number" ng-model="updateSteps" min="1" max="10" id="interactionUpdateSteps" />
+                    <div class="smallWidth" slider ng-model="updateSteps" bound-spinner-id="interactionUpdateSteps" min="0" max="10"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>Tolerance [%]:</td>
+                <td>
+                    <input class="smallWidth" type="number" ng-model="tolerance" min="0" max="100" id="interactionTolerance" />
+                    <div class="smallWidth" slider ng-model="tolerance" bound-spinner-id="interactionTolerance" min="0" max="100"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>Time buffer [min]:</td>
+                <td>
+                    <input class="smallWidth" type="number" ng-model="buffer" min="5" max="60" id="interactionBuffer"/>
+                    <div class="smallWidth" slider ng-model="buffer" bound-spinner-id="interactionBuffer" min="5" max="60"></div>
+                </td>
+            </tr>
+		</table>
+	</div>
+</div>

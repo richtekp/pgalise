@@ -1,0 +1,2 @@
+#URL for OCSimulationTimestampServlet
+url = http://localhost:8080/operationCenter/OCSimulationServlet

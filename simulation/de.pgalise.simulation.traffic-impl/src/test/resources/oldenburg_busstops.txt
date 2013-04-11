@@ -1,0 +1,377 @@
+Eversten
+Ludwig-Erhard-Straße
+Otto-Suhr-Straße
+Florianstraße
+Billunger Weg
+Pirolweg
+Dersagauweg
+Lerigauweg
+Margarete-Gramberg-Str.
+Kaspersweg
+Friedhof Eversten
+Tannenkampstraße
+Feststraße
+Marktplatz Eversten
+Meinardusstraße
+Bismarckstraße
+Pulverturm-B
+Julius-Mosen-Platz-A
+Lappan-A
+Lappan-A ab
+Hauptbahnhof-Süd-B
+ZOB-C
+Karlstraße
+Pferdemarkt-A
+Kriegerstraße
+Bürgereschstraße
+Bogenstraße
+Lüttichstraße
+Stiftsweg
+Deelweg
+Scheideweg
+Hackenweg
+Eßkamp
+Sackhofsweg
+Bürgerbuschweg
+Spreenweg
+Stiekelkamp
+Bahnhof Ofenerdiek
+Zanderweg
+Karpfenweg
+Am Stadtrand
+Linsweger Straße
+Ammerlandstraße
+Ofenerfeld
+Margarete-Gramberg-Str.
+Pferdemarkt-C
+ZOB-B
+Hauptbahnhof-Süd-A
+Lappan-B
+Lappan-B ab
+Staustraße-A
+Schloßplatz-A
+Pulverturm-A
+Borchersweg
+Schützenhof
+Oldeweg
+An der Schmiede
+Georg-Bölts-Straße
+Rohdenweg
+A.-W.-Kühnholz-Straße
+Sportpark Osternburg
+Gerhard-Stalling-Straße
+Helmsweg
+Herrenweg
+Largauweg
+Zaunkönigstraße
+Am Bahndamm
+Stieglitzweg
+Leffersweg
+Bhf. Osternburg
+Bremer Heerstraße
+Schützenhofstraße
+Bremer Straße
+Wiesenstraße
+Nordstraße
+Nikolausstraße
+ZOB-D
+Humboldtstraße
+von-Finckh-Straße
+Melkbrink
+Frankenstraße
+Schulweg
+Im Dreieck
+Feldstraße
+Theodor-Pekol-Straße
+Brookweg
+Mittelweg
+Rauhehorst
+Glatzer Straße
+BBS Wechloy
+Johann-Justus-Weg
+Masurenstraße
+Am Tennispark
+Infanterieweg
+Dr.-Th.-Goerlitz-Str.
+Ellernbrok
+Schloßplatz-B
+Krusenbusch
+Schwertlilienweg
+Schafgarbenweg
+Tweelbäker Tredde
+Bhf. Krusenbusch
+Beentweg
+Am Schmeel
+Heinrich-Früstück-Straße
+Gerhard-Schnitger-Straße
+Dwaschweg
+Hans-Fleischer-Straße
+Kreyen-Centrum
+Am Wüschemeer
+Klingenbergstraße
+Lärchenring
+Goldregenweg
+Brachvogelweg
+Ferdinand-Koch-Straße
+Wunderburgstraße
+Lappan-A an
+Fliegerhorst
+Eiffelstraße
+Schmälkamp
+Fahrenkamp
+Am Alexanderhaus
+Westersteder Straße
+Wiefelsteder Straße
+Leuchtenburger Straße
+Schwarzer Weg
+Am Ostkamp
+Am Sportplatz
+Metjenweg
+Königsberger Straße
+Heidkamp
+Ofenerfelder Straße
+Am Fuhrenkamp
+Carl-Friedrich-Gauß-Str.
+Aschhauser Weg
+Lappan-B an
+Bümmerstede
+Heidschnuckenweg
+Waldmannsweg
+Robert-von-Mayer-Straße
+Dorfweg
+Otto-Wels-Straße
+Alter Postweg
+Sandkruger Straße
+Dr.-Behring-Straße
+Klingenbergplatz
+Dr.-Schüßler-Str./Klinikum
+Ewigkeit
+Buschhagenweg
+Am Wallplacken
+Mohrstraße
+Anton-Günther-Straße
+Pferdemarkt-B
+Flötenstraße
+Nadorst
+Zuschlag
+Käthe-Kollwitz-Straße
+Oldenrome
+Paul-Tantzen-Straße
+Haakestraße
+Westerdiek
+Südring
+Neusüdender Weg
+Feldahornweg
+Carl-v.-Ossietzky-Str.
+Kurt-Huber-Straße
+Grotepool
+Universität
+Schützenweg
+Kath.Friedh./BBS Haarent.
+Ammerländer
+Westerstraße
+Fachhochschule
+Julius-Mosen-Platz-B
+Carl-v.-Ossietzky-Str.
+Kath.Friedh./BBS Haarent.
+ZOB-A
+Lappan-D
+Julius-Mosen-Platz-C
+Carl-v.-Ossietzky-Str.
+Kath.Friedh./BBS Haarent.
+Drielake
+Warnsweg
+Wichmannsweg
+Drielaker Straße
+Dragonerstraße
+Dedestraße
+Kampstr./Jüdischer Friedh.
+Marienstraße
+Blumenstraße
+Margaretenstraße
+Industriestraße
+Jägerstraße
+Neuer Friedhof
+Vahlenhorst
+Wittingsbrok
+Trakehnenstraße
+Siebenbürger Straße
+Quendelstraße
+Tondernstraße
+Dr.-Th.-Goerlitz-Str.
+Petersfehn
+Bussardweg
+Eichenweg
+Moorweg
+Wildenloh
+Heideweg
+Ziegelweg
+Fuhrenweg
+An den Eschen
+Eschenplatz
+Bloherfelde
+Hörneweg
+Schramperweg
+Hartenscher Damm
+Bloherfelder Marktplatz
+Kennedystraße
+Theodor-Heuss-Straße
+Sportweg
+Postenweg
+Uhlhornsweg
+Dresdener Straße
+Haarenfeld
+Leipziger Straße
+Lasiusstraße
+Rummelweg
+Tappenbeckstraße
+Herbartstraße
+Theater
+Straßburger Straße
+Weser-Ems-Halle
+bfe-Oldenburg/Unt. Berg
+Graf-Dietrich-Straße
+Schlieffenstraße
+Ammergaustraße
+Trommelweg
+Ostlandstraße
+Mühlenhofsweg
+Niendorfer Weg
+Ohmstede
+Geestkamp
+Dillweg
+Botterkamp
+Ekernstraße
+Mittelkamp
+Wahnbäkenweg
+Sandbergstraße
+Schulstraße
+Elbestraße
+Huntestraße
+Wahnbek
+Am Nordkreuz
+Wehnen
+Karl-Jaspers-Klinik
+Dürerstraße
+Feldkamp
+Ofen
+Alte Dorfstraße
+Bauhof Freytag
+Am Tegelbusch
+Posthalterweg
+Famila
+Pophankenweg
+Carl-v.-Ossietzky-Str.
+Kath.Friedh./BBS Haarent.
+Stralsunder Straße
+Max-Beckmann-Straße
+Kreyenbrück
+Schmidt-Rottluff-Straße
+Franz-Marc-Straße
+Wilhelm-Kempin-Straße
+von-Helmholtz-Straße
+Hertzstraße
+Kielweg
+Windmühlenweg
+Giesenweg
+Brandenburger Straße
+Klinikum Oldenburg
+An den Voßbergen
+Sandkamp
+Krögerskamp
+P+R Landwehrstraße
+Rudolf-Diesel-Straße
+Am Vogelbusch
+Achternmeerer Straße
+Hunteweg
+Zur Huntebrücke
+Eichenallee
+Achterdiek
+Kanalbrücke
+Kanal
+Hogenkamp
+Sodenstich
+von-Thünen-Straße
+Wilhelm-Busch-Straße
+Adalbert-Stifter-Straße
+Eichendorffstraße
+P+R Marschweg/ OLantis
+Wehdestraße
+Nibelungenstraße
+Waterender Weg
+Brahmkamp
+Friedrich-Ebert-Straße
+Clausewitzstraße
+Westeresch
+Kurlandallee
+Rennplatz
+Schellsteder Weg
+Triftweg
+Haseler Weg
+Wilhelmsh. Heerstraße
+Felix-Wankel-Straße
+Muttenpottsweg
+Im Eichengrund
+Lagerstraße
+Schleistraße
+Am Strehl
+Schafjückenweg
+Waldfriedhof
+Ostring
+Patentbusch
+Wardenburg 
+Am Esch
+Tillyhöhe
+Danzmeesterweg
+Schießstand
+Diekmann
+Tjarks
+Neuer Hort
+Hatterwüsting
+Berliner Straße
+Am Forst
+Hasenweg
+Voßbergweg
+Kiebitzweg
+Mühlenweg
+Bahnhof Sandkrug
+Sommerweg
+Streeker Moorweg
+Schultredde
+Schul- u. Sportzentrum
+Friedhof Sandkrug
+Wirtschaftspark Sandkrug
+Tempelberg
+Wiemerslande
+Waldschänke
+Sprungweg
+Westerholtsweg
+Annabergstraße
+Osternburger Kanal
+P+R Westfalend./ OLantis
+Bachstraße
+Gr.-Anton-Günther-Schule
+Staatsarchiv
+Am Festungsgraben
+Neuenwege
+Bäko
+Werrastraße
+Werftweg
+Victoriastraße
+IKEA
+Eibenweg
+Thomasburg
+Margarete-Gramberg-Str.
+Bäkeweg
+Pestalozzistraße
+Ohlenbuschweg
+Bodenburgallee
+Dr.-Th.-Goerlitz-Str.
+Margarete-Gramberg-Str.
+Hamelmannstraße
+Quellenweg
+Paulstraße
+Staakenweg
+Erlenweg
+Artillerieweg
+Kath.Friedh./BBS Haarent.

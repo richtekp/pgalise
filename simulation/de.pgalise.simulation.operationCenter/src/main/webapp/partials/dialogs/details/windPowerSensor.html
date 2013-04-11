@@ -1,0 +1,33 @@
+<table id="detailTable" class="fullWidth noWrap">
+    <tr class="wrap">
+        <td><b>ID:</b></td>
+        <td>{{sensorInDetail.id}}</td>
+    </tr>
+    <tr>
+        <td><b>Symbol:</b></td>
+        <td><img src="img/wind_power_plant.png" height="20" /></td>
+    </tr>
+    <tr>
+        <td><b>Position:</b></td>
+        <td>[{{sensorInDetail.latitude.toFixed(6) + ', ' + sensorInDetail.longitude.toFixed(6)}}]</td>
+    </tr>
+    <tr>
+        <td><b>Receipt interval:</b></td>
+        <td>{{sensorInDetail.updateSteps * simulationInfo.initParameter.interval}} ms</td>
+    </tr>
+    <tr>
+        <td><b>Last data receipt:</b></td>
+        <td>{{sensorInDetail.lastChange | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
+    </tr>
+    <tr>
+        <td><b>Status:</b></td>
+        <td>
+            <span ng-show="sensorInDetail.isActive" class="green">Active</span>
+            <span ng-hide="sensorInDetail.isActive" class="red">Inactive</span>
+        </td>
+    </tr>
+    <tr>
+        <td><b>Value:</b></td>
+        <td>{{sensorInDetail.getValue().toFixed(3) + ' ' + getUnit(sensorInDetail.type)}}</td>
+    </tr>
+</table>

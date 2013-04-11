@@ -1,0 +1,31 @@
+<div class="control">
+    <div help>
+        The gate view shows all sensors currently active in the simulation.
+        It shows the total numbers as well as the currently active number.
+        Below the line of result you can configure the number of sensors.
+    </div>
+    <table class="fullWidth gate">
+        <tr>
+            <th></th>
+            <th>total</th>
+            <th>current</th>
+            <th>%</th>
+        </tr>
+        <tr ng-repeat="gateInfo in gateMap">
+            <td><b>{{gateInfo.name}}</b></td>
+            <td>{{count(gateInfo.set)}}</td>
+            <td>{{parseInt(count(gateInfo.set) / 100 * gateInfo.percentage)}}</td>
+            <td>{{gateInfo.percentage}}</td>
+        </tr>
+        <tr class="footer">
+            <td colspan="4"></td>
+        </tr>
+        <tr>
+            <td><b>Total:</b></td>
+            <td>{{sensorAmount()}}</td>
+            <td>{{overallNumber()}}</td>
+            <td>{{overallPercentage()}}</td>
+        </tr>
+    </table>
+    <button button class="fullWidth" ng-click="openConfigGatePopup()"><span class="ui-icon ui-icon-link"></span> Configure gate</button>
+</div>

@@ -1,0 +1,93 @@
+.olControlPanel {
+    top: 10px;
+    left: 40px;
+    height: 30px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.olControlPanel div {
+    float: left;
+    margin-right: 5px;
+    height: 30px;
+    width: 60px;
+    background-size: 60px 30px;
+}
+
+.olControlFavoritesDepictionItemActive {
+    background-image: url(../img/favoritesDepiction.png);
+    border: 1px solid red;
+}
+
+.olControlFavoritesDepictionItemInactive {
+    background-image: url(../img/favoritesDepiction.png);
+    border: 1px solid black;
+}
+
+.olControlPointDepictionItemActive {
+    background-image: url(../img/pointDepiction.png);
+    border: 1px solid red;
+}
+.olControlPointDepictionItemInactive {
+    background-image: url(../img/pointDepiction.png);
+    border: 1px solid black;
+}
+
+.olControlIconDepictionItemActive {
+    background-image: url(../img/iconDepiction.png);
+    border: 1px solid red;
+}
+.olControlIconDepictionItemInactive {
+    background-image: url(../img/iconDepiction.png);
+    border: 1px solid black;
+}
+
+.olControlHeatMapDepictionGPSItemActive {
+    background-image: url(../img/heatMapDepictionGPS.png);
+    border: 1px solid red;
+}
+.olControlHeatMapDepictionGPSItemInactive {
+    background-image: url(../img/heatMapDepictionGPS.png);
+    border: 1px solid black;
+}
+
+.olControlHeatMapDepictionSpeedItemActive {
+    background-image: url(../img/heatMapDepictionSpeed.png);
+    border: 1px solid red;
+}
+.olControlHeatMapDepictionSpeedItemInactive {
+    background-image: url(../img/heatMapDepictionSpeed.png);
+    border: 1px solid black;
+}
+
+.olControlHeatMapDepictionEnergyConsumptionItemActive {
+    background-image: url(../img/heatMapDepictionEnergyConsumption.png);
+    border: 1px solid red;
+}
+.olControlHeatMapDepictionEnergyConsumptionItemInactive {
+    background-image: url(../img/heatMapDepictionEnergyConsumption.png);
+    border: 1px solid black;
+}
+
+.olControlHeatMapDepictionEnergyProductionItemActive {
+    background-image: url(../img/heatMapDepictionEnergyProduction.png);
+    border: 1px solid red;
+}
+.olControlHeatMapDepictionEnergyProductionItemInactive {
+    background-image: url(../img/heatMapDepictionEnergyProduction.png);
+    border: 1px solid black;
+}
+
+.olControlTestItemActive {
+    background-image: url(../img/heatMapDepictionServer.png);
+    border: 1px solid red;
+}
+.olControlTestItemInactive {
+    background-image: url(../img/heatMapDepictionServer.png);
+    border: 1px solid black;
+}
+
+.olCognosItemInactive {
+    background-image: url(../img/cognos.png);
+    border: 1px solid black;
+}

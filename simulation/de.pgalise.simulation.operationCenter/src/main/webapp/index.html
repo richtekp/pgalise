@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <title>Operation Center</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css">  
+    <link rel="stylesheet" href="css/olStyle.css" type="text/css">  
+    <link rel="stylesheet" href="lib/jquery.ui/jquery-ui.css" type="text/css" /> 
+    <link rel="stylesheet" href="lib/jquery.ui/custom-theme/jquery-ui-1.8.23.custom.css" type="text/css" /> 
+    <link rel="stylesheet" href="lib/jquery.treeview/jquery.treeview.css" type="text/css" /> 
+    <script type="text/javascript" src="lib/jquery/jquery-1.7.2.js"></script>  
+    <script type="text/javascript" src="lib/jquery/jquery.json-2.4.min.js"></script>  
+    <script type="text/javascript" src="lib/jquery.ui/jquery.ui.js"></script> 
+    <script type="text/javascript" src="lib/jquery.treeview/jquery.treeview.js"></script>
+    <script type="text/javascript" src="lib/jquery.sparkline/jquery.sparkline.min.js"></script>
+   
+    <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>  
+    <script type="text/javascript" src="lib/angular/angular.min.js"></script>  
+    
+    <script type="text/javascript" src="lib/heatmap/heatmap.js"></script>
+    <script type="text/javascript" src="lib/heatmap/heatmap-openlayers.js"></script>
+
+    <script type="text/javascript" src="js/global.js"></script>
+    <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="js/mock.js"></script>
+    <script type="text/javascript" src="js/model/enums.js"></script>
+    <script type="text/javascript" src="js/model/messages.js"></script>
+    <script type="text/javascript" src="js/model/markers.js"></script>
+    <script type="text/javascript" src="js/model/containers.js"></script>
+    <script type="text/javascript" src="js/model/subSensors.js"></script>
+    <script type="text/javascript" src="js/model/vehicles.js"></script>
+    <script type="text/javascript" src="js/model/sensors.js"></script>
+    <script type="text/javascript" src="js/modules/filters.js"></script>
+    <script type="text/javascript" src="js/modules/directives.js"></script>
+    <script type="text/javascript" src="js/modules/services/mapServices.js"></script>
+    <script type="text/javascript" src="js/modules/services/servletCommunicationServices.js"></script>
+    <script type="text/javascript" src="js/modules/services/popupServices.js"></script>
+    <script type="text/javascript" src="js/modules/services/callbackServices.js"></script>
+    <script type="text/javascript" src="js/modules/services/consoleServices.js"></script>
+    <script type="text/javascript" src="js/modules/services/eventLogServices.js"></script>
+    <script type="text/javascript" src="js/modules/services/idServices.js"></script>
+    <script type="text/javascript" src="js/modules/simulationModule.js"></script>
+    <script type="text/javascript" src="js/modules/modules.js"></script>
+    <script type="text/javascript" src="js/ctrl/cognosDialogCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/consoleDialogCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/messageDialogCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/detailsCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/detailsDialogCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/eventCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/gateCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/gateDialogCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/headCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/listCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/simulationInfoDialogCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/tabCtrl.js"></script>
+    <script type="text/javascript" src="js/ctrl/mainCtrl.js"></script>
+</head>
+<body ng-controller="MainCtrl">
+    <div id="div_all">
+        <div id="statusArea" ng-controller="HeadCtrl">
+            <div id="layout_top">
+                <span>Connection: <span class="{{connectionInfo.connectionStateColor()}}">{{connectionInfo.connectionState}}</span></span>
+                <span>Simulation: <span class="{{simulationInfo.simulationStateColor()}}">{{simulationInfo.simulationState}}</span></span>
+                <span>Simulation Time: {{simulationInfo.simulationTime | date:'MM/dd/yyyy @ h:mm:ssa'}}</span>
+            </div>
+            <div id="div_top">
+                <img src="img/console.png" id="consoleImg" ng-click="openConsole()" />
+                <div id="div_logo">
+                    <img src="img/logo.png" ng-click="testMethod()" />
+                </div>
+                <div id="loadingArea" ng-class="loadingStatus"></div>
+                <div id="div_heading">
+                    <div id="div_simulationInfo">
+                        <div id="headline">Operation Center</div>
+                        <div id="simulationProgress" progressbar ng-model="simulationInfo.simulationTime" title="{{simulationInfo.percent}} %, {{timespanFormat(simulationInfo.left)}} left">
+                            <span>{{simulationInfo.percent}} %, {{timespanFormat(simulationInfo.left)}} left</span>
+                        </div>
+                    </div>
+                    <div id="div_simulationTimeControl" ng-init="autoUpdate">
+                        <img src="img/info.png" ng-click="openInfoDialog()" />
+                        <div>
+                            <input type="checkbox" class="control checkbox" ng-model="autoUpdate" ng-change="autoUpdateChange()" />Auto update<br />
+                        </div>
+                        <div ng-show="autoUpdate">
+                            <input type="checkbox" class="control checkbox" ng-model="fastMapRefresh" ng-change="fastMapRefreshChange()" />Fast map refresh<br />
+                            Refresh rate [ms]: <input type="number" class="tinyWidth" min="500" ng-model="refreshRate" />
+                        </div>
+                        <div ng-hide="autoUpdate">
+                            <input button type="button" value="update ({{simulationInfo.simulationStepCounter}} steps)" class="control button" ng-click="update()" ng-disabled="simulationInfo.simulationStepCounter<1" />
+                        <div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="div_control">
+            <!--<div class="filter"><input type="text" /><input type="button" value="filter" /></div>-->
+            <div tabs ng-controller="TabCtrl">
+                <ul>
+                    <li><a href="#controlTabs_gate"><span class="ui-icon ui-icon-link"></span> Gate</a></li>
+                    <li><a href="#controlTabs_list"><span class="ui-icon ui-icon-script"></span> List</a></li>
+                    <li><a href="#controlTabs_details"><span class="ui-icon ui-icon-tag"></span> Details</a></li>
+                    <li><a href="#controlTabs_eventWindow"><span class="ui-icon ui-icon-alert"></span> Event</a></li>
+                </ul>
+                <div id="controlTabs_gate" ng-controller="GateCtrl">
+                    <ng:include src="contentURLs[0]"></ng:include>
+                </div>
+                <div id="controlTabs_list" ng-controller="ListCtrl">
+                    <ng:include src="contentURLs[1]"></ng:include>
+                </div>
+                <div id="controlTabs_details" ng-controller="DetailsCtrl">
+                    <ng:include src="contentURLs[2]"></ng:include>
+                </div>
+                <div id="controlTabs_eventWindow" ng-controller="EventCtrl">
+                    <ng:include src="contentURLs[3]"></ng:include>
+                </div>
+            </div>
+        </div>
+        <div id="div_content">
+            <div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
+        </div>
+    </div>
+</body>   
+</html>

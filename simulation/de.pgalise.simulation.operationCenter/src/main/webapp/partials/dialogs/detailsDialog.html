@@ -1,0 +1,20 @@
+<div ng-controller="DetailsDialogCtrl"><div>
+    <div help>
+        The details view shows detailed information about the sensor in focus.
+        There are options like "Pan to", "Add to favorites" and "Discard".
+        "Pan to" fixes the view to the sensor in focus.
+        "Add to favorites" favours the sensor and "Discard" clears the detail view.
+    </div>
+    <div ng-show="sensorInDetail.type == trafficLightInsersectionSensorID">
+        <canvas id="orientationCanvas"></canvas>
+    </div>
+    <ng:include src="detailsURL()"></ng:include>
+    <hr />
+    <button button class="control button fullWidth" ng-click="favorize()" ng-show="!filled() || !isFavorized()" ng-disabled="!filled()">
+        <span class="ui-icon ui-icon-star"></span> Add to favorites
+    </button>
+    <button button class="control button fullWidth" ng-click="unfavorize()" ng-hide="!filled() || !isFavorized()">
+        <span class="ui-icon ui-icon-star"></span> Remove from favorites
+    </button>
+</div>
+</div>

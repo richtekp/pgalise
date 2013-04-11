@@ -1,0 +1,34 @@
+<div ng-controller="SimulationInfoDialogCtrl">
+    <table class="fullWidth">
+        <tr>
+            <td colspan="2"><b>General</b></td>
+        </tr>
+        <tr>
+            <td>Start</td>
+            <td>{{simulationInfo.initParameter.startTimestamp|date:'medium'}}</td>
+        </tr>
+        <tr>
+            <td>End</td>
+            <td>{{simulationInfo.initParameter.endTimestamp|date:'medium'}}</td>
+        </tr>
+        <tr>
+            <td>Interval</td>
+            <td>{{simulationInfo.initParameter.interval}}</td>
+        </tr>
+        <tr>
+            <td>Clock interval</td>
+            <td>{{simulationInfo.initParameter.clockGeneratorInterval}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>City</b></td>
+        </tr>
+        <tr>
+            <td>City name</td>
+            <td>{{simulationInfo.startParameter.cityName}}</td>
+        </tr>
+        <tr>
+            <td>Population</td>
+            <td>{{simulationInfo.startParameter.population}}</td>
+        </tr>
+    </table>
+</div>

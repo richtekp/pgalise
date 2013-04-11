@@ -1,0 +1,102 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>de.pgalise</groupId>
+		<artifactId>simulation</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+
+	<groupId>de.pgalise.simulation</groupId>
+	<artifactId>playground</artifactId>
+	<version>${applicationVersion}</version>
+
+	<packaging>jar</packaging>
+
+	<name>de.pgalise.simulation.playground</name>
+
+
+	<dependencies>
+		<!-- Hier die EJB Module definieren -->
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>simulationController-impl</artifactId>
+			<type>ejb</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>services-impl</artifactId>
+			<type>ejb</type>
+		</dependency>
+
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>weather-impl</artifactId>
+			<type>ejb</type>
+		</dependency>
+
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>energy-impl</artifactId>
+			<type>ejb</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>staticSensors-impl</artifactId>
+			<type>ejb</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic-impl</artifactId>
+			<type>ejb</type>
+		</dependency>
+
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>sensorFramework</artifactId>
+		</dependency>	
+
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>sensorFramework-impl</artifactId>
+			<type>ejb</type>
+		</dependency>	
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-server</artifactId>
+		</dependency>
+
+<!-- 
+		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>driver</artifactId>
+		</dependency>
+ -->		
+			<dependency>
+			  <groupId>org.apache.derby</groupId>
+			  <artifactId>derbyclient</artifactId>
+			  <version>10.8.1.2</version>
+			</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.pgalise.util</groupId>
+			<artifactId>parser</artifactId>
+		</dependency>
+	</dependencies>
+</project>

@@ -1,0 +1,26 @@
+<table id="detailTable" ng-show="filled()" class="fullWidth noWrap">
+    <tr class="wrap">
+        <td><b>ID:</b></td>
+        <td>{{sensorInDetail.id}}</td>
+    </tr>
+    <tr>
+        <td><b>Class:</b></td>
+        <td>{{sensorInDetail.className}}</td>
+    </tr>
+    <tr>
+        <td><b>Symbol:</b></td>
+        <td><img href="img/car.png" /></td>
+    </tr>
+    <tr>
+        <td><b>Position:</b></td>
+        <td>[{{sensorInDetail.latitude.toFixed(6) + ', ' + sensorInDetail.longitude.toFixed(6)}}]</td>
+    </tr>
+    <tr>
+        <td><b>Is active:</b></td>
+        <td>{{sensorInDetail.isActive}}</td>
+    </tr>
+    <tr>
+    	<td><b>Last data receipt:</b></td>
+    	<td>{{sensorInDetail.lastChange | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
+   	</tr>
+</table>

@@ -1,0 +1,78 @@
+<div ng-controller="PathDialogCtrl">
+    <div class="left">
+        <b>Add new vehicle</b>
+        <table>
+            <tr>
+                <td colspan="2"><b>Vehicle-ID:</b></td>
+            </tr>
+            <tr>
+                <td colspan="2">{{path.current.id}}</td>
+            </tr>
+            <tr>
+                <td><b>Start time:</b></td>
+                <td>{{path.current.wayThereTimestamp | date:'dd.MM.yyyy @ H:mm:ss'}}</td>
+            </tr>
+            <tr>
+                <td><b>Start position:</b></td>
+                <td>[{{path.start.latitude.toFixed(6)}}, {{path.start.longitude.toFixed(6)}}]</td>
+            </tr>
+            <tr>
+                <td><b>Finish position:</b></td>
+                <td>[{{path.end.latitude.toFixed(6)}}, {{path.end.longitude.toFixed(6)}}]</td>
+            </tr>
+            <tr>
+                <td colspan="2"><hr /></td>
+            </tr>
+            <tr>
+                <td><b>Name:</b></td>
+                <td><input type="text" ng-model="path.current.name" /></td>
+            </tr>
+            <tr>
+                <td><b>Type:</b></td>
+                <td><select class="vType" ng-model="path.current.type" ng-options="b.name for b in types"></select></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button button ng-click="addVehicle()" class="fullWidth">
+                        Add vehicle
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="scrollable fullHeight">
+        <table>
+            <tr><td><b>Start trip:</b></td></tr>
+            <tr>
+                <td>
+                    <div datepicker ng-model="path.current.wayThereDate" type="text" class="wayThere"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <b>Time:</b>&nbsp;
+                    <input class="tinyWidth" type="number" ng-model="path.current.wayThereHours" min="0" max="23" size="2" />h&nbsp;
+                    :&nbsp;
+                    <input class="tinyWidth" type="number" ng-model="path.current.wayThereMinutes" min="0" max="59" size="2" />m
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="scrollable fullHeight">
+        <b>Defined vehicles</b>
+        <table ng-init="reverse=true" class="fullWidth">
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Way There</th>
+                <th><img src="img/delete.png" /></th>
+            </tr>
+            <tr ng-repeat="vehicle in path.vehicles|orderBy:'name':reverse">
+                <td>{{vehicle.name}}</td>
+                <td>{{vehicle.type.name}}</td>
+                <td>{{vehicle.startTime|date:'dd.MM.yyyy @ H:mm:ss'}}</td>
+                <td><img src="img/delete.png" ng-click="path.deleteVehicle(vehicle.id)" /></td>
+            </tr>
+        </table>
+    </div>
+</div>

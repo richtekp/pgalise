@@ -1,0 +1,352 @@
+/* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+ 
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK energy
+
+// Define input variables
+VAR_INPUT
+    temperature : REAL;
+    rain : REAL;
+    brightness : REAL;
+    timeOfDay : REAL;
+    dayOfWeek : REAL;
+    season : REAL;
+    storm : REAL;
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    percentage : REAL;
+END_VAR
+
+// Fuzzify input variable 'temperature'
+FUZZIFY temperature
+	TERM cold := (-15, 1) (-5, 1) (15, 0);
+	TERM average := (5, 0) (15, 1) (25, 0);
+	TERM hot := (15, 0) (35, 1) (45, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'rain'
+FUZZIFY rain
+    TERM low := (0, 1) (150, 0); 
+    TERM middle := (100, 0) (200, 1) (300,0);
+    TERM high := (250, 0) (400, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'brightness'
+FUZZIFY brightness
+	TERM dark := (0, 1) (12000, 0);
+	TERM bright := (3000, 0) (15000, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'timeOfDay'
+FUZZIFY timeOfDay
+    TERM early := (5, 0) (6, 0.75) (7, 1) (8, 1) (9, 0.7) (10, 0.5) (11,0);
+    TERM midday := (12, 1) (13, 1) (14, 0.75) (15, 0.5) (16, 0);
+    TERM late := (17, 0) (18, 0.5) (19, 1) (20, 1) (21, 0.75) (22, 0.5);
+    TERM night := (1, 1) (2, 1) (3, 0.75) (4, 0.5) (23, 0.5) (24, 1);
+END_FUZZIFY
+
+//Fuzzify input variable 'dayOfWeek`
+FUZZIFY dayOfWeek
+	TERM week := (1, 0) (2, 1) (3, 1) (4, 1) (5, 0);
+	TERM weekend := (4, 0) (5, 0.5) (6, 0.8) (7, 1);
+END_FUZZIFY
+
+//Fuzzify input variable 'season'
+FUZZIFY season
+    //Seasons are given in month data 1 = january, 2 = february, etc.
+        TERM spring := (2, 0) (3, 1) (4, 0.75) (5, 0.5) (6, 0);
+	TERM summer := (5, 0) (6, 0.5) (7, 1) (8, 1) (9, 0);
+        TERM autumn := (8, 0) (9, 0.5) (10, 1) (11, 0.5) (12, 0);
+	TERM winter := (1, 0.75) (2, 0.5) (3, 0) (10, 0) (11, 0) (12, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'storm'
+FUZZIFY storm
+    // Storm gets values 1 - 5 for low, 6 - 8 for average and 9 - 12 for high storm
+    TERM breeze := (1, 0) (2, 0.5) (3, 0.6) (4, 0.75) (5, 1); 
+    TERM windy := (6, 0.5) (7, 0.75) (8,1);
+    TERM hurricane := (9, 0.7) (10, 0.8) (11, 0.9) (12, 1);
+END_FUZZIFY
+
+// Defuzzify output variable 'percentage'
+DEFUZZIFY percentage
+    TERM low := (0,1) (40,0);
+    TERM medium := (40, 0.5) (55, 1) (70, 0.75);
+    TERM high := (70,0) (80, 0.5) (100,1) ;
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 100 (if no rule activates defuzzifier)
+    DEFAULT := 100;
+END_DEFUZZIFY
+
+
+// RULEBLOCK for bakery g5:
+RULEBLOCK g5
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for business on weekend g6:
+RULEBLOCK g6
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for farm building l0:
+RULEBLOCK l0
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for farm building other l2:
+RULEBLOCK l2
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for farm building with animal breeding l1
+RULEBLOCK l1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for household h0:
+RULEBLOCK h0
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for industry general g0:
+RULEBLOCK g0
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for industry on workdays g1:
+RULEBLOCK g1
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for industry with consumption night g2:
+RULEBLOCK g2
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for industry working g3:
+RULEBLOCK g3
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+// RULEBLOCK for shop g4:
+RULEBLOCK g4
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+    RULE 1 : IF rain IS high THEN percentage IS high;
+    
+    RULE 2 : IF rain IS low THEN percentage IS low;
+
+	RULE 3 : IF rain IS middle THEN percentage IS medium;
+	
+	RULE 4 : IF temperature IS hot THEN percentage IS high;
+	
+	RULE 5 : IF temperature IS cold THEN percentage IS high;
+	
+	RULE 6 : IF temperature IS average THEN percentage IS medium;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

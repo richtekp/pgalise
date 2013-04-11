@@ -1,0 +1,89 @@
+<!-- START (INIT) -->
+<div class="contentDiv" ng-controller="StartCtrl">
+	<h2>Start</h2>
+	<div class="block">
+		<table class="noWrap" ng-init="summaryShown=true">
+			<tr class="head">
+				<td><h3>Summary</h3></td>
+			</tr>
+            <tr>
+                <td colspan="2">
+                    <div help>
+                        Shows the XML start parameter as a hierarchic structure.
+                    </div>
+                </td>
+            </tr>
+			<tr>
+			    <td>
+                    <input type="button" class="fullWidth" button value="show" ng-hide="summaryShown" ng-click="summaryShown=true" />
+                    <input type="button" class="fullWidth" button value="hide" ng-show="summaryShown" ng-click="summaryShown=false" />
+			    </td>
+			</tr>
+			<tr ng-show="summaryShown">
+			    <td>
+    			     <div object-view ng-model="startParameter" show-control="true"></div>
+			    </td>
+			</tr>
+		</table>
+	</div>
+    <div class="block">
+        <table class="noWrap">
+            <tr class="head">
+                <td class="validation-{{validationStack.length<1}}"><h3>Validation Stack ({{validationStack.length}})</h3></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div help>
+                        Shows the results of the validation.
+                    </div>
+                </td>
+            </tr>
+            <tr ng-hide="validationStack.length>0">
+                <td><i>Everything's fine. Go ahead ...</i></td>
+            </tr>
+            <tr ng-repeat="(i,msg) in validationStack">
+                <td>
+                    {{i + ': ' + msg}}
+                </td>
+            </tr>
+        </table>
+    </div>
+	<div class="block">
+	    <table class="noWrap">
+            <tr class="head">
+                <td><h3>Export start parameter</h3></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div help>
+                        Export the start parameter of the actual simulation as XML.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="fullWidth" ng-disabled="{{validationStack.length>0}}" button type="button" value="Export as XML" title="export your start parameter to an XML file" ng-click="export()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="block">
+        <table class="noWrap">
+            <tr class="head">
+                <td><h3>Start Simulation Now</h3></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div help>
+                        Click the button below to start the simulation with the chosen parameters.
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="fullWidth" ng-disabled="{{validationStack.length>0}}" button type="button" value="Start" title="start the simulation with your set parameter" ng-click="start()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<table id="detailTable" class="fullWidth noWrap">
+    <tr>
+        <td colspan="2"><b>ID:</b></td>
+    </tr>
+    <tr class="wrap">
+        <td colspan="2">{{sensorInDetail.id}}</td>
+    </tr>
+    <tr>
+        <td><b>Symbol:</b></td>
+        <td><img src="img/car.png" height="20" /></td>
+    </tr>
+    <tr>
+        <td colspan="2"><b>GPS Sensor Data</b></td>
+    </tr>
+    <tr>
+        <td class="margin"><b>ID:</b></td>
+        <td>{{sensorInDetail.positioningSensor.id}}</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Receipt interval:</b></td>
+        <td>{{sensorInDetail.positioningSensor.updateSteps * simulationInfo.initParameter.interval}} ms</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Last data receipt:</b></td>
+        <td>{{sensorInDetail.positioningSensor.lastChange | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Status:</b></td>
+        <td>
+            <span ng-show="sensorInDetail.positioningSensor.isActive" class="green">Active</span>
+            <span ng-hide="sensorInDetail.positioningSensor.isActive" class="red">Inactive</span>
+        </td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Distance (last {{sensorInDetail.positioningSensor.updateSteps * simulationInfo.initParameter.interval}} ms):</b></td>
+        <td>{{sensorInDetail.positioningSensor.distance.toFixed(2)}} m</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Total distance:</b></td>
+        <td>{{sensorInDetail.positioningSensor.totalDistance.toFixed(2)}} m</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Current Speed:</b></td>
+        <td>{{sensorInDetail.positioningSensor.speed.toFixed(2)}} km/h</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Average Speed:</b></td>
+        <td>{{sensorInDetail.positioningSensor.averageSpeed.toFixed(2)}} km/h</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Direction:</b></td>
+        <td>{{sensorInDetail.positioningSensor.direction.toFixed(2)}} &deg;</td>
+    </tr>
+    <tr>
+        <td class="margin"><b>Travel time:</b></td>
+        <td>{{sensorInDetail.positioningSensor.travelTime | date:'H:mm:ss'}}</td>
+    </tr>
+</table>

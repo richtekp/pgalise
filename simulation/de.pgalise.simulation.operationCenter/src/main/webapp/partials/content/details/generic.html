@@ -1,0 +1,39 @@
+<table id="detailTable" ng-show="filled()" class="fullWidth noWrap">
+    <tr class="wrap">
+        <td><b>ID:</b></td>
+        <td>{{sensorInDetail.id}}</td>
+    </tr>
+    <tr>
+        <td><b>Class:</b></td>
+        <td>{{sensorInDetail.className}}</td>
+    </tr>
+    <tr>
+        <td><b>Symbol:</b></td>
+        <td><img href="img/car.png" /></td>
+    </tr>
+    <tr>
+        <td><b>Position:</b></td>
+        <td>[{{sensorInDetail.latitude.toFixed(6) + ', ' + sensorInDetail.longitude.toFixed(6)}}]</td>
+    </tr>
+    <tr>
+        <td><b>Is active:</b></td>
+        <td>{{sensorInDetail.isActive}}</td>
+    </tr>
+    <tr>
+    	<td><b>Last data receipt:</b></td>
+    	<td>{{sensorInDetail.lastChange | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
+   	</tr>
+</table>
+<hr />
+<button button class="control button fullWidth" ng-click="showHighlighter()" ng-show="highlighterShown==false">
+    <span class="ui-icon ui-icon-radio-on"></span> Show highlighter
+</button>
+<button button class="control button fullWidth" ng-click="hideHighlighter()" ng-show="highlighterShown==true">
+    <span class="ui-icon ui-icon-radio-on"></span> Hide highlighter
+</button>
+<button button class="control button fullWidth" ng-click="panTo()" ng-show="panningTo==false" ng-disabled="!filled()">
+    <span class="ui-icon ui-icon-pin-s"></span> Pan to
+</button>
+<button button class="control button fullWidth" ng-click="unpanTo()" ng-show="panningTo==true">
+    <span class="ui-icon ui-icon-pin-w"></span> Stop panning to
+</button>

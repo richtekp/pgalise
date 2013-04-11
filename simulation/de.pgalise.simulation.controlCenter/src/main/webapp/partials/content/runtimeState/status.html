@@ -1,0 +1,16 @@
+<!-- STATUS (RUNTIME) -->
+<div class="contentDiv" ng-controller="StatusCtrl">
+    <h2>Status</h2>
+    <div class="block">
+        <table class="noWrap">
+            <tr class="head">
+                <td><h3>Simulation status</h3></td>
+            </tr>
+            <tr>
+                <td>
+                    <input button type="button" class="fullWidth" value="Stop simulation" ng-disabled="simulation.simulationState != 'running' && simulation.simulationState != 'paused'" ng-click="stopSimulation()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

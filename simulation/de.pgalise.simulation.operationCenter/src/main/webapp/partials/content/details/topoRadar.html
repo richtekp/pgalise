@@ -1,0 +1,54 @@
+<table id="detailTable" class="fullWidth noWrap">
+    <tr class="wrap">
+        <td><b>ID:</b></td>
+        <td>{{sensorInDetail.id}}</td>
+    </tr>
+    <tr>
+        <td><b>Symbol:</b></td>
+        <td><img src="img/topo_radar.png" height="20" /></td>
+    </tr>
+    <tr>
+        <td><b>Position:</b></td>
+        <td>[{{sensorInDetail.latitude.toFixed(6) + ', ' + sensorInDetail.longitude.toFixed(6)}}]</td>
+    </tr>
+    <tr>
+        <td><b>Receipt interval:</b></td>
+        <td>{{sensorInDetail.updateSteps * simulationInfo.initParameter.interval}} ms</td>
+    </tr>
+    <tr>
+        <td><b>Last data receipt:</b></td>
+        <td>{{sensorInDetail.lastChange | date:'MM/dd/yyyy @ h:mm:ssa'}}</td>
+    </tr>
+    <tr>
+        <td><b>Status:</b></td>
+        <td>
+            <span ng-show="sensorInDetail.isActive" class="green">Active</span>
+            <span ng-hide="sensorInDetail.isActive" class="red">Inactive</span>
+        </td>
+    </tr>
+    <tr>
+        <td><b>Axle count:</b></td>
+        <td>{{sensorInDetail.axleCount}}</td>
+    </tr>
+    <tr>
+        <td><b>Length:</b></td>
+        <td>{{sensorInDetail.length}}</td>
+    </tr>
+    <tr>
+        <td><b>Axial distance 1:</b></td>
+        <td>{{sensorInDetail.axialDistance1}}</td>
+    </tr>
+    <tr>
+        <td><b>Axial distance 2:</b></td>
+        <td>{{sensorInDetail.axialDistance2}}</td>
+    </tr>
+</table>
+<button button class="control button fullWidth" ng-click="showHighlighter()" ng-show="highlighterShown==false">
+    <span class="ui-icon ui-icon-radio-on"></span> Show highlighter
+</button>
+<button button class="control button fullWidth" ng-click="hideHighlighter()" ng-show="highlighterShown==true">
+    <span class="ui-icon ui-icon-radio-on"></span> Hide highlighter
+</button>
+<button button class="control button fullWidth" ng-click="panTo()">
+    <span class="ui-icon ui-icon-pin-s"></span> Pan to
+</button>

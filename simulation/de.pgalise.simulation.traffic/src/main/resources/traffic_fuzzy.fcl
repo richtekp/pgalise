@@ -1,0 +1,2695 @@
+/* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+ 
+// Block definition (there may be more than one block per file)
+FUNCTION_BLOCK function_traffic
+
+// Define input variables
+VAR_INPUT
+    temperature : REAL;
+    rain : REAL;
+    brightness : REAL;
+    time_of_day : REAL;
+    day_of_week : REAL;
+    season : REAL;
+    wind_strength : REAL;
+    snow : REAL; 
+END_VAR
+
+// Define output variable
+VAR_OUTPUT
+    percentage : REAL;
+END_VAR
+
+// Fuzzify input variable 'temperature'
+FUZZIFY temperature
+	TERM cold := (-15, 1) (-5, 1) (15, 0);
+	TERM average := (5, 0) (15, 1) (25, 0);
+	TERM hot := (15, 0) (35, 1) (45, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'rain'
+FUZZIFY rain
+    TERM low := (0, 1) (150, 0); 
+    TERM middle := (100, 0) (200, 1) (300,0);
+    TERM high := (250, 0) (400, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'brightness'
+FUZZIFY brightness
+	TERM dark := (0, 1) (12000, 0);
+	TERM bright := (3000, 0) (15000, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'time_of_day'
+FUZZIFY time_of_day
+    TERM early := (5, 0) (6, 0.75) (7, 1) (8, 1) (9, 0.7) (10, 0.5) (11,0);
+    TERM midday := (12, 1) (13, 1) (14, 0.75) (15, 0.5) (16, 0);
+    TERM late := (17, 0) (18, 0.5) (19, 1) (20, 1) (21, 0.75) (22, 0.5);
+    TERM night := (1, 1) (2, 1) (3, 0.75) (4, 0.5) (23, 0.5) (24, 1);
+END_FUZZIFY
+
+//Fuzzify input variable 'day_of_week`
+FUZZIFY day_of_week
+	TERM week := (1, 0) (2, 1) (3, 1) (4, 1) (5, 0);
+	TERM weekend := (4, 0) (5, 0.5) (6, 0.8) (7, 1);
+END_FUZZIFY
+
+//Fuzzify input variable 'season'
+FUZZIFY season
+    //Seasons are given in month data 1 = january, 2 = february, etc.
+        TERM spring := (2, 0) (3, 1) (4, 0.75) (5, 0.5) (6, 0);
+	TERM summer := (5, 0) (6, 0.5) (7, 1) (8, 1) (9, 0);
+        TERM autumn := (8, 0) (9, 0.5) (10, 1) (11, 0.5) (12, 0);
+	TERM winter := (1, 0.75) (2, 0.5) (3, 0) (10, 0) (11, 0) (12, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'wind_strength'
+FUZZIFY wind_strength
+    // Storm gets values 1 - 5 for low, 6 - 8 for average and 9 - 12 for high wind_strength
+    TERM breeze := (1, 0) (2, 0.5) (3, 0.6) (4, 0.75) (5, 1); 
+    TERM windy := (6, 0.5) (7, 0.75) (8,1);
+    TERM hurricane := (9, 0.7) (10, 0.8) (11, 0.9) (12, 1);
+END_FUZZIFY
+
+// Fuzzify input variable 'snow'
+FUZZIFY snow
+    // Amount of snow is presentated in kg/m³
+    TERM low := (0, 0) (20, 0.5) (30, 0.6) ; 
+    TERM medium := (30, 0.5) (60, 0.75) (100, 1);
+    TERM high := (100, 0.5) (150, 0.75) (200, 1);
+END_FUZZIFY
+
+// Defuzzify output variable 'percentage'
+DEFUZZIFY percentage
+	TERM non := (0, 1);
+    TERM few := (0,1) (0.4,0);
+    TERM average := (0.4, 0.5) (0.55, 1) (0.70, 0.75);
+    TERM many := (0.70,0) (0.80, 0.5) (1,1) ;
+    // Use 'Center Of Gravity' defuzzification method
+    METHOD : COG;
+    // Default value is 0 (if no rule activates defuzzifier)
+    DEFAULT := 50;
+END_DEFUZZIFY
+
+
+RULEBLOCK rule_block_car
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+// RULES for: Temperature and rain and birghtness:
+    RULE 1 : IF temperature IS cold AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 2 : IF temperature IS cold AND rain IS middle AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 3 : IF temperature IS cold AND rain IS high AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 4 : IF temperature IS cold AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 5 : IF temperature IS cold AND rain IS middle AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 6 : IF temperature IS cold AND rain IS high AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 7 : IF temperature IS average AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 8 : IF temperature IS average AND rain IS middle AND brightness IS dark
+                THEN percentage IS average;
+
+    RULE 9 : IF temperature IS average AND rain IS high AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 10 : IF temperature IS average AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 11 : IF temperature IS average AND rain IS middle AND brightness IS bright
+                THEN percentage IS average;
+
+    RULE 12 : IF temperature IS average AND rain IS high AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 13 : IF temperature IS hot AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 14 : IF temperature IS hot AND rain IS middle AND brightness IS dark
+                THEN percentage IS average;
+
+    RULE 15 : IF temperature IS hot AND rain IS high AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 16 : IF temperature IS hot AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 17 : IF temperature IS hot AND rain IS middle AND brightness IS bright
+                THEN percentage IS average;
+
+    RULE 18 : IF temperature IS hot AND rain IS high AND brightness IS bright
+                THEN percentage IS many;
+
+// RULES for: rain and brightness and time_of_day:
+    RULE 19 : IF rain IS low AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 20 : IF rain IS low AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 21 : IF rain IS low AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 22 : IF rain IS low AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 23 : IF rain IS low AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 24 : IF rain IS low AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 25 : IF rain IS low AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 26 : IF rain IS low AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 27 : IF rain IS middle AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 28 : IF rain IS middle AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 29 : IF rain IS middle AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 30 : IF rain IS middle AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 31 : IF rain IS middle AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 32 : IF rain IS middle AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 33 : IF rain IS middle AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 34 : IF rain IS middle AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS average;
+
+    RULE 35 : IF rain IS high AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 36 : IF rain IS high AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 37 : IF rain IS high AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 38 : IF rain IS high AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 39 : IF rain IS high AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 40 : IF rain IS high AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 41 : IF rain IS high AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 42 : IF rain IS high AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+//RULES for: brightness and time_of_day and day_of_week
+    RULE 43 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 44 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 45 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 46 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 47 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 48 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 49 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 50 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 51 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 52 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 53 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 54 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 55 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 56 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 57 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 58 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+//RULES for: time_of_day and day_of_week and season
+    RULE 59 : IF time_of_day IS early AND day_of_week IS week AND season IS spring
+                THEN percentage IS few;
+
+    RULE 60 : IF time_of_day IS early AND day_of_week IS week AND season IS summer
+                THEN percentage IS few;
+
+    RULE 61 : IF time_of_day IS early AND day_of_week IS week AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 62 : IF time_of_day IS early AND day_of_week IS week AND season IS winter
+                THEN percentage IS many;
+
+    RULE 63 : IF time_of_day IS early AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS few;
+
+    RULE 64 : IF time_of_day IS early AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 65 : IF time_of_day IS early AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 66 : IF time_of_day IS early AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS average;
+
+    RULE 67 : IF time_of_day IS midday AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 68 : IF time_of_day IS midday AND day_of_week IS week AND season IS summer
+                THEN percentage IS few;
+
+    RULE 69 : IF time_of_day IS midday AND day_of_week IS week AND season IS autumn
+                THEN percentage IS many;
+
+    RULE 70 : IF time_of_day IS midday AND day_of_week IS week AND season IS winter
+                THEN percentage IS many;
+
+    RULE 71 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS average;
+
+    RULE 72 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 73 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 74 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS many;
+
+    RULE 75 : IF time_of_day IS late AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 76 : IF time_of_day IS late AND day_of_week IS week AND season IS summer
+                THEN percentage IS many;
+
+    RULE 77 : IF time_of_day IS late AND day_of_week IS week AND season IS autumn
+                THEN percentage IS many;
+
+    RULE 78 : IF time_of_day IS late AND day_of_week IS week AND season IS winter
+                THEN percentage IS many;
+
+    RULE 79 : IF time_of_day IS late AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS few;
+
+    RULE 80 : IF time_of_day IS late AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 81 : IF time_of_day IS late AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS many;
+
+    RULE 82 : IF time_of_day IS late AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS many;
+
+//RULES for: day_of_week and season and wind_strength:
+    RULE 83 : IF day_of_week IS week AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 84 : IF day_of_week IS week AND season IS spring AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 85 : IF day_of_week IS week AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 86 : IF day_of_week IS week AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 87 : IF day_of_week IS week AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 88 : IF day_of_week IS week AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 89 : IF day_of_week IS week AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 90 : IF day_of_week IS week AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 91 : IF day_of_week IS week AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 86 : IF day_of_week IS week AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS average;
+
+    RULE 87 : IF day_of_week IS week AND season IS winter AND wind_strength IS windy
+                THEN percentage IS many;
+
+    RULE 88 : IF day_of_week IS week AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 89 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 90 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS windy
+                THEN percentage IS many;
+
+    RULE 91 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 92 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 93 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 94 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 95 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS average;
+
+    RULE 96 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 97 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 98 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS average;
+
+    RULE 99 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS windy
+                THEN percentage IS many;
+
+    RULE 100 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+// RULE for: season and wind_strength and snow:
+    RULE 101 : IF season IS spring AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS few;
+
+    RULE 102 : IF season IS spring AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS average;
+
+    RULE 103 : IF season IS spring AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS many;
+
+    RULE 104 : IF season IS spring AND wind_strength IS windy AND snow IS low
+                THEN percentage IS average;
+
+    RULE 105 : IF season IS spring AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS average;
+
+    RULE 106 : IF season IS spring AND wind_strength IS windy AND snow IS high
+                THEN percentage IS many;
+
+    RULE 107 : IF season IS spring AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS many;
+
+    RULE 108 : IF season IS spring AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS many;
+
+    RULE 109 : IF season IS spring AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS many;
+
+    RULE 110 : IF season IS winter AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS few;
+
+    RULE 111 : IF season IS winter AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS average;
+
+    RULE 112 : IF season IS winter AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS many;
+
+    RULE 113 : IF season IS winter AND wind_strength IS windy AND snow IS low
+                THEN percentage IS many;
+
+    RULE 114 : IF season IS winter AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS many;
+
+    RULE 115 : IF season IS winter AND wind_strength IS windy AND snow IS high
+                THEN percentage IS many;
+
+    RULE 116 : IF season IS winter AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS many;
+
+    RULE 117 : IF season IS winter AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS many;
+
+    RULE 118 : IF season IS winter AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS many;
+
+//RULES for: time_of_day and snow and temperature:
+    RULE 119 : IF time_of_day IS early AND snow IS low AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 120 : IF time_of_day IS early AND snow IS low AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 121 : IF time_of_day IS early AND snow IS low AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 122 : IF time_of_day IS midday AND snow IS low AND temperature IS cold
+                THEN percentage IS average;
+
+    RULE 123 : IF time_of_day IS midday AND snow IS low AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 122 : IF time_of_day IS midday AND snow IS low AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 123 : IF time_of_day IS late AND snow IS low AND temperature IS cold
+                THEN percentage IS average;
+
+    RULE 124 : IF time_of_day IS late AND snow IS low AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 125 : IF time_of_day IS late AND snow IS low AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 126 : IF time_of_day IS night AND snow IS low AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 127 : IF time_of_day IS night AND snow IS low AND temperature IS average
+                THEN percentage IS few;
+
+    RULE 128 : IF time_of_day IS night AND snow IS low AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 129 : IF time_of_day IS early AND snow IS medium AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 130 : IF time_of_day IS early AND snow IS medium AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 131 : IF time_of_day IS early AND snow IS medium AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 132 : IF time_of_day IS midday AND snow IS medium AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 133 : IF time_of_day IS midday AND snow IS medium AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 134 : IF time_of_day IS midday AND snow IS medium AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 135 : IF time_of_day IS late AND snow IS medium AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 136 : IF time_of_day IS late AND snow IS medium AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 137 : IF time_of_day IS late AND snow IS medium AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 138 : IF time_of_day IS night AND snow IS medium AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 139 : IF time_of_day IS night AND snow IS medium AND temperature IS average
+                THEN percentage IS few;
+
+    RULE 140 : IF time_of_day IS night AND snow IS medium AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 141 : IF time_of_day IS early AND snow IS high AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 142 : IF time_of_day IS early AND snow IS high AND temperature IS average
+                THEN percentage IS many;
+
+    RULE 143 : IF time_of_day IS early AND snow IS high AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 144 : IF time_of_day IS midday AND snow IS high AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 145 : IF time_of_day IS midday AND snow IS high AND temperature IS average
+                THEN percentage IS many;
+
+    RULE 146 : IF time_of_day IS midday AND snow IS high AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 147 : IF time_of_day IS late AND snow IS high AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 148 : IF time_of_day IS late AND snow IS high AND temperature IS average
+                THEN percentage IS many;
+
+    RULE 149 : IF time_of_day IS late AND snow IS high AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 150 : IF time_of_day IS night AND snow IS high AND temperature IS cold
+                THEN percentage IS many;
+
+    RULE 151 : IF time_of_day IS night AND snow IS high AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 152 : IF time_of_day IS night AND snow IS high AND temperature IS hot
+                THEN percentage IS few;
+
+//RULES for: rain and day_of_week and time_of_day
+    RULE 153 : IF rain IS low AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 154 : IF rain IS low AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 155 : IF rain IS low AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 156 : IF rain IS low AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 157 : IF rain IS middle AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 158 : IF rain IS middle AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 159 : IF rain IS middle AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 160 : IF rain IS middle AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 161 : IF rain IS high AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 162 : IF rain IS high AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 163 : IF rain IS high AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 164 : IF rain IS high AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+//
+    RULE 165 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 166 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 167 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 168 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 169 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 170 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 171 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 172 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS average;
+
+    RULE 173 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 174 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 175 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 176 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS average;
+END_RULEBLOCK
+
+RULEBLOCK rule_block_bicycle
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+    
+// RULES for: Temperature and rain and brightness:
+    RULE 1 : IF temperature IS cold AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 2 : IF temperature IS cold AND rain IS middle AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 3 : IF temperature IS cold AND rain IS high AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 4 : IF temperature IS cold AND rain IS low AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 5 : IF temperature IS cold AND rain IS middle AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 6 : IF temperature IS cold AND rain IS high AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 7 : IF temperature IS average AND rain IS low AND brightness IS dark
+                THEN percentage IS average;
+
+    RULE 8 : IF temperature IS average AND rain IS middle AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 9 : IF temperature IS average AND rain IS high AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 10 : IF temperature IS average AND rain IS low AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 11 : IF temperature IS average AND rain IS middle AND brightness IS bright
+                THEN percentage IS average;
+
+    RULE 12 : IF temperature IS average AND rain IS high AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 13 : IF temperature IS hot AND rain IS low AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 14 : IF temperature IS hot AND rain IS middle AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 15 : IF temperature IS hot AND rain IS high AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 16 : IF temperature IS hot AND rain IS low AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 17 : IF temperature IS hot AND rain IS middle AND brightness IS bright
+                THEN percentage IS average;
+
+    RULE 18 : IF temperature IS hot AND rain IS high AND brightness IS bright
+                THEN percentage IS many;
+
+// RULES for: rain and brightness and time_of_day:
+    RULE 19 : IF rain IS low AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 20 : IF rain IS low AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 21 : IF rain IS low AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 22 : IF rain IS low AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 23 : IF rain IS low AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 24 : IF rain IS low AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 25 : IF rain IS low AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 26 : IF rain IS low AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 27 : IF rain IS middle AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 28 : IF rain IS middle AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 29 : IF rain IS middle AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 30 : IF rain IS middle AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS average;
+
+    RULE 31 : IF rain IS middle AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 32 : IF rain IS middle AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 33 : IF rain IS middle AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 34 : IF rain IS middle AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 35 : IF rain IS high AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 36 : IF rain IS high AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 37 : IF rain IS high AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 38 : IF rain IS high AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 39 : IF rain IS high AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 40 : IF rain IS high AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 41 : IF rain IS high AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 42 : IF rain IS high AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+//RULES for: brightness and time_of_day and day_of_week
+    RULE 43 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 44 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 45 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 46 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 47 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 48 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 49 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 50 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 51 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 52 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 53 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 54 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 55 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 56 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 57 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 58 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS average;
+
+//RULES for: time_of_day and day_of_week and season
+    RULE 59 : IF time_of_day IS early AND day_of_week IS week AND season IS spring
+                THEN percentage IS many;
+
+    RULE 60 : IF time_of_day IS early AND day_of_week IS week AND season IS summer
+                THEN percentage IS many;
+
+    RULE 61 : IF time_of_day IS early AND day_of_week IS week AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 62 : IF time_of_day IS early AND day_of_week IS week AND season IS winter
+                THEN percentage IS few;
+
+    RULE 63 : IF time_of_day IS early AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS average;
+
+    RULE 64 : IF time_of_day IS early AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS many;
+
+    RULE 65 : IF time_of_day IS early AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 66 : IF time_of_day IS early AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS few;
+
+    RULE 67 : IF time_of_day IS midday AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 68 : IF time_of_day IS midday AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 69 : IF time_of_day IS midday AND day_of_week IS week AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 70 : IF time_of_day IS midday AND day_of_week IS week AND season IS winter
+                THEN percentage IS few;
+
+    RULE 71 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS many;
+
+    RULE 72 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS many;
+
+    RULE 73 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 74 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS few;
+
+    RULE 75 : IF time_of_day IS late AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 76 : IF time_of_day IS late AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 77 : IF time_of_day IS late AND day_of_week IS week AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 78 : IF time_of_day IS late AND day_of_week IS week AND season IS winter
+                THEN percentage IS few;
+
+    RULE 79 : IF time_of_day IS late AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS few;
+
+    RULE 80 : IF time_of_day IS late AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 81 : IF time_of_day IS late AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 82 : IF time_of_day IS late AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS few;
+
+//RULES for: day_of_week and season and wind_strength:
+    RULE 83 : IF day_of_week IS week AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS average;
+
+    RULE 84 : IF day_of_week IS week AND season IS spring AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 85 : IF day_of_week IS week AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 86 : IF day_of_week IS week AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 87 : IF day_of_week IS week AND season IS summer AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 88 : IF day_of_week IS week AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 89 : IF day_of_week IS week AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS average;
+
+    RULE 90 : IF day_of_week IS week AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 91 : IF day_of_week IS week AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 86 : IF day_of_week IS week AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS average;
+
+    RULE 87 : IF day_of_week IS week AND season IS winter AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 88 : IF day_of_week IS week AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 89 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 90 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 91 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 92 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 93 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 94 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 95 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 96 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 97 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+    RULE 98 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS average;
+
+    RULE 99 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 100 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS few;
+
+// RULE for: season and wind_strength and snow:
+    RULE 101 : IF season IS spring AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS average;
+
+    RULE 102 : IF season IS spring AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 103 : IF season IS spring AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS few;
+
+    RULE 104 : IF season IS spring AND wind_strength IS windy AND snow IS low
+                THEN percentage IS few;
+
+    RULE 105 : IF season IS spring AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 106 : IF season IS spring AND wind_strength IS windy AND snow IS high
+                THEN percentage IS few;
+
+    RULE 107 : IF season IS spring AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS few;
+
+    RULE 108 : IF season IS spring AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 109 : IF season IS spring AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS few;
+
+    RULE 110 : IF season IS winter AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS many;
+
+    RULE 111 : IF season IS winter AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS average;
+
+    RULE 112 : IF season IS winter AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS few;
+
+    RULE 113 : IF season IS winter AND wind_strength IS windy AND snow IS low
+                THEN percentage IS many;
+
+    RULE 114 : IF season IS winter AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS average;
+
+    RULE 115 : IF season IS winter AND wind_strength IS windy AND snow IS high
+                THEN percentage IS few;
+
+    RULE 116 : IF season IS winter AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS few;
+
+    RULE 117 : IF season IS winter AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 118 : IF season IS winter AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS few;
+
+//RULES for: time_of_day and snow and temperature:
+    RULE 119 : IF time_of_day IS early AND snow IS low AND temperature IS cold
+                THEN percentage IS average;
+
+    RULE 120 : IF time_of_day IS early AND snow IS low AND temperature IS average
+                THEN percentage IS many;
+
+    RULE 121 : IF time_of_day IS early AND snow IS low AND temperature IS hot
+                THEN percentage IS many;
+
+    RULE 122 : IF time_of_day IS midday AND snow IS low AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 123 : IF time_of_day IS midday AND snow IS low AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 122 : IF time_of_day IS midday AND snow IS low AND temperature IS hot
+                THEN percentage IS many;
+
+    RULE 123 : IF time_of_day IS late AND snow IS low AND temperature IS cold
+                THEN percentage IS average;
+
+    RULE 124 : IF time_of_day IS late AND snow IS low AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 125 : IF time_of_day IS late AND snow IS low AND temperature IS hot
+                THEN percentage IS many;
+
+    RULE 126 : IF time_of_day IS night AND snow IS low AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 127 : IF time_of_day IS night AND snow IS low AND temperature IS average
+                THEN percentage IS few;
+
+    RULE 128 : IF time_of_day IS night AND snow IS low AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 129 : IF time_of_day IS early AND snow IS medium AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 130 : IF time_of_day IS early AND snow IS medium AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 131 : IF time_of_day IS early AND snow IS medium AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 132 : IF time_of_day IS midday AND snow IS medium AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 133 : IF time_of_day IS midday AND snow IS medium AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 134 : IF time_of_day IS midday AND snow IS medium AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 135 : IF time_of_day IS late AND snow IS medium AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 136 : IF time_of_day IS late AND snow IS medium AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 137 : IF time_of_day IS late AND snow IS medium AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 138 : IF time_of_day IS night AND snow IS medium AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 139 : IF time_of_day IS night AND snow IS medium AND temperature IS average
+                THEN percentage IS few;
+
+    RULE 140 : IF time_of_day IS night AND snow IS medium AND temperature IS hot
+                THEN percentage IS few;
+
+    RULE 141 : IF time_of_day IS early AND snow IS high AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 142 : IF time_of_day IS early AND snow IS high AND temperature IS average
+                THEN percentage IS few;
+
+    RULE 143 : IF time_of_day IS early AND snow IS high AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 144 : IF time_of_day IS midday AND snow IS high AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 145 : IF time_of_day IS midday AND snow IS high AND temperature IS average
+                THEN percentage IS few;
+
+    RULE 146 : IF time_of_day IS midday AND snow IS high AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 147 : IF time_of_day IS late AND snow IS high AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 148 : IF time_of_day IS late AND snow IS high AND temperature IS average
+                THEN percentage IS average;
+
+    RULE 149 : IF time_of_day IS late AND snow IS high AND temperature IS hot
+                THEN percentage IS average;
+
+    RULE 150 : IF time_of_day IS night AND snow IS high AND temperature IS cold
+                THEN percentage IS few;
+
+    RULE 151 : IF time_of_day IS night AND snow IS high AND temperature IS average
+                THEN percentage IS few;
+
+    RULE 152 : IF time_of_day IS night AND snow IS high AND temperature IS hot
+                THEN percentage IS few;
+
+//RULES for: rain and day_of_week and time_of_day
+    RULE 153 : IF rain IS low AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 154 : IF rain IS low AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 155 : IF rain IS low AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 156 : IF rain IS low AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 157 : IF rain IS middle AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 158 : IF rain IS middle AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 159 : IF rain IS middle AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 160 : IF rain IS middle AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 161 : IF rain IS high AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 162 : IF rain IS high AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 163 : IF rain IS high AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 164 : IF rain IS high AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+//
+    RULE 165 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 166 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 167 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 168 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 169 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 170 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 171 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 172 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 173 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 174 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 175 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 176 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS few;
+END_RULEBLOCK
+
+RULEBLOCK rule_block_motorcycle
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+// RULES for: Temperature and rain and brightness:
+    RULE 1 : IF temperature IS cold AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 2 : IF temperature IS cold AND rain IS middle AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 3 : IF temperature IS cold AND rain IS high AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 4 : IF temperature IS cold AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 5 : IF temperature IS cold AND rain IS middle AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 6 : IF temperature IS cold AND rain IS high AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 7 : IF temperature IS average AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 8 : IF temperature IS average AND rain IS middle AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 9 : IF temperature IS average AND rain IS high AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 10 : IF temperature IS average AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 11 : IF temperature IS average AND rain IS middle AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 12 : IF temperature IS average AND rain IS high AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 13 : IF temperature IS hot AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 14 : IF temperature IS hot AND rain IS middle AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 15 : IF temperature IS hot AND rain IS high AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 16 : IF temperature IS hot AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 17 : IF temperature IS hot AND rain IS middle AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 18 : IF temperature IS hot AND rain IS high AND brightness IS bright
+                THEN percentage IS non;
+
+// RULES for: rain and brightness and time_of_day:
+    RULE 19 : IF rain IS low AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 20 : IF rain IS low AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 21 : IF rain IS low AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 22 : IF rain IS low AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 23 : IF rain IS low AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 24 : IF rain IS low AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 25 : IF rain IS low AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 26 : IF rain IS low AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 27 : IF rain IS middle AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 28 : IF rain IS middle AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 29 : IF rain IS middle AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 30 : IF rain IS middle AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 31 : IF rain IS middle AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 32 : IF rain IS middle AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 33 : IF rain IS middle AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 34 : IF rain IS middle AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 35 : IF rain IS high AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 36 : IF rain IS high AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 37 : IF rain IS high AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 38 : IF rain IS high AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 39 : IF rain IS high AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 40 : IF rain IS high AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 41 : IF rain IS high AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 42 : IF rain IS high AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS non;
+
+//RULES for: brightness and time_of_day and day_of_week
+    RULE 43 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 44 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 45 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 46 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 47 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 48 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 49 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 50 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 51 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 52 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 53 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 54 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 55 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 56 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 57 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 58 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+//RULES for: time_of_day and day_of_week and season
+    RULE 59 : IF time_of_day IS early AND day_of_week IS week AND season IS spring
+                THEN percentage IS few;
+
+    RULE 60 : IF time_of_day IS early AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 61 : IF time_of_day IS early AND day_of_week IS week AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 62 : IF time_of_day IS early AND day_of_week IS week AND season IS winter
+                THEN percentage IS non;
+
+    RULE 63 : IF time_of_day IS early AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS average;
+
+    RULE 64 : IF time_of_day IS early AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS average;
+
+    RULE 65 : IF time_of_day IS early AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 66 : IF time_of_day IS early AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS non;
+
+    RULE 67 : IF time_of_day IS midday AND day_of_week IS week AND season IS spring
+                THEN percentage IS many;
+
+    RULE 68 : IF time_of_day IS midday AND day_of_week IS week AND season IS summer
+                THEN percentage IS many;
+
+    RULE 69 : IF time_of_day IS midday AND day_of_week IS week AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 70 : IF time_of_day IS midday AND day_of_week IS week AND season IS winter
+                THEN percentage IS non;
+
+    RULE 71 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS many;
+
+    RULE 72 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS many;
+
+    RULE 73 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 74 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS non;
+
+    RULE 75 : IF time_of_day IS late AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 76 : IF time_of_day IS late AND day_of_week IS week AND season IS summer
+                THEN percentage IS many;
+
+    RULE 77 : IF time_of_day IS late AND day_of_week IS week AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 78 : IF time_of_day IS late AND day_of_week IS week AND season IS winter
+                THEN percentage IS non;
+
+    RULE 79 : IF time_of_day IS late AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS few;
+
+    RULE 80 : IF time_of_day IS late AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 81 : IF time_of_day IS late AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 82 : IF time_of_day IS late AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS non;
+                
+                
+
+
+
+//RULES for: day_of_week and season and wind_strength:
+    RULE 83 : IF day_of_week IS week AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 84 : IF day_of_week IS week AND season IS spring AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 85 : IF day_of_week IS week AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 86 : IF day_of_week IS week AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 87 : IF day_of_week IS week AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 88 : IF day_of_week IS week AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 89 : IF day_of_week IS week AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 90 : IF day_of_week IS week AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 91 : IF day_of_week IS week AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 86 : IF day_of_week IS week AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS non;
+
+    RULE 87 : IF day_of_week IS week AND season IS winter AND wind_strength IS windy
+                THEN percentage IS non;
+
+    RULE 88 : IF day_of_week IS week AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 89 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 90 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 91 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 92 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 93 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 94 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 95 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 96 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 97 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 98 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS non;
+
+    RULE 99 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS windy
+                THEN percentage IS non;
+
+    RULE 100 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+// RULE for: season and wind_strength and snow:
+    RULE 101 : IF season IS spring AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS non;
+
+    RULE 102 : IF season IS spring AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 103 : IF season IS spring AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS non;
+
+    RULE 104 : IF season IS spring AND wind_strength IS windy AND snow IS low
+                THEN percentage IS non;
+
+    RULE 105 : IF season IS spring AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 106 : IF season IS spring AND wind_strength IS windy AND snow IS high
+                THEN percentage IS non;
+
+    RULE 107 : IF season IS spring AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS non;
+
+    RULE 108 : IF season IS spring AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 109 : IF season IS spring AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS non;
+
+    RULE 110 : IF season IS winter AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS non;
+
+    RULE 111 : IF season IS winter AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 112 : IF season IS winter AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS non;
+
+    RULE 113 : IF season IS winter AND wind_strength IS windy AND snow IS low
+                THEN percentage IS non;
+
+    RULE 114 : IF season IS winter AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 115 : IF season IS winter AND wind_strength IS windy AND snow IS high
+                THEN percentage IS non;
+
+    RULE 116 : IF season IS winter AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS non;
+
+    RULE 117 : IF season IS winter AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 118 : IF season IS winter AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS non;
+
+//RULES for: rain and day_of_week and time_of_day
+    RULE 153 : IF rain IS low AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 154 : IF rain IS low AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 155 : IF rain IS low AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 156 : IF rain IS low AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 157 : IF rain IS middle AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 158 : IF rain IS middle AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 159 : IF rain IS middle AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 160 : IF rain IS middle AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 161 : IF rain IS high AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 162 : IF rain IS high AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 163 : IF rain IS high AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 164 : IF rain IS high AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 165 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 166 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 167 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 168 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 169 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 170 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 171 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 172 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 173 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 174 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 175 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 176 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS non;
+END_RULEBLOCK
+
+RULEBLOCK rule_block_truck
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+// RULES for: DayOfWeek and time_of_day
+    RULE 1 : IF day_of_week IS week AND time_of_day IS early
+                THEN percentage IS average;
+    RULE 2 : IF day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS many;
+    RULE 3 : IF day_of_week IS week AND time_of_day IS late
+                THEN percentage IS few;
+    RULE 4 : IF day_of_week IS week AND time_of_day IS night
+                THEN percentage IS average;
+    RULE 5 : IF day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+    RULE 6 : IF day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+    RULE 7 : IF day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS non;
+    RULE 8 : IF day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non; 
+    RULE 9 : IF day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS average;         
+    RULE 5 : IF day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS average;
+    RULE 6 : IF day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+    RULE 7 : IF day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS non;
+    RULE 8 : IF day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non; 
+    RULE 9 : IF day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS average;                        
+END_RULEBLOCK
+
+//Ruleblock for bycicles
+RULEBLOCK rule_block_bycicles
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+//RULES for temperature and rain and brightness
+    RULE 1 : IF temperature IS cold AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 2 : IF temperature IS cold AND rain IS middle AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 3 : IF temperature IS cold AND rain IS high AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 4 : IF temperature IS cold AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 5 : IF temperature IS cold AND rain IS middle AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 6 : IF temperature IS cold AND rain IS high AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 7 : IF temperature IS average AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 8 : IF temperature IS average AND rain IS middle AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 9 : IF temperature IS average AND rain IS high AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 10 : IF temperature IS average AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 11 : IF temperature IS average AND rain IS middle AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 12 : IF temperature IS average AND rain IS high AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 13 : IF temperature IS hot AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 14 : IF temperature IS hot AND rain IS middle AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 15 : IF temperature IS hot AND rain IS high AND brightness IS dark
+                THEN percentage IS non;
+
+    RULE 16 : IF temperature IS hot AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 17 : IF temperature IS hot AND rain IS middle AND brightness IS bright
+                THEN percentage IS non;
+
+    RULE 18 : IF temperature IS hot AND rain IS high AND brightness IS bright
+                THEN percentage IS non;
+
+// RULES for: rain and brightness and time_of_day:
+    RULE 19 : IF rain IS low AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 20 : IF rain IS low AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 21 : IF rain IS low AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 22 : IF rain IS low AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 23 : IF rain IS low AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 24 : IF rain IS low AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 25 : IF rain IS low AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 26 : IF rain IS low AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 27 : IF rain IS middle AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 28 : IF rain IS middle AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 29 : IF rain IS middle AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 30 : IF rain IS middle AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 31 : IF rain IS middle AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 32 : IF rain IS middle AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 33 : IF rain IS middle AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 34 : IF rain IS middle AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 35 : IF rain IS high AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 36 : IF rain IS high AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 37 : IF rain IS high AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 38 : IF rain IS high AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 39 : IF rain IS high AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 40 : IF rain IS high AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 41 : IF rain IS high AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 42 : IF rain IS high AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS non;
+
+//RULES for: brightness and time_of_day and day_of_week
+    RULE 43 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 44 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 45 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 46 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 47 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 48 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 49 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 50 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 51 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 52 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 53 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 54 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 55 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 56 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 57 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 58 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS average;
+
+//RULES for: time_of_day and day_of_week and season
+    RULE 59 : IF time_of_day IS early AND day_of_week IS week AND season IS spring
+                THEN percentage IS many;
+
+    RULE 60 : IF time_of_day IS early AND day_of_week IS week AND season IS summer
+                THEN percentage IS many;
+
+    RULE 61 : IF time_of_day IS early AND day_of_week IS week AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 62 : IF time_of_day IS early AND day_of_week IS week AND season IS winter
+                THEN percentage IS average;
+
+    RULE 63 : IF time_of_day IS early AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS few;
+
+    RULE 64 : IF time_of_day IS early AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS average;
+
+    RULE 65 : IF time_of_day IS early AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 66 : IF time_of_day IS early AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS few;
+
+    RULE 67 : IF time_of_day IS midday AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 68 : IF time_of_day IS midday AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 69 : IF time_of_day IS midday AND day_of_week IS week AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 70 : IF time_of_day IS midday AND day_of_week IS week AND season IS winter
+                THEN percentage IS few;
+
+    RULE 71 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS average;
+
+    RULE 72 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS many;
+
+    RULE 73 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 74 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS few;
+
+    RULE 75 : IF time_of_day IS late AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 76 : IF time_of_day IS late AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 77 : IF time_of_day IS late AND day_of_week IS week AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 78 : IF time_of_day IS late AND day_of_week IS week AND season IS winter
+                THEN percentage IS few;
+
+    RULE 79 : IF time_of_day IS late AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS few;
+
+    RULE 80 : IF time_of_day IS late AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 81 : IF time_of_day IS late AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS few;
+
+    RULE 82 : IF time_of_day IS late AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS few;
+                
+                
+
+
+
+//RULES for: day_of_week and season and wind_strength:
+    RULE 83 : IF day_of_week IS week AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 84 : IF day_of_week IS week AND season IS spring AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 85 : IF day_of_week IS week AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 86 : IF day_of_week IS week AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 87 : IF day_of_week IS week AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 88 : IF day_of_week IS week AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 89 : IF day_of_week IS week AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 90 : IF day_of_week IS week AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 91 : IF day_of_week IS week AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 86 : IF day_of_week IS week AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 87 : IF day_of_week IS week AND season IS winter AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 88 : IF day_of_week IS week AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 89 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 90 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 91 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 92 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 93 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 94 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 95 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 96 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 97 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 98 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 99 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 100 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+
+
+// RULE for: season and wind_strength and snow:
+    RULE 101 : IF season IS spring AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS average;
+
+    RULE 102 : IF season IS spring AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 103 : IF season IS spring AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS non;
+
+    RULE 104 : IF season IS spring AND wind_strength IS windy AND snow IS low
+                THEN percentage IS few;
+
+    RULE 105 : IF season IS spring AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 106 : IF season IS spring AND wind_strength IS windy AND snow IS high
+                THEN percentage IS non;
+
+    RULE 107 : IF season IS spring AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS non;
+
+    RULE 108 : IF season IS spring AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 109 : IF season IS spring AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS non;
+
+    RULE 110 : IF season IS winter AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS average;
+
+    RULE 111 : IF season IS winter AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 112 : IF season IS winter AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS non;
+
+    RULE 113 : IF season IS winter AND wind_strength IS windy AND snow IS low
+                THEN percentage IS few;
+
+    RULE 114 : IF season IS winter AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 115 : IF season IS winter AND wind_strength IS windy AND snow IS high
+                THEN percentage IS non;
+
+    RULE 116 : IF season IS winter AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS non;
+
+    RULE 117 : IF season IS winter AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 118 : IF season IS winter AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS non;
+                
+                
+
+//RULES for: rain and day_of_week and time_of_day
+    RULE 153 : IF rain IS low AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 154 : IF rain IS low AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 155 : IF rain IS low AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 156 : IF rain IS low AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 157 : IF rain IS middle AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 158 : IF rain IS middle AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 159 : IF rain IS middle AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 160 : IF rain IS middle AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 161 : IF rain IS high AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 162 : IF rain IS high AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 163 : IF rain IS high AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 164 : IF rain IS high AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 165 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 166 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 167 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 168 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 169 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 170 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 171 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 172 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 173 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 174 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 175 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 176 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS non;
+END_RULEBLOCK
+
+//Ruleblock for bus passengers
+RULEBLOCK rule_block_buspassengers
+    // Use 'min' for 'and' (also implicit use 'max'
+    // for 'or' to fulfill DeMorgan's Law)
+    AND : MIN;
+    // Use 'min' activation method
+    ACT : MIN;
+    // Use 'max' accumulation method
+    ACCU : MAX;
+
+//RULES for temperature and rain and brightness
+    RULE 1 : IF temperature IS cold AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 2 : IF temperature IS cold AND rain IS middle AND brightness IS dark
+                THEN percentage IS average;
+
+    RULE 3 : IF temperature IS cold AND rain IS high AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 4 : IF temperature IS cold AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 5 : IF temperature IS cold AND rain IS middle AND brightness IS bright
+                THEN percentage IS average;
+
+    RULE 6 : IF temperature IS cold AND rain IS high AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 7 : IF temperature IS average AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 8 : IF temperature IS average AND rain IS middle AND brightness IS dark
+                THEN percentage IS average;
+
+    RULE 9 : IF temperature IS average AND rain IS high AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 10 : IF temperature IS average AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 11 : IF temperature IS average AND rain IS middle AND brightness IS bright
+                THEN percentage IS average;
+
+    RULE 12 : IF temperature IS average AND rain IS high AND brightness IS bright
+                THEN percentage IS many;
+
+    RULE 13 : IF temperature IS hot AND rain IS low AND brightness IS dark
+                THEN percentage IS few;
+
+    RULE 14 : IF temperature IS hot AND rain IS middle AND brightness IS dark
+                THEN percentage IS average;
+
+    RULE 15 : IF temperature IS hot AND rain IS high AND brightness IS dark
+                THEN percentage IS many;
+
+    RULE 16 : IF temperature IS hot AND rain IS low AND brightness IS bright
+                THEN percentage IS few;
+
+    RULE 17 : IF temperature IS hot AND rain IS middle AND brightness IS bright
+                THEN percentage IS average;
+
+    RULE 18 : IF temperature IS hot AND rain IS high AND brightness IS bright
+                THEN percentage IS many;
+
+// RULES for: rain and brightness and time_of_day:
+    RULE 19 : IF rain IS low AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 20 : IF rain IS low AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 21 : IF rain IS low AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 22 : IF rain IS low AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 23 : IF rain IS low AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 24 : IF rain IS low AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS average;
+
+    RULE 25 : IF rain IS low AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 26 : IF rain IS low AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 27 : IF rain IS middle AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 28 : IF rain IS middle AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 29 : IF rain IS middle AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 30 : IF rain IS middle AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 31 : IF rain IS middle AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 32 : IF rain IS middle AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 33 : IF rain IS middle AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 34 : IF rain IS middle AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 35 : IF rain IS high AND brightness IS dark AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 36 : IF rain IS high AND brightness IS dark AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 37 : IF rain IS high AND brightness IS dark AND time_of_day IS late
+                THEN percentage IS many;
+
+    RULE 38 : IF rain IS high AND brightness IS dark AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 39 : IF rain IS high AND brightness IS bright AND time_of_day IS early
+                THEN percentage IS many;
+
+    RULE 40 : IF rain IS high AND brightness IS bright AND time_of_day IS midday
+                THEN percentage IS many;
+
+    RULE 41 : IF rain IS high AND brightness IS bright AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 42 : IF rain IS high AND brightness IS bright AND time_of_day IS night
+                THEN percentage IS few;
+
+
+//RULES for: brightness and time_of_day and day_of_week
+    RULE 43 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 44 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS many;
+
+    RULE 45 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 46 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 47 : IF brightness IS dark AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 48 : IF brightness IS dark AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS many;
+
+    RULE 49 : IF brightness IS dark AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 50 : IF brightness IS dark AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 51 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 52 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 53 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS week
+                THEN percentage IS average;
+
+    RULE 54 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS week
+                THEN percentage IS few;
+
+    RULE 55 : IF brightness IS bright AND time_of_day IS early AND day_of_week IS weekend
+                THEN percentage IS few;
+
+    RULE 56 : IF brightness IS bright AND time_of_day IS midday AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 57 : IF brightness IS bright AND time_of_day IS late AND day_of_week IS weekend
+                THEN percentage IS average;
+
+    RULE 58 : IF brightness IS bright AND time_of_day IS night AND day_of_week IS weekend
+                THEN percentage IS few;
+
+//RULES for: time_of_day and day_of_week and season
+    RULE 59 : IF time_of_day IS early AND day_of_week IS week AND season IS spring
+                THEN percentage IS many;
+
+    RULE 60 : IF time_of_day IS early AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 61 : IF time_of_day IS early AND day_of_week IS week AND season IS autumn
+                THEN percentage IS many;
+
+    RULE 62 : IF time_of_day IS early AND day_of_week IS week AND season IS winter
+                THEN percentage IS many;
+
+    RULE 63 : IF time_of_day IS early AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS average;
+
+    RULE 64 : IF time_of_day IS early AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS average;
+
+    RULE 65 : IF time_of_day IS early AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 66 : IF time_of_day IS early AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS average;
+
+    RULE 67 : IF time_of_day IS midday AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 68 : IF time_of_day IS midday AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 69 : IF time_of_day IS midday AND day_of_week IS week AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 70 : IF time_of_day IS midday AND day_of_week IS week AND season IS winter
+                THEN percentage IS average;
+
+    RULE 71 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS average;
+
+    RULE 72 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 73 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 74 : IF time_of_day IS midday AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS many;
+
+    RULE 75 : IF time_of_day IS late AND day_of_week IS week AND season IS spring
+                THEN percentage IS average;
+
+    RULE 76 : IF time_of_day IS late AND day_of_week IS week AND season IS summer
+                THEN percentage IS average;
+
+    RULE 77 : IF time_of_day IS late AND day_of_week IS week AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 78 : IF time_of_day IS late AND day_of_week IS week AND season IS winter
+                THEN percentage IS few;
+
+    RULE 79 : IF time_of_day IS late AND day_of_week IS weekend AND season IS spring
+                THEN percentage IS few;
+
+    RULE 80 : IF time_of_day IS late AND day_of_week IS weekend AND season IS summer
+                THEN percentage IS few;
+
+    RULE 81 : IF time_of_day IS late AND day_of_week IS weekend AND season IS autumn
+                THEN percentage IS average;
+
+    RULE 82 : IF time_of_day IS late AND day_of_week IS weekend AND season IS winter
+                THEN percentage IS average;
+                
+                
+
+
+
+//RULES for: day_of_week and season and wind_strength:
+    RULE 83 : IF day_of_week IS week AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 84 : IF day_of_week IS week AND season IS spring AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 85 : IF day_of_week IS week AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 86 : IF day_of_week IS week AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 87 : IF day_of_week IS week AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 88 : IF day_of_week IS week AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 89 : IF day_of_week IS week AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 90 : IF day_of_week IS week AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 91 : IF day_of_week IS week AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 86 : IF day_of_week IS week AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 87 : IF day_of_week IS week AND season IS winter AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 88 : IF day_of_week IS week AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 89 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 90 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 91 : IF day_of_week IS weekend AND season IS spring AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 92 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS breeze
+                THEN percentage IS many;
+
+    RULE 93 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS windy
+                THEN percentage IS average;
+
+    RULE 94 : IF day_of_week IS weekend AND season IS summer AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 95 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 96 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 97 : IF day_of_week IS weekend AND season IS autumn AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+    RULE 98 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS breeze
+                THEN percentage IS few;
+
+    RULE 99 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS windy
+                THEN percentage IS few;
+
+    RULE 100 : IF day_of_week IS weekend AND season IS winter AND wind_strength IS hurricane
+                THEN percentage IS non;
+
+
+
+// RULE for: season and wind_strength and snow:
+    RULE 101 : IF season IS spring AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS average;
+
+    RULE 102 : IF season IS spring AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 103 : IF season IS spring AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS non;
+
+    RULE 104 : IF season IS spring AND wind_strength IS windy AND snow IS low
+                THEN percentage IS few;
+
+    RULE 105 : IF season IS spring AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 106 : IF season IS spring AND wind_strength IS windy AND snow IS high
+                THEN percentage IS non;
+
+    RULE 107 : IF season IS spring AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS non;
+
+    RULE 108 : IF season IS spring AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 109 : IF season IS spring AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS non;
+
+    RULE 110 : IF season IS winter AND wind_strength IS breeze AND snow IS low
+                THEN percentage IS average;
+
+    RULE 111 : IF season IS winter AND wind_strength IS breeze AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 112 : IF season IS winter AND wind_strength IS breeze AND snow IS high
+                THEN percentage IS non;
+
+    RULE 113 : IF season IS winter AND wind_strength IS windy AND snow IS low
+                THEN percentage IS few;
+
+    RULE 114 : IF season IS winter AND wind_strength IS windy AND snow IS medium
+                THEN percentage IS few;
+
+    RULE 115 : IF season IS winter AND wind_strength IS windy AND snow IS high
+                THEN percentage IS non;
+
+    RULE 116 : IF season IS winter AND wind_strength IS hurricane AND snow IS low
+                THEN percentage IS non;
+
+    RULE 117 : IF season IS winter AND wind_strength IS hurricane AND snow IS medium
+                THEN percentage IS non;
+
+    RULE 118 : IF season IS winter AND wind_strength IS hurricane AND snow IS high
+                THEN percentage IS non;
+                
+                
+
+//RULES for: rain and day_of_week and time_of_day
+    RULE 153 : IF rain IS low AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS average;
+
+    RULE 154 : IF rain IS low AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 155 : IF rain IS low AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS average;
+
+    RULE 156 : IF rain IS low AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 157 : IF rain IS middle AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 158 : IF rain IS middle AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 159 : IF rain IS middle AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 160 : IF rain IS middle AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 161 : IF rain IS high AND day_of_week IS week AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 162 : IF rain IS high AND day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 163 : IF rain IS high AND day_of_week IS week AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 164 : IF rain IS high AND day_of_week IS week AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 165 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+
+    RULE 166 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 167 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS few;
+
+    RULE 168 : IF rain IS low AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS few;
+
+    RULE 169 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 170 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS few;
+
+    RULE 171 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 172 : IF rain IS middle AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS non;
+
+    RULE 173 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS non;
+
+    RULE 174 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS midday
+                THEN percentage IS non;
+
+    RULE 175 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS late
+                THEN percentage IS non;
+
+    RULE 176 : IF rain IS high AND day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS non;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

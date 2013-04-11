@@ -1,0 +1,193 @@
+/* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+ 
+FUNCTION_BLOCK function_traffic
+
+VAR_INPUT
+    temperature : REAL;
+    precipitation_amount : REAL;
+    light_intensity : REAL;
+    time_of_day : REAL;
+    day_of_week : REAL;
+    season : REAL;
+    wind_strength : REAL;
+END_VAR
+
+VAR_OUTPUT
+    percentage : REAL;
+END_VAR
+
+FUZZIFY temperature
+	TERM cold := (-45, 1) (-5, 0.5) (15, 0);
+	TERM average := (5, 0) (15, 1) (25, 0);
+	TERM hot := (15, 0) (35, 1) (45, 1);
+END_FUZZIFY
+
+FUZZIFY precipitation_amount
+    TERM low := (0, 1) (150, 0); 
+    TERM middle := (100, 0) (200, 1) (300,0);
+    TERM high := (250, 0) (400, 1) (1000, 1);
+END_FUZZIFY
+
+FUZZIFY light_intensity
+	TERM dark := (0, 1) (12000, 0);
+	TERM bright := (3000, 0) (15000, 1);
+END_FUZZIFY
+
+FUZZIFY time_of_day
+    TERM early := (3, 0) (6, 0.75) (7, 1) (8, 1) (9, 0.7) (10, 0.5) (11,0);
+    TERM midday := (10, 0) (12, 1) (13, 1) (14, 0.75) (15, 0.5) (18, 0);
+    TERM late := (2, 0) (17, 0) (18, 0.5) (19, 1) (20, 1) (21, 0.75) (22, 0.5) (24, 0);
+    TERM night := (1, 1) (2, 1) (3, 0.75) (4, 0.5) (5, 0) (22, 0) (23, 0.5) (24, 1);
+END_FUZZIFY
+
+FUZZIFY day_of_week
+	TERM week := (1, 0) (2, 1) (3, 1) (4, 1) (5, 0);
+	TERM weekend := (4, 0) (5, 0.5) (6, 0.8) (7, 1);
+END_FUZZIFY
+
+FUZZIFY season
+    //Seasons are given in month data 1 = january, 2 = february, etc.
+    TERM spring := (2, 0) (3, 1) (4, 0.75) (5, 0.5) (6, 0);
+	TERM summer := (5, 0) (6, 0.5) (7, 1) (8, 1) (9, 0);
+    TERM autumn := (8, 0) (9, 0.5) (10, 1) (11, 0.5) (12, 0);
+	TERM winter := (1, 0.75) (2, 0.5) (3, 0) (10, 0) (11, 0) (12, 1);
+END_FUZZIFY
+
+FUZZIFY wind_strength
+    // Storm gets values 1 - 5 for low, 6 - 8 for average and 9 - 12 for high wind_strength
+    TERM breeze := (1, 0) (2, 0.5) (3, 0.6) (4, 0.75) (5, 1) (6 ,0); 
+    TERM windy := (4, 0) (6, 0.5) (7, 0.75) (8, 1) (9, 0);
+    TERM hurricane := (8, 0) (9, 0.7) (10, 0.8) (11, 0.9) (12, 1);
+END_FUZZIFY
+
+DEFUZZIFY percentage
+	TERM non := (0, 1);
+    TERM few := (0,1) (0.4,0);
+    TERM average := (0, 0) (0.4, 0.5) (0.55, 1) (0.7, 0.75) (1, 0);
+    TERM many := (0.70,0) (0.8, 0.9) (1,1) ;
+    METHOD : COG;
+    DEFAULT := 0.3;
+END_DEFUZZIFY
+
+RULEBLOCK rule_block_cars
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF temperature IS cold
+    			THEN percentage IS many;
+    RULE 2 : IF precipitation_amount IS high
+    			THEN percentage IS many;
+    RULE 3 : IF light_intensity IS dark 
+    			THEN percentage IS many;
+   	RULE 4 : IF day_of_week IS week AND (time_of_day IS early OR time_of_day IS late)
+   				THEN percentage IS many;
+   	RULE 5 : IF day_of_week IS weekend
+   				THEN percentage IS many;
+   	RULE 6 : IF time_of_day IS midday AND day_of_week IS week
+   				THEN percentage IS few;
+    RULE 7 : IF time_of_day IS night
+    			THEN percentage IS non;
+    RULE 8 : IF wind_strength IS hurricane 
+    			THEN percentage IS non;
+    RULE 9 : IF temperature IS hot
+    			THEN percentage IS average;
+    RULE 10 : IF temperature IS average
+    			THEN percentage IS many;
+    RULE 11 : IF temperature IS cold AND precipitation_amount IS high
+    			THEN percentage IS non;
+
+END_RULEBLOCK
+
+RULEBLOCK rule_block_bicycles
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+    
+    RULE 1 : IF wind_strength IS hurricane
+    			THEN percentage IS non;
+    RULE 2 : IF temperature IS cold
+    			THEN percentage IS few;
+    RULE 3 : IF temperature IS average OR temperature IS hot
+    			THEN percentage IS many;
+    RULE 4 : IF day_of_week IS week AND (time_of_day IS midday OR time_of_day IS early)
+    			THEN percentage IS many;
+    RULE 5 : IF day_of_week IS weekend
+    			THEN percentage IS many; 
+    RULE 6 : IF time_of_day IS night
+    			THEN percentage IS few;
+    RULE 7 : IF time_of_day IS late
+    			THEN percentage IS average;   			
+END_RULEBLOCK
+
+RULEBLOCK rule_block_motorcycles
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+	RULE 1 : IF season IS winter
+				THEN percentage IS few;
+	RULE 2 : IF season IS spring
+				THEN percentage IS few;
+	RULE 3 : IF season IS summer
+				THEN percentage IS many;
+	RULE 4 : IF season IS autumn
+				THEN percentage IS few;
+    RULE 5 : IF temperature IS hot
+    			THEN percentage IS many;
+    RULE 6 : IF temperature IS cold
+    			THEN percentage IS few;
+    RULE 7 : IF light_intensity IS bright
+    			THEN percentage IS many;
+    RULE 8 : IF light_intensity IS dark
+    			THEN percentage IS few;
+         
+END_RULEBLOCK
+
+RULEBLOCK rule_block_trucks
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF day_of_week IS week AND time_of_day IS early
+                THEN percentage IS average;
+    RULE 2 : IF day_of_week IS week AND time_of_day IS midday
+                THEN percentage IS many;
+    RULE 3 : IF day_of_week IS week AND time_of_day IS late
+                THEN percentage IS few;
+    RULE 4 : IF day_of_week IS week AND time_of_day IS night
+                THEN percentage IS average;
+    RULE 5 : IF day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS few;
+    RULE 9 : IF day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS average;         
+    RULE 5 : IF day_of_week IS weekend AND time_of_day IS early
+                THEN percentage IS average;
+    RULE 9 : IF day_of_week IS weekend AND time_of_day IS night
+                THEN percentage IS average;                        
+END_RULEBLOCK
+
+RULEBLOCK rule_block_buspassengers
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+
+    RULE 1 : IF temperature IS cold AND precipitation_amount IS low AND light_intensity IS dark
+                THEN percentage IS few;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK

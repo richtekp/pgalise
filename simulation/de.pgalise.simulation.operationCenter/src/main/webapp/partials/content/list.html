@@ -1,0 +1,481 @@
+
+    <div help>
+        The list view shows all single sensor entities.
+        Single random entities can be added by using the given buttons.
+        Single sensors can be added to favorites or deleted from the list.
+        There is a search bar that searches for single entities.
+    </div>
+    <div>
+    <input type="text" ng-model="sensorFilterQuery" class="normalWidth" placeholder="Search" />
+    , limit to:
+    <input type="number"ng-init="searchSize=15" ng-model="searchSize" class="tinyWidth" />
+</div>
+<hr />
+<ul treeView class="control treeView" ng-show="sensorFilterQuery.length>0">
+    <span><h3>Filter results (max. {{searchSize}}):</h3></span>
+    <li ng-repeat="sensor in filteredSensors(sensorFilterQuery, searchSize)">
+        <div class="crop left mouseOverRed sensorIdSpan sensor-{{sensor.isFavorite}}" ng-click="detailize(sensor.id)">
+            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+        </div>
+        <div class="right">
+            <img src="img/favorize.png" ng-hide="sensor.isFavorite || sensor.positioningSensor.isFavorite" ng-click="favorize(sensor.id)" />
+            <img src="img/favorizeC.png" ng-show="sensor.isFavorite || sensor.positioningSensor.isFavorite" ng-click="favorize(sensor.id)" />
+            <!--<input type="checkbox" class="control checkbox" ng-click="checkChange(sensor, $event)" ng-checked="sensor.isShown" ng-disabled="!sensor.isActive" />-->
+        </div>
+    </li>
+</ul>
+<ul treeview class="control treeView" ng-hide="sensorFilterQuery.length>0">
+    <li class="closed">
+        <span class="mouseOverRed">
+            {{'Favorites (' + (countFavorizedVehicles(cars) + countFavorizedVehicles(trucks) + countFavorizedVehicles(motorcycles) + countFavorizedVehicles(busses) + countFavorizedVehicles(bikes) + countFavorized(inductionLoops) + countFavorized(trafficLightIntersections) + countFavorized(photovoltaik) + countFavorized(smartMeter) + countFavorized(windPowerPlants) + countFavorized(weatherStations)) + ')'}}
+        </span>
+        <!--<div class="right"> hey! don't you miss that "left"-class up there :-D
+            <input type="checkbox" ng-model="favoritesChecked" ng-click="favoritesCheckChange()" />
+        </div>-->
+        <ul>
+            <li ng-hide="(countFavorizedVehicles(cars) + countFavorizedVehicles(trucks) + countFavorizedVehicles(motorcycles) + countFavorizedVehicles(bikes) + countFavorizedVehicles(busses))<1">
+                <span class="left mouseOverRed">
+                    {{'GPS (' + (countFavorizedVehicles(cars) + countFavorizedVehicles(trucks) + countFavorizedVehicles(motorcycles) + countFavorizedVehicles(bikes) + countFavorizedVehicles(busses)) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_favGPS" type="checkbox" ng-model="favoriteGPSChecked" ng-click="favoriteGPSCheckChange()" ng-disabled="favoriteGPSDisabled" />
+                </div>
+                <ul treeview class="control treeView">
+                    <li ng-repeat="sensor in cars" ng-show="sensor.positioningSensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.positioningSensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.positioningSensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in trucks" ng-show="sensor.positioningSensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.positioningSensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.positioningSensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in motorcycles" ng-show="sensor.positioningSensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.positioningSensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.positioningSensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in busses" ng-show="sensor.positioningSensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.positioningSensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.positioningSensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in bikes" ng-show="sensor.positioningSensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.positioningSensorisActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.positioningSensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li ng-hide="(countFavorized(trafficLightIntersections) + countFavorized(inductionLoops) + countFavorized(topoRadars))<1">
+                <span class="left mouseOverRed">
+                    {{'Traffic (' + (countFavorized(trafficLightIntersections) + countFavorized(inductionLoops) + countFavorized(topoRadars)) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_favTraffic" type="checkbox" ng-model="favoriteTrafficChecked" ng-click="favoriteTrafficCheckChange()"  ng-disabled="favoriteTrafficDisabled" />
+                </div>
+                <ul treeview class="control treeView">
+                    <li ng-repeat="sensor in trafficLightIntersections" ng-show="sensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in inductionLoops" ng-show="sensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in topoRadars" ng-show="sensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li ng-hide="(countFavorized(photovoltaik) + countFavorized(windPowerPlants) + countFavorized(smartMeter))<1">
+                <span class="left mouseOverRed">
+                    {{'Energy (' + (countFavorized(photovoltaik) + countFavorized(windPowerPlants) + countFavorized(smartMeter)) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_favEnergy" type="checkbox" ng-model="favoriteEnergyChecked" ng-click="favoriteEnergyCheckChange()"  ng-disabled="favoriteEnergyDisabled" />
+                </div>
+                <ul treeview class="control treeView">
+                    <li ng-repeat="sensor in photovoltaik" ng-show="sensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in windPowerPlants" ng-show="sensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                    <li ng-repeat="sensor in smartMeter" ng-show="sensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li ng-hide="(countFavorized(weatherStations))<1">
+                <span class="left mouseOverRed">
+                    {{'Weather (' + (countFavorized(weatherStations)) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_favWeather" type="checkbox" ng-model="favoriteWeatherChecked" ng-click="favoriteWeatherCheckChange()" ng-disabled="favoriteWeatherDisabled" />
+                </div>
+                <ul treeview class="control treeView">
+                    <li ng-repeat="sensor in weatherStations" ng-show="sensor.isFavorite">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-true sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/delete.png" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <span class="mouseOverRed">
+            {{'GPS (' + (count(cars) + count(trucks) + count(motorcycles) + count(busses) + count(bikes)) + ')'}}
+        </span>
+        <ul>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    Cars ({{count(cars)}})
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.GPS_CAR}}" type="checkbox" ng-click="checkChange(sensorType.GPS_CAR)" ng-model="carsChecked" ng-disabled="carsDisabled" />
+                </div>
+                <ul>
+                    <li ng-hide="count(cars)>0">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-show="count(cars)>0">
+                        <i>Active cars:</i>
+                    </li>
+                    <li ng-repeat="car in activeSensors(cars, 20)">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{car.positioningSensor.isFavorite}} sensorAct-{{car.positioningSensor.isActive}}" ng-click="detailize(car.id)">
+                            <img ng-src="{{car.icon}}" height="10" /> {{car.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="car.positioningSensor.isFavorite" ng-click="favorize(car.positioningSensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="car.positioningSensor.isFavorite" ng-click="favorize(car.positioningSensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    Trucks ({{count(trucks)}})
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.GPS_TRUCK}}" type="checkbox" ng-click="checkChange(sensorType.GPS_TRUCK)" ng-model="trucksChecked" ng-disabled="trucksDisabled" />
+                </div>
+                <ul>
+                    <li ng-hide="count(trucks)>0">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-show="count(trucks)>0">
+                        <i>Active trucks:</i>
+                    </li>
+                    <li ng-repeat="truck in activeSensors(trucks,10)">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{truck.positioningSensor.isFavorite}} sensorAct-{{truck.positioningSensor.isActive}}" ng-click="detailize(truck.id)">
+                            <img ng-src="{{truck.icon}}" height="10" /> {{truck.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="truck.positioningSensor.isFavorite" ng-click="favorize(truck.positioningSensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="truck.positioningSensor.isFavorite" ng-click="favorize(truck.positioningSensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    Motorcycles ({{count(motorcycles)}})
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.GPS_MOTORCYCLE}}" type="checkbox" ng-click="checkChange(sensorType.GPS_MOTORCYCLE)" ng-model="motorcyclesChecked" ng-disabled="motorcyclesDisabled" />
+                </div>
+                <ul>
+                    <li ng-hide="count(motorcycles)>0">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-show="count(motorcycles)>0">
+                        <i>Active motorcycles:</i>
+                    </li>
+                    <li ng-repeat="motorcycle in activeSensors(motorcycles,20)">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{motorcycle.positioningSensor.isFavorite}} sensorAct-{{motorcycle.positioningSensor.isActive}}" ng-click="detailize(motorcycle.id)">
+                            <img ng-src="{{motorcycle.icon}}" height="10" /> {{motorcycle.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="motorcycle.positioningSensor.isFavorite" ng-click="favorize(motorcycle.positioningSensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="motorcycle.positioningSensor.isFavorite" ng-click="favorize(motorcycle.positioningSensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    Busses ({{count(busses)}})
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.GPS_BUS}}" type="checkbox" ng-click="checkChange(sensorType.GPS_BUS)" ng-model="bussesChecked" ng-disabled="bussesDisabled" />
+                </div>
+                <ul>
+                    <li ng-hide="count(busses)>0">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-show="count(busses)>0">
+                        <i>Active busses:</i>
+                    </li>
+                    <li ng-repeat="bus in activeSensors(busses,20)">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{bus.positioningSensor.isFavorite}} sensorAct-{{bus.positioningSensor.isActive}}" ng-click="detailize(bus.id)">
+                            <img ng-src="{{bus.icon}}" height="10" /> {{bus.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="bus.positioningSensor.isFavorite" ng-click="favorize(bus.positioningSensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="bus.positioningSensor.isFavorite" ng-click="favorize(bus.positioningSensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    Bikes ({{count(bikes)}})
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.GPS_BIKE}}" type="checkbox" ng-click="checkChange(sensorType.GPS_BIKE)" ng-model="bikesChecked" ng-disabled="bikesDisabled" />
+                </div>
+                <ul>
+                    <li ng-hide="count(bikes)>0">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-show="count(bikes)>0">
+                        <i>Active bikes:</i>
+                    </li>
+                    <li ng-repeat="bike in activeSensors(bikes,20)">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{bike.positioningSensor.isFavorite}} sensorAct-{{bike.positioningSensor.isActive}}" ng-click="detailize(bike.id)">
+                            <img ng-src="{{bike.icon}}" height="10" /> {{bike.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="bike.positioningSensor.isFavorite" ng-click="favorize(bike.positioningSensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="bike.positioningSensor.isFavorite" ng-click="favorize(bike.positioningSensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <span class="mouseOverRed">
+            {{'Traffic (' + (count(trafficLightIntersections) + count(inductionLoops) + count(topoRadars)) + ')'}}
+        </span>
+        <ul>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    {{'Traffic Light Intersections (' + count(trafficLightIntersections) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.TRAFFIC_LIGHT_INTERSECTION}}" type="checkbox" ng-click="checkChange(sensorType.TRAFFIC_LIGHT_INTERSECTION)" ng-model="trafficLightIntersectionsChecked" ng-disabled="trafficLightIntersectionsDisabled"/>
+                </div>
+                <ul>
+                    <li ng-show="count(trafficLightIntersections)<1">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-repeat="sensor in trafficLightIntersections">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{sensor.isFavorite}} sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    {{'Induction Loops (' + count(inductionLoops) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.INDUCTIONLOOP}}" type="checkbox" ng-click="checkChange(sensorType.INDUCTIONLOOP)" ng-model="inductionLoopsChecked" ng-disabled="inductionLoopsDisabled" />
+                </div>
+                <ul>
+                    <li ng-show="count(inductionLoops)<1">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-repeat="sensor in inductionLoops">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{sensor.isFavorite}} sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    {{'Topo Radars (' + count(topoRadars) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.TOPORADAR}}" type="checkbox" ng-click="checkChange(sensorType.TOPORADAR)" ng-model="topoRadarsChecked" ng-disabled="topoRadarsDisabled" />
+                </div>
+                <ul>
+                    <li ng-show="count(topoRadars)<1">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-repeat="sensor in topoRadars">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{sensor.isFavorite}} sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <span class="mouseOverRed">
+            {{'Energy (' + (count(photovoltaik) + count(windPowerPlants) + count(smartMeter)) + ')'}}
+        </span>
+        <ul>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    {{'Photovoltaik (' + count(photovoltaik) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.PHOTOVOLTAIK}}" type="checkbox" ng-click="checkChange(sensorType.PHOTOVOLTAIK)" ng-model="photovoltaikChecked" ng-disabled="photovoltaikDisabled" />
+                </div>
+                <ul>
+                    <li ng-show="count(photovoltaik)<1">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-repeat="sensor in photovoltaik">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{sensor.isFavorite}} sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    {{'Wind Power Plant (' + count(windPowerPlants) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.WINDPOWERSENSOR}}" type="checkbox" ng-click="checkChange(sensorType.WINDPOWERSENSOR)" ng-model="windPowerPlantsChecked" ng-disabled="windPowerPlantsDisabled" />
+                </div>
+                <ul>
+                    <li ng-show="count(windPowerPlants)<1">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-repeat="sensor in windPowerPlants">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{sensor.isFavorite}} sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    {{'Smart Meter (' + count(smartMeter) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.SMARTMETER}}" type="checkbox" ng-click="checkChange(sensorType.SMARTMETER)" ng-model="smartMeterChecked" ng-disabled="smartMeterDisabled" />
+                </div>
+                <ul>
+                    <li ng-show="count(smartMeter)<1">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-repeat="sensor in smartMeter">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{sensor.isFavorite}} sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>
+        <span class="mouseOverRed">
+            {{'Weather (' + (count(weatherStations)) + ')'}}
+        </span>
+        <ul>
+            <li class="closed">
+                <span class="left mouseOverRed">
+                    {{'WeatherStation (' + count(weatherStations) + ')'}}
+                </span>
+                <div class="right">
+                    <input id="check_{{sensorType.WEATHER_STATION}}" type="checkbox" ng-click="checkChange(sensorType.WEATHER_STATION)" ng-model="weatherStationsChecked" ng-disabled="weatherStationsDisabled" />
+                </div>
+                <ul>
+                    <li ng-show="count(weatherStations)<1">
+                        <i>No data available</i>
+                    </li>
+                    <li ng-repeat="sensor in weatherStations">
+                        <span class="crop left mouseOverRed sensorIdSpan sensorFav-{{sensor.isFavorite}} sensorAct-{{sensor.isActive}}" ng-click="detailize(sensor.id)">
+                            <img ng-src="{{sensor.icon}}" height="10" /> {{sensor.id}}
+                        </span>
+                        <div class="right">
+                            <img src="img/favorize.png" ng-hide="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                            <img src="img/favorizeC.png" ng-show="sensor.isFavorite" ng-click="favorize(sensor.id)" />
+                        </div>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>

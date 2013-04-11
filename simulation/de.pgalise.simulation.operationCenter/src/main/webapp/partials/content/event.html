@@ -1,0 +1,36 @@
+<div class="control">
+    
+    <div help>
+        The event view shows all incoming events for the simulation.
+        There are options to filter the events by notifications or errors,
+        or to limit the number entries shown.
+    </div>
+    <button button type="button" class="control button fullWidth" ng-click="clear()" ng-disabled="messages.length<1"><span class="ui-icon ui-icon-trash"></span> Clear log</button>
+    Limit to <input type="number" min="1" ng-model="limit" class="tinyWidth" /> entries
+    <hr />
+    <div tabs>
+        <ul ng-init="reverse=true">
+            <li><a href="#eventTabs_all"><span class="ui-icon ui-icon-signal-diag"></span> All</a></li>
+            <li><a href="#eventTabs_notifications"><span class="ui-icon ui-icon-info"></span> Notifications</a></li>
+            <li><a href="#eventTabs_errors"><span class="ui-icon ui-icon-alert"></span> Errors</a></li>
+        </ul>
+        <div id="eventTabs_all">
+            <div ng-repeat="message in messages | orderBy:'timestamp':reverse | limitTo:limit">
+                {{message.timestamp | date:'MM/dd/yyyy @ h:mma'}}: {{message.text}}
+                <hr />
+            </div>
+        </div>
+        <div id="eventTabs_notifications">
+            <div ng-repeat="message in messages | orderBy:'timestamp':reverse | limitTo:limit" ng-show="message.type == messageType.NOTIFICATION">
+                {{message.timestamp | date:'MM/dd/yyyy @ h:mma'}}: {{message.text}}
+                <hr />
+            </div>
+        </div>
+        <div id="eventTabs_errors">
+            <div ng-repeat="message in messages | orderBy:'timestamp':reverse | limitTo:limit" ng-show="message.type == messageType.ERROR">
+                {{message.timestamp | date:'MM/dd/yyyy @ h:mma'}}: {{message.text}}
+                <hr />
+            </div>
+        </div>
+    </div>
+</div>

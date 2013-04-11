@@ -1,0 +1,40 @@
+<div ng-controller="UncommitedEventsDialogCtrl" class="messageDialog">
+    <div class="block scrollable left" id="eventList">
+        <table>
+            <tr class="head">
+                <td colspan="3"><h3>Event list</h3></td>
+            </tr>
+            <tr ng-repeat="(i, event) in uncommittedEvents">
+                <td>{{i}}</td>
+                <td class="fullWidth">
+                    <div object-view ng-model="event"></div>
+                </td>
+                <td><div class="deleteImage" ng-click="deleteEvent(i)"></div></td>
+            </tr>
+        </table>
+    </div>
+    <div class="block">
+        <table>
+            <tr class="head">
+                <td><h3>Commit events</h3></td>
+            </tr>
+            <tr>
+                <td>
+                    <div datepicker ng-model="chosenTimeDate" type="text" class="commitDate"></div>
+                </td>
+            </tr><tr>
+                <td>
+                        {{currentWeatherEventViewData.datetime | date:'dd.MM.yyyy'}} -
+                    <input type="number" class="tinyWidth" ng-model="chosenTimeHours" min="0" max="23" />
+                    :
+                    <input type="number" class="tinyWidth" ng-model="chosenTimeMinutes" min="0" max="59" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input class="fullWidth" type="button" button value="Commit now" ng-click="commit()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

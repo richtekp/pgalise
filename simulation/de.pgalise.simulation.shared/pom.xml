@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.pgalise</groupId>
+        <artifactId>simulation</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>de.pgalise.simulation</groupId>
+    <artifactId>shared</artifactId>
+    <version>${applicationVersion}</version>
+
+    <packaging>jar</packaging>
+	
+    <name>de.pgalise.simulation.shared</name>
+	
+    <!-- Hier die Abh??ngigkeiten definieren -->
+    <dependencies>
+        <dependency>
+            <groupId>org.graphstream</groupId>
+            <artifactId>gs-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.pgalise.util</groupId>
+            <artifactId>vector</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>javax.persistence</artifactId>
+        </dependency>                  
+    </dependencies>
+</project>

@@ -1,0 +1,495 @@
+/* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+ 
+package de.pgalise.simulation.internal;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
+import javax.ejb.Remote;
+import javax.ejb.Singleton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.pgalise.simulation.SimulationController;
+import de.pgalise.simulation.SimulationControllerLocal;
+import de.pgalise.simulation.SpentTimeLogger;
+import de.pgalise.simulation.event.EventInitiator;
+import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
+import de.pgalise.simulation.service.GPSMapper;
+import de.pgalise.simulation.service.ServiceDictionary;
+import de.pgalise.simulation.service.configReader.ConfigReader;
+import de.pgalise.simulation.service.manager.ServerConfigurationReader;
+import de.pgalise.simulation.service.manager.ServiceHandler;
+import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
+import de.pgalise.simulation.shared.exception.SensorException;
+import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
+import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
+import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+import de.pgalise.simulation.visualizationcontroller.OperationCenterControllerLoader;
+import de.pgalise.util.generic.MutableBoolean;
+
+/**
+ * The default implementation of the simulation controller inits, starts, stops
+ * and resets all the other {@link Controller}. The {@link SensorManagerController#createSensor(SensorHelper)} methods
+ * are called for every known {@link SensorManagerController} until one of them does not response with an {@link SensorException}.
+ * To update the simulation, it uses the set {@link EventInitiator}. New events can be added via {@link SimulationController#addSimulationEventList(SimulationEventList)}
+ * and will be handled by the {@link EventInitiator}.
+ * @author Jens
+ * @author Kamil
+ * @author Timo
+ */
+@Lock(LockType.READ)
+@Singleton(name = "de.pgalise.simulation.SimulationController")
+@Remote(SimulationController.class)
+@Local(SimulationControllerLocal.class)
+public class DefaultSimulationController extends AbstractController implements SimulationControllerLocal {
+
+	/**
+	 * Logger
+	 */
+	private static final Logger log = LoggerFactory.getLogger(DefaultSimulationController.class);
+	private static final String NAME = "SimulationController";
+
+	/**
+	 * EventInitiator
+	 */
+	@EJB
+	private EventInitiator eventInitiator;
+
+	/**
+	 * gpsMapper of simulation
+	 */
+	@EJB
+	private GPSMapper gpsMapper;
+
+	@EJB(name="de.pgalise.sensorFramework.persistence.SensorPersistenceService")
+	private SensorPersistenceService sensorPersistenceService;
+
+	@EJB
+	private ControlCenterControllerLoader controlCenterControllerLoader;
+	
+	@EJB
+	private OperationCenterControllerLoader operationCenterControllerLoader;
+	
+	private OperationCenterController operationCenterController;
+
+	private ControlCenterController controlCenterController;
+	
+	@EJB
+	private ServiceDictionary serviceDictionary;
+
+	@EJB
+	private ServerConfigurationReader serverConfigReader;
+	
+	@EJB
+	private ConfigReader configReader;
+	
+	@EJB
+	private SpentTimeLogger spentTimeLogger;
+	/**
+	 * Start parameter
+	 */
+	private StartParameter startParameter;
+	
+	private List<Controller> frontControllerList;
+
+	/**
+	 * Default constructor
+	 */
+	public DefaultSimulationController() {
+		this.frontControllerList = new LinkedList<>();
+	}
+	
+	/**
+	 * Automatically called on post construct
+	 */
+	@PostConstruct
+	public void onPostContruct() {
+		this.controlCenterController = this.controlCenterControllerLoader.loadControlCenterController();
+		this.operationCenterController = this.operationCenterControllerLoader.loadOperationCenterController();
+	}
+
+	@Override
+	public void createSensor(SensorHelper sensor) throws SensorException {
+		if (sensor == null) {
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
+		}
+
+		for (Controller c : this.serviceDictionary.getControllers()) {
+			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
+				try {
+					((SensorManagerController) c).createSensor(sensor);
+					this.operationCenterController.createSensor(sensor);
+					return;
+				} catch (SensorException e) {
+					log.error(e.getLocalizedMessage(),e );
+				}
+			}
+		}
+		
+		for(Controller c : this.serviceDictionary.getControllers()) {
+			c.reset();
+		}
+		
+		throw new NoValidControllerForSensorException(String.format(
+				"Can't create sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
+				sensor.getSensorID(), sensor.getSensorType().toString()));
+	}
+
+	@Override
+	public void deleteSensor(SensorHelper sensor) throws SensorException {
+		if (sensor == null) {
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
+		}
+
+		for (Controller c : this.serviceDictionary.getControllers()) {
+			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
+				try {
+					((SensorManagerController) c).deleteSensor(sensor);
+					this.operationCenterController.deleteSensor(sensor);
+					return;
+				} catch (SensorException e) {
+					log.error(e.getLocalizedMessage(), e);
+				}
+			}
+		}		
+		
+		throw new NoValidControllerForSensorException(String.format(
+				"Can't delete sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
+				sensor.getSensorID(), sensor.getSensorType().toString()));
+	}
+
+	public OperationCenterController getOperationCenterController() {
+		return this.operationCenterController;
+	}
+
+	/**
+	 * Determine the status of a sensor
+	 * 
+	 * @param sensor
+	 *            sensor to get information from
+	 * @return status of the sensor (false if there is no sensor or controller)
+	 * @throws SensorException
+	 */
+	@Override
+	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+		if (sensor == null) {
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
+		}
+
+		for (Controller c : this.serviceDictionary.getControllers()) {
+			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
+				try {
+					return ((SensorManagerController) c).statusOfSensor(sensor);
+				} catch (Exception e) {
+					log.error(e.getLocalizedMessage(), e);
+				}
+			}
+		}
+		
+		throw new NoValidControllerForSensorException(
+				String.format(
+						"Can't find status of sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
+						sensor.getSensorID(), sensor.getSensorType().toString()));
+	}
+
+	@Override
+	protected void onInit(final InitParameter param) throws InitializationException {
+		this.spentTimeLogger.init(param);
+		
+		// init the operation center
+		this.operationCenterController.init(param);
+		
+		// init the control center
+		this.controlCenterController.init(param);
+		
+		spentTimeLogger.begin("init");
+		// Delete all Sensors from database
+		this.sensorPersistenceService.clear();
+
+		final MutableBoolean exception = new MutableBoolean();
+		exception.setValue(false);
+		
+		serverConfigReader.read(param.getServerConfiguration(), 
+				new ServiceHandler<Controller>() {
+					@Override
+					public String getSearchedName() {
+						return ServiceDictionary.FRONT_CONTROLLER;
+					}
+		
+					@Override
+					public void handle(String server, Controller service) {
+						log.info(String.format("Using %s on server %s", getSearchedName(), server));
+						if (!(service instanceof SimulationController)) {
+							try {
+								if (service.getStatus() != StatusEnum.INIT) {
+									service.reset();
+								}
+									service.init(param);
+							}
+							catch (IllegalStateException | InitializationException e) {
+								exception.setValue(false);
+								log.error("Could not inititialize FrontController", e);
+							}
+						}
+						frontControllerList.add(service);
+					}
+				});
+		
+		if (exception.getValue()) {
+			throw new InitializationException("An error occured during the initialization of the front controllers");
+		}
+
+		Collection<Controller> controllers = this.serviceDictionary.getControllers();
+		log.debug(controllers.size() +" Controller referenced by the ServiceDictionary");
+		// init controller
+		for (Controller c : controllers) {
+			if (!(c instanceof SimulationController)) {
+				c.init(param);
+			}
+		}
+
+		// init the event initiator
+		this.eventInitiator.setFrontController(frontControllerList);
+		spentTimeLogger.end("init");
+		this.eventInitiator.init(param);
+	}
+
+	@Override
+	protected void onReset() {
+		spentTimeLogger.begin("reset");
+		this.frontControllerList.clear();
+		
+		// reset controller
+		for (Controller c : this.serviceDictionary.getControllers()) {
+			if (!(c instanceof SimulationController)) {
+				c.reset();
+			}
+		}
+		
+		for(Controller c: frontControllerList) {
+			if (!(c instanceof SimulationController)) {
+				c.reset();
+			}
+		}
+
+		// reset the event initiator
+		this.eventInitiator.reset();
+
+		// reset the operation center
+		this.operationCenterController.reset();
+		this.controlCenterController.reset();
+		spentTimeLogger.end("reset");
+		this.spentTimeLogger.reset();
+	}
+
+	@Override
+	protected void onStart(StartParameter param) {
+		spentTimeLogger.begin("start");
+		this.startParameter = param;
+
+		// start the controllers
+		for (Controller c : this.serviceDictionary.getControllers()) {
+			if (!(c instanceof SimulationController)) {
+				c.start(param);
+			}
+
+		}
+
+		for(Controller c: frontControllerList) {
+			if (!(c instanceof SimulationController)) {
+				c.start(param);
+			}
+		}
+
+		
+		// start the operation center
+		this.operationCenterController.start(param);
+		this.controlCenterController.start(param);
+		
+		// start the event initiator
+		this.eventInitiator.start(param);
+		spentTimeLogger.end("start");
+		this.spentTimeLogger.start(param);
+	}
+
+	@Override
+	protected void onStop() {
+		spentTimeLogger.begin("stop");
+		// stop the event initiator
+		if (this.eventInitiator.getStatus() == StatusEnum.STARTED) {
+			this.eventInitiator.stop();
+		}
+
+		// stop the operation center
+		this.operationCenterController.stop();
+		
+		// stop the control center
+		this.controlCenterController.stop();
+
+		// stop all controllers (without this controller type)
+		for (Controller c : this.serviceDictionary.getControllers()) {
+			if (!(c instanceof SimulationController)) {
+				c.stop();
+			}
+		}
+		
+		for(Controller c: frontControllerList) {
+			if (!(c instanceof SimulationController)) {
+				c.stop();
+			}
+		}
+		spentTimeLogger.end("stop");
+		this.spentTimeLogger.stop();
+	}
+
+	@Override
+	protected void onResume() {	
+		spentTimeLogger.begin("resume");
+		// start the controllers
+		for (Controller c : this.serviceDictionary.getControllers()) {
+			if (!(c instanceof SimulationController)) {
+				c.start(this.startParameter);
+			}
+		}
+		
+		for(Controller c: frontControllerList) {
+			if (!(c instanceof SimulationController)) {
+				c.start(this.startParameter);
+			}
+		}
+
+
+		// start the event initiator
+		this.eventInitiator.start(this.startParameter);
+
+		// start the operation center
+		this.operationCenterController.start(this.startParameter);
+		spentTimeLogger.end("resume");
+		this.spentTimeLogger.start(this.startParameter);
+	}
+
+	@Override
+	protected void onUpdate(SimulationEventList simulationEventList) {
+		this.eventInitiator.addSimulationEventList(simulationEventList);
+	}
+
+	@Override
+	public void addSimulationEventList(SimulationEventList simulationEventList) {
+		this.eventInitiator.addSimulationEventList(simulationEventList);
+	}
+
+	@Override
+	public long getSimulationTimestamp() {
+		return this.eventInitiator.getCurrentTimestamp();
+	}
+
+	@Override
+	public void _setOperationCenterController(OperationCenterController operationCenterController) {
+		this.operationCenterController = operationCenterController;
+	}
+
+	@Override
+	public EventInitiator _getEventInitiator() {
+		return this.eventInitiator;
+	}
+
+	@Override
+	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+		for (SensorHelper sensor : sensors) {
+			this.createSensor(sensor);
+		}
+	}
+
+	@Override
+	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+		for (SensorHelper sensor : sensors) {
+			this.deleteSensor(sensor);
+		}
+	}
+
+	/**
+	 * Only for J-Unit tests.
+	 * 
+	 * @param serviceDictionary
+	 */
+	public void _setServiceDictionary(ServiceDictionary serviceDictionary) {
+		this.serviceDictionary = serviceDictionary;
+	}
+
+	/**
+	 * Only for J-Unit tests.
+	 * 
+	 * @param eventInitiator
+	 */
+	public void _setEventInitiator(EventInitiator eventInitiator) {
+		this.eventInitiator = eventInitiator;
+	}
+
+	/**
+	 * Only for J-Unit tests.
+	 * 
+	 * @param sensorPersistenceService
+	 */
+	public void _setSensorPersistenceService(SensorPersistenceService sensorPersistenceService) {
+		this.sensorPersistenceService = sensorPersistenceService;
+	}
+
+	/**
+	 * Only for J-Unit tests.
+	 * 
+	 * @param serverConfigurationReader
+	 */
+	public void _setServerConfigurationReader(ServerConfigurationReader serverConfigurationReader) {
+		this.serverConfigReader = serverConfigurationReader;
+	}
+
+	@Override
+	public void _setControlCenterController(
+			ControlCenterController controlCenterController) {
+		this.controlCenterController = controlCenterController;
+	}
+	
+	/**
+	 * Only for JUnit tests.
+	 * @param spentTimeLogger
+	 */
+	public void _setSpentTimeLogger(SpentTimeLogger spentTimeLogger) {
+		this.spentTimeLogger = spentTimeLogger;
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
+	}
+}

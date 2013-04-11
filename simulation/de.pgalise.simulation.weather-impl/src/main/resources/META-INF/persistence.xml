@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="weather_data"
+		transaction-type="JTA">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>	
+		<jta-data-source>weather-database</jta-data-source>
+		<class>de.pgalise.simulation.weather.database.impl.StationDataAggregate</class>
+		<class>de.pgalise.simulation.weather.database.impl.StationDataNormal</class>
+		<class>de.pgalise.simulation.weather.database.impl.ServiceDataForecast</class>
+		<class>de.pgalise.simulation.weather.database.impl.ServiceDataCurrent</class>
+		<class>de.pgalise.simulation.shared.city.City</class>
+	</persistence-unit>
+</persistence>

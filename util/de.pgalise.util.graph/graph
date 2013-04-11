@@ -1,0 +1,8 @@
+DGS004
+null 0 0
+an "a"
+cn "a"  "pos":12345
+an "b"
+cn "b"  "position":"(2.0, 3.0)"
+ae "ab" "a"  "b"
+ce "ab"  "weight":"1337"

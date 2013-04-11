@@ -1,0 +1,35 @@
+<!-- BUS SYSTEM (INIT) -->
+<div class="contentDiv" ng-controller="BusSystemCtrl">
+	<h2>Bus system</h2>
+	<div class="block">
+		<table class="noWrap">
+		    <tr class="head">
+		        <td colspan="5"><h3>Lines</h3></td>
+		    </tr>
+            <tr>
+                <td colspan="5">
+                    <div help>
+                        Shows different bus lines to choose
+                    </div>
+                </td>
+            </tr>
+		    <tr>
+                <th>Line Id</th>
+		        <th>Line Short Name</th>
+		        <th>Line Long Name</th>
+		        <th>Line Type</th>
+		        <th>Use <a ng-click="checkAll()">all</a>|<a ng-click="checkNone()">none</a></th>
+		    </tr>
+		    <tr ng-show="allBusRoutes.length<1">
+		        <td colspan="5"><i>No bus lines available</i></td>
+		    </tr>
+		    <tr ng-repeat="(id,busLine) in allBusRoutes">
+		        <td>{{busLine.routeId}}</td>
+		        <td>{{busLine.routeShortName}}</td>
+		        <td>{{busLine.routeLongName}}</td>
+		        <td>{{routeTypeMap[busLine.routeType]}}</td>
+		        <td><input type="checkbox" ng-model="busLine.used" /></td>
+		    </tr>
+		</table>
+	</div>
+</div>
