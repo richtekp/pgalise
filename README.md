@@ -5,7 +5,7 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 [Visit our website](http://pg-alise.com) to gain more information and full documentation!
 
 ## Install
-* Install first [Apache Maven](http://apache.maven.org)
+* Install first [Apache Maven](http://maven.apache.org/)
 * Checkout the source: `git clone git://github.com/`
 * Run in the root directory `mvn -DskipTests clean install`.
    
@@ -24,19 +24,19 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 
 * Check out the [docs](http://pg-alise.com)
 
-## To do
+## To Do
 * (R1) OperationCenter should be configured over the ConfigReader
 * (R2) HQF-Components should retrieve their database connection through the EJB container
 * (R3) Parser of the public transportation issues (BusStop, GTFS) should retrieve its database connection through the EJB container
 * (R4) HQF-Components in the OperationCenter should use JPA to handle database access
 * (R5) Change the implementation of the Dashboard function (replace Cognos)
 
-## Known issues
+## Known Issues
 * Several integration tests fail or are ignored due to the anonymisation of ip addresses
 * Control- and OperationCenter won't work till R1 is fixed
 * Dashboard in the OperationCenter won't work because Cognos is not available anymore
 
-## Work arounds
+## Work Arounds
 * Although you can't start a simulation through the web interface, you can start it programmatically. Take a look at the playground project! If any error occurs regarding the web interface, try to mock it.
 ** Open the simulation.conf in the applib directory in the TomEE installation
 ** Add: `simulation.configuration.server.ccc.mock=true` and `simulation.configuration.server.occ.mock=true`
