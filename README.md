@@ -6,11 +6,13 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 
 ## Install
 * Install first [Apache Maven](http://maven.apache.org/)
-* Checkout the source: `git clone git://github.com/`
+* Checkout the source: `git://github.com/luxmeter/pgalise.git`
 * Run in the root directory `mvn -DskipTests clean install`.
    
 ## Getting Started
 * Install the project
+* Download and install [Odysseus](http://odysseus.informatik.uni-oldenburg.de:8090/display/ODYSSEUS/Odysseus+Home)
+* [Configure Odysseus](https://github.com/luxmeter/pgalise/wiki/Configure-Odysseus)
 * Download our [Derby-DB Database Dump](http://uploaded.net/file/w9l8o1fy)
 * Extract the downloaded archive in a directory of your choice
 * Run the start script with `./startderby.sh`
@@ -20,7 +22,8 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 * Apply our patch (tomee.patch) using git-apply: `git apply --ignore-space-change --ignore-whitespace tomee.patch`
 * Copy ear/target/simulation into the apps directory in your TomEE installation
 * Start the server `./bin/catalina.sh run`
-* Open the URL ``
+* For the ControlCenter open the URL `http://localhost:8080/controlCenter`
+* For the OperationCenter open the URL `http://localhost:8080/operationCenter`
 
 * Check out the [docs](http://pg-alise.com)
 
@@ -38,6 +41,6 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 
 ## Work Arounds
 * Although you can't start a simulation through the web interface, you can start it programmatically. Take a look at the playground project! If any error occurs regarding the web interface, try to mock it.
-** Open the simulation.conf in the applib directory in the TomEE installation
-** Add: `simulation.configuration.server.ccc.mock=true` and `simulation.configuration.server.occ.mock=true`
+   - Open the simulation.conf in the applib directory in the TomEE installation
+   - Add: `simulation.configuration.server.ccc.mock=true` and `simulation.configuration.server.occ.mock=true`
 * If your application can't handle the data throughput, try to adjust the simulation clock time intervall (see. playground/Main.java line 114)
