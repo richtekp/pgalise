@@ -46,7 +46,6 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
 @Singleton(name = "de.pgalise.simulation.sensorFramework.SensorRegistry")
 @Local
 public class DefaultSensorRegistry implements SensorRegistry {
-
 	/**
 	 * Logger
 	 */
