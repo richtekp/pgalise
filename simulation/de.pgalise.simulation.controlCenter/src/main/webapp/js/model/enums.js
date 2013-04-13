@@ -1,6 +1,7 @@
 (function(model) {
 	/**
-	 * Class which contains all enums needed for the simulation 
+	 * Message Types
+	 * @author Dennis Höting
 	 */
 	var MessageType = {
 		ERROR : -1,
@@ -31,7 +32,11 @@
 		GENERIC_NOTIFICATION_MESSAGE : 100		// By Server
 	};
 	model.MessageType = MessageType;
-	
+		
+ 	/**
+	 * SensorTypes
+	 * @author Dennis Höting
+	 */
     var SensorType = {
         ANEMOMETER : 0,
         BAROMETER : 1,
@@ -57,7 +62,11 @@
         TRAFFIC_LIGHT_INTERSECTION : 21
     };
     model.SensorType = SensorType;
-
+		
+ 	/**
+	 * SensorTypes
+	 * @author Dennis Höting
+	 */
     var VehicleModel = {
         BIKE_RANDOM : 4,
         BUS_RANDOM : 10,
@@ -67,6 +76,10 @@
     };
     model.VehicleModel = VehicleModel;
 
+ 	/**
+	 * VehicleTypes
+	 * @author Dennis Höting
+	 */
     var VehicleType = {
         CAR : 0,
         MOTORCYCLE : 1,
@@ -76,6 +89,19 @@
     };
     model.VehicleType = VehicleType;
     
+    var VehicleTypeSensorTypeMap = {};
+    VehicleTypeSensorTypeMap[model.VehicleTypeCAR] = model.SensorType.GPS_CAR;
+    VehicleTypeSensorTypeMap[model.VehicleTypeMOTORCYCLE] = model.SensorType.GPS_MOTORCYCLE;
+    VehicleTypeSensorTypeMap[model.VehicleTypeBIKE] = model.SensorType.GPS_BIKE;
+    VehicleTypeSensorTypeMap[model.VehicleTypeTRUCK] = model.SensorType.GPS_TRUCK;
+    VehicleTypeSensorTypeMap[model.VehicleTypeBUS] = model.SensorType.GPS_BUS;
+    
+    model.VehicleTypeSensorTypeMap = VehicleTypeSensorTypeMap;
+    
+ 	/**
+	 * EventTypes
+	 * @author Dennis Höting
+	 */
     var EventType = {
         PATH : 100,
         PATHSTART : 101,
@@ -86,6 +112,10 @@
     };
     model.EventType = EventType;
     
+ 	/**
+	 * WeatherEvents
+	 * @author Dennis Höting
+	 */
 	var WeatherEvents = {
 		USE_CITY_CLIMATE : 0,
 		USE_REFERENCE_CITY : 1,
@@ -96,6 +126,10 @@
 	};
 	model.WeatherEvents = WeatherEvents;
 	
+ 	/**
+	 * SimulationEvents
+	 * @author Dennis Höting
+	 */
 	var SimulationEvents = {
 		CREATE_RANDOM_VEHICLES_EVENT : 0,
 		CREATE_BUSSES_EVENT : 1,

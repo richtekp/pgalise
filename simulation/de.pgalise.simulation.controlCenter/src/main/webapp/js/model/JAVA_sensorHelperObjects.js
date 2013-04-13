@@ -1,6 +1,7 @@
 (function(model) {
 	/**
 	 * SENSOR HELPER
+ 	 * @author Dennis Höting
 	 */
 	var SensorHelper = (function() {
 		function SensorHelper(sensor) {
@@ -25,6 +26,7 @@
 	
 	/**
 	 * Sensor Helper for the photovoltaik sensor 
+ 	 * @author Dennis Höting
 	 */
 	var SensorHelperPhotovoltaik = (function() {
 		function SensorHelperPhotovoltaik(sensor) {
@@ -50,6 +52,7 @@
 	
 	/**
 	 * Sensor Helper for the Smart Meter sensor 
+ 	 * @author Dennis Höting
 	 */
 	var SensorHelperSmartMeter = (function() {
 		function SensorHelperSmartMeter(sensor) {
@@ -75,6 +78,7 @@
 	
 	/**
 	 * Sensor Helper for the wind power sensor 
+ 	 * @author Dennis Höting
 	 */
 	var SensorHelperWindPower = (function() {
 		function SensorHelperWindPower(sensor) {
@@ -101,6 +105,7 @@
 	
 	/**
 	 * Sensor Helper for the Traffic Light sensors
+ 	 * @author Dennis Höting
 	 */
 	var SensorHelperTrafficLightIntersection = (function() {
 		function SensorHelperTrafficLightIntersection(sensor) {
@@ -126,6 +131,10 @@
 	})();
 	model.SensorHelperTrafficLightIntersection = SensorHelperTrafficLightIntersection;
 	
+    /**
+	 * Sensor Helper for Weather Station
+ 	 * @author Dennis Höting
+	 */
 	var SensorHelperWeather = (function() {
 		function SensorHelperWeather(sensorID, sensorType, lat, lng, updateSteps, weatherStationID) {
 			return {

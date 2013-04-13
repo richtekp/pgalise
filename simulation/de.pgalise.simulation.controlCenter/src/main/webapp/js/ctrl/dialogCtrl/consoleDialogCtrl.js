@@ -7,6 +7,7 @@
  * 
  * @param $scope the scope
  * @ConsoleService service for the message traffic
+ * @author Dennis Höting
  */
 function ConsoleDialogCtrl($scope, ConsoleService) {
 	this.$scope = $scope;

@@ -6,6 +6,7 @@
  * This controller is responsible for displaying messages
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function MessageDialogCtrl($scope) {
 	this.$scope = $scope;

@@ -7,6 +7,7 @@
  * 
  * @param $scope the scope
  * @param UUIDService service for generating 
+ * @author Dennis Höting
  */
 function WeatherEventsCtrl($scope, UUIDService) {
 	var _this = this;

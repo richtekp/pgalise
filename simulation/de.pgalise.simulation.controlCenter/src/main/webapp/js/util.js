@@ -1,5 +1,6 @@
 /*
  * Helper method for extention of classes
+ * @author Dennis Höting
  */
 var __extends = this.__extends || function(d, b) {
 	function __() {this.constructor = d;}
@@ -7,6 +8,9 @@ var __extends = this.__extends || function(d, b) {
 	d.prototype = new __();
 };
 
+/*
+ * @author Dennis Höting
+ */
 var count = function(mySet) {
     if (typeof mySet !== 'undefined') {
         return Object.keys(mySet).length;
@@ -18,7 +22,7 @@ var count = function(mySet) {
  * MouseCoords
  * //TODO: Put somewhere else
  * 
- * @authod dhoeting
+ * @author Dennis Höting
  */
 var mouseCoords = {};
 function Point(x,y) {

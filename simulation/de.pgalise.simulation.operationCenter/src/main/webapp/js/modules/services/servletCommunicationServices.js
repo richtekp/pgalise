@@ -1,5 +1,6 @@
 /*
  * Servlet communication service module
+ * @author Dennis Höting
  */
 var servletCommunicationServices = angular.module('servletCommunicationServices', []);
 
@@ -8,6 +9,7 @@ var servletCommunicationServices = angular.module('servletCommunicationServices'
  * @param EventLogService Injected event log service
  * @param CallbackService Injected callback service
  * @param ConsoleService Injected console service
+ * @author Dennis Höting
  */
 servletCommunicationServices.factory('WebSocketService', function(EventLogService, CallbackService, ConsoleService) {
 	var WebSocketService = (function() {

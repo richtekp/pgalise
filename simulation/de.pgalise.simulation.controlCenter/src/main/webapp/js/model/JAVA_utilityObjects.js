@@ -1,4 +1,8 @@
 (function(model) {
+	/*
+	 * Vehicle
+	 * @author Dennis Höting
+	 */
 	var Vehicle = (function() {
 		function Vehicle(id, type, name, gpsActivated, startTime) {
 			this.id = id;
@@ -12,6 +16,10 @@
 	})();
 	model.Vehicle = Vehicle;
 
+	/*
+	 * Node
+	 * @author Dennis Höting
+	 */
 	var Node = (function() {
 		function Node(id, onStreet, onJunction, position) {
 			this.id = id;
@@ -24,6 +32,10 @@
 	})();
 	model.Node = Node;
 
+	/*
+	 * GeoLocation
+	 * @author Dennis Höting
+	 */
 	var GeoLocation = (function() {
 		function GeoLocation(latitude, longitude) {
 			this.latitude = {
@@ -38,6 +50,10 @@
 	})();
 	model.GeoLocation = GeoLocation;
 
+	/*
+	 * TrafficTrip
+	 * @author Dennis Höting
+	 */
 	var TrafficTrip = (function() {
 		function TrafficTrip(startNode, startPosition, endNode, endPosition, startTime) {
 			return {
@@ -53,6 +69,10 @@
 	})();
 	model.TrafficTrip = TrafficTrip;
 	
+	/*
+	 * VehicleInformation
+	 * @author Dennis Höting
+	 */
 	var VehicleInformation = (function() {
 		function VehicleInformation(vehicle, trip) {
 			return {
@@ -69,6 +89,10 @@
 	})();
 	model.VehicleInformation = VehicleInformation;
 	
+	/*
+	 * Start Parameter
+	 * @author Dennis Höting
+	 */
 	var SimulationStartParameter = (function() {
 		function SimulationStartParameter(SensorObjectIDService, UUIDService) {
 			return {

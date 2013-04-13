@@ -5,6 +5,7 @@
  * @param SimulationService Injected service für simulation
  * @paran PopupService Injected service for popup management
  * @param MapService Injected service for map
+ * @author Dennis Höting
  */
 function DetailsCtrl($scope, SimulationService, PopupService, MapService) {
     var _this = this;

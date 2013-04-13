@@ -7,6 +7,7 @@
  * This controller is responsible for the street block event which can be set to block streets during runtime.
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function StreetBlockDialogCtrl($scope) {
 	this.$scope = $scope;

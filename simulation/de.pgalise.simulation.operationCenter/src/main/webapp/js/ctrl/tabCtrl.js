@@ -3,6 +3,7 @@
  * 
  * @param $scope Scope
  * @param $element HTML-Element
+ * @author Dennis Höting
  */
 function TabCtrl($scope, $element) {
     var _this = this;

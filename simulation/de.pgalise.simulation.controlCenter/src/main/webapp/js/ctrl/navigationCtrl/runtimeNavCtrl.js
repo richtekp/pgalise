@@ -8,6 +8,7 @@
  * 
  * @param $scope the scope
  * @param MapService Injected service for map
+ * @author Dennis Höting
  */
 function RuntimeNavCtrl($scope, MapService) {
     ctrl.runtimeNavCtrl = this;

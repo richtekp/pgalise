@@ -1,5 +1,6 @@
 /**
  * Module which contains all given services as a factory
+ * @author Dennis Höting
  */
 var appModule = angular.module('app', ['directives', 
                                        'filters', 

@@ -6,6 +6,7 @@
  * This controller is responsible for the simulations settings
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function SettingsDialogCtrl($scope) {
 	this.$scope = $scope;

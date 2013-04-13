@@ -1,10 +1,12 @@
 /*
  * Package model
+ * @author Dennis Höting
  */
 (function(model) {
     /*
      * Base Class of all model elements
      * Children: DynamicMarker, StaticMarker
+ 	 * @author Dennis Höting
      */
     var OCMarker = (function() {
     	/*
@@ -109,6 +111,7 @@
      * Base Class for DynamicMarkers
      * Parent: OCMarker
      * Children: GPS-Sensors
+ 	 * @author Dennis Höting
      */
     var DynamicMarker = (function(_super) {
         __extends(DynamicMarker, _super);
@@ -156,6 +159,7 @@
      * Base Class for StaticMarkers
      * Parent: OCMarker
      * Children: TrafficLight, InductionLoop
+ 	 * @author Dennis Höting
      */
     var StaticMarker = (function(_super) {
         __extends(StaticMarker, _super);

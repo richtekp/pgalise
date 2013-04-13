@@ -1,5 +1,6 @@
 /*
  * Controller for Console
+ * @author Dennis Höting
  */
 function ConsoleDialogCtrl($scope, ConsoleService) {
 	this.$scope = $scope;

@@ -8,6 +8,7 @@
  * @param $scope the scope
  * @param MessageIDService Injected service for the message IDs
  * @param PopupService Injected service for pop-up management
+ * @author Dennis Höting
  */
 function StatusCtrl($scope, PopupService, MessageIDService) {
 	var _this = this;

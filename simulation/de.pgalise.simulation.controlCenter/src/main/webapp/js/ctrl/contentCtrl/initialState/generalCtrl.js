@@ -6,7 +6,7 @@
  * This controller is responsible for general simulation parameter.
  * 
  * @param $scope the scope
- * @author rofriedr
+ * @author Dennis Höting
  */
 function GeneralCtrl($scope) {
 	var _this = this;

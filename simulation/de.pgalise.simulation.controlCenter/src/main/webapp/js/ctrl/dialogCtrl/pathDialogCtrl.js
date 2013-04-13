@@ -10,6 +10,7 @@
  * @param PopupService Injected service for pop-up management
  * @param MapService Injected service for map
  * @param UUIDService Injected service for Path's internal IDs
+ * @author Dennis Höting
  */
 function PathDialogCtrl($scope, PopupService, MapService, UUIDService) {
     var _this = this;

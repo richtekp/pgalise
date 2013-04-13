@@ -10,6 +10,7 @@
  * @param PopupService Injected service for pop-up management
  * @param UUIDService service for generating 
  * @param SensorObjectIDService service for generating a ID for the created sensor
+ * @author Dennis Höting
  */
 function RandomVehiclesCtrl($scope, UUIDService, SensorObjectIDService, MessageIDService, PopupService) {
 	var _this = this;

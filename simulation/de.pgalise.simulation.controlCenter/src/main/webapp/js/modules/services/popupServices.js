@@ -1,5 +1,6 @@
 /**
  * Pop-up service  
+ * @author Dennis Höting
  */
 var popupServices = angular.module('popupServices', []);
 popupServices.factory('SimplePopupService', function($http, $compile) {

@@ -1,5 +1,6 @@
 /**
  * Service for the output console
+ * @author Dennis Höting
  */
 var consoleServices = angular.module('consoleServices', []);
 consoleServices.factory('SimpleConsoleService', function() {

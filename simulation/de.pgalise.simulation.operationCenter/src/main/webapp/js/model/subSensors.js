@@ -1,250 +1,261 @@
 /*
  * Package model
+ * @author Dennis Höting
  */
 (function(model) {
 	/*
 	 * SubSensors are sensors within a container (container.js)
+	 * @author Dennis Höting
 	 */
-    var SubSensor = (function() {
-    	/*
-    	 * Constructor
-    	 */
-        function SubSensor(id, name, container) {
-        	this.id = id;
-        	this.name = name;
-            this.container = container;
-            
-            this.className = 'SubSensor';
-            this.isDynamicSensor = false;
+	var SubSensor = (function() {
+		/*
+		 * Constructor
+		 */
+		function SubSensor(id, name, container) {
+			this.id = id;
+			this.name = name;
+			this.container = container;
 
-            this.value = 0;
-            
-            //this.ringBuffer = new DynamicRingBuffer(ctrl.detailsCtrl.getHistorySize);
-        }
+			this.className = 'SubSensor';
+			this.isDynamicSensor = false;
 
-        /*
-         * Set value
-         */
-        SubSensor.prototype.setValue = function(value) {
-            this.value = value;
-            
-            if (this.isFavorite || (typeof this.container !== 'undefined' && this.container.isFavorite)) {
-                this.ringBuffer.push({
-                    timestamp : new Date().getTime(),
-                    message : 'new value: ' + value,
-                    value : value
-                });
-            }
-            
-            this.lastChange = new Date().getTime();
-            
-            if(typeof this.container !== 'undefined')
-            	this.container.lastChange = new Date().getTime();
-        };
-        
-        /*
-         * Get value
-         */
-        SubSensor.prototype.getValue = function() {
-            return this.value;
-        };
+			this.value = 0;
 
-        return SubSensor;
-    })();
-    model.SubSensor = SubSensor;
-    
-    /*
-     * TrafficLight-Model
-     * Parent: StaticMarker
-     */
-    var TrafficLight = (function(_super) {
-        __extends(TrafficLight, _super);
+			//this.ringBuffer = new DynamicRingBuffer(ctrl.detailsCtrl.getHistorySize);
+		}
 
-    	/*
-    	 * Constructor
-    	 */
-        function TrafficLight(id, container) {
-            _super.call(this, id, 'TrafficLight', container);
+		/*
+		 * Set value
+		 */
+		SubSensor.prototype.setValue = function(value) {
+			this.value = value;
 
-            this.className = 'TrafficLight';
-            this.type = model.SensorType.TRAFFICLIGHT;
-            this.value = model.TrafficLightStates.BLINKING;
-            this.isOriented = false;
-            this.orientation1 = 0;
-            this.orientation2 = 0;
-        }
-        
-        /*
-         * Set orientations
-         */
-        TrafficLight.prototype.setOrientations = function(o1, o2) {
-            this.isOriented = true;
-            this.orientation1 = o1;
-            this.orientation2 = o2;
-        };
+			if (this.isFavorite || ( typeof this.container !== 'undefined' && this.container.isFavorite)) {
+				this.ringBuffer.push({
+					timestamp : new Date().getTime(),
+					message : 'new value: ' + value,
+					value : value
+				});
+			}
 
-        return TrafficLight;
-    })(model.SubSensor);
-    model.TrafficLight = TrafficLight;
+			this.lastChange = new Date().getTime();
 
-    /*
-     * Anemometer-Model
-     */
-    var Anemometer = (function(_super) {
-        __extends(Anemometer, _super);
+			if ( typeof this.container !== 'undefined')
+				this.container.lastChange = new Date().getTime();
+		};
 
-    	/*
-    	 * Constructor
-    	 */
-        function Anemometer(id, container) {
-            _super.call(this, id, 'Anemometer', container);
+		/*
+		 * Get value
+		 */
+		SubSensor.prototype.getValue = function() {
+			return this.value;
+		};
 
-            this.className = "Anemometer";
-            this.type = model.SensorType.ANEMOMETER;
-        }
+		return SubSensor;
+	})();
+	model.SubSensor = SubSensor;
 
-        return Anemometer;
-    })(model.SubSensor);
-    model.Anemometer = Anemometer;
+	/*
+	 * TrafficLight-Model
+	 * Parent: StaticMarker
+	 * @author Dennis Höting
+	 */
+	var TrafficLight = (function(_super) {
+		__extends(TrafficLight, _super);
 
-    /*
-     * Barometer-Model
-     */
-    var Barometer = (function(_super) {
-        __extends(Barometer, _super);
+		/*
+		 * Constructor
+		 */
+		function TrafficLight(id, container) {
+			_super.call(this, id, 'TrafficLight', container);
 
-    	/*
-    	 * Constructor
-    	 */
-        function Barometer(id, container) {
-            _super.call(this, id, 'Barometer', container);
+			this.className = 'TrafficLight';
+			this.type = model.SensorType.TRAFFICLIGHT;
+			this.value = model.TrafficLightStates.BLINKING;
+			this.isOriented = false;
+			this.orientation1 = 0;
+			this.orientation2 = 0;
+		}
 
-            this.className = "Barometer";
-            this.type = model.SensorType.BAROMETER;
-        }
+		/*
+		 * Set orientations
+		 */
+		TrafficLight.prototype.setOrientations = function(o1, o2) {
+			this.isOriented = true;
+			this.orientation1 = o1;
+			this.orientation2 = o2;
+		};
 
-        return Barometer;
-    })(model.SubSensor);
-    model.Barometer = Barometer;
+		return TrafficLight;
+	})(model.SubSensor);
+	model.TrafficLight = TrafficLight;
 
-    /*
-     * Hygrometer-Model
-     */
-    var Hygrometer = (function(_super) {
-        __extends(Hygrometer, _super);
+	/*
+	 * Anemometer-Model
+	 * @author Dennis Höting
+	 */
+	var Anemometer = (function(_super) {
+		__extends(Anemometer, _super);
 
-    	/*
-    	 * Constructor
-    	 */
-        function Hygrometer(id, container) {
-            _super.call(this, id, 'Hygrometer', container);
+		/*
+		 * Constructor
+		 */
+		function Anemometer(id, container) {
+			_super.call(this, id, 'Anemometer', container);
 
-            this.className = "Hygrometer";
-            this.type = model.SensorType.HYGROMETER;
-        }
+			this.className = "Anemometer";
+			this.type = model.SensorType.ANEMOMETER;
+		}
 
-        return Hygrometer;
-    })(model.SubSensor);
-    model.Hygrometer = Hygrometer;
+		return Anemometer;
+	})(model.SubSensor);
+	model.Anemometer = Anemometer;
 
-    /*
-     * Luxmeter-Model
-     */
-    var Luxmeter = (function(_super) {
-        __extends(Luxmeter, _super);
+	/*
+	 * Barometer-Model
+	 * @author Dennis Höting
+	 */
+	var Barometer = (function(_super) {
+		__extends(Barometer, _super);
 
-    	/*
-    	 * Constructor
-    	 */
-        function Luxmeter(id, container) {
-            _super.call(this, id, 'Luxmeter', container);
+		/*
+		 * Constructor
+		 */
+		function Barometer(id, container) {
+			_super.call(this, id, 'Barometer', container);
 
-            this.className = "Luxmeter";
-            this.type = model.SensorType.LUXMETER;
-        }
+			this.className = "Barometer";
+			this.type = model.SensorType.BAROMETER;
+		}
 
-        return Luxmeter;
-    })(model.SubSensor);
-    model.Luxmeter = Luxmeter;
+		return Barometer;
+	})(model.SubSensor);
+	model.Barometer = Barometer;
 
-    /*
-     * Pyranometer-Model
-     */
-    var Pyranometer = (function(_super) {
-        __extends(Pyranometer, _super);
+	/*
+	 * Hygrometer-Model
+	 * @author Dennis Höting
+	 */
+	var Hygrometer = (function(_super) {
+		__extends(Hygrometer, _super);
 
-    	/*
-    	 * Constructor
-    	 */
-        function Pyranometer(id, container) {
-            _super.call(this, id, 'Pyranometer', container);
+		/*
+		 * Constructor
+		 */
+		function Hygrometer(id, container) {
+			_super.call(this, id, 'Hygrometer', container);
 
-            this.className = "Pyranometer";
-            this.type = model.SensorType.PYRANOMETER;
-        }
+			this.className = "Hygrometer";
+			this.type = model.SensorType.HYGROMETER;
+		}
 
-        return Pyranometer;
-    })(model.SubSensor);
-    model.Pyranometer = Pyranometer;
+		return Hygrometer;
+	})(model.SubSensor);
+	model.Hygrometer = Hygrometer;
 
-    /*
-     * Rain-Model
-     */
-    var Rain = (function(_super) {
-        __extends(Rain, _super);
+	/*
+	 * Luxmeter-Model
+	 * @author Dennis Höting
+	 */
+	var Luxmeter = (function(_super) {
+		__extends(Luxmeter, _super);
 
-    	/*
-    	 * Constructor
-    	 */
-        function Rain(id, container) {
-            _super.call(this, id, 'Rain', container);
+		/*
+		 * Constructor
+		 */
+		function Luxmeter(id, container) {
+			_super.call(this, id, 'Luxmeter', container);
 
-            this.className = "Rain";
-            this.type = model.SensorType.RAIN;
-        }
+			this.className = "Luxmeter";
+			this.type = model.SensorType.LUXMETER;
+		}
 
-        return Rain;
-    })(model.SubSensor);
-    model.Rain = Rain;
+		return Luxmeter;
+	})(model.SubSensor);
+	model.Luxmeter = Luxmeter;
 
-    /*
-     * Thermometer-Model
-     */
-    var Thermometer = (function(_super) {
-        __extends(Thermometer, _super);
+	/*
+	 * Pyranometer-Model
+	 * @author Dennis Höting
+	 */
+	var Pyranometer = (function(_super) {
+		__extends(Pyranometer, _super);
 
-    	/*
-    	 * Constructor
-    	 */
-        function Thermometer(id, container) {
-            _super.call(this, id, 'Thermometer', container);
+		/*
+		 * Constructor
+		 */
+		function Pyranometer(id, container) {
+			_super.call(this, id, 'Pyranometer', container);
 
-            this.className = "Thermometer";
-            this.type = model.SensorType.THERMOMETER;
-        }
+			this.className = "Pyranometer";
+			this.type = model.SensorType.PYRANOMETER;
+		}
 
-        return Thermometer;
-    })(model.SubSensor);
-    model.Thermometer = Thermometer;
+		return Pyranometer;
+	})(model.SubSensor);
+	model.Pyranometer = Pyranometer;
 
-    /*
-     * WindFlag-Model
-     */
-    var WindFlag = (function(_super) {
-        __extends(WindFlag, _super);
+	/*
+	 * Rain-Model
+	 * @author Dennis Höting
+	 */
+	var Rain = (function(_super) {
+		__extends(Rain, _super);
 
-    	/*
-    	 * Constructor
-    	 */
-        function WindFlag(id, container) {
-            _super.call(this, id, 'WindFlag', container);
+		/*
+		 * Constructor
+		 */
+		function Rain(id, container) {
+			_super.call(this, id, 'Rain', container);
 
-            this.className = "WindFlag";
-            this.type = model.SensorType.WINDFLAG;
-        }
+			this.className = "Rain";
+			this.type = model.SensorType.RAIN;
+		}
 
-        return WindFlag;
-    })(model.SubSensor);
-    model.WindFlag = WindFlag;
+		return Rain;
+	})(model.SubSensor);
+	model.Rain = Rain;
 
-})(model);
+	/*
+	 * Thermometer-Model
+	 * @author Dennis Höting
+	 */
+	var Thermometer = (function(_super) {
+		__extends(Thermometer, _super);
+
+		/*
+		 * Constructor
+		 */
+		function Thermometer(id, container) {
+			_super.call(this, id, 'Thermometer', container);
+
+			this.className = "Thermometer";
+			this.type = model.SensorType.THERMOMETER;
+		}
+
+		return Thermometer;
+	})(model.SubSensor);
+	model.Thermometer = Thermometer;
+
+	/*
+	 * WindFlag-Model
+	 * @author Dennis Höting
+	 */
+	var WindFlag = (function(_super) {
+		__extends(WindFlag, _super);
+
+		/*
+		 * Constructor
+		 */
+		function WindFlag(id, container) {
+			_super.call(this, id, 'WindFlag', container);
+
+			this.className = "WindFlag";
+			this.type = model.SensorType.WINDFLAG;
+		}
+
+		return WindFlag;
+	})(model.SubSensor);
+	model.WindFlag = WindFlag;
+
+})(model); 

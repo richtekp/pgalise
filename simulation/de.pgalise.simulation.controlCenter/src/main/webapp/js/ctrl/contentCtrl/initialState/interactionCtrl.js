@@ -7,6 +7,7 @@
  * 
  * @param $scope the scope
  * @author rofriedr
+ * @author Dennis Höting
  */
 function InteractionCtrl($scope) {
 	this.$scope = $scope;

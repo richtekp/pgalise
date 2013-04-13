@@ -1,5 +1,6 @@
 /*
  * Popup services
+ * @author Dennis Höting
  */
 var popupServices = angular.module('popupServices', []);
 
@@ -7,6 +8,7 @@ var popupServices = angular.module('popupServices', []);
  * Simple implementation
  * @param $http AngularService for AJAX http loading
  * @param $compile AngularService for compiling purposes
+ * @author Dennis Höting
  */
 popupServices.factory('SimplePopupService', function($http, $compile) {
 	// Package

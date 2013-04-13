@@ -1,5 +1,9 @@
 var mapServices = angular.module('mapServices', []);
 
+/*
+ * Open Layers Service
+ * @author Dennis Höting
+ */
 mapServices.factory('OpenLayersService', function(PopupService, SensorObjectIDService, UUIDService, EventObjectIDService, MessageIDService) {
     var OpenLayersService = (function() {
 

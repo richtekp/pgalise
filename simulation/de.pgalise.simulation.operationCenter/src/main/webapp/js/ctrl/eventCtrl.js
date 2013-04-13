@@ -3,6 +3,7 @@
  * 
  * @param $scope Scope
  * @param EventLogService Injected service for eventLog
+ * @author Dennis Höting
  * 
  * Events will be pushed into event log and eventLog will notify registered scopes
  */

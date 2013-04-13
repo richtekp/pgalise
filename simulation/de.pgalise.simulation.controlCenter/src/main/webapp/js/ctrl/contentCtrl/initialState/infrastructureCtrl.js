@@ -6,6 +6,7 @@
  * 
  * @param $scope the scope
  * @author rofriedr
+ * @author Dennis Höting
  */
 function InfrastructureCtrl($scope) {
 	var _this = this;

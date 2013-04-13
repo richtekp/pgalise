@@ -10,6 +10,7 @@
  * @param PopupService Injected service for pop-up management
  * @param MapService Injected service for map
  * @param MessageIDService Injected service for the message IDs
+ * @author Dennis Höting
  */
 function InitialDialogCtrl($scope, PopupService, MapService, MessageIDService) {
 	var _this = this;

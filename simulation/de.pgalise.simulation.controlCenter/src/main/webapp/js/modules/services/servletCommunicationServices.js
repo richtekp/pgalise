@@ -1,5 +1,6 @@
 /**
  * Web Socket Service 
+ * @author Dennis Höting
  */
 var servletCommunicationServices = angular.module('servletCommunicationServices', []);
 

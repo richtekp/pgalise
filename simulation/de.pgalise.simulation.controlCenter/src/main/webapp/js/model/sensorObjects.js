@@ -2,6 +2,7 @@
     /*
      * TrafficLight-Model
      * Parent: StaticMarker
+     * @author Dennis Höting
      */
     var TrafficLightIntersection = (function(_super) {
         __extends(TrafficLightIntersection, _super);
@@ -22,6 +23,7 @@
     /*
      * InductionLoop-Model
      * Parent: StaticMarker
+     * @author Dennis Höting
      */
     var InductionLoop = (function(_super) {
         __extends(InductionLoop, _super);
@@ -41,6 +43,7 @@
     /*
      * SolarCollector-Model
      * Parent: StaticMarker
+     * @author Dennis Höting
      */
     var Photovoltaik = (function(_super) {
         __extends(Photovoltaik, _super);
@@ -61,6 +64,7 @@
     /*
      * WindPowerPlant-Model
      * Parent: StaticMarker
+     * @author Dennis Höting
      */
     var WindPowerSensor = (function(_super) {
         __extends(WindPowerSensor, _super);
@@ -81,6 +85,7 @@
 
     /*
      * SmartMeter-Model
+     * @author Dennis Höting
      */
     var SmartMeter = (function(_super) {
         __extends(SmartMeter, _super);
@@ -104,6 +109,7 @@
 
     /*
      * TopoRadar-Model
+     * @author Dennis Höting
      */
     var TopoRadar = (function(_super) {
         __extends(TopoRadar, _super);
@@ -119,8 +125,10 @@
         return TopoRadar;
     })(model.StaticMarker);
     model.TopoRadar = TopoRadar;
+    
     /*
      * WeatherSensor-Model
+     * @author Dennis Höting
      */
     var WeatherStation = (function(_super) {
         __extends(WeatherStation, _super);

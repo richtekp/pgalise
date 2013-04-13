@@ -1,5 +1,6 @@
 /**
  * callback service 
+ * @author Dennis Höting
  */
 var callbackServices = angular.module('callbackServices', []);
 callbackServices.factory('SimpleCallbackService', function() {

@@ -4,6 +4,7 @@
  * @param $scope Scope
  * @param SimulationService Injected service for simulation
  * @param MapService Injected service for map
+ * @author Dennis Höting
  */
 function ListCtrl($scope, SimulationService, MapService) {
     var _this = this;

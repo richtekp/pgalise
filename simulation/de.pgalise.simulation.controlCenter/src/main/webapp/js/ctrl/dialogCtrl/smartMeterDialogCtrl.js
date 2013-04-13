@@ -6,6 +6,7 @@
  * This controller is responsible smart meter sensor's settings.
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function SmartMeterDialogCtrl($scope) {
 	this.$scope = $scope;

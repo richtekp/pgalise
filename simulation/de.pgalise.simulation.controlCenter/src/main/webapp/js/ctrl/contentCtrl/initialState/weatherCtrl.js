@@ -1,7 +1,7 @@
 /*
  * Controller for weather view
  *
- * @author dhoeting
+ * @author Dennis Höting
  */
 function WeatherCtrl($scope, UUIDService) {
 	var _this = this;

@@ -1,5 +1,6 @@
 /*
  * Controller for details dialog
+ * @author Dennis Höting
  */
 function DetailsDialogCtrl($scope, SimulationService, PopupService, MapService) {
     var _this = this;

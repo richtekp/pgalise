@@ -1,10 +1,12 @@
 /*
  * EventLog service module
+ * @author Dennis Höting
  */
 var eventLogServices = angular.module('eventLogServices', []);
 
 /*
  * Simple implementation
+ * @author Dennis Höting
  */
 eventLogServices.factory('SimpleEventLogService', function() {
 		// listeners to eventLog

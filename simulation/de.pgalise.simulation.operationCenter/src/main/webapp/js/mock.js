@@ -4,6 +4,8 @@
  * !!!!!!!!!!!!!!!!!!!! TEST !!!!!!!!!!!!!!!!!!!!!!!!!!!
  * =====================================================
  * these are mock/test functions
+ * 
+ * @author Dennis Höting
  */
 
 var testOnConnectMessage = function() {

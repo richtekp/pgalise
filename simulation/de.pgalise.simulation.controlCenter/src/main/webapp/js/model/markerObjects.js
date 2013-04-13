@@ -2,6 +2,7 @@
     /*
      * Base Class of all model elements
      * Children: DynamicMarker, StaticMarker
+     * @author Dennis Höting
      */
     var OCMarker = (function() {
         function OCMarker(id, latitude, longitude, name, updateSteps) {
@@ -46,6 +47,7 @@
      * Base Class for StaticMarkers
      * Parent: OCMarker
      * Children: TrafficLight, InductionLoop
+     * @author Dennis Höting
      */
     var StaticMarker = (function(_super) {
         __extends(StaticMarker, _super);

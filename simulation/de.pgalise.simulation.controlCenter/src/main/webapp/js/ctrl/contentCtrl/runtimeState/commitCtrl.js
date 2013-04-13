@@ -10,6 +10,7 @@
  * @param MessageIDService Injected service for the message IDs
  * @param PopupService Injected service for pop-up management
  * @param MapService Injected service for map
+ * @author Dennis Höting
  */
 function CommitCtrl($scope, MessageIDService, PopupService, MapService, SensorObjectIDService, UUIDService) {
 	var _this = this;

@@ -1,6 +1,7 @@
 /**
  * This Class contains all the simulation events which can be set.  
  * @param {Object} model which contains the event
+ * @author Dennis Höting
  */
 (function(model) {
 	var Path = (function() {

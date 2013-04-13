@@ -4,6 +4,7 @@
  * @param $scope 
  * @param SimulationService Injected service for simulation
  * @param PopupService Injected service für popup management
+ * @author Dennis Höting
  */
 function GateCtrl($scope, SimulationService, PopupService) {
     var _this = this;

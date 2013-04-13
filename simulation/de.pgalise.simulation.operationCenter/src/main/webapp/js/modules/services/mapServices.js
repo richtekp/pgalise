@@ -1,10 +1,12 @@
 /*
  * Map service module
+ * @author Dennis Höting
  */
 var mapServices = angular.module('mapServices', []);
 
 /*
  * OpenLayers implementation
+ * @author Dennis Höting
  */
 mapServices.factory('OpenLayersService',
 	function() {

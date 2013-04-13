@@ -1,10 +1,12 @@
 /*
  * Callback Service module
+ * @author Dennis Höting
  */
 var callbackServices = angular.module('callbackServices', []);
 
 /*
  * Simple Implementation
+ * @author Dennis Höting
  */
 callbackServices.factory('SimpleCallbackService', function() {
 	// registry

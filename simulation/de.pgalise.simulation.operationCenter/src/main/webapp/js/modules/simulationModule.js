@@ -1,5 +1,10 @@
 var appSimulation = angular.module('simulationModule', []);
 
+/*
+ * Simulation Service
+ * 
+ * @author Dennis Höting
+ */
 appSimulation.factory('SimulationService', function(MapService) {
 	var Simulation = (function() {
 		function Simulation() {

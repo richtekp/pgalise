@@ -5,6 +5,7 @@
  * @param ServletCommunicationService Injected service for communication
  * @param PopupService Injected service for popup management
  * @param MessageIDService Injected service for message id management
+ * @author Dennis Höting
  */
 function GateDialogCtrl($scope, SimulationService, ServletCommunicationService, PopupService, MessageIDService) {
     var _this = this;

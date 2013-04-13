@@ -7,6 +7,7 @@
  * 
  * @param $scope the scope
  * @param MapService Injected service for map
+ * @author Dennis Höting
  */
 function InitNavCtrl($scope, MapService) {
     ctrl.initNavCtrl = this;

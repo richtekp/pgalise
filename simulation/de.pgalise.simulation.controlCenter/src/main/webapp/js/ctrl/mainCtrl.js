@@ -5,7 +5,7 @@
  * Additionally, the controller can be referenced using the global package ctrl
  * E.g. Use ctrl.mainCtrl.$scope etc.
  *
- * @author dhoeting
+ * @author Dennis Höting
  */
 function MainCtrl($scope, ServletCommunicationService, MapService, PopupService, ConsoleService, EventObjectIDService, SensorObjectIDService, MessageIDService, UUIDService) {
     var _this = this;

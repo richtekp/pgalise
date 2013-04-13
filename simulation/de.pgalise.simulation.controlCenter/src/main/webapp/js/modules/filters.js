@@ -1,5 +1,6 @@
 /**
  * Filter 
+ * @author Dennis Höting
  */
 var filtersModule = angular.module('filters', []);
 filtersModule.filter('booleanToString', function() {

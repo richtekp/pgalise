@@ -2,7 +2,7 @@
  * Empty Content controller
  * For the empty space during map parsing
  * 
- * @author dhoeting
+ * @author Dennis Höting
  */
 function EmptyContentCtrl($scope) {
     this.$scope = $scope;

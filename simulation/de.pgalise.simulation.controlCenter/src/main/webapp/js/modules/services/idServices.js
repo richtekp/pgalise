@@ -1,6 +1,7 @@
 var idSeed = 0;
 /**
  * ID Service for sensors 
+ * @author Dennis Höting
  */
 var idServices = angular.module('idServices', []);
 idServices.factory('SimpleSensorObjectIDService', function() {

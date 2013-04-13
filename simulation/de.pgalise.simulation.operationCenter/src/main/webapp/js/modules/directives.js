@@ -1,10 +1,12 @@
 /*
  * Directives
+ * @author Dennis Höting
  */
 var directivesModule = angular.module('directives', []);
 
 /*
  * Slider (JQuery UI)
+ * @author Dennis Höting
  */
 directivesModule.directive('slider', function() {
     return function(scope, element, attrs) {
@@ -29,6 +31,7 @@ directivesModule.directive('slider', function() {
 
 /*
  * Button (JQuery UI)
+ * @author Dennis Höting
  */
 directivesModule.directive('button', function() {
 	return function(scope, element, attrs) {
@@ -44,6 +47,7 @@ directivesModule.directive('button', function() {
 
 /*
  * TreeView (JQuery TreeView)
+ * @author Dennis Höting
  */
 directivesModule.directive('treeview', function() {
 	return function(scope, element, attrs) {
@@ -55,6 +59,7 @@ directivesModule.directive('treeview', function() {
 
 /*
  * Tabs (JQuery UI)
+ * @author Dennis Höting
  */
 directivesModule.directive('tabs', function() {
 	return function(scope, element, attrs) {
@@ -66,6 +71,7 @@ directivesModule.directive('tabs', function() {
 
 /*
  * Progress bar (JQuery UI)
+ * @author Dennis Höting
  */
 directivesModule.directive('progressbar', function() {
 	return function(scope, element, attrs) {
@@ -79,6 +85,7 @@ directivesModule.directive('progressbar', function() {
 
 /*
  * Help-Button + Popup
+ * @author Dennis Höting
  */
 directivesModule.directive('help', function(PopupService) {
     return function(scope, element, attrs) {
@@ -96,6 +103,7 @@ directivesModule.directive('help', function(PopupService) {
 
 /*
  * Object view (JQuery TreeView)
+ * @author Dennis Höting
  */
 directivesModule.directive('objectView', function() {
     return function(scope, element, attrs) {

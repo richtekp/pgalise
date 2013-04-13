@@ -8,6 +8,7 @@
  * 
  * @param $scope the scope
  * @param PopupService Injected service for pop-up management
+ * @author Dennis Höting
  */
 function UnsentMessagesDialogCtrl($scope, PopupService) {
 	var _this = this;

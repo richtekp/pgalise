@@ -1,14 +1,14 @@
 /*
  * Module for directives
  *
- * @author dhoeting
+ * @author Dennis Höting
  */
 var directivesModule = angular.module('directives', []);
 
 /*
  * Slider
  *
- * @author dhoeting
+ * @author Dennis Höting
  */
 directivesModule.directive('slider', function() {
 	return function(scope, element, attrs) {
@@ -32,7 +32,7 @@ directivesModule.directive('slider', function() {
 /*
  * Button
  *
- * @author dhoeting
+ * @author Dennis Höting
  */
 directivesModule.directive('button', function() {
 	return function(scope, element, attrs) {
@@ -49,7 +49,7 @@ directivesModule.directive('button', function() {
 /*
  * Datepicker
  *
- * @author dhoeting
+ * @author Dennis Höting
  */
 directivesModule.directive('datepicker', function() {
 	return function(scope, element, attrs) {
@@ -67,6 +67,11 @@ directivesModule.directive('datepicker', function() {
 	};
 });
 
+/*
+ * Simple Datepicker
+ *
+ * @author Dennis Höting
+ */
 directivesModule.directive('datepickerSimple', function() {
 	return function(scope, element, attrs) {
 		$(document).ready(function() {
@@ -83,6 +88,11 @@ directivesModule.directive('datepickerSimple', function() {
 	};
 });
 
+/*
+ * Rating
+ *
+ * @author Dennis Höting
+ */
 directivesModule.directive('rating', function() {
 	return function(scope, element, attrs) {
 		$(document).ready(function() {
@@ -99,6 +109,11 @@ directivesModule.directive('rating', function() {
 	}; 
 });
 
+/*
+ * Help
+ *
+ * @author Dennis Höting
+ */
 directivesModule.directive('help', function(PopupService) {
     return function(scope, element, attrs) {
         $(document).ready(function() {
@@ -113,6 +128,11 @@ directivesModule.directive('help', function(PopupService) {
     };
 }); 
 
+/*
+ * Object View
+ *
+ * @author Dennis Höting
+ */
 directivesModule.directive('objectView', function() {
 	return function(scope, element, attrs) {
 		function writeList(object) {

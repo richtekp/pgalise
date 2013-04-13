@@ -8,6 +8,7 @@
  * the confirmation in case of a user's decision
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function ConfirmationDialogCtrl($scope) {
 	this.$scope = $scope;

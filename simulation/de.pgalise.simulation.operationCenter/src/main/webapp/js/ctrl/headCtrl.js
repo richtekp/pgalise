@@ -3,6 +3,7 @@
  * 
  * @param $scope 
  * @param PopupService Injected service for popup management
+ * @author Dennis Höting
  */
 function HeadCtrl($scope, PopupService) {
     this.$scope = $scope;

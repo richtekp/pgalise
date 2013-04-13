@@ -8,6 +8,7 @@
  * 
  * @param $scope the scope
  * @param PopupService Injected service for pop-up management
+ * @author Dennis Höting
  */
 function AttractionDialogCtrl($scope, PopupService) {
     this.$scope = $scope;

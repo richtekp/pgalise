@@ -6,6 +6,7 @@
  * This controller is responsible for showing the start parameter export link
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function LinkDialogCtrl($scope) {
 	this.$scope = $scope;

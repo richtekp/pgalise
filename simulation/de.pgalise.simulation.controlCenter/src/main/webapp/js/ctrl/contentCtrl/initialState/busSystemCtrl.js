@@ -4,6 +4,7 @@
  * It also has access to the main controller's scope.
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function BusSystemCtrl($scope) {
 	this.$scope = $scope;

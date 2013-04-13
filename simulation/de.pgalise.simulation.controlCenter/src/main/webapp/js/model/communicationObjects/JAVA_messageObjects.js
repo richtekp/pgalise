@@ -1,8 +1,8 @@
-(function (model) {
-	model.messages = {};
-	/**
-	 * Simulation messages for the client-server communication 
-	 */
+/**
+ * Simulation messages for the client-server communication
+ * @author Dennis Höting
+ */
+(function(model) {
 	var OsmAndBusstopFileMessage = (function() {
 		function OsmAndBusstopFileMessage(id, osmFileName, busStopFileName) {
 			return {
@@ -14,11 +14,11 @@
 				}
 			};
 		}
-		
+
 		return OsmAndBusstopFileMessage;
 	})();
 	model.OsmAndBusstopFileMessage = OsmAndBusstopFileMessage;
-	
+
 	var AskForValidNodeMessage = (function() {
 		function AskForValidNodeMessage(id, node) {
 			return {
@@ -27,11 +27,11 @@
 				content : node
 			};
 		}
-		
+
 		return AskForValidNodeMessage;
 	})();
 	model.AskForValidNodeMessage = AskForValidNodeMessage;
-	
+
 	var SimulationStartParameterMessage = (function() {
 		function SimulationStartParameterMessage(id, startParameter) {
 			return {
@@ -40,24 +40,27 @@
 				content : startParameter
 			};
 		}
-		
+
 		return SimulationStartParameterMessage;
 	})();
 	model.SimulationStartParameterMessage = SimulationStartParameterMessage;
-	
+
 	var SimulationExportParameterMessage = (function() {
 		function SimulationExportParameterMessage(id, startParameter, fileName) {
 			return {
 				messageID : id,
 				messageType : model.MessageType.SIMULATION_EXPORT_PARAMETER,
-				content : {ccSimulationStartParameter: startParameter, fileName: fileName}
+				content : {
+					ccSimulationStartParameter : startParameter,
+					fileName : fileName
+				}
 			};
 		}
-		
+
 		return SimulationExportParameterMessage;
 	})();
 	model.SimulationExportParameterMessage = SimulationExportParameterMessage;
-	
+
 	var ImportXMLStartParameterMessage = (function() {
 		function ImportXMLStartParameterMessage(id, xmlFile) {
 			return {
@@ -66,11 +69,11 @@
 				content : xmlFile
 			};
 		}
-		
+
 		return ImportXMLStartParameterMessage;
 	})();
 	model.ImportXMLStartParameterMessage = ImportXMLStartParameterMessage;
-	
+
 	var LoadSimulationStartParameterMessage = (function() {
 		function LoadSimulationStartParameterMessage(id, path) {
 			return {
@@ -79,11 +82,11 @@
 				content : path
 			};
 		}
-		
+
 		return LoadSimulationStartParameterMessage;
 	})();
 	model.LoadSimulationStartParameterMessage = LoadSimulationStartParameterMessage;
-	
+
 	var SimulationEventListMessage = (function() {
 		function SimulationEventListMessage(id, timestamp, events) {
 			var uuidService = angular.element(document).injector().get('UUIDService');
@@ -97,11 +100,11 @@
 				}
 			};
 		}
-		
+
 		return SimulationEventListMessage;
 	})();
 	model.SimulationEventListMessage = SimulationEventListMessage;
-	
+
 	var CreateRandomVehiclesMessage = (function() {
 		function CreateRandomVehiclesMessage(id, sensorBundle) {
 			return {
@@ -110,11 +113,11 @@
 				content : sensorBundle
 			};
 		}
-		
+
 		return CreateRandomVehiclesMessage;
 	})();
 	model.CreateRandomVehiclesMessage = CreateRandomVehiclesMessage;
-	
+
 	var CreateAttractionEventsMessage = (function() {
 		function CreateAttractionEventsMessage(id, attractionDataList) {
 			return {
@@ -123,11 +126,11 @@
 				content : attractionDataList
 			};
 		}
-		
+
 		return CreateAttractionEventsMessage;
 	})();
 	model.CreateAttractionEventsMessage = CreateAttractionEventsMessage;
-	
+
 	var SimulationStopMessage = (function() {
 		function SimulationStopMessage(id) {
 			return {
@@ -135,8 +138,8 @@
 				messageType : model.MessageType.SIMULATION_STOP
 			};
 		}
-		
+
 		return SimulationStopMessage;
 	})();
 	model.SimulationStopMessage = SimulationStopMessage;
-})(model);
+})(model); 

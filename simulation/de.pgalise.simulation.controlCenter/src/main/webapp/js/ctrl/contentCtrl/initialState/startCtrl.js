@@ -1,7 +1,7 @@
 /*
  * Controller for start view
  *
- * @author dhoeting
+ * @author Dennis Höting
  */
 function StartCtrl($scope, PopupService, MessageIDService) {
 	var _this = this;

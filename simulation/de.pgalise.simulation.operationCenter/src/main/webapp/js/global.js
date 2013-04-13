@@ -1,5 +1,6 @@
 /*
  * Global variables
+ * @author Dennis Höting
  */
 var model = {};
 var ctrl = {};

@@ -2,6 +2,7 @@
  * Modules
  * 
  * This is where dependency injection is carried out
+ * @author Dennis Höting
  */
 var appModule = angular.module('app', ['filters', 'directives', 'idServices', 'servletCommunicationServices', 'simulationModule', 'mapServices', 'popupServices', 'callbackServices', 'consoleServices', 'eventLogServices']).
 	

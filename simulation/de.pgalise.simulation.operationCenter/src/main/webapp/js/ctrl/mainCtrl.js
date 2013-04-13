@@ -12,6 +12,7 @@
  * @param ServletCommunicationService Injected service for communication with server
  * @param MapService Injected service for map
  * @param PopupService Injected service for popup management
+ * @author Dennis Höting
  */
 function MainCtrl($scope, SimulationService, ServletCommunicationService, MapService, PopupService) {
 	var _this = this;

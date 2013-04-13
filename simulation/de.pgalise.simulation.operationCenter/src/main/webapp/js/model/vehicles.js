@@ -1,9 +1,11 @@
 /*
  * Package model
+ * @author Dennis Höting
  */
 (function(model) {
 	/*
 	 * Vehicles
+ 	 * @author Dennis Höting
 	 */
 	var Vehicle = (function() {
         /*
@@ -46,6 +48,7 @@
     /*
      * Truck-Model
      * Parent: Vehicle
+ 	 * @author Dennis Höting
      */
     var Car = (function(_super) {
         __extends(Car, _super);
@@ -67,6 +70,7 @@
     /*
      * Truck-Model
      * Parent: Vehicle
+ 	 * @author Dennis Höting
      */
     var Truck = (function(_super) {
         __extends(Truck, _super);
@@ -89,6 +93,7 @@
     /*
      * Motorcycle-Model
      * Parent: Vehicle
+ 	 * @author Dennis Höting
      */
     var Motorcycle = (function(_super) {
         __extends(Motorcycle, _super);
@@ -111,6 +116,7 @@
     /*
      * Bike-Model
      * Parent: Vehicle
+ 	 * @author Dennis Höting
      */
     var Bike = (function(_super) {
         __extends(Bike, _super);
@@ -133,6 +139,7 @@
     /*
      * Bus-Model
      * Parent: Vehicle
+ 	 * @author Dennis Höting
      */
     var Bus = (function(_super) {
         __extends(Bus, _super);

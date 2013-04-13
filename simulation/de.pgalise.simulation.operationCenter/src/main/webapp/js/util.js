@@ -1,5 +1,6 @@
 /*
  * Helper method for extention of classes
+ * @author Dennis Höting
  */
 var __extends = this.__extends || function(d, b) {
 	function __() {
@@ -12,6 +13,7 @@ var __extends = this.__extends || function(d, b) {
 /*
  * Counting function
  * @param mySet set to be counted
+ * @author Dennis Höting
  */
 var count = function(mySet) {
 	if (!undef(mySet)) {
@@ -24,6 +26,7 @@ var count = function(mySet) {
  * Checking function
  * @param ngModel model for view
  * @param value value to be set (true/false)
+ * @author Dennis Höting
  */
 var check = function(ngModel, value) {
 	if (value) {
@@ -35,6 +38,7 @@ var check = function(ngModel, value) {
 
 /*
  * MouseCoords
+ * @author Dennis Höting
  */
 function Point(x, y) {
 	this.x = x || 0;
@@ -45,6 +49,7 @@ mouseCoords.current = new Point(0, 0);
 
 /*
  * Overrides
+ * @author Dennis Höting
  */
 // By John Resig (JQuery)
 Array.prototype.remove = function(from, to) {
@@ -53,15 +58,27 @@ Array.prototype.remove = function(from, to) {
 	return this.push.apply(this, rest);
 };
 
+/*
+ * 
+ * @author Dennis Höting
+ */
 Date.prototype.dateBased = function() {
 	return this.getDate() + '.' + (this.getMonth() + 1) + '.' + this.getFullYear();
 };
 
+/*
+ * 
+ * @author Dennis Höting
+ */
 Date.prototype.minuteBased = function() {
 	return this.getDate() + '.' + (this.getMonth() + 1) + '.' + this.getFullYear() + ' ' + ((this.getHours() <= 9) ? ('0' + this.getHours()) : this.getHours()) + ':'
 			+ ((this.getMinutes() <= 9) ? ('0' + this.getMinutes()) : this.getMinutes());
 };
 
+/*
+ * 
+ * @author Dennis Höting
+ */
 Date.prototype.secondBased = function() {
 	return this.getDate() + '.' + (this.getMonth() + 1) + '.' + this.getFullYear() + ' ' + this.getHours() + ':' + this.getMinutes() + ':' + this.getSeconds();
 };

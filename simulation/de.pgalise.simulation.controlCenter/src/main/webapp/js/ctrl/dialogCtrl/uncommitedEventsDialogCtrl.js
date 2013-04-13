@@ -9,6 +9,7 @@
  * @param $scope the scope
  * @param PopupService Injected service for pop-up management
  * @param MessageIDService Injected service for the message IDs
+ * @author Dennis Höting
  */
 function UncommitedEventsDialogCtrl($scope, MessageIDService, PopupService) {
 	var _this = this;

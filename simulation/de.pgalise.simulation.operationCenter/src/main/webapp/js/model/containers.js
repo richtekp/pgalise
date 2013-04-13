@@ -3,6 +3,7 @@
  * 
  * Classes for sensor containers.
  * Sensor containers contain sensors.
+ * @author Dennis Höting
  */
 (function(model) {
 	/*

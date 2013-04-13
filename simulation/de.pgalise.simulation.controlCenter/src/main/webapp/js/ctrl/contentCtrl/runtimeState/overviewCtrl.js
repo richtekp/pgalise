@@ -7,6 +7,7 @@
  * messages to the operation center during runtime
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function OverviewCtrl($scope) {
 	var _this = this;

@@ -7,6 +7,7 @@
  * which can be set for the city.
  * 
  * @param $scope the scope
+ * @author Dennis Höting
  */
 function CityCtrl($scope) {
 	var _this = this;

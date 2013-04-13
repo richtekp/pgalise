@@ -1,10 +1,12 @@
 /*
  * Console service module
+ * @author Dennis Höting
  */
 var consoleServices = angular.module('consoleServices', []);
 
 /*
  * Simple implementation
+ * @author Dennis Höting
  */
 consoleServices.factory('SimpleConsoleService', function() {
 	// listeners
