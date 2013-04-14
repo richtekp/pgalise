@@ -13,7 +13,7 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 * Install the project
 * Download and install [Odysseus](http://odysseus.informatik.uni-oldenburg.de:8090/display/ODYSSEUS/Odysseus+Home)
 * [Configure Odysseus](https://github.com/luxmeter/pgalise/wiki/Configure-Odysseus)
-* Download our [Derby-DB Database Dump](http://uploaded.net/file/w9l8o1fy)
+* Download our [Derby-DB Database Dump](http://www.pg-alise.com/openRes/derby_database.tar.gz)
 * Extract the downloaded archive in a directory of your choice
 * Run the start script with `./startderby.sh`
 * Download [TomEE Web Profile v1.5.0](http://archive.apache.org/dist/openejb/openejb-4.5.0/apache-tomee-1.5.0-webprofile.tar.gz)
