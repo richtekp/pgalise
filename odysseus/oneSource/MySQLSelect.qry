@@ -1,0 +1,6 @@
+///OdysseusScript
+#PARSER CQL
+#TRANSCFG Standard
+///This operator streams the input stream to the database sink operator
+#RUNQUERY
+Stream to dbSink select * from AliseSource;

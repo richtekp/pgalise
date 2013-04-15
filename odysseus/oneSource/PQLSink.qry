@@ -1,0 +1,12 @@
+///OdysseusScript
+#PARSER PQL
+#TRANSCFG Standard
+/// These operators create sinks for each data stream on a specific port.
+#RUNQUERY
+OutputNormalSink = SENDER({sink= 'Sink', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','port']]}, NewNormalOutput)
+#RUNQUERY
+OutputGPSSink = SENDER({sink= 'Sink1', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','port']]}, OutputGPS)
+#RUNQUERY
+OutputTopoSink = SENDER({sink= 'Sink2', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','port']]}, OutputTopo)
+#RUNQUERY
+OutputTlightSink = SENDER({sink= 'Sink3', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','port']]}, OutputTlight)

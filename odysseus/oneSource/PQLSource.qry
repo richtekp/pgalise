@@ -1,0 +1,22 @@
+///OdysseusScript
+#PARSER PQL
+#TRANSCFG Standard
+
+///This operator defines the tcp source for the sensor data streams. It uses
+/// MarkerBytes at the beginning and at the end (-1). This source is listening on his port
+/// for tuple to come in.
+#QUERY
+AliseSource := ACCESS({source='AliseSource', wrapper='GenericPush',
+transport='TCPServer', protocol='MarkerByteBuffer', dataHandler='Tuple',
+ options=[['host', 'localhost'],['port','port'],['start','-1'],['end','-1'], ['ByteOrder','BIG_ENDIAN']],
+schema=[
+ ['timestamp', 'LONG'],
+ ['id','INTEGER'],
+ ['sensorTypeId','byte'], 
+ ['measureValue1','DOUBLE'],
+ ['measureValue2','DOUBLE'],
+ ['axleCount','byte'], 
+ ['length','short'], 
+ ['axialDistance1','short'], 
+ ['axialDistance2','short'] 
+ ]})

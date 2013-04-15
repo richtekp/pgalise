@@ -1,0 +1,7 @@
+///OdysseusScript
+#PARSER PQL
+#TRANSCFG Standard
+///This operator checks the measureValue1 of each sensor with ids unique id and filters out
+///duplicate data or tuple.
+#QUERY
+NewNormalOutput := changedetect({attr = ['measureValue1'], deliverFirstElement = ['true'], group_by = ['id']}, OutputNormal)

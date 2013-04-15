@@ -1,0 +1,8 @@
+///OdysseusScript
+#PARSER CQL
+#TRANSCFG Standard
+///This operator creates the connection to the database and the associated database sink.
+#QUERY
+CREATE DATABASE CONNECTION connection AS mysql TO odysseus AT adresss : port WITH USER user PASSWORD password
+#QUERY
+CREATE SINK dbSink AS DATABASE database TABLE table

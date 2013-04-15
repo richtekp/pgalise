@@ -1,0 +1,14 @@
+///OdysseusScript
+#PARSER CQL
+#TRANSCFG Standard
+
+///These select operations split the data stream into four data streams depending
+/// on the specific sensor type.
+#ADDQUERY 
+create view OutputNormal from ( Select timestamp, id, sensorTypeId, measureValue1 from AliseSource where sensorTypeId <> 2 AND sensorTypeId <> 3 AND sensorTypeId <> 4 AND sensorTypeId <> 18 AND sensorTypeId <> 19 AND sensorTypeId <> 20 AND sensorTypeId <> 14 );
+#ADDQUERY 
+create view OutputGPS from (select timestamp, id, sensorTypeId, measureValue1, measureValue2 from AliseSource where sensorTypeId = 2 or sensorTypeId = 3 or sensorTypeId = 4 or sensorTypeId = 19 or sensorTypeId = 20);
+#ADDQUERY
+create view OutputTopo from (select timestamp, id, sensorTypeId, axleCount, length, axialDistance1, axialDistance2 from AliseSource where sensorTypeId = 18);
+#ADDQUERY 
+create view OutputTlight from (select timestamp, id, sensorTypeId, measureValue1, measureValue2, axleCount  from AliseSource where sensorTypeId = 14);
