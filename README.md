@@ -33,6 +33,7 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 * (R3) Parser of the public transportation issues (BusStop, GTFS) should retrieve its database connection through the EJB container
 * (R4) HQF-Components in the OperationCenter should use JPA to handle database access
 * (R5) Change the implementation of the Dashboard function (replace Cognos)
+* (R6) Add the server address and the specfic ports of the Odysseus server in 'porperties.props' in 'de.pgalise.simulation.operationCenter'
 
 ## Known Issues
 * Several integration tests fail or are ignored due to the anonymisation of ip addresses
