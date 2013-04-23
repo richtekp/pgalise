@@ -31,7 +31,8 @@ public class Main {
 		
 		run(10);
 		
-		closeOutputServer(outputServer); System.exit(0); 
+		closeOutputServer(outputServer);
+		System.exit(0); 
 		
 	}
 	

@@ -8,7 +8,7 @@
 #QUERY
 AliseSource := ACCESS({source='AliseSource', wrapper='GenericPush',
 transport='TCPServer', protocol='MarkerByteBuffer', dataHandler='Tuple',
- options=[['host', 'localhost'],['port','port'],['start','-1'],['end','-1'], ['ByteOrder','BIG_ENDIAN']],
+ options=[['host', 'localhost'],['port','6666'],['start','-1'],['end','-1'], ['ByteOrder','BIG_ENDIAN']],
 schema=[
  ['timestamp', 'LONG'],
  ['id','INTEGER'],

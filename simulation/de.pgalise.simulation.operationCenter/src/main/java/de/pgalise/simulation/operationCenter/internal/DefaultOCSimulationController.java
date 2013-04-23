@@ -344,8 +344,8 @@ public class DefaultOCSimulationController extends AbstractController implements
 						Integer.valueOf(this.properties.getProperty("InfoSpherePortTopoRadarSensor")),
 					this.properties.getProperty("InfoSphereIPTrafficLightSensors"),
 						Integer.valueOf(this.properties.getProperty("InfoSpherePortTrafficLightSensor")));
-			this.ocHqfDataStreamController.listenStream(this.properties.getProperty("InfoSphereIPStaticSensors"), 
-					Integer.valueOf(this.properties.getProperty("InfoSpherePortHQFData")));
+					this.ocHqfDataStreamController.listenStream(this.properties.getProperty("InfoSphereIPStaticSensors"), 
+						Integer.valueOf(this.properties.getProperty("InfoSpherePortHQFData")));
 		} catch (IOException e) {
 			log.error("Exception", e);
 			try {

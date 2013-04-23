@@ -24,7 +24,7 @@ import de.pgalise.simulation.operationCenter.internal.OCSensorStreamController;
 import de.pgalise.simulation.operationCenter.internal.OCSimulationController;
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketService;
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketServlet;
-import de.pgalise.simulation.operationCenter.internal.hqf.DefaultHQFStreamController;
+import de.pgalise.simulation.operationCenter.internal.hqf.NoOCHQFDataStreamController;
 import de.pgalise.simulation.operationCenter.internal.hqf.OCHQFDataStreamController;
 /**
  * Contains all bindings for the Operation Center
@@ -39,8 +39,8 @@ public class OCModule extends AbstractModule {
 		bind(OCSensorStreamController.class).to(DefaultOCSensorStreamController.class);
 		bind(OCSimulationController.class).to(DefaultOCSimulationController.class);
 		bind(SendSensorDataStrategy.class).to(DefaultSendSensorDataStrategy.class);
-//		bind(OCHQFDataStreamController.class).to(NoOCHQFDataStreamController.class);
-		bind(OCHQFDataStreamController.class).to(DefaultHQFStreamController.class);
+		bind(OCHQFDataStreamController.class).to(NoOCHQFDataStreamController.class);
+//		bind(OCHQFDataStreamController.class).to(DefaultHQFStreamController.class);
 		bind(GPSGateStrategy.class).to(DefaultGPSGateStrategy.class);
 //		bind(GPSGateStrategy.class).to(DefaultGPSGateStrategy.class);
 	}

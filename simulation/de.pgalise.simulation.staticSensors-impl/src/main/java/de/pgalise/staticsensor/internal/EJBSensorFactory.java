@@ -97,9 +97,13 @@ public class EJBSensorFactory implements SensorFactory {
 			try {
 				sensorOutput = (Output) Class.forName(outputDecorator).getConstructor(Output.class)
 						.newInstance(sensorOutput);
+				log.info("Using output decorator: "+outputDecorator);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
+		}
+		else {
+			log.info("Using output decorator: default (none)");
 		}
 
 		factory = new DefaultSensorFactory(dic.getRandomSeedService(), dic.getController(WeatherController.class),
