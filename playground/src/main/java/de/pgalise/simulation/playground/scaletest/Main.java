@@ -22,7 +22,7 @@ import de.pgalise.simulation.sensorFramework.NullOutputServer;
 import de.pgalise.simulation.sensorFramework.Server;
 
 /**
- * @author marcus
+ * @author mustafa
  *
  */
 public class Main {	
