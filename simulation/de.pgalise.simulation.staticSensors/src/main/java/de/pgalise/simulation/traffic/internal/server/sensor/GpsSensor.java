@@ -150,10 +150,13 @@ public final class GpsSensor extends Sensor {
 					break;
 				case CAR:
 					this.setSensorType(SensorType.GPS_CAR);
+					break;
 				case BUS:
 					this.setSensorType(SensorType.GPS_BUS);
+					break;
 				case MOTORCYCLE:
 					this.setSensorType(SensorType.GPS_MOTORCYCLE);
+					break;
 				case BIKE:
 					this.setSensorType(SensorType.GPS_BIKE);
 				default:
