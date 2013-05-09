@@ -1,0 +1,5 @@
+///OdysseusScript
+#PARSER CQL
+#TRANSCFG Standard
+#QUERY
+SELECT * FROM SourceAlice;

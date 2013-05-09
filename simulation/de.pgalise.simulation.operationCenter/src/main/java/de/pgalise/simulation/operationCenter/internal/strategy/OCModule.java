@@ -41,7 +41,7 @@ public class OCModule extends AbstractModule {
 		bind(SendSensorDataStrategy.class).to(DefaultSendSensorDataStrategy.class);
 		bind(OCHQFDataStreamController.class).to(NoOCHQFDataStreamController.class);
 //		bind(OCHQFDataStreamController.class).to(DefaultHQFStreamController.class);
-		bind(GPSGateStrategy.class).to(DefaultGPSGateStrategy.class);
-//		bind(GPSGateStrategy.class).to(DefaultGPSGateStrategy.class);
+//		bind(GPSGateStrategy.class).to(DefaultGPSGateStrategy.class); // für Infosphere
+		bind(GPSGateStrategy.class).to(NoGPSGateStrategy.class); // für Odysseus 
 	}
 }

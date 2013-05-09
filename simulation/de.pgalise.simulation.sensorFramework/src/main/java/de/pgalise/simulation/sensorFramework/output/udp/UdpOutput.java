@@ -212,4 +212,9 @@ public final class UdpOutput implements Output {
 	Semaphore getSemaphore() {
 		return semaphore;
 	}
+
+	@Override
+	public void transmitByteArray(byte[] value) throws IllegalStateException {
+		this.getCurrentState().transmitByteArray(value);
+	}
 }

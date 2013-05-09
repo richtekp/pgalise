@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.sensorFramework.output.decorator;
 
+import java.nio.ByteBuffer;
+
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.OutputDecorator;
 import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
@@ -25,13 +27,13 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * @author marcus
  *
  */
-public final class OdysseusOutput extends OutputDecorator {
+public final class Odysseus2Output extends OutputDecorator {
 
 	/**
 	 * Constructor
 	 * @param sensorOutput the {@link Output} to decorate
 	 */
-	public OdysseusOutput(final Output sensorOutput) {
+	public Odysseus2Output(final Output sensorOutput) {
 		super(sensorOutput);
 	}
 
@@ -39,14 +41,17 @@ public final class OdysseusOutput extends OutputDecorator {
 	public void beginTransmit() {
 		this.getOutput().beginTransmit();
 		
-		//transmit a start bit at the beginning of tuple transmission
-		this.transmitByte((byte)-1);
+		int inputSize = Long.SIZE+Integer.SIZE+Byte.SIZE
+				+Double.SIZE+Double.SIZE+Byte.SIZE
+				+Short.SIZE+Short.SIZE+Short.SIZE;
+		
+		//transmit an input size at the beginning of tuple transmission
+		byte[] bytes = ByteBuffer.allocate(4).putInt(inputSize).array();
+		this.transmitByteArray(bytes);
 	}
 
 	@Override
 	public void endTransmit() {
-		//transmit a stop bit at the end of tuple transmission
-		this.transmitByte((byte)-1);
 		this.getOutput().endTransmit();
 	}
 

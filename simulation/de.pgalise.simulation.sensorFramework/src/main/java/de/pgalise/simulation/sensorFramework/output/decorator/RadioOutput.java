@@ -134,4 +134,9 @@ public final class RadioOutput extends OutputDecorator{
 		
 	}
 
+	@Override
+	public void transmitByteArray(byte[] value) throws IllegalStateException {
+		this.getOutput().transmitByteArray(value);
+	}
+
 }

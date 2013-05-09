@@ -165,5 +165,7 @@ abstract class TcpIpOutputState {
 	 *            any boolean value
 	 */
 	abstract void transmitBoolean(boolean value) throws IllegalStateException;
+	
+	abstract void transmitByteArray(byte[] value) throws IllegalStateException;
 
 }

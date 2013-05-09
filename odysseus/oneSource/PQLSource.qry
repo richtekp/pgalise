@@ -6,9 +6,9 @@
 /// MarkerBytes at the beginning and at the end (-1). This source is listening on his port
 /// for tuple to come in.
 #QUERY
-AliseSource := ACCESS({source='AliseSource', wrapper='GenericPush',
-transport='TCPServer', protocol='MarkerByteBuffer', dataHandler='Tuple',
- options=[['host', 'localhost'],['port','6666'],['start','-1'],['end','-1'], ['ByteOrder','BIG_ENDIAN']],
+SourceAlice := ACCESS({source='AliceSource', wrapper='GenericPush',
+transport='TCPServer', protocol='SizeByteBuffer', dataHandler='Tuple',
+ options=[['host', 'localhost'],['port','6666'], ['ByteOrder','BIG_ENDIAN']],
 schema=[
  ['timestamp', 'LONG'],
  ['id','INTEGER'],
