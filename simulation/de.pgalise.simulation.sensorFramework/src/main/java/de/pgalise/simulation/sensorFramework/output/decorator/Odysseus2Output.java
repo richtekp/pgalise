@@ -41,9 +41,9 @@ public final class Odysseus2Output extends OutputDecorator {
 	public void beginTransmit() {
 		this.getOutput().beginTransmit();
 		
-		int inputSize = Long.SIZE+Integer.SIZE+Byte.SIZE
+		int inputSize = (Long.SIZE+Integer.SIZE+Byte.SIZE
 				+Double.SIZE+Double.SIZE+Byte.SIZE
-				+Short.SIZE+Short.SIZE+Short.SIZE;
+				+Short.SIZE+Short.SIZE+Short.SIZE)/8;
 		
 		//transmit an input size at the beginning of tuple transmission
 		byte[] bytes = ByteBuffer.allocate(4).putInt(inputSize).array();

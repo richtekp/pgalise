@@ -1,0 +1,49 @@
+/// OdysseusScript
+#PARSER PQL
+#TRANSCFG Standard
+/// Source Definition
+#RUNQUERY
+AliceSource = ACCESS({source='SourceAlice', wrapper='GenericPush',
+transport='TCPServer', protocol='SizeByteBuffer', dataHandler='Tuple',
+ options=[['host', 'localhost'],['port','6666'], ['ByteOrder','BIG_ENDIAN']],
+schema=[
+ ['timestamp', 'LONG'],
+ ['id','INTEGER'],
+ ['sensorTypeId','byte'], 
+ ['measureValue1','DOUBLE'],
+ ['measureValue2','DOUBLE'],
+ ['axleCount','byte'], 
+ ['length','short'], 
+ ['axialDistance1','short'], 
+ ['axialDistance2','short'] 
+ ]})
+
+#PARSER CQL
+#TRANSCFG Standard
+/// These select operations split the data stream into four data streams depending
+/// on the specific sensor type.
+#ADDQUERY 
+create view OutputNormal from ( Select timestamp, id, sensorTypeId, measureValue1 from SourceAlice where sensorTypeId <> 2 AND sensorTypeId <> 3 AND sensorTypeId <> 4 AND sensorTypeId <> 18 AND sensorTypeId <> 19 AND sensorTypeId <> 20 AND sensorTypeId <> 14 );
+#ADDQUERY 
+create view OutputGPS from (select timestamp, id, sensorTypeId, measureValue1, measureValue2 from SourceAlice where sensorTypeId = 2 or sensorTypeId = 3 or sensorTypeId = 4 or sensorTypeId = 19 or sensorTypeId = 20);
+#ADDQUERY
+create view OutputTopo from (select timestamp, id, sensorTypeId, axleCount, length, axialDistance1, axialDistance2 from SourceAlice where sensorTypeId = 18);
+#ADDQUERY 
+create view OutputTlight from (select timestamp, id, sensorTypeId, measureValue1, measureValue2, axleCount  from SourceAlice where sensorTypeId = 14);
+
+
+#PARSER PQL
+#TRANSCFG Standard
+/// This operator checks the measureValue1 of each sensor with ids unique id and filters out
+/// duplicate data or tuple.
+#QUERY
+NewNormalOutput := changedetect({attr = ['measureValue1'], deliverFirstElement = ['true'], group_by = ['id']}, OutputNormal)
+
+#RUNQUERY
+OutputNormalSink = SENDER({sink= 'Sink', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','6000']]}, NewNormalOutput)
+#RUNQUERY
+OutputGPSSink = SENDER({sink= 'Sink1', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','6001']]}, OutputGPS)
+#RUNQUERY
+OutputTopoSink = SENDER({sink= 'Sink2', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','6002']]}, OutputTopo)
+#RUNQUERY
+OutputTlightSink = SENDER({sink= 'Sink3', wrapper='GenericPush', transport='TCPServer', protocol='SizeByteBuffer',dataHandler='Tuple', options=[['host', 'localhost'],['port','6003']]}, OutputTlight)
