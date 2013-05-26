@@ -4,6 +4,8 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 
 [Visit our website](http://pg-alise.com) to gain more information and full documentation!
 
+![ScreenShot](http://pg-alise.com/openRes/screenshot.png)
+
 ## Install
 * Install first [Apache Maven](http://maven.apache.org/)
 * Checkout the source: `git://github.com/luxmeter/pgalise.git`
