@@ -130,4 +130,6 @@ public interface Output {
 	 *             if output is not in \"Transmitting\" state
 	 */
 	void transmitString(final String value) throws IllegalArgumentException, IllegalStateException;
+	
+	void transmitByteArray(final byte[] value) throws IllegalStateException;
 }

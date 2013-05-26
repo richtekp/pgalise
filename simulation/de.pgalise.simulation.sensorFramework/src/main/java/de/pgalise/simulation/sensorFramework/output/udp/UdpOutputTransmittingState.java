@@ -132,4 +132,9 @@ final class UdpOutputTransmittingState extends UdpOutputState {
 		this.getOutput().setCurrentBufSize(this.getOutput().getCurrentBufSize() + buf.length);
 	}
 
+	@Override
+	void transmitByteArray(byte[] value) throws IllegalStateException {
+		throw new RuntimeException("Not implemented...");
+	}
+
 }

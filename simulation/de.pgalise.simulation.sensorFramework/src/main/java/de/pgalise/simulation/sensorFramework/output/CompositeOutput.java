@@ -273,4 +273,11 @@ public final class CompositeOutput implements Output {
 		}
 		return first;
 	}
+
+	@Override
+	public void transmitByteArray(byte[] value) throws IllegalStateException {
+		for(final Output sensorOutput : this.sensorOutputs) {
+			sensorOutput.transmitByteArray(value);
+		}
+	}
 }

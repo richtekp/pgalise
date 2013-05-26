@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -99,7 +100,7 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 	private class ListenStaticSensorStreamThread extends Thread {
 
 		private Socket socket;
-		private BufferedReader in;
+		private BufferedInputStream in;
 
 		/**
 		 * Constructor
@@ -111,14 +112,14 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 		private ListenStaticSensorStreamThread(Socket socket) throws IOException {
 			super();
 			this.socket = socket;
-			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+			this.in = new BufferedInputStream(socket.getInputStream());
 			this.socket.setKeepAlive(true);
 		}
 
 		@SuppressWarnings("deprecation")
 		@Override
 		public void run() {
-			CSVParse parser = new CSVParser(in);
+			InputStreamDecoder parser = new InputStreamDecoder(in);
 			try {
 				for (String[] text = parser.getLine(); text != null; text = parser.getLine()) {
 					try {
@@ -161,7 +162,7 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 	private class ListenDynamicSensorStreamThread extends Thread {
 
 		private Socket socket;
-		private BufferedReader in;
+		private BufferedInputStream in;
 
 		/**
 		 * Constructor
@@ -174,14 +175,14 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 			super();
 			this.socket = socket;
 			this.socket.setKeepAlive(true);
-			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+			this.in = new BufferedInputStream(socket.getInputStream());
 			log.debug("ListenDynamicSensorStreamThread created.");
 		}
 
 		@SuppressWarnings("deprecation")
 		@Override
 		public void run() {
-			CSVParse parser = new CSVParser(in);
+			InputStreamDecoder parser = new InputStreamDecoder(in);
 			try {
 				for (String[] text = parser.getLine(); text != null; text = parser.getLine()) {
 					try {
@@ -191,17 +192,19 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 						 * speedInKmh, (8) byte AvgSpeedInKmh, (9) short directionInGrad, (10) long travelTimeInMs.
 						 */
 						SensorData sensorData = null;
-						long traffelTimeInMS = 0;
-						try {
-							traffelTimeInMS = Long.valueOf(text[10]);
-						} catch (NumberFormatException e) {
-							log.debug("Exception", e);
-						}
+//						long traffelTimeInMS = 0;
+//						try {
+//							traffelTimeInMS = Long.valueOf(text[10]);
+//						} catch (NumberFormatException e) {
+//							log.debug("Exception", e);
+//						}
 						long currentTimestamp = Long.valueOf(text[0]);
 						sensorData = new GPSSensorData(Integer.valueOf(text[2]), Integer.valueOf(text[1]),
-								Double.valueOf(text[3]), Double.valueOf(text[4]), Double.valueOf(text[5]),
-								Integer.valueOf(text[6]), Integer.valueOf(text[7]), Integer.valueOf(text[8]),
-								Integer.valueOf(text[9]), traffelTimeInMS);
+								Double.valueOf(text[3]), Double.valueOf(text[4]),
+								0d, 0, 0, 0, 0, 0l);
+//								Double.valueOf(text[5]), Integer.valueOf(text[6]),
+//								Integer.valueOf(text[7]), Integer.valueOf(text[8]), 
+//								Integer.valueOf(text[9]), traffelTimeInMS);
 						log.debug(new Date(currentTimestamp) + " SensorId: " + sensorData.getId() + " Sensortype: "
 								+ sensorData.getType());
 
@@ -237,7 +240,7 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 	private class ListenTopoRadarSensorStreamThread extends Thread {
 
 		private Socket socket;
-		private BufferedReader in;
+		private BufferedInputStream in;
 
 		/**
 		 * Constructor
@@ -250,14 +253,14 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 			super();
 			this.socket = socket;
 			this.socket.setKeepAlive(true);
-			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+			this.in = new BufferedInputStream(socket.getInputStream());
 			log.debug("ListenDynamicSensorStreamThread created.");
 		}
 
 		@SuppressWarnings("deprecation")
 		@Override
 		public void run() {
-			CSVParse parser = new CSVParser(in);
+			InputStreamDecoder parser = new InputStreamDecoder(in);
 			try {
 				for (String[] text = parser.getLine(); text != null; text = parser.getLine()) {
 					try {
@@ -302,7 +305,7 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 	private class ListenTrafficLightSensorStreamThread extends Thread {
 
 		private Socket socket;
-		private BufferedReader in;
+		private BufferedInputStream in;
 
 		/**
 		 * Constructor
@@ -315,14 +318,14 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 			super();
 			this.socket = socket;
 			this.socket.setKeepAlive(true);
-			this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			this.in = new BufferedInputStream(socket.getInputStream());
 			log.debug("ListenDynamicSensorStreamThread created.");
 		}
 
 		@SuppressWarnings("deprecation")
 		@Override
 		public void run() {
-			CSVParse parser = new CSVParser(in);
+			InputStreamDecoder parser = new InputStreamDecoder(in);
 			try {
 				for (String[] text = parser.getLine(); text != null; text = parser.getLine()) {
 					try {

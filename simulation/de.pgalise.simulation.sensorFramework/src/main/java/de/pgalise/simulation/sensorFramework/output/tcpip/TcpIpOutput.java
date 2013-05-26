@@ -406,4 +406,9 @@ public class TcpIpOutput implements Output {
 	void setDataOutputStream(final DataOutputStream dataOutputStream) {
 		this.dataOutputStream = dataOutputStream;
 	}
+
+	@Override
+	public void transmitByteArray(byte[] value) throws IllegalStateException {
+		this.getCurrentState().transmitByteArray(value);
+	}
 }

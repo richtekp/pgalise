@@ -215,4 +215,13 @@ final class TcpIpOutputTransmittingState extends TcpIpOutputState {
 			throw new RuntimeException(ex);
 		}
 	}
+
+	@Override
+	void transmitByteArray(byte[] value) throws IllegalStateException {
+		try {
+			this.getOutput().getSocketOutputStream().write(value);
+		} catch(final Exception ex) {
+			throw new RuntimeException(ex);
+		}
+	}
 }

@@ -182,4 +182,9 @@ final class TcpIpOutputReadyState extends TcpIpOutputState {
 	void transmitBoolean(final boolean value) throws IllegalStateException {
 		throw new IllegalStateException("Output must be in \"Transmitting\" state in order to transmit something.");
 	}
+
+	@Override
+	void transmitByteArray(byte[] value) throws IllegalStateException {
+		throw new IllegalStateException("Output must be in \"Transmitting\" state in order to transmit something.");
+	}
 }

@@ -95,4 +95,9 @@ public final class OdysseusOutput extends OutputDecorator {
 			IllegalStateException {
 		this.getOutput().transmitString(value);
 	}
+
+	@Override
+	public void transmitByteArray(byte[] value) throws IllegalStateException {
+		this.getOutput().transmitByteArray(value);
+	}
 }

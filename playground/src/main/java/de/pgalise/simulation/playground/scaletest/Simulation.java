@@ -88,7 +88,7 @@ public class Simulation {
 	/**
 	 * Use a mock for the operation center. Useful if you don't want to deploy it.
 	 */
-	private static final boolean USE_OC_MOCK = false;
+	private static final boolean USE_OC_MOCK = true;
 
 	/* Settings: */
 	private static final Logger log = LoggerFactory.getLogger(Simulation.class);
@@ -111,7 +111,7 @@ public class Simulation {
 	/**
 	 * The simulation will wait for time after every step.
 	 */
-	private static final int SIMULATION_CLOCKTIME_INTERVAL_IN_MILLIES = 0;
+	private static final int SIMULATION_CLOCKTIME_INTERVAL_IN_MILLIES = 300;
 
 	/**
 	 * URL for the operation controller servlet:

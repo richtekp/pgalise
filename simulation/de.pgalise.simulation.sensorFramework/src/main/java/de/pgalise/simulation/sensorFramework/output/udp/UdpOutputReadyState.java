@@ -101,4 +101,9 @@ final class UdpOutputReadyState extends UdpOutputState {
 		throw new IllegalStateException("Output must be in \"Transmitting\" state in order to end transmission process.");
 	}
 
+	@Override
+	void transmitByteArray(byte[] value) throws IllegalStateException {
+		throw new IllegalStateException("Output must be in \"Transmitting\" state in order to end transmission process.");
+	}
+
 }
