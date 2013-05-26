@@ -11,7 +11,7 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
    
 ## Getting Started
 * Install the project
-* Download and install [Odysseus](http://odysseus.informatik.uni-oldenburg.de:8090/display/ODYSSEUS/Odysseus+Home)
+* Download and install [Odysseus](http://odysseus.offis.uni-oldenburg.de/download/studio/nightlybuild/memorystore/)
 * [Configure Odysseus](https://github.com/luxmeter/pgalise/wiki/Configure-Odysseus)
 * Download our [Derby-DB Database Dump](http://www.pg-alise.com/openRes/derby_database.tar.gz)
 * Extract the downloaded archive in a directory of your choice
@@ -36,7 +36,6 @@ In a nutshell this project is the outcome of a student group from the Carl v. Os
 
 ## Known Issues
 * Several integration tests fail or are ignored due to the anonymisation of ip addresses
-* Control- and OperationCenter won't work till R1 is fixed
 * Dashboard in the OperationCenter won't work because Cognos is not available anymore
 
 ## Work Arounds

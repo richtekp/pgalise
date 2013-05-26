@@ -84,11 +84,11 @@ public class Simulation {
 	/**
 	 * When set to true the tomee container will run in embedded mode. Service will not be distributed then.
 	 */
-	private static final boolean RUN_EMBEDDED = true;
+	private static final boolean RUN_EMBEDDED = false;
 	/**
 	 * Use a mock for the operation center. Useful if you don't want to deploy it.
 	 */
-	private static final boolean USE_OC_MOCK = false;
+	private static final boolean USE_OC_MOCK = true;
 
 	/* Settings: */
 	private static final Logger log = LoggerFactory.getLogger(Simulation.class);

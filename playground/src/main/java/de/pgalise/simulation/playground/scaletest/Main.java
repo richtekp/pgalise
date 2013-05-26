@@ -27,11 +27,11 @@ import de.pgalise.simulation.sensorFramework.Server;
  */
 public class Main {	
 	public static void main(String args[]) throws IOException {	
-//		Server outputServer[] = startOutputServer(new int[]{6666});
+		Server outputServer[] = startOutputServer(new int[]{6666});
 		
 		run(10);
 		
-//		closeOutputServer(outputServer);
+		closeOutputServer(outputServer);
 		System.exit(0); 
 		
 	}

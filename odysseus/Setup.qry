@@ -2,7 +2,7 @@
 #PARSER PQL
 #TRANSCFG Standard
 /// Source Definition
-#RUNQUERY
+#QUERY
 AliceSource = ACCESS({source='SourceAlice', wrapper='GenericPush',
 transport='TCPServer', protocol='SizeByteBuffer', dataHandler='Tuple',
  options=[['host', 'localhost'],['port','6666'], ['ByteOrder','BIG_ENDIAN']],
