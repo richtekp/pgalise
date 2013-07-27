@@ -100,12 +100,12 @@ public class VisualizationTest {
 	/**
 	 * Update interval of the simulation
 	 */
-	private static final int SIMULATION_INTERVAL_IN_MILLIES = 1000;
+	private static final int SIMULATION_INTERVAL_IN_MILLIES = 60000;
 
 	/**
 	 * The simulation will wait for time after every step.
 	 */
-	private static final int SIMULATION_CLOCKTIME_INTERVAL_IN_MILLIES = 10000;
+	private static final int SIMULATION_CLOCKTIME_INTERVAL_IN_MILLIES = 1000;
 
 	/**
 	 * How many random cars:
@@ -281,7 +281,7 @@ public class VisualizationTest {
 		entities.add(new Entity(ServiceDictionary.STATIC_SENSOR_CONTROLLER));
 		entities.add(new Entity(ServiceDictionary.TRAFFIC_CONTROLLER));
 		entities.add(new Entity(ServiceDictionary.TRAFFIC_SERVER));
-		conf.getConfiguration().put("127.0.0.1:8081", entities);
+		conf.getConfiguration().put("127.0.0.1:8080", entities);
 
 		return conf;
 	}
