@@ -23,7 +23,7 @@ import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Sensor for the traffic lights

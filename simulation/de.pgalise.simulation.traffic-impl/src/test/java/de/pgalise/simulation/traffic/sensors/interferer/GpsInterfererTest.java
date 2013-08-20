@@ -43,7 +43,7 @@ import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsWh
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the all GPSInterferer
@@ -95,7 +95,7 @@ public class GpsInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = Vector2d.valueOf(1.0, 10.0);
+		testPosition = new Vector2d(1.0, 10.0);
 
 		/*
 		 * Mock of the Weather Controller
@@ -118,11 +118,11 @@ public class GpsInterfererTest {
 		 */
 		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
 
-		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
-		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
+		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
+		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
 
-		assertTrue(testPosition.getX() != result.getX());
-		assertTrue(testPosition.getY() != result.getY());
+		assertTrue(testPosition.x != result.x);
+		assertTrue(testPosition.y != result.y);
 	}
 
 	@Test
@@ -134,11 +134,11 @@ public class GpsInterfererTest {
 		 */
 		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
 
-		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
-		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
+		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
+		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
 
-		assertTrue(testPosition.getX() == result.getX());
-		assertTrue(testPosition.getY() == result.getY());
+		assertTrue(testPosition.x == result.x);
+		assertTrue(testPosition.y == result.y);
 	}
 
 	@Test
@@ -151,11 +151,11 @@ public class GpsInterfererTest {
 		 */
 		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
 
-		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
-		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
+		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
+		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
 
-		assertTrue(testPosition.getX() != result.getX());
-		assertTrue(testPosition.getY() != result.getY());
+		assertTrue(testPosition.x != result.x);
+		assertTrue(testPosition.y != result.y);
 	}
 
 	@Test
@@ -168,11 +168,11 @@ public class GpsInterfererTest {
 		 */
 		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
 
-		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
-		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
+		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
+		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
 
-		assertTrue(testPosition.getX() != result.getX());
-		assertTrue(testPosition.getY() != result.getY());
+		assertTrue(testPosition.x != result.x);
+		assertTrue(testPosition.y != result.y);
 	}
 
 	@Test
@@ -188,16 +188,16 @@ public class GpsInterfererTest {
 		for (int i = 0; i < 20; i++) {
 			result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
 
-			log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX() + " - Difference:"
-					+ (testPosition.getX() - result.getX()) + " - Changed Meters:"
-					+ (testPosition.getX() - result.getX()) * vectorUnit);
-			log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY() + " - Difference:"
-					+ (testPosition.getY() - result.getY()) + " - Changed Meters:"
-					+ (testPosition.getY() - result.getY()) * vectorUnit);
+			log.debug("Reference: " + testPosition.x + " - Changed: " + result.x + " - Difference:"
+					+ (testPosition.x - result.x) + " - Changed Meters:"
+					+ (testPosition.x - result.x) * vectorUnit);
+			log.debug("Reference: " + testPosition.y + " - Changed: " + result.y + " - Difference:"
+					+ (testPosition.y - result.y) + " - Changed Meters:"
+					+ (testPosition.y - result.y) * vectorUnit);
 		}
 
-		assertTrue(testPosition.getX() != result.getX());
-		assertTrue(testPosition.getY() != result.getY());
+		assertTrue(testPosition.x != result.x);
+		assertTrue(testPosition.y != result.y);
 	}
 
 	@Test
@@ -216,12 +216,12 @@ public class GpsInterfererTest {
 		 */
 		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
 
-		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX() + " - Difference:"
-				+ (testPosition.getX() - result.getX()));
-		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY() + " - Difference:"
-				+ (testPosition.getX() - result.getX()));
+		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x + " - Difference:"
+				+ (testPosition.x - result.x));
+		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y + " - Difference:"
+				+ (testPosition.x - result.x));
 
-		assertTrue(testPosition.getX() != result.getX());
-		assertTrue(testPosition.getY() != result.getY());
+		assertTrue(testPosition.x != result.x);
+		assertTrue(testPosition.y != result.y);
 	}
 }

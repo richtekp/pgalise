@@ -17,7 +17,7 @@
 package de.pgalise.simulation.service;
 
 import de.pgalise.simulation.shared.geolocation.GeoLocation;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * An vector based coordinate system is internal used by the simulation 

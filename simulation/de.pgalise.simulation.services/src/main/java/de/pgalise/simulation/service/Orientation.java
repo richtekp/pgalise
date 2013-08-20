@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.service;
 
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Enum of directions
@@ -35,21 +35,21 @@ public enum Orientation {
 	 */
 	public final static Orientation getOrientation(Vector2d direction) {
 		Orientation orientation;
-		if ((direction.getX() == 0) && (direction.getY() < 0)) {
+		if ((direction.x == 0) && (direction.y < 0)) {
 			orientation = Orientation.NORTH;
-		} else if ((direction.getX() > 0) && (direction.getY() < 0)) {
+		} else if ((direction.x > 0) && (direction.y < 0)) {
 			orientation = Orientation.NORTH_EAST;
-		} else if ((direction.getX() > 0) && (direction.getY() == 0)) {
+		} else if ((direction.x > 0) && (direction.y == 0)) {
 			orientation = Orientation.EAST;
-		} else if ((direction.getX() > 0) && (direction.getY() > 0)) {
+		} else if ((direction.x > 0) && (direction.y > 0)) {
 			orientation = Orientation.SOUTH_EAST;
-		} else if ((direction.getX() == 0) && (direction.getY() > 0)) {
+		} else if ((direction.x == 0) && (direction.y > 0)) {
 			orientation = Orientation.SOUTH;
-		} else if ((direction.getX() < 0) && (direction.getY() > 0)) {
+		} else if ((direction.x < 0) && (direction.y > 0)) {
 			orientation = Orientation.SOUTH_WEST;
-		} else if ((direction.getX() < 0) && (direction.getY() == 0)) {
+		} else if ((direction.x < 0) && (direction.y == 0)) {
 			orientation = Orientation.WEST;
-		} else if ((direction.getX() < 0) && (direction.getY() < 0)) {
+		} else if ((direction.x < 0) && (direction.y < 0)) {
 			orientation = Orientation.NORTH_WEST;
 		} else {
 			orientation = Orientation.ORIGIN;
@@ -70,24 +70,24 @@ public enum Orientation {
 	 */
 	public final static boolean isBeyond(Orientation orientation,
 			Vector2d position, Vector2d borderPosition) {
-		return (((orientation == Orientation.NORTH) && (position.getY() <= borderPosition
-				.getY()))
+		return (((orientation == Orientation.NORTH) && (position.y <= borderPosition
+				.y))
 				|| ((orientation == Orientation.NORTH_EAST)
-						&& (position.getX() >= borderPosition.getX()) && (position
-						.getY() <= borderPosition.getY()))
-				|| ((orientation == Orientation.EAST) && (position.getX() >= borderPosition
-						.getX()))
+						&& (position.x >= borderPosition.x) && (position
+						.y <= borderPosition.y))
+				|| ((orientation == Orientation.EAST) && (position.x >= borderPosition
+						.x))
 				|| ((orientation == Orientation.SOUTH_EAST)
-						&& (position.getX() >= borderPosition.getX()) && (position
-						.getY() >= borderPosition.getY()))
-				|| ((orientation == Orientation.SOUTH) && (position.getY() >= borderPosition
-						.getY()))
+						&& (position.x >= borderPosition.x) && (position
+						.y >= borderPosition.y))
+				|| ((orientation == Orientation.SOUTH) && (position.y >= borderPosition
+						.y))
 				|| ((orientation == Orientation.SOUTH_WEST)
-						&& (position.getX() <= borderPosition.getX()) && (position
-						.getY() >= borderPosition.getY()))
-				|| ((orientation == Orientation.WEST) && (position.getX() <= borderPosition
-						.getX())) || ((orientation == Orientation.NORTH_WEST)
-				&& (position.getX() <= borderPosition.getX()) && (position
-				.getY() <= borderPosition.getY())));
+						&& (position.x <= borderPosition.x) && (position
+						.y >= borderPosition.y))
+				|| ((orientation == Orientation.WEST) && (position.x <= borderPosition
+						.x)) || ((orientation == Orientation.NORTH_WEST)
+				&& (position.x <= borderPosition.x) && (position
+				.y <= borderPosition.y)));
 	}
 }

@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.internal.DefaultGPSMapper;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * @author Mustafa
@@ -51,13 +51,13 @@ public class PathTest {
 		// log.debug("velocity = " + velocity);
 		// log.debug("distance 2000m = " + distance);
 		Node a = graph.addNode("a");
-		a.addAttribute("position", Vector2d.valueOf(0, 0));
+		a.addAttribute("position", new Vector2d(0, 0));
 
 		Node b = graph.addNode("b");
-		b.addAttribute("position", Vector2d.valueOf(distance, 0));
+		b.addAttribute("position", new Vector2d(distance, 0));
 
 		Node c = graph.addNode("c");
-		c.addAttribute("position", Vector2d.valueOf(distance, distance));
+		c.addAttribute("position", new Vector2d(distance, distance));
 
 		Edge ab = graph.addEdge("ab", "a", "b");
 		ab.addAttribute("distance", distance);
@@ -73,7 +73,7 @@ public class PathTest {
 
 		Edge ac = graph.addEdge("ac", "a", "c");
 		Vector2d v = (Vector2d) a.getAttribute("position");
-		v = v.sub((Vector2d) c.getAttribute("position"));
+		v.sub((Vector2d) c.getAttribute("position"));
 		double length = v.length();
 
 		ac.addAttribute("distance", length);

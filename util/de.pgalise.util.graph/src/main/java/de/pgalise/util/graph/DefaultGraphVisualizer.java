@@ -43,7 +43,7 @@ import org.graphstream.graph.Node;
 import de.pgalise.simulation.shared.graphextension.DefaultGraphExtensions;
 import de.pgalise.simulation.shared.graphextension.GraphExtensions;
 import de.pgalise.util.generic.function.Function;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * @author Mustafa
@@ -102,11 +102,11 @@ public class DefaultGraphVisualizer extends JPanel implements GraphVisualizer, W
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		Vector2d v = Vector2d.valueOf(e.getX(), e.getY());
-		v = v.sub(srcClick);
-		this.translateX += v.getX();
-		this.translateY += v.getY();
-		srcClick = srcClick.add(v);
+		Vector2d v = new Vector2d(e.getX(), e.getY());
+		v.sub(srcClick);
+		this.translateX += v.x;
+		this.translateY += v.y;
+		srcClick.add(v);
 	}
 
 	@Override
@@ -129,26 +129,26 @@ public class DefaultGraphVisualizer extends JPanel implements GraphVisualizer, W
 		for (Iterator<Node> i = graph.getNodeSet().iterator(); i.hasNext();) {
 			Node node = i.next();
 			Vector2d vec = this.nodeExtensions.getPosition(node);
-			vec = Vector2d.valueOf((vec.getX() * transform.getScaleX() + transform.getTranslateX()), (vec.getY()
+			vec = new Vector2d((vec.x * transform.getScaleX() + transform.getTranslateX()), (vec.y
 					* transform.getScaleY() + transform.getTranslateY()));
-			// log.debug(String.format("Node %s pos: (%s, %s)", node.getId(), vec.getX(), vec.getY()));
-			Ellipse2D.Double circle = new Ellipse2D.Double(vec.getX() - 5, vec.getY() - 5, 10, 10);
+			// log.debug(String.format("Node %s pos: (%s, %s)", node.getId(), vec.x, vec.y));
+			Ellipse2D.Double circle = new Ellipse2D.Double(vec.x - 5, vec.y - 5, 10, 10);
 			g2d.fill(circle);
 
 			Font font = new Font("Arial", Font.PLAIN, 12);
 			g2d.setFont(font);
-			g2d.drawString(node.getId(), (int) (vec.getX() + 5), (int) (vec.getY() - 5));
+			g2d.drawString(node.getId(), (int) (vec.x + 5), (int) (vec.y - 5));
 		}
 
 		for (Iterator<Edge> i = graph.getEdgeSet().iterator(); i.hasNext();) {
 			Edge edge = i.next();
 			Vector2d a = this.nodeExtensions.getPosition(edge.getNode0());
-			a = Vector2d.valueOf(a.getX() * transform.getScaleX() + transform.getTranslateX(),
-					a.getY() * transform.getScaleY() + transform.getTranslateY());
+			a = new Vector2d(a.x * transform.getScaleX() + transform.getTranslateX(),
+					a.y * transform.getScaleY() + transform.getTranslateY());
 			Vector2d b = this.nodeExtensions.getPosition(edge.getNode1());
-			b = Vector2d.valueOf(b.getX() * transform.getScaleX() + transform.getTranslateX(),
-					b.getY() * transform.getScaleY() + transform.getTranslateY());
-			g2d.drawLine((int) a.getX(), (int) a.getY(), (int) b.getX(), (int) b.getY());
+			b = new Vector2d(b.x * transform.getScaleX() + transform.getTranslateX(),
+					b.y * transform.getScaleY() + transform.getTranslateY());
+			g2d.drawLine((int) a.x, (int) a.y, (int) b.x, (int) b.y);
 		}
 	}
 
@@ -241,8 +241,8 @@ public class DefaultGraphVisualizer extends JPanel implements GraphVisualizer, W
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// log.debug(String.format("Source: (%s, %s) ", e.getX(), e.getY()));
-		srcClick = Vector2d.valueOf(e.getX(), e.getY());
+		// log.debug(String.format("Source: (%s, %s) ", e.x, e.getY()));
+		srcClick = new Vector2d(e.getX(), e.getY());
 	}
 
 	@Override

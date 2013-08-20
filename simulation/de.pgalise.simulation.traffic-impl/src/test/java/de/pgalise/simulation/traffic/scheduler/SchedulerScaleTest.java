@@ -48,7 +48,7 @@ import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.Item;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler.Modus;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the implementations of the {@link Scheduler} against duration
@@ -156,7 +156,7 @@ public class SchedulerScaleTest {
 	 */
 	private static Node addNode(Graph graph, String id, double x, double y) {
 		Node node = graph.addNode(id);
-		node.setAttribute("position", Vector2d.valueOf(x, y));
+		node.setAttribute("position", new Vector2d(x, y));
 		return node;
 	}
 

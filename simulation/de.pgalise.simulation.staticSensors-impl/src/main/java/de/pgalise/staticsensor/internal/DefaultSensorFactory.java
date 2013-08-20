@@ -87,7 +87,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Default implementation of the SensorFactory.
@@ -152,7 +152,7 @@ public class DefaultSensorFactory implements SensorFactory {
 			// log.warn("Sensor not created, because the caller is not responsible for this type of sensors");
 			return null;
 		}
-		Vector2d position = Vector2d.valueOf(0, 0);
+		Vector2d position = new Vector2d(0, 0);
 		if (sensorHelper.getPosition() != null) {
 			position = this.mapper.convertToVector(sensorHelper.getPosition());
 		}

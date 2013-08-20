@@ -17,8 +17,8 @@
 package de.pgalise.simulation.shared.geometry;
 
 import java.io.Serializable;
+import javax.vecmath.Vector2d;
 
-import de.pgalise.util.vector.Vector2d;
 
 
 

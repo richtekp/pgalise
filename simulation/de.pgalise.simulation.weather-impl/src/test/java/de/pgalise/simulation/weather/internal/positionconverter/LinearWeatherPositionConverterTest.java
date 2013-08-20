@@ -28,7 +28,7 @@ import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.util.DateConverter;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the linear weather grid converter
@@ -63,7 +63,7 @@ public class LinearWeatherPositionConverterTest {
 		 * Test preparations
 		 */
 		Timestamp testTime = DateConverter.convertTimestamp("2012-10-08 12:00:00", "YYYY-MM-dd HH:mm:ss");
-		Vector2d testPosition = Vector2d.valueOf(1, 1);
+		Vector2d testPosition = new Vector2d(1, 1);
 		double value;
 		/*
 		 * Test: Temperature

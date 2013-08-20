@@ -35,7 +35,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.traffic.internal.governor.FuzzyTrafficGovernor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests of the FuzzyTrafficGovernor
@@ -86,7 +86,7 @@ public class FuzzyTrafficGovernorTest {
 		 */
 		weather = EasyMock.createNiceMock(WeatherController.class);
 		System.out.println("Neue Zeit: " + testTimestamp);
-		Vector2d testPosition = Vector2d.valueOf(1.0, 10.0);
+		Vector2d testPosition = new Vector2d(1.0, 10.0);
 
 		final Random random = new Random();
 

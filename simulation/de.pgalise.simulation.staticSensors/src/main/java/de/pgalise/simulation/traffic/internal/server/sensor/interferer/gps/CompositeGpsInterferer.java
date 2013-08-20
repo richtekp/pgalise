@@ -21,7 +21,7 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Implementation of an {@link GpsInterferer} that hold several other {@link GpsInterferer}s
@@ -89,7 +89,7 @@ public final class CompositeGpsInterferer implements GpsInterferer {
 	@Override
 	public Vector2d interfere(final Vector2d mutablePosition, final Vector2d realPosition, final long simTime,
 			final double vectorUnit) {
-		Vector2d result = Vector2d.valueOf(mutablePosition.getX(), mutablePosition.getY());
+		Vector2d result = new Vector2d(mutablePosition.x, mutablePosition.y);
 		for (final GpsInterferer interferer : this.interferers) {
 			result = interferer.interfere(result, realPosition, simTime, vectorUnit);
 		}

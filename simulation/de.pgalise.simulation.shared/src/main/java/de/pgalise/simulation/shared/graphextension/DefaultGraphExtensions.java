@@ -20,7 +20,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Extension class which methods interact with edge's attribute hashmap
@@ -89,9 +89,9 @@ public class DefaultGraphExtensions implements GraphExtensions {
 			return null;
 		}
 		return Math
-				.sqrt(Math.pow(this.getPosition(edge.getNode0()).getX() - this.getPosition(edge.getNode1()).getX(), 2)
+				.sqrt(Math.pow(this.getPosition(edge.getNode0()).x - this.getPosition(edge.getNode1()).x, 2)
 						+ (Math.pow(
-								this.getPosition(edge.getNode0()).getY() - this.getPosition(edge.getNode1()).getY(), 2)));
+								this.getPosition(edge.getNode0()).y - this.getPosition(edge.getNode1()).y, 2)));
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 			return null;
 		}
 		Vector2d result = this.getPosition(edge.getNode0());
-		result = result.sub(this.getPosition(edge.getNode1()));
+		result.sub(this.getPosition(edge.getNode1()));
 		return result;
 	}
 
@@ -180,7 +180,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 			throw new IllegalStateException("Argument 'node2' has no position data attached.");
 		}
 		Vector2d result = this.getPosition(from);
-		result = result.sub(this.getPosition(to));
+		result.sub(this.getPosition(to));
 		return result;
 	}
 
@@ -217,7 +217,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 		if (position == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("node"));
 		}
-		if ((position.getX() < 0) || (position.getY() < 0)) {
+		if ((position.x < 0) || (position.y < 0)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("position", true));
 		}
 		node.setAttribute(DefaultGraphExtensions.POSITION, position);

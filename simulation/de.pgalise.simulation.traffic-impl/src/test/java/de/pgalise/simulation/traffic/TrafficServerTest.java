@@ -105,7 +105,7 @@ import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import de.pgalise.util.GTFS.service.DefaultBusService;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the {@link TrafficServer}

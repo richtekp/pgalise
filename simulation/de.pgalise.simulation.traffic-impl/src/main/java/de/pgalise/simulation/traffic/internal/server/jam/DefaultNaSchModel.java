@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
 import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Implementation of the Nagel-Schreckenberg model Follows the Nagel-Schreckenberg model to update the given list of
@@ -125,7 +125,7 @@ public class DefaultNaSchModel implements TrafficJamModel {
 		if (carAhead != null) {
 			// log.debug("Nearest vehicle to " + v.getName() + ": " + carAhead.getName());
 			Vector2d carAheadPos = carAhead.getPosition();
-			carAheadPos = carAheadPos.sub(v.getPosition());
+			carAheadPos.sub(v.getPosition());
 
 			double distance = ((int) (carAheadPos.length() * 1000) / 1000.0d);
 

@@ -59,7 +59,7 @@ import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Implementation of the traffic controller

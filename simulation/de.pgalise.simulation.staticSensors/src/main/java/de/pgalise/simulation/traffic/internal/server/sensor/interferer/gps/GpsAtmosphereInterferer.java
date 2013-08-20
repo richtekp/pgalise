@@ -20,7 +20,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that shows errors caused by the atmosphere
@@ -64,7 +64,7 @@ public final class GpsAtmosphereInterferer extends GpsBaseInterferer {
 		if (this.getRandom().nextDouble() <= this.changeProbability) {
 			double radiation = this.weatherController.getValue(WeatherParameterEnum.RADIATION, simTime, realPosition)
 					.doubleValue();
-			return Vector2d.valueOf(mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
+			return new Vector2d(mutablePosition.x + radiation, mutablePosition.y + radiation);
 		}
 		// Returns with no change
 		return mutablePosition;

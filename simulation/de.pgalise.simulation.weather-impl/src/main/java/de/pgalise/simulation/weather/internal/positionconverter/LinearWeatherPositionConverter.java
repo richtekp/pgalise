@@ -20,7 +20,7 @@ import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverterBase;
 import de.pgalise.simulation.weather.util.DateConverter;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * The implementation {@link LinearWeatherPositionConverter} calculates the values on a linear base away from the
@@ -63,8 +63,8 @@ public final class LinearWeatherPositionConverter extends WeatherPositionConvert
 		}
 
 		// Calculate distance
-		double distance = Math.abs(Math.sqrt(Math.pow(this.getReferencePosition().getX() - position.getX(), 2)
-				+ Math.pow(this.getReferencePosition().getY() - position.getY(), 2)));
+		double distance = Math.abs(Math.sqrt(Math.pow(this.getReferencePosition().x - position.x, 2)
+				+ Math.pow(this.getReferencePosition().y - position.y, 2)));
 
 		// Get the change value
 		T changeValue = this.getChangeValue(key, time, distance, refValue);

@@ -55,7 +55,7 @@ import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorizedVehicle;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the attitude of a {@link Vehicle}
@@ -137,43 +137,43 @@ public class VehicleTest {
 		assertEquals(graph.getEdge("ab"), car.getCurrentEdge());
 		assertEquals(graph.getEdge("bc"), car.getNextEdge());
 		car.update(0);
-		log.debug(String.format("x=%s, y=%s", car.getPosition().getX(), car.getPosition().getY()));
+		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
 		assertEquals(State.DRIVING, car.getState());
-		assertTrue(car.getPosition().getX() == 0 && car.getPosition().getY() == 0);
+		assertTrue(car.getPosition().x == 0 && car.getPosition().y == 0);
 
 		car.update(1000);
-		log.debug(String.format("x=%s, y=%s", car.getPosition().getX(), car.getPosition().getY()));
+		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
 		assertEquals(State.DRIVING, car.getState());
-		assertTrue(car.getPosition().getX() == 1 && car.getPosition().getY() == 0);
+		assertTrue(car.getPosition().x == 1 && car.getPosition().y == 0);
 		// dürfte sich noch nicht geändert haben
 		assertEquals(graph.getEdge("ab"), car.getCurrentEdge());
 		assertEquals(graph.getEdge("bc"), car.getNextEdge());
 
 		// bei b angekommen
 		car.update(1000);
-		log.debug(String.format("x=%s, y=%s", car.getPosition().getX(), car.getPosition().getY()));
+		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
 		assertEquals(State.DRIVING, car.getState());
-		assertEquals(2, car.getPosition().getX(), 0);
-		assertEquals(0, car.getPosition().getY(), 0);
+		assertEquals(2, car.getPosition().x, 0);
+		assertEquals(0, car.getPosition().y, 0);
 		assertEquals(graph.getEdge("bc"), car.getCurrentEdge());
 		assertEquals(null, car.getNextEdge());
 
 		car.update(1000);
-		log.debug(String.format("x=%s, y=%s", car.getPosition().getX(), car.getPosition().getY()));
+		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
 		assertEquals(State.DRIVING, car.getState());
-		assertTrue(car.getPosition().getX() == 2 && car.getPosition().getY() == 1);
+		assertTrue(car.getPosition().x == 2 && car.getPosition().y == 1);
 
 		car.update(1000);
-		log.debug(String.format("x=%s, y=%s", car.getPosition().getX(), car.getPosition().getY()));
+		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
 		assertEquals(State.REACHED_TARGET, car.getState());
-		assertTrue(car.getPosition().getX() == 2 && car.getPosition().getY() == 2);
+		assertTrue(car.getPosition().x == 2 && car.getPosition().y == 2);
 		assertEquals(null, car.getCurrentEdge());
 		assertEquals(null, car.getNextEdge());
 
 		car.update(1000);
-		log.debug(String.format("x=%s, y=%s", car.getPosition().getX(), car.getPosition().getY()));
+		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
 		assertEquals(State.REACHED_TARGET, car.getState());
-		assertTrue(car.getPosition().getX() == 2 && car.getPosition().getY() == 2);
+		assertTrue(car.getPosition().x == 2 && car.getPosition().y == 2);
 	}
 
 	@Test
@@ -190,16 +190,16 @@ public class VehicleTest {
 		v.setVelocity(9.5);
 		v.setPath(shortestPath);
 
-		assertEquals(0, v.getPosition().getX(), 0);
-		assertEquals(0, v.getPosition().getY(), 0);
+		assertEquals(0, v.getPosition().x, 0);
+		assertEquals(0, v.getPosition().y, 0);
 
 		v.update(1000);
-		assertEquals(0, v.getPosition().getX(), 0.0001);
-		assertEquals(3.5, v.getPosition().getY(), 0.0001);
+		assertEquals(0, v.getPosition().x, 0.0001);
+		assertEquals(3.5, v.getPosition().y, 0.0001);
 
 		v.update(1000);
-		assertEquals(0, v.getPosition().getX(), 0.0001);
-		assertEquals(4, v.getPosition().getY(), 0.0001);
+		assertEquals(0, v.getPosition().x, 0.0001);
+		assertEquals(4, v.getPosition().y, 0.0001);
 		assertEquals(State.REACHED_TARGET, v.getState());
 	}
 
@@ -447,7 +447,7 @@ public class VehicleTest {
 	 */
 	private Node addNode(Graph graph, String id, double x, double y) {
 		Node node = graph.addNode(id);
-		node.setAttribute("position", Vector2d.valueOf(x, y));
+		node.setAttribute("position", new Vector2d(x, y));
 		return node;
 	}
 }

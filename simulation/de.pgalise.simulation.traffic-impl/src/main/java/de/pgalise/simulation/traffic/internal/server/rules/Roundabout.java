@@ -36,8 +36,8 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
-import de.pgalise.util.vector.Vector2d;
-import de.pgalise.util.vector.Vector3d;
+import javax.vecmath.Vector2d;
+import javax.vecmath.Vector3d;
 
 /**
  * Class for roundabouts
@@ -194,10 +194,11 @@ public final class Roundabout extends TrafficRule {
 		final Vector2d posNodeFrom = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom);
 		final Vector2d posNodeTo = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo);
 
-		final Vector3d vector3dCross = Vector3d.valueOf(posNodeFrom.getX(), posNodeFrom.getY(), 0).cross(
-				Vector3d.valueOf(posNodeTo.getX(), posNodeTo.getY(), 0));
+		final Vector3d vector3dCross = new Vector3d(posNodeFrom.x, posNodeFrom.y, 0);
+		vector3dCross.cross(vector3dCross,
+				new Vector3d(posNodeTo.x, posNodeTo.y, 0));
 
-		if (vector3dCross.getZ() >= 0) {
+		if (vector3dCross.z >= 0) {
 			angle = 360 - angle;
 		}
 		return (int) ((angle / 360D) * this.getMillisPerRound());

@@ -17,7 +17,7 @@
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that shows errors caused by satellite clocks
@@ -50,7 +50,7 @@ public final class GpsClockInterferer extends GpsBaseInterferer {
 		// Should be changed?
 		if (this.random.nextDouble() <= this.changeProbability) {
 			double changeValue = (this.changeAmplitude / VECTOR_UNIT) * this.random.nextGaussian();
-			return Vector2d.valueOf(mutablePosition.getX() + changeValue, mutablePosition.getY() + changeValue);
+			return new Vector2d(mutablePosition.x + changeValue, mutablePosition.y + changeValue);
 		}
 
 		// Returns with no change

@@ -26,7 +26,7 @@ import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * The event handler create two vehicles with the same ID and properties. The class are used by the

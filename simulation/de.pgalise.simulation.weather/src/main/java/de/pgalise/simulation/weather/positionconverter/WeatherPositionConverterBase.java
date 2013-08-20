@@ -17,7 +17,7 @@
 package de.pgalise.simulation.weather.positionconverter;
 
 import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Abstract super class for a {@link WeatherPositionConverter}. This class provides some methods for calculations.

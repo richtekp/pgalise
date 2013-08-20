@@ -33,7 +33,7 @@ import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.geolocation.GeoLocation;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * JUnit test for {@link FuzzyEnergyConsumptionManager}. Uses different timestamps and weather settings to test the

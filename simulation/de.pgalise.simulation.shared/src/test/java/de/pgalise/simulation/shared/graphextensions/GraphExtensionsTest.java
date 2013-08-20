@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.shared.graphextension.DefaultGraphExtensions;
 import de.pgalise.simulation.shared.graphextension.GraphExtensions;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the {@link GraphExtensions}
@@ -68,9 +68,9 @@ public class GraphExtensionsTest {
 
 		// add a node without attached position data
 		final Node node = graph.addNode("A");
-		graphExtensions.setPosition(graph.addNode("A1"), Vector2d.valueOf(1, 1));
-		graphExtensions.setPosition(graph.addNode("A2"), Vector2d.valueOf(1, 19));
-		graphExtensions.setPosition(graph.addNode("A3"), Vector2d.valueOf(19, 19));
+		graphExtensions.setPosition(graph.addNode("A1"), new Vector2d(1, 1));
+		graphExtensions.setPosition(graph.addNode("A2"), new Vector2d(1, 19));
+		graphExtensions.setPosition(graph.addNode("A3"), new Vector2d(19, 19));
 		graph.addEdge("AA1", "A", "A1");
 		graph.addEdge("AA2", "A", "A2");
 		graph.addEdge("AA3", "A", "A3");
@@ -101,7 +101,7 @@ public class GraphExtensionsTest {
 		assertNull(graphExtensions.getLength(edge));
 
 		// now attach position data to the edge's first node
-		graphExtensions.setPosition(edge.getNode0(), Vector2d.valueOf(14, 1));
+		graphExtensions.setPosition(edge.getNode0(), new Vector2d(14, 1));
 
 		// the method under test should still return null since the second node
 		// still
@@ -109,7 +109,7 @@ public class GraphExtensionsTest {
 		assertNull(graphExtensions.getLength(edge));
 
 		// now attach position data to the edge's second node
-		graphExtensions.setPosition(edge.getNode1(), Vector2d.valueOf(3, 1));
+		graphExtensions.setPosition(edge.getNode1(), new Vector2d(3, 1));
 
 		// now test whether the correct length has been calculated
 		assertEquals(Double.valueOf(11), graphExtensions.getLength(edge), 0.0);
@@ -118,8 +118,8 @@ public class GraphExtensionsTest {
 
 		// now create a second edge which nodes have more complicated positions
 		edge = GraphExtensionsTest.createEdge();
-		graphExtensions.setPosition(edge.getNode0(), Vector2d.valueOf(4, 54));
-		graphExtensions.setPosition(edge.getNode1(), Vector2d.valueOf(87, 112));
+		graphExtensions.setPosition(edge.getNode0(), new Vector2d(4, 54));
+		graphExtensions.setPosition(edge.getNode1(), new Vector2d(87, 112));
 
 		assertEquals(Double.valueOf(101.25709851659783758135491008371), graphExtensions.getLength(edge), 0.0);
 	}
@@ -190,7 +190,7 @@ public class GraphExtensionsTest {
 		assertNull(graphExtensions.getVector(edge));
 
 		// now attach position data to the edge's first node
-		graphExtensions.setPosition(edge.getNode0(), Vector2d.valueOf(14, 1));
+		graphExtensions.setPosition(edge.getNode0(), new Vector2d(14, 1));
 
 		// the method under test should still return null since the second node
 		// still
@@ -198,19 +198,19 @@ public class GraphExtensionsTest {
 		assertNull(graphExtensions.getVector(edge));
 
 		// now attach position data to the edge's second node
-		graphExtensions.setPosition(edge.getNode1(), Vector2d.valueOf(3, 1));
+		graphExtensions.setPosition(edge.getNode1(), new Vector2d(3, 1));
 
 		// now test whether the correct vector has been calculated
-		assertEquals(Vector2d.valueOf(11, 0), graphExtensions.getVector(edge));
+		assertEquals(new Vector2d(11, 0), graphExtensions.getVector(edge));
 		// test again to check side effects
-		assertEquals(Vector2d.valueOf(11, 0), graphExtensions.getVector(edge));
+		assertEquals(new Vector2d(11, 0), graphExtensions.getVector(edge));
 
 		// now create a second edge which nodes have more complicated positions
 		edge = GraphExtensionsTest.createEdge();
-		graphExtensions.setPosition(edge.getNode0(), Vector2d.valueOf(4, 54));
-		graphExtensions.setPosition(edge.getNode1(), Vector2d.valueOf(87, 112));
+		graphExtensions.setPosition(edge.getNode0(), new Vector2d(4, 54));
+		graphExtensions.setPosition(edge.getNode1(), new Vector2d(87, 112));
 
-		assertEquals(Vector2d.valueOf(-83, -58), graphExtensions.getVector(edge));
+		assertEquals(new Vector2d(-83, -58), graphExtensions.getVector(edge));
 	}
 
 	/**
@@ -234,12 +234,12 @@ public class GraphExtensionsTest {
 
 		// set the position of the edge's first node and the edge still has no
 		// length property set
-		graphExtensions.setPosition(edge.getNode0(), Vector2d.valueOf(12, 13));
+		graphExtensions.setPosition(edge.getNode0(), new Vector2d(12, 13));
 		assertFalse(graphExtensions.hasLength(edge));
 
 		// set the position of the edge's second node and the edge now should
 		// have the length property set
-		graphExtensions.setPosition(edge.getNode1(), Vector2d.valueOf(1, 34));
+		graphExtensions.setPosition(edge.getNode1(), new Vector2d(1, 34));
 		assertTrue(graphExtensions.hasLength(edge));
 
 	}
@@ -325,12 +325,12 @@ public class GraphExtensionsTest {
 
 		// set the position of the edge's first node and the edge still has no
 		// length property set
-		graphExtensions.setPosition(edge.getNode0(), Vector2d.valueOf(12, 13));
+		graphExtensions.setPosition(edge.getNode0(), new Vector2d(12, 13));
 		assertFalse(graphExtensions.hasVector(edge));
 
 		// set the position of the edge's second node and the edge now should
 		// have the length property set
-		graphExtensions.setPosition(edge.getNode1(), Vector2d.valueOf(1, 34));
+		graphExtensions.setPosition(edge.getNode1(), new Vector2d(1, 34));
 		assertTrue(graphExtensions.hasVector(edge));
 	}
 
@@ -448,10 +448,10 @@ public class GraphExtensionsTest {
 		assertNull(graphExtensions.getPosition(node));
 
 		// Attach a position to the node
-		graphExtensions.setPosition(node, Vector2d.valueOf(12, 12));
+		graphExtensions.setPosition(node, new Vector2d(12, 12));
 
 		// now test whether the attached position is correct
-		assertEquals(Vector2d.valueOf(12, 12), graphExtensions.getPosition(node));
+		assertEquals(new Vector2d(12, 12), graphExtensions.getPosition(node));
 
 	}
 
@@ -492,9 +492,9 @@ public class GraphExtensionsTest {
 
 		// create two nodes with attached position data
 		final Node node1 = graphExtensions.setPosition(GraphExtensionsTest.createNode(graphExtensions),
-				Vector2d.valueOf(32, 57));
+				new Vector2d(32, 57));
 		final Node node2 = graphExtensions.setPosition(GraphExtensionsTest.createNode(graphExtensions),
-				Vector2d.valueOf(21, 123));
+				new Vector2d(21, 123));
 
 		// try to pass the second node without position data attached
 		try {
@@ -513,13 +513,13 @@ public class GraphExtensionsTest {
 		}
 
 		// now use method normally
-		assertEquals(Vector2d.valueOf(11, -66), graphExtensions.getVectorBetween(node1, node2));
+		assertEquals(new Vector2d(11, -66), graphExtensions.getVectorBetween(node1, node2));
 
 		// inverted normal use
-		assertEquals(Vector2d.valueOf(-11, 66), graphExtensions.getVectorBetween(node2, node1));
+		assertEquals(new Vector2d(-11, 66), graphExtensions.getVectorBetween(node2, node1));
 
 		// same parameter
-		assertEquals(Vector2d.valueOf(0, 0), graphExtensions.getVectorBetween(node1, node1));
+		assertEquals(new Vector2d(0, 0), graphExtensions.getVectorBetween(node1, node1));
 	}
 
 	/**
@@ -542,7 +542,7 @@ public class GraphExtensionsTest {
 		assertFalse(graphExtensions.hasPosition(node));
 
 		// now attach a position to the node
-		graphExtensions.setPosition(node, Vector2d.valueOf(1, 1));
+		graphExtensions.setPosition(node, new Vector2d(1, 1));
 
 		// test whether method returns false
 		assertTrue(graphExtensions.hasPosition(node));
@@ -564,7 +564,7 @@ public class GraphExtensionsTest {
 
 		// try to use a null node and a default Vector2d
 		try {
-			graphExtensions.setPosition(null, Vector2d.valueOf(0, 0));
+			graphExtensions.setPosition(null, new Vector2d(0, 0));
 			fail("this code should have never been reached");
 		} catch (IllegalArgumentException ex) {
 			assertTrue(true);
@@ -585,14 +585,14 @@ public class GraphExtensionsTest {
 		assertNull(graphExtensions.getPosition(node));
 
 		// set a new position
-		graphExtensions.setPosition(node, Vector2d.valueOf(12.3, 1232.231));
+		graphExtensions.setPosition(node, new Vector2d(12.3, 1232.231));
 
 		// test whether the position is correctly set
-		assertEquals(Vector2d.valueOf(12.3, 1232.231), graphExtensions.getPosition(node));
+		assertEquals(new Vector2d(12.3, 1232.231), graphExtensions.getPosition(node));
 
 		// try to change the node's position
 		try {
-			graphExtensions.setPosition(node, Vector2d.valueOf(2, 3));
+			graphExtensions.setPosition(node, new Vector2d(2, 3));
 			fail("this code should have never been reached");
 		} catch (IllegalStateException ex) {
 			assertTrue(true);
@@ -600,7 +600,7 @@ public class GraphExtensionsTest {
 
 		// try to pass negative position data
 		try {
-			graphExtensions.setPosition(GraphExtensionsTest.createNode(graphExtensions), Vector2d.valueOf(-12, 23));
+			graphExtensions.setPosition(GraphExtensionsTest.createNode(graphExtensions), new Vector2d(-12, 23));
 			fail("this code should have never been reached");
 		} catch (IllegalArgumentException ex) {
 			assertTrue(true);
@@ -608,7 +608,7 @@ public class GraphExtensionsTest {
 
 		// test method chaining
 		node = GraphExtensionsTest.createNode(graphExtensions);
-		assertSame(node, graphExtensions.setPosition(node, Vector2d.valueOf(12, 12)));
+		assertSame(node, graphExtensions.setPosition(node, new Vector2d(12, 12)));
 	}
 
 }

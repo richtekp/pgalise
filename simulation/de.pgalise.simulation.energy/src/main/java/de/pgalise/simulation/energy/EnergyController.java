@@ -20,7 +20,7 @@ package de.pgalise.simulation.energy;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.geolocation.GeoLocation;
 import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Interface for the energy controllers. An energy controller is able to give the energy consumption in kWh on a

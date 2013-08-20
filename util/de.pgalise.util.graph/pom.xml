@@ -38,9 +38,11 @@
 	    	<groupId>de.pgalise.util</groupId>
 			<artifactId>generic</artifactId>
 	    </dependency>
-	    <dependency>
-			<groupId>de.pgalise.util</groupId>
-			<artifactId>vector</artifactId>
-	 	</dependency>
-	 </dependencies>
+	 <dependency>
+	  <groupId>java3d</groupId>
+	  <artifactId>vecmath</artifactId>
+	  <version>1.3.2</version>
+	  <type>jar</type>
+	 </dependency>
+	</dependencies>
 </project>

@@ -50,7 +50,7 @@ import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.geolocation.GeoLocation;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Default implementation of an energy controller.

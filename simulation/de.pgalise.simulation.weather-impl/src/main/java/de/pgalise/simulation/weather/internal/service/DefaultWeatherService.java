@@ -46,7 +46,7 @@ import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * The {@link WeatherService} coordinates the {@link WeatherParameter} requests and provides access with the help of the
@@ -338,7 +338,7 @@ public final class DefaultWeatherService implements WeatherService {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("key"));
 		} else if ((position == null)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("position"));
-		} else if ((position.getX() < 0) || (position.getY() < 0)) {
+		} else if ((position.x < 0) || (position.y < 0)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotPositive("position (x or y)", true));
 		} else if (time <= 0) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotPositive("time", false));

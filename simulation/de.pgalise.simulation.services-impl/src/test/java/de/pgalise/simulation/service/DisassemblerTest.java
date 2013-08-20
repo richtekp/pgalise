@@ -32,7 +32,7 @@ import de.pgalise.simulation.shared.geometry.Geometry;
 import de.pgalise.simulation.shared.geometry.Rectangle;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the {@link QuadrantDisassembler}
@@ -49,27 +49,27 @@ public class DisassemblerTest {
 
 		// erster qudrant
 		node = graph.addNode("a");
-		node.setAttribute("position", Vector2d.valueOf(10, 10));
+		node.setAttribute("position", new Vector2d(10, 10));
 
 		node = graph.addNode("b");
-		node.setAttribute("position", Vector2d.valueOf(25, 25));
+		node.setAttribute("position", new Vector2d(25, 25));
 
 		node = graph.addNode("c");
-		node.setAttribute("position", Vector2d.valueOf(20, 25));
+		node.setAttribute("position", new Vector2d(20, 25));
 
 		// zweiter quadrant
 		node = graph.addNode("d");
-		node.setAttribute("position", Vector2d.valueOf(18, 45));
+		node.setAttribute("position", new Vector2d(18, 45));
 
 		node = graph.addNode("e");
-		node.setAttribute("position", Vector2d.valueOf(40, 50));
+		node.setAttribute("position", new Vector2d(40, 50));
 
 		// dritter quadrant
 		node = graph.addNode("f");
-		node.setAttribute("position", Vector2d.valueOf(75, 30));
+		node.setAttribute("position", new Vector2d(75, 30));
 
 		node = graph.addNode("g");
-		node.setAttribute("position", Vector2d.valueOf(80, 45));
+		node.setAttribute("position", new Vector2d(80, 45));
 
 		List<Geometry> quadrants = dis.disassemble(new Rectangle(0, 0, 100, 60), 4);
 

@@ -18,7 +18,7 @@ package de.pgalise.simulation.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * The energy consumption manager returns the energy consumption for a given energy profile

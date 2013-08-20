@@ -32,7 +32,7 @@ import de.pgalise.simulation.shared.geolocation.GeoLocation;
 import de.pgalise.simulation.shared.geolocation.Latitude;
 import de.pgalise.simulation.shared.geolocation.Longitude;
 import de.pgalise.simulation.shared.graphextension.GraphExtensions;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * The GraphConstrcutor is used to construct a graph based upon the results of the OSMParser.
@@ -108,7 +108,7 @@ public class GraphConstructor {
 						org.graphstream.graph.Edge edge = graph.addEdge(UUID.randomUUID().toString(), prevNode, node);
 						Vector2d b = this.graphExtension.getPosition(node);
 						Vector2d a = this.graphExtension.getPosition(prevNode);
-						b = b.sub(a);
+						b.sub(a);
 						double length = b.length();
 						double vel = this.gpsMapper.convertVelocity(way.getMaxSpeed());
 						edge.addAttribute("length", length);

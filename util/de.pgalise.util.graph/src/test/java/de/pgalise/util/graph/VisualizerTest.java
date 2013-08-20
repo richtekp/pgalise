@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import de.pgalise.util.generic.MutableBoolean;
 import de.pgalise.util.generic.function.Function;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the {@link GraphVisualizer}
@@ -116,7 +116,7 @@ public class VisualizerTest {
 	 */
 	private Node addNode(Graph graph, String id, double x, double y) {
 		Node node = graph.addNode(id);
-		node.setAttribute("position", Vector2d.valueOf(x, y));
+		node.setAttribute("position", new Vector2d(x, y));
 		return node;
 	}
 }

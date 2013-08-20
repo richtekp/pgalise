@@ -18,7 +18,7 @@ package de.pgalise.simulation.staticsensor.grid;
 
 import java.util.List;
 
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Interface for util classes to get positions for sensors

@@ -33,7 +33,7 @@ import de.pgalise.simulation.energy.profile.EnergyProfile;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Handles all energy consumption calculations and the load of the energy profiles from CSV files.

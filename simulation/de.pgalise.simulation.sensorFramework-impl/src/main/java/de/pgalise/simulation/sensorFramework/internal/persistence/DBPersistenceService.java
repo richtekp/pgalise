@@ -90,8 +90,8 @@ public final class DBPersistenceService implements SensorPersistenceService {
 			}
 			this.sensorId = sensor.getSensorId();
 			this.sensorTypeId = sensor.getSensorType().ordinal();
-			this.longitude = sensor.getPosition().getX();
-			this.latitude = sensor.getPosition().getY();
+			this.longitude = sensor.getPosition().x;
+			this.latitude = sensor.getPosition().y;
 		}
 	}
 

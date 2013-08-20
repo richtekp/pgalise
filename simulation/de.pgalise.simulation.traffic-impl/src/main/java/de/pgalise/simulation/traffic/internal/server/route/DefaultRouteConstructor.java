@@ -50,7 +50,7 @@ import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
 import de.pgalise.simulation.traffic.server.route.RegionParser;
 import de.pgalise.simulation.traffic.server.route.RouteConstructor;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Default implementation of a {@link RouteConstructor}.

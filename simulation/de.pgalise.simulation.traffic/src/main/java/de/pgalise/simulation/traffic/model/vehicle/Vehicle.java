@@ -25,7 +25,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).

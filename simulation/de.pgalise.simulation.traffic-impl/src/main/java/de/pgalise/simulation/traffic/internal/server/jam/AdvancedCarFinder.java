@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Implements the advanced car finder. Has a visibility range to verify the vehicles in front of the given vehicle.
@@ -93,10 +93,12 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		// Berechnen der Endposition (Ende der Visibilityrange auf der letzten
 		// Kante)
 		double diff = edgesLength - visibilityRange;
-		Vector2d dir = trafficGraphExtensions.getPosition(toNode).sub(trafficGraphExtensions.getPosition(fromNode));
-		dir = dir.normalize();
-		dir = dir.scale(diff);
-		Vector2d endPosition = trafficGraphExtensions.getPosition(toNode).sub(dir);
+		Vector2d dir = new Vector2d(trafficGraphExtensions.getPosition(toNode));
+		dir.sub(trafficGraphExtensions.getPosition(fromNode));
+		dir.normalize();
+		dir.scale(diff);
+		Vector2d endPosition = trafficGraphExtensions.getPosition(toNode);
+		endPosition.sub(dir);
 
 		// AdvancedCarFinder.log.debug("Endposition: " + endPosition.toString());
 
@@ -128,7 +130,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 			// AdvancedCarFinder.log.debug("Checking " + v.getName() + " as potential nearest car with its distance: "
 			// + v.getPosition().sub(car.getPosition()).length());
 			Vector2d otherCarPos = v.getPosition();
-			otherCarPos = otherCarPos.sub(carPos);
+			otherCarPos.sub(carPos);
 			if (distance == -1) {
 				nearestCar = v;
 				distance = otherCarPos.length();

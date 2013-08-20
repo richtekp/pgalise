@@ -32,7 +32,7 @@ import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.DefaultGraphVisualizer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Default implementation of the TrafficVisualizer.
@@ -96,7 +96,7 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 		// wieder einkommentieren, wenn randomseedservice wieder korrekt übergeben wird
 		// for (final Node node : this.graph) {
 		// Vector2d pos = ne.getPosition(node);
-		// pos = Vector2d.valueOf((pos.getX() * transform.getScaleX() + transform.getTranslateX()), (pos.getY()
+		// pos = new Vector2d((pos.x * transform.getScaleX() + transform.getTranslateX()), (pos.y
 		// * transform.getScaleX() + transform.getTranslateY()));
 		// final TrafficRule trafficRule = ne.getTrafficRule(node);
 		// if (!(trafficRule instanceof TrafficLightSetof)) {
@@ -108,22 +108,22 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 		// g2d.setColor(Color.BLACK);
 		// }
 		//
-		// Ellipse2D.Double circle = new Ellipse2D.Double(pos.getX() - 5, pos.getY() - 5, 10, 10);
+		// Ellipse2D.Double circle = new Ellipse2D.Double(pos.x - 5, pos.y - 5, 10, 10);
 		// g2d.fill(circle);
 		// } else {
 		// TrafficLightSetof trafficLightSetof = (TrafficLightSetof) trafficRule;
 		// for (final Edge edge : node) {
 		// final Vector2d vec = ne.getVectorBetween(node, edge.getOpposite(node)).normalize();
 		// final double factor = 20;
-		// Rectangle2D.Double rect = new Rectangle2D.Double(pos.getX() - vec.normalize().getX() * factor - 5,
-		// pos.getY() - vec.normalize().getY() * factor - 10, 10, 22);
+		// Rectangle2D.Double rect = new Rectangle2D.Double(pos.x - vec.normalize().x * factor - 5,
+		// pos.y - vec.normalize().y * factor - 10, 10, 22);
 		//
-		// Ellipse2D.Double red = new Ellipse2D.Double(pos.getX() - vec.normalize().getX() * factor - 3,
-		// pos.getY() - vec.normalize().getY() * factor - 9, 6, 6);
-		// Ellipse2D.Double yellow = new Ellipse2D.Double(pos.getX() - vec.normalize().getX() * factor - 3,
-		// pos.getY() - vec.normalize().getY() * factor - 2, 6, 6);
-		// Ellipse2D.Double green = new Ellipse2D.Double(pos.getX() - vec.normalize().getX() * factor - 3,
-		// pos.getY() - vec.normalize().getY() * factor + 5, 6, 6);
+		// Ellipse2D.Double red = new Ellipse2D.Double(pos.x - vec.normalize().x * factor - 3,
+		// pos.y - vec.normalize().y * factor - 9, 6, 6);
+		// Ellipse2D.Double yellow = new Ellipse2D.Double(pos.x - vec.normalize().x * factor - 3,
+		// pos.y - vec.normalize().y * factor - 2, 6, 6);
+		// Ellipse2D.Double green = new Ellipse2D.Double(pos.x - vec.normalize().x * factor - 3,
+		// pos.y - vec.normalize().y * factor + 5, 6, 6);
 		//
 		// g2d.setColor(Color.BLACK);
 		// g2d.fill(rect);
@@ -159,48 +159,48 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 		g2d.setColor(Color.BLACK);
 		for (Vehicle<? extends VehicleData> v : vehicles) {
 			Vector2d pos = v.getPosition();
-			pos = Vector2d.valueOf((pos.getX() * transform.getScaleX() + transform.getTranslateX()), (pos.getY()
+			pos = new Vector2d((pos.x * transform.getScaleX() + transform.getTranslateX()), (pos.y
 					* transform.getScaleX() + transform.getTranslateY()));
 			// log.debug(String.format("Car %s pos: (%s, %s)", v.getName(),
-			// pos.getX(), pos.getY()));
+			// pos.x, pos.y));
 
 			// Vector2d opos = pos;
 
 			Vector2d dir = v.getDirection();
 			// Orthogonale zeigt nach rechts
-			Vector2d ortho = Vector2d.valueOf(dir.getY(), dir.getX() * (-1));
+			Vector2d ortho = new Vector2d(dir.y, dir.x * (-1));
 			Vector2d ortho2 = ortho;
-			ortho2 = ortho2.scale(-1);
+			ortho2.scale(-1);
 
-			dir = dir.normalize();
-			ortho = ortho.normalize();
-			ortho2 = ortho2.normalize();
+			dir.normalize();
+			ortho.normalize();
+			ortho2.normalize();
 
 			Vector2d d = dir;
-			d = d.scale(12);
-			pos = pos.sub(d);
+			d.scale(12);
+			pos.sub(d);
 
 			// Skalieren
-			dir = dir.scale(24);
-			ortho = ortho.scale(8);
-			ortho2 = ortho2.scale(8);
+			dir.scale(24);
+			ortho.scale(8);
+			ortho2.scale(8);
 
-			dir = dir.add(pos);
-			ortho = ortho.add(pos);
-			ortho2 = ortho2.add(pos);
+			dir.add(pos);
+			ortho.add(pos);
+			ortho2.add(pos);
 
 			// Dreieck erstellen
 			Polygon p = new Polygon();
-			p.addPoint((int) ortho2.getX(), (int) ortho2.getY());
-			p.addPoint((int) dir.getX(), (int) dir.getY());
-			p.addPoint((int) ortho.getX(), (int) ortho.getY());
+			p.addPoint((int) ortho2.x, (int) ortho2.y);
+			p.addPoint((int) dir.x, (int) dir.y);
+			p.addPoint((int) ortho.x, (int) ortho.y);
 
-			// log.debug(String.format("ortho: (%s, %s)", ortho.getX(),
-			// ortho.getY()));
-			// log.debug(String.format("ortho2: (%s, %s)", ortho2.getX(),
-			// ortho2.getY()));
-			// log.debug(String.format("dir: (%s, %s)", dir.getX(),
-			// dir.getY()));
+			// log.debug(String.format("ortho: (%s, %s)", ortho.x,
+			// ortho.y));
+			// log.debug(String.format("ortho2: (%s, %s)", ortho2.x,
+			// ortho2.y));
+			// log.debug(String.format("dir: (%s, %s)", dir.x,
+			// dir.y));
 
 			g2d.setPaint(Color.ORANGE);
 			g2d.fillPolygon(p);
@@ -208,7 +208,7 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 			g2d.setPaint(Color.RED);
 			Font font = new Font("Arial", Font.BOLD, 12);
 			g2d.setFont(font);
-			g2d.drawString(v.getName(), (int) (pos.getX() + 5), (int) (pos.getY() - 5));
+			g2d.drawString(v.getName(), (int) (pos.x + 5), (int) (pos.y - 5));
 		}
 	}
 

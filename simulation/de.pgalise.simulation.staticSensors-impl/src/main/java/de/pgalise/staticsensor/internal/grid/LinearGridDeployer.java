@@ -24,7 +24,7 @@ import de.pgalise.simulation.shared.geometry.Rectangle;
 import de.pgalise.simulation.staticsensor.grid.GridDeployer;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Create positions for sensors depending on the limits of the grid.
@@ -63,7 +63,7 @@ public class LinearGridDeployer implements GridDeployer {
 
 		for (int i = 0; i < newNumber; i++) {
 			Geometry geo = list.get(i);
-			positions.add(Vector2d.valueOf(geo.getStartX(), geo.getStartY()));
+			positions.add(new Vector2d(geo.getStartX(), geo.getStartY()));
 		}
 		return positions;
 	}

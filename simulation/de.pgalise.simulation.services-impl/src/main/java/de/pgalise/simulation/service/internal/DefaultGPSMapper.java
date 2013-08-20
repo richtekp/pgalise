@@ -25,7 +25,7 @@ import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.geolocation.GeoLocation;
 import de.pgalise.simulation.shared.geolocation.Latitude;
 import de.pgalise.simulation.shared.geolocation.Longitude;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Converts GPS values to vector units and vice versa
@@ -114,17 +114,17 @@ public class DefaultGPSMapper implements GPSMapper {
 	@Override
 	public Vector2d convertToVector(GeoLocation gps) {
 		if(gps.equals(this.origin)) {
-			return Vector2d.valueOf(0, 0);
+			return new Vector2d(0, 0);
 		}
 		double x = convert(this.origin, new GeoLocation(this.origin.getLatitude(), gps.getLongitude()));
 		double y = convert(this.origin, new GeoLocation(gps.getLatitude(), this.origin.getLongitude()));
-		return Vector2d.valueOf(x * VECTOR_UNIT, y * VECTOR_UNIT);
+		return new Vector2d(x * VECTOR_UNIT, y * VECTOR_UNIT);
 	}
 
 	@Override
 	public GeoLocation convertVectorToGPS(Vector2d vector) {
-		Latitude north = new Latitude(((-0.1232 / HEIGHT) * vector.getY()) + 53.2056);
-		Longitude east = new Longitude(((0.1847 / WIDTH) * vector.getX()) + 8.1289);
+		Latitude north = new Latitude(((-0.1232 / HEIGHT) * vector.y) + 53.2056);
+		Longitude east = new Longitude(((0.1847 / WIDTH) * vector.x) + 8.1289);
 		return new GeoLocation(north, east);
 	}
 
@@ -140,14 +140,14 @@ public class DefaultGPSMapper implements GPSMapper {
 
 	@Override
 	public Vector2d getCenterPoint() {
-		return Vector2d.valueOf(this.getWidth() / 2.0, this.getHeight() / 2.0);
+		return new Vector2d(this.getWidth() / 2.0, this.getHeight() / 2.0);
 	}
 
 	@Override
 	public double getDistanceFromCenterToFarhestPoint() {
-		Vector2d topLeft = Vector2d.valueOf(0.0, 0.0);
+		Vector2d topLeft = new Vector2d(0.0, 0.0);
 		Vector2d center = this.getCenterPoint();
-		center = center.sub(topLeft);
+		center.sub(topLeft);
 
 		return center.length();
 	}

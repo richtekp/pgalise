@@ -17,7 +17,7 @@
 package de.pgalise.staticsensor.internal.sensor.energy.interferer;
 
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that shows no errors

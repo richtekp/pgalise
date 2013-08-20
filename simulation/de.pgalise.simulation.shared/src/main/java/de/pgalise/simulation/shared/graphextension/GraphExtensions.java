@@ -19,7 +19,7 @@ package de.pgalise.simulation.shared.graphextension;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * The TrafficGraphExtensions is an interface

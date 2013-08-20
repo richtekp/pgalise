@@ -29,7 +29,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Class to generate an induction loop sensor

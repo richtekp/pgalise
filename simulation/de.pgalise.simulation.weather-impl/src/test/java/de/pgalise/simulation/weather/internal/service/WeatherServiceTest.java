@@ -42,7 +42,7 @@ import de.pgalise.simulation.weather.internal.modifier.simulationevents.Referenc
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * JUnit Tests for WeatherService
@@ -272,7 +272,7 @@ public class WeatherServiceTest {
 		long timestamp2 = WeatherServiceTest.startTimestamp + DateConverter.NEXT_DAY_IN_MILLIS + time.getTime();
 
 		// Test Position
-		Vector2d position = Vector2d.valueOf(2, 3);
+		Vector2d position = new Vector2d(2, 3);
 
 		/*
 		 * Test preparations
@@ -315,7 +315,7 @@ public class WeatherServiceTest {
 
 		// Test false position
 		try {
-			value = WeatherServiceTest.service.getValue(testParameter, timestamp, Vector2d.valueOf(-1, -1));
+			value = WeatherServiceTest.service.getValue(testParameter, timestamp, new Vector2d(-1, -1));
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}

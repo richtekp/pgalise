@@ -48,7 +48,7 @@ import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
 import de.pgalise.simulation.traffic.server.TrafficServer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the DefaultTrafficController
@@ -237,9 +237,9 @@ public class TrafficControllerTest {
 		StartParameter startParam = createNiceMock(StartParameter.class);
 
 		// create sensors
-		SensorHelper sensorHelper = new SensorHelper(0, mapper.convertVectorToGPS(Vector2d.valueOf(100, 100)),
+		SensorHelper sensorHelper = new SensorHelper(0, mapper.convertVectorToGPS(new Vector2d(100, 100)),
 				SensorType.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>(), "");
-		SensorHelper sensorHelper2 = new SensorHelper(1, mapper.convertVectorToGPS(Vector2d.valueOf(100, 600)),
+		SensorHelper sensorHelper2 = new SensorHelper(1, mapper.convertVectorToGPS(new Vector2d(100, 600)),
 				SensorType.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>(), "");
 
 		TrafficServer s1 = createMock(TrafficServer.class);

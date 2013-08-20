@@ -52,7 +52,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * JUnit Testcases for WeatherController
@@ -151,7 +151,7 @@ public class WeatherControllerTest {
 		// Local test variables
 		long valueTime = WeatherControllerTest.startTimestamp + 360000;
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
-		Vector2d testPosition = Vector2d.valueOf(2, 3);
+		Vector2d testPosition = new Vector2d(2, 3);
 		List<SimulationEvent> testEventList = new ArrayList<>();
 		testEventList.add(new ChangeWeatherEvent(UUID.randomUUID(), WeatherEventEnum.HOTDAY, 30.0f,
 				WeatherControllerTest.eventTimestamp, 6.0f));
@@ -229,7 +229,7 @@ public class WeatherControllerTest {
 
 		// Test false parameters: wrong position -> call onFailure
 		try {
-			testNumber = ctrl.getValue(testParameter, 0, Vector2d.valueOf(-1, -2));
+			testNumber = ctrl.getValue(testParameter, 0, new Vector2d(-1, -2));
 			Assert.assertNull(testNumber);
 		} catch (Exception e1) {
 			Assert.assertTrue(true);

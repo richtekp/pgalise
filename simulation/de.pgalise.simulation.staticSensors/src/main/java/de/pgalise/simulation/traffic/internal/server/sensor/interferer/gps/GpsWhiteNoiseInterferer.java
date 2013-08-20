@@ -17,7 +17,7 @@
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that creates generally low errors
@@ -49,9 +49,9 @@ public class GpsWhiteNoiseInterferer extends GpsBaseInterferer {
 		if (this.getRandom().nextDouble() <= this.changeProbability) {
 			final double x = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)) * vectorUnit);
 			final double y = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)) * vectorUnit);
-			return Vector2d.valueOf(
-					this.getRandom().nextBoolean() ? mutablePosition.getX() + x : mutablePosition.getX() - x, this
-							.getRandom().nextBoolean() ? mutablePosition.getY() + y : mutablePosition.getY() - y);
+			return new Vector2d(
+					this.getRandom().nextBoolean() ? mutablePosition.x + x : mutablePosition.x - x, this
+							.getRandom().nextBoolean() ? mutablePosition.y + y : mutablePosition.y - y);
 		}
 		return mutablePosition;
 	}

@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.shared.geometry;
 
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Represents a rectangle
@@ -77,8 +77,8 @@ public class Rectangle implements Geometry {
 
 	@Override
 	public boolean covers(Vector2d point) {
-		return (point.getX() >= this.getStartX()) && (point.getX() < this.getEndX())
-				&& (point.getY() >= this.getStartY()) && (point.getY() < this.getEndY());
+		return (point.x >= this.getStartX()) && (point.x < this.getEndX())
+				&& (point.y >= this.getStartY()) && (point.y < this.getEndY());
 	}
 
 	@Override

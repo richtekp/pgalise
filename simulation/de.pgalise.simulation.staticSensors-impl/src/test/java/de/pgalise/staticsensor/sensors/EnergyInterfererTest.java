@@ -36,7 +36,7 @@ import de.pgalise.staticsensor.internal.sensor.energy.interferer.EnergyBaseInter
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.PhotovoltaikWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.SmartMeterWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.WindPowerWhiteNoiseInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the all {@link EnergyInterferer}
@@ -82,7 +82,7 @@ public class EnergyInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = Vector2d.valueOf(1.0, 10.0);
+		testPosition = new Vector2d(1.0, 10.0);
 	}
 
 	@Test

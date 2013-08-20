@@ -155,10 +155,10 @@ public class TrafficLightIntersection extends TrafficRule {
 					final Node otherNode1 = edge1.getOpposite(node);
 
 					final double a = this.trafficGraphExtensions.getLength(edge0);
-					final double b = Math.sqrt(Math.pow(this.trafficGraphExtensions.getPosition(otherNode0).getX()
-							- this.trafficGraphExtensions.getPosition(otherNode1).getX(), 2)
-							+ Math.pow(this.trafficGraphExtensions.getPosition(otherNode0).getY()
-									- this.trafficGraphExtensions.getPosition(otherNode1).getY(), 2));
+					final double b = Math.sqrt(Math.pow(this.trafficGraphExtensions.getPosition(otherNode0).x
+							- this.trafficGraphExtensions.getPosition(otherNode1).x, 2)
+							+ Math.pow(this.trafficGraphExtensions.getPosition(otherNode0).y
+									- this.trafficGraphExtensions.getPosition(otherNode1).y, 2));
 					final double c = this.trafficGraphExtensions.getLength(edge1);
 
 					// Save cosBeta
@@ -199,17 +199,17 @@ public class TrafficLightIntersection extends TrafficRule {
 				final Node otherNode = edge.getOpposite(node);
 
 				final double a = 1;
-				final double b = Math.sqrt(Math.pow(this.trafficGraphExtensions.getPosition(otherNode).getX()
-						- this.trafficGraphExtensions.getPosition(node).getX(), 2)
-						+ Math.pow(this.trafficGraphExtensions.getPosition(otherNode).getY()
-								- this.trafficGraphExtensions.getPosition(node).getY() - 1, 2));
+				final double b = Math.sqrt(Math.pow(this.trafficGraphExtensions.getPosition(otherNode).x
+						- this.trafficGraphExtensions.getPosition(node).x, 2)
+						+ Math.pow(this.trafficGraphExtensions.getPosition(otherNode).y
+								- this.trafficGraphExtensions.getPosition(node).y - 1, 2));
 				final double c = this.trafficGraphExtensions.getLength(edge);
 
 				// Save cosBeta
 				double angle = (Math.acos(((Math.pow(a, 2) + Math.pow(c, 2)) - Math.pow(b, 2)) / (2 * a * c)) * 180)
 						/ Math.PI;
-				if (this.trafficGraphExtensions.getPosition(otherNode).getX() < this.trafficGraphExtensions
-						.getPosition(node).getX()) {
+				if (this.trafficGraphExtensions.getPosition(otherNode).x < this.trafficGraphExtensions
+						.getPosition(node).x) {
 					angle = 360 - angle;
 				}
 				anglesToEdges.put(angle, edge);

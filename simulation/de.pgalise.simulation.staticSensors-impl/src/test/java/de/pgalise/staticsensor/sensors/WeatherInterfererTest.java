@@ -44,7 +44,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherBaseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the all {@link WeatherInterferer}
@@ -92,7 +92,7 @@ public class WeatherInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = Vector2d.valueOf(1.0, 10.0);
+		testPosition = new Vector2d(1.0, 10.0);
 
 		/*
 		 * Mock of the Weather Controller

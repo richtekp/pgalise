@@ -49,7 +49,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
 import de.pgalise.util.generic.MutableBoolean;
 import de.pgalise.util.generic.function.Function;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Test for the Traffic Visualizer. Opens a window and draws a graph with driving vehicles.
@@ -208,8 +208,8 @@ public class TrafficVisualizerTest {
 		// CAR B
 		Vector2d apos = carA.getPosition();
 		Vector2d adir = carA.getDirection();
-		adir = adir.scale(0.15);
-		apos = apos.add(adir);
+		adir.scale(0.15);
+		apos.add(adir);
 
 		carB.setPosition(apos);
 		carB.setName("carB");
@@ -218,8 +218,8 @@ public class TrafficVisualizerTest {
 		// CAR C
 		apos = carA.getPosition();
 		adir = carA.getDirection();
-		adir = adir.scale(0.3);
-		apos = apos.add(adir);
+		adir.scale(0.3);
+		apos.add(adir);
 
 		carC.setPosition(apos);
 		carC.setName("carC");
@@ -228,8 +228,8 @@ public class TrafficVisualizerTest {
 		// CAR D
 		apos = carA.getPosition();
 		adir = carA.getDirection();
-		adir = adir.scale(0.7);
-		apos = apos.add(adir);
+		adir.scale(0.7);
+		apos.add(adir);
 
 		carD.setPosition(apos);
 		carD.setName("carD");
@@ -241,8 +241,8 @@ public class TrafficVisualizerTest {
 
 		apos = carE.getPosition();
 		adir = carE.getDirection();
-		adir = adir.scale(0.12);
-		apos = apos.add(adir);
+		adir.scale(0.12);
+		apos.add(adir);
 
 		carF.setPosition(apos);
 		carF.setName("carF");
@@ -250,8 +250,8 @@ public class TrafficVisualizerTest {
 
 		apos = carE.getPosition();
 		adir = carE.getDirection();
-		adir = adir.scale(0.32);
-		apos = apos.add(adir);
+		adir.scale(0.32);
+		apos.add(adir);
 
 		carG.setPosition(apos);
 		carG.setName("carG");
@@ -259,8 +259,8 @@ public class TrafficVisualizerTest {
 
 		apos = carE.getPosition();
 		adir = carE.getDirection();
-		adir = adir.scale(0.52);
-		apos = apos.add(adir);
+		adir.scale(0.52);
+		apos.add(adir);
 
 		carH.setPosition(apos);
 		carH.setName("carH");
@@ -268,8 +268,8 @@ public class TrafficVisualizerTest {
 
 		apos = carE.getPosition();
 		adir = carE.getDirection();
-		adir = adir.scale(0.82);
-		apos = apos.add(adir);
+		adir.scale(0.82);
+		apos.add(adir);
 
 		carI.setPosition(apos);
 		carI.setName("carI");
@@ -338,7 +338,7 @@ public class TrafficVisualizerTest {
 	 */
 	private Node addNode(Graph graph, String id, double x, double y) {
 		Node node = graph.addNode(id);
-		node.setAttribute("position", Vector2d.valueOf(x, y));
+		node.setAttribute("position", new Vector2d(x, y));
 		return node;
 	}
 

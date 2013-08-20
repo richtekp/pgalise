@@ -29,7 +29,7 @@ import de.pgalise.simulation.energy.EnergyConsumptionManagerLocal;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Energy Consumption manager that uses fuzzy rules and maximum energy values to determine the current energy consumption.

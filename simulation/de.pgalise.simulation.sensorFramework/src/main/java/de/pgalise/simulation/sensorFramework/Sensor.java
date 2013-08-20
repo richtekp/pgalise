@@ -20,7 +20,7 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.controller.SimulationComponent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Abstract super class of a Sensor. To create a concrete sensor instantiate a SensorDomain and use the add-method to

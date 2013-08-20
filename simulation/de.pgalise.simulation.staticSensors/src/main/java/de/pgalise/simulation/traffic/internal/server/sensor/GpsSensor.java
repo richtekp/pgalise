@@ -30,7 +30,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Class to generate a GPS sensor
@@ -102,7 +102,7 @@ public final class GpsSensor extends Sensor {
 	public GpsSensor(final Output output, final Object sensorId, final Vehicle<? extends VehicleData> vehicle,
 			final int updateLimit, final SensorType sensor, final GPSMapper mapper, final GpsInterferer interferer) {
 
-		super(output, sensorId, Vector2d.valueOf(0, 0), updateLimit);
+		super(output, sensorId, new Vector2d(0, 0), updateLimit);
 		if (mapper == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("mapper"));
 		}

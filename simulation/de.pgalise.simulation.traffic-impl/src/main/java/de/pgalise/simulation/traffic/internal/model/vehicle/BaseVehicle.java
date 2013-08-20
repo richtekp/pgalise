@@ -30,7 +30,7 @@ import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Superclass for vehicles
@@ -394,7 +394,9 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	}
 
 	protected final Vector2d getDirection(Vector2d a, Vector2d b) {
-		Vector2d dir = b.sub(a).normalize();
+		Vector2d dir = new Vector2d(b);
+		dir.sub(a);
+		dir.normalize();
 		return dir;
 	}
 
@@ -418,7 +420,8 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 			this.orientation = this.getOrientation(this.direction);
 
 			// calculate new position on the path
-			double scale = this.position.sub(this.getTrafficGraphExtensions().getPosition(this._getNextNode()))
+			this.position.sub(this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
+			double scale = this.position
 					.length();
 			// log.debug("Drüber gefahren: "+scale);
 			// log.debug(String.format("Edge (%s, %s): ", getNextNode().getId(),
@@ -426,8 +429,10 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 			// log.debug("DIR: "+NodeExtensions.getInstance().getPosition(path.get(path.indexOf(getNextNode())
 			// + 1)).
 			// sub(NodeExtensions.getInstance().getPosition(getNextNode())));
-			this.position = this.getTrafficGraphExtensions().getPosition(this._getNextNode())
-					.add(this.direction.scale(scale));
+			this.direction.scale(scale);
+			this.getTrafficGraphExtensions().getPosition(this._getNextNode())
+					.add(this.direction);
+			this.position = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
 
 			// log.debug(String.format("Vehicle \"%s\" passed by intermediate node \"%s\" (index: %s)", this.name,
 			// this._getNextNode().getId(), this.getIndex(this._getNextNode())));
@@ -522,7 +527,8 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 		// + ", direction: " + dir);
 		double distance = this.velocity * (double) (elapsedTime / 1000);
 		// log.debug("Distance: " + distance + ", Add to vector: " + (dir.scale(distance)));
-		pos = pos.add(dir.scale(distance));
+		dir.scale(distance);
+		pos.add(dir);
 		// log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
 		// ", direction: " + dir);
 		return pos;

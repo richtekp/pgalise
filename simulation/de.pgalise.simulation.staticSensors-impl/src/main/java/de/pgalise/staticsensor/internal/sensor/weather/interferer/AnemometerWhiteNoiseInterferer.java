@@ -17,7 +17,7 @@
 package de.pgalise.staticsensor.internal.sensor.weather.interferer;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that creates generally low errors

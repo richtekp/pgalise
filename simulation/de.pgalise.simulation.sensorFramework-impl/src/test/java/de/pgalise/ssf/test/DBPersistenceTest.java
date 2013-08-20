@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
 import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 public class DBPersistenceTest {
 
@@ -27,7 +27,7 @@ public class DBPersistenceTest {
 		System.out.println(s.getClass().getName());
 		s.clear();
 		for (int i = 0; i < 100; i++) {
-			s.saveSensor(new TestSensor(i + 1, Vector2d.valueOf(i, i)));
+			s.saveSensor(new TestSensor(i + 1, new Vector2d(i, i)));
 		}
 		for (int i = 0; i < 100; i++) {
 			s.deleteSensor(i + 1);

@@ -19,7 +19,7 @@ package de.pgalise.simulation.weather.service;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the

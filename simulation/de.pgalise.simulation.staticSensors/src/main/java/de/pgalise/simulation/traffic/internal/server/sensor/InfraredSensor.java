@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Class to generate an infrared sensor

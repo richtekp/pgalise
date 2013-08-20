@@ -37,7 +37,7 @@ import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.geolocation.GeoLocation;
-import de.pgalise.util.vector.Vector2d;
+import javax.vecmath.Vector2d;
 
 /**
  * Tests the public methods of the CSVEnergyConsumptionManager.
