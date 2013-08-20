@@ -425,7 +425,18 @@
 				<groupId>org.apache.tika</groupId>
 				<artifactId>tika-parsers</artifactId>
 				<version>1.1</version>
-			</dependency>		
+				<exclusions>
+					<exclusion>
+						<groupId>javassist</groupId>
+						<artifactId>javassist</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.17.1-GA</version>
+			</dependency>
 
 			<dependency>
 	  			<groupId>openmap</groupId>

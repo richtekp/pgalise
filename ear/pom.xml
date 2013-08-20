@@ -131,6 +131,22 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>someid</id>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<phase>package</phase>
+						<configuration>
+							<outputDirectory>target/apache-tomee/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
 				<version>2.6</version>
 				<configuration>
@@ -151,6 +167,9 @@
 							<contextRoot>/controlCenter</contextRoot>
 						</webModule>
 					</modules>
+					<libs>
+						<lib>org.eclipse.persistence:eclipselink:2.5.0</lib>
+					</libs>
 				</configuration>
 			</plugin>
 			<plugin>
