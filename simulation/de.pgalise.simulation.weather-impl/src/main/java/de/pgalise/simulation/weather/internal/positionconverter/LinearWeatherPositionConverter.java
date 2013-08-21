@@ -319,7 +319,7 @@ public final class LinearWeatherPositionConverter extends WeatherPositionConvert
 		}
 
 		// Calculate for one vector unit
-		result = ((this.getVectorUnit() / this.getGridDistance()) * result) * distance;
+		result = ((1 / this.getGridDistance()) * result) * distance;
 
 		// Check result?
 		return (T) ((result > 3) ? 3 : (T) result);

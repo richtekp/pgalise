@@ -49,12 +49,7 @@ public abstract class WeatherPositionConverterBase implements WeatherPositionCon
 	/**
 	 * Position of the reference values
 	 */
-	private Vector2d referencePosition;
-
-	/**
-	 * Distance between two points in the grid
-	 */
-	private double vectorUnit;
+	private Coordinate referencePosition;
 
 	/**
 	 * Constructor
@@ -70,23 +65,15 @@ public abstract class WeatherPositionConverterBase implements WeatherPositionCon
 		return this.gridDistance;
 	}
 
-	public Vector2d getReferencePosition() {
+	public Coordinate getReferencePosition() {
 		return this.referencePosition;
-	}
-
-	public double getVectorUnit() {
-		return this.vectorUnit;
 	}
 
 	public void setGridDistance(double gridDistance) {
 		this.gridDistance = gridDistance;
 	}
 
-	public void setReferencePosition(Vector2d referencePosition) {
+	public void setReferencePosition(Coordinate referencePosition) {
 		this.referencePosition = referencePosition;
-	}
-
-	public void setVectorUnit(double vectorUnit) {
-		this.vectorUnit = vectorUnit;
 	}
 }
