@@ -452,7 +452,7 @@ public class GraphExtensionsTest {
 		graphExtensions.setPosition(node, new Coordinate(12, 12));
 
 		// now test whether the attached position is correct
-		assertEquals(new Vector2d(12, 12), graphExtensions.getPosition(node));
+		assertEquals(new Coordinate(12, 12), graphExtensions.getPosition(node));
 
 	}
 
@@ -589,7 +589,7 @@ public class GraphExtensionsTest {
 		graphExtensions.setPosition(node, new Coordinate(12.3, 1232.231));
 
 		// test whether the position is correctly set
-		assertEquals(new Vector2d(12.3, 1232.231), graphExtensions.getPosition(node));
+		assertEquals(new Coordinate(12.3, 1232.231), graphExtensions.getPosition(node));
 
 		// try to change the node's position
 		try {
