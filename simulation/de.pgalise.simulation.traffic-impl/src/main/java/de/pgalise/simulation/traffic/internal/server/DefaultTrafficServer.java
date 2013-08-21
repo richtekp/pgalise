@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -48,7 +49,6 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.configReader.Identifier;
@@ -65,7 +65,8 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geometry.Geometry;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorHelperTrafficLightIntersection;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
@@ -193,8 +194,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	/**
 	 * GPS mapper (as EJB)
 	 */
-	@EJB
-	private GPSMapper mapper;
+	private Coordinate mapper;
 
 	/**
 	 * Service dictionary (as EJB)
@@ -351,7 +351,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	 *            List with all known traffic servers
 	 */
 	@SuppressWarnings("unchecked")
-	public DefaultTrafficServer(GPSMapper mapper, ServiceDictionary serviceDictionary, SensorRegistry sensorRegistry,
+	public DefaultTrafficServer(ServiceDictionary serviceDictionary, SensorRegistry sensorRegistry,
 			SimulationEventHandlerManager eventHandlerManager, List<TrafficServerLocal> slist,
 			SensorFactory sensorFactory, Graph graph) {
 		DefaultTrafficServer.JUNIT_TEST = true;
@@ -461,11 +461,6 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	@Override
 	public Geometry getCityZone() {
 		return this.cityZone;
-	}
-
-	@Override
-	public GPSMapper getGPSMapper() {
-		return this.mapper;
 	}
 
 	@Override
@@ -704,6 +699,8 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 		this.sensorController = new DefaultSensorController(this, this.sensorRegistry, this.sensorFactory, this.mapper,
 				this.trafficGraphExtensions);
 	}
+	
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	/**
 	 * Updates all vehicles of the traffic server
@@ -746,13 +743,13 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 					if (!varNode.getId().equals(curNode.getId()) && (vehicle.getState() != State.REACHED_TARGET)) {
 						log.debug("Vehicle " + vehicle.getName() + " passed node " + curNode.getId());
 						if (this.cityZone == null
-								|| this.cityZone.covers(this.trafficGraphExtensions.getPosition(curNode))) {
+								|| this.cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(curNode)))) {
 							this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(
 									VehicleEventType.VEHICLE_PASSED_NODE, this, vehicle, currentTime, 0));
 						} else {
 							// vehicle is driving out of boundaries
 							for (int j = 0; j < this.cityZones.size(); j++) {
-								if (this.cityZones.get(j).covers(this.trafficGraphExtensions.getPosition(curNode))) {
+								if (this.cityZones.get(j).covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(curNode)))) {
 									log.debug(String.format("Vehicle %s drove out of the bounderies of server %s",
 											vehicle.getName(), this.serverId));
 									log.debug(String.format("Sending vehicle %s to server %s", vehicle.getName(),

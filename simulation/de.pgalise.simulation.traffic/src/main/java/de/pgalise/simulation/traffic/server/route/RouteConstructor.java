@@ -24,7 +24,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
-import de.pgalise.simulation.shared.geometry.Geometry;
+import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.graphextension.GraphExtensions;
 import de.pgalise.simulation.shared.traffic.BusStop;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;

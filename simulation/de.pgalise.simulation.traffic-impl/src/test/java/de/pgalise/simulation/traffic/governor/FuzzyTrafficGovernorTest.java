@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.governor;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -86,7 +87,7 @@ public class FuzzyTrafficGovernorTest {
 		 */
 		weather = EasyMock.createNiceMock(WeatherController.class);
 		System.out.println("Neue Zeit: " + testTimestamp);
-		Vector2d testPosition = new Vector2d(1.0, 10.0);
+		Coordinate testPosition = new Coordinate(1.0, 10.0);
 
 		final Random random = new Random();
 

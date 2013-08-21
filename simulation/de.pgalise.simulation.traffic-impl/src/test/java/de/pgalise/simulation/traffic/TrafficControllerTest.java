@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
@@ -35,14 +36,13 @@ import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geometry.Geometry;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -57,16 +57,7 @@ import javax.vecmath.Vector2d;
  * @version 1.0 (Feb 15, 2013)
  */
 public class TrafficControllerTest {
-
-	/**
-	 * GPS mapper
-	 */
-	private GPSMapper mapper;
-
-	@Before
-	public void setUp() {
-		this.mapper = new DefaultGPSMapper(800, 1000);
-	}
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
@@ -89,7 +80,7 @@ public class TrafficControllerTest {
 			public Object answer() throws Throwable {
 				Geometry g = (Geometry) getCurrentArguments()[0];
 
-				assertTrue(g.getStartX() == 0 && g.getStartY() == 0 && g.getWidth() == 800 && g.getHeight() == 500);
+				assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.getEnvelopeInternal().getMinY() == 0 && g.getEnvelopeInternal().getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
 				return null;
 			}
 
@@ -105,7 +96,7 @@ public class TrafficControllerTest {
 			@Override
 			public Object answer() throws Throwable {
 				Geometry g = (Geometry) getCurrentArguments()[0];
-				assertTrue(g.getStartX() == 0 && g.getStartY() == 500 && g.getWidth() == 800 && g.getHeight() == 500);
+				assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.getEnvelopeInternal().getMinY() == 500 && g.getEnvelopeInternal().getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
 				return null;
 			}
 
@@ -113,7 +104,7 @@ public class TrafficControllerTest {
 		s2.start(startParam);
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(mapper, Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}),Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -149,7 +140,7 @@ public class TrafficControllerTest {
 		s2.start(null);
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(mapper, Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -182,7 +173,7 @@ public class TrafficControllerTest {
 		s2.reset();
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(mapper, Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -215,7 +206,7 @@ public class TrafficControllerTest {
 		s2.processMovedVehicles();
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(mapper, Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -237,9 +228,9 @@ public class TrafficControllerTest {
 		StartParameter startParam = createNiceMock(StartParameter.class);
 
 		// create sensors
-		SensorHelper sensorHelper = new SensorHelper(0, mapper.convertVectorToGPS(new Vector2d(100, 100)),
+		SensorHelper sensorHelper = new SensorHelper(0, new Coordinate(100, 100),
 				SensorType.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>(), "");
-		SensorHelper sensorHelper2 = new SensorHelper(1, mapper.convertVectorToGPS(new Vector2d(100, 600)),
+		SensorHelper sensorHelper2 = new SensorHelper(1, new Coordinate(100, 600),
 				SensorType.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>(), "");
 
 		TrafficServer s1 = createMock(TrafficServer.class);
@@ -261,7 +252,7 @@ public class TrafficControllerTest {
 		s2.deleteSensor(sensorHelper);
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(mapper, Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);

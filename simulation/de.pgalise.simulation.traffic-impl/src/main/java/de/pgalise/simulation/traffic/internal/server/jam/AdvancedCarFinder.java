@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.jam;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -93,12 +94,16 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		// Berechnen der Endposition (Ende der Visibilityrange auf der letzten
 		// Kante)
 		double diff = edgesLength - visibilityRange;
-		Vector2d dir = new Vector2d(trafficGraphExtensions.getPosition(toNode));
-		dir.sub(trafficGraphExtensions.getPosition(fromNode));
+		Coordinate toNodePosition = trafficGraphExtensions.getPosition(toNode);
+		Vector2d dir = new Vector2d(toNodePosition.x, toNodePosition.y);
+		Coordinate fromNodePosition = trafficGraphExtensions.getPosition(fromNode);
+		Vector2d fromNodeVector = new Vector2d(fromNodePosition.x, fromNodePosition.y);
+		dir.sub(fromNodeVector);
 		dir.normalize();
 		dir.scale(diff);
-		Vector2d endPosition = trafficGraphExtensions.getPosition(toNode);
-		endPosition.sub(dir);
+		Vector2d endPositionVector = new Vector2d(toNodePosition.x, toNodePosition.y);
+		endPositionVector.sub(dir);
+		Coordinate endPosition = new Coordinate(endPositionVector.x, endPositionVector.y);
 
 		// AdvancedCarFinder.log.debug("Endposition: " + endPosition.toString());
 
@@ -121,7 +126,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 	@Override
 	public Vehicle<? extends VehicleData> findNearestCar(Vehicle<? extends VehicleData> car, long time) {
 		List<Vehicle<? extends VehicleData>> vehicles = this.findCars(car, time);
-		Vector2d carPos = car.getPosition();
+		Vector2d carPos = new Vector2d(car.getPosition().x, car.getPosition().y);
 
 		Vehicle<? extends VehicleData> nearestCar = null;
 		double distance = -1;
@@ -129,7 +134,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		for (Vehicle<? extends VehicleData> v : vehicles) {
 			// AdvancedCarFinder.log.debug("Checking " + v.getName() + " as potential nearest car with its distance: "
 			// + v.getPosition().sub(car.getPosition()).length());
-			Vector2d otherCarPos = v.getPosition();
+			Vector2d otherCarPos = new Vector2d(v.getPosition().x, v.getPosition().y);
 			otherCarPos.sub(carPos);
 			if (distance == -1) {
 				nearestCar = v;

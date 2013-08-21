@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.shared.graphextension;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
@@ -108,9 +109,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 		if (!this.hasPosition(edge.getNode0()) || !this.hasPosition(edge.getNode1())) {
 			return null;
 		}
-		Vector2d result = this.getPosition(edge.getNode0());
-		result.sub(this.getPosition(edge.getNode1()));
-		return result;
+		return getVectorBetween(edge.getSourceNode(), edge.getTargetNode());
 	}
 
 	/**
@@ -151,7 +150,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	public final Vector2d getPosition(final Node node) throws IllegalArgumentException {
+	public final Coordinate getPosition(final Node node) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		return node.getAttribute(DefaultGraphExtensions.POSITION);
 	}
@@ -179,8 +178,10 @@ public class DefaultGraphExtensions implements GraphExtensions {
 		if (!this.hasPosition(to)) {
 			throw new IllegalStateException("Argument 'node2' has no position data attached.");
 		}
-		Vector2d result = this.getPosition(from);
-		result.sub(this.getPosition(to));
+		Coordinate fromPosition = this.getPosition(from);
+		Vector2d result = new Vector2d(fromPosition.x, fromPosition.y);
+		Coordinate toPosition = this.getPosition(to);
+		result.sub(new Vector2d(toPosition.x, toPosition.y));
 		return result;
 	}
 
@@ -209,7 +210,8 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	public final Node setPosition(final Node node, final Vector2d position) throws IllegalArgumentException {
+	@Override
+	public Node setPosition(final Node node, final Coordinate position) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		if (node.hasAttribute(DefaultGraphExtensions.POSITION)) {
 			throw new IllegalStateException("Argument \"node\" has already position property attached.");
@@ -538,4 +540,5 @@ public class DefaultGraphExtensions implements GraphExtensions {
 		checkNode(node2);
 		return this.getLength(node1.getEdgeBetween(node2));
 	}
+
 }

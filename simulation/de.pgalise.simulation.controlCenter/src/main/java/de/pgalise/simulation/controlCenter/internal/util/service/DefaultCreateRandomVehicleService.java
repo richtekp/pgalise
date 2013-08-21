@@ -30,7 +30,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
 import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.VehicleInformation;
@@ -85,7 +85,7 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 				usedSensorIDsCopy.add(sensorID);
 
 				sensorHelperList.add(new SensorHelper(sensorID, 
-						new GeoLocation(), 
+						new Coordinate(), 
 						SensorType.GPS_CAR, 
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_CAR, withSensorInterferer), ""));
 			}
@@ -112,7 +112,7 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 				}
 				usedSensorIDsCopy.add(sensorID);
 
-				sensorHelperList.add(new SensorHelper(sensorID, new GeoLocation(), SensorType.GPS_BIKE, 
+				sensorHelperList.add(new SensorHelper(sensorID, new Coordinate(), SensorType.GPS_BIKE, 
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_BIKE, withSensorInterferer), ""));
 			}
 
@@ -138,7 +138,7 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 				}
 				usedSensorIDsCopy.add(sensorID);
 
-				sensorHelperList.add(new SensorHelper(sensorID, new GeoLocation(), SensorType.GPS_TRUCK, 
+				sensorHelperList.add(new SensorHelper(sensorID, new Coordinate(), SensorType.GPS_TRUCK, 
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_TRUCK, withSensorInterferer), ""));
 			}
 
@@ -164,7 +164,7 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 				}
 				usedSensorIDsCopy.add(sensorID);
 
-				sensorHelperList.add(new SensorHelper(sensorID, new GeoLocation(), SensorType.GPS_MOTORCYCLE, 
+				sensorHelperList.add(new SensorHelper(sensorID, new Coordinate(), SensorType.GPS_MOTORCYCLE, 
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_MOTORCYCLE, withSensorInterferer), ""));
 			}
 

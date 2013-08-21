@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Contains streets, bus stops and landuse information.
@@ -137,7 +137,7 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param radiusInMeter
 	 * @return
 	 */
-	public Map<EnergyProfileEnum, List<Building>> getBuildings(GeoLocation geolocation, int radiusInMeter);
+	public Map<EnergyProfileEnum, List<Building>> getBuildings(Coordinate geolocation, int radiusInMeter);
 	
 	/**
 	 * Returns all buildings in the radius.
@@ -145,7 +145,7 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param radiusInMeter
 	 * @return
 	 */
-	public List<Building> getBuildingsInRadius(GeoLocation centerPoint, int radiusInMeter);
+	public List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter);
 	
 	/**
 	 * Returns all nodes in the boundary.

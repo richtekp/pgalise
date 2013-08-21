@@ -17,7 +17,7 @@
 package de.pgalise.staticsensor.internal.sensor.weather.interferer;
 
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
-import javax.vecmath.Vector2d;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Represents an interferer that shows no errors
@@ -29,7 +29,7 @@ import javax.vecmath.Vector2d;
 public final class WeatherNoInterferer implements WeatherInterferer {
 
 	@Override
-	public double interfere(double mutableValue, Vector2d position, long simTime) {
+	public double interfere(double mutableValue, Coordinate position, long simTime) {
 		// Returns with no change
 		return mutableValue;
 	}

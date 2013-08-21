@@ -18,7 +18,7 @@ package de.pgalise.simulation.shared.sensor;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 /**
  * Sensorhelper for traffic light intersection
  * @author Marcus
@@ -45,7 +45,7 @@ public class SensorHelperTrafficLightIntersection extends SensorHelper {
 	 */
 	public SensorHelperTrafficLightIntersection(
 			int sensorID, 
-			GeoLocation position, 
+			Coordinate position, 
 			List<Integer> trafficLightIds,
 			List<SensorInterfererType> sensorInterfererList, 
 			String nodeId) {

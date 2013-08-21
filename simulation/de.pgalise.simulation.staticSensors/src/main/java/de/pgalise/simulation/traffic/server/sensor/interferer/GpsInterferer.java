@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.server.sensor.interferer;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import javax.vecmath.Vector2d;
 
@@ -41,6 +42,5 @@ public interface GpsInterferer extends SensorInterferer {
 	 *            Vector unit of the gps mapper
 	 * @return new position as Vector2d
 	 */
-	Vector2d interfere(final Vector2d mutablePosition, final Vector2d realPosition, final long simTime,
-			final double vectorUnit);
+	Coordinate interfere(final Coordinate mutablePosition, final Coordinate realPosition, final long simTime);
 }

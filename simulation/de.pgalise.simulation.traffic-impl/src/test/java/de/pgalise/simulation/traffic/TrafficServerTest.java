@@ -60,10 +60,8 @@ import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultSimulationEventHandlerManager;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
@@ -78,9 +76,11 @@ import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
 import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
-import de.pgalise.simulation.shared.geometry.Geometry;
-import de.pgalise.simulation.shared.geometry.Rectangle;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import java.awt.Rectangle;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -106,6 +106,7 @@ import de.pgalise.util.GTFS.service.DefaultBusService;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import javax.vecmath.Vector2d;
+import org.geotools.geometry.jts.JTS;
 
 /**
  * Tests the {@link TrafficServer}
@@ -118,11 +119,6 @@ public class TrafficServerTest {
 	 * Log
 	 */
 	private static final Logger log = LoggerFactory.getLogger(TrafficServerTest.class);
-
-	/**
-	 * GPS mapper
-	 */
-	private static GPSMapper mapper;
 
 	/**
 	 * CityInfrastructureData
@@ -219,7 +215,6 @@ public class TrafficServerTest {
 
 	@BeforeClass
 	public static void init() throws IOException {
-		mapper = new DefaultGPSMapper();
 		DefaultOSMCityInfrastructureDataService cityFactory = new DefaultOSMCityInfrastructureDataService();
 		city = cityFactory.createCityInfrastructureData(new File(OSM), new File(BUS_STOPS), null);
 
@@ -240,7 +235,7 @@ public class TrafficServerTest {
 		server = new FileOutputServer(new File(CSV_OUTPUT), null, 6666);
 		server.open();
 		sensorFactory = new DefaultSensorFactory(sd.getRandomSeedService(), sd.getController(WeatherController.class),
-				sd.getController(EnergyController.class), mapper, new TcpIpOutput("127.0.0.1", 6666,
+				sd.getController(EnergyController.class), new TcpIpOutput("127.0.0.1", 6666,
 						new TcpIpKeepOpenStrategy()));
 		TrafficServerTest.sd.getRandomSeedService().init(SIMULATION_START);
 	}
@@ -280,7 +275,7 @@ public class TrafficServerTest {
 		log.debug("MOVE VEHICLE TEST");
 		log.debug("#################");
 		Disassembler dis = new QuadrantDisassembler();
-		List<Geometry> gs = dis.disassemble(new Rectangle(0, 0, mapper.getWidth(), mapper.getHeight()), 2);
+		List<Geometry> gs = dis.disassemble(JTS.toGeometry(new Envelope(0, 0, 100, 200)), 2);
 
 		TrafficServerLocal server2 = createTrafficServer(null);
 		server2.setCityZone(gs.get(1), 1);
@@ -370,6 +365,8 @@ public class TrafficServerTest {
 
 		return car2;
 	}
+	
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	/**
 	 * @return nodes from two distinct areas
@@ -383,7 +380,7 @@ public class TrafficServerTest {
 
 			if (nodes[0] == null) {
 				if (gs.get(0).covers(
-						server.getTrafficGraphExtesions().getPosition(server.getGraph().getNode(trip.getStartNode())))) {
+						GEOMETRY_FACTORY.createPoint(server.getTrafficGraphExtesions().getPosition(server.getGraph().getNode(trip.getStartNode()))))) {
 					log.debug("Found node in the first area: "
 							+ trip.getStartNode()
 							+ ", "
@@ -395,7 +392,7 @@ public class TrafficServerTest {
 			}
 			if (nodes[1] == null) {
 				if (gs.get(1).covers(
-						server.getTrafficGraphExtesions().getPosition(server.getGraph().getNode(trip2.getStartNode())))) {
+						GEOMETRY_FACTORY.createPoint(server.getTrafficGraphExtesions().getPosition(server.getGraph().getNode(trip2.getStartNode()))))) {
 					log.debug("Found node in the second area: "
 							+ trip2.getStartNode()
 							+ ", "
@@ -485,9 +482,9 @@ public class TrafficServerTest {
 		for (int i = 0; i < tnbt; i++) {
 			UUID id = UUID.randomUUID();
 			List<SensorHelper> sensorLists = new ArrayList<>();
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.GPS_BUS,
+			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_BUS,
 					new ArrayList<SensorInterfererType>(), ""));
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.INFRARED,
+			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.INFRARED,
 					new ArrayList<SensorInterfererType>(), ""));
 			busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true,
 					VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
@@ -543,7 +540,7 @@ public class TrafficServerTest {
 
 		StartParameter startParam = new StartParameter();
 		server.start(startParam);
-		GeoLocation location = null;
+		Coordinate location = null;
 		Node nodeForStaticSensor = null;
 
 		if (VEHICLE_TYPE.equals("car") || VEHICLE_TYPE.equals("all")) {
@@ -610,7 +607,7 @@ public class TrafficServerTest {
 
 		log.debug("##############################################################################");
 
-		location = server.getGPSMapper().convertVectorToGPS((Vector2d) nodeForStaticSensor.getAttribute("position"));
+		location = ((Coordinate) nodeForStaticSensor.getAttribute("position"));
 		if (location != null) {
 			SensorHelper helper = new SensorHelper(getUniqueSensorID(), location, SensorType.INDUCTIONLOOP,
 					new LinkedList<SensorInterfererType>(), "");
@@ -688,7 +685,7 @@ public class TrafficServerTest {
 				List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
 
 				List<SensorHelper> sensorLists = new ArrayList<>();
-				sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.GPS_CAR,
+				sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_CAR,
 						new ArrayList<SensorInterfererType>(), ""));
 				trip = new TrafficTrip("97775877", "373877298", SIMULATION_START + 4000);
 				vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(UUID.randomUUID(),
@@ -747,7 +744,7 @@ public class TrafficServerTest {
 				List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
 
 				List<SensorHelper> sensorLists = new ArrayList<>();
-				sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.GPS_CAR,
+				sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_CAR,
 						new ArrayList<SensorInterfererType>(), ""));
 				vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(UUID.randomUUID(),
 						true, VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1, null, "K.A.R.R")));
@@ -791,9 +788,9 @@ public class TrafficServerTest {
 
 		SENSOR_REGISTRY = new DefaultSensorRegistry(createNiceMock(SensorPersistenceService.class));
 
-		TrafficServerLocal server = new DefaultTrafficServer(mapper, sd, SENSOR_REGISTRY,
+		TrafficServerLocal server = new DefaultTrafficServer(sd, SENSOR_REGISTRY,
 				new DefaultSimulationEventHandlerManager(), serverList, sensorFactory, null);
-		server.setCityZone(new Rectangle(0, 0, mapper.getWidth(), mapper.getHeight()), 0);
+		server.setCityZone(JTS.toGeometry(new Envelope(0, 0, 100, 200)), 0);
 
 		InitParameter initParam = new InitParameter();
 		initParam.setCityInfrastructureData(city);

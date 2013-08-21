@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.staticsensor.sensor.weather;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -58,7 +59,7 @@ public abstract class WeatherSensor extends Sensor {
 	 * @param weatherInterferer
 	 *            the {@link WeatherInterferer}
 	 */
-	protected WeatherSensor(Output output, Object sensorId, final Vector2d position,
+	protected WeatherSensor(Output output, Object sensorId, final Coordinate position,
 			WeatherController weatherController, int updateLimit, final WeatherInterferer weatherInterferer) {
 		super(output, sensorId, position, updateLimit);
 		if (weatherController == null) {

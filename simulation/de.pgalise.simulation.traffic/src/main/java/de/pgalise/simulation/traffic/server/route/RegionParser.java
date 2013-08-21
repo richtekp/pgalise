@@ -24,7 +24,6 @@ import org.graphstream.graph.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.Node;
 import de.pgalise.simulation.shared.city.Way;
@@ -47,11 +46,6 @@ public class RegionParser {
 		}
 	}
 
-	/**
-	 * GPS mapper
-	 */
-	private final GPSMapper gpsMapper;
-
 	private List<org.graphstream.graph.Node> homeNodes = new ArrayList<org.graphstream.graph.Node>();
 
 	private CityInfrastructureData trafficInformation;
@@ -64,8 +58,7 @@ public class RegionParser {
 	 * @param gpsMapper
 	 * @param trafficInformation
 	 */
-	public RegionParser(GPSMapper gpsMapper, CityInfrastructureData trafficInformation) {
-		this.gpsMapper = gpsMapper;
+	public RegionParser(CityInfrastructureData trafficInformation) {
 		this.trafficInformation = trafficInformation;
 	}
 
@@ -133,9 +126,5 @@ public class RegionParser {
 
 	public void setWorkNodes(List<org.graphstream.graph.Node> workNodes) {
 		this.workNodes = workNodes;
-	}
-
-	public GPSMapper getGpsMapper() {
-		return gpsMapper;
 	}
 }

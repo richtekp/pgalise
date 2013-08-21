@@ -16,6 +16,9 @@
  
 package de.pgalise.simulation.energy.internal;
 
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LengthUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +34,7 @@ import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.ChangeEnergyConsumptionEvent;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Default implementation of energy event strategy.
@@ -117,11 +120,11 @@ public class DefaultEnergyEventStrategy implements EnergyEventStrategyLocal {
 
 	@Override
 	public double getEnergyConsumptionInKWh(long timestamp,
-			EnergyProfileEnum key, GeoLocation geoLocation,
+			EnergyProfileEnum key, Coordinate geoLocation,
 			double consumptionWithoutEvents) {
 		
 		List<DistanceResult<ChangeEnergyConsumptionEvent>> results = this.changeEnergyConsumptionEventDataTree.nearestNeighbour(this.PR_TREE_DISTANCE_CALCULATOR,
-				this.PR_EVENT_FILTER, 1, new SimplePointND(geoLocation.getLatitude().getDegree(), geoLocation.getLongitude().getDegree()));
+				this.PR_EVENT_FILTER, 1, new SimplePointND(geoLocation.x, geoLocation.y));
 
 		for(DistanceResult<ChangeEnergyConsumptionEvent> result : results) {
 			/* Result distance is in KM */
@@ -148,12 +151,12 @@ public class DefaultEnergyEventStrategy implements EnergyEventStrategyLocal {
 
 		@Override
 		public double getMax(int arg0, ChangeEnergyConsumptionEvent arg1) {
-			return arg0 == 0 ? arg1.getPosition().getLatitude().getDegree() : arg1.getPosition().getLongitude().getDegree();
+			return arg0 == 0 ? arg1.getPosition().x : arg1.getPosition().y;
 		}
 
 		@Override
 		public double getMin(int arg0, ChangeEnergyConsumptionEvent arg1) {
-			return arg0 == 0 ? arg1.getPosition().getLatitude().getDegree() : arg1.getPosition().getLongitude().getDegree();
+			return arg0 == 0 ? arg1.getPosition().x : arg1.getPosition().y;
 		}
 	}
 	
@@ -165,8 +168,9 @@ public class DefaultEnergyEventStrategy implements EnergyEventStrategyLocal {
 		private static final long serialVersionUID = -6193813933897564417L;
 
 		@Override
-		public double distanceTo(ChangeEnergyConsumptionEvent e, PointND p) {			
-			return new GeoLocation(p.getOrd(0), p.getOrd(1)).getDistanceInKM(e.getPosition());
+		public double distanceTo(ChangeEnergyConsumptionEvent e, PointND p) {
+			double retValue = LatLngTool.distance(new LatLng(p.getOrd(0), p.getOrd(1)), new LatLng(e.getPosition().x, e.getPosition().y), LengthUnit.METER);
+			return retValue;
 		}
 	}
 	

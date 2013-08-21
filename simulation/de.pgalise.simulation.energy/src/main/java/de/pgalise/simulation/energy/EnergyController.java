@@ -18,7 +18,7 @@ package de.pgalise.simulation.energy;
 
 
 import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
 import javax.vecmath.Vector2d;
 
@@ -41,18 +41,6 @@ public interface EnergyController extends Controller {
 	 *            the measure radius around the given position
 	 * @return double value in KWh
 	 */
-	public double getEnergyConsumptionInKWh(long timestamp, GeoLocation position, int measureRadiusInMeter);
+	public double getEnergyConsumptionInKWh(long timestamp, Coordinate position, int measureRadiusInMeter);
 
-	/**
-	 * Returns the current energy consumption on the given point.
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @param position
-	 *            Position
-	 * @param measureRadiusInMeter
-	 *            Radius
-	 * @return double value
-	 */
-	public double getEnergyConsumptionInKWh(long timestamp, Vector2d position, int measureRadiusInMeter);
 }

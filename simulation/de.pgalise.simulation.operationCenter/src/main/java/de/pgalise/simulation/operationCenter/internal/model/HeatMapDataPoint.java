@@ -16,25 +16,25 @@
  
 package de.pgalise.simulation.operationCenter.internal.model;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 /**
  * Not used so far.
  * @author Dennis
  */
 public class HeatMapDataPoint {
-	private GeoLocation lonlat;
+	private Coordinate lonlat;
 	private double count;
 	
-	public HeatMapDataPoint(GeoLocation position, double count) {
+	public HeatMapDataPoint(Coordinate position, double count) {
 		this.lonlat = position;
 		this.count = count;
 	}
 
-	public GeoLocation getPosition() {
+	public Coordinate getPosition() {
 		return lonlat;
 	}
 
-	public void setPosition(GeoLocation position) {
+	public void setPosition(Coordinate position) {
 		this.lonlat = position;
 	}
 

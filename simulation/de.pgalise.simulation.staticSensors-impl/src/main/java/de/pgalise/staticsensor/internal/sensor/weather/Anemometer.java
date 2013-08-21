@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -57,7 +58,7 @@ public final class Anemometer extends WeatherSensor {
 	 *             if argument 'weatherController' is 'null' or if argument 'weatherController' is not a type of
 	 *             {@link AnemometerWhiteNoiseInterferer}
 	 */
-	public Anemometer(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public Anemometer(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			WeatherInterferer weatherInterferer) {
 		this(output, sensorId, position, weatherController, 1, weatherInterferer);
 	}
@@ -82,7 +83,7 @@ public final class Anemometer extends WeatherSensor {
 	 *             if argument 'weatherController' is 'null' or if argument 'weatherController' is not a type of
 	 *             {@link AnemometerWhiteNoiseInterferer}
 	 */
-	public Anemometer(final Output output, final Object sensorId, final Vector2d position,
+	public Anemometer(final Output output, final Object sensorId, final Coordinate position,
 			final WeatherController weatherController, final int updateLimit, final WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);

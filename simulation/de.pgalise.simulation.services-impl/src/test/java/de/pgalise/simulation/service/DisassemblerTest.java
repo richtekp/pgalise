@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -28,11 +30,13 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Test;
 
-import de.pgalise.simulation.shared.geometry.Geometry;
-import de.pgalise.simulation.shared.geometry.Rectangle;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import java.awt.Rectangle;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import javax.vecmath.Vector2d;
+import org.geotools.geometry.jts.JTS;
 
 /**
  * Tests the {@link QuadrantDisassembler}
@@ -71,7 +75,7 @@ public class DisassemblerTest {
 		node = graph.addNode("g");
 		node.setAttribute("position", new Vector2d(80, 45));
 
-		List<Geometry> quadrants = dis.disassemble(new Rectangle(0, 0, 100, 60), 4);
+		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(0, 0, 100, 60)), 4);
 
 		// es gibt 3 quadranten
 		assertEquals(4, quadrants.size());
@@ -95,6 +99,8 @@ public class DisassemblerTest {
 		assertTrue(this.getNodes(graph.getNodeSet(), quadrants.get(3)).contains("f"));
 		assertTrue(this.getNodes(graph.getNodeSet(), quadrants.get(3)).contains("g"));
 	}
+	
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	/**
 	 * Returns the nodes as String
@@ -109,7 +115,7 @@ public class DisassemblerTest {
 		String str = "";
 		for (Iterator<Node> i = nodes.iterator(); i.hasNext();) {
 			Node node = i.next();
-			if (geometry.covers((Vector2d) node.getAttribute("position"))) {
+			if (geometry.covers(GEOMETRY_FACTORY.createPoint(((Coordinate) node.getAttribute("position"))))) {
 				str += node.getId();
 			}
 		}

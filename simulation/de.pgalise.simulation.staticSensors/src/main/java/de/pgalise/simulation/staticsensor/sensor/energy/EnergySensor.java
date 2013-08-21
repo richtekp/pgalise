@@ -16,13 +16,13 @@
  
 package de.pgalise.simulation.staticsensor.sensor.energy;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Abstract superclass of an energy sensor.
@@ -72,7 +72,7 @@ public abstract class EnergySensor extends Sensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	protected EnergySensor(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	protected EnergySensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int updateLimit,
 			EnergyInterferer interferer) {
 		super(output, sensorId, position, updateLimit);

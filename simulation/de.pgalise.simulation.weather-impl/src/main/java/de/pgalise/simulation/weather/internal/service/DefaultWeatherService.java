@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -107,7 +107,7 @@ public final class DefaultWeatherService implements WeatherService {
 	/**
 	 * Position of the reference point
 	 */
-	private Vector2d referencePosition;
+	private Coordinate referencePosition;
 
 	/**
 	 * Values linked to the reference point
@@ -130,24 +130,17 @@ public final class DefaultWeatherService implements WeatherService {
 	private List<WeatherStrategyHelper> plannedEventModifiers;
 
 	/**
-	 * GPSMapper
-	 */
-	private GPSMapper mapper;
-
-	/**
 	 * Constructor
 	 * 
 	 * @param city
 	 *            City
+	 * @param loader  
 	 */
-	public DefaultWeatherService(City city, GPSMapper mapper, WeatherLoader loader) {
-		if (mapper == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("mapper"));
-		} else if (city == null) {
+	public DefaultWeatherService(City city, WeatherLoader loader) {
+		if (city == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("city"));
 		}
-		this.mapper = mapper;
-		this.referencePosition = this.mapper.getCenterPoint();
+		this.referencePosition = city.getReferencePoint();
 		this.city = city;
 		this.loader = loader;
 
@@ -155,7 +148,7 @@ public final class DefaultWeatherService implements WeatherService {
 		this.referenceValues = null;
 		this.parameters = new HashMap<>();
 		this.cachedParameters = new HashMap<>();
-		this.gridConverter = new LinearWeatherPositionConverter(this.mapper);
+		this.gridConverter = new LinearWeatherPositionConverter();
 		this.plannedEventModifiers = new ArrayList<>();
 
 		// Add parameters
@@ -271,7 +264,7 @@ public final class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public Vector2d getReferencePosition() {
+	public Coordinate getReferencePosition() {
 		return this.referencePosition;
 	}
 
@@ -332,7 +325,7 @@ public final class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Vector2d position)
+	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position)
 			throws IllegalArgumentException, NoWeatherDataFoundException {
 		if (key == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("key"));
@@ -363,11 +356,6 @@ public final class DefaultWeatherService implements WeatherService {
 	@Override
 	public void setCity(City city) {
 		this.city = city;
-	}
-
-	@Override
-	public void setGPSMapper(GPSMapper mapper) {
-		this.mapper = mapper;
 	}
 
 	public void setLoadedTimestamp(long loadedTimestamp) {

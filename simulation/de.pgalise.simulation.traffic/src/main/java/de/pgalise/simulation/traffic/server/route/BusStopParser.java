@@ -72,10 +72,10 @@ public class BusStopParser {
 				double lat = rs.getDouble("stop_lat");
 				double lon = rs.getDouble("stop_lon");
 				Boundary boundary = this.trafficInformation.getBoundary();
-				double latSW = boundary.getSouthWest().getLatitude().getDegree();
-				double lonSW = boundary.getSouthWest().getLongitude().getDegree();
-				double latNE = boundary.getNorthEast().getLatitude().getDegree();
-				double lonNE = boundary.getNorthEast().getLongitude().getDegree();
+				double latSW = boundary.getSouthWest().x;
+				double lonSW = boundary.getSouthWest().y;
+				double latNE = boundary.getNorthEast().x;
+				double lonNE = boundary.getNorthEast().y;
 				if ((lat > latSW) && (lat < latNE) && (lon > lonSW) && (lon < lonNE)) {
 					de.pgalise.simulation.shared.city.Node osmNode = this.trafficInformation.getNearestNode(lat,
 							lon);

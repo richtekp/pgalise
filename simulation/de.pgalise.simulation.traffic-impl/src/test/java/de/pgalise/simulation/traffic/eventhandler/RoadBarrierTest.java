@@ -51,10 +51,8 @@ import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultSimulationEventHandlerManager;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
@@ -67,7 +65,7 @@ import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
 import de.pgalise.simulation.shared.event.traffic.RoadBarrierTrafficEvent;
 import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -102,11 +100,6 @@ public class RoadBarrierTest {
 	 * Log
 	 */
 	private static final Logger log = LoggerFactory.getLogger(RoadBarrierTest.class);
-
-	/**
-	 * GPS mapper
-	 */
-	private static GPSMapper mapper;
 
 	/**
 	 * CityInfrastructureData
@@ -198,7 +191,6 @@ public class RoadBarrierTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		mapper = new DefaultGPSMapper();
 		DefaultOSMCityInfrastructureDataService cityFactory = new DefaultOSMCityInfrastructureDataService();
 		city = cityFactory.createCityInfrastructureData(new File(OSM), new File(BUS_STOPS), null);
 
@@ -219,7 +211,7 @@ public class RoadBarrierTest {
 		server = new FileOutputServer(new File(CSV_OUTPUT), null, 6666);
 		server.open();
 		sensorFactory = new DefaultSensorFactory(sd.getRandomSeedService(), sd.getController(WeatherController.class),
-				sd.getController(EnergyController.class), mapper, new TcpIpOutput("127.0.0.1", 6666,
+				sd.getController(EnergyController.class), new TcpIpOutput("127.0.0.1", 6666,
 						new TcpIpKeepOpenStrategy()));
 		RoadBarrierTest.sd.getRandomSeedService().init(SIMULATION_START);
 	}
@@ -315,7 +307,7 @@ public class RoadBarrierTest {
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
-				new GeoLocation(), closedNode.getId());
+				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
@@ -427,7 +419,7 @@ public class RoadBarrierTest {
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
-				new GeoLocation(), closedNode.getId());
+				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
@@ -488,9 +480,9 @@ public class RoadBarrierTest {
 		for (int i = 0; i < tnbt; i++) {
 			UUID id = UUID.randomUUID();
 			List<SensorHelper> sensorLists = new ArrayList<>();
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.GPS_BUS,
+			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_BUS,
 					new ArrayList<SensorInterfererType>(), ""));
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.INFRARED,
+			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.INFRARED,
 					new ArrayList<SensorInterfererType>(), ""));
 			busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true,
 					VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
@@ -573,7 +565,7 @@ public class RoadBarrierTest {
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
-				new GeoLocation(), closedNode.getId());
+				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
@@ -635,7 +627,7 @@ public class RoadBarrierTest {
 
 		SENSOR_REGISTRY = new DefaultSensorRegistry(createNiceMock(SensorPersistenceService.class));
 
-		TrafficServerLocal server = new DefaultTrafficServer(mapper, sd, SENSOR_REGISTRY,
+		TrafficServerLocal server = new DefaultTrafficServer(sd, SENSOR_REGISTRY,
 				new DefaultSimulationEventHandlerManager(), serverList, sensorFactory, null);
 
 		InitParameter initParam = new InitParameter();

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import javax.vecmath.Vector2d;
 
 /**
@@ -69,7 +70,7 @@ public enum Orientation {
 	 * @return True, if the position is beyond the border position
 	 */
 	public final static boolean isBeyond(Orientation orientation,
-			Vector2d position, Vector2d borderPosition) {
+			Coordinate position, Coordinate borderPosition) {
 		return (((orientation == Orientation.NORTH) && (position.y <= borderPosition
 				.y))
 				|| ((orientation == Orientation.NORTH_EAST)

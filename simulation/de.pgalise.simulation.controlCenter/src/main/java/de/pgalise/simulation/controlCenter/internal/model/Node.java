@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.model;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Wraps lat/lng with an ID, position and information if it's on a street or/and on a junction.
@@ -25,7 +25,7 @@ import de.pgalise.simulation.shared.geolocation.GeoLocation;
 public class Node {
 	private boolean onStreet, onJunction;
 	private String id;
-	private GeoLocation position;
+	private Coordinate position;
 	
 	/**
 	 * Constructor
@@ -35,18 +35,18 @@ public class Node {
 	 * @param id
 	 * @param position
 	 */
-	public Node(boolean onStreet, boolean onJunction, String id, GeoLocation position) {
+	public Node(boolean onStreet, boolean onJunction, String id, Coordinate position) {
 		this.onStreet = onStreet;
 		this.onJunction = onJunction;
 		this.id = id;
 		this.position = position;
 	}
 	
-	public GeoLocation getPosition() {
+	public Coordinate getPosition() {
 		return position;
 	}
 	
-	public void setPosition(GeoLocation position) {
+	public void setPosition(Coordinate position) {
 		this.position = position;
 	}
 

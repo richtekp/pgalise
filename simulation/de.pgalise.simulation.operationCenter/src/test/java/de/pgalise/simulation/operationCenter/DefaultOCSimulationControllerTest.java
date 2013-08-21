@@ -48,7 +48,7 @@ import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -173,11 +173,11 @@ public class DefaultOCSimulationControllerTest {
 	@BeforeClass
 	public static void setUp() {
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST = new LinkedList<>();
-		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(2, new GeoLocation(),
+		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(2, new Coordinate(),
 				SensorType.ANEMOMETER, new LinkedList<SensorInterfererType>(), ""));
-		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(3, new GeoLocation(),
+		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(3, new Coordinate(),
 				SensorType.BAROMETER, new LinkedList<SensorInterfererType>(), ""));
-		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(4, new GeoLocation(),
+		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(4, new Coordinate(),
 				SensorType.INDUCTIONLOOP, new LinkedList<SensorInterfererType>(), ""));
 
 		DefaultOCSimulationControllerTest.OC_SENSOR_STREAM_CONTROLLER = EasyMock

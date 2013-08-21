@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,9 +33,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
@@ -89,7 +88,6 @@ public class TrafficVisualizerTest {
 	public void vizualizerTest() throws InterruptedException {
 		final MutableBoolean exit = new MutableBoolean();
 		exit.setValue(false);
-		GPSMapper mapper = new DefaultGPSMapper();
 		final Graph graph = createGraph();
 		algo.init(graph);
 		final List<Vehicle<? extends VehicleData>> vehicles = createVehicles(graph);
@@ -97,7 +95,7 @@ public class TrafficVisualizerTest {
 		RandomSeedService seedService = new DefaultRandomSeedService();
 		seedService.init(System.currentTimeMillis());
 
-		final TrafficJamModel nasch = new DefaultNaSchModel(mapper, seedService);
+		final TrafficJamModel nasch = new DefaultNaSchModel(seedService);
 
 		// Visualizer for the traffic
 		final TrafficVisualizer viz = new DefaultTrafficVisualizer(900, 700, graph, ee);
@@ -158,11 +156,10 @@ public class TrafficVisualizerTest {
 	 * @throws InterruptedException
 	 */
 	private List<Vehicle<? extends VehicleData>> createVehicles(Graph graph) throws InterruptedException {
-		GPSMapper mapper = new DefaultGPSMapper();
 
 		// Sets the max speed of the edges
-		ee.setMaxSpeed(graph.getEdge("ab"), mapper.convertVelocity(50));
-		ee.setMaxSpeed(graph.getEdge("bc"), mapper.convertVelocity(120));
+		ee.setMaxSpeed(graph.getEdge("ab"), 50.0);
+		ee.setMaxSpeed(graph.getEdge("bc"), 120.0);
 
 		// Creates the default car factory
 
@@ -170,7 +167,7 @@ public class TrafficVisualizerTest {
 		Vehicle<? extends VehicleData> carA = factory.createRandomCar(UUID.randomUUID(), null);
 		carA.setTrafficGraphExtensions(ee);
 		carA.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
-		carA.setVelocity(mapper.convertVelocity(27));
+		carA.setVelocity(27);
 		carA.setName("carA");
 
 		Vehicle<? extends VehicleData> carB = factory.createRandomCar(UUID.randomUUID(), null);
@@ -206,74 +203,74 @@ public class TrafficVisualizerTest {
 		carI.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
 		// CAR B
-		Vector2d apos = carA.getPosition();
+		Vector2d apos = new Vector2d(carA.getPosition().x, carA.getPosition().y);
 		Vector2d adir = carA.getDirection();
 		adir.scale(0.15);
 		apos.add(adir);
 
-		carB.setPosition(apos);
+		carB.setPosition(new Coordinate(apos.x, apos.y));
 		carB.setName("carB");
-		carB.setVelocity(mapper.convertVelocity(60));
+		carB.setVelocity(60);
 
 		// CAR C
-		apos = carA.getPosition();
+		apos = new Vector2d(carA.getPosition().x, carA.getPosition().y);
 		adir = carA.getDirection();
 		adir.scale(0.3);
 		apos.add(adir);
 
-		carC.setPosition(apos);
+		carC.setPosition(new Coordinate(apos.x, apos.y));
 		carC.setName("carC");
-		carC.setVelocity(mapper.convertVelocity(50));
+		carC.setVelocity(50);
 
 		// CAR D
-		apos = carA.getPosition();
+		apos = new Vector2d(carA.getPosition().x, carA.getPosition().y);
 		adir = carA.getDirection();
 		adir.scale(0.7);
 		apos.add(adir);
 
-		carD.setPosition(apos);
+		carD.setPosition(new Coordinate(apos.x, apos.y));
 		carD.setName("carD");
-		carD.setVelocity(mapper.convertVelocity(10));
+		carD.setVelocity(10);
 
 		// carE.setPosition(apos);
 		carE.setName("carE");
-		carE.setVelocity(mapper.convertVelocity(60));
+		carE.setVelocity(60);
 
-		apos = carE.getPosition();
+		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
 		adir = carE.getDirection();
 		adir.scale(0.12);
 		apos.add(adir);
 
-		carF.setPosition(apos);
+		carF.setPosition(new Coordinate(apos.x, apos.y));
 		carF.setName("carF");
-		carF.setVelocity(mapper.convertVelocity(50));
+		carF.setVelocity(50);
 
-		apos = carE.getPosition();
+		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
 		adir = carE.getDirection();
 		adir.scale(0.32);
 		apos.add(adir);
 
-		carG.setPosition(apos);
+		carG.setPosition(new Coordinate(apos.x, apos.y));
 		carG.setName("carG");
-		carG.setVelocity(mapper.convertVelocity(10));
+		carG.setVelocity(10);
 
-		apos = carE.getPosition();
+		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
 		adir = carE.getDirection();
 		adir.scale(0.52);
 		apos.add(adir);
 
-		carH.setPosition(apos);
+		carH.setPosition(new Coordinate(apos.x, apos.y));
 		carH.setName("carH");
-		carH.setVelocity(mapper.convertVelocity(10));
+		carH.setVelocity(10);
 
-		apos = carE.getPosition();
+		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
 		adir = carE.getDirection();
 		adir.scale(0.82);
 		apos.add(adir);
 
-		carI.setPosition(apos);
+		carI.setPosition(new Coordinate(apos.x, apos.y));
 		carI.setName("carI");
-		carI.setVelocity(mapper.convertVelocity(10));
+		carI.setVelocity(10);
 
 		List<Vehicle<? extends VehicleData>> vehicles = new LinkedList<>();
 		vehicles.add(carA);

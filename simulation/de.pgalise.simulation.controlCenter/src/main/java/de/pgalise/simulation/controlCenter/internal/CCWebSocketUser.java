@@ -95,7 +95,7 @@ import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
 import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
 import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
 import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -250,28 +250,28 @@ public class CCWebSocketUser extends MessageInbound {
 						de.pgalise.simulation.controlCenter.internal.model.Node node = null;
 						if(askForValidNodeMessage.getContent().isOnJunction()) {
 							Node tmpNode = this.cityInfrastructureData.getNearestJunctionNode(
-									askForValidNodeMessage.getContent().getPosition().getLatitude().getDegree(), 
-									askForValidNodeMessage.getContent().getPosition().getLongitude().getDegree());
+									askForValidNodeMessage.getContent().getPosition().x, 
+									askForValidNodeMessage.getContent().getPosition().y);
 							node = new de.pgalise.simulation.controlCenter.internal.model.Node(true, 
 									true, 
 									tmpNode.getId(), 
-									new GeoLocation(tmpNode.getLatitude(), tmpNode.getLongitude()));
+									new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude()));
 						} else if(askForValidNodeMessage.getContent().isOnStreet()) {
 							Node tmpNode = this.cityInfrastructureData.getNearestStreetNode(
-									askForValidNodeMessage.getContent().getPosition().getLatitude().getDegree(), 
-									askForValidNodeMessage.getContent().getPosition().getLongitude().getDegree());
+									askForValidNodeMessage.getContent().getPosition().x, 
+									askForValidNodeMessage.getContent().getPosition().y);
 							node = new de.pgalise.simulation.controlCenter.internal.model.Node(false, 
 									true, 
 									tmpNode.getId(), 
-									new GeoLocation(tmpNode.getLatitude(), tmpNode.getLongitude()));
+									new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude()));
 						} else {
 							Node tmpNode = this.cityInfrastructureData.getNearestNode(
-									askForValidNodeMessage.getContent().getPosition().getLatitude().getDegree(), 
-									askForValidNodeMessage.getContent().getPosition().getLongitude().getDegree());
+									askForValidNodeMessage.getContent().getPosition().x, 
+									askForValidNodeMessage.getContent().getPosition().y);
 							node = new de.pgalise.simulation.controlCenter.internal.model.Node(false, 
 									false, 
 									tmpNode.getId(), 
-									new GeoLocation(tmpNode.getLatitude(), tmpNode.getLongitude()));
+									new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude()));
 						}
 						
 						this.sendMessage(new ValidNodeMessage(ccWebSocketMessage.getMessageID(), node));
@@ -496,12 +496,12 @@ public class CCWebSocketUser extends MessageInbound {
 					UUID id = this.getUniqueRandomUUID(usedUUIDs, random);
 					List<SensorHelper> sensorLists = new ArrayList<>();
 					sensorLists.add(new SensorHelper(this.getUniqueRandomIntID(usedIntegerIDs, random), 
-							new GeoLocation(), 
+							new Coordinate(), 
 							SensorType.GPS_BUS, 
 							new ArrayList<SensorInterfererType>(),
 							""));
 					sensorLists.add(new SensorHelper(this.getUniqueRandomIntID(usedIntegerIDs, random), 
-							new GeoLocation(), 
+							new Coordinate(), 
 							SensorType.INFRARED, 
 							new ArrayList<SensorInterfererType>(),
 							""));

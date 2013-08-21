@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -87,11 +88,10 @@ public final class CompositeGpsInterferer implements GpsInterferer {
 	}
 
 	@Override
-	public Vector2d interfere(final Vector2d mutablePosition, final Vector2d realPosition, final long simTime,
-			final double vectorUnit) {
-		Vector2d result = new Vector2d(mutablePosition.x, mutablePosition.y);
+	public Coordinate interfere(final Coordinate mutablePosition, final Coordinate realPosition, final long simTime) {
+		Coordinate result = new Coordinate(mutablePosition.x, mutablePosition.y);
 		for (final GpsInterferer interferer : this.interferers) {
-			result = interferer.interfere(result, realPosition, simTime, vectorUnit);
+			result = interferer.interfere(result, realPosition, simTime);
 		}
 		// Returns the last value
 		return result;

@@ -18,7 +18,7 @@ package de.pgalise.simulation.shared.sensor;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Extends the SensorHelper with a weather station ID.
@@ -58,7 +58,7 @@ public class SensorHelperWeather extends SensorHelper {
 	 *            List of interferer for the sensor
 	 * @param nodeId
 	 */
-	public SensorHelperWeather(int sensorID, GeoLocation position, SensorType sensorType, int weatherStationID,
+	public SensorHelperWeather(int sensorID, Coordinate position, SensorType sensorType, int weatherStationID,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		super(sensorID, position, sensorType, sensorInterfererList, nodeId);
 		this.weatherStationID = weatherStationID;
@@ -81,7 +81,7 @@ public class SensorHelperWeather extends SensorHelper {
 	 *            List of interferer for the sensor
 	 * @param nodeId
 	 */
-	public SensorHelperWeather(int sensorID, GeoLocation position, SensorType sensorType, int updateSteps,
+	public SensorHelperWeather(int sensorID, Coordinate position, SensorType sensorType, int updateSteps,
 			int weatherStationID, List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		this(sensorID, position, sensorType, weatherStationID, sensorInterfererList, nodeId);
 		super.setUpdateSteps(updateSteps);

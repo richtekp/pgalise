@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.model;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Data to create an attraction event.
@@ -38,7 +38,7 @@ public class AttractionData {
 	/**
 	 * where is the point of interest.
 	 */
-	private GeoLocation attractionPoint;
+	private Coordinate attractionPoint;
 	
 	/**
 	 * Node id in graph
@@ -61,7 +61,7 @@ public class AttractionData {
 	 * 			defines which vehicle will drive to the attraction
 	 */
 	public AttractionData(int id, long attractionStartTimestamp,
-			long attractionEndTimestamp, GeoLocation attractionPoint,
+			long attractionEndTimestamp, Coordinate attractionPoint,
 			String nodeID, RandomVehicleBundle randomVehicleBundle) {
 		this.id = id;
 		this.attractionStartTimestamp = attractionStartTimestamp;
@@ -95,11 +95,11 @@ public class AttractionData {
 		this.attractionEndTimestamp = attractionEndTimestamp;
 	}
 
-	public GeoLocation getAttractionPoint() {
+	public Coordinate getAttractionPoint() {
 		return attractionPoint;
 	}
 
-	public void setAttractionPoint(GeoLocation attractionPoint) {
+	public void setAttractionPoint(Coordinate attractionPoint) {
 		this.attractionPoint = attractionPoint;
 	}
 

@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.energy;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -58,7 +59,7 @@ public class SmartMeterSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public SmartMeterSensor(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public SmartMeterSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter,
 			EnergyInterferer interferer) {
 		this(output, sensorId, position, weatherController, energyController, randomSeedService, measureRadiusInMeter,
@@ -87,7 +88,7 @@ public class SmartMeterSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public SmartMeterSensor(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public SmartMeterSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter,
 			int updateLimit, EnergyInterferer interferer) {
 		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,

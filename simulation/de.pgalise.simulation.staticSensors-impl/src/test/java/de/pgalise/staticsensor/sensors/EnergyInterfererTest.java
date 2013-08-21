@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.sensors;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class EnergyInterfererTest {
 	/**
 	 * Test position
 	 */
-	public static Vector2d testPosition;
+	public static Coordinate testPosition;
 
 	/**
 	 * Test value
@@ -82,7 +83,7 @@ public class EnergyInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new Vector2d(1.0, 10.0);
+		testPosition = new Coordinate(1.0, 10.0);
 	}
 
 	@Test

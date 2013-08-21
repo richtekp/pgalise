@@ -16,6 +16,7 @@
  
 package de.pgalise.ssf.test;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
@@ -39,7 +40,6 @@ import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
-import javax.vecmath.Vector2d;
 
 /**
  * Tests the sensor domain
@@ -94,7 +94,7 @@ public class SensorRegistryTest {
 		// add ten sensors to the SensorDomain
 		final int expected = 10;
 		for (int i = 0; i < expected; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Vector2d(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
 		}
 		// assert
 		Assert.assertEquals(expected, this.sensorRegistry.numberOfSensors());
@@ -107,9 +107,9 @@ public class SensorRegistryTest {
 	public void testGetSensor() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Vector2d(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
 		}
-		final Sensor sensor = new TestSensor(11, new Vector2d(887, 14));
+		final Sensor sensor = new TestSensor(11, new Coordinate(887, 14));
 		this.sensorRegistry.addSensor(sensor);
 		Assert.assertEquals(this.sensorRegistry.getSensor(sensor.getSensorId()), sensor);
 	}
@@ -121,12 +121,12 @@ public class SensorRegistryTest {
 	public void testNumberOfSensors() {
 		final ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 		for (int i = 0; i < 20; i++) {
-			sensors.add(this.sensorRegistry.addSensor(new TestSensor(i + 1, new Vector2d(i, i))));
+			sensors.add(this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i))));
 		}
 		for (int i = 0; i < (sensors.size() - 2); i++) {
 			this.sensorRegistry.removeSensor(sensors.get(i));
 		}
-		final Sensor sensor = new TestSensor(3, new Vector2d(12, 343));
+		final Sensor sensor = new TestSensor(3, new Coordinate(12, 343));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 		Assert.assertEquals(2, this.sensorRegistry.numberOfSensors());
@@ -136,9 +136,9 @@ public class SensorRegistryTest {
 	public void testRemoveSensor() {
 		// Remove
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Vector2d(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
 		}
-		final Sensor sensor = new TestSensor(11, new Vector2d(23, 8438));
+		final Sensor sensor = new TestSensor(11, new Coordinate(23, 8438));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 
@@ -150,7 +150,7 @@ public class SensorRegistryTest {
 	public void testSetSensorsActivated() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Vector2d(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
 		}
 		this.sensorRegistry.setSensorsActivated(true);
 		for (final Sensor s : this.sensorRegistry) {
@@ -167,7 +167,7 @@ public class SensorRegistryTest {
 	public void testUpdateSensors() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Vector2d(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
 		}
 		this.sensorRegistry.setSensorsActivated(false);
 		for (int i = 0; i < 100; i++) {
@@ -248,10 +248,10 @@ class TestSensor extends Sensor {
 	 * @param sensorId
 	 *            ID of sensor
 	 * @param position
-	 *            Position as Vector2d
+	 *            Position as Coordinate
 	 * @throws IllegalArgumentException
 	 */
-	protected TestSensor(Object sensorId, Vector2d position) throws IllegalArgumentException {
+	protected TestSensor(Object sensorId, Coordinate position) throws IllegalArgumentException {
 		super(TestSensor.SENSOR_OUTPUT, sensorId, position);
 	}
 

@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * A building is a {@link Boundary} with several openstreetmap tags.
@@ -26,11 +26,11 @@ import de.pgalise.simulation.shared.geolocation.GeoLocation;
 public class Building extends Boundary {
 	private static final long serialVersionUID = 5874106158590082263L;
 	private int squareMeter;
-	private GeoLocation centerPoint;
+	private Coordinate centerPoint;
 	private String tourism, sport, service, school, repair, amenity, attraction, shop, emergencyService, office,
 	craft, leisure, military, publicTransport, gambling, landUseArea;	
 
-	public Building(GeoLocation northEast, GeoLocation southWest, GeoLocation centerPoint) {
+	public Building(Coordinate northEast, Coordinate southWest, Coordinate centerPoint) {
 		super(northEast, southWest);
 		this.centerPoint = centerPoint;
 	}
@@ -58,7 +58,7 @@ public class Building extends Boundary {
 	 * @param publicTransport
 	 * @param gambling
 	 */
-	public Building(GeoLocation northEast, GeoLocation southWest, GeoLocation centerPoint,
+	public Building(Coordinate northEast, Coordinate southWest, Coordinate centerPoint,
 			int squareMeter, String landUseArea, String tourism,
 			String sport, String service, String school,
 			String repair, String amenity, String attraction, String shop,
@@ -224,11 +224,11 @@ public class Building extends Boundary {
 		this.landUseArea = landUseArea;
 	}
 
-	public GeoLocation getCenterPoint() {
+	public Coordinate getCenterPoint() {
 		return centerPoint;
 	}
 
-	public void setCenterPoint(GeoLocation centerPoint) {
+	public void setCenterPoint(Coordinate centerPoint) {
 		this.centerPoint = centerPoint;
 	}
 }

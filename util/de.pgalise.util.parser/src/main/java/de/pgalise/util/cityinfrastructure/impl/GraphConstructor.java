@@ -25,12 +25,9 @@ import org.graphstream.graph.implementations.SingleGraph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.city.Node;
 import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
-import de.pgalise.simulation.shared.geolocation.Latitude;
-import de.pgalise.simulation.shared.geolocation.Longitude;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.graphextension.GraphExtensions;
 import javax.vecmath.Vector2d;
 
@@ -47,11 +44,6 @@ public class GraphConstructor {
 	private static final Logger log = LoggerFactory.getLogger(GraphConstructor.class);
 
 	/**
-	 * GPS mapper
-	 */
-	private GPSMapper gpsMapper;
-
-	/**
 	 * Graph extension
 	 */
 	private GraphExtensions graphExtension;
@@ -64,8 +56,7 @@ public class GraphConstructor {
 	 * @param graphExtensions
 	 *            Graph extension
 	 */
-	public GraphConstructor(GPSMapper mapper, GraphExtensions graphExtensions) {
-		this.gpsMapper = mapper;
+	public GraphConstructor(GraphExtensions graphExtensions) {
 		this.graphExtension = graphExtensions;
 	}
 
@@ -94,8 +85,7 @@ public class GraphConstructor {
 				org.graphstream.graph.Node node = graph.getNode(osmNode.getId());
 				if (node == null) {
 					node = graph.addNode(osmNode.getId());
-					Vector2d v = this.gpsMapper.convertToVector(new GeoLocation(new Latitude(osmNode.getLatitude()),
-							new Longitude(osmNode.getLongitude())));
+					Coordinate v = new Coordinate(osmNode.getLatitude(), osmNode.getLongitude());
 					node.setAttribute("position", v);
 
 					// cmd +=
@@ -106,11 +96,13 @@ public class GraphConstructor {
 					// log.debug(String.format("adding edge between node %s and %s", prevNode, node));
 					try {
 						org.graphstream.graph.Edge edge = graph.addEdge(UUID.randomUUID().toString(), prevNode, node);
-						Vector2d b = this.graphExtension.getPosition(node);
-						Vector2d a = this.graphExtension.getPosition(prevNode);
-						b.sub(a);
-						double length = b.length();
-						double vel = this.gpsMapper.convertVelocity(way.getMaxSpeed());
+						Coordinate b = this.graphExtension.getPosition(node);
+						Coordinate a = this.graphExtension.getPosition(prevNode);
+						Vector2d bVector = new Vector2d(b.x, b.y);
+						Vector2d aVector = new Vector2d(a.x, a.y);
+						bVector.sub(aVector);
+						double length = bVector.length();
+						double vel = way.getMaxSpeed();
 						edge.addAttribute("length", length);
 						edge.addAttribute("velocity", vel);
 						double weight = length / vel;
@@ -146,14 +138,6 @@ public class GraphConstructor {
 		log.info(String.format("Graph constructed. Added %s edges, missing %s edges ", countEdges, countMissingEdges));
 		// log.info(cmd);
 		return graph;
-	}
-
-	public GPSMapper getGpsMapper() {
-		return this.gpsMapper;
-	}
-
-	public void setGpsMapper(GPSMapper gpsMapper) {
-		this.gpsMapper = gpsMapper;
 	}
 
 }

@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -54,7 +55,7 @@ public final class Barometer extends WeatherSensor {
 	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
 	 *            is not a type of {@link BarometerWhiteNoiseInterferer}
 	 */
-	public Barometer(final Output output, final Object sensorId, final Vector2d position,
+	public Barometer(final Output output, final Object sensorId, final Coordinate position,
 			final WeatherController weatherController, WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
 		this(output, sensorId, position, weatherController, 1, weatherInterferer);
@@ -75,7 +76,7 @@ public final class Barometer extends WeatherSensor {
 	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
 	 *            argument 'weatherController' is not a type of {@link BarometerWhiteNoiseInterferer}
 	 */
-	public Barometer(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public Barometer(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			int updateLimit, WeatherInterferer weatherInterferer) throws IllegalArgumentException {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof BarometerWhiteNoiseInterferer)) {

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 import javax.vecmath.Vector2d;
 
@@ -46,11 +47,11 @@ public final class GpsClockInterferer extends GpsBaseInterferer {
 	}
 
 	@Override
-	public Vector2d interfere(Vector2d mutablePosition, Vector2d realPosition, long simTime, final double vectorUnit) {
+	public Coordinate interfere(Coordinate mutablePosition, Coordinate realPosition, long simTime) {
 		// Should be changed?
 		if (this.random.nextDouble() <= this.changeProbability) {
 			double changeValue = (this.changeAmplitude / VECTOR_UNIT) * this.random.nextGaussian();
-			return new Vector2d(mutablePosition.x + changeValue, mutablePosition.y + changeValue);
+			return new Coordinate(mutablePosition.x + changeValue, mutablePosition.y + changeValue);
 		}
 
 		// Returns with no change

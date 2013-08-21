@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.energy;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.energy.EnergyController;
@@ -99,7 +100,7 @@ public final class WindPowerSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public WindPowerSensor(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public WindPowerSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, double rotorLength,
 			double activityValue, EnergyInterferer interferer) throws InterruptedException, ExecutionException {
 		this(output, sensorId, position, weatherController, energyController, randomSeedService, rotorLength,
@@ -130,7 +131,7 @@ public final class WindPowerSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public WindPowerSensor(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public WindPowerSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, double rotorLength,
 			double activityValue, int updateLimit, EnergyInterferer interferer) throws InterruptedException,
 			ExecutionException {

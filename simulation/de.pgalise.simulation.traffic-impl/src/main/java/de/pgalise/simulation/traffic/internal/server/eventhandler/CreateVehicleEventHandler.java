@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +62,8 @@ public class CreateVehicleEventHandler extends AbstractVehicleEventHandler {
 	public SimulationEventTypeEnum getType() {
 		return CreateVehicleEventHandler.type;
 	}
+	
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
 	public void handleEvent(SimulationEvent event) {
@@ -102,7 +106,8 @@ public class CreateVehicleEventHandler extends AbstractVehicleEventHandler {
 			data.getVehicleInformation().setTrip(trip);			
 			
 			if (this.getServer().getCityZone().covers(
-					(Vector2d) this.getServer().getGraph().getNode(trip.getStartNode()).getAttribute("position"))) {
+					GEOMETRY_FACTORY.createPoint(
+						(Coordinate) this.getServer().getGraph().getNode(trip.getStartNode()).getAttribute("position")))) {
 				// Create vehicle
 				Vehicle<? extends VehicleData> v = this.createVehicle(data, trip);
 	

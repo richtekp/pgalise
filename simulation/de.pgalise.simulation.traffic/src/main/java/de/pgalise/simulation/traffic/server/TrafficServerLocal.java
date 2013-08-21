@@ -28,11 +28,10 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.event.SimulationEventHandlerManager;
 import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
-import de.pgalise.simulation.shared.geometry.Geometry;
+import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -98,13 +97,6 @@ public interface TrafficServerLocal extends TrafficServer {
 	 * @return {@link BusFactory}
 	 */
 	public BusFactory getBusFactory();
-
-	/**
-	 * Returns the GPSMapper.
-	 * 
-	 * @return {@link GPSMapper}
-	 */
-	public GPSMapper getGPSMapper();
 
 	/**
 	 * Returns the ServiceDictionary.

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -32,8 +33,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
@@ -85,9 +84,6 @@ public class WeatherServiceTest {
 		EJBContainer container = EJBContainer.createEJBContainer(prop);
 		Context ctx = container.getContext();
 
-		// GPS Mapper
-		GPSMapper mapper = new DefaultGPSMapper();
-
 		// City
 		City city = new City();
 		city.setPopulation(200000);
@@ -96,7 +92,7 @@ public class WeatherServiceTest {
 		WeatherServiceTest.loader = (WeatherLoader) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
-		WeatherServiceTest.service = new DefaultWeatherService(city, mapper, WeatherServiceTest.loader);
+		WeatherServiceTest.service = new DefaultWeatherService(city, WeatherServiceTest.loader);
 
 		// Start
 		Calendar cal = new GregorianCalendar();
@@ -272,7 +268,7 @@ public class WeatherServiceTest {
 		long timestamp2 = WeatherServiceTest.startTimestamp + DateConverter.NEXT_DAY_IN_MILLIS + time.getTime();
 
 		// Test Position
-		Vector2d position = new Vector2d(2, 3);
+		Coordinate position = new Coordinate(2, 3);
 
 		/*
 		 * Test preparations
@@ -315,7 +311,7 @@ public class WeatherServiceTest {
 
 		// Test false position
 		try {
-			value = WeatherServiceTest.service.getValue(testParameter, timestamp, new Vector2d(-1, -1));
+			value = WeatherServiceTest.service.getValue(testParameter, timestamp, new Coordinate(-1, -1));
 		} catch (IllegalArgumentException e) {
 			Assert.assertTrue(true);
 		}

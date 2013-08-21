@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.positionconverter;
 
-import de.pgalise.simulation.service.GPSMapper;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverterBase;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -37,8 +37,8 @@ public final class LinearWeatherPositionConverter extends WeatherPositionConvert
 	 * @param mapper
 	 *            GPSMapper
 	 */
-	public LinearWeatherPositionConverter(GPSMapper mapper) {
-		super(mapper);
+	public LinearWeatherPositionConverter() {
+		super();
 	}
 
 	/**
@@ -56,7 +56,7 @@ public final class LinearWeatherPositionConverter extends WeatherPositionConvert
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Vector2d position, T refValue) {
+	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position, T refValue) {
 		// Change the value pro vector unit?
 		if (!key.isChangePerVectorUnit()) {
 			return refValue;

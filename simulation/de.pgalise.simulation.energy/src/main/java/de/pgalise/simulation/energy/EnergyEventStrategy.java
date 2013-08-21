@@ -20,7 +20,7 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * An energy event strategy changes the energy consumption by considering given instances of {@link EnergyEvent}.
@@ -49,5 +49,5 @@ public interface EnergyEventStrategy {
 	 * 			the consumption before considering the energy events
 	 * @return
 	 */
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, GeoLocation geoLocation, double consumptionWithoutEvents);
+	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, Coordinate geoLocation, double consumptionWithoutEvents);
 }

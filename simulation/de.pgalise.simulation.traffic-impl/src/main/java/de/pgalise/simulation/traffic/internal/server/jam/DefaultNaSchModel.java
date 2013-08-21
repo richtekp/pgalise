@@ -22,7 +22,6 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -60,7 +59,6 @@ import javax.vecmath.Vector2d;
  */
 public class DefaultNaSchModel implements TrafficJamModel {
 	private SurroundingCarsFinder finder;
-	private GPSMapper mapper;
 	private Random random;
 	private RandomSeedService seedService;
 	private double bias;
@@ -73,11 +71,10 @@ public class DefaultNaSchModel implements TrafficJamModel {
 	 * @param seed
 	 *            Random seed service
 	 */
-	public DefaultNaSchModel(GPSMapper mapper, RandomSeedService seed) {
-		this.mapper = mapper;
+	public DefaultNaSchModel(RandomSeedService seed) {
 		this.seedService = seed;
 		this.random = new Random(this.seedService.getSeed(DefaultNaSchModel.class.getName()));
-		this.bias = 0.5 / mapper.getVectorUnit();
+		this.bias = 0.5 ;
 		this.finder = new AdvancedCarFinder();
 	}
 
@@ -95,7 +92,7 @@ public class DefaultNaSchModel implements TrafficJamModel {
 		double carLength = v.getData().getLength();
 		if (carLength != 0) {
 			carLength /= 1000;
-			this.bias += (carLength / 2) / this.mapper.getVectorUnit();
+			this.bias += (carLength / 2) ;
 			// log.debug(v.getData().getType() + " length: " + carLength);
 		}
 
@@ -111,7 +108,7 @@ public class DefaultNaSchModel implements TrafficJamModel {
 		}
 
 		if (maxSpeed <= 0) {
-			maxSpeed = this.mapper.convertVelocity(50);
+			maxSpeed = 50;
 		}
 
 		// velocity of 1 = 27/kmh = 0.075vu/s
@@ -124,8 +121,9 @@ public class DefaultNaSchModel implements TrafficJamModel {
 		Vehicle<? extends VehicleData> carAhead = this.finder.findNearestCar(v, time);
 		if (carAhead != null) {
 			// log.debug("Nearest vehicle to " + v.getName() + ": " + carAhead.getName());
-			Vector2d carAheadPos = carAhead.getPosition();
-			carAheadPos.sub(v.getPosition());
+			Vector2d carAheadPos = new Vector2d(carAhead.getPosition().x, carAhead.getPosition().y);
+			Vector2d vVector = new Vector2d(v.getPosition().x, v.getPosition().y);
+			carAheadPos.sub(vVector);
 
 			double distance = ((int) (carAheadPos.length() * 1000) / 1000.0d);
 

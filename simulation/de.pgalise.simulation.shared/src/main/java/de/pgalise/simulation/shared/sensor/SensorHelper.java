@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * A sensor helper without sensor interferer.
@@ -39,7 +39,7 @@ public class SensorHelper implements Serializable {
 	/**
 	 * Position
 	 */
-	private GeoLocation position;
+	private Coordinate position;
 
 	/**
 	 * ID of the sensor
@@ -86,7 +86,7 @@ public class SensorHelper implements Serializable {
 	 *            List with SensorInterfererTypes
 	 * @param nodeId
 	 */
-	public SensorHelper(int sensorID, GeoLocation position, SensorType sensorType,
+	public SensorHelper(int sensorID, Coordinate position, SensorType sensorType,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		this(sensorID, position, sensorType, 1, sensorInterfererList, nodeId);
 	}
@@ -105,7 +105,7 @@ public class SensorHelper implements Serializable {
 	 * @param sensorInterfererList
 	 *            List with SensorInterfererTypes
 	 */
-	public SensorHelper(int sensorID, GeoLocation position, SensorType sensorType, int updateSteps,
+	public SensorHelper(int sensorID, Coordinate position, SensorType sensorType, int updateSteps,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		if (sensorID < 0) {
 			throw new IllegalArgumentException("sensorID < 0");
@@ -129,7 +129,7 @@ public class SensorHelper implements Serializable {
 		this.nodeId = nodeId;
 	}
 
-	public GeoLocation getPosition() {
+	public Coordinate getPosition() {
 		return this.position;
 	}
 
@@ -145,7 +145,7 @@ public class SensorHelper implements Serializable {
 		return this.updateSteps;
 	}
 
-	public void setPosition(GeoLocation position) {
+	public void setPosition(Coordinate position) {
 		this.position = position;
 	}
 

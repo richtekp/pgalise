@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.positionconverter;
 
-import de.pgalise.simulation.service.GPSMapper;
+import com.vividsolutions.jts.geom.Coordinate;
 import javax.vecmath.Vector2d;
 
 /**
@@ -62,10 +62,8 @@ public abstract class WeatherPositionConverterBase implements WeatherPositionCon
 	 * @param mapper
 	 *            GPSMapper
 	 */
-	public WeatherPositionConverterBase(GPSMapper mapper) {
-		this.referencePosition = mapper.getCenterPoint();
-		this.gridDistance = mapper.getDistanceFromCenterToFarhestPoint();
-		this.vectorUnit = mapper.getVectorUnit();
+	public WeatherPositionConverterBase() {
+		this.referencePosition = referencePosition;
 	}
 
 	public double getGridDistance() {

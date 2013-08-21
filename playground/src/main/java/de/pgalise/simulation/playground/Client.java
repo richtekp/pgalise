@@ -60,7 +60,7 @@ import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -256,14 +256,14 @@ public class Client {
 
 		Node resultNode = city.getNearestNode(
 		/* random latitude in boundary */
-		city.getBoundary().getSouthWest().getLatitude().getDegree()
-				+ (random.nextDouble() * (city.getBoundary().getNorthEast().getLatitude().getDegree() - city
-						.getBoundary().getSouthWest().getLatitude().getDegree())),
+		city.getBoundary().getSouthWest().x
+				+ (random.nextDouble() * (city.getBoundary().getNorthEast().x - city
+						.getBoundary().getSouthWest().x)),
 
 		/* random longitude in boundary */
-		city.getBoundary().getSouthWest().getLongitude().getDegree()
-				+ (random.nextDouble() * (city.getBoundary().getNorthEast().getLongitude().getDegree() - city
-						.getBoundary().getSouthWest().getLongitude().getDegree())));
+		city.getBoundary().getSouthWest().y
+				+ (random.nextDouble() * (city.getBoundary().getNorthEast().y - city
+						.getBoundary().getSouthWest().y)));
 
 		return resultNode;
 	}

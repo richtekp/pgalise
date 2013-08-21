@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.staticsensor.sensor.weather;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import javax.vecmath.Vector2d;
 
@@ -39,5 +40,5 @@ public interface WeatherInterferer extends SensorInterferer {
 	 *            Simulation timestamp
 	 * @return new value
 	 */
-	double interfere(final double mutableValue, final Vector2d position, final long simTime);
+	double interfere(final double mutableValue, final Coordinate position, final long simTime);
 }

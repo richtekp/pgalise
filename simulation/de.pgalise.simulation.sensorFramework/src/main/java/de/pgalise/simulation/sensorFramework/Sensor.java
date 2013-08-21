@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.sensorFramework;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.controller.SimulationComponent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
@@ -54,7 +55,7 @@ public abstract class Sensor implements SimulationComponent {
 	/**
 	 * The position of the sensor in the environment
 	 */
-	private Vector2d position;
+	private Coordinate position;
 
 	/**
 	 * The Id of the sensor
@@ -76,7 +77,7 @@ public abstract class Sensor implements SimulationComponent {
 	 * @param position
 	 *            Position of the sensor
 	 */
-	protected Sensor(final Output output, final Object sensorId, final Vector2d position)
+	protected Sensor(final Output output, final Object sensorId, final Coordinate position)
 			throws IllegalArgumentException {
 		this(output, sensorId, position, 1);
 	}
@@ -93,7 +94,7 @@ public abstract class Sensor implements SimulationComponent {
 	 * @param updateLimit
 	 *            Update limit
 	 */
-	protected Sensor(final Output output, final Object sensorId, final Vector2d position, final int updateLimit)
+	protected Sensor(final Output output, final Object sensorId, final Coordinate position, final int updateLimit)
 			throws IllegalArgumentException {
 		if (output == null) {
 			throw new IllegalArgumentException("Argument 'output' must not be 'null'.");
@@ -138,7 +139,7 @@ public abstract class Sensor implements SimulationComponent {
 	 * 
 	 * @return position
 	 */
-	public Vector2d getPosition() {
+	public Coordinate getPosition() {
 		return this.position;
 	}
 
@@ -183,7 +184,7 @@ public abstract class Sensor implements SimulationComponent {
 	 * @param position
 	 *            Position
 	 */
-	public void setPosition(final Vector2d position) {
+	public void setPosition(final Coordinate position) {
 		this.position = position;
 	}
 

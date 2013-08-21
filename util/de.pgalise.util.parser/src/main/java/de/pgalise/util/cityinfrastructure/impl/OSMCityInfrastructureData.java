@@ -57,7 +57,7 @@ import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.Node;
 import de.pgalise.simulation.shared.city.Way;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 
 /**
@@ -82,8 +82,8 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		@Override
 		public double distanceTo(Building b, PointND p) {
 			/* euclidean distance */
-			return Math.sqrt(Math.pow((b.getCenterPoint().getLatitude().getDegree() - p.getOrd(0)), 2)
-					+ Math.pow((b.getCenterPoint().getLongitude().getDegree() - p.getOrd(1)), 2));
+			return Math.sqrt(Math.pow((b.getCenterPoint().x - p.getOrd(0)), 2)
+					+ Math.pow((b.getCenterPoint().y - p.getOrd(1)), 2));
 		}
 	}
 
@@ -102,14 +102,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 		@Override
 		public double getMax(int arg0, Building arg1) {
-			return arg0 == 0 ? arg1.getCenterPoint().getLatitude().getDegree() : arg1.getCenterPoint().getLongitude()
-					.getDegree();
+			return arg0 == 0 ? arg1.getCenterPoint().x : arg1.getCenterPoint().y;
 		}
 
 		@Override
 		public double getMin(int arg0, Building arg1) {
-			return arg0 == 0 ? arg1.getCenterPoint().getLatitude().getDegree() : arg1.getCenterPoint().getLongitude()
-					.getDegree();
+			return arg0 == 0 ? arg1.getCenterPoint().x : arg1.getCenterPoint().y;
 		}
 	}
 
@@ -296,22 +294,22 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param radiusInMeter
 	 * @return
 	 */
-	private Boundary circleToRectangle(GeoLocation centerPoint, int radiusInMeter) {
+	private Boundary circleToRectangle(Coordinate centerPoint, int radiusInMeter) {
 
-		List<GeoLocation> tmpPoints = new ArrayList<>();
+		List<Coordinate> tmpPoints = new ArrayList<>();
 		int pointNumber = 4;
 		double radiusInKm = radiusInMeter / 1000.0;
 		double earthRadius = 6378.137; // in km
 		double r2d = 180.0 / Math.PI; // degrees to radians
 		double d2r = Math.PI / 180.0; // radians to degrees
 		double rlat = (radiusInKm / earthRadius) * r2d;
-		double rlng = rlat / Math.cos(centerPoint.getLatitude().getDegree() * d2r);
+		double rlng = rlat / Math.cos(centerPoint.x * d2r);
 
 		for (int i = 0; i < pointNumber; i++) {
 			double t = Math.PI * (i / (pointNumber / 2.0));
-			double lat = centerPoint.getLatitude().getDegree() + (rlat * Math.cos(t));
-			double lng = centerPoint.getLongitude().getDegree() + (rlng * Math.sin(t));
-			tmpPoints.add(new GeoLocation(lat, lng));
+			double lat = centerPoint.x + (rlat * Math.cos(t));
+			double lng = centerPoint.y + (rlng * Math.sin(t));
+			tmpPoints.add(new Coordinate(lat, lng));
 		}
 
 		double northEastLat = Double.MIN_VALUE;
@@ -319,22 +317,22 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		double southWestLat = Double.MAX_VALUE;
 		double southWestLng = Double.MAX_VALUE;
 
-		for (GeoLocation p : tmpPoints) {
-			if (p.getLatitude().getDegree() > northEastLat) {
-				northEastLat = p.getLatitude().getDegree();
+		for (Coordinate p : tmpPoints) {
+			if (p.x > northEastLat) {
+				northEastLat = p.x;
 			}
-			if (p.getLatitude().getDegree() < southWestLat) {
-				southWestLat = p.getLatitude().getDegree();
+			if (p.x < southWestLat) {
+				southWestLat = p.x;
 			}
-			if (p.getLongitude().getDegree() > northEastLng) {
-				northEastLng = p.getLongitude().getDegree();
+			if (p.y > northEastLng) {
+				northEastLng = p.y;
 			}
-			if (p.getLongitude().getDegree() < southWestLng) {
-				southWestLng = p.getLongitude().getDegree();
+			if (p.y < southWestLng) {
+				southWestLng = p.y;
 			}
 		}
 
-		return new Boundary(new GeoLocation(northEastLat, northEastLng), new GeoLocation(southWestLat, southWestLng));
+		return new Boundary(new Coordinate(northEastLat, northEastLng), new Coordinate(southWestLat, southWestLng));
 	}
 
 	/**
@@ -617,7 +615,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 				}
 
 				/* find other tags */
-				for (Node node : this.getNodesInBoundary(new Boundary(new GeoLocation(maxLat, maxLng), new GeoLocation(
+				for (Node node : this.getNodesInBoundary(new Boundary(new Coordinate(maxLat, maxLng), new Coordinate(
 						minLat, minLng)))) {
 					if (node.getTourism() != null) {
 						tourism = node.getTourism();
@@ -687,8 +685,8 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 				double area = length * width;
 				area *= area;
 
-				buildingList.add(new Building(new GeoLocation(maxLat, maxLng), new GeoLocation(minLat, minLng),
-						new GeoLocation(centerLat, centerLon), (int) area, landUseArea, tourism, sport, service,
+				buildingList.add(new Building(new Coordinate(maxLat, maxLng), new Coordinate(minLat, minLng),
+						new Coordinate(centerLat, centerLon), (int) area, landUseArea, tourism, sport, service,
 						school, repair, amenity, attraction, shop, emergencyService, office, craft, leisure, military,
 						publicTransport, gambling));
 			}
@@ -784,7 +782,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public Map<EnergyProfileEnum, List<Building>> getBuildings(GeoLocation geolocation, int radiusInMeter) {
+	public Map<EnergyProfileEnum, List<Building>> getBuildings(Coordinate geolocation, int radiusInMeter) {
 
 		Map<EnergyProfileEnum, List<Building>> energyProfileCountMap = new HashMap<>();
 		List<Building> buildingsInRadius = this.getBuildingsInRadius(geolocation, radiusInMeter);
@@ -807,12 +805,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public List<Building> getBuildingsInRadius(GeoLocation centerPoint, int radiusInMeter) {
+	public List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter) {
 		Boundary boundary = this.circleToRectangle(centerPoint, radiusInMeter);
 		List<Building> tmpBuildings = new ArrayList<>();
-		for (Building building : this.buildingTree.find(boundary.getSouthWest().getLatitude().getDegree(), boundary
-				.getSouthWest().getLongitude().getDegree(), boundary.getNorthEast().getLatitude().getDegree(), boundary
-				.getNorthEast().getLongitude().getDegree())) {
+		for (Building building : this.buildingTree.find(boundary.getSouthWest().x, boundary
+				.getSouthWest().y, boundary.getNorthEast().x, boundary
+				.getNorthEast().y)) {
 			tmpBuildings.add(building);
 		}
 
@@ -875,18 +873,18 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param target
 	 * @return
 	 */
-	private double getDistanceInMeter(GeoLocation start, GeoLocation target) {
+	private double getDistanceInMeter(Coordinate start, Coordinate target) {
 
-		if ((start.getLatitude().getDegree() == target.getLatitude().getDegree())
-				&& (start.getLongitude().getDegree() == target.getLongitude().getDegree())) {
+		if ((start.x == target.x)
+				&& (start.y == target.y)) {
 			return 0.0;
 		}
 
 		double f = 1 / 298.257223563;
 		double a = 6378.137;
-		double F = ((start.getLatitude().getDegree() + target.getLatitude().getDegree()) / 2) * (Math.PI / 180);
-		double G = ((start.getLatitude().getDegree() - target.getLatitude().getDegree()) / 2) * (Math.PI / 180);
-		double l = ((start.getLongitude().getDegree() - target.getLongitude().getDegree()) / 2) * (Math.PI / 180);
+		double F = ((start.x + target.x) / 2) * (Math.PI / 180);
+		double G = ((start.x - target.x) / 2) * (Math.PI / 180);
+		double l = ((start.y - target.y) / 2) * (Math.PI / 180);
 		double S = Math.pow(Math.sin(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.cos(F), 2)
 				* Math.pow(Math.sin(l), 2);
 		double C = Math.pow(Math.cos(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.sin(F), 2)
@@ -1278,8 +1276,8 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		this.junctionNodesTree.load(this.junctionNodes);
 
 		if (northEastBoundary != null) {
-			this.boundary = new Boundary(new GeoLocation(northEastBoundary.getLatitude(),
-					northEastBoundary.getLongitude()), new GeoLocation(southWestBoundary.getLatitude(),
+			this.boundary = new Boundary(new Coordinate(northEastBoundary.getLatitude(),
+					northEastBoundary.getLongitude()), new Coordinate(southWestBoundary.getLatitude(),
 					southWestBoundary.getLongitude()));
 		}
 
@@ -1376,9 +1374,9 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	public List<Node> getNodesInBoundary(Boundary boundary) {
 
 		List<Node> nodes = new ArrayList<>();
-		for (Node node : this.allNodesTree.find(boundary.getSouthWest().getLatitude().getDegree(), boundary
-				.getSouthWest().getLongitude().getDegree(), boundary.getNorthEast().getLatitude().getDegree(), boundary
-				.getNorthEast().getLongitude().getDegree())) {
+		for (Node node : this.allNodesTree.find(boundary.getSouthWest().x, boundary
+				.getSouthWest().y, boundary.getNorthEast().x, boundary
+				.getNorthEast().y)) {
 			nodes.add(node);
 		}
 

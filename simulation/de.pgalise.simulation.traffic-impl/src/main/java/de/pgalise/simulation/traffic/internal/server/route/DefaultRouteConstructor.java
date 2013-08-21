@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.route;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,10 +38,10 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.geometry.Geometry;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.shared.traffic.BusStop;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -108,11 +109,11 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	 * @param randomSeedService
 	 * @param trafficGraphExtensions
 	 */
-	public DefaultRouteConstructor(GPSMapper mapper, CityInfrastructureData cityInfrastructure, long time,
+	public DefaultRouteConstructor(Coordinate mapper, CityInfrastructureData cityInfrastructure, long time,
 			RandomSeedService randomSeedService, TrafficGraphExtensions trafficGraphExtensions) {
 		this.trafficInformation = cityInfrastructure;
-		this.graphConstructor = new GraphConstructor(mapper, trafficGraphExtensions);
-		this.regionParser = new RegionParser(mapper, cityInfrastructure);
+		this.graphConstructor = new GraphConstructor(trafficGraphExtensions);
+		this.regionParser = new RegionParser(cityInfrastructure);
 		this.busStopParser = new BusStopParser(cityInfrastructure);
 		this.time = time;
 		this.randomSeedService = randomSeedService;
@@ -186,6 +187,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
 		}
 
 	}
+	
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
 	public TrafficTrip createTrip(int serverId, Geometry cityZone, String nodeID, long startTimestamp,
@@ -196,7 +199,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 
 			return this.gen.createVehicleTrip(startHomeNodesForServer.get(serverId), nodeID, startTimestamp);
 		} else {
-			if (cityZone == null || cityZone.covers((Vector2d) graph.getNode(nodeID).getAttribute("position")))
+			if (cityZone == null || cityZone.covers(GEOMETRY_FACTORY.createPoint((Coordinate) graph.getNode(nodeID).getAttribute("position"))))
 				return this.gen.createVehicleTrip(nodeID, getAllHomeNodes(), startTimestamp);
 			else
 				return null;
@@ -359,7 +362,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	public List<Node> getStartHomeNodes(Geometry cityZone) {
 		List<Node> nodes = new ArrayList<>();
 		for (Node node : getAllHomeNodes()) {
-			if (cityZone.covers(this.trafficGraphExtensions.getPosition(node)))
+			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node))))
 				nodes.add(node);
 		}
 		return nodes;
@@ -369,7 +372,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	public List<Node> getStartWorkNodes(Geometry cityZone) {
 		List<Node> nodes = new ArrayList<>();
 		for (Node node : getAllWorkNodes()) {
-			if (cityZone.covers(this.trafficGraphExtensions.getPosition(node)))
+			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node))))
 				nodes.add(node);
 		}
 		return nodes;

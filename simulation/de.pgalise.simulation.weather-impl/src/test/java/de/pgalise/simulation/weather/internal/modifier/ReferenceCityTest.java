@@ -30,8 +30,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.Controller;
@@ -78,9 +76,6 @@ public class ReferenceCityTest {
 		EJBContainer container = EJBContainer.createEJBContainer(prop);
 		Context ctx = container.getContext();
 
-		// GPS Mapper
-		GPSMapper mapper = new DefaultGPSMapper();
-
 		// City
 		City city = new City();
 		city.setPopulation(200000);
@@ -99,7 +94,7 @@ public class ReferenceCityTest {
 		ReferenceCityTest.endTimestamp = cal.getTimeInMillis();
 
 		// Create service
-		ReferenceCityTest.service = new DefaultWeatherService(city, mapper, ReferenceCityTest.loader);
+		ReferenceCityTest.service = new DefaultWeatherService(city, ReferenceCityTest.loader);
 	}
 
 	@Before

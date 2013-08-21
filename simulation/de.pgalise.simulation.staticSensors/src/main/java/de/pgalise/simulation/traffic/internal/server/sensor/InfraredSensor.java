@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +73,7 @@ public final class InfraredSensor extends Sensor {
 	 *            InfraredInterferer
 	 */
 	public InfraredSensor(final Output output, final Object sensorId, final Vehicle<? extends BusData> vehicle,
-			final Vector2d position, final int updateLimit, final InfraredInterferer interferer) {
+			final Coordinate position, final int updateLimit, final InfraredInterferer interferer) {
 		super(output, sensorId, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
@@ -96,7 +97,7 @@ public final class InfraredSensor extends Sensor {
 	 *            InfraredInterferer
 	 */
 	public InfraredSensor(final Output output, final Object sensorId, final Vehicle<? extends BusData> vehicle,
-			final Vector2d position, final InfraredInterferer interferer) {
+			final Coordinate position, final InfraredInterferer interferer) {
 		this(output, sensorId, vehicle, position, 1, interferer);
 	}
 

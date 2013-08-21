@@ -1,5 +1,6 @@
 package de.pgalise.ssf.test;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -11,7 +12,6 @@ import org.junit.Test;
 
 import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
 import de.pgalise.simulation.shared.controller.Controller;
-import javax.vecmath.Vector2d;
 
 public class DBPersistenceTest {
 
@@ -27,7 +27,7 @@ public class DBPersistenceTest {
 		System.out.println(s.getClass().getName());
 		s.clear();
 		for (int i = 0; i < 100; i++) {
-			s.saveSensor(new TestSensor(i + 1, new Vector2d(i, i)));
+			s.saveSensor(new TestSensor(i + 1, new Coordinate(i, i)));
 		}
 		for (int i = 0; i < 100; i++) {
 			s.deleteSensor(i + 1);

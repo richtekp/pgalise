@@ -35,7 +35,6 @@ import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.configReader.Identifier;
@@ -62,12 +61,6 @@ public class EJBSensorFactory implements SensorFactory {
 	 * Sensor factory
 	 */
 	private DefaultSensorFactory factory;
-
-	/**
-	 * GPS mapper
-	 */
-	@EJB
-	private GPSMapper mapper;
 
 	/**
 	 * Service dictionary
@@ -107,7 +100,7 @@ public class EJBSensorFactory implements SensorFactory {
 		}
 
 		factory = new DefaultSensorFactory(dic.getRandomSeedService(), dic.getController(WeatherController.class),
-				dic.getController(EnergyController.class), mapper, sensorOutput);
+				dic.getController(EnergyController.class), sensorOutput);
 		log.info("SensorFactory initialized. Set output server to " + output);
 	}
 

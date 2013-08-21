@@ -26,9 +26,7 @@ import javax.naming.NamingException;
 
 import org.jfree.data.time.TimeSeries;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.Controller;
@@ -131,9 +129,6 @@ public abstract class AbstractChartTest {
 		EJBContainer container = EJBContainer.createEJBContainer(prop);
 		Context ctx = container.getContext();
 
-		// GPS Mapper
-		GPSMapper mapper = new DefaultGPSMapper();
-
 		// City
 		City city = new City();
 		city.setPopulation(200000);
@@ -143,7 +138,7 @@ public abstract class AbstractChartTest {
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
 		// Create service
-		this.service = new DefaultWeatherService(city, mapper, this.loader);
+		this.service = new DefaultWeatherService(city, this.loader);
 
 		// Get reference weather informations
 		this.service.addNewWeather(this.startTimestamp, this.endTimestamp, true, null);

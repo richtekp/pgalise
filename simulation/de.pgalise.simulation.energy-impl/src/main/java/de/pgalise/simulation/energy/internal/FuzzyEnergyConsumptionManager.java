@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.energy.internal;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -66,7 +67,7 @@ public class FuzzyEnergyConsumptionManager implements EnergyConsumptionManagerLo
 	public FuzzyEnergyConsumptionManager() {}
 
 	@Override
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, Vector2d position) {		
+	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, Coordinate position) {		
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeInMillis(timestamp);
 		double percentage = 0.0;

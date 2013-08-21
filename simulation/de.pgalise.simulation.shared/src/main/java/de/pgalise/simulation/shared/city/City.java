@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.shared.city;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -83,6 +84,8 @@ public class City implements Serializable {
 	 */
 	@Transient
 	private int rate = 0;
+	
+	private Coordinate referencePoint;
 
 	/**
 	 * Default constructor
@@ -104,13 +107,22 @@ public class City implements Serializable {
 	 * @param nearSea
 	 *            Option that the city is near the sea
 	 */
-	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea) {
+	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Coordinate referencePoint) {
 		super();
 		this.name = name;
 		this.population = population;
 		this.nearRiver = nearRiver;
 		this.nearSea = nearSea;
 		this.altitude = altitude;
+		this.referencePoint = referencePoint;
+	}
+
+	public Coordinate getReferencePoint() {
+		return referencePoint;
+	}
+
+	public void setReferencePoint(Coordinate referencePoint) {
+		this.referencePoint = referencePoint;
 	}
 
 	public int getAltitude() {

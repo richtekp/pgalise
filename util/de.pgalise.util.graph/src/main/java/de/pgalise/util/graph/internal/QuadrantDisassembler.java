@@ -16,14 +16,16 @@
  
 package de.pgalise.util.graph.internal;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.pgalise.simulation.shared.geometry.Geometry;
-import de.pgalise.simulation.shared.geometry.Rectangle;
+import com.vividsolutions.jts.geom.Geometry;
+import java.awt.Rectangle;
 import de.pgalise.util.btree.BNode;
 import de.pgalise.util.btree.BTree;
 import de.pgalise.util.graph.disassembler.Disassembler;
+import org.geotools.geometry.jts.JTS;
 
 /**
  * Disassemble the graph
@@ -61,25 +63,25 @@ public class QuadrantDisassembler implements Disassembler {
 			do {
 				BNode<Geometry> current = tree.getLowestLeaf();
 				// log.debug("Lowest leaf: " + current.getData());
-				if (current.getData().getWidth() >= current.getData().getHeight()) {
+				if (current.getData().getEnvelopeInternal().getWidth() >= current.getData().getEnvelopeInternal().getHeight()) {
 					// vertikal aufteilen
-					current.setLeft(new BNode<Geometry>(new Rectangle(current.getData().getStartX(), current.getData()
-							.getStartY(), current.getData().getStartX() + (current.getData().getWidth() / 2), current
-							.getData().getStartY() + current.getData().getHeight())));
-					current.setRight(new BNode<Geometry>(new Rectangle(current.getData().getStartX()
-							+ (current.getData().getWidth() / 2), current.getData().getStartY(), (current.getData()
-							.getWidth() / 2) + (current.getData().getWidth() / 2), current.getData().getStartY()
-							+ current.getData().getHeight())));
+					current.setLeft(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX(), current.getData()
+							.getEnvelopeInternal().getMinY(), current.getData().getEnvelopeInternal().getMinX() + (current.getData().getEnvelopeInternal().getWidth() / 2), current
+							.getData().getEnvelopeInternal().getMinY() + current.getData().getEnvelopeInternal().getHeight()))));
+					current.setRight(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX()
+							+ (current.getData().getEnvelopeInternal().getWidth() / 2), current.getData().getEnvelopeInternal().getMinY(), (current.getData()
+							.getEnvelopeInternal().getWidth() / 2) + (current.getData().getEnvelopeInternal().getWidth() / 2), current.getData().getEnvelopeInternal().getMinY()
+							+ current.getData().getEnvelopeInternal().getHeight()))));
 					// log.debug(String.format("Splitting node (%s) vertical to (%s) and (%s) ", current.getData(),
 					// current.getLeft().getData(), current.getRight().getData()));
 				} else {
 					// horizontal aufteilen
-					current.setLeft(new BNode<Geometry>(new Rectangle(current.getData().getStartX(), current.getData()
-							.getStartY(), current.getData().getStartX() + current.getData().getWidth(), current
-							.getData().getStartY() + (current.getData().getHeight() / 2))));
-					current.setRight(new BNode<Geometry>(new Rectangle(current.getData().getStartX(), current.getData()
-							.getHeight() / 2, current.getData().getStartX() + current.getData().getWidth(), (current
-							.getData().getHeight() / 2) + (current.getData().getHeight() / 2))));
+					current.setLeft(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX(), current.getData()
+							.getEnvelopeInternal().getMinY(), current.getData().getEnvelopeInternal().getMinX() + current.getData().getEnvelopeInternal().getWidth(), current
+							.getData().getEnvelopeInternal().getMinY() + (current.getData().getEnvelopeInternal().getHeight() / 2)))));
+					current.setRight(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX(), current.getData()
+							.getEnvelopeInternal().getHeight() / 2, current.getData().getEnvelopeInternal().getMinX() + current.getData().getEnvelopeInternal().getWidth(), (current
+							.getData().getEnvelopeInternal().getHeight() / 2) + (current.getData().getEnvelopeInternal().getHeight() / 2)))));
 					// log.debug(String.format("Splitting node (%s) horizontal to (%s) and (%s) ", current.getData(),
 					// current.getLeft().getData(), current.getRight().getData()));
 				}

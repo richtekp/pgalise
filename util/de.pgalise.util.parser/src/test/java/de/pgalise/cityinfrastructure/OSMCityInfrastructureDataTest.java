@@ -28,7 +28,7 @@ import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.shared.city.Node;
 import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.util.cityinfrastructure.impl.DefaultBuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.impl.OSMCityInfrastructureData;
 
@@ -75,10 +75,8 @@ public class OSMCityInfrastructureDataTest {
 	@Test
 	public void boundaryTest() {
 		Boundary boundary = osmParser.getBoundary();
-		assertTrue(boundary.getNorthEast().getLatitude().getDegree() > boundary.getSouthWest().getLatitude()
-				.getDegree()
-				&& boundary.getNorthEast().getLongitude().getDegree() > boundary.getSouthWest().getLongitude()
-						.getDegree());
+		assertTrue(boundary.getNorthEast().x > boundary.getSouthWest().x
+				&& boundary.getNorthEast().y > boundary.getSouthWest().y);
 	}
 
 	/**
@@ -106,7 +104,7 @@ public class OSMCityInfrastructureDataTest {
 	public void getBuildingsInRadiusTest() {
 		int radiusInMeter = 500;
 		Node tmpNode = osmParser.getNodes().get((int) (Math.random() * osmParser.getNodes().size()));
-		GeoLocation centerPoint = new GeoLocation(tmpNode.getLatitude(), tmpNode.getLongitude());
+		Coordinate centerPoint = new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude());
 		for (Building building : osmParser.getBuildingsInRadius(centerPoint, radiusInMeter)) {
 			assertTrue(this.getDistanceInMeter(centerPoint, building.getCenterPoint()) <= radiusInMeter);
 		}
@@ -136,18 +134,18 @@ public class OSMCityInfrastructureDataTest {
 	 *            Position
 	 * @return distance
 	 */
-	private double getDistanceInMeter(GeoLocation start, GeoLocation target) {
+	private double getDistanceInMeter(Coordinate start, Coordinate target) {
 
-		if ((start.getLatitude().getDegree() == target.getLatitude().getDegree())
-				&& (start.getLongitude().getDegree() == target.getLongitude().getDegree())) {
+		if ((start.x == target.x)
+				&& (start.y == target.y)) {
 			return 0.0;
 		}
 
 		double f = 1 / 298.257223563;
 		double a = 6378.137;
-		double F = ((start.getLatitude().getDegree() + target.getLatitude().getDegree()) / 2) * (Math.PI / 180);
-		double G = ((start.getLatitude().getDegree() - target.getLatitude().getDegree()) / 2) * (Math.PI / 180);
-		double l = ((start.getLongitude().getDegree() - target.getLongitude().getDegree()) / 2) * (Math.PI / 180);
+		double F = ((start.x + target.x) / 2) * (Math.PI / 180);
+		double G = ((start.x - target.x) / 2) * (Math.PI / 180);
+		double l = ((start.y - target.y) / 2) * (Math.PI / 180);
 		double S = Math.pow(Math.sin(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.cos(F), 2)
 				* Math.pow(Math.sin(l), 2);
 		double C = Math.pow(Math.cos(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.sin(F), 2)

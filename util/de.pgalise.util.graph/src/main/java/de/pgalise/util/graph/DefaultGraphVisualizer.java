@@ -16,6 +16,7 @@
  
 package de.pgalise.util.graph;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -128,8 +129,8 @@ public class DefaultGraphVisualizer extends JPanel implements GraphVisualizer, W
 
 		for (Iterator<Node> i = graph.getNodeSet().iterator(); i.hasNext();) {
 			Node node = i.next();
-			Vector2d vec = this.nodeExtensions.getPosition(node);
-			vec = new Vector2d((vec.x * transform.getScaleX() + transform.getTranslateX()), (vec.y
+			Coordinate vec0 = this.nodeExtensions.getPosition(node);
+			Vector2d vec = new Vector2d((vec0.x * transform.getScaleX() + transform.getTranslateX()), (vec0.y
 					* transform.getScaleY() + transform.getTranslateY()));
 			// log.debug(String.format("Node %s pos: (%s, %s)", node.getId(), vec.x, vec.y));
 			Ellipse2D.Double circle = new Ellipse2D.Double(vec.x - 5, vec.y - 5, 10, 10);
@@ -142,12 +143,12 @@ public class DefaultGraphVisualizer extends JPanel implements GraphVisualizer, W
 
 		for (Iterator<Edge> i = graph.getEdgeSet().iterator(); i.hasNext();) {
 			Edge edge = i.next();
-			Vector2d a = this.nodeExtensions.getPosition(edge.getNode0());
-			a = new Vector2d(a.x * transform.getScaleX() + transform.getTranslateX(),
-					a.y * transform.getScaleY() + transform.getTranslateY());
-			Vector2d b = this.nodeExtensions.getPosition(edge.getNode1());
-			b = new Vector2d(b.x * transform.getScaleX() + transform.getTranslateX(),
-					b.y * transform.getScaleY() + transform.getTranslateY());
+			Coordinate a0 = this.nodeExtensions.getPosition(edge.getNode0());
+			Vector2d a = new Vector2d(a0.x * transform.getScaleX() + transform.getTranslateX(),
+					a0.y * transform.getScaleY() + transform.getTranslateY());
+			Coordinate b0 = this.nodeExtensions.getPosition(edge.getNode1());
+			Vector2d b = new Vector2d(b0.x * transform.getScaleX() + transform.getTranslateX(),
+					b0.y * transform.getScaleY() + transform.getTranslateY());
 			g2d.drawLine((int) a.x, (int) a.y, (int) b.x, (int) b.y);
 		}
 	}

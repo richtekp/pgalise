@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.shared.graphextension;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
@@ -40,7 +41,7 @@ public interface GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	public Vector2d getPosition(final Node node);
+	public Coordinate getPosition(final Node node);
 
 	/**
 	 * Returns the vector between the two nodes as difference.
@@ -74,7 +75,7 @@ public interface GraphExtensions {
 	 *            the new position of the node
 	 * @return the passed node for method chaining
 	 */
-	public Node setPosition(final Node node, final Vector2d position);
+	public Node setPosition(final Node node, final Coordinate position);
 
 	/**
 	 * Returns the length between two nodes.

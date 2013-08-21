@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.City;
@@ -129,9 +129,6 @@ public final class DefaultWeatherController extends AbstractController implement
 
 	@EJB
 	private WeatherLoader weatherLoader;
-
-	@EJB
-	private GPSMapper mapper;
 
 	/**
 	 * Random Seed Service
@@ -246,17 +243,12 @@ public final class DefaultWeatherController extends AbstractController implement
 		return this.nextNewDayInMillis;
 	}
 
-	@Override
-	public Vector2d getReferencePosition() {
-		return this.weatherservice.getReferencePosition();
-	}
-
 	public long getStartTimestamp() {
 		return this.startTimestamp;
 	}
 
 	@Override
-	public Number getValue(final WeatherParameterEnum key, final long timestamp, final Vector2d position) {
+	public Number getValue(final WeatherParameterEnum key, final long timestamp, final Coordinate position) {
 		return DefaultWeatherController.this.weatherservice.getValue(key, timestamp, position);
 	}
 
@@ -280,7 +272,7 @@ public final class DefaultWeatherController extends AbstractController implement
 	 */
 	public void startWeatherService(City city) {
 		if (this.weatherservice == null) {
-			this.weatherservice = new DefaultWeatherService(city, this.mapper, this.weatherLoader);
+			this.weatherservice = new DefaultWeatherService(city, this.weatherLoader);
 		} else {
 			this.weatherservice.initValues();
 			this.weatherservice.setCity(city);
@@ -400,5 +392,10 @@ public final class DefaultWeatherController extends AbstractController implement
 	@Override
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public Coordinate getReferencePosition() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

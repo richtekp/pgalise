@@ -21,7 +21,6 @@ import java.util.UUID;
 
 import org.graphstream.graph.Graph;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
@@ -63,10 +62,6 @@ public final class VehicleEvent {
 
 	public long getElapsedTime() {
 		return elapsedTime;
-	}
-
-	public GPSMapper getGPSMapper() {
-		return server.getGPSMapper();
 	}
 
 	public ServiceDictionary getServiceDictionary() {

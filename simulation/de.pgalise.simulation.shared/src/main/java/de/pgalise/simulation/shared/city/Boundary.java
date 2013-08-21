@@ -18,7 +18,7 @@ package de.pgalise.simulation.shared.city;
 
 import java.io.Serializable;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * A boundary is a rectangle with instances of {@link GeoLocation} for north-east (biggest lat/lng values) and south-west (smallest lat/lng values).
@@ -26,31 +26,31 @@ import de.pgalise.simulation.shared.geolocation.GeoLocation;
  */
 public class Boundary implements Serializable {
 	private static final long serialVersionUID = -1661074617259218811L;
-	private GeoLocation northEast, southWest;
+	private Coordinate northEast, southWest;
 
 	/**
 	 * Constructor
 	 * @param northEast
 	 * @param southWest
 	 */
-	public Boundary(GeoLocation northEast, GeoLocation southWest) {
+	public Boundary(Coordinate northEast, Coordinate southWest) {
 		this.northEast = northEast;
 		this.southWest = southWest;
 	}
 
-	public GeoLocation getNorthEast() {
+	public Coordinate getNorthEast() {
 		return northEast;
 	}
 
-	public void setNorthEast(GeoLocation northEast) {
+	public void setNorthEast(Coordinate northEast) {
 		this.northEast = northEast;
 	}
 
-	public GeoLocation getSouthWest() {
+	public Coordinate getSouthWest() {
 		return southWest;
 	}
 
-	public void setSouthWest(GeoLocation southWest) {
+	public void setSouthWest(Coordinate southWest) {
 		this.southWest = southWest;
 	}
 	
@@ -59,11 +59,11 @@ public class Boundary implements Serializable {
 	 * @param location
 	 * @return	true, if it is inside this boundary.
 	 */
-	public boolean isLocationInBoundary(GeoLocation location) {
-		if(location.getLatitude().getDegree() <= this.northEast.getLatitude().getDegree()
-				&& location.getLatitude().getDegree() >= this.southWest.getLatitude().getDegree()
-				&& location.getLongitude().getDegree() <= this.northEast.getLongitude().getDegree()
-				&& location.getLongitude().getDegree() >= this.southWest.getLongitude().getDegree()) {
+	public boolean isLocationInBoundary(Coordinate location) {
+		if(location.x <= this.northEast.x
+				&& location.x >= this.southWest.x
+				&& location.y <= this.northEast.y
+				&& location.y >= this.southWest.y) {
 			return true;
 		}
 		

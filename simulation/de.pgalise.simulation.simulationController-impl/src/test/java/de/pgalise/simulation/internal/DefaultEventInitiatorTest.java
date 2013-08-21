@@ -41,7 +41,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
 import de.pgalise.simulation.traffic.TrafficController;
@@ -411,12 +411,12 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public Vector2d getReferencePosition() {
+		public Coordinate getReferencePosition() {
 			return null;
 		}
 
 		@Override
-		public Number getValue(WeatherParameterEnum key, long timestamp, Vector2d position) {
+		public Number getValue(WeatherParameterEnum key, long timestamp, Coordinate position) {
 			return null;
 		}
 
@@ -470,12 +470,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public double getEnergyConsumptionInKWh(long timestamp, GeoLocation position, int measureRadiusInMeter) {
-			return 0;
-		}
-
-		@Override
-		public double getEnergyConsumptionInKWh(long timestamp, Vector2d position, int measureRadiusInMeter) {
+		public double getEnergyConsumptionInKWh(long timestamp, Coordinate position, int measureRadiusInMeter) {
 			return 0;
 		}
 

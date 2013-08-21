@@ -27,10 +27,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.energy.internal.FuzzyEnergyConsumptionManager;
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import javax.vecmath.Vector2d;
@@ -42,10 +40,8 @@ import javax.vecmath.Vector2d;
  * @author Timo
  */
 public class FuzzyEnergyConsumptionManagerTest {
-	private static final GPSMapper gpsMapper = new DefaultGPSMapper();
-	private static final GeoLocation testLocation = new GeoLocation(0.0, 0.0);
-	private static final Vector2d testLocationV2d = FuzzyEnergyConsumptionManagerTest.gpsMapper
-			.convertToVector(FuzzyEnergyConsumptionManagerTest.testLocation);
+	private static final Coordinate testLocation = new Coordinate(0.0, 0.0);
+	private static final Coordinate testLocationV2d = FuzzyEnergyConsumptionManagerTest.testLocation;
 	private static final double coldDayTemperature = -5.0;
 	private static final double hotDayTemperature = 35.0;
 	private static final double mediumTemperature = 15.0;

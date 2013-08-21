@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.modifier;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Properties;
@@ -28,8 +29,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.Controller;
@@ -90,9 +89,6 @@ public class ColdDayEventTest {
 		EJBContainer container = EJBContainer.createEJBContainer(prop);
 		Context ctx = container.getContext();
 
-		// GPS Mapper
-		GPSMapper mapper = new DefaultGPSMapper();
-
 		// City
 		City city = new City();
 		city.setPopulation(200000);
@@ -115,7 +111,7 @@ public class ColdDayEventTest {
 		ColdDayEventTest.testTimestamp = cal.getTimeInMillis();
 
 		// Create service
-		ColdDayEventTest.service = new DefaultWeatherService(city, mapper, ColdDayEventTest.loader);
+		ColdDayEventTest.service = new DefaultWeatherService(city, ColdDayEventTest.loader);
 	}
 
 	@Before

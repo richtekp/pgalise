@@ -35,7 +35,6 @@ import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.City;
@@ -48,7 +47,7 @@ import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.weather.service.WeatherController;
 import javax.vecmath.Vector2d;
 
@@ -77,7 +76,7 @@ public class DefaultEnergyController extends AbstractController implements
 		/**
 		 * Position
 		 */
-		private GeoLocation geoLocation;
+		private Coordinate geoLocation;
 		/**
 		 * Radius in meter
 		 */
@@ -89,7 +88,7 @@ public class DefaultEnergyController extends AbstractController implements
 		 * @param geoLocation
 		 * @param measureRadiusInMeter
 		 */
-		public GeoRadiusWrapper(GeoLocation geoLocation,
+		public GeoRadiusWrapper(Coordinate geoLocation,
 				int measureRadiusInMeter) {
 			this.geoLocation = geoLocation;
 			this.measureRadiusInMeter = measureRadiusInMeter;
@@ -115,7 +114,7 @@ public class DefaultEnergyController extends AbstractController implements
 		}
 
 		@SuppressWarnings("unused")
-		public GeoLocation getGeoLocation() {
+		public Coordinate getGeoLocation() {
 			return geoLocation;
 		}
 
@@ -135,7 +134,7 @@ public class DefaultEnergyController extends AbstractController implements
 		}
 
 		@SuppressWarnings("unused")
-		public void setGeoLocation(GeoLocation geoLocation) {
+		public void setGeoLocation(Coordinate geoLocation) {
 			this.geoLocation = geoLocation;
 		}
 
@@ -171,12 +170,6 @@ public class DefaultEnergyController extends AbstractController implements
 	@EJB
 	private EnergyConsumptionManager energyConsumptionManager;
 
-	/**
-	 * GPS mapper
-	 */
-	@EJB
-	private GPSMapper gpsmapper;
-
 	@EJB
 	private ServiceDictionary serviceDictionary;
 
@@ -208,7 +201,7 @@ public class DefaultEnergyController extends AbstractController implements
 
 	@Override
 	public double getEnergyConsumptionInKWh(long timestamp,
-			GeoLocation position, int measureRadiusInMeter) {
+			Coordinate position, int measureRadiusInMeter) {
 		if (this.getStatus() != StatusEnum.STARTED) {
 			throw new IllegalStateException(
 					"Controller is not in running state!");
@@ -233,20 +226,12 @@ public class DefaultEnergyController extends AbstractController implements
 						.getEnergyConsumptionInKWh(
 								timestamp,
 								entry.getKey(),
-								this.getGpsmapper().convertToVector(
-										building.getCenterPoint()));
+								
+										building.getCenterPoint());
 			}
 		}
 
 		return energyConsumption;
-	}
-
-	@Override
-	public double getEnergyConsumptionInKWh(long timestamp, Vector2d position,
-			int measureRadiusInMeter) {
-		return this.getEnergyConsumptionInKWh(timestamp,
-				this.gpsmapper.convertVectorToGPS(position),
-				measureRadiusInMeter);
 	}
 
 	public EnergyConsumptionManager getEnergyConsumptionManager() {
@@ -255,10 +240,6 @@ public class DefaultEnergyController extends AbstractController implements
 
 	public EnergyEventStrategy getEnergyEventStrategy() {
 		return energyEventStrategy;
-	}
-
-	public GPSMapper getGpsmapper() {
-		return gpsmapper;
 	}
 
 	public ServiceDictionary getServiceDictionary() {
@@ -329,10 +310,6 @@ public class DefaultEnergyController extends AbstractController implements
 
 	public void setEnergyEventStrategy(EnergyEventStrategy energyEventStrategy) {
 		this.energyEventStrategy = energyEventStrategy;
-	}
-
-	public void setGpsmapper(GPSMapper gpsmapper) {
-		this.gpsmapper = gpsmapper;
 	}
 
 	public void setServiceDictionary(ServiceDictionary serviceDictionary) {

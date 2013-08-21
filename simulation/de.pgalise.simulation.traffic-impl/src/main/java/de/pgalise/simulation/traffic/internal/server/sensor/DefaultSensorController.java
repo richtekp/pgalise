@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 
@@ -25,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
@@ -78,10 +78,10 @@ public class DefaultSensorController extends AbstractController implements Traff
 	/**
 	 * GPS mapper
 	 */
-	private final GPSMapper mapper;
+	private final Coordinate mapper;
 
 	public DefaultSensorController(TrafficServerLocal server, SensorRegistry sensorRegistry,
-			SensorFactory sensorFactory, GPSMapper mapper, TrafficGraphExtensions trafficGraphExtensions) {
+			SensorFactory sensorFactory, Coordinate mapper, TrafficGraphExtensions trafficGraphExtensions) {
 		this.server = server;
 		this.sensorRegistry = sensorRegistry;
 		this.sensorFactory = sensorFactory;
@@ -100,7 +100,7 @@ public class DefaultSensorController extends AbstractController implements Traff
 					.createSensor(sensor, TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
 			if (newSensor != null) {
 				if (newSensor instanceof InductionLoopSensor) {
-					newSensor.setPosition(this.mapper.convertToVector(sensor.getPosition()));
+					newSensor.setPosition(sensor.getPosition());
 					newSensor.setActivated(true);
 				}
 				// else if(newSensor instanceof GpsSensor) {

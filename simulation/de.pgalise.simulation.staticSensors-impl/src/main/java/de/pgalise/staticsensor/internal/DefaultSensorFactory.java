@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.internal;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -25,7 +26,6 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
@@ -118,11 +118,6 @@ public class DefaultSensorFactory implements SensorFactory {
 	private EnergyController energyCtrl;
 
 	/**
-	 * GPS mapper
-	 */
-	private GPSMapper mapper;
-
-	/**
 	 * Constructor
 	 * 
 	 * @param rss
@@ -137,11 +132,10 @@ public class DefaultSensorFactory implements SensorFactory {
 	 *            Sensor output
 	 */
 	public DefaultSensorFactory(RandomSeedService rss, WeatherController wctrl, EnergyController ectrl,
-			GPSMapper mapper, Output sensorOutput) {
+			Output sensorOutput) {
 		this.rss = rss;
 		this.weatherCtrl = wctrl;
 		this.energyCtrl = ectrl;
-		this.mapper = mapper;
 		this.sensorOutput = sensorOutput;
 	}
 
@@ -152,9 +146,9 @@ public class DefaultSensorFactory implements SensorFactory {
 			// log.warn("Sensor not created, because the caller is not responsible for this type of sensors");
 			return null;
 		}
-		Vector2d position = new Vector2d(0, 0);
+		Coordinate position = new Coordinate(0, 0);
 		if (sensorHelper.getPosition() != null) {
-			position = this.mapper.convertToVector(sensorHelper.getPosition());
+			position = sensorHelper.getPosition();
 		}
 		switch (sensorHelper.getSensorType()) {
 			case PHOTOVOLTAIK:
@@ -243,7 +237,7 @@ public class DefaultSensorFactory implements SensorFactory {
 				}
 
 				return new InfraredSensor(this.sensorOutput, sensorHelper.getSensorID(), null,
-						this.mapper.convertToVector(sensorHelper.getPosition()), sensorHelper.getUpdateSteps(),
+						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						infraredInterferer);
 
 			case INDUCTIONLOOP: // Inductionloop
@@ -266,7 +260,7 @@ public class DefaultSensorFactory implements SensorFactory {
 				}
 
 				return new InductionLoopSensor(this.sensorOutput, sensorHelper.getSensorID(),
-						this.mapper.convertToVector(sensorHelper.getPosition()), sensorHelper.getUpdateSteps(), mapper,
+						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						inductionLoopInterferer);
 
 			case TOPORADAR: // Toporadar
@@ -290,7 +284,7 @@ public class DefaultSensorFactory implements SensorFactory {
 				}
 
 				return new TopoRadarSensor(this.sensorOutput, sensorHelper.getSensorID(),
-						this.mapper.convertToVector(sensorHelper.getPosition()), sensorHelper.getUpdateSteps(),
+						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						toporadarInterferer);
 
 			case GPS_BIKE: // GPS
@@ -329,7 +323,7 @@ public class DefaultSensorFactory implements SensorFactory {
 				}
 
 				return new GpsSensor(this.sensorOutput, sensorHelper.getSensorID(), null,
-						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), this.mapper, gpsInterferer);
+						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), new Coordinate(0, 0), gpsInterferer);
 			default:
 				throw new NoValidControllerForSensorException(String.format("%s is not a known SensorType!",
 						sensorHelper.getSensorType().toString()));

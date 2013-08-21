@@ -16,12 +16,15 @@
  
 package de.pgalise.util.graph.internal;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.pgalise.simulation.shared.geometry.Geometry;
-import de.pgalise.simulation.shared.geometry.Rectangle;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import java.awt.Rectangle;
 import de.pgalise.util.graph.disassembler.Disassembler;
+import org.geotools.geometry.jts.JTS;
 
 /**
  * Divides a Geometry into smaller pieces.
@@ -39,11 +42,11 @@ public class AdvancedQuadrantDisassembler implements Disassembler {
 			List<Geometry> tmpGeometryList = new ArrayList<Geometry>();
 			Geometry tmpBiggestGeometry = null;
 
-			for (Geometry Geometry : GeometryList) {
+			for (Geometry geometry : GeometryList) {
 				if ((tmpBiggestGeometry == null)
-						|| ((tmpBiggestGeometry.getWidth() * tmpBiggestGeometry.getHeight()) <= (Geometry.getWidth() * Geometry
-								.getHeight()))) {
-					tmpBiggestGeometry = Geometry;
+						|| ((tmpBiggestGeometry.getEnvelopeInternal().getWidth()* tmpBiggestGeometry.getEnvelopeInternal().getHeight()) <= (geometry.getEnvelopeInternal().getWidth() * geometry
+								.getEnvelopeInternal().getHeight()))) {
+					tmpBiggestGeometry = geometry;
 				}
 			}
 
@@ -60,6 +63,8 @@ public class AdvancedQuadrantDisassembler implements Disassembler {
 
 		return new ArrayList<Geometry>(GeometryList);
 	}
+	
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	/**
 	 * Divides the Geometry into two parts.
@@ -67,20 +72,22 @@ public class AdvancedQuadrantDisassembler implements Disassembler {
 	 * @param Geometry
 	 * @return List with Geometry objects
 	 */
-	private List<Geometry> halveGeometry(Geometry Geometry) {
+	private List<Geometry> halveGeometry(Geometry geometry) {
 		List<Geometry> dividedGeometryList = new ArrayList<Geometry>();
 
 		/* horizontal or vertical cut? */
-		if (Geometry.getWidth() <= Geometry.getHeight()) {
-			dividedGeometryList.add(new Rectangle(Geometry.getStartX(), Geometry.getStartY(), Geometry.getEndX(),
-					Geometry.getEndY() / 2));
-			dividedGeometryList.add(new Rectangle(Geometry.getStartX(), Geometry.getEndY() / 2, Geometry.getEndX(),
-					Geometry.getEndY()));
+		if (geometry.getEnvelopeInternal().getWidth() <= geometry.getEnvelopeInternal().getHeight()) {
+			
+			dividedGeometryList.add(
+				JTS.toGeometry( new Envelope(geometry.getEnvelopeInternal().getMinX(), geometry.getEnvelopeInternal().getMinY(), geometry.getEnvelopeInternal().getMaxX(),
+					geometry.getEnvelopeInternal().getMaxY() / 2)));
+			dividedGeometryList.add(JTS.toGeometry(new Envelope(geometry.getEnvelopeInternal().getMinX(), geometry.getEnvelopeInternal().getMaxY() / 2, geometry.getEnvelopeInternal().getMaxX(),
+					geometry.getEnvelopeInternal().getMaxY())));
 		} else {
-			dividedGeometryList.add(new Rectangle(Geometry.getStartX(), Geometry.getStartY(), Geometry.getEndX() / 2,
-					Geometry.getEndY()));
-			dividedGeometryList.add(new Rectangle(Geometry.getEndX() / 2, Geometry.getStartY(), Geometry.getEndX(),
-					Geometry.getEndY()));
+			dividedGeometryList.add(JTS.toGeometry(new Envelope(geometry.getEnvelopeInternal().getMinX(), geometry.getEnvelopeInternal().getMinY(), geometry.getEnvelopeInternal().getMaxX() / 2,
+					geometry.getEnvelopeInternal().getMaxY())));
+			dividedGeometryList.add(JTS.toGeometry(new Envelope(geometry.getEnvelopeInternal().getMaxX() / 2, geometry.getEnvelopeInternal().getMinY(), geometry.getEnvelopeInternal().getMaxX(),
+					geometry.getEnvelopeInternal().getMaxY())));
 		}
 
 		return dividedGeometryList;

@@ -36,7 +36,6 @@ import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.SpentTimeLogger;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
@@ -85,12 +84,6 @@ public class DefaultSimulationController extends AbstractController implements S
 	 */
 	@EJB
 	private EventInitiator eventInitiator;
-
-	/**
-	 * gpsMapper of simulation
-	 */
-	@EJB
-	private GPSMapper gpsMapper;
 
 	@EJB(name="de.pgalise.sensorFramework.persistence.SensorPersistenceService")
 	private SensorPersistenceService sensorPersistenceService;

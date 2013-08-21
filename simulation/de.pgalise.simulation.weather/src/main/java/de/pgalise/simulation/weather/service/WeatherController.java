@@ -16,10 +16,10 @@
  
 package de.pgalise.simulation.weather.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import javax.vecmath.Vector2d;
 
 /**
  * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the
@@ -44,8 +44,10 @@ public interface WeatherController extends Controller {
 
 	/**
 	 * Returns the position of the reference point
+	 * 
+	 * @return 
 	 */
-	public Vector2d getReferencePosition();
+	public Coordinate getReferencePosition();
 
 	/**
 	 * Get the reference value for the given timestamp and position. If the value can be cached the method looks into
@@ -61,5 +63,5 @@ public interface WeatherController extends Controller {
 	 *            Position of the sensor
 	 * @return Number
 	 */
-	public Number getValue(WeatherParameterEnum key, long timestamp, Vector2d position);
+	public Number getValue(WeatherParameterEnum key, long timestamp, Coordinate position);
 }

@@ -158,7 +158,7 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 
 		g2d.setColor(Color.BLACK);
 		for (Vehicle<? extends VehicleData> v : vehicles) {
-			Vector2d pos = v.getPosition();
+			Vector2d pos = new Vector2d(v.getPosition().x, v.getPosition().y);
 			pos = new Vector2d((pos.x * transform.getScaleX() + transform.getTranslateX()), (pos.y
 					* transform.getScaleX() + transform.getTranslateY()));
 			// log.debug(String.format("Car %s pos: (%s, %s)", v.getName(),

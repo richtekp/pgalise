@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.energy;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import javax.vecmath.Vector2d;
@@ -40,7 +41,7 @@ public interface EnergyConsumptionManager {
 	 * 				position can be useful to consider weather data.
 	 * @return value of the energy consumption
 	 */
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum energyProfile, Vector2d position);
+	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum energyProfile, Coordinate position);
 	
 	/**
 	 * Inits the energy consumption manager.

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final Object sensorId, final Vector2d position, final int updateLimit,
+	public TopoRadarSensor(final Output output, final Object sensorId, final Coordinate position, final int updateLimit,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
 		super(output, sensorId, position, updateLimit);
 		if (interferer == null) {
@@ -86,7 +87,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final Object sensorId, final Vector2d position,
+	public TopoRadarSensor(final Output output, final Object sensorId, final Coordinate position,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
 		this(output, sensorId, position, 1, interferer);
 

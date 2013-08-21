@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import javax.vecmath.Vector2d;
 
 /**
@@ -42,11 +41,10 @@ public class PathTest {
 
 	@Test
 	public void test() {
-		DefaultGPSMapper mapper = new DefaultGPSMapper();
 		Graph graph = new SingleGraph("Tutorial 1");
 
-		double velocity = mapper.convertVelocity(50);
-		double distance = mapper.convertDistance(200);
+		double velocity = 50;
+		double distance = 200;
 
 		// log.debug("velocity = " + velocity);
 		// log.debug("distance 2000m = " + distance);

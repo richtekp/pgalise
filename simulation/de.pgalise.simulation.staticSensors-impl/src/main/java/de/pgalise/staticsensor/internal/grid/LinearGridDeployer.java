@@ -16,15 +16,17 @@
  
 package de.pgalise.staticsensor.internal.grid;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.pgalise.simulation.shared.geometry.Geometry;
-import de.pgalise.simulation.shared.geometry.Rectangle;
+import com.vividsolutions.jts.geom.Geometry;
+import java.awt.Rectangle;
 import de.pgalise.simulation.staticsensor.grid.GridDeployer;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import javax.vecmath.Vector2d;
+import org.geotools.geometry.jts.JTS;
 
 /**
  * Create positions for sensors depending on the limits of the grid.
@@ -55,7 +57,7 @@ public class LinearGridDeployer implements GridDeployer {
 			newNumber++;
 		}
 
-		List<Geometry> list = this.dis.disassemble(new Rectangle(0, 0, width, height), newNumber);
+		List<Geometry> list = this.dis.disassemble(JTS.toGeometry(new Envelope(0, 0, width, height)), newNumber);
 
 		if (number != newNumber) {
 			newNumber = number;
@@ -63,7 +65,7 @@ public class LinearGridDeployer implements GridDeployer {
 
 		for (int i = 0; i < newNumber; i++) {
 			Geometry geo = list.get(i);
-			positions.add(new Vector2d(geo.getStartX(), geo.getStartY()));
+			positions.add(new Vector2d(geo.getEnvelopeInternal().getMinX(), geo.getEnvelopeInternal().getMinY()));
 		}
 		return positions;
 	}

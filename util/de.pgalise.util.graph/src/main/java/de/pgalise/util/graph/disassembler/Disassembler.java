@@ -18,7 +18,7 @@ package de.pgalise.util.graph.disassembler;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.geometry.Geometry;
+import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * Interface for disassembling the graph

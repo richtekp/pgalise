@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 import javax.vecmath.Vector2d;
 
@@ -43,13 +44,12 @@ public class GpsWhiteNoiseInterferer extends GpsBaseInterferer {
 	}
 
 	@Override
-	public Vector2d interfere(final Vector2d mutablePosition, final Vector2d realPosition, final long simTime,
-			final double vectorUnit) {
+	public Coordinate interfere(final Coordinate mutablePosition, final Coordinate realPosition, final long simTime) {
 		// Should be changed?
 		if (this.getRandom().nextDouble() <= this.changeProbability) {
-			final double x = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)) * vectorUnit);
-			final double y = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)) * vectorUnit);
-			return new Vector2d(
+			final double x = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)));
+			final double y = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)));
+			return new Coordinate(
 					this.getRandom().nextBoolean() ? mutablePosition.x + x : mutablePosition.x - x, this
 							.getRandom().nextBoolean() ? mutablePosition.y + y : mutablePosition.y - y);
 		}

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.positionconverter;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
 import javax.vecmath.Vector2d;
@@ -43,5 +44,5 @@ public interface WeatherPositionConverter {
 	 *            Reference value
 	 * @return Modified value
 	 */
-	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Vector2d position, T refValue);
+	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position, T refValue);
 }

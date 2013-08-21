@@ -47,7 +47,7 @@ import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -133,7 +133,7 @@ public class DefaultSimulationControllerTest {
 
 		initParameter = new InitParameter(cityInfrastructureData, serverConfiguration, START_TIMESTAMP, END_TIMESTAMP,
 				INTERVAL, CLOCK_GENERATOR_INTERVAL, "", "", new TrafficFuzzyData(0, 0.9, 1), new Boundary(
-						new GeoLocation(), new GeoLocation()));
+						new Coordinate(), new Coordinate()));
 
 		startParameter = new StartParameter(new City(), false, null, null);
 	}
@@ -232,9 +232,9 @@ public class DefaultSimulationControllerTest {
 	public void testCreateSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new GeoLocation(), SensorType.ANEMOMETER,
+		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
 				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new GeoLocation(), SensorType.INDUCTIONLOOP,
+		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
 				new LinkedList<SensorInterfererType>(), "");
 
 		/* The operation center will receive both sensors: */
@@ -278,9 +278,9 @@ public class DefaultSimulationControllerTest {
 	public void testCreateSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new GeoLocation(), SensorType.ANEMOMETER,
+		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
 				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new GeoLocation(), SensorType.INDUCTIONLOOP,
+		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
 				new LinkedList<SensorInterfererType>(), "");
 		List<SensorHelper> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensorHelperStaticSensor);
@@ -326,9 +326,9 @@ public class DefaultSimulationControllerTest {
 	public void testDeleteSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new GeoLocation(), SensorType.ANEMOMETER,
+		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
 				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new GeoLocation(), SensorType.INDUCTIONLOOP,
+		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
 				new LinkedList<SensorInterfererType>(), "");
 
 		/* The operation center will receive both sensors: */
@@ -372,9 +372,9 @@ public class DefaultSimulationControllerTest {
 	public void testDeleteSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new GeoLocation(), SensorType.ANEMOMETER,
+		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
 				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new GeoLocation(), SensorType.INDUCTIONLOOP,
+		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
 				new LinkedList<SensorInterfererType>(), "");
 		List<SensorHelper> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensorHelperStaticSensor);

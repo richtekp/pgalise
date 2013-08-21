@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.energy;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -68,7 +69,7 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public PhotovoltaikSensor(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public PhotovoltaikSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int area,
 			EnergyInterferer interferer) throws InterruptedException, ExecutionException {
 		this(output, sensorId, position, weatherController, energyController, randomSeedService, area, 1, interferer);
@@ -96,7 +97,7 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public PhotovoltaikSensor(Output output, Object sensorId, Vector2d position, WeatherController weatherController,
+	public PhotovoltaikSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int area, int updateLimit,
 			EnergyInterferer interferer) throws InterruptedException, ExecutionException {
 		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,

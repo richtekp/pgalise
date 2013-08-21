@@ -64,7 +64,7 @@ import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorHelperPhotovoltaik;
 import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;

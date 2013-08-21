@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.UUID;
@@ -134,13 +135,13 @@ public interface Vehicle<E extends VehicleData> extends Serializable {
 	/**
 	 * @return the position
 	 */
-	public Vector2d getPosition();
+	public Coordinate getPosition();
 
 	/**
 	 * @param position
 	 *            the position to set
 	 */
-	public void setPosition(Vector2d position);
+	public void setPosition(Coordinate position);
 
 	/**
 	 * @return the direction

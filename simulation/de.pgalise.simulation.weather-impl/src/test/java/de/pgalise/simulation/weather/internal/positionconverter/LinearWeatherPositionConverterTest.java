@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.positionconverter;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
@@ -23,8 +24,6 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -39,22 +38,15 @@ import javax.vecmath.Vector2d;
 public class LinearWeatherPositionConverterTest {
 
 	/**
-	 * Mapper
-	 */
-	public static GPSMapper mapper;
-
-	/**
 	 * Test class
 	 */
 	public static WeatherPositionConverter testclass;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		LinearWeatherPositionConverterTest.mapper = new DefaultGPSMapper();
 
 		// Init test class
-		LinearWeatherPositionConverterTest.testclass = new LinearWeatherPositionConverter(
-				LinearWeatherPositionConverterTest.mapper);
+		LinearWeatherPositionConverterTest.testclass = new LinearWeatherPositionConverter();
 	}
 
 	@Test
@@ -63,7 +55,7 @@ public class LinearWeatherPositionConverterTest {
 		 * Test preparations
 		 */
 		Timestamp testTime = DateConverter.convertTimestamp("2012-10-08 12:00:00", "YYYY-MM-dd HH:mm:ss");
-		Vector2d testPosition = new Vector2d(1, 1);
+		Coordinate testPosition = new Coordinate(1, 1);
 		double value;
 		/*
 		 * Test: Temperature

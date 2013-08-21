@@ -178,7 +178,7 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 				bike.setVelocity(velocity);
 			else {
 				double randomVelocity = (((random.nextInt(7) + 15) * 1000) / (3600))
-						/ server.getGPSMapper().getVectorUnit();
+						;
 				bike.setVelocity(randomVelocity);
 			}
 			bike.setPath(path);

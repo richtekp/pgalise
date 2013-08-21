@@ -19,7 +19,7 @@ package de.pgalise.simulation.shared.event.traffic;
 import java.util.UUID;
 
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * The road barrier traffic event will block a route during the given time window.
@@ -46,7 +46,7 @@ public class RoadBarrierTrafficEvent extends TrafficEvent {
 	/**
 	 * Position to block
 	 */
-	private GeoLocation roadBarrierPoint;
+	private Coordinate roadBarrierPoint;
 
 	/**
 	 * node id in graph
@@ -68,7 +68,7 @@ public class RoadBarrierTrafficEvent extends TrafficEvent {
 	 *            node id in graph
 	 */
 	public RoadBarrierTrafficEvent(UUID id, long roadBarrierStartTimestamp, long roadBarrierEndTimestamp,
-			GeoLocation roadBarrierPoint, String nodeID) {
+			Coordinate roadBarrierPoint, String nodeID) {
 		super(id, SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT);
 		this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
 		this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
@@ -92,11 +92,11 @@ public class RoadBarrierTrafficEvent extends TrafficEvent {
 		this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
 	}
 
-	public GeoLocation getRoadBarrierPoint() {
+	public Coordinate getRoadBarrierPoint() {
 		return roadBarrierPoint;
 	}
 
-	public void setRoadBarrierPoint(GeoLocation roadBarrierPoint) {
+	public void setRoadBarrierPoint(Coordinate roadBarrierPoint) {
 		this.roadBarrierPoint = roadBarrierPoint;
 	}
 

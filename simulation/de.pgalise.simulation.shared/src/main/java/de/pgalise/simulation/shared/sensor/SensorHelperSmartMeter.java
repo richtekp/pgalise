@@ -18,7 +18,7 @@ package de.pgalise.simulation.shared.sensor;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Sensorhelper for smartmeter sensors.
@@ -50,7 +50,7 @@ public class SensorHelperSmartMeter extends SensorHelper {
 	 * @param sensorInterfererList
 	 *            List of interferer for the sensor
 	 */
-	public SensorHelperSmartMeter(int sensorID, GeoLocation position, int measureRadiusInMeter,
+	public SensorHelperSmartMeter(int sensorID, Coordinate position, int measureRadiusInMeter,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		super(sensorID, position, SensorType.SMARTMETER, sensorInterfererList, nodeId);
 		this.measureRadiusInMeter = measureRadiusInMeter;
@@ -70,7 +70,7 @@ public class SensorHelperSmartMeter extends SensorHelper {
 	 * @param sensorInterfererList
 	 *            List of interferer for the sensor
 	 */
-	public SensorHelperSmartMeter(int sensorID, GeoLocation position, int measureRadiusInMeter, int updateSteps,
+	public SensorHelperSmartMeter(int sensorID, Coordinate position, int measureRadiusInMeter, int updateSteps,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		this(sensorID, position, measureRadiusInMeter, sensorInterfererList, nodeId);
 		super.setUpdateSteps(updateSteps);

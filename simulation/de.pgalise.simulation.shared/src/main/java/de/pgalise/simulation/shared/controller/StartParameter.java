@@ -90,4 +90,4 @@ public class StartParameter implements Serializable {
 	public void setBusRouteList(List<BusRoute> busRouteList) {
 		this.busRouteList = busRouteList;
 	}
-}
+	}

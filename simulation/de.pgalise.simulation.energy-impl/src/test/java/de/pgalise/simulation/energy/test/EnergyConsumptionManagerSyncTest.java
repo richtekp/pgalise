@@ -31,12 +31,10 @@ import org.junit.Test;
 
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import javax.vecmath.Vector2d;
 
 /**
@@ -63,20 +61,14 @@ public class EnergyConsumptionManagerSyncTest {
 	private static EnergyConsumptionManager testclass;
 
 	/**
-	 * GPS mapper
-	 */
-	private static final GPSMapper gpsMapper = new DefaultGPSMapper();
-
-	/**
 	 * Test location as Geolocation
 	 */
-	private static final GeoLocation testLocation = new GeoLocation(53.136765, 8.216524);
+	private static final Coordinate testLocation = new Coordinate(53.136765, 8.216524);
 
 	/**
 	 * Test location as Vector2d
 	 */
-	private static final Vector2d testLocationAsV2d = EnergyConsumptionManagerSyncTest.gpsMapper
-			.convertToVector(EnergyConsumptionManagerSyncTest.testLocation);
+	private static final Coordinate testLocationAsV2d = EnergyConsumptionManagerSyncTest.testLocation;
 	/**
 	 * Number of test threads
 	 */
@@ -88,7 +80,7 @@ public class EnergyConsumptionManagerSyncTest {
 		List<Building> buildingList = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {
-			buildingList.add(new Building(new GeoLocation(), new GeoLocation(), new GeoLocation(53.136765, 8.216524)));
+			buildingList.add(new Building(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));
 		}
 
 		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);

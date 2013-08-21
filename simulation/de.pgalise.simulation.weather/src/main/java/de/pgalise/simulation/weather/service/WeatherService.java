@@ -16,9 +16,9 @@
  
 package de.pgalise.simulation.weather.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.Weather;
@@ -102,7 +102,7 @@ public interface WeatherService {
 	 * 
 	 * @return referencePosition
 	 */
-	public Vector2d getReferencePosition();
+	public Coordinate getReferencePosition();
 
 	/**
 	 * Returns the reference values
@@ -142,7 +142,7 @@ public interface WeatherService {
 	 * @throws IllegalArgumentException
 	 *             There is no value linked to the timestamp or wrong position (e.g. perhaps wrong date)
 	 */
-	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Vector2d position)
+	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position)
 			throws IllegalArgumentException;
 
 	/**
@@ -157,13 +157,5 @@ public interface WeatherService {
 	 *            City
 	 */
 	public void setCity(City city);
-
-	/**
-	 * Set a new GPS mapper
-	 * 
-	 * @param mapper
-	 *            GPS mapper
-	 */
-	public void setGPSMapper(GPSMapper mapper);
 
 }

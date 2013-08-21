@@ -32,8 +32,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.GPSMapper;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
@@ -85,9 +83,6 @@ public class WeatherServiceSyncTest {
 		EJBContainer container = EJBContainer.createEJBContainer(prop);
 		Context ctx = container.getContext();
 
-		// GPS Mapper
-		GPSMapper mapper = new DefaultGPSMapper();
-
 		// City
 		City city = new City();
 		city.setPopulation(200000);
@@ -96,7 +91,7 @@ public class WeatherServiceSyncTest {
 		WeatherServiceSyncTest.loader = (WeatherLoader) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
-		WeatherServiceSyncTest.testclass = new DefaultWeatherService(city, mapper, WeatherServiceSyncTest.loader);
+		WeatherServiceSyncTest.testclass = new DefaultWeatherService(city, WeatherServiceSyncTest.loader);
 
 		// Start
 		Calendar cal = new GregorianCalendar();

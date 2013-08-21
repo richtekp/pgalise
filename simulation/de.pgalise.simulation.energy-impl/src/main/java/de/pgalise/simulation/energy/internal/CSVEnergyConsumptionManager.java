@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.energy.internal;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -150,7 +151,7 @@ public class CSVEnergyConsumptionManager implements EnergyConsumptionManagerLoca
 	}
 
 	@Override
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, Vector2d position) {
+	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, Coordinate position) {
 		try {
 			this.semaphore.acquire();
 

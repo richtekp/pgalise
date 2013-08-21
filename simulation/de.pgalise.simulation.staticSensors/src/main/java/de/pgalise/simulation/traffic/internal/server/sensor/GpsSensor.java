@@ -21,10 +21,9 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
@@ -52,11 +51,6 @@ public final class GpsSensor extends Sensor {
 	private static Logger log = LoggerFactory.getLogger(GpsSensor.class);
 
 	/**
-	 * the GPS mapper to transform the relative position into a geo references position
-	 */
-	private final GPSMapper mapper;
-
-	/**
 	 * GPS interferer
 	 */
 	private GpsInterferer interferer;
@@ -80,7 +74,7 @@ public final class GpsSensor extends Sensor {
 	 * Counter for the search signal
 	 */
 	private int searchSignalCounter = 0;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -100,16 +94,12 @@ public final class GpsSensor extends Sensor {
 	 *            GPS interferer
 	 */
 	public GpsSensor(final Output output, final Object sensorId, final Vehicle<? extends VehicleData> vehicle,
-			final int updateLimit, final SensorType sensor, final GPSMapper mapper, final GpsInterferer interferer) {
+			final int updateLimit, final SensorType sensor, Coordinate position, final GpsInterferer interferer) {
 
-		super(output, sensorId, new Vector2d(0, 0), updateLimit);
-		if (mapper == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("mapper"));
-		}
+		super(output, sensorId, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
-		this.mapper = mapper;
 		this.interferer = interferer;
 		this.setSensorType(sensor);
 	}
@@ -125,14 +115,13 @@ public final class GpsSensor extends Sensor {
 	 *            According vehicle
 	 * @param sensor
 	 *            Type of the sensor
-	 * @param mapper
-	 *            GPS mapper of the graph
+	 * @param position 
 	 * @param interferer
 	 *            GPS interferer
 	 */
 	public GpsSensor(Output output, Object sensorId, Vehicle<? extends VehicleData> vehicle, SensorType sensor,
-			final GPSMapper mapper, final GpsInterferer interferer) {
-		this(output, sensorId, vehicle, 1, sensor, mapper, interferer);
+			final Coordinate position, final GpsInterferer interferer) {
+		this(output, sensorId, vehicle, 1, sensor, position, interferer);
 	}
 
 	/**
@@ -226,18 +215,18 @@ public final class GpsSensor extends Sensor {
 		/* Send data if the vehicle is driving */
 
 		// Use interferer
-		final Vector2d interferedPos = this.interferer.interfere(this.vehicle.getPosition(),
-				this.vehicle.getPosition(), eventList.getTimestamp(), this.mapper.getVectorUnit());
+		final Coordinate interferedPos = this.interferer.interfere(this.vehicle.getPosition(),
+				this.vehicle.getPosition(), eventList.getTimestamp());
 
 		// convert to geo location
-		final GeoLocation geoLocation = this.mapper.convertVectorToGPS(interferedPos);
+		final Coordinate geoLocation = interferedPos;
 
-		log.debug("Send position of sensor " + this.getSensorId() + ": " + geoLocation.getLatitude().getDegree() + ", "
-				+ geoLocation.getLongitude().getDegree());
+		log.debug("Send position of sensor " + this.getSensorId() + ": " + geoLocation.x + ", "
+				+ geoLocation.y);
 
 		// Send data
-		this.getOutput().transmitDouble(geoLocation.getLatitude().getDegree());
-		this.getOutput().transmitDouble(geoLocation.getLongitude().getDegree());
+		this.getOutput().transmitDouble(geoLocation.x);
+		this.getOutput().transmitDouble(geoLocation.y);
 		this.getOutput().transmitByte((byte) 0);
 		this.getOutput().transmitShort((short) 0);
 		this.getOutput().transmitShort((short) 0);
@@ -277,14 +266,14 @@ public final class GpsSensor extends Sensor {
 			// + this.vehicle.getPosition().getY());
 
 			// Use interferer
-			final Vector2d interferedPos = this.interferer.interfere(this.vehicle.getPosition(),
-					this.vehicle.getPosition(), eventList.getTimestamp(), this.mapper.getVectorUnit());
+			final Coordinate interferedPos = this.interferer.interfere(this.vehicle.getPosition(),
+					this.vehicle.getPosition(), eventList.getTimestamp());
 
 			// convert to geolocation
-			final GeoLocation geoLocation = this.mapper.convertVectorToGPS(interferedPos);
+			final Coordinate geoLocation = interferedPos;
 
-			GpsSensor.log.debug("Send lat: " + geoLocation.getLatitude().getDegree() + " long: "
-					+ geoLocation.getLongitude().getDegree() + " of vehicle " + vehicle.getId());
+			GpsSensor.log.debug("Send lat: " + geoLocation.x + " long: "
+					+ geoLocation.y + " of vehicle " + vehicle.getId());
 		}
 	}
 }

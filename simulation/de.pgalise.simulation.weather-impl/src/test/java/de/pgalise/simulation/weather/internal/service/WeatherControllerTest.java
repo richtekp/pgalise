@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -151,7 +152,7 @@ public class WeatherControllerTest {
 		// Local test variables
 		long valueTime = WeatherControllerTest.startTimestamp + 360000;
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
-		Vector2d testPosition = new Vector2d(2, 3);
+		Coordinate testPosition = new Coordinate(2, 3);
 		List<SimulationEvent> testEventList = new ArrayList<>();
 		testEventList.add(new ChangeWeatherEvent(UUID.randomUUID(), WeatherEventEnum.HOTDAY, 30.0f,
 				WeatherControllerTest.eventTimestamp, 6.0f));
@@ -229,7 +230,7 @@ public class WeatherControllerTest {
 
 		// Test false parameters: wrong position -> call onFailure
 		try {
-			testNumber = ctrl.getValue(testParameter, 0, new Vector2d(-1, -2));
+			testNumber = ctrl.getValue(testParameter, 0, new Coordinate(-1, -2));
 			Assert.assertNull(testNumber);
 		} catch (Exception e1) {
 			Assert.assertTrue(true);

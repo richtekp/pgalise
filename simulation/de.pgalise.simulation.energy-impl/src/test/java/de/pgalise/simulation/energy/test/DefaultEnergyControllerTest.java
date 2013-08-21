@@ -32,9 +32,7 @@ import org.junit.Test;
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.energy.internal.DefaultEnergyController;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.City;
@@ -46,7 +44,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.traffic.BusRoute;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -84,14 +82,9 @@ public class DefaultEnergyControllerTest {
 	private static WeatherController weather;
 
 	/**
-	 * GPS mapper
-	 */
-	private static GPSMapper gpsMapper = new DefaultGPSMapper();
-
-	/**
 	 * Geolocation
 	 */
-	private static final GeoLocation testLocation = new GeoLocation(53.136765, 8.216524);
+	private static final Coordinate testLocation = new Coordinate(53.136765, 8.216524);
 
 	/**
 	 * Init parameters
@@ -143,7 +136,7 @@ public class DefaultEnergyControllerTest {
 		List<Building> buildingList = new ArrayList<>();
 		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
 		for (int i = 0; i < 100; i++) {
-			buildingList.add(new Building(new GeoLocation(), new GeoLocation(), new GeoLocation(53.136765, 8.216524)));
+			buildingList.add(new Building(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));
 		}
 
 		DefaultEnergyControllerTest.information = EasyMock.createNiceMock(CityInfrastructureData.class);
@@ -181,7 +174,7 @@ public class DefaultEnergyControllerTest {
 				EasyMock.createNiceMock(ServerConfiguration.class), DefaultEnergyControllerTest.startTime,
 				DefaultEnergyControllerTest.endTime, interval, interval, "http://localhost:8080/operationCenter",
 				"", null,
-				new Boundary(new GeoLocation(), new GeoLocation()));
+				new Boundary(new Coordinate(), new Coordinate()));
 
 		DefaultEnergyControllerTest.startParameter = new StartParameter(new City(),
 				true, new ArrayList<WeatherEventHelper>(), new LinkedList<BusRoute>());
@@ -191,12 +184,11 @@ public class DefaultEnergyControllerTest {
 
 		// EnergyConsumptionManager
 		energyConsumptionManager = EasyMock.createNiceMock(EnergyConsumptionManager.class);
-		EasyMock.expect(energyConsumptionManager.getEnergyConsumptionInKWh(testTime, EnergyProfileEnum.HOUSEHOLD, gpsMapper.convertToVector(testLocation))).andStubReturn(1.0);
+		EasyMock.expect(energyConsumptionManager.getEnergyConsumptionInKWh(testTime, EnergyProfileEnum.HOUSEHOLD, testLocation)).andStubReturn(1.0);
 		EasyMock.replay(energyConsumptionManager);
 
 		// Create class
 		DefaultEnergyControllerTest.testClass = new DefaultEnergyController();
-		DefaultEnergyControllerTest.testClass.setGpsmapper(DefaultEnergyControllerTest.gpsMapper);
 		DefaultEnergyControllerTest.testClass.setServiceDictionary(DefaultEnergyControllerTest.serviceDictionary);
 		DefaultEnergyControllerTest.testClass.setEnergyConsumptionManager(energyConsumptionManager);
 		DefaultEnergyControllerTest.testClass.setEnergyEventStrategy(energyEventStrategy);

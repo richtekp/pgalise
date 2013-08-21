@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficGraphExtensions")
 @Local(TrafficGraphExtensions.class)
-public final class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implements TrafficGraphExtensions {
+public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implements TrafficGraphExtensions {
 	private static final Logger log = LoggerFactory.getLogger(DefaultTrafficGraphExtensions.class);
 
 	/**

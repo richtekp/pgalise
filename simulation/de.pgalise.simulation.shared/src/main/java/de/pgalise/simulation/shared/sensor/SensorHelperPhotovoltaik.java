@@ -18,7 +18,7 @@ package de.pgalise.simulation.shared.sensor;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * SensorHelper for PhotovoltaikSensors.
@@ -54,7 +54,7 @@ public class SensorHelperPhotovoltaik extends SensorHelper {
 	 * @param sensorInterfererList
 	 *            List of interferer for the sensor
 	 */
-	public SensorHelperPhotovoltaik(int sensorID, GeoLocation position, int area,
+	public SensorHelperPhotovoltaik(int sensorID, Coordinate position, int area,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		super(sensorID, position, SensorType.PHOTOVOLTAIK, sensorInterfererList, nodeId);
 		this.area = area;
@@ -74,7 +74,7 @@ public class SensorHelperPhotovoltaik extends SensorHelper {
 	 * @param sensorInterfererList
 	 *            List of interferer for the sensor
 	 */
-	public SensorHelperPhotovoltaik(int sensorID, GeoLocation position, int area, int updateSteps,
+	public SensorHelperPhotovoltaik(int sensorID, Coordinate position, int area, int updateSteps,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		this(sensorID, position, area, sensorInterfererList, nodeId);
 		super.setUpdateSteps(updateSteps);

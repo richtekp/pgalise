@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.server.sensor;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -43,7 +44,7 @@ public abstract class StaticTrafficSensor extends Sensor {
 	 *            Update limit
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, Object sensorId, Vector2d position, int updateLimit)
+	protected StaticTrafficSensor(Output output, Object sensorId, Coordinate position, int updateLimit)
 			throws IllegalArgumentException {
 		super(output, sensorId, position, updateLimit);
 	}
@@ -57,7 +58,7 @@ public abstract class StaticTrafficSensor extends Sensor {
 	 *            Position of the sensor
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, Object sensorId, Vector2d position) throws IllegalArgumentException {
+	protected StaticTrafficSensor(Output output, Object sensorId, Coordinate position) throws IllegalArgumentException {
 		super(output, sensorId, position);
 	}
 

@@ -16,6 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.energy.interferer;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 import javax.vecmath.Vector2d;
 
@@ -44,7 +45,7 @@ public class SmartMeterWhiteNoiseInterferer extends EnergyBaseInterferer {
 	}
 
 	@Override
-	public double interfere(final double mutableValue, final Vector2d position, final long simTime) {
+	public double interfere(final double mutableValue, final Coordinate position, final long simTime) {
 		// Should be changed?
 		if (this.getRandom().nextDouble() <= this.changeProbability) {
 			double changeValue = this.changeAmplitude * this.random.nextGaussian();

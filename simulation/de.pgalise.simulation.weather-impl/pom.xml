@@ -47,6 +47,12 @@
 			<scope>test</scope>
 			<type>ejb</type>
 		</dependency>
+	 <dependency>
+	  <groupId>com.vividsolutions</groupId>
+	  <artifactId>jts</artifactId>
+	  <version>1.13</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>

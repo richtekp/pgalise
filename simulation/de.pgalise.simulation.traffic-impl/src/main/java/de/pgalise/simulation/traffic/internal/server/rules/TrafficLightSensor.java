@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.rules;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -51,7 +52,7 @@ public final class TrafficLightSensor extends StaticTrafficSensor {
 	 * @throws IllegalArgumentException
 	 *             Thrown if no traffic light is null
 	 */
-	public TrafficLightSensor(Output output, int sensorId, Vector2d position, TrafficLight trafficLight)
+	public TrafficLightSensor(Output output, int sensorId, Coordinate position, TrafficLight trafficLight)
 			throws IllegalArgumentException {
 		super(output, sensorId, position);
 		if (trafficLight == null) {

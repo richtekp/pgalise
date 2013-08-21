@@ -18,7 +18,7 @@ package de.pgalise.simulation.shared.sensor;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.geolocation.GeoLocation;
+import com.vividsolutions.jts.geom.Coordinate;
 
 /**
  * Sensorhelper for WindPowerSensors.
@@ -63,7 +63,7 @@ public class SensorHelperWindPower extends SensorHelper {
 	 *            List of interferer for the sensor
 	 * @param nodeId
 	 */
-	public SensorHelperWindPower(int sensorID, GeoLocation position, double activityValue, double rotorLength,
+	public SensorHelperWindPower(int sensorID, Coordinate position, double activityValue, double rotorLength,
 			List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		super(sensorID, position, SensorType.WINDPOWERSENSOR, sensorInterfererList, nodeId);
 		this.activityValue = activityValue;
@@ -87,7 +87,7 @@ public class SensorHelperWindPower extends SensorHelper {
 	 *            List of interferer for the sensor
 	 * @param nodeId
 	 */
-	public SensorHelperWindPower(int sensorID, GeoLocation position, double activityValue, double rotorLength,
+	public SensorHelperWindPower(int sensorID, Coordinate position, double activityValue, double rotorLength,
 			int updateSteps, List<SensorInterfererType> sensorInterfererList, String nodeId) {
 		this(sensorID, position, activityValue, rotorLength, sensorInterfererList, nodeId);
 		super.setUpdateSteps(updateSteps);

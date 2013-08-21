@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,7 +79,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	/**
 	 * Position
 	 */
-	private Vector2d position;
+	private Coordinate position;
 
 	/**
 	 * Direction
@@ -206,7 +207,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	}
 
 	@Override
-	public Vector2d getPosition() {
+	public Coordinate getPosition() {
 		return this.position;
 	}
 
@@ -301,7 +302,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	}
 
 	@Override
-	public void setPosition(Vector2d position) {
+	public void setPosition(Coordinate position) {
 		this.position = position;
 	}
 
@@ -393,9 +394,10 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 		return nextNode;
 	}
 
-	protected final Vector2d getDirection(Vector2d a, Vector2d b) {
-		Vector2d dir = new Vector2d(b);
-		dir.sub(a);
+	protected final Vector2d getDirection(Coordinate a, Coordinate b) {
+		Vector2d dir = new Vector2d(b.x, b.y);
+		Vector2d aVector = new Vector2d(a.x, a.y);
+		dir.sub(aVector);
 		dir.normalize();
 		return dir;
 	}
@@ -420,8 +422,11 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 			this.orientation = this.getOrientation(this.direction);
 
 			// calculate new position on the path
-			this.position.sub(this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
-			double scale = this.position
+			Vector2d positionVector = new Vector2d(this.position.x, this.position.y);
+			Coordinate nextNodePosition = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
+			Vector2d nextNodeVector = new Vector2d(nextNodePosition.x, nextNodePosition.y);
+			positionVector.sub(nextNodeVector);
+			double scale = positionVector
 					.length();
 			// log.debug("Drüber gefahren: "+scale);
 			// log.debug(String.format("Edge (%s, %s): ", getNextNode().getId(),
@@ -430,7 +435,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 			// + 1)).
 			// sub(NodeExtensions.getInstance().getPosition(getNextNode())));
 			this.direction.scale(scale);
-			this.getTrafficGraphExtensions().getPosition(this._getNextNode())
+			nextNodeVector
 					.add(this.direction);
 			this.position = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
 
@@ -472,7 +477,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	 * @param position
 	 * @return true, if the next node is reached
 	 */
-	protected final boolean hasReachedNextNode(Orientation orientation, Vector2d position) {
+	protected final boolean hasReachedNextNode(Orientation orientation, Coordinate position) {
 		return Orientation.isBeyond(orientation, position,
 				this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
 	}
@@ -518,7 +523,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	protected void preUpdate(long elapsedTime) {
 	}
 
-	protected final Vector2d update(long elapsedTime, Vector2d pos, Vector2d dir) {
+	protected final Coordinate update(long elapsedTime, Coordinate pos, Vector2d dir) {
 		// log.debug("elapsedTime == 0 " + (elapsedTime == 0) + ", velocity == 0 " + (this.velocity == 0));
 		if (elapsedTime == 0 || this.velocity == 0) {
 			return pos;
@@ -528,10 +533,11 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 		double distance = this.velocity * (double) (elapsedTime / 1000);
 		// log.debug("Distance: " + distance + ", Add to vector: " + (dir.scale(distance)));
 		dir.scale(distance);
-		pos.add(dir);
+		Vector2d posVector = new Vector2d(pos.x, pos.y);
+		posVector.add(dir);
 		// log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
 		// ", direction: " + dir);
-		return pos;
+		return new Coordinate(posVector.x, posVector.y);
 	}
 
 	@Override

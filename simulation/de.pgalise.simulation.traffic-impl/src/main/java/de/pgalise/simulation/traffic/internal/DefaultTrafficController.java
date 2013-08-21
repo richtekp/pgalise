@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +33,6 @@ import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
@@ -48,8 +48,9 @@ import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geometry.Geometry;
-import de.pgalise.simulation.shared.geometry.Rectangle;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import java.awt.Rectangle;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
@@ -79,12 +80,6 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	private static final String NAME = "TrafficController";
 
 	/**
-	 * GPS mapper
-	 */
-	@EJB
-	private GPSMapper mapper;
-
-	/**
 	 * Server configuration
 	 */
 	@EJB
@@ -111,14 +106,17 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	 * help variable for JUnit tests
 	 */
 	private final boolean JUNIT_TEST;
+	
+	private Geometry area;
 
 	/**
 	 * Default constructor
 	 */
-	public DefaultTrafficController() {
+	public DefaultTrafficController(Geometry area) {
 		JUNIT_TEST = false;
 		disassembler = new QuadrantDisassembler();
 		asyncHandler = new ThreadPoolHandler();
+		this.area = area;
 	}
 
 	/**
@@ -129,13 +127,13 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	 * @param trafficServer
 	 *            List with traffic servers
 	 */
-	public DefaultTrafficController(GPSMapper mapper, List<TrafficServer> trafficServer) {
+	public DefaultTrafficController(Geometry area, List<TrafficServer> trafficServer) {
 		JUNIT_TEST = true;
-		this.mapper = mapper;
 		this.serverList = trafficServer;
 		asyncHandler = new ThreadPoolHandler();
 
 		disassembler = new QuadrantDisassembler();
+		this.area = area;
 	}
 
 	@Override
@@ -345,12 +343,14 @@ public class DefaultTrafficController extends AbstractController implements Traf
 			server.deleteSensor(sensor);
 		}
 	}
+	
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
 	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
 		for (int i = 0; i < cityZones.size(); i++) {
-			Vector2d pos = mapper.convertToVector(sensor.getPosition());
-			if (cityZones.get(i).covers(pos))
+			Coordinate pos = sensor.getPosition();
+			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos)))
 				return serverList.get(i).statusOfSensor(sensor);
 		}
 		throw new SensorException("Could not find sensor.");
@@ -388,7 +388,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	 * @return List with Geometry objects
 	 */
 	private List<Geometry> createCityZones() {
-		return this.disassembler.disassemble(new Rectangle(0, 0, this.mapper.getWidth(), this.mapper.getHeight()),
+		return this.disassembler.disassemble(area,
 				serverList.size());
 	}
 

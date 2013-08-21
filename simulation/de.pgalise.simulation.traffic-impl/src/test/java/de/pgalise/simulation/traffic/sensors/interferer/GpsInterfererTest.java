@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.sensors.interferer;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -29,9 +30,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultGPSMapper;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.CompositeGpsInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsAtmosphereInterferer;
@@ -71,7 +70,7 @@ public class GpsInterfererTest {
 	/**
 	 * Test position
 	 */
-	public static Vector2d testPosition;
+	public static Coordinate testPosition;
 
 	/**
 	 * Vector Unit
@@ -86,8 +85,6 @@ public class GpsInterfererTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// GPS Mapper
-		GPSMapper mapper = new DefaultGPSMapper();
-		vectorUnit = mapper.getVectorUnit();
 
 		// Test timestamp
 		Calendar cal = new GregorianCalendar();
@@ -95,7 +92,7 @@ public class GpsInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new Vector2d(1.0, 10.0);
+		testPosition = new Coordinate(1.0, 10.0);
 
 		/*
 		 * Mock of the Weather Controller
@@ -116,7 +113,7 @@ public class GpsInterfererTest {
 		/*
 		 * Test value
 		 */
-		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
+		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 
 		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
 		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
@@ -132,7 +129,7 @@ public class GpsInterfererTest {
 		/*
 		 * Test value
 		 */
-		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
+		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 
 		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
 		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
@@ -149,7 +146,7 @@ public class GpsInterfererTest {
 		/*
 		 * Test value
 		 */
-		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
+		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 
 		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
 		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
@@ -166,7 +163,7 @@ public class GpsInterfererTest {
 		/*
 		 * Test value
 		 */
-		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
+		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 
 		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
 		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
@@ -183,10 +180,10 @@ public class GpsInterfererTest {
 		/*
 		 * Test value
 		 */
-		Vector2d result = null;
+		Coordinate result = null;
 
 		for (int i = 0; i < 20; i++) {
-			result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
+			result = testclass.interfere(testPosition, testPosition, testTimestamp);
 
 			log.debug("Reference: " + testPosition.x + " - Changed: " + result.x + " - Difference:"
 					+ (testPosition.x - result.x) + " - Changed Meters:"
@@ -214,7 +211,7 @@ public class GpsInterfererTest {
 		/*
 		 * Test value
 		 */
-		Vector2d result = testclass.interfere(testPosition, testPosition, testTimestamp, vectorUnit);
+		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 
 		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x + " - Difference:"
 				+ (testPosition.x - result.x));

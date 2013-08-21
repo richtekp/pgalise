@@ -16,11 +16,11 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -61,11 +61,6 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 	private InductionLoopInterferer interferer;
 
 	/**
-	 * GPSMapper
-	 */
-	private final GPSMapper mapper;
-
-	/**
 	 * Constructor
 	 * 
 	 * @param output
@@ -77,9 +72,8 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(final Output output, final Object sensorId, final Vector2d position,
-			final GPSMapper mapper, final InductionLoopInterferer interferer) {
-		this(output, sensorId, position, 1, mapper, interferer);
+	public InductionLoopSensor(final Output output, final Object sensorId, final Coordinate position, final InductionLoopInterferer interferer) {
+		this(output, sensorId, position, 1, interferer);
 	}
 
 	/**
@@ -96,17 +90,12 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(Output output, Object sensorId, Vector2d position, int updateLimit,
-			final GPSMapper mapper, final InductionLoopInterferer interferer) {
+	public InductionLoopSensor(Output output, Object sensorId, Coordinate position, int updateLimit, final InductionLoopInterferer interferer) {
 		super(output, sensorId, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
-		if (mapper == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("mapper"));
-		}
 		this.interferer = interferer;
-		this.mapper = mapper;
 	}
 
 	public InductionLoopInterferer getInterferer() {
@@ -166,7 +155,7 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 			this.realVehicleCount++;
 
 			this.vehicleCount += this.interferer.interfere(vehicle.getData().getLength(), this.realVehicleCount,
-					this.mapper.convertVUStoKMH(vehicle.getVelocity()));
+					vehicle.getVelocity());
 
 			log.debug(this.getSensorId()+" registered a vehicle");
 		}

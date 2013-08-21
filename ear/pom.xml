@@ -124,6 +124,14 @@
 		    <version>${applicationVersion}</version>
 		    <type>war</type>
 		</dependency>
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>eclipselink</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbyclient</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -167,9 +175,9 @@
 							<contextRoot>/controlCenter</contextRoot>
 						</webModule>
 					</modules>
-					<libs>
-						<lib>org.eclipse.persistence:eclipselink:2.5.0</lib>
-					</libs>
+<!--					<libs>
+						<lib>org.eclipse.persistence:eclipselink:2.4.2</lib>
+					</libs>--><!--doesn't seem to work-->
 				</configuration>
 			</plugin>
 			<plugin>

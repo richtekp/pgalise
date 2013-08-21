@@ -16,8 +16,8 @@
  
 package de.pgalise.simulation.staticsensor.sensor.energy;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Interface for an interferer which manipulates the energy input
@@ -39,5 +39,5 @@ public interface EnergyInterferer extends SensorInterferer {
 	 *            Simulation timestamp
 	 * @return new value
 	 */
-	double interfere(final double mutableValue, final Vector2d position, final long simTime);
+	double interfere(final double mutableValue, final Coordinate position, final long simTime);
 }

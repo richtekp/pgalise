@@ -33,7 +33,6 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.service.GPSMapper;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -88,9 +87,6 @@ public class DefaultStaticSensorController extends AbstractController implements
 
 	@EJB
 	private ServiceDictionary serviceDictionary;
-
-	@EJB
-	private GPSMapper gpsMapper;
 
 	/**
 	 * Default
