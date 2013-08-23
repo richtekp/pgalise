@@ -14,7 +14,7 @@
 
 	<packaging>ejb</packaging>
 
-	<name>de.pgalise.simulation.weather</name>
+	<name>de.pgalise.simulation.weather-impl</name>
 
 	<!-- Hier die Abhängigkeiten definieren -->
 	<dependencies>
