@@ -94,7 +94,7 @@ public class QuadrantDisassemblerTest {
 
 		// dritter quadrant hat 1 Punkte -> see below for check whether all points 
 		//belong to exactly one quadrant
-		assertEquals(0, this.getNodes(graph.getNodeSet(), quadrants.get(2)).length());
+		assertEquals(1, this.getNodes(graph.getNodeSet(), quadrants.get(2)).length());
 
 		// vierter hat 2
 		assertEquals(2, this.getNodes(graph.getNodeSet(), quadrants.get(3)).length());
