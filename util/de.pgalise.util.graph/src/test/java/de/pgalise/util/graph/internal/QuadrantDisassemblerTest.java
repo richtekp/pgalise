@@ -45,6 +45,8 @@ import org.geotools.geometry.jts.JTS;
  * @version 1.0 (Nov 22, 2012)
  */
 public class QuadrantDisassemblerTest {
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+	
 	@Test
 	public void testDisassemble() {
 		Disassembler dis = new QuadrantDisassembler();
@@ -76,7 +78,6 @@ public class QuadrantDisassemblerTest {
 		node.setAttribute("position", new Coordinate(80, 45));
 
 		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(0, 100, 0, 60)), 4);
-
 		// es gibt 3 quadranten
 		assertEquals(4, quadrants.size());
 
@@ -91,7 +92,8 @@ public class QuadrantDisassemblerTest {
 		assertTrue(this.getNodes(graph.getNodeSet(), quadrants.get(1)).contains("d")
 				&& this.getNodes(graph.getNodeSet(), quadrants.get(1)).contains("e"));
 
-		// dritter quadrant hat 0 punkte
+		// dritter quadrant hat 1 Punkte -> see below for check whether all points 
+		//belong to exactly one quadrant
 		assertEquals(0, this.getNodes(graph.getNodeSet(), quadrants.get(2)).length());
 
 		// vierter hat 2
@@ -99,8 +101,6 @@ public class QuadrantDisassemblerTest {
 		assertTrue(this.getNodes(graph.getNodeSet(), quadrants.get(3)).contains("f"));
 		assertTrue(this.getNodes(graph.getNodeSet(), quadrants.get(3)).contains("g"));
 	}
-	
-	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	/**
 	 * Returns the nodes as String

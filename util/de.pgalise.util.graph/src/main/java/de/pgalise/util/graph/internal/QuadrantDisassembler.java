@@ -117,9 +117,9 @@ public class QuadrantDisassembler implements Disassembler {
 							JTS.toGeometry(
 								new Envelope(
 									current.getData().getEnvelopeInternal().getMinX(), 
-									current.getData().getEnvelopeInternal().getHeight() / 2, 
 									current.getData().getEnvelopeInternal().getMinX() 
 										+ current.getData().getEnvelopeInternal().getWidth(),
+									current.getData().getEnvelopeInternal().getHeight() / 2, 
 									(current.getData().getEnvelopeInternal().getHeight() / 2) 
 										+ (current.getData().getEnvelopeInternal().getHeight() / 2)
 								)
