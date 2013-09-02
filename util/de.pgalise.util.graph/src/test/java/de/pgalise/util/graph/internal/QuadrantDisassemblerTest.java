@@ -75,7 +75,7 @@ public class QuadrantDisassemblerTest {
 		node = graph.addNode("g");
 		node.setAttribute("position", new Coordinate(80, 45));
 
-		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(0, 0, 100, 60)), 4);
+		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(0, 100, 0, 60)), 4);
 
 		// es gibt 3 quadranten
 		assertEquals(4, quadrants.size());

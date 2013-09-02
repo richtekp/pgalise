@@ -65,23 +65,67 @@ public class QuadrantDisassembler implements Disassembler {
 				// log.debug("Lowest leaf: " + current.getData());
 				if (current.getData().getEnvelopeInternal().getWidth() >= current.getData().getEnvelopeInternal().getHeight()) {
 					// vertikal aufteilen
-					current.setLeft(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX(), current.getData()
-							.getEnvelopeInternal().getMinY(), current.getData().getEnvelopeInternal().getMinX() + (current.getData().getEnvelopeInternal().getWidth() / 2), current
-							.getData().getEnvelopeInternal().getMinY() + current.getData().getEnvelopeInternal().getHeight()))));
-					current.setRight(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX()
-							+ (current.getData().getEnvelopeInternal().getWidth() / 2), current.getData().getEnvelopeInternal().getMinY(), (current.getData()
-							.getEnvelopeInternal().getWidth() / 2) + (current.getData().getEnvelopeInternal().getWidth() / 2), current.getData().getEnvelopeInternal().getMinY()
-							+ current.getData().getEnvelopeInternal().getHeight()))));
+					current.setLeft(
+						new BNode<Geometry>(
+							JTS.toGeometry(
+								new Envelope(
+									current.getData().getEnvelopeInternal().getMinX(), 
+									current.getData().getEnvelopeInternal().getMinX() 
+										+ (current.getData().getEnvelopeInternal().getWidth() / 2), 
+									current.getData().getEnvelopeInternal().getMinY(), 
+									current.getData().getEnvelopeInternal().getMinY() 
+										+ current.getData().getEnvelopeInternal().getHeight()
+								)
+							)
+						)
+					);
+					current.setRight(
+						new BNode<Geometry>(
+							JTS.toGeometry(
+								new Envelope(
+									current.getData().getEnvelopeInternal().getMinX()
+										+ (current.getData().getEnvelopeInternal().getWidth() / 2), 
+									(current.getData().getEnvelopeInternal().getWidth() / 2) 
+										+ (current.getData().getEnvelopeInternal().getWidth() / 2), 
+									current.getData().getEnvelopeInternal().getMinY(), 
+									current.getData().getEnvelopeInternal().getMinY()
+										+ current.getData().getEnvelopeInternal().getHeight()
+								)
+							)
+						)
+					);
 					// log.debug(String.format("Splitting node (%s) vertical to (%s) and (%s) ", current.getData(),
 					// current.getLeft().getData(), current.getRight().getData()));
 				} else {
 					// horizontal aufteilen
-					current.setLeft(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX(), current.getData()
-							.getEnvelopeInternal().getMinY(), current.getData().getEnvelopeInternal().getMinX() + current.getData().getEnvelopeInternal().getWidth(), current
-							.getData().getEnvelopeInternal().getMinY() + (current.getData().getEnvelopeInternal().getHeight() / 2)))));
-					current.setRight(new BNode<Geometry>(JTS.toGeometry(new Envelope(current.getData().getEnvelopeInternal().getMinX(), current.getData()
-							.getEnvelopeInternal().getHeight() / 2, current.getData().getEnvelopeInternal().getMinX() + current.getData().getEnvelopeInternal().getWidth(), (current
-							.getData().getEnvelopeInternal().getHeight() / 2) + (current.getData().getEnvelopeInternal().getHeight() / 2)))));
+					current.setLeft(
+						new BNode<Geometry>(
+							JTS.toGeometry(
+								new Envelope(
+									current.getData().getEnvelopeInternal().getMinX(), 
+									current.getData().getEnvelopeInternal().getMinX() 
+										+ current.getData().getEnvelopeInternal().getWidth(),
+									current.getData().getEnvelopeInternal().getMinY(), 
+									current.getData().getEnvelopeInternal().getMinY() 
+										+ (current.getData().getEnvelopeInternal().getHeight() / 2)
+								)
+							)
+						)
+					);
+					current.setRight(
+						new BNode<Geometry>(
+							JTS.toGeometry(
+								new Envelope(
+									current.getData().getEnvelopeInternal().getMinX(), 
+									current.getData().getEnvelopeInternal().getHeight() / 2, 
+									current.getData().getEnvelopeInternal().getMinX() 
+										+ current.getData().getEnvelopeInternal().getWidth(),
+									(current.getData().getEnvelopeInternal().getHeight() / 2) 
+										+ (current.getData().getEnvelopeInternal().getHeight() / 2)
+								)
+							)
+						)
+					);
 					// log.debug(String.format("Splitting node (%s) horizontal to (%s) and (%s) ", current.getData(),
 					// current.getLeft().getData(), current.getRight().getData()));
 				}
