@@ -30,6 +30,7 @@ import de.pgalise.weathercollector.model.ServiceDataForecast;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.util.Converter;
 import de.pgalise.weathercollector.weatherservice.ServiceStrategyLib;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Returns weather informations from Google. Uses the strategy pattern.
@@ -47,7 +48,7 @@ public final class GoogleWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected ServiceDataHelper extractWeather(City city, Document doc) {
+	protected ServiceDataHelper extractWeather(City city, Document doc, EntityManagerFactory entityManagerFactory) {
 		ServiceDataHelper weather = new ServiceDataHelper(city, this.apiname);
 
 		// Read general informations
@@ -95,7 +96,7 @@ public final class GoogleWeather extends XMLAPIWeather {
 					condition.setRelativHumidity(Float.parseFloat(segs[1].substring(0, (segs[1].length() - 1))));
 				} else if (childnodes.item(j).getNodeName() == "condition") {
 					// Condition
-					condition.setCondition(ServiceStrategyLib.getConditionCode(dataString));
+					condition.setCondition(ServiceStrategyLib.getConditionCode(dataString, entityManagerFactory));
 				}
 			}
 
@@ -137,7 +138,7 @@ public final class GoogleWeather extends XMLAPIWeather {
 					condition.setTemperatureHigh(Float.parseFloat(dataString));
 				} else if (childnodes.item(j).getNodeName() == "condition") {
 					// Condition
-					condition.setCondition(ServiceStrategyLib.getConditionCode(dataString));
+					condition.setCondition(ServiceStrategyLib.getConditionCode(dataString, entityManagerFactory));
 				}
 			}
 

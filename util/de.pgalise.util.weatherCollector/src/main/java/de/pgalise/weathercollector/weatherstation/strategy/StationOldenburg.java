@@ -64,7 +64,7 @@ public final class StationOldenburg implements StationStrategy {
 	}
 
 	@Override
-	public void saveWeather(WeatherStationSaver saver, boolean testmode) {
+	public void saveWeather(WeatherStationSaver saver) {
 		Set<StationData> list = null;
 		int month = -1; // To identify the previous month
 
@@ -82,7 +82,7 @@ public final class StationOldenburg implements StationStrategy {
 				list = this.readLinesFromFile(url);
 
 				// Save station data
-				result = (testmode) ? false : saver.saveStationDataSet(list);
+				result = saver.saveStationDataSet(list);
 			} while (result);
 		} catch (SaveStationDataException | IOException e) {
 			e.printStackTrace();

@@ -29,6 +29,7 @@ import de.pgalise.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.weathercollector.model.City;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Abstract superclass for weather service strategies which uses an URL
@@ -80,7 +81,7 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	}
 
 	@Override
-	public ServiceDataHelper getWeather(City city) throws ReadServiceDataException {
+	public ServiceDataHelper getWeather(City city, EntityManagerFactory entityManagerFactory) throws ReadServiceDataException {
 		// Remember city
 		this.city = city;
 		this.setSearchCity(this.city);
@@ -91,7 +92,7 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 		}
 
 		// Extract data
-		return this.extractWeather(city, this.fetchWeatherData(this.searchCity));
+		return this.extractWeather(city, this.fetchWeatherData(this.searchCity), entityManagerFactory);
 	}
 
 	/**
@@ -103,7 +104,7 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	 *            Document root
 	 * @return ServiceData object
 	 */
-	protected abstract ServiceDataHelper extractWeather(City city, Document doc);
+	protected abstract ServiceDataHelper extractWeather(City city, Document doc, EntityManagerFactory entityManagerFactory);
 
 	/**
 	 * Returns the weather service xml to the given city

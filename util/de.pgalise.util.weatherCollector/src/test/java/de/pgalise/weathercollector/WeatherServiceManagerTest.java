@@ -24,6 +24,13 @@ import org.junit.Test;
 
 import de.pgalise.weathercollector.util.Log;
 import de.pgalise.weathercollector.weatherservice.WeatherServiceManager;
+import java.util.Properties;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * Tests the weather service manager
@@ -31,37 +38,23 @@ import de.pgalise.weathercollector.weatherservice.WeatherServiceManager;
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-@Ignore
+@LocalClient
 public class WeatherServiceManagerTest {
+	@PersistenceUnit(unitName = "weather_data_test")
+	private EntityManagerFactory entityManagerFactory;
 
-	/**
-	 * Test mode on?
-	 */
-	public static boolean TEST_MODE = true;
-
-	/**
-	 * Test class
-	 */
-	public static WeatherServiceManager testclass = null;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		testclass = new WeatherServiceManager(TEST_MODE);
-
-		// Set up logger
-		Log.configLogging(WeatherServiceManagerTest.class.getName());
+	public WeatherServiceManagerTest() throws NamingException {
+		Properties p = new Properties();
+		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
+		InitialContext initialContext = new InitialContext(p);
+		initialContext.bind("inject", this);
 	}
 
 	@Test
 	public void testSaveInformations() {
-		// Checks the function in testmode
-		try {
-			testclass.saveInformations();
-			assertTrue(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		WeatherServiceManager instance = new WeatherServiceManager(
+			entityManagerFactory);
+		instance.saveInformations(entityManagerFactory);
 	}
 
 }

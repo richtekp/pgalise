@@ -19,6 +19,7 @@ package de.pgalise.weathercollector.weatherservice;
 import de.pgalise.weathercollector.model.Condition;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.util.DatabaseManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Helper for weather service strategies
@@ -72,7 +73,7 @@ public final class ServiceStrategyLib {
 	 *            Condition
 	 * @return Condition code
 	 */
-	public static int getConditionCode(String condition) {
+	public static int getConditionCode(String condition, EntityManagerFactory entityManagerFactory) {
 		if ((condition == null) || condition.equals("")) {
 			return UNKNOWN_CONDITION;
 		}
@@ -81,7 +82,7 @@ public final class ServiceStrategyLib {
 		condition = condition.toLowerCase();
 
 		// Get condition
-		Condition result = DatabaseManager.getInstance().getCondition(condition);
+		Condition result = DatabaseManager.getInstance(entityManagerFactory).getCondition(condition);
 
 		if (result != null) {
 			return result.getCode();

@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import de.pgalise.weathercollector.util.Log;
 import de.pgalise.weathercollector.weatherservice.WeatherServiceManager;
 import de.pgalise.weathercollector.weatherstation.WeatherStationManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * This is the entrance point of the weather collector. This program gets various informations of weather stations and
@@ -38,23 +39,19 @@ public final class WeatherCollector {
 	 *            no args
 	 */
 	public static void main(String[] args) {
-		WeatherCollector collector = new WeatherCollector(false);
+		EntityManagerFactory entityManagerFactory = null;
+		WeatherCollector collector = new WeatherCollector();
 
 		Log.writeLog("### PROGRAMM START ###", Level.INFO);
 
 		// Weather services
-		collector.collectServiceData();
+		collector.collectServiceData(entityManagerFactory);
 
 		// Weather stations
-		collector.collectStationData();
+		collector.collectStationData(entityManagerFactory);
 
 		Log.writeLog("### PROGRAMM END ###", Level.INFO);
 	}
-
-	/**
-	 * Option to enable the test mode (no database commits)
-	 */
-	private boolean testmode = false;
 
 	/**
 	 * Constructor
@@ -62,28 +59,25 @@ public final class WeatherCollector {
 	 * @param testmode
 	 *            Option to enable the test mode (no database commits)
 	 */
-	public WeatherCollector(boolean testmode) {
-		this.testmode = testmode;
-
-		this.init();
+	public WeatherCollector() {
 	}
 
 	/**
 	 * Collect weather informations of the weather services
 	 */
-	public void collectServiceData() {
-		WeatherServiceManager collector = new WeatherServiceManager(this.testmode);
+	public void collectServiceData(EntityManagerFactory entityManagerFactory) {
+		WeatherServiceManager collector = new WeatherServiceManager(entityManagerFactory);
 
 		// Get informations and save them
 		Log.writeLog("### --- Wetterdienste --- ###", Level.INFO);
-		collector.saveInformations();
+		collector.saveInformations(entityManagerFactory);
 	}
 
 	/**
 	 * Collect weather informations of the weather stations
 	 */
-	public void collectStationData() {
-		WeatherStationManager collector = new WeatherStationManager(this.testmode);
+	public void collectStationData(EntityManagerFactory entityManagerFactory) {
+		WeatherStationManager collector = new WeatherStationManager(entityManagerFactory);
 
 		// Get informations and save them
 		Log.writeLog("### --- Wetterstationen --- ###", Level.INFO);

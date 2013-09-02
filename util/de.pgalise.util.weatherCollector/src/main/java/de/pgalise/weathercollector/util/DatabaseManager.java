@@ -41,6 +41,8 @@ import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.model.StationData;
 import de.pgalise.weathercollector.weatherservice.WeatherServiceSaver;
 import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Handles all database statements of the weather collector. Uses the singleton pattern.
@@ -53,7 +55,7 @@ public class DatabaseManager implements WeatherStationSaver, WeatherServiceSaver
 	/**
 	 * Instance of the class
 	 */
-	private static DatabaseManager instance = null;
+	private final static Map<EntityManagerFactory,DatabaseManager> instances = new HashMap<>(1);
 
 	/**
 	 * File path for property file
@@ -71,9 +73,12 @@ public class DatabaseManager implements WeatherStationSaver, WeatherServiceSaver
 	 * 
 	 * @return instance of the database manager
 	 */
-	public static synchronized DatabaseManager getInstance() {
+	public static synchronized DatabaseManager getInstance(EntityManagerFactory entityManagerFactory) {
+		DatabaseManager instance = instances.get(entityManagerFactory);
 		if (instance == null) {
-			instance = new DatabaseManager();
+			instance = new DatabaseManager(entityManagerFactory);
+			instances.put(entityManagerFactory,
+				instance);
 		}
 		return instance;
 	}
@@ -99,6 +104,10 @@ public class DatabaseManager implements WeatherStationSaver, WeatherServiceSaver
 
 		// Set persistence unit name
 		this.factory = Persistence.createEntityManagerFactory(PERSISTENT_UNIT_NAME, database);
+	}
+	
+	private DatabaseManager(EntityManagerFactory entityManagerFactory) {
+		this.factory = entityManagerFactory;
 	}
 
 	/**

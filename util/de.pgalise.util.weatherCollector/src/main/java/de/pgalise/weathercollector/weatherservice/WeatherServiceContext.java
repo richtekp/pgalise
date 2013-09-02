@@ -37,6 +37,7 @@ import de.pgalise.weathercollector.model.City;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.util.Log;
 import de.pgalise.weathercollector.weatherstation.WeatherStationManager;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Uses strategies to read informations from weather services
@@ -81,7 +82,7 @@ public class WeatherServiceContext {
 	 *            City
 	 * @return Best ServiceData
 	 */
-	public ServiceDataHelper getBestWeather(City city) {
+	public ServiceDataHelper getBestWeather(City city, EntityManagerFactory entityManagerFactory) {
 
 		// ServiceData objects
 		ServiceDataHelper bestWeather = null;
@@ -94,7 +95,7 @@ public class WeatherServiceContext {
 				this.strategy = strategy;
 
 				// --- Get informations ---
-				tempWeather = this.strategy.getWeather(city);
+				tempWeather = this.strategy.getWeather(city, entityManagerFactory);
 
 				// --- Complete informations ---
 				bestWeather = (bestWeather == null) ? tempWeather : ServiceStrategyLib.completeWeather(bestWeather,
@@ -120,7 +121,7 @@ public class WeatherServiceContext {
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public ServiceDataHelper getSingleWeather(City city, int strategyIndex) throws ReadServiceDataException {
+	public ServiceDataHelper getSingleWeather(City city, int strategyIndex, EntityManagerFactory entityManagerFactory) throws ReadServiceDataException {
 		if ((strategyIndex < 0) || (strategyIndex >= this.strategies.size())) {
 			// Get random
 			this.strategy = this.getRandomStrategy();
@@ -130,7 +131,7 @@ public class WeatherServiceContext {
 		}
 
 		// Return informations
-		return this.strategy.getWeather(city);
+		return this.strategy.getWeather(city, entityManagerFactory);
 	}
 
 	public List<ServiceStrategy> getStrategies() {

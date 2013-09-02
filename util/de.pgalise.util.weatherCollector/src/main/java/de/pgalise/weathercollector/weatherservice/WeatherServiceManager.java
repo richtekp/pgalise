@@ -24,6 +24,7 @@ import de.pgalise.weathercollector.model.City;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.util.DatabaseManager;
 import de.pgalise.weathercollector.util.Log;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Gets and saves informations of various weather services
@@ -37,10 +38,6 @@ public final class WeatherServiceManager {
 	 * Class to save the informations
 	 */
 	public WeatherServiceSaver saver;
-	/**
-	 * Option to enable the test mode (no database commits)
-	 */
-	public boolean testmode = false;
 
 	/**
 	 * Constructor
@@ -48,17 +45,14 @@ public final class WeatherServiceManager {
 	 * @param testmode
 	 *            Option to enable the test mode (no database commits)
 	 */
-	public WeatherServiceManager(boolean testmode) {
-		this.testmode = testmode;
-
-		// Sets the helper to save the informations
-		this.saver = DatabaseManager.getInstance();
+	public WeatherServiceManager(EntityManagerFactory entityManagerFactory) {
+		this.saver = DatabaseManager.getInstance(entityManagerFactory);
 	}
 
 	/**
 	 * Gets informations from weather services
 	 */
-	public void saveInformations() {
+	public void saveInformations(EntityManagerFactory entityManagerFactory) {
 		// Read all cities
 		List<City> cities = this.getCities();
 
@@ -66,12 +60,9 @@ public final class WeatherServiceManager {
 		if ((cities != null) && (cities.size() > 0)) {
 			for (City city : cities) {
 				// Get data
-				ServiceDataHelper weather = this.getServiceData(city);
+				ServiceDataHelper weather = this.getServiceData(city, entityManagerFactory);
 
-				// Save weather informations
-				if (!this.testmode) {
-					this.saveServiceData(weather);
-				}
+				this.saveServiceData(weather);
 			}
 		}
 	}
@@ -98,39 +89,17 @@ public final class WeatherServiceManager {
 	 *            City
 	 * @return ServiceData
 	 */
-	private ServiceDataHelper getServiceData(City city) {
+	private ServiceDataHelper getServiceData(City city, EntityManagerFactory entityManagerFactory) {
 		ServiceDataHelper data = null;
 
-		try {
-			Log.writeLog("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
+		Log.writeLog("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
 
-			WeatherServiceContext context = new WeatherServiceContext();
+		WeatherServiceContext context = new WeatherServiceContext();
 
-			// Testmode? - Use all strategies
-			if (this.testmode) {
-				Log.writeLog("#### Alle Strategien testen ####", Level.INFO);
-				for (int i = 0; i < context.getStrategies().size(); i++) {
-					data = context.getSingleWeather(city, i);
-					Log.writeLog(data.toString(), Level.INFO);
-					Log.writeLog("-------------------------------------", Level.INFO);
-				}
+		// Use best strategy
+		data = context.getBestWeather(city, entityManagerFactory);
 
-				// Get best strategy
-				Log.writeLog("#### Beste Wetterdaten testen ####", Level.INFO);
-				data = context.getBestWeather(city);
-				Log.writeLog(data.toString(), Level.INFO);
-
-			} else {
-				// Use best strategy
-				data = context.getBestWeather(city);
-			}
-
-			Log.writeLog("Holen der Daten zur Stadt " + city.getName() + " beendet.", Level.INFO);
-		} catch (ReadServiceDataException e) {
-			Log.writeLog("Beim Holen der Daten zur Stadt " + city.getName() + " ist ein Fehler aufgetreten",
-					Level.WARNING);
-			e.printStackTrace();
-		}
+		Log.writeLog("Holen der Daten zur Stadt " + city.getName() + " beendet.", Level.INFO);
 
 		return data;
 	}

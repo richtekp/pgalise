@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
 
 import de.pgalise.weathercollector.util.DatabaseManager;
 import de.pgalise.weathercollector.util.Log;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Gets and saves informations of various weather stations
@@ -68,11 +69,8 @@ public final class WeatherStationManager {
 	 * @param testmode
 	 *            Option to enable the test mode (no database commits)
 	 */
-	public WeatherStationManager(boolean testmode) {
-		this.testmode = testmode;
-
-		// Sets the helper to save the informations
-		this.saver = DatabaseManager.getInstance();
+	public WeatherStationManager(EntityManagerFactory entityManagerFactory) {
+		this.saver = DatabaseManager.getInstance(entityManagerFactory);
 	}
 
 	/**
@@ -93,7 +91,7 @@ public final class WeatherStationManager {
 		for (StationStrategy strategy : slist) {
 			try {
 				this.strategy = strategy;
-				this.strategy.saveWeather(this.saver, this.testmode);
+				this.strategy.saveWeather(this.saver);
 
 			} catch (Exception e) {
 				Log.writeLog(e.getMessage(), Level.WARNING);

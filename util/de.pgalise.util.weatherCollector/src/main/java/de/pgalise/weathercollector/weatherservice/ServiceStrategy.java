@@ -19,6 +19,7 @@ package de.pgalise.weathercollector.weatherservice;
 import de.pgalise.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.weathercollector.model.City;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Interface for weather service strategies. Uses the strategy pattern
@@ -37,5 +38,5 @@ public interface ServiceStrategy {
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public ServiceDataHelper getWeather(City city) throws ReadServiceDataException;
+	public ServiceDataHelper getWeather(City city, EntityManagerFactory entityManagerFactory) throws ReadServiceDataException;
 }

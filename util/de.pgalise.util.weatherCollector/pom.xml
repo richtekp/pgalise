@@ -35,6 +35,13 @@
 		<!-- <artifactId>mysql-connector-java</artifactId> -->
 		<!-- <version>5.1.18</version> -->
 		<!-- </dependency> -->
+	 <dependency>
+	  <groupId>org.apache.openejb</groupId>
+	  <artifactId>openejb-api</artifactId>
+	  <version>4.5.1</version>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<plugins>

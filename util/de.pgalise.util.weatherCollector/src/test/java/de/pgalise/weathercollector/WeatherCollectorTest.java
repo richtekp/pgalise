@@ -23,6 +23,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.pgalise.weathercollector.app.WeatherCollector;
+import java.util.Properties;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * Tests the weather collector
@@ -30,46 +37,28 @@ import de.pgalise.weathercollector.app.WeatherCollector;
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-@Ignore
+@LocalClient
 public class WeatherCollectorTest {
+	@PersistenceUnit(unitName = "weather_data_test")
+	private EntityManagerFactory entityManagerFactory;
 
-	/**
-	 * Test mode on?
-	 */
-	public static boolean TEST_MODE = true;
-
-	/**
-	 * Test class
-	 */
-	public static WeatherCollector testclass = null;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		testclass = new WeatherCollector(TEST_MODE);
+	public WeatherCollectorTest() throws NamingException {
+		Properties p = new Properties();
+		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
+		InitialContext initialContext = new InitialContext(p);
+		initialContext.bind("inject", this);
 	}
 
 	@Test
 	public void testCollectServiceData() {
-		// Checks the function in testmode
-		try {
-			testclass.collectServiceData();
-			assertTrue(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		WeatherCollector weatherCollector = new WeatherCollector();
+		weatherCollector.collectServiceData(entityManagerFactory);
 	}
 
 	@Test
 	public void testCollectStationData() {
-		// Checks the function in testmode
-		try {
-			testclass.collectStationData();
-			assertTrue(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-			assertTrue(false);
-		}
+		WeatherCollector weatherCollector = new WeatherCollector();
+		weatherCollector.collectStationData(entityManagerFactory);
 	}
 
 }

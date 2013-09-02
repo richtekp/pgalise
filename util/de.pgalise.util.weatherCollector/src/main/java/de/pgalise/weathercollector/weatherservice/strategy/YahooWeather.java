@@ -35,6 +35,7 @@ import de.pgalise.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.weathercollector.model.ServiceDataForecast;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.util.Converter;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Returns weather informations from Yahoo. Uses the strategy pattern. More: http://developer.yahoo.com/weather/#terms
@@ -52,7 +53,7 @@ public final class YahooWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected ServiceDataHelper extractWeather(City city, Document doc) {
+	protected ServiceDataHelper extractWeather(City city, Document doc, EntityManagerFactory entityManagerFactory) {
 		ServiceDataHelper weather = new ServiceDataHelper(city, this.apiname);
 
 		// City (<yweather:location city="Oldenburg" region="NI" country="Germany"/>)

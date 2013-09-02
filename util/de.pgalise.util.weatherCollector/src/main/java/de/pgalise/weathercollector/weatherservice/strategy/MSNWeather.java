@@ -30,6 +30,7 @@ import de.pgalise.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.weathercollector.model.ServiceDataForecast;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import de.pgalise.weathercollector.util.Converter;
+import javax.persistence.EntityManagerFactory;
 
 /**
  * Returns weather informations from MSN. Uses the strategy pattern.
@@ -48,7 +49,7 @@ public final class MSNWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected ServiceDataHelper extractWeather(City city, Document doc) {
+	protected ServiceDataHelper extractWeather(City city, Document doc, EntityManagerFactory entityManagerFactory) {
 		ServiceDataHelper weather = new ServiceDataHelper(city, this.apiname);
 
 		// Read global data
