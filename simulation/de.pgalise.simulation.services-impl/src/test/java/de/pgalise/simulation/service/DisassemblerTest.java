@@ -53,27 +53,27 @@ public class DisassemblerTest {
 
 		// erster qudrant
 		node = graph.addNode("a");
-		node.setAttribute("position", new Vector2d(10, 10));
+		node.setAttribute("position", new Coordinate(10, 10));
 
 		node = graph.addNode("b");
-		node.setAttribute("position", new Vector2d(25, 25));
+		node.setAttribute("position", new Coordinate(25, 25));
 
 		node = graph.addNode("c");
-		node.setAttribute("position", new Vector2d(20, 25));
+		node.setAttribute("position", new Coordinate(20, 25));
 
 		// zweiter quadrant
 		node = graph.addNode("d");
-		node.setAttribute("position", new Vector2d(18, 45));
+		node.setAttribute("position", new Coordinate(18, 45));
 
 		node = graph.addNode("e");
-		node.setAttribute("position", new Vector2d(40, 50));
+		node.setAttribute("position", new Coordinate(40, 50));
 
 		// dritter quadrant
 		node = graph.addNode("f");
-		node.setAttribute("position", new Vector2d(75, 30));
+		node.setAttribute("position", new Coordinate(75, 30));
 
 		node = graph.addNode("g");
-		node.setAttribute("position", new Vector2d(80, 45));
+		node.setAttribute("position", new Coordinate(80, 45));
 
 		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(0, 0, 100, 60)), 4);
 
