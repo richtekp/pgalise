@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.service;
+package de.pgalise.util.graph.internal;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
@@ -44,9 +44,9 @@ import org.geotools.geometry.jts.JTS;
  * @author Marina
  * @version 1.0 (Nov 22, 2012)
  */
-public class DisassemblerTest {
+public class QuadrantDisassemblerTest {
 	@Test
-	public void disassemble() {
+	public void testDisassemble() {
 		Disassembler dis = new QuadrantDisassembler();
 		Graph graph = new SingleGraph("oldenburg");
 		Node node;
