@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 /**
  * Helper with important methods to convert dates, times and other stuff
@@ -31,7 +32,13 @@ import java.util.GregorianCalendar;
  * @author Andreas Rehfeldt
  * @version 1.0 (Jun 22, 2012)
  */
-public final class Converter {
+public class Converter {
+	
+	public static Date convertDate(String dateString, String pattern) throws ParseException {
+		Date retValue = convertDate(dateString,
+			pattern, Locale.US);
+		return retValue;
+	}
 
 	/**
 	 * Returns a date object to the given date string
@@ -44,17 +51,22 @@ public final class Converter {
 	 * @throws ParseException
 	 *             The string can not be interpreted
 	 */
-	public static Date convertDate(String dateString, String pattern) throws ParseException {
+	public static Date convertDate(String dateString, String pattern, Locale locale) throws ParseException {
 		if (dateString == null) {
 			throw new IllegalArgumentException("dateString");
 		} else if (pattern == null) {
 			throw new IllegalArgumentException("pattern");
 		}
 
-		DateFormat formatter = new SimpleDateFormat(pattern);
+		DateFormat formatter = new SimpleDateFormat(pattern, locale);
 		Date date = new Date(formatter.parse(dateString).getTime());
 
 		return date;
+	}
+	
+	public static Date convertDateFromWeekday(String dateString) throws ParseException {
+		Date retValue = convertDateFromWeekday(dateString, Locale.US);
+		return retValue;
 	}
 
 	/**
@@ -66,13 +78,13 @@ public final class Converter {
 	 * @throws ParseException
 	 *             The string can not be interpreted
 	 */
-	public static Date convertDateFromWeekday(String dateString) throws ParseException {
+	public static Date convertDateFromWeekday(String dateString, Locale locale) throws ParseException {
 		if (dateString == null) {
 			throw new IllegalArgumentException("dateString");
 		}
 
 		Calendar cal = new GregorianCalendar();
-		DateFormat formatter = new SimpleDateFormat("E");
+		DateFormat formatter = new SimpleDateFormat("E", locale);
 
 		// Current date
 		if (formatter.format(cal.getTime()).equals(dateString)) {
@@ -90,6 +102,19 @@ public final class Converter {
 		// Nothing found?
 		return null;
 	}
+	
+	/**
+	 * invokes {@link #convertTime(java.lang.String, Sting) } with {@link Locale#US}
+	 * @param timeString
+	 * @param pattern
+	 * @return 
+	 */
+	public static Time convertTime(String timeString, String pattern) throws ParseException {
+		Time retValue = convertTime(timeString,
+			timeString,
+			Locale.US);
+		return retValue;
+	}
 
 	/**
 	 * Returns a time object to the given string
@@ -102,17 +127,23 @@ public final class Converter {
 	 * @throws ParseException
 	 *             The string can not be interpreted
 	 */
-	public static Time convertTime(String timeString, String pattern) throws ParseException {
+	public static Time convertTime(String timeString, String pattern, Locale locale) throws ParseException {
 		if (timeString == null) {
 			throw new IllegalArgumentException("timeString");
 		} else if (pattern == null) {
 			throw new IllegalArgumentException("pattern");
 		}
 
-		DateFormat formatter = new SimpleDateFormat(pattern);
+		DateFormat formatter = new SimpleDateFormat(pattern, locale);
 		Time time = new Time(formatter.parse(timeString).getTime());
 
 		return time;
+	}
+	
+	public static Timestamp convertTimestamp(String timestampString, String pattern) throws ParseException {
+		Timestamp retValue = convertTimestamp(timestampString,
+			pattern, Locale.US);
+		return retValue;
 	}
 
 	/**
@@ -126,14 +157,14 @@ public final class Converter {
 	 * @throws ParseException
 	 *             The string can not be interpreted
 	 */
-	public static Timestamp convertTimestamp(String timestampString, String pattern) throws ParseException {
+	public static Timestamp convertTimestamp(String timestampString, String pattern, Locale locale) throws ParseException {
 		if (timestampString == null) {
 			throw new IllegalArgumentException("timestampString");
 		} else if (pattern == null) {
 			throw new IllegalArgumentException("pattern");
 		}
 
-		DateFormat formatter = new SimpleDateFormat(pattern);
+		DateFormat formatter = new SimpleDateFormat(pattern, locale);
 		Timestamp timestamp = new Timestamp(formatter.parse(timestampString).getTime());
 
 		return timestamp;
@@ -159,6 +190,9 @@ public final class Converter {
 	 */
 	public static String getNumberWithNull(int value) {
 		return (value < 10) ? "0" + value : "" + value;
+	}
+
+	private Converter() {
 	}
 
 }
