@@ -36,7 +36,8 @@ import de.pgalise.util.weathercollector.model.ServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import javax.persistence.EntityManagerFactory;
+import java.sql.Date;
+import java.sql.Time;
 
 /**
  * Returns weather informations from Yahoo. Uses the strategy pattern. More: http://developer.yahoo.com/weather/#terms
@@ -44,7 +45,7 @@ import javax.persistence.EntityManagerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public final class YahooWeather extends XMLAPIWeather {
+public class YahooWeather extends XMLAPIWeather {
 
 	/**
 	 * Constructor
@@ -93,8 +94,9 @@ public final class YahooWeather extends XMLAPIWeather {
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
-				condition = new ServiceDataCurrent(Converter.convertDate(dateString, "E, dd MMM yyyy h:mm a z"),
-						Converter.convertTime(dateString, "E, dd MMM yyyy h:mm a z"));
+				Date date = Converter.convertDate(dateString, "E, dd MMM yyyy h:mm a z");
+				Time time = Converter.convertTime(dateString, "E, dd MMM yyyy h:mm a z");
+				condition = new ServiceDataCurrent(date, time	);
 			} catch (ParseException e) {
 				e.printStackTrace();
 				return null;
@@ -166,7 +168,7 @@ public final class YahooWeather extends XMLAPIWeather {
 			condition.setCity(city.getId());
 
 			// Save informations
-			weather.getForecastCondition().add(condition);
+			weather.getForecastConditions().add(condition);
 		}
 
 		if (weather.getCurrentCondition() != null) {

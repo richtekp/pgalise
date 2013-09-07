@@ -149,7 +149,7 @@ public final class GoogleWeather extends XMLAPIWeather {
 			// Save weather informations
 			if (condition.getDate() != null) {
 				condition.setUnitTemperature(this.unitTemperature);
-				weather.getForecastCondition().add(condition);
+				weather.getForecastConditions().add(condition);
 			}
 		}
 

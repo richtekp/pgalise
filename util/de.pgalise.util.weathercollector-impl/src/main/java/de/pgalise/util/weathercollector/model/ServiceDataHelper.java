@@ -85,7 +85,7 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	/**
 	 * Set with forecasts
 	 */
-	private Set<ServiceDataForecast> forecastCondition;
+	private Set<ServiceDataForecast> forecastConditions;
 
 	/**
 	 * Timestamp of the data
@@ -100,14 +100,14 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	/**
 	 * Constructor
 	 * 
-	 * @param source
-	 *            Source
+	 * @param apiSource the name of the weather API used to retrieve the date 
+	 * (e.g. Yahoo)
 	 */
-	public ServiceDataHelper(City city, String source) {
-		this.source = source;
+	public ServiceDataHelper(City city, String apiSource) {
+		this.source = apiSource;
 		this.city = city;
 		this.apicity = "";
-		this.forecastCondition = new TreeSet<ServiceDataForecast>();
+		this.forecastConditions = new TreeSet<ServiceDataForecast>();
 	}
 
 	@Override
@@ -131,22 +131,22 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 			this.currentCondition.complete(newObj.getCurrentCondition());
 		}
 
-		if ((this.forecastCondition == null) || (this.forecastCondition.size() == 0)) {
-			this.forecastCondition = newObj.getForecastCondition();
+		if ((this.forecastConditions == null) || (this.forecastConditions.size() == 0)) {
+			this.forecastConditions = newObj.getForecastConditions();
 		} else {
-			for (ServiceDataForecast condition : this.forecastCondition) {
-				ServiceDataForecast newCondition = getForecastFromDate(newObj.getForecastCondition(),
+			for (ServiceDataForecast condition : this.forecastConditions) {
+				ServiceDataForecast newCondition = getForecastFromDate(newObj.getForecastConditions(),
 						condition.getDate());
 				if (newCondition != null) {
 					condition.complete(newCondition);
 				}
 			}
 
-			for (ServiceDataForecast newCondition : newObj.getForecastCondition()) {
+			for (ServiceDataForecast newCondition : newObj.getForecastConditions()) {
 
-				ServiceDataForecast oldCondition = getForecastFromDate(this.forecastCondition, newCondition.getDate());
+				ServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getDate());
 				if (oldCondition == null) {
-					this.forecastCondition.add(newCondition);
+					this.forecastConditions.add(newCondition);
 				}
 
 			}
@@ -165,8 +165,8 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		return this.currentCondition;
 	}
 
-	public Set<ServiceDataForecast> getForecastCondition() {
-		return this.forecastCondition;
+	public Set<ServiceDataForecast> getForecastConditions() {
+		return this.forecastConditions;
 	}
 
 	public Timestamp getMeasureTimestamp() {
@@ -240,9 +240,9 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 			builder.append(this.currentCondition.toString());
 			builder.append(", ");
 		}
-		if ((this.forecastCondition != null) && !this.forecastCondition.isEmpty()) {
+		if ((this.forecastConditions != null) && !this.forecastConditions.isEmpty()) {
 			builder.append("\n- forecastCondition=[");
-			for (ServiceDataForecast condition : this.forecastCondition) {
+			for (ServiceDataForecast condition : this.forecastConditions) {
 				builder.append(condition.toString());
 			}
 			builder.append("]");

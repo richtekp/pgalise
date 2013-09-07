@@ -34,6 +34,13 @@ import java.util.Locale;
  */
 public class Converter {
 	
+	/**
+	 * invokes {@link #convertDate(java.lang.String, java.lang.String, java.util.Locale) } with {@link Locale#US}
+	 * @param dateString
+	 * @param pattern
+	 * @return
+	 * @throws ParseException 
+	 */
 	public static Date convertDate(String dateString, String pattern) throws ParseException {
 		Date retValue = convertDate(dateString,
 			pattern, Locale.US);
@@ -47,6 +54,7 @@ public class Converter {
 	 *            Date string
 	 * @param pattern
 	 *            Pattern for the string
+	 * @param locale 
 	 * @return Date object
 	 * @throws ParseException
 	 *             The string can not be interpreted
@@ -64,16 +72,23 @@ public class Converter {
 		return date;
 	}
 	
+	/**
+	 * invokes {@link #convertDateFromWeekday(java.lang.String, java.util.Locale) } with {@link Locale#US}
+	 * @param dateString
+	 * @return
+	 * @throws ParseException 
+	 */
 	public static Date convertDateFromWeekday(String dateString) throws ParseException {
 		Date retValue = convertDateFromWeekday(dateString, Locale.US);
 		return retValue;
 	}
 
 	/**
-	 * Returns the date object to the next weekday
+	 * Returns the date object to the next weekday with the current hour, minute, second and millisecond
 	 * 
 	 * @param dateString
 	 *            Next weekday
+	 * @param locale 
 	 * @return Date object
 	 * @throws ParseException
 	 *             The string can not be interpreted
@@ -107,11 +122,12 @@ public class Converter {
 	 * invokes {@link #convertTime(java.lang.String, Sting) } with {@link Locale#US}
 	 * @param timeString
 	 * @param pattern
-	 * @return 
+	 * @return
+	 * @throws ParseException  
 	 */
 	public static Time convertTime(String timeString, String pattern) throws ParseException {
 		Time retValue = convertTime(timeString,
-			timeString,
+			pattern,
 			Locale.US);
 		return retValue;
 	}
@@ -123,6 +139,7 @@ public class Converter {
 	 *            Time string
 	 * @param pattern
 	 *            Pattern for the string
+	 * @param locale 
 	 * @return Time object
 	 * @throws ParseException
 	 *             The string can not be interpreted
@@ -140,6 +157,13 @@ public class Converter {
 		return time;
 	}
 	
+	/**
+	 * invokes {@link #convertTimestamp(java.lang.String, java.lang.String, java.util.Locale) } with {@link Locale#US}
+	 * @param timestampString
+	 * @param pattern
+	 * @return
+	 * @throws ParseException 
+	 */
 	public static Timestamp convertTimestamp(String timestampString, String pattern) throws ParseException {
 		Timestamp retValue = convertTimestamp(timestampString,
 			pattern, Locale.US);
@@ -153,6 +177,7 @@ public class Converter {
 	 *            Timestamp string
 	 * @param pattern
 	 *            Pattern for the string
+	 * @param locale 
 	 * @return Timestamp object
 	 * @throws ParseException
 	 *             The string can not be interpreted

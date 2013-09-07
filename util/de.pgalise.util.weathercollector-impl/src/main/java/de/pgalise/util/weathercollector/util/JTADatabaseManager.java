@@ -131,7 +131,7 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 		this.saveCurrentWeather(cityID, weather.getCurrentCondition());
 
 		// Forecast
-		this.saveForecastWeather(cityID, weather.getForecastCondition());
+		this.saveForecastWeather(cityID, weather.getForecastConditions());
 	}
 
 	@Override
