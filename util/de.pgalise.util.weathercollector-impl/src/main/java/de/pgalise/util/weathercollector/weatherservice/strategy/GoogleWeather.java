@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
+import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
@@ -46,6 +47,11 @@ public final class GoogleWeather extends XMLAPIWeather {
 	 */
 	public GoogleWeather() {
 		super("http://www.google.com/ig/api?h1=en&weather=", "Google", "F");
+	}
+
+	@Override
+	protected Document fetchWeatherData(String city) throws ReadServiceDataException {
+		throw new UnsupportedOperationException("Google Weather API is shut down!");
 	}
 
 	@Override
