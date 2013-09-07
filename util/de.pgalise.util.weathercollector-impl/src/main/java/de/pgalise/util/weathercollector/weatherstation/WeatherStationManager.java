@@ -34,6 +34,8 @@ import org.xml.sax.SAXException;
 
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceContext;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,11 +63,8 @@ public final class WeatherStationManager {
 	 * Option to enable the test mode (no database commits)
 	 */
 	public boolean testmode = false;
-
-	/**
-	 * Current strategy
-	 */
-	private StationStrategy strategy;
+	
+	private Set<StationStrategy> stationStrategys;
 
 	/**
 	 * Constructor
@@ -74,34 +73,21 @@ public final class WeatherStationManager {
 	 *            Option to enable the test mode (no database commits)
 	 */
 	public WeatherStationManager(WeatherStationSaver weatherStationSaver) {
+		this(weatherStationSaver, loadStrategiesFromFile());
+	}
+	
+	public WeatherStationManager(WeatherStationSaver weatherStationSaver, Set<StationStrategy> stationStrategys) {
 		this.saver = weatherStationSaver;
+		this.stationStrategys = stationStrategys;
 	}
 
 	/**
 	 * Saves all informations of the weather stations
 	 */
 	public void saveInformations() {
-		// Read the strategies from a file
-		List<StationStrategy> slist;
-		try {
-			slist = this.loadStrategiesFromFile();
-		} catch (Exception e) {
-			LOGGER.debug(e.getMessage(), Level.WARNING);
-			e.printStackTrace();
-			return;
-		}
-
 		// Execute all strategies
-		for (StationStrategy strategy : slist) {
-			try {
-				this.strategy = strategy;
-				this.strategy.saveWeather(this.saver);
-
-			} catch (Exception e) {
-				LOGGER.debug(e.getMessage(), Level.WARNING);
-				e.printStackTrace();
-				continue;
-			}
+		for (StationStrategy strategy : stationStrategys) {
+			strategy.saveWeather(this.saver);
 		}
 	}
 
@@ -111,8 +97,8 @@ public final class WeatherStationManager {
 	 * @return list with available strategies
 	 */
 	@SuppressWarnings("unchecked")
-	private List<StationStrategy> loadStrategiesFromFile() {
-		List<StationStrategy> list = new ArrayList<>();
+	private static Set<StationStrategy> loadStrategiesFromFile() {
+		Set<StationStrategy> list = new HashSet<>();
 
 		try (InputStream propInFile = WeatherStationManager.class.getResourceAsStream(FILEPATH)) {
 			// Read file

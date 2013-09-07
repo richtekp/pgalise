@@ -19,8 +19,13 @@ package de.pgalise.util.weathercollector;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
+import de.pgalise.util.weathercollector.model.StationData;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
+import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
+import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Properties;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
@@ -30,6 +35,8 @@ import javax.persistence.PersistenceUnit;
 import org.apache.openejb.api.LocalClient;
 import org.junit.AfterClass;
 import org.junit.Before;
+import static org.junit.Assert.*;
+import static org.easymock.EasyMock.*;
 
 /**
  * Tests the weather collector
@@ -66,7 +73,11 @@ public class WeatherCollectorTest {
 	public void testCollectStationData() {
 		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
 		BaseDatabaseManager baseDatabaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
-		weatherCollector.collectStationData(baseDatabaseManager);
+		StationStrategy stationStrategy = createMock(StationStrategy.class);
+		stationStrategy.saveWeather(anyObject(WeatherStationSaver.class));
+		expectLastCall().atLeastOnce();
+		weatherCollector.collectStationData(baseDatabaseManager, new HashSet<>(Arrays.asList(stationStrategy)));
+		//nothing to test (relevant constraints should be checked in StationStrategy implementions)
 	}
 	
 	@AfterClass

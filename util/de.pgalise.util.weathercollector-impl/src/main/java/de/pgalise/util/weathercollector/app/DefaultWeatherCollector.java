@@ -23,7 +23,11 @@ import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceSaver;
+import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
+import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +68,14 @@ public class DefaultWeatherCollector {
 	 */
 	public void collectStationData(BaseDatabaseManager databaseManager) {
 		WeatherStationManager collector = new WeatherStationManager(databaseManager);
+
+		// Get informations and save them
+		LOGGER.debug("### --- Wetterstationen --- ###", Level.INFO);
+		collector.saveInformations();
+	}
+	
+	public void collectStationData(BaseDatabaseManager databaseManager, Set<StationStrategy> stationStrategys) {
+		WeatherStationManager collector = new WeatherStationManager(databaseManager, stationStrategys);
 
 		// Get informations and save them
 		LOGGER.debug("### --- Wetterstationen --- ###", Level.INFO);

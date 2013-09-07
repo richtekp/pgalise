@@ -23,6 +23,7 @@ import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
+import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,8 @@ public final class WeatherServiceManager {
 	 * Class to save the informations
 	 */
 	public WeatherServiceSaver saver;
+	
+	private List<ServiceStrategy> serviceStrategys;
 
 	/**
 	 * Constructor
@@ -47,8 +50,13 @@ public final class WeatherServiceManager {
 	 * @param testmode
 	 *            Option to enable the test mode (no database commits)
 	 */
-	public WeatherServiceManager(WeatherServiceSaver databaseManager) {
-		this.saver = databaseManager;
+	public WeatherServiceManager(WeatherServiceSaver weatherServiceSaver) {
+		this(weatherServiceSaver, null);
+	}
+	
+	public WeatherServiceManager(WeatherServiceSaver weatherServiceSaver, List<ServiceStrategy> serviceStrategys) {
+		this.saver = weatherServiceSaver;
+		this.serviceStrategys = serviceStrategys;
 	}
 
 	/**
@@ -62,7 +70,14 @@ public final class WeatherServiceManager {
 		if ((cities != null) && (cities.size() > 0)) {
 			for (City city : cities) {
 				// Get data
-				ServiceDataHelper weather = this.getServiceData(city, databaseManager);
+				ServiceDataHelper weather;
+				if(this.serviceStrategys == null || this.serviceStrategys.isEmpty()) {
+					weather = this.getServiceData(city, databaseManager);
+				}else {
+					weather = this.getServiceData(city,
+						databaseManager,
+						serviceStrategys);
+				}
 
 				this.saveServiceData(weather);
 			}
@@ -82,6 +97,22 @@ public final class WeatherServiceManager {
 		LOGGER.debug(cities.size() + " Staedte wurden geladen.", Level.INFO);
 
 		return cities;
+	}
+	
+	private ServiceDataHelper getServiceData(City city, DatabaseManager databaseManager, List<ServiceStrategy> serviceStrategys) {
+		ServiceDataHelper data = null;
+
+		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
+
+		WeatherServiceContext context = new WeatherServiceContext(serviceStrategys);
+
+		// Use best strategy
+		data = context.getBestWeather(city, databaseManager);
+
+		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beendet.", Level.INFO);
+
+		return data;
+		
 	}
 
 	/**

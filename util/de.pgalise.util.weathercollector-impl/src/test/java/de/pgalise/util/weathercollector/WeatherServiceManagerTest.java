@@ -18,9 +18,14 @@ package de.pgalise.util.weathercollector;
 
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
+import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
+import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
@@ -58,7 +63,8 @@ public class WeatherServiceManagerTest {
 	@Test
 	public void testSaveInformations() {
 		BaseDatabaseManager baseDatabaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
-		WeatherServiceManager instance = new WeatherServiceManager(baseDatabaseManager);
+		List<ServiceStrategy> serviceStrategys = new ArrayList<ServiceStrategy>(Arrays.asList(new YahooWeather()));
+		WeatherServiceManager instance = new WeatherServiceManager(baseDatabaseManager, serviceStrategys);
 		instance.saveInformations(baseDatabaseManager);
 	}
 	

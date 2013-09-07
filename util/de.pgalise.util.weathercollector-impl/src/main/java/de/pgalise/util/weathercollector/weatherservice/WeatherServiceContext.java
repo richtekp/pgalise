@@ -37,6 +37,8 @@ import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +60,7 @@ public class WeatherServiceContext {
 	/**
 	 * All available strategies
 	 */
-	private List<ServiceStrategy> strategies = new ArrayList<>();
+	private List<ServiceStrategy> strategies;
 
 	/**
 	 * Current strategy
@@ -69,13 +71,11 @@ public class WeatherServiceContext {
 	 * Constructor
 	 */
 	public WeatherServiceContext() {
-		// Read the strategies from a file
-		try {
-			this.strategies.addAll(this.loadStrategiesFromFile());
-		} catch (Exception e) {
-			LOGGER.debug(e.getMessage(), Level.WARNING);
-			e.printStackTrace();
-		}
+		this(loadStrategiesFromFile());
+	}
+	
+	public WeatherServiceContext(List<ServiceStrategy> serviceStrategys) {
+		this.strategies = serviceStrategys;
 	}
 
 	/**
@@ -160,7 +160,7 @@ public class WeatherServiceContext {
 	 * @return list with available strategies
 	 */
 	@SuppressWarnings("unchecked")
-	private List<ServiceStrategy> loadStrategiesFromFile() {
+	private static List<ServiceStrategy> loadStrategiesFromFile() {
 		List<ServiceStrategy> list = new ArrayList<>();
 
 		try (InputStream propInFile = WeatherStationManager.class.getResourceAsStream(FILEPATH)) {
