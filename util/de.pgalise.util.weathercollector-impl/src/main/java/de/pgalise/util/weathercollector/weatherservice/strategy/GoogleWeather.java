@@ -111,7 +111,7 @@ public final class GoogleWeather extends XMLAPIWeather {
 			condition.setUnitTemperature("C");
 
 			// City
-			condition.setCity(city.getId());
+			condition.setCity(city);
 
 			// Save current weather
 			weather.setCurrentCondition(condition);
@@ -150,7 +150,7 @@ public final class GoogleWeather extends XMLAPIWeather {
 			}
 
 			// City
-			condition.setCity(city.getId());
+			condition.setCity(city);
 
 			// Save weather informations
 			if (condition.getDate() != null) {

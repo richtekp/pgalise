@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.io.Serializable;
 
 import javax.persistence.Column;
@@ -33,7 +34,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PGALISE.WEATHER_CITY")
 @NamedQuery(name = "City.getAll", query = "SELECT i FROM City i")
-public class City implements Serializable, Comparable<City> {
+public class City extends AbstractIdentifiable implements Serializable, Comparable<City> {
 
 	/**
 	 * Serial
@@ -45,13 +46,6 @@ public class City implements Serializable, Comparable<City> {
 	 */
 	@Column(name = "ALTITUDE")
 	private int altitude;
-
-	/**
-	 * ID
-	 */
-	@Id
-	@Column(name = "ID")
-	private int id;
 
 	/**
 	 * Name
@@ -115,10 +109,6 @@ public class City implements Serializable, Comparable<City> {
 		return this.altitude;
 	}
 
-	public int getId() {
-		return this.id;
-	}
-
 	public String getName() {
 		return this.name;
 	}
@@ -137,10 +127,6 @@ public class City implements Serializable, Comparable<City> {
 
 	public void setAltitude(int altitude) {
 		this.altitude = altitude;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public void setName(String name) {

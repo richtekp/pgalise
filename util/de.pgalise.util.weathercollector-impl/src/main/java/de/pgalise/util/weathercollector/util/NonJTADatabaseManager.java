@@ -58,7 +58,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	/**
 	 * Instance of the class
 	 */
-	private static NonJTADatabaseManager instance = null;
+	private static Map<EntityManagerFactory,NonJTADatabaseManager> instances = new HashMap<>(1);
 
 	/**
 	 * File path for property file
@@ -68,7 +68,6 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	/**
 	 * Name of the persistent unit
 	 */
-	@PersistenceUnit
 	private String PERSISTENT_UNIT_NAME = "weather_data";
 
 	/**
@@ -76,9 +75,12 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * 
 	 * @return instance of the database manager
 	 */
-	public static synchronized NonJTADatabaseManager getInstance() {
+	public static synchronized NonJTADatabaseManager getInstance(EntityManagerFactory entityManagerFactory) {
+		NonJTADatabaseManager instance = instances.get(entityManagerFactory);
 		if (instance == null) {
-			instance = new NonJTADatabaseManager();
+			instance = new NonJTADatabaseManager(entityManagerFactory);
+			instances.put(entityManagerFactory,
+				instance);
 		}
 		return instance;
 	}
@@ -104,6 +106,10 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 
 		// Set persistence unit name
 		this.factory = Persistence.createEntityManagerFactory(PERSISTENT_UNIT_NAME, database);
+	}
+
+	private NonJTADatabaseManager(EntityManagerFactory factory) {
+		this.factory = factory;
 	}
 
 	/**
@@ -161,13 +167,13 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	@Override
 	public void saveServiceData(ServiceDataHelper weather) {
 		// Get city
-		int cityID = weather.getCity().getId();
+		City city = weather.getCity();
 
 		// Current weather
-		this.saveCurrentWeather(cityID, weather.getCurrentCondition());
+		this.saveCurrentWeather(city, weather.getCurrentCondition());
 
 		// Forecast
-		this.saveForecastWeather(cityID, weather.getForecastConditions());
+		this.saveForecastWeather(city, weather.getForecastConditions());
 	}
 
 	@Override
@@ -305,7 +311,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataCurrent objects
 	 */
-	private List<ServiceDataCurrent> getServiceDataCurrent(int city, Date date, EntityManager em) {
+	private List<ServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
@@ -337,7 +343,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataForecast objects
 	 */
-	private List<ServiceDataForecast> getServiceDataForecast(int city, Date date, EntityManager em) {
+	private List<ServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
@@ -366,10 +372,8 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @param service_data
 	 *            Current service weather data
 	 */
-	private void saveCurrentWeather(int cityID, ServiceDataCurrent service_data) {
-		if (cityID < 1) {
-			throw new IllegalArgumentException("city");
-		} else if ((service_data == null) || (service_data.getDate() == null)) {
+	private void saveCurrentWeather(City cityID, ServiceDataCurrent service_data) {
+		if ((service_data == null) || (service_data.getDate() == null)) {
 			throw new IllegalArgumentException("service_data");
 		}
 
@@ -405,10 +409,8 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @param service_data
 	 *            Set with forecasts for future days
 	 */
-	private void saveForecastWeather(int cityID, Set<ServiceDataForecast> service_data) {
-		if (cityID < 1) {
-			throw new IllegalArgumentException("city");
-		} else if ((service_data == null) || service_data.isEmpty()) {
+	private void saveForecastWeather(City cityID, Set<ServiceDataForecast> service_data) {
+		if ((service_data == null) || service_data.isEmpty()) {
 			throw new IllegalArgumentException("service_data");
 		}
 

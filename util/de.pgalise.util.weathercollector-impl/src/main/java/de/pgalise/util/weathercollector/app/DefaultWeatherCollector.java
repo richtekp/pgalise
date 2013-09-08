@@ -19,6 +19,7 @@ package de.pgalise.util.weathercollector.app;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
+import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
@@ -27,6 +28,7 @@ import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
@@ -51,12 +53,9 @@ public class DefaultWeatherCollector {
 	 */
 	public DefaultWeatherCollector() {
 	}
-
-	/**
-	 * Collect weather informations of the weather services
-	 */
-	public void collectServiceData(BaseDatabaseManager weatherServiceSaver) {
-		WeatherServiceManager collector = new WeatherServiceManager(weatherServiceSaver);
+	
+	public void collectServiceData(BaseDatabaseManager weatherServiceSaver, Set<ServiceStrategy> serviceStrategys) {
+		WeatherServiceManager collector = new WeatherServiceManager(weatherServiceSaver, serviceStrategys);
 
 		// Get informations and save them
 		LOGGER.debug("### --- Wetterdienste --- ###", Level.INFO);
@@ -64,14 +63,11 @@ public class DefaultWeatherCollector {
 	}
 
 	/**
-	 * Collect weather informations of the weather stations
+	 * Collect weather informations of the weather services
 	 */
-	public void collectStationData(BaseDatabaseManager databaseManager) {
-		WeatherStationManager collector = new WeatherStationManager(databaseManager);
-
-		// Get informations and save them
-		LOGGER.debug("### --- Wetterstationen --- ###", Level.INFO);
-		collector.saveInformations();
+	public void collectServiceData(BaseDatabaseManager weatherServiceSaver) {
+		collectServiceData(weatherServiceSaver,
+			null);
 	}
 	
 	public void collectStationData(BaseDatabaseManager databaseManager, Set<StationStrategy> stationStrategys) {
@@ -80,6 +76,14 @@ public class DefaultWeatherCollector {
 		// Get informations and save them
 		LOGGER.debug("### --- Wetterstationen --- ###", Level.INFO);
 		collector.saveInformations();
+	}
+
+	/**
+	 * Collect weather informations of the weather stations
+	 */
+	public void collectStationData(BaseDatabaseManager databaseManager) {
+		collectStationData(databaseManager,
+			null);
 	}
 
 }

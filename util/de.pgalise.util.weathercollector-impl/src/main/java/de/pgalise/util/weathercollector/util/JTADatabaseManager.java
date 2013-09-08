@@ -125,13 +125,13 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	@Override
 	public void saveServiceData(ServiceDataHelper weather) {
 		// Get city
-		int cityID = weather.getCity().getId();
+		City city = weather.getCity();
 
 		// Current weather
-		this.saveCurrentWeather(cityID, weather.getCurrentCondition());
+		this.saveCurrentWeather(city, weather.getCurrentCondition());
 
 		// Forecast
-		this.saveForecastWeather(cityID, weather.getForecastConditions());
+		this.saveForecastWeather(city, weather.getForecastConditions());
 	}
 
 	@Override
@@ -251,7 +251,7 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataCurrent objects
 	 */
-	private List<ServiceDataCurrent> getServiceDataCurrent(int city, Date date, EntityManager em) {
+	private List<ServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
@@ -278,7 +278,7 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataForecast objects
 	 */
-	private List<ServiceDataForecast> getServiceDataForecast(int city, Date date, EntityManager em) {
+	private List<ServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
@@ -302,17 +302,15 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 * @param service_data
 	 *            Current service weather data
 	 */
-	private void saveCurrentWeather(int cityID, ServiceDataCurrent service_data) {
-		if (cityID < 1) {
-			throw new IllegalArgumentException("city");
-		} else if ((service_data == null) || (service_data.getDate() == null)) {
+	private void saveCurrentWeather(City city, ServiceDataCurrent service_data) {
+		if ((service_data == null) || (service_data.getDate() == null)) {
 			throw new IllegalArgumentException("service_data");
 		}
 
 		final EntityManager em = this.factory.createEntityManager();
 
 		// Delete old entries
-		this.deleteCurrentWeather(this.getServiceDataCurrent(cityID, service_data.getDate(), em), em);
+		this.deleteCurrentWeather(this.getServiceDataCurrent(city, service_data.getDate(), em), em);
 
 		// Save data
 		em.persist(service_data);
@@ -322,7 +320,7 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 			em.close();
 		}
 
-		LOGGER.debug("Datensatz fuer Stadt " + cityID + " vom " + service_data.getDate() + " gespeichert.", Level.INFO);
+		LOGGER.debug("Datensatz fuer Stadt " + city + " vom " + service_data.getDate() + " gespeichert.", Level.INFO);
 	}
 
 	/**
@@ -333,10 +331,8 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 * @param service_data
 	 *            Set with forecasts for future days
 	 */
-	private void saveForecastWeather(int cityID, Set<ServiceDataForecast> service_data) {
-		if (cityID < 1) {
-			throw new IllegalArgumentException("city");
-		} else if ((service_data == null) || service_data.isEmpty()) {
+	private void saveForecastWeather(City city, Set<ServiceDataForecast> service_data) {
+		if ((service_data == null) || service_data.isEmpty()) {
 			throw new IllegalArgumentException("service_data");
 		}
 
@@ -345,12 +341,12 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 		// For all entries
 		for (ServiceDataForecast data : service_data) {
 			// Delete old entries
-			this.deleteForeCastWeather(this.getServiceDataForecast(cityID, data.getDate(), em), em);
+			this.deleteForeCastWeather(this.getServiceDataForecast(city, data.getDate(), em), em);
 
 			// Save data
 			em.persist(data);
 
-			LOGGER.debug("Datensatz fuer Stadt " + cityID + " vom " + data.getDate() + " gespeichert.", Level.INFO);
+			LOGGER.debug("Datensatz fuer Stadt " + city + " vom " + data.getDate() + " gespeichert.", Level.INFO);
 
 		}
 

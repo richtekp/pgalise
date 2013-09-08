@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.sql.Date;
 
 import javax.persistence.Column;
@@ -26,6 +27,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
+import javax.persistence.ManyToOne;
 
 /**
  * Abstract super class for weather data of weather services. This class uses EclipseLink.
@@ -34,27 +36,19 @@ import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
  * @version 1.0 (01.07.2012)
  */
 @MappedSuperclass
-public abstract class ServiceData implements Comparable<ServiceData>, ServiceDataCompleter {
+public abstract class ServiceData extends AbstractIdentifiable implements Comparable<ServiceData>, ServiceDataCompleter {
 
 	/**
 	 * City
 	 */
-	@Column(name = "CITY")
-	protected Integer city;
+	@ManyToOne
+	protected City city;
 
 	/**
 	 * Condition
 	 */
 	@Column(name = "CONDITIONCODE")
 	protected Integer condition;
-
-	/**
-	 * Database id
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID")
-	protected Integer id;
 
 	/**
 	 * Date
@@ -94,7 +88,7 @@ public abstract class ServiceData implements Comparable<ServiceData>, ServiceDat
 		return (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
 	}
 
-	public Integer getCity() {
+	public City getCity() {
 		return this.city;
 	}
 
@@ -106,15 +100,11 @@ public abstract class ServiceData implements Comparable<ServiceData>, ServiceDat
 		return this.measureDate;
 	}
 
-	public Integer getId() {
-		return this.id;
-	}
-
 	public String getUnitTemperature() {
 		return this.unitTemperature;
 	}
 
-	public void setCity(Integer city) {
+	public void setCity(City city) {
 		this.city = city;
 	}
 
@@ -124,10 +114,6 @@ public abstract class ServiceData implements Comparable<ServiceData>, ServiceDat
 
 	public void setDate(Date measureDate) {
 		this.measureDate = measureDate;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public void setUnitTemperature(String unitTemperature) {

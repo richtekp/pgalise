@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="weather_data" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="weather_data" transaction-type="JTA">
+		<jta-data-source>weatherData</jta-data-source>
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>de.pgalise.util.weathercollector.model.StationData</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataForecast</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataCurrent</class>
@@ -17,10 +19,15 @@
 			/> -->
     </properties>
   </persistence-unit>
-  <persistence-unit name="weather_data_test" transaction-type="JTA">
+  <persistence-unit name="weather_data_test" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <jta-data-source>weatherData</jta-data-source>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <non-jta-data-source>weatherDataTest</non-jta-data-source>
+    <class>de.pgalise.util.weathercollector.model.StationData</class>
+    <class>de.pgalise.util.weathercollector.model.ServiceDataForecast</class>
+    <class>de.pgalise.util.weathercollector.model.ServiceDataCurrent</class>
+    <class>de.pgalise.util.weathercollector.model.City</class>
+    <class>de.pgalise.util.weathercollector.model.Condition</class>
+    <!--<exclude-unlisted-classes>false</exclude-unlisted-classes>-->
     <properties>
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>

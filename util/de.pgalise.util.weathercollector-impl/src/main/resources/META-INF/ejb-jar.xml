@@ -1,3 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ejb-jar/>
+<ejb-jar>
+<!--	<data-source>
+		<name>java:app/env/Application_Level_DataSource</name>
+		<class-name>org.apache.derby.jdbc.ClientXADataSource</class-name>
+		<server-name>localhost</server-name>
+		<port-number>5201</port-number>
+		<database-name>pgalise</database-name>
+		<user>pgalise</user>
+		<password>somepw</password>
+		<property>
+			<name>connectionAttributes</name>
+			<value>;create=true</value>
+		</property>
+	</data-source>-->
+</ejb-jar>

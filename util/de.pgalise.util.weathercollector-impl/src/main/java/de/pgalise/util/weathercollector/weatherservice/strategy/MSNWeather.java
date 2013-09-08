@@ -122,7 +122,7 @@ public final class MSNWeather extends XMLAPIWeather {
 					condition.setUnitTemperature(this.unitTemperature);
 
 					// City
-					condition.setCity(city.getId());
+					condition.setCity(city);
 
 					// Save informations
 					weather.setCurrentCondition(condition);
@@ -162,7 +162,7 @@ public final class MSNWeather extends XMLAPIWeather {
 					}
 
 					// City
-					condition.setCity(city.getId());
+					condition.setCity(city);
 
 					// Save informations
 					if (condition.getDate() != null) {

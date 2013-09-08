@@ -120,7 +120,7 @@ public class YahooWeather extends XMLAPIWeather {
 			condition.setUnitTemperature(this.unitTemperature);
 
 			// City
-			condition.setCity(city.getId());
+			condition.setCity(city);
 
 			// Save informations
 			weather.setCurrentCondition(condition);
@@ -165,7 +165,7 @@ public class YahooWeather extends XMLAPIWeather {
 			condition.setUnitTemperature(this.unitTemperature);
 
 			// City
-			condition.setCity(city.getId());
+			condition.setCity(city);
 
 			// Save informations
 			weather.getForecastConditions().add(condition);

@@ -42,7 +42,7 @@ public final class WeatherServiceManager {
 	 */
 	public WeatherServiceSaver saver;
 	
-	private List<ServiceStrategy> serviceStrategys;
+	private Set<ServiceStrategy> serviceStrategys;
 
 	/**
 	 * Constructor
@@ -54,7 +54,7 @@ public final class WeatherServiceManager {
 		this(weatherServiceSaver, null);
 	}
 	
-	public WeatherServiceManager(WeatherServiceSaver weatherServiceSaver, List<ServiceStrategy> serviceStrategys) {
+	public WeatherServiceManager(WeatherServiceSaver weatherServiceSaver, Set<ServiceStrategy> serviceStrategys) {
 		this.saver = weatherServiceSaver;
 		this.serviceStrategys = serviceStrategys;
 	}
@@ -99,7 +99,7 @@ public final class WeatherServiceManager {
 		return cities;
 	}
 	
-	private ServiceDataHelper getServiceData(City city, DatabaseManager databaseManager, List<ServiceStrategy> serviceStrategys) {
+	private ServiceDataHelper getServiceData(City city, DatabaseManager databaseManager, Set<ServiceStrategy> serviceStrategys) {
 		ServiceDataHelper data = null;
 
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);

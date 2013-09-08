@@ -38,6 +38,7 @@ import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
@@ -60,7 +61,7 @@ public class WeatherServiceContext {
 	/**
 	 * All available strategies
 	 */
-	private List<ServiceStrategy> strategies;
+	private Set<ServiceStrategy> strategies;
 
 	/**
 	 * Current strategy
@@ -74,7 +75,7 @@ public class WeatherServiceContext {
 		this(loadStrategiesFromFile());
 	}
 	
-	public WeatherServiceContext(List<ServiceStrategy> serviceStrategys) {
+	public WeatherServiceContext(Set<ServiceStrategy> serviceStrategys) {
 		this.strategies = serviceStrategys;
 	}
 
@@ -124,20 +125,14 @@ public class WeatherServiceContext {
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public ServiceDataHelper getSingleWeather(City city, int strategyIndex, DatabaseManager databaseManager) throws ReadServiceDataException {
-		if ((strategyIndex < 0) || (strategyIndex >= this.strategies.size())) {
-			// Get random
-			this.strategy = this.getRandomStrategy();
-		} else {
-			// Get index
-			this.strategy = this.strategies.get(strategyIndex);
-		}
+	public ServiceDataHelper getSingleWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
+		this.strategy = this.getRandomStrategy();
 
 		// Return informations
 		return this.strategy.getWeather(city, databaseManager);
 	}
 
-	public List<ServiceStrategy> getStrategies() {
+	public Set<ServiceStrategy> getStrategies() {
 		return this.strategies;
 	}
 
@@ -147,8 +142,9 @@ public class WeatherServiceContext {
 	 * @return random ServiceStrategy
 	 */
 	private ServiceStrategy getRandomStrategy() {
+		
 		if (this.strategies.size() > 0) {
-			return this.strategies.get(new Random().nextInt(this.strategies.size()));
+			return new LinkedList<>(this.strategies).get(new Random().nextInt(this.strategies.size()));
 		} else {
 			return null;
 		}
@@ -160,8 +156,8 @@ public class WeatherServiceContext {
 	 * @return list with available strategies
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<ServiceStrategy> loadStrategiesFromFile() {
-		List<ServiceStrategy> list = new ArrayList<>();
+	private static Set<ServiceStrategy> loadStrategiesFromFile() {
+		Set<ServiceStrategy> list = new HashSet<>();
 
 		try (InputStream propInFile = WeatherStationManager.class.getResourceAsStream(FILEPATH)) {
 			// Read file
