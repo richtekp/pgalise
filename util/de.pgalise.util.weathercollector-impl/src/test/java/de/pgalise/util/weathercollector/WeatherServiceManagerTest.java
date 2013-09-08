@@ -16,24 +16,34 @@
  
 package de.pgalise.util.weathercollector;
 
+import de.pgalise.util.weathercollector.model.City;
+import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.util.JTADatabaseManager;
+import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
 import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
+import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
 import org.apache.openejb.api.LocalClient;
-import org.junit.AfterClass;
+import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 
 /**
@@ -43,10 +53,10 @@ import org.junit.Before;
  * @version 1.0 (Oct 14, 2012)
  */
 @LocalClient
+@ManagedBean
 public class WeatherServiceManagerTest {
-	@PersistenceUnit(unitName = "weather_data_test")
-	private EntityManagerFactory entityManagerFactory;
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
+	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("weather_data_test");
 
 	public WeatherServiceManagerTest() {
 	}
@@ -61,16 +71,25 @@ public class WeatherServiceManagerTest {
 	}
 
 	@Test
-	public void testSaveInformations() {
-		BaseDatabaseManager baseDatabaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
-		List<ServiceStrategy> serviceStrategys = new ArrayList<ServiceStrategy>(Arrays.asList(new YahooWeather()));
+	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
+		BaseDatabaseManager baseDatabaseManager = NonJTADatabaseManager.getInstance(
+			entityManagerFactory);
+		Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(Arrays.asList(new YahooWeather()));
 		WeatherServiceManager instance = new WeatherServiceManager(baseDatabaseManager, serviceStrategys);
+		
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		City city = new City("Berlin",
+			3375222,
+			34,
+			true,
+			false);
+		entityManager.getTransaction().begin();
+		entityManager.persist(city);
+		entityManager.getTransaction().commit();
 		instance.saveInformations(baseDatabaseManager);
-	}
-	
-	@AfterClass
-	public static void tearDownClass() {
-		CONTAINER.close();
+		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", ServiceDataCurrent.class.getSimpleName()));
+		assertFalse(query.getResultList().isEmpty());
+		entityManager.close();
 	}
 
 }

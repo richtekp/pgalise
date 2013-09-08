@@ -19,21 +19,27 @@ package de.pgalise.util.weathercollector;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
-import de.pgalise.util.weathercollector.model.StationData;
+import de.pgalise.util.weathercollector.model.City;
+import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.util.JTADatabaseManager;
+import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
+import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
+import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import org.apache.openejb.api.LocalClient;
-import org.junit.AfterClass;
 import org.junit.Before;
 import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;
@@ -45,10 +51,10 @@ import static org.easymock.EasyMock.*;
  * @version 1.0 (Oct 14, 2012)
  */
 @LocalClient
+@ManagedBean
 public class WeatherCollectorTest {
-	@PersistenceUnit(unitName = "weather_data_test")
-	private EntityManagerFactory entityManagerFactory;
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
+	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("weather_data_test");
 
 	public WeatherCollectorTest() {
 	}
@@ -65,24 +71,42 @@ public class WeatherCollectorTest {
 	@Test
 	public void testCollectServiceData() {
 		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
-		BaseDatabaseManager baseDatabaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
-		weatherCollector.collectServiceData(baseDatabaseManager);
+		BaseDatabaseManager baseDatabaseManager = NonJTADatabaseManager.getInstance(entityManagerFactory);
+		Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(Arrays.asList(new YahooWeather()));
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		City city = new City("Berlin",
+			3375222,
+			34,
+			true,
+			false);
+		entityManager.getTransaction().begin();
+		entityManager.persist(city);
+		entityManager.getTransaction().commit();
+		weatherCollector.collectServiceData(baseDatabaseManager, serviceStrategys);
+		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", ServiceDataCurrent.class.getSimpleName()));
+		assertFalse(query.getResultList().isEmpty());
+		entityManager.close();
 	}
 
 	@Test
 	public void testCollectStationData() {
 		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
-		BaseDatabaseManager baseDatabaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
+		BaseDatabaseManager baseDatabaseManager = NonJTADatabaseManager.getInstance(entityManagerFactory);
 		StationStrategy stationStrategy = createMock(StationStrategy.class);
 		stationStrategy.saveWeather(anyObject(WeatherStationSaver.class));
 		expectLastCall().atLeastOnce();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		City city = new City("Berlin",
+			3375222,
+			34,
+			true,
+			false);
+		entityManager.getTransaction().begin();
+		entityManager.persist(city);
+		entityManager.getTransaction().commit();
 		weatherCollector.collectStationData(baseDatabaseManager, new HashSet<>(Arrays.asList(stationStrategy)));
-		//nothing to test (relevant constraints should be checked in StationStrategy implementions)
-	}
-	
-	@AfterClass
-	public static void tearDownClass() {
-		CONTAINER.close();
+		//nothing to test (depends all on functionality of station)
+		entityManager.close();
 	}
 
 }
