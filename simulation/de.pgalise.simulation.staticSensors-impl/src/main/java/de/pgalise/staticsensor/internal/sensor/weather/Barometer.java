@@ -55,8 +55,8 @@ public final class Barometer extends WeatherSensor {
 	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
 	 *            is not a type of {@link BarometerWhiteNoiseInterferer}
 	 */
-	public Barometer(final Output output, final Object sensorId, final Coordinate position,
-			final WeatherController weatherController, WeatherInterferer weatherInterferer)
+	
+	public Barometer(final Output output, final long sensorId, final Coordinate position, final WeatherController weatherController, WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
 		this(output, sensorId, position, weatherController, 1, weatherInterferer);
 	}
@@ -76,8 +76,8 @@ public final class Barometer extends WeatherSensor {
 	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
 	 *            argument 'weatherController' is not a type of {@link BarometerWhiteNoiseInterferer}
 	 */
-	public Barometer(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
-			int updateLimit, WeatherInterferer weatherInterferer) throws IllegalArgumentException {
+	
+	public Barometer(Output output, long sensorId, Coordinate position, WeatherController weatherController, int updateLimit, WeatherInterferer weatherInterferer) throws IllegalArgumentException {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof BarometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +

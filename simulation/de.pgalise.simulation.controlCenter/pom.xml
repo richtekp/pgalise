@@ -56,10 +56,10 @@
 		</dependency>
  -->		
 
-		<dependency>
+<!--		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>de.pgalise.util</groupId>

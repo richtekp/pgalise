@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="weather_data" transaction-type="JTA">
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0">
+<!--  <persistence-unit name="weather_data" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>weatherData</jta-data-source>
-    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>de.pgalise.util.weathercollector.model.StationData</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataForecast</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataCurrent</class>
@@ -10,18 +13,11 @@
     <class>de.pgalise.util.weathercollector.model.Condition</class>
     <properties>
       <property name="eclipselink.ddl-generation" value="create-tables"/>
-      <!-- <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" 
-			/> -->
-      <!-- <property name="javax.persistence.jdbc.url" value="jdbc:mysql://duemmer.informatik.uni-oldenburg.de:10832/weather" 
-			/> -->
-      <!-- <property name="javax.persistence.jdbc.user" value="root" /> -->
-      <!-- <property name="javax.persistence.jdbc.password" value="pg20122013Plizzard" 
-			/> -->
     </properties>
-  </persistence-unit>
+  </persistence-unit>-->
   <persistence-unit name="weather_data_test" transaction-type="RESOURCE_LOCAL">
-    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <non-jta-data-source>weatherDataTest</non-jta-data-source>
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <!--<non-jta-data-source>weatherDataTest</non-jta-data-source>-->
     <class>de.pgalise.util.weathercollector.model.StationData</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataForecast</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataCurrent</class>

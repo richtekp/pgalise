@@ -86,7 +86,7 @@ import javax.vecmath.Vector2d;
 @Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
 @Local(WeatherControllerLocal.class)
 @Remote(WeatherController.class)
-public final class DefaultWeatherController extends AbstractController implements WeatherControllerLocal {
+public class DefaultWeatherController extends AbstractController implements WeatherControllerLocal {
 
 	/**
 	 * Logger

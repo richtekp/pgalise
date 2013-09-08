@@ -35,72 +35,75 @@ public class Weather implements Comparable<Weather> {
 	/**
 	 * air pressure
 	 */
-	protected int airPressure;
+	private int airPressure;
 
 	/**
 	 * light intensity
 	 */
-	protected int lightIntensity;
+	private int lightIntensity;
 
 	/**
 	 * Timestamp
 	 */
-	protected long timestamp;
+	private long timestamp;
 
 	/**
 	 * perceived temperature
 	 */
-	protected float perceivedTemperature;
+	private float perceivedTemperature;
 
 	/**
 	 * precipitation amount
 	 */
-	protected float precipitationAmount;
+	private float precipitationAmount;
 
 	/**
 	 * radiation
 	 */
-	protected int radiation;
+	private int radiation;
 
 	/**
 	 * relativ humidity
 	 */
-	protected float relativHumidity;
+	private float relativHumidity;
 
 	/**
 	 * temperature
 	 */
-	protected float temperature;
+	private float temperature;
 
 	/**
 	 * wind direction
 	 */
-	protected int windDirection;
+	private int windDirection;
 
 	/**
 	 * wind velocity
 	 */
-	protected float windVelocity;
+	private float windVelocity;
 
 	/**
 	 * Constructor
 	 */
-	public Weather() {
+	protected Weather() {
 	}
 
-	/**
-	 * Constructor
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 */
-	public Weather(long timestamp) {
+	public Weather(long timestamp, int airPressure, int lightIntensity, float perceivedTemperature, float precipitationAmount, int radiation, float relativHumidity, float temperature, int windDirection, float windVelocity) {
+		this.airPressure = airPressure;
+		this.lightIntensity = lightIntensity;
 		this.timestamp = timestamp;
+		this.perceivedTemperature = perceivedTemperature;
+		this.precipitationAmount = precipitationAmount;
+		this.radiation = radiation;
+		this.relativHumidity = relativHumidity;
+		this.temperature = temperature;
+		this.windDirection = windDirection;
+		this.windVelocity = windVelocity;
 	}
 
 	@Override
 	public int compareTo(Weather weather) {
-		long thisTime = this.timestamp;
+		long thisTime = this.getTimestamp();
 		long anotherTime = weather.getTimestamp();
 		return (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
 	}
@@ -185,17 +188,79 @@ public class Weather implements Comparable<Weather> {
 		this.windVelocity = windVelocity;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Weather other = (Weather) obj;
+		if (this.timestamp != other.timestamp) {
+			return false;
+		}
+		return equalsIgnoreTimestamp(other);
+	}
+
+	public boolean equalsIgnoreTimestamp(Weather other) {
+		if (this.airPressure != other.airPressure) {
+			return false;
+		}
+		if (this.lightIntensity != other.lightIntensity) {
+			return false;
+		}
+		if (Float.floatToIntBits(this.perceivedTemperature) != Float.floatToIntBits(other.perceivedTemperature)) {
+			return false;
+		}
+		if (Float.floatToIntBits(this.precipitationAmount) != Float.floatToIntBits(other.precipitationAmount)) {
+			return false;
+		}
+		if (this.radiation != other.radiation) {
+			return false;
+		}
+		if (Float.floatToIntBits(this.relativHumidity) != Float.floatToIntBits(other.relativHumidity)) {
+			return false;
+		}
+		if (Float.floatToIntBits(this.temperature) != Float.floatToIntBits(other.temperature)) {
+			return false;
+		}
+		if (this.windDirection != other.windDirection) {
+			return false;
+		}
+		if (Float.floatToIntBits(this.windVelocity) != Float.floatToIntBits(other.windVelocity)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 97 * hash + this.airPressure;
+		hash = 97 * hash + this.lightIntensity;
+		hash = 97 * hash + (int) (this.timestamp ^ (this.timestamp >>> 32));
+		hash = 97 * hash + Float.floatToIntBits(this.perceivedTemperature);
+		hash = 97 * hash + Float.floatToIntBits(this.precipitationAmount);
+		hash = 97 * hash + this.radiation;
+		hash = 97 * hash + Float.floatToIntBits(this.relativHumidity);
+		hash = 97 * hash + Float.floatToIntBits(this.temperature);
+		hash = 97 * hash + this.windDirection;
+		hash = 97 * hash + Float.floatToIntBits(this.windVelocity);
+		return hash;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "Weather [timestamp=" + this.timestamp + ", windVelocity=" + this.windVelocity + ", temperature="
-				+ this.temperature + ", perceivedTemperature=" + this.perceivedTemperature + ", lightIntensity="
-				+ this.lightIntensity + ", relativHumidity=" + this.relativHumidity + ", windDirection="
-				+ this.windDirection + ", radiation=" + this.radiation + ", precipitationAmount="
-				+ this.precipitationAmount + ", airPressure=" + this.airPressure + "]";
+		return "Weather [timestamp=" + this.getTimestamp() + ", windVelocity=" + this.getWindVelocity() + ", temperature="
+				+ this.getTemperature() + ", perceivedTemperature=" + this.getPerceivedTemperature() + ", lightIntensity="
+				+ this.getLightIntensity() + ", relativHumidity=" + this.getRelativHumidity() + ", windDirection="
+				+ this.getWindDirection() + ", radiation=" + this.getRadiation() + ", precipitationAmount="
+				+ this.getPrecipitationAmount() + ", airPressure=" + this.getAirPressure() + "]";
 	}
 
 }

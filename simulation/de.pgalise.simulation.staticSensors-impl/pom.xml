@@ -34,7 +34,6 @@
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>services-impl</artifactId>
-			<scope>test</scope>
 		</dependency>
 	 <dependency>
 	  <groupId>org.geotools</groupId>

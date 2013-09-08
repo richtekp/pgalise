@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
+import de.pgalise.simulation.shared.city.City;
+import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -28,15 +30,10 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.WEATHER_SERVICE_CURRENT")
+//@Table(name = "PGALISE.WEATHER_SERVICE_CURRENT")
 @NamedQuery(name = "ServiceDataCurrent.findByDate", query = "SELECT i FROM ServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
-public final class ServiceDataCurrent extends ServiceData {
-
-	/**
-	 * Relativ humidity
-	 */
-	@Column(name = "RELATIV_HUMIDITY")
-	private Float relativHumidity;
+public class ServiceDataCurrent extends AbstractServiceData {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Temperature
@@ -44,48 +41,20 @@ public final class ServiceDataCurrent extends ServiceData {
 	@Column(name = "TEMPERATURE")
 	private Float temperature;
 
-	/**
-	 * wind direction
-	 */
-	@Column(name = "WIND_DIRECTION")
-	private Float windDirection;
+	protected ServiceDataCurrent() {
+	}
 
-	/**
-	 * wind velocity
-	 */
-	@Column(name = "WIND_VELOCITY")
-	private Float windVelocity;
-
-	public Float getRelativHumidity() {
-		return this.relativHumidity;
+	public ServiceDataCurrent(Float relativHumidity, Float temperature, Float windDirection, Float windVelocity, City city, Date measureDate) {
+		super(relativHumidity, windDirection, windVelocity, city, measureDate);
+		this.temperature = temperature;
 	}
 
 	public Float getTemperature() {
 		return this.temperature;
 	}
 
-	public Float getWindDirection() {
-		return this.windDirection;
-	}
-
-	public Float getWindVelocity() {
-		return this.windVelocity;
-	}
-
-	public void setRelativHumidity(Float relativHumidity) {
-		this.relativHumidity = relativHumidity;
-	}
-
 	public void setTemperature(Float temperature) {
 		this.temperature = temperature;
-	}
-
-	public void setWindDirection(Float windDirection) {
-		this.windDirection = windDirection;
-	}
-
-	public void setWindVelocity(Float windVelocity) {
-		this.windVelocity = windVelocity;
 	}
 
 }

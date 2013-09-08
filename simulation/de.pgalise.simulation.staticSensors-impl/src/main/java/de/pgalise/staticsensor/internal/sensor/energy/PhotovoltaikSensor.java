@@ -69,7 +69,7 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public PhotovoltaikSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	public PhotovoltaikSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int area,
 			EnergyInterferer interferer) throws InterruptedException, ExecutionException {
 		this(output, sensorId, position, weatherController, energyController, randomSeedService, area, 1, interferer);
@@ -86,10 +86,10 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 *            Position of the sensor
 	 * @param weatherController
 	 *            Weather interface to access the weather data
-	 * @param randomSeedService
-	 *            Seed service
 	 * @param energyController
 	 *            Energy interface to access the energy consumption data
+	 * @param randomSeedService
+	 * Seed service
 	 * @param area
 	 *            roof area in m²
 	 * @param updateLimit
@@ -97,9 +97,8 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public PhotovoltaikSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
-			EnergyController energyController, RandomSeedService randomSeedService, int area, int updateLimit,
-			EnergyInterferer interferer) throws InterruptedException, ExecutionException {
+	
+	public PhotovoltaikSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int area, int updateLimit, EnergyInterferer interferer) throws InterruptedException, ExecutionException {
 		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,
 				interferer);
 		this.area = area;

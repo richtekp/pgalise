@@ -7,31 +7,28 @@ package de.pgalise.simulation.shared.persistence;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 /**
- *
+ * superclass for all persistence related classes which need an {@link Id}
  * @author richter
  */
 @MappedSuperclass
-public class AbstractIdentifiable implements Serializable {
+public abstract class AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	private Long id = nextId();
-	private final static Set<Long> usedIds = new HashSet<>();
-	
-	private static long nextId() {
-		long retValue = (int) (Math.random()*Integer.MAX_VALUE);
-		while(usedIds.contains(retValue)) {
-			retValue = (int) (Math.random()*Integer.MAX_VALUE);
-		}
-		usedIds.add(retValue);
-		return retValue;
-	}
+	private Long id;
+	private static Set<Long> usedIds = new HashSet<>(16);
 
 	protected AbstractIdentifiable() {
+		this.id = UUID.randomUUID().getMostSignificantBits();
+		while(usedIds.contains(id)) {
+			this.id = UUID.randomUUID().getMostSignificantBits();
+		}
+		usedIds.add(id);
 	}
 
 	public AbstractIdentifiable(Long id) {

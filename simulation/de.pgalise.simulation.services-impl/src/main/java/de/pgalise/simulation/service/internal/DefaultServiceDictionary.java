@@ -39,6 +39,7 @@ import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import javax.ejb.Remote;
 
 @Lock(LockType.READ)
 @Local
@@ -48,7 +49,7 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
  * @author mustafa
  *
  */
-public final class DefaultServiceDictionary implements ServiceDictionary {
+public class DefaultServiceDictionary implements ServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultServiceDictionary.class);
 
 	private Map<String, Controller> controllers;

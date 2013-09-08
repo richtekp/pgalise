@@ -102,17 +102,12 @@ public final class XMLFileWeatherLoader implements WeatherLoader {
 	}
 
 	@Override
-	public int getReferenceCity(City city) {
+	public ServiceWeather loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 		throw new RuntimeException("Not implemented!");
 	}
 
 	@Override
-	public ServiceWeather loadCurrentServiceWeatherData(long timestamp, int city) throws NoWeatherDataFoundException {
-		throw new RuntimeException("Not implemented!");
-	}
-
-	@Override
-	public ServiceWeather loadForecastServiceWeatherData(long timestamp, int city) throws NoWeatherDataFoundException {
+	public ServiceWeather loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 		throw new RuntimeException("Not implemented!");
 	}
 

@@ -5,7 +5,9 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.util.weathercollector.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
@@ -31,7 +33,7 @@ import static org.junit.Assert.*;
 @ManagedBean
 public class MSNWeatherTest {
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("weather_data_test");
+	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
 	
 	public MSNWeatherTest() {
 	}
@@ -52,12 +54,24 @@ public class MSNWeatherTest {
 	 */
 	@Test
 	public void testgetWeather() throws ReadServiceDataException {
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+			new Coordinate(1,
+			1),
+			new Coordinate(1,
+			2),
+			new Coordinate(2,
+			2),
+			new Coordinate(2,
+			1),
+			new Coordinate(1,
+			1)
+		});
 		City city = new City("Berlin",
-			3400000,
+			3375222,
 			80,
 			true,
 			true,
-			new Coordinate(52.516667, 13.4));
+			referenceArea);
 		DatabaseManager databaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
 		MSNWeather instance = new MSNWeather();
 		ServiceDataHelper result = instance.getWeather(city,

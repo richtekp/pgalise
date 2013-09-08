@@ -17,6 +17,9 @@
 package de.pgalise.simulation.traffic.governor;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -33,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.traffic.internal.governor.FuzzyTrafficGovernor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -78,12 +82,16 @@ public class FuzzyTrafficGovernorTest {
 		long endTimestamp = cal.getTimeInMillis();
 
 		StartParameter parameter = new StartParameter();
-		City city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			new Coordinate(52.516667, 13.4));
+		Coordinate referencePoint = new Coordinate(20, 20);
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+			new Coordinate[] {
+				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
+				new Coordinate(referencePoint.x-1, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y-1)
+			}
+		);
+		City city = new City("test_city", 200000, 100, true, true, referenceArea);
 		parameter.setCity(city);
 		parameter.setWeatherEventHelperList(null);
 		parameter.setAggregatedWeatherDataEnabled(true);

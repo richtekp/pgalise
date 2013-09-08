@@ -33,8 +33,10 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
 import de.pgalise.simulation.shared.event.SimulationEventList;
+import java.util.UUID;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 /**
  * A SensorDomain is supposed to administrate Sensors. Sensors can be added and removed in the SensorDomain.
@@ -46,6 +48,7 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
 @Singleton(name = "de.pgalise.simulation.sensorFramework.SensorRegistry")
 @Local
 public class DefaultSensorRegistry implements SensorRegistry {
+	private static Set<Long> usedIds = new HashSet<>(16);
 
 	/**
 	 * Logger
@@ -55,23 +58,12 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	/**
 	 * Service for saving the sensors.
 	 */
-	@EJB
-	private SensorPersistenceService persistenceService;
-
-	/**
-	 * Map with IDs to sensors
-	 */
-	private final Map<Integer, Sensor> sensorIdsToSensors = new LinkedHashMap<Integer, Sensor>();
-
-	/**
-	 * Map with sensors to IDs
-	 */
-	private final Map<Sensor, Integer> sensorsToSensorIds = new LinkedHashMap<Sensor, Integer>();
+	private EntityManager persistenceService;
 
 	/**
 	 * Default
 	 */
-	public DefaultSensorRegistry() {
+	protected DefaultSensorRegistry() {
 
 	}
 
@@ -81,7 +73,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	 * @param persistenceService
 	 *            Service for saving the sensors.
 	 */
-	public DefaultSensorRegistry(final SensorPersistenceService persistenceService) {
+	public DefaultSensorRegistry(final EntityManager persistenceService) {
 		this(persistenceService, new HashSet<Sensor>());
 	}
 
@@ -93,7 +85,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	 * @param sensors
 	 *            Set of sensors
 	 */
-	public DefaultSensorRegistry(final SensorPersistenceService persistenceService, final Set<Sensor> sensors) {
+	public DefaultSensorRegistry(final EntityManager persistenceService, final Set<Sensor> sensors) {
 		if (persistenceService == null) {
 			throw new IllegalArgumentException("persistenceService");
 		}
@@ -108,9 +100,8 @@ public class DefaultSensorRegistry implements SensorRegistry {
 		if (sensor == null) {
 			throw new IllegalArgumentException("sensor must not be NULL");
 		}
-		log.debug("Sensor " + sensor.getSensorId() + " added to the SensorRegistry");
-		this.addSensorWithoutSave(sensor);
-		this.persistenceService.saveSensor(sensor);
+		log.debug("Sensor " + sensor.getId()+ " added to the SensorRegistry");
+		this.persistenceService.persist(sensor);
 		return sensor;
 	}
 
@@ -122,49 +113,55 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	}
 
 	@Override
-	public Sensor getSensor(final int sensorId) {
-		return this.sensorIdsToSensors.get(sensorId);
+	public Sensor getSensor(final long sensorId) {
+		return this.persistenceService.find(Sensor.class, sensorId);
 	}
 
 	@Override
 	public Iterator<Sensor> iterator() {
-		return this.sensorsToSensorIds.keySet().iterator();
+		Query query = this.persistenceService.createQuery(String.format("SELECT * FROM %s s", Sensor.class.getName()));
+		return query.getResultList().iterator();
 	}
 
 	@Override
-	public int nextAvailableSensorId() {
-		return this.persistenceService.nextAvailableSensorId();
+	public long nextAvailableSensorId() {
+		long retValue = UUID.randomUUID().getMostSignificantBits();
+		while(usedIds.contains(retValue)) {
+			retValue = UUID.randomUUID().getMostSignificantBits();
+		}
+		usedIds.add(retValue);
+		return retValue;
 	}
 
 	@Override
-	public final int numberOfSensors() {
-		return this.sensorsToSensorIds.size();
+	public long numberOfSensors() {
+		Query query = this.persistenceService.createQuery(String.format("SELECT COUNT(*) FROM %s s", Sensor.class.getName()));
+		return (long) query.getSingleResult();
 	}
 
 	@Override
 	public final synchronized void removeAllSensors() {
-		Set<Integer> sensorIds = new HashSet<>();
+		Set<Long> sensorIds = new HashSet<>();
 
 		// Save all IDs
 		for (final Sensor sensor : this) {
-			sensorIds.add(sensor.getSensorId());
+			sensorIds.add(sensor.getId());
 		}
 
 		// Delete all IDs
-		for (Integer id : sensorIds) {
+		for (Long id : sensorIds) {
 			this.removeSensor(id);
 		}
 	}
 
 	@Override
-	public final synchronized Sensor removeSensor(final int sensorId) {
-		final Sensor result = this.sensorIdsToSensors.remove(sensorId);
+	public final synchronized Sensor removeSensor(final long sensorId) {
+		final Sensor result = this.persistenceService.find(Sensor.class, sensorId);
 		if (result != null) {
-			this.sensorsToSensorIds.remove(result);
+			log.debug("Sensor is to be removed from Database (id:" + sensorId + ")");
+			this.persistenceService.remove(result);
 
 			// delete the sensor from persistence
-			log.debug("Sensor is to be removed from Database (id:" + sensorId + ")");
-			this.persistenceService.deleteSensor(sensorId);
 		}
 
 		// return the removed sensor or null
@@ -174,7 +171,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	@Override
 	public final synchronized Sensor removeSensor(final Sensor sensor) {
 		// Delete the Sensor from RAM
-		return this.removeSensor(sensor.getSensorId());
+		return this.removeSensor(sensor.getId());
 	}
 
 	@Override
@@ -195,18 +192,6 @@ public class DefaultSensorRegistry implements SensorRegistry {
 		for (final Sensor sensor : this) {
 			sensor.update(eventList);
 		}
-	}
-
-	/**
-	 * Adds a sensor to the sensor domain without to save
-	 * 
-	 * @param sensor
-	 *            Sensor
-	 * @return created sensor
-	 */
-	private final void addSensorWithoutSave(final Sensor sensor) {
-		this.sensorIdsToSensors.put(sensor.getSensorId(), sensor);
-		this.sensorsToSensorIds.put(sensor, sensor.getSensorId());
 	}
 
 	@Override

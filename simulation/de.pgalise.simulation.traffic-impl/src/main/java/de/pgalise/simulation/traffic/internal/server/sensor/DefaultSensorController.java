@@ -227,7 +227,7 @@ public class DefaultSensorController extends AbstractController implements Traff
 								TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
 						newSensor.setVehicle((Vehicle<? extends BusData>) vehicle);
 						((Vehicle<? extends BusData>) vehicle).getData().setInfraredSensor(newSensor);
-						log.debug("InfraredSensor " + newSensor.getSensorId() + " registered for vehicle "
+						log.debug("InfraredSensor " + newSensor.getId()+ " registered for vehicle "
 								+ vehicle.getName());
 						sensorRegistry.addSensor(newSensor);
 

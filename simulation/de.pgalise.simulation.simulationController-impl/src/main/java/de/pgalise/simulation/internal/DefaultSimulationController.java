@@ -35,7 +35,6 @@ import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.SpentTimeLogger;
 import de.pgalise.simulation.event.EventInitiator;
-import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
@@ -56,6 +55,7 @@ import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoad
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterControllerLoader;
 import de.pgalise.util.generic.MutableBoolean;
+import javax.persistence.EntityManager;
 
 /**
  * The default implementation of the simulation controller inits, starts, stops
@@ -85,8 +85,7 @@ public class DefaultSimulationController extends AbstractController implements S
 	@EJB
 	private EventInitiator eventInitiator;
 
-	@EJB(name="de.pgalise.sensorFramework.persistence.SensorPersistenceService")
-	private SensorPersistenceService sensorPersistenceService;
+	private EntityManager sensorPersistenceService;
 
 	@EJB
 	private ControlCenterControllerLoader controlCenterControllerLoader;
@@ -454,7 +453,7 @@ public class DefaultSimulationController extends AbstractController implements S
 	 * 
 	 * @param sensorPersistenceService
 	 */
-	public void _setSensorPersistenceService(SensorPersistenceService sensorPersistenceService) {
+	public void _setSensorPersistenceService(EntityManager sensorPersistenceService) {
 		this.sensorPersistenceService = sensorPersistenceService;
 	}
 

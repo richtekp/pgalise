@@ -17,6 +17,9 @@
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -35,6 +38,7 @@ import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import org.junit.AfterClass;
 
 /**
  * Abstract super class for chart tests. Theses tests are used to test the weather decorators.
@@ -43,6 +47,18 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
  * @version 1.0 (Sep 11, 2012)
  */
 public abstract class AbstractChartTest {
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+	private final static EJBContainer container;
+	static {
+		try {
+			// Load EJB properties
+			Properties prop = new Properties();
+			prop.load(Controller.class.getResourceAsStream("/META-INF/jndi.properties"));
+			container = EJBContainer.createEJBContainer(prop);
+		} catch (IOException ex) {
+			throw new ExceptionInInitializerError(ex);
+		}
+	}
 
 	/**
 	 * Title for decorator dataset
@@ -124,19 +140,19 @@ public abstract class AbstractChartTest {
 			throw new RuntimeException(e);
 		}
 
-		// Load EJB properties
-		Properties prop = new Properties();
-		prop.load(Controller.class.getResourceAsStream("/jndi.properties"));
-		EJBContainer container = EJBContainer.createEJBContainer(prop);
 		Context ctx = container.getContext();
 
 		// City
-		City city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			new Coordinate(52.516667, 13.4));
+		Coordinate referencePoint = new Coordinate(20, 20);
+		Polygon referenceArea = GEOMETRY_FACTORY.createPolygon(
+			new Coordinate[] {
+				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
+				new Coordinate(referencePoint.x-1, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y-1)
+			}
+		);
+		City city = new City("test_city", 200000, 100, true, true, referenceArea);
 
 		// Load EJB for Weather loader
 		this.loader = (WeatherLoader) ctx
@@ -148,6 +164,11 @@ public abstract class AbstractChartTest {
 		// Get reference weather informations
 		this.service.addNewWeather(this.startTimestamp, this.endTimestamp, true, null);
 
+	}
+	
+	@AfterClass
+	public static void tearDownClass() {
+		container.close();
 	}
 
 	public WeatherLoader getLoader() {

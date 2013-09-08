@@ -104,7 +104,7 @@ public class DefaultStaticSensorController extends AbstractController implements
 			log.error(e.getLocalizedMessage(), e);
 		}
 		if (newSensor != null) {
-			log.debug("Sensor " + newSensor.getSensorId() + "created");
+			log.debug("Sensor " + newSensor.getId() + "created");
 			newSensor = this.sensorRegistry.addSensor(newSensor);
 		}
 	}

@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
+import de.pgalise.simulation.shared.city.City;
+import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -28,9 +30,10 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.WEATHER_SERVICE_FORECAST")
+//@Table(name = "PGALISE.WEATHER_SERVICE_FORECAST")
 @NamedQuery(name = "ServiceDataForecast.findByDate", query = "SELECT i FROM ServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public final class ServiceDataForecast extends ServiceData {
+public class ServiceDataForecast extends AbstractServiceData {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Temperature (high)
@@ -43,6 +46,15 @@ public final class ServiceDataForecast extends ServiceData {
 	 */
 	@Column(name = "TEMPERATURE_LOW")
 	private Float temperatureLow;
+
+	protected ServiceDataForecast() {
+	}
+
+	public ServiceDataForecast(Float temperatureHigh, Float temperatureLow, Float relativHumidity, Float windDirection, Float windVelocity, City city, Date measureDate) {
+		super(relativHumidity, windDirection, windVelocity, city, measureDate);
+		this.temperatureHigh = temperatureHigh;
+		this.temperatureLow = temperatureLow;
+	}
 
 	public Float getTemperatureHigh() {
 		return this.temperatureHigh;
@@ -66,7 +78,7 @@ public final class ServiceDataForecast extends ServiceData {
 	 */
 	@Override
 	public String toString() {
-		return "ServiceData [id=" + this.id + ", city=" + this.city + ", measureDate=" + this.measureDate
+		return "ServiceData [id=" + this.getId() + ", city=" + this.getCity() + ", measureDate=" + this.getMeasureDate()
 				+ ", temperatureLow=" + this.temperatureLow + ", temperatureHigh=" + this.temperatureHigh + "]";
 	}
 

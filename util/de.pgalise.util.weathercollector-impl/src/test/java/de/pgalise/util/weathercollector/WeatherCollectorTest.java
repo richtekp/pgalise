@@ -17,7 +17,9 @@
 package de.pgalise.util.weathercollector;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
@@ -55,7 +57,7 @@ import static org.easymock.EasyMock.*;
 @ManagedBean
 public class WeatherCollectorTest {
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("weather_data_test");
+	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
 
 	public WeatherCollectorTest() {
 	}
@@ -75,12 +77,24 @@ public class WeatherCollectorTest {
 		BaseDatabaseManager baseDatabaseManager = NonJTADatabaseManager.getInstance(entityManagerFactory);
 		Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(Arrays.asList(new YahooWeather()));
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+			new Coordinate(1,
+			1),
+			new Coordinate(1,
+			2),
+			new Coordinate(2,
+			2),
+			new Coordinate(2,
+			1),
+			new Coordinate(1,
+			1)
+		});
 		City city = new City("Berlin",
 			3375222,
-			34,
+			80,
 			true,
-			false,
-			new Coordinate(52.516667, 13.4));
+			true,
+			referenceArea);
 		entityManager.getTransaction().begin();
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();
@@ -98,12 +112,24 @@ public class WeatherCollectorTest {
 		stationStrategy.saveWeather(anyObject(WeatherStationSaver.class));
 		expectLastCall().atLeastOnce();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+			new Coordinate(1,
+			1),
+			new Coordinate(1,
+			2),
+			new Coordinate(2,
+			2),
+			new Coordinate(2,
+			1),
+			new Coordinate(1,
+			1)
+		});
 		City city = new City("Berlin",
 			3375222,
-			34,
+			80,
 			true,
-			false,
-			new Coordinate(52.516667, 13.4));
+			true,
+			referenceArea);
 		entityManager.getTransaction().begin();
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();

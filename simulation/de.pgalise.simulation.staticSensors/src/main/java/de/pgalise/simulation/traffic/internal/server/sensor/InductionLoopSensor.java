@@ -72,7 +72,7 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(final Output output, final Object sensorId, final Coordinate position, final InductionLoopInterferer interferer) {
+	public InductionLoopSensor(final Output output, final long sensorId, final Coordinate position, final InductionLoopInterferer interferer) {
 		this(output, sensorId, position, 1, interferer);
 	}
 
@@ -90,7 +90,7 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(Output output, Object sensorId, Coordinate position, int updateLimit, final InductionLoopInterferer interferer) {
+	public InductionLoopSensor(Output output, long sensorId, Coordinate position, int updateLimit, final InductionLoopInterferer interferer) {
 		super(output, sensorId, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
@@ -123,7 +123,7 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 	@Override
 	public void transmitUsageData(SimulationEventList eventList) {
 		if(this.vehicleCount>0)
-			log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getSensorId());
+			log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getId());
 
 		// Send data
 		this.getOutput().transmitDouble(this.vehicleCount);
@@ -140,7 +140,7 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 
 	@Override
 	public void logValueToSend(SimulationEventList eventList) {
-		log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getSensorId());
+		log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getId());
 	}
 
 	/**
@@ -157,7 +157,7 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 			this.vehicleCount += this.interferer.interfere(vehicle.getData().getLength(), this.realVehicleCount,
 					vehicle.getVelocity());
 
-			log.debug(this.getSensorId()+" registered a vehicle");
+			log.debug(this.getId()+" registered a vehicle");
 		}
 	}
 }

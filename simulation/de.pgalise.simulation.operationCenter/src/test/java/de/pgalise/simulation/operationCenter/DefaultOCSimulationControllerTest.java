@@ -49,6 +49,8 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -195,12 +197,24 @@ public class DefaultOCSimulationControllerTest {
 		DefaultOCSimulationControllerTest.INIT_PARAMETER = new InitParameter(null, null, 0, 0, 0, 0, "", "", null, null);
 
 		/* Create start parameter: */
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+			new Coordinate(1,
+			1),
+			new Coordinate(1,
+			2),
+			new Coordinate(2,
+			2),
+			new Coordinate(2,
+			1),
+			new Coordinate(1,
+			1)
+		});
 		City city = new City("Berlin",
 			3375222,
 			80,
 			true,
 			true,
-			new Coordinate(52.516667, 13.4));
+			referenceArea);
 		DefaultOCSimulationControllerTest.START_PARAMTER = new StartParameter(city, true, null, new LinkedList<BusRoute>());
 
 		DefaultOCSimulationControllerTest.TESTCLASS = new DefaultOCSimulationController(

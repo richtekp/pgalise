@@ -72,7 +72,7 @@ public abstract class EnergySensor extends Sensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	protected EnergySensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	protected EnergySensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int updateLimit,
 			EnergyInterferer interferer) {
 		super(output, sensorId, position, updateLimit);

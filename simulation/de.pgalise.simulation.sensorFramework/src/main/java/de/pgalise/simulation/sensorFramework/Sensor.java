@@ -20,8 +20,11 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.controller.SimulationComponent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.sensor.SensorType;
-import javax.vecmath.Vector2d;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 
 /**
  * Abstract super class of a Sensor. To create a concrete sensor instantiate a SensorDomain and use the add-method to
@@ -30,7 +33,8 @@ import javax.vecmath.Vector2d;
  * @author Marcus
  * @version 1.0
  */
-public abstract class Sensor implements SimulationComponent {
+@Entity
+public abstract class Sensor extends AbstractIdentifiable implements SimulationComponent {
 
 	/**
 	 * Determines whether the sensor is activated
@@ -50,22 +54,22 @@ public abstract class Sensor implements SimulationComponent {
 	/**
 	 * The output used by the sensor to send his measured values.
 	 */
-	private final Output output;
+	@Transient
+	private Output output;
 
 	/**
 	 * The position of the sensor in the environment
 	 */
+	@Embedded
 	private Coordinate position;
-
-	/**
-	 * The Id of the sensor
-	 */
-	private final int sensorId;
 
 	/**
 	 * Update limit
 	 */
-	private final int updateLimit;
+	private int updateLimit;
+
+	protected Sensor() {
+	}
 
 	/**
 	 * Constructor
@@ -77,7 +81,7 @@ public abstract class Sensor implements SimulationComponent {
 	 * @param position
 	 *            Position of the sensor
 	 */
-	protected Sensor(final Output output, final Object sensorId, final Coordinate position)
+	protected Sensor(final Output output, final long sensorId, final Coordinate position)
 			throws IllegalArgumentException {
 		this(output, sensorId, position, 1);
 	}
@@ -94,13 +98,11 @@ public abstract class Sensor implements SimulationComponent {
 	 * @param updateLimit
 	 *            Update limit
 	 */
-	protected Sensor(final Output output, final Object sensorId, final Coordinate position, final int updateLimit)
+	protected Sensor(final Output output, final long sensorId, final Coordinate position, final int updateLimit)
 			throws IllegalArgumentException {
+		super(sensorId);
 		if (output == null) {
 			throw new IllegalArgumentException("Argument 'output' must not be 'null'.");
-		}
-		if (sensorId == null) {
-			throw new IllegalArgumentException("Argument 'sensorId' must not be 'null'.");
 		}
 		// if (position != null && (position.getX() < 0) || (position.getY() < 0)) {
 		// throw new IllegalArgumentException("Argument 'position' must have only positive values.");
@@ -110,7 +112,6 @@ public abstract class Sensor implements SimulationComponent {
 		}
 
 		this.output = output;
-		this.sensorId = (Integer) sensorId;
 		this.position = position;
 		this.updateLimit = updateLimit;
 
@@ -141,15 +142,6 @@ public abstract class Sensor implements SimulationComponent {
 	 */
 	public Coordinate getPosition() {
 		return this.position;
-	}
-
-	/**
-	 * returns the unique sensor id
-	 * 
-	 * @return sensorId
-	 */
-	public final int getSensorId() {
-		return this.sensorId;
 	}
 
 	/**
@@ -262,7 +254,7 @@ public abstract class Sensor implements SimulationComponent {
 		// Timestamp
 		this.getOutput().transmitLong(eventList.getTimestamp());
 		// SensorId
-		this.getOutput().transmitInt(this.getSensorId());
+		this.getOutput().transmitLong(this.getId());
 		// SensorTypeId
 		this.getOutput().transmitByte((byte) this.getSensorType().getSensorTypeId());
 	}

@@ -72,7 +72,7 @@ public final class InfraredSensor extends Sensor {
 	 * @param interferer
 	 *            InfraredInterferer
 	 */
-	public InfraredSensor(final Output output, final Object sensorId, final Vehicle<? extends BusData> vehicle,
+	public InfraredSensor(final Output output, final long sensorId, final Vehicle<? extends BusData> vehicle,
 			final Coordinate position, final int updateLimit, final InfraredInterferer interferer) {
 		super(output, sensorId, position, updateLimit);
 		if (interferer == null) {
@@ -96,7 +96,7 @@ public final class InfraredSensor extends Sensor {
 	 * @param interferer
 	 *            InfraredInterferer
 	 */
-	public InfraredSensor(final Output output, final Object sensorId, final Vehicle<? extends BusData> vehicle,
+	public InfraredSensor(final Output output, final long sensorId, final Vehicle<? extends BusData> vehicle,
 			final Coordinate position, final InfraredInterferer interferer) {
 		this(output, sensorId, vehicle, position, 1, interferer);
 	}
@@ -136,7 +136,7 @@ public final class InfraredSensor extends Sensor {
 		}
 
 		// log
-		log.debug("Send amount of passengers (" + passengersToSend + ") by sensor "+this.getSensorId()+
+		log.debug("Send amount of passengers (" + passengersToSend + ") by sensor "+this.getId()+
 				" (vehicle: " + vehicle.getId()+")");
 
 		// Send
@@ -160,7 +160,7 @@ public final class InfraredSensor extends Sensor {
 				passengersToSend += this.interferer.interfere(passengersToSend);
 			}
 
-			log.debug("Send amount of passengers (" + passengersToSend + ") by sensor "+this.getSensorId()+
+			log.debug("Send amount of passengers (" + passengersToSend + ") by sensor "+this.getId()+
 					" (vehicle: " + vehicle.getId()+")");
 		} else {
 			log.warn("No infrared sensor data will be send, vehicle " + vehicle.getId() + " is not driving");

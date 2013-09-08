@@ -17,6 +17,8 @@
 package de.pgalise.simulation.weather.internal.positionconverter;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
@@ -36,17 +38,9 @@ import javax.vecmath.Vector2d;
  * @version 1.0 (Oct 22, 2012)
  */
 public class LinearWeatherPositionConverterTest {
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
-	/**
-	 * Test class
-	 */
-	public static WeatherPositionConverter testclass;
-
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-
-		// Init test class
-		LinearWeatherPositionConverterTest.testclass = new LinearWeatherPositionConverter();
+	public LinearWeatherPositionConverterTest() {
 	}
 
 	@Test
@@ -60,70 +54,81 @@ public class LinearWeatherPositionConverterTest {
 		/*
 		 * Test: Temperature
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.TEMPERATURE,
+		Coordinate referencePoint = new Coordinate(20, 20);
+		Geometry referenceArea = GEOMETRY_FACTORY.createPolygon(
+			new Coordinate[] {
+				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
+				new Coordinate(referencePoint.x-1, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y-1),
+				new Coordinate(referencePoint.x-1, referencePoint.y-1)
+			}
+		);
+		LinearWeatherPositionConverter instance = new LinearWeatherPositionConverter(referenceArea);
+		value = instance.getValue(WeatherParameterEnum.TEMPERATURE,
 				testTime.getTime(), testPosition, 20.0);
 		Assert.assertEquals(22, value, 1);
 
 		/*
 		 * Test: Air pressure
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.AIR_PRESSURE,
+		value = instance.getValue(WeatherParameterEnum.AIR_PRESSURE,
 				testTime.getTime(), testPosition, 1034);
 		Assert.assertEquals(1034, value, 1);
 
 		/*
 		 * Test: Light intensity
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.LIGHT_INTENSITY,
+		value = instance.getValue(WeatherParameterEnum.LIGHT_INTENSITY,
 				testTime.getTime(), testPosition, 77000.0);
 		Assert.assertEquals(80000, value, 1000);
 
 		/*
 		 * Test: Precipitation amount
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT,
+		value = instance.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT,
 				testTime.getTime(), testPosition, 0.0);
 		Assert.assertEquals(0, value, 0);
 
 		/*
 		 * Test: Precipitation amount
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT,
+		value = instance.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT,
 				testTime.getTime(), testPosition, 2.0);
 		Assert.assertEquals(1, value, 1);
 
 		/*
 		 * Test: Radiation
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.RADIATION,
+		value = instance.getValue(WeatherParameterEnum.RADIATION,
 				testTime.getTime(), testPosition, 427.0);
 		Assert.assertEquals(415, value, 3);
 
 		/*
 		 * Test: Relativ humidity
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.RELATIV_HUMIDITY,
+		value = instance.getValue(WeatherParameterEnum.RELATIV_HUMIDITY,
 				testTime.getTime(), testPosition, 62.0);
 		Assert.assertEquals(62, value, 1);
 
 		/*
 		 * Test: Wind direction
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.WIND_DIRECTION,
+		value = instance.getValue(WeatherParameterEnum.WIND_DIRECTION,
 				testTime.getTime(), testPosition, 217.0);
 		Assert.assertEquals(217, value, 1);
 
 		/*
 		 * Test: Wind velocity
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.WIND_VELOCITY,
+		value = instance.getValue(WeatherParameterEnum.WIND_VELOCITY,
 				testTime.getTime(), testPosition, 2.0);
 		Assert.assertEquals(3, value, 0.5);
 
 		/*
 		 * Test: Wind strength
 		 */
-		value = LinearWeatherPositionConverterTest.testclass.getValue(WeatherParameterEnum.WIND_STRENGTH,
+		value = instance.getValue(WeatherParameterEnum.WIND_STRENGTH,
 				testTime.getTime(), testPosition, 2.0);
 		Assert.assertEquals(2, value, 0);
 	}

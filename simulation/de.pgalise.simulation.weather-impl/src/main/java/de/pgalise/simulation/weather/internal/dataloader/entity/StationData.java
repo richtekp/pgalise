@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -30,20 +31,13 @@ import javax.persistence.MappedSuperclass;
  * @version 1.0 (01.07.2012)
  */
 @MappedSuperclass
-public abstract class StationData implements Comparable<StationData> {
+public abstract class StationData extends AbstractIdentifiable implements Comparable<StationData> {
 
 	/**
 	 * air pressure
 	 */
 	@Column(name = "AIR_PRESSURE")
 	private Integer airPressure;
-
-	/**
-	 * Database id
-	 */
-	@Id
-	@Column(name = "ID")
-	private Integer id;
 
 	/**
 	 * light intensity
@@ -54,7 +48,7 @@ public abstract class StationData implements Comparable<StationData> {
 	/**
 	 * Date
 	 */
-	@Column(name = "MEASURE_DATE")
+//	@Column(name = "MEASURE_DATE")
 	private Date measureDate;
 
 	/**
@@ -108,8 +102,7 @@ public abstract class StationData implements Comparable<StationData> {
 	/**
 	 * Default constructor
 	 */
-	public StationData() {
-
+	protected StationData() {
 	}
 
 	/**
@@ -169,10 +162,6 @@ public abstract class StationData implements Comparable<StationData> {
 		return this.measureDate;
 	}
 
-	public Integer getId() {
-		return this.id;
-	}
-
 	public Integer getLightIntensity() {
 		return this.lightIntensity;
 	}
@@ -215,10 +204,6 @@ public abstract class StationData implements Comparable<StationData> {
 
 	public void setDate(Date date) {
 		this.measureDate = date;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public void setLightIntensity(Integer lightIntensity) {

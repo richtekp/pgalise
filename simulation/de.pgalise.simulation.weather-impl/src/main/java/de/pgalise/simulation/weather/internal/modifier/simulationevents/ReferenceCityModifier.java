@@ -96,32 +96,21 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 	 */
 	@Override
 	public void deployChanges() {
-		try {
-			// Get reference city
-			int refCity = this.weatherLoader.getReferenceCity(this.city);
+		if (this.city != null) {
+			// Get values from weather services
+			ServiceWeather serviceForecast = this.weatherLoader.loadForecastServiceWeatherData(
+					this.simulationTimestamp, this.city);
+			ServiceWeather serviceCurrent = this.weatherLoader.loadCurrentServiceWeatherData(
+					this.simulationTimestamp, this.city);
 
-			// City found?
-			if (refCity > 0) {
-				// Get values from weather services
-				ServiceWeather serviceForecast = this.weatherLoader.loadForecastServiceWeatherData(
-						this.simulationTimestamp, refCity);
-				ServiceWeather serviceCurrent = this.weatherLoader.loadCurrentServiceWeatherData(
-						this.simulationTimestamp, refCity);
+			// Temperature
+			this.changeTemperature(serviceForecast.getTemperatureLow(), serviceForecast.getTemperatureHigh());
 
-				// Temperature
-				this.changeTemperature(serviceForecast.getTemperatureLow(), serviceForecast.getTemperatureHigh());
+			// Relativ humidity
+			this.changeRelativHumidity(serviceCurrent.getRelativHumidity());
 
-				// Relativ humidity
-				this.changeRelativHumidity(serviceCurrent.getRelativHumidity());
-
-				// wind velocity
-				this.changeWindVelocity(serviceCurrent.getWindVelocity());
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			// Don't show exception
-			// throw new RuntimeException(e);
+			// wind velocity
+			this.changeWindVelocity(serviceCurrent.getWindVelocity());
 		}
 
 		// Super class

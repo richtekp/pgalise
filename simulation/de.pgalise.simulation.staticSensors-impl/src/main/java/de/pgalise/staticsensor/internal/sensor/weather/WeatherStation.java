@@ -61,7 +61,7 @@ public class WeatherStation extends WeatherSensor {
 	 * @param sensors
 	 *            Weather sensors
 	 */
-	protected WeatherStation(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	protected WeatherStation(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			final WeatherInterferer weatherInterferer, int updateLimit, WeatherSensor... sensors) {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 		if(sensors == null) {
@@ -86,7 +86,7 @@ public class WeatherStation extends WeatherSensor {
 	 * @param updateLimit
 	 *            Update limit
 	 */
-	protected WeatherStation(Output output, Object sensorId, Coordinate position, WeatherController weatherController, int updateLimit,
+	protected WeatherStation(Output output, long sensorId, Coordinate position, WeatherController weatherController, int updateLimit,
 			final WeatherInterferer weatherInterferer) {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 	}

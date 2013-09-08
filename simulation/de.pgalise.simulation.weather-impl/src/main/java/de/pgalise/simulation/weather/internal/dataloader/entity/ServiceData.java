@@ -16,10 +16,14 @@
  
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -29,56 +33,60 @@ import javax.persistence.MappedSuperclass;
  * @version 1.0 (01.07.2012)
  */
 @MappedSuperclass
-public abstract class ServiceData implements Comparable<ServiceData> {
+public abstract class ServiceData extends AbstractIdentifiable implements Comparable<ServiceData> {
 
 	/**
 	 * City
 	 */
-	@Column(name = "CITY")
-	protected Integer city;
-
-	/**
-	 * Database id
-	 */
-	@Id
-	@Column(name = "ID")
-	protected Integer id;
+	@ManyToOne
+	@JoinColumn(name="CITY")
+	private City city;
 
 	/**
 	 * Timestamp
 	 */
-	@Column(name = "MEASURE_DATE")
-	protected Date measureDate;
+//	@Column(name = "MEASURE_DATE")
+	private Date measureDate;
 
-	@Override
-	public int compareTo(ServiceData data) {
-		long thisTime = this.getDate().getTime();
-		long anotherTime = data.getDate().getTime();
-		return (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
+	protected ServiceData() {
+		super();
 	}
 
-	public Integer getCity() {
-		return this.city;
-	}
-
-	public Date getDate() {
-		return this.measureDate;
-	}
-
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setCity(Integer city) {
+	public ServiceData(City city, Date measureDate) {
+		this();
 		this.city = city;
-	}
-
-	public void setDate(Date measureDate) {
 		this.measureDate = measureDate;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	@Override
+	public int compareTo(ServiceData data) {
+		long thisTime = this.getMeasureDate().getTime();
+		long anotherTime = data.getMeasureDate().getTime();
+		return (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
 	}
 
+	public City getCity() {
+		return this.city;
+	}
+
+	/**
+	 * @param city the city to set
+	 */
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	/**
+	 * @return the measureDate
+	 */
+	public Date getMeasureDate() {
+		return measureDate;
+	}
+
+	/**
+	 * @param measureDate the measureDate to set
+	 */
+	public void setMeasureDate(Date measureDate) {
+		this.measureDate = measureDate;
+	}
 }

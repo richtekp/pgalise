@@ -17,14 +17,21 @@
 package de.pgalise.simulation.shared.city;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
+import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.hibernate.annotations.Type;
 
 /**
  * Represents the city from the simulation
@@ -35,7 +42,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "PGALISE.WEATHER_CITY")
 @NamedQuery(name = "City.getAll", query = "SELECT i FROM City i")
-public class City implements Serializable {
+public class City extends AbstractIdentifiable {
 
 	/**
 	 * Serial
@@ -47,13 +54,6 @@ public class City implements Serializable {
 	 */
 	@Column(name = "ALTITUDE")
 	private int altitude = 4;
-
-	/**
-	 * ID
-	 */
-	@Id
-	@Column(name = "ID")
-	private int id = 1;
 
 	/**
 	 * Name
@@ -85,12 +85,16 @@ public class City implements Serializable {
 	@Transient
 	private int rate = 0;
 	
-	private Coordinate referencePoint;
+	@Type(type="org.hibernate.spatial.GeometryType")//"org.hibernate.spatial.GeometryType") //org.hibernatespatial.GeometryUserType")//
+	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
+	private Polygon referenceArea;
 
 	/**
 	 * Default constructor
 	 */
 	protected City() {
+//		GeometryUserType
+		Geometry x = null;
 	}
 
 	/**
@@ -106,32 +110,30 @@ public class City implements Serializable {
 	 *            Option that the city is near a river
 	 * @param nearSea
 	 *            Option that the city is near the sea
-	 * @param referencePoint  
+	 * @param referenceArea  
 	 */
-	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Coordinate referencePoint) {
+	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Polygon referenceArea) {
 		super();
 		this.name = name;
 		this.population = population;
 		this.nearRiver = nearRiver;
 		this.nearSea = nearSea;
 		this.altitude = altitude;
-		this.referencePoint = referencePoint;
+		this.referenceArea = referenceArea;
+	}
+
+	public Geometry getReferenceArea() {
+		return referenceArea;
 	}
 
 	public Coordinate getReferencePoint() {
-		return referencePoint;
-	}
-
-	public void setReferencePoint(Coordinate referencePoint) {
-		this.referencePoint = referencePoint;
+		Point centroid = referenceArea.getCentroid();
+		Coordinate retValue = new Coordinate(centroid.getX(), centroid.getY());
+		return retValue;
 	}
 
 	public int getAltitude() {
 		return this.altitude;
-	}
-
-	public int getId() {
-		return this.id;
 	}
 
 	public String getName() {
@@ -158,10 +160,6 @@ public class City implements Serializable {
 		this.altitude = altitude;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -180,6 +178,10 @@ public class City implements Serializable {
 	
 	public void setRate(int rate) {
 		this.rate = rate;
+	}
+
+	public void setReferenceArea(Polygon referenceArea) {
+		this.referenceArea = referenceArea;
 	}
 
 }

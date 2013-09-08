@@ -27,8 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @version 1.0 (Nov 22, 2012)
  */
 @RunWith(Suite.class)
-@SuiteClasses({ 
-	EventHandlerManagerTest.class,
+@SuiteClasses({ EventHandlerManagerTest.class,
 	ServerConfigReaderTest.class})
 public class AllTests {
 

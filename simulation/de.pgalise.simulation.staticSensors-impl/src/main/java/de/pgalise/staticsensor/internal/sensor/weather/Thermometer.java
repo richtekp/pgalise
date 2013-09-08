@@ -56,7 +56,7 @@ public final class Thermometer extends WeatherSensor {
 	 *            'weatherController' is 'null' or if argument 'weatherController' is not a type of
 	 *            {@link ThermometerWhiteNoiseInterferer}
 	 */
-	public Thermometer(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	public Thermometer(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
 		this(output, sensorId, position, weatherController, 1, weatherInterferer);
 	}
@@ -76,7 +76,7 @@ public final class Thermometer extends WeatherSensor {
 	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
 	 *            argument 'weatherController' is not a type of {@link ThermometerWhiteNoiseInterferer}
 	 */
-	public Thermometer(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	public Thermometer(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			int updateLimit, final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof ThermometerWhiteNoiseInterferer)) {

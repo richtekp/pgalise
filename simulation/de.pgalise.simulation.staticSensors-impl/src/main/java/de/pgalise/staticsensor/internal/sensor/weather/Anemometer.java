@@ -58,8 +58,8 @@ public final class Anemometer extends WeatherSensor {
 	 *             if argument 'weatherController' is 'null' or if argument 'weatherController' is not a type of
 	 *             {@link AnemometerWhiteNoiseInterferer}
 	 */
-	public Anemometer(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
-			WeatherInterferer weatherInterferer) {
+	
+	public Anemometer(Output output, long sensorId, Coordinate position, WeatherController weatherController, WeatherInterferer weatherInterferer) {
 		this(output, sensorId, position, weatherController, 1, weatherInterferer);
 	}
 
@@ -76,15 +76,12 @@ public final class Anemometer extends WeatherSensor {
 	 *            Reference to the weather controller of the simulation
 	 * @param updateLimit
 	 *            Update limit
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation must be a type of
-	 *            {@link AnemometerWhiteNoiseInterferer}
 	 * @throws IllegalArgumentException
 	 *             if argument 'weatherController' is 'null' or if argument 'weatherController' is not a type of
 	 *             {@link AnemometerWhiteNoiseInterferer}
 	 */
-	public Anemometer(final Output output, final Object sensorId, final Coordinate position,
-			final WeatherController weatherController, final int updateLimit, final WeatherInterferer weatherInterferer)
+	
+	public Anemometer(final Output output, final long sensorId, final Coordinate position, final WeatherController weatherController, final int updateLimit, final WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof AnemometerWhiteNoiseInterferer)) {

@@ -17,7 +17,8 @@
 package de.pgalise.simulation.weather.positionconverter;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import javax.vecmath.Vector2d;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * Abstract super class for a {@link WeatherPositionConverter}. This class provides some methods for calculations.
@@ -49,31 +50,32 @@ public abstract class WeatherPositionConverterBase implements WeatherPositionCon
 	/**
 	 * Position of the reference values
 	 */
-	private Coordinate referencePosition;
+	private Geometry grid;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param mapper
-	 *            GPSMapper
+	 * 
+	 * @param grid 
 	 */
-	public WeatherPositionConverterBase() {
-		this.referencePosition = referencePosition;
+	public WeatherPositionConverterBase(Geometry grid) {
+		this.grid = grid;
 	}
 
 	public double getGridDistance() {
-		return this.gridDistance;
+		double retValue = Double.MIN_VALUE;
+		Coordinate referncePoint = getReferencePosition();
+		for(Coordinate coordinate : grid.getCoordinates()) {
+			double distance = referncePoint.distance(coordinate);
+			if(distance > retValue) {
+				retValue = distance;
+	}
+	}
+		return retValue;
 	}
 
 	public Coordinate getReferencePosition() {
-		return this.referencePosition;
-	}
-
-	public void setGridDistance(double gridDistance) {
-		this.gridDistance = gridDistance;
-	}
-
-	public void setReferencePosition(Coordinate referencePosition) {
-		this.referencePosition = referencePosition;
+		Point centroid = this.grid.getCentroid();
+		return new Coordinate(centroid.getX(), centroid.getY());
 	}
 }

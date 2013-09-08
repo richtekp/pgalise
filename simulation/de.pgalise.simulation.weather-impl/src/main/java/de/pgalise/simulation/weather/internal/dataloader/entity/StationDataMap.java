@@ -24,7 +24,7 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 23, 2012)
  */
-public final class StationDataMap extends WeatherMap {
+public class StationDataMap extends WeatherMap {
 
 	/**
 	 * Serial

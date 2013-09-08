@@ -53,7 +53,7 @@ public final class WindFlagSensor extends WeatherSensor {
 	 * @param weatherController
 	 *            Reference to the weather controller of the simulation
 	 */
-	public WindFlagSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	public WindFlagSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			final WeatherInterferer weatherInterferer) {
 		this(output, sensorId, position, weatherController, 1, weatherInterferer);
 	}
@@ -72,7 +72,7 @@ public final class WindFlagSensor extends WeatherSensor {
 	 * @param updateLimit
 	 *            Update limit
 	 */
-	public WindFlagSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	public WindFlagSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			int updateLimit, final WeatherInterferer weatherInterferer) {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 	}

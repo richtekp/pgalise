@@ -151,7 +151,8 @@ public class XMLWeatherLoaderTest {
 	@Test
 	public void testSaveWeatherMapToXML() {
 		WeatherMap map = new StationDataMap();
-		map.put(System.currentTimeMillis(), new Weather());
+		Weather weather = new Weather(System.currentTimeMillis(), 1, 1, 1.0f, 1.0f, 1, 1.0f, 1.0f, 1, 1.0f);
+		map.put(System.currentTimeMillis(), weather);
 
 		// Test save
 		try {
@@ -169,7 +170,8 @@ public class XMLWeatherLoaderTest {
 	 */
 	private void createTestFile() throws Exception {
 		WeatherMap map = new StationDataMap();
-		map.put(System.currentTimeMillis(), new Weather());
+		Weather weather = new Weather(System.currentTimeMillis(), 1, 1, 1.0f, 1.0f, 1, 1.0f, 1.0f, 1, 1.0f);
+		map.put(System.currentTimeMillis(), weather);
 
 		XMLWeatherLoaderTest.testClass.saveWeatherMapToXML(map, XMLWeatherLoaderTest.testTimestamp);
 	}

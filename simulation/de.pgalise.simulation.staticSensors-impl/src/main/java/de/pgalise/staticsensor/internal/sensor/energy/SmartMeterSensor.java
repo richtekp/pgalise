@@ -50,18 +50,17 @@ public class SmartMeterSensor extends EnergySensor {
 	 *            Position of the sensor
 	 * @param weatherController
 	 *            Weather interface to access the weather data
-	 * @param randomSeedService
-	 *            Seed service
 	 * @param energyController
 	 *            Energy interface to access the energy consumption data
+	 * @param randomSeedService
+	 * Seed service
 	 * @param measureRadiusInMeter
 	 *            Radius in meter
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public SmartMeterSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
-			EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter,
-			EnergyInterferer interferer) {
+	
+	public SmartMeterSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter, EnergyInterferer interferer) {
 		this(output, sensorId, position, weatherController, energyController, randomSeedService, measureRadiusInMeter,
 				1, interferer);
 	}
@@ -77,10 +76,10 @@ public class SmartMeterSensor extends EnergySensor {
 	 *            Position of the sensor
 	 * @param weatherController
 	 *            Weather interface to access the weather data
-	 * @param randomSeedService
-	 *            Seed service
 	 * @param energyController
 	 *            Energy interface to access the energy consumption data
+	 * @param randomSeedService
+	 * Seed service
 	 * @param measureRadiusInMeter
 	 *            Radius in meter
 	 * @param updateLimit
@@ -88,9 +87,8 @@ public class SmartMeterSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public SmartMeterSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
-			EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter,
-			int updateLimit, EnergyInterferer interferer) {
+	
+	public SmartMeterSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter, int updateLimit, EnergyInterferer interferer) {
 		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,
 				interferer);
 		this.measureRadiusInMeter = measureRadiusInMeter;

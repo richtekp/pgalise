@@ -16,6 +16,9 @@
  
 package de.pgalise.simulation.weather.dataloader;
 
+import de.pgalise.simulation.shared.city.City;
+import java.util.Objects;
+
 /**
  * Weather informations from weather services.
  * 
@@ -32,7 +35,7 @@ public class ServiceWeather implements Comparable<ServiceWeather> {
 	/**
 	 * ID of the city
 	 */
-	private int cityId;
+	private City city;
 
 	/**
 	 * relativ humidity
@@ -62,7 +65,17 @@ public class ServiceWeather implements Comparable<ServiceWeather> {
 	/**
 	 * Default constructor
 	 */
-	public ServiceWeather() {
+	protected ServiceWeather() {
+	}
+
+	public ServiceWeather(long timestamp, City city, Float relativHumidity, Float temperatureLow, Float temperatureHigh, Float windDirection, Float windVelocity) {
+		this.timestamp = timestamp;
+		this.city = city;
+		this.relativHumidity = relativHumidity;
+		this.temperatureLow = temperatureLow;
+		this.temperatureHigh = temperatureHigh;
+		this.windDirection = windDirection;
+		this.windVelocity = windVelocity;
 	}
 
 	@Override
@@ -72,8 +85,8 @@ public class ServiceWeather implements Comparable<ServiceWeather> {
 		return (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
 	}
 
-	public int getCityId() {
-		return this.cityId;
+	public City getCity() {
+		return this.city;
 	}
 
 	public Float getRelativHumidity() {
@@ -100,8 +113,8 @@ public class ServiceWeather implements Comparable<ServiceWeather> {
 		return this.windVelocity;
 	}
 
-	public void setCityId(int cityId) {
-		this.cityId = cityId;
+	public void setCity(City city) {
+		this.city = city;
 	}
 
 	public void setRelativHumidity(Float relativHumidity) {
@@ -126,6 +139,52 @@ public class ServiceWeather implements Comparable<ServiceWeather> {
 
 	public void setWindVelocity(Float windVelocity) {
 		this.windVelocity = windVelocity;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 59 * hash + (int) (this.timestamp ^ (this.timestamp >>> 32));
+		hash = 59 * hash + Objects.hashCode(this.city);
+		hash = 59 * hash + Objects.hashCode(this.relativHumidity);
+		hash = 59 * hash + Objects.hashCode(this.temperatureLow);
+		hash = 59 * hash + Objects.hashCode(this.temperatureHigh);
+		hash = 59 * hash + Objects.hashCode(this.windDirection);
+		hash = 59 * hash + Objects.hashCode(this.windVelocity);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ServiceWeather other = (ServiceWeather) obj;
+		if (this.timestamp != other.timestamp) {
+			return false;
+		}
+		if (!Objects.equals(this.city, other.city)) {
+			return false;
+		}
+		if (!Objects.equals(this.relativHumidity, other.relativHumidity)) {
+			return false;
+		}
+		if (!Objects.equals(this.temperatureLow, other.temperatureLow)) {
+			return false;
+		}
+		if (!Objects.equals(this.temperatureHigh, other.temperatureHigh)) {
+			return false;
+		}
+		if (!Objects.equals(this.windDirection, other.windDirection)) {
+			return false;
+		}
+		if (!Objects.equals(this.windVelocity, other.windVelocity)) {
+			return false;
+		}
+		return true;
 	}
 
 }

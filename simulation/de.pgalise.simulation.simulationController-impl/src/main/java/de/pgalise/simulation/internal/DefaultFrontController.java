@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.controller.InitParameter;
@@ -35,6 +34,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import javax.persistence.EntityManager;
 
 /**
  * The Front Controller exists on every server and inits the {@link SensorRegistry} and the {@link ServiceDictionary}.
@@ -53,8 +53,7 @@ public class DefaultFrontController extends AbstractController implements Contro
 	@EJB
 	private SensorRegistry sensorRegistry;
 	
-	@EJB
-	private SensorPersistenceService sensorPersistenceService;
+	private EntityManager sensorPersistenceService;
 
 	@EJB
 	private ServiceDictionary serviceDictionary;

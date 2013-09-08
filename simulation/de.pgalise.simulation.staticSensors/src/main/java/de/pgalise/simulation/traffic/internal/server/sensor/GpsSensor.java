@@ -93,7 +93,7 @@ public final class GpsSensor extends Sensor {
 	 * @param interferer
 	 *            GPS interferer
 	 */
-	public GpsSensor(final Output output, final Object sensorId, final Vehicle<? extends VehicleData> vehicle,
+	public GpsSensor(final Output output, final long sensorId, final Vehicle<? extends VehicleData> vehicle,
 			final int updateLimit, final SensorType sensor, Coordinate position, final GpsInterferer interferer) {
 
 		super(output, sensorId, position, updateLimit);
@@ -119,7 +119,7 @@ public final class GpsSensor extends Sensor {
 	 * @param interferer
 	 *            GPS interferer
 	 */
-	public GpsSensor(Output output, Object sensorId, Vehicle<? extends VehicleData> vehicle, SensorType sensor,
+	public GpsSensor(Output output, long sensorId, Vehicle<? extends VehicleData> vehicle, SensorType sensor,
 			final Coordinate position, final GpsInterferer interferer) {
 		this(output, sensorId, vehicle, 1, sensor, position, interferer);
 	}
@@ -221,7 +221,7 @@ public final class GpsSensor extends Sensor {
 		// convert to geo location
 		final Coordinate geoLocation = interferedPos;
 
-		log.debug("Send position of sensor " + this.getSensorId() + ": " + geoLocation.x + ", "
+		log.debug("Send position of sensor " + this.getId()+ ": " + geoLocation.x + ", "
 				+ geoLocation.y);
 
 		// Send data

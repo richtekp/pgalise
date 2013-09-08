@@ -50,21 +50,21 @@ public interface SensorRegistry extends Iterable<Sensor>, SimulationComponent {
 	 * @param sensorId
 	 * @return sensor
 	 */
-	public Sensor getSensor(int sensorId);
+	public Sensor getSensor(long sensorId);
 
 	/**
 	 * Returns the next available id for a Sensor
 	 * 
 	 * @return the next available id for a Sensor
 	 */
-	public int nextAvailableSensorId();
+	public long nextAvailableSensorId();
 
 	/**
 	 * Returns the number of sensors in the SensorDomain
 	 * 
 	 * @return Number of sensors
 	 */
-	public int numberOfSensors();
+	public long numberOfSensors();
 
 	/**
 	 * Removes all Sensors from the SensorDomain
@@ -77,7 +77,7 @@ public interface SensorRegistry extends Iterable<Sensor>, SimulationComponent {
 	 * @param sensorId
 	 * @return Sensor which are removed
 	 */
-	public Sensor removeSensor(int sensorId);
+	public Sensor removeSensor(long sensorId);
 
 	/**
 	 * Removes a sensor from the domain

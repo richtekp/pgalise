@@ -55,7 +55,7 @@ public final class Hygrometer extends WeatherSensor {
 	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
 	 *            is not a type of {@link HygrometerWhiteNoiseInterferer}
 	 */
-	public Hygrometer(final Output output, final Object sensorId, final Coordinate position,
+	public Hygrometer(final Output output, final long sensorId, final Coordinate position,
 			final WeatherController weatherController, final WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
 		this(output, sensorId, position, weatherController, 1, weatherInterferer);
@@ -76,7 +76,7 @@ public final class Hygrometer extends WeatherSensor {
 	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
 	 *            argument 'weatherController' is not a type of {@link HygrometerWhiteNoiseInterferer}
 	 */
-	public Hygrometer(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	public Hygrometer(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			int updateLimit, final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
 		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof HygrometerWhiteNoiseInterferer)) {

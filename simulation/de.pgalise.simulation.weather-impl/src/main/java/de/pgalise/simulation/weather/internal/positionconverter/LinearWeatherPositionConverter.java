@@ -16,7 +16,11 @@
  
 package de.pgalise.simulation.weather.internal.positionconverter;
 
+import com.javadocmd.simplelatlng.LatLng;
+import com.javadocmd.simplelatlng.LatLngTool;
+import com.javadocmd.simplelatlng.util.LengthUnit;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverterBase;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -34,16 +38,17 @@ public final class LinearWeatherPositionConverter extends WeatherPositionConvert
 	/**
 	 * Constructor
 	 * 
-	 * @param mapper
-	 *            GPSMapper
+	 * 
+	 * @param grid 
 	 */
-	public LinearWeatherPositionConverter() {
-		super();
+	public LinearWeatherPositionConverter(Geometry grid) {
+		super(grid);
 	}
 
 	/**
 	 * Returns the modified reference value for the given position
 	 * 
+	 * @param <T> 
 	 * @param key
 	 *            WeatherParameterEnum
 	 * @param time
@@ -63,8 +68,11 @@ public final class LinearWeatherPositionConverter extends WeatherPositionConvert
 		}
 
 		// Calculate distance
-		double distance = Math.abs(Math.sqrt(Math.pow(this.getReferencePosition().x - position.x, 2)
-				+ Math.pow(this.getReferencePosition().y - position.y, 2)));
+		
+		double distance = 
+			LatLngTool.distance(new LatLng(this.getReferencePosition().x, this.getReferencePosition().y), new LatLng(position.x, position.y), LengthUnit.METER);
+			//Math.abs(Math.sqrt(Math.pow(this.getReferencePosition().x - position.x, 2)
+//				+ Math.pow(this.getReferencePosition().y - position.y, 2)));
 
 		// Get the change value
 		T changeValue = this.getChangeValue(key, time, distance, refValue);

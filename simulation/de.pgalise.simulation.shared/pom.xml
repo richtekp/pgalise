@@ -22,9 +22,15 @@
             <groupId>org.graphstream</groupId>
             <artifactId>gs-core</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>
+        </dependency>-->
+					
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-spatial</artifactId>
+				<version>4.0-M1</version>
         </dependency>
         <dependency>
             <groupId>java3d</groupId>

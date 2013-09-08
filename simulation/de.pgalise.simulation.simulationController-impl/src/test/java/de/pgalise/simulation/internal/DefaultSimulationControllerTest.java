@@ -31,7 +31,6 @@ import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SpentTimeLogger;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
-import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.shared.city.Boundary;
@@ -48,6 +47,9 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -56,6 +58,7 @@ import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
+import javax.persistence.EntityManager;
 
 /**
  * JUnit tests for {@link DefaultSimulationController}<br />
@@ -65,6 +68,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @author Timo
  */
 public class DefaultSimulationControllerTest {
+	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	private static final long START_TIMESTAMP = 0;
 	private static final long END_TIMESTAMP = 100000;
@@ -81,7 +85,7 @@ public class DefaultSimulationControllerTest {
 	private static StaticSensorController staticSensorController;
 	private static EnergyController energyController;
 	private static WeatherController weatherController;
-	private static SensorPersistenceService sensorPersistenceService;
+	private static EntityManager sensorPersistenceService;
 	private static ServerConfigurationReader serverConfigurationReader;
 	private static CityInfrastructureData cityInfrastructureData;
 	private static ServerConfiguration serverConfiguration;
@@ -99,7 +103,7 @@ public class DefaultSimulationControllerTest {
 		weatherController = EasyMock.createNiceMock(WeatherController.class);
 
 		/* Mock all other services: */
-		sensorPersistenceService = EasyMock.createNiceMock(SensorPersistenceService.class);
+		sensorPersistenceService = EasyMock.createNiceMock(EntityManager.class);
 		serverConfigurationReader = EasyMock.createNiceMock(ServerConfigurationReader.class);
 		eventInitiator = new EventInitiatorMock();
 		cityInfrastructureData = EasyMock.createNiceMock(CityInfrastructureData.class);
@@ -135,12 +139,16 @@ public class DefaultSimulationControllerTest {
 				INTERVAL, CLOCK_GENERATOR_INTERVAL, "", "", new TrafficFuzzyData(0, 0.9, 1), new Boundary(
 						new Coordinate(), new Coordinate()));
 
-		City city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			new Coordinate(52.516667, 13.4));
+		Coordinate referencePoint = new Coordinate(20, 20);
+		Polygon referenceArea = GEOMETRY_FACTORY.createPolygon(
+			new Coordinate[] {
+				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
+				new Coordinate(referencePoint.x-1, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y-1)
+			}
+		);
+		City city = new City("test_city", 200000, 100, true, true, referenceArea);
 		startParameter = new StartParameter(city, false, null, null);
 	}
 

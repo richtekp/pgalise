@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
+import java.sql.Date;
+import java.sql.Time;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -28,11 +30,19 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.WEATHER_AGGREGATE_STATION")
+//@Table(name = "PGALISE.WEATHER_AGGREGATE_STATION")
 @NamedQueries({
 		@NamedQuery(name = "StationDataAggregate.findByDate", query = "SELECT i FROM StationDataAggregate i WHERE i.measureDate = :date"),
 		@NamedQuery(name = "StationDataAggregate.findFirstEntryByDate", query = "SELECT i FROM StationDataAggregate i WHERE i.measureDate = :date ORDER BY i.measureTime ASC"),
 		@NamedQuery(name = "StationDataAggregate.findLastEntryByDate", query = "SELECT i FROM StationDataAggregate i WHERE i.measureDate = :date ORDER BY i.measureTime DESC"), })
-public final class StationDataAggregate extends StationData {
+public class StationDataAggregate extends StationData {
+	private static final long serialVersionUID = 1L;
+
+	protected StationDataAggregate() {
+	}
+
+	public StationDataAggregate(Date date, Time time, Integer airPressure, Integer lightIntensity, Float perceivedTemperature, Float temperature, Float precipitationAmount, Integer radiation, Float relativHumidity, Integer windDirection, Float windVelocity) {
+		super(date, time, airPressure, lightIntensity, perceivedTemperature, temperature, precipitationAmount, radiation, relativHumidity, windDirection, windVelocity);
+	}
 
 }

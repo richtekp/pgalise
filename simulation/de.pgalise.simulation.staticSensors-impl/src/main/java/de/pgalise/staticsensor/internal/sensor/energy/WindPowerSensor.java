@@ -100,7 +100,7 @@ public final class WindPowerSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public WindPowerSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
+	public WindPowerSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, double rotorLength,
 			double activityValue, EnergyInterferer interferer) throws InterruptedException, ExecutionException {
 		this(output, sensorId, position, weatherController, energyController, randomSeedService, rotorLength,
@@ -118,10 +118,10 @@ public final class WindPowerSensor extends EnergySensor {
 	 *            Position of the sensor
 	 * @param weatherController
 	 *            Weather interface to access the weather data
-	 * @param randomSeedService
-	 *            Seed service
 	 * @param energyController
 	 *            Energy interface to access the energy consumption data
+	 * @param randomSeedService
+	 * Seed service
 	 * @param rotorLength
 	 *            rotor length in m (usually between 7.5m and 63m).
 	 * @param activityValue
@@ -131,9 +131,8 @@ public final class WindPowerSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public WindPowerSensor(Output output, Object sensorId, Coordinate position, WeatherController weatherController,
-			EnergyController energyController, RandomSeedService randomSeedService, double rotorLength,
-			double activityValue, int updateLimit, EnergyInterferer interferer) throws InterruptedException,
+	
+	public WindPowerSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, double rotorLength, double activityValue, int updateLimit, EnergyInterferer interferer) throws InterruptedException,
 			ExecutionException {
 		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,
 				interferer);

@@ -50,7 +50,6 @@ import de.pgalise.simulation.sensorFramework.Server;
 import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.sensorFramework.persistence.SensorPersistenceService;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
@@ -87,6 +86,8 @@ import de.pgalise.simulation.traffic.server.scheduler.Item;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import de.pgalise.util.GTFS.service.DefaultBusService;
+import javax.persistence.EntityManager;
+import org.easymock.EasyMock;
 
 /**
  * Tests the {@link RoadBarrierTrafficEvent}.
@@ -147,39 +148,6 @@ public class RoadBarrierTest {
 	private static String OSM = System.getProperty("user.dir") + "/src/test/resources/oldenburg_pg.osm";
 
 	/**
-	 * Mock of the persistence service
-	 */
-	private static SensorPersistenceService PERSISTENCE_MOCK = new SensorPersistenceService() {
-
-		@Override
-		public void clear() {
-		}
-
-		@Override
-		public void deleteSensor(int sensorId) {
-		}
-
-		@Override
-		public void deleteSensor(Sensor sensor) throws IllegalArgumentException, UnsupportedOperationException {
-		}
-
-		@Override
-		public int nextAvailableSensorId() {
-			return 0;
-		}
-
-		@Override
-		public int numberOfSensors() {
-			return 0;
-		}
-
-		@Override
-		public void saveSensor(Sensor sensor) throws UnsupportedOperationException {
-		}
-
-	};
-
-	/**
 	 * Bus stops file
 	 */
 	private static String BUS_STOPS = System.getProperty("user.dir") + "/src/test/resources/stops.txt";
@@ -206,7 +174,8 @@ public class RoadBarrierTest {
 
 		replay(sd, wc);
 
-		SENSOR_REGISTRY = new DefaultSensorRegistry(PERSISTENCE_MOCK);
+		EntityManager entityManager = EasyMock.createMock(EntityManager.class);
+		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
 
 		server = new FileOutputServer(new File(CSV_OUTPUT), null, 6666);
 		server.open();
@@ -625,7 +594,8 @@ public class RoadBarrierTest {
 		// TrafficSensorFactory sensorFactory = new CSVTrafficSensorFactory(CSV_OUTPUT, sd.getRandomSeedService(),
 		// sd.getController(WeatherController.class), mapper);
 
-		SENSOR_REGISTRY = new DefaultSensorRegistry(createNiceMock(SensorPersistenceService.class));
+		EntityManager entityManager = EasyMock.createMock(EntityManager.class);
+		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
 
 		TrafficServerLocal server = new DefaultTrafficServer(sd, SENSOR_REGISTRY,
 				new DefaultSimulationEventHandlerManager(), serverList, sensorFactory, null);

@@ -65,7 +65,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final Object sensorId, final Coordinate position, final int updateLimit,
+	public TopoRadarSensor(final Output output, final long sensorId, final Coordinate position, final int updateLimit,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
 		super(output, sensorId, position, updateLimit);
 		if (interferer == null) {
@@ -87,7 +87,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final Object sensorId, final Coordinate position,
+	public TopoRadarSensor(final Output output, final long sensorId, final Coordinate position,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
 		this(output, sensorId, position, 1, interferer);
 

@@ -39,15 +39,6 @@ public interface WeatherLoader {
 	public boolean checkStationDataForDay(long timestamp);
 
 	/**
-	 * Returns the ID of the reference city for the given city
-	 * 
-	 * @param city
-	 *            City
-	 * @return ID of the reference city
-	 */
-	public int getReferenceCity(City city);
-
-	/**
 	 * Returns the current weather informations form the weather services for the given city and timestamp
 	 * 
 	 * @param timestamp
@@ -58,7 +49,7 @@ public interface WeatherLoader {
 	 *             There is no service weather data for the given timestamp.
 	 * @return ServiceWeather object
 	 */
-	public ServiceWeather loadCurrentServiceWeatherData(long timestamp, int city) throws NoWeatherDataFoundException;
+	public ServiceWeather loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException;
 
 	/**
 	 * Returns the forecast weather informations form the weather services for the given city and timestamp
@@ -71,7 +62,7 @@ public interface WeatherLoader {
 	 *             There is no service weather data for the given timestamp.
 	 * @return ServiceWeather object
 	 */
-	public ServiceWeather loadForecastServiceWeatherData(long timestamp, int city) throws NoWeatherDataFoundException;
+	public ServiceWeather loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException;
 
 	/**
 	 * Returns the weather data of the weather station. They are sorted ascending.

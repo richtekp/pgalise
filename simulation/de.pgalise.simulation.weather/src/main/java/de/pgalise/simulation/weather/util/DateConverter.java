@@ -146,18 +146,8 @@ public final class DateConverter {
 		}
 
 		// Correct the date
-		return DateConverter.getCleanDate(cal);
-	}
-
-	/**
-	 * Calculate fahrenheit to celsius
-	 * 
-	 * @param fahrenheit
-	 *            value in fahrenheit
-	 * @return value in celsius
-	 */
-	public static float convertToCelsius(float fahrenheit) {
-		return (((fahrenheit - 32) * 5) / 9);
+		DateConverter.cleanDate(cal);
+		return cal.getTimeInMillis();
 	}
 
 	/**
@@ -167,13 +157,11 @@ public final class DateConverter {
 	 *            Calendar with timestamp
 	 * @return timestamp without hours, minutes, seconds and milliseconds
 	 */
-	public static long getCleanDate(Calendar cal) {
+	public static void cleanDate(Calendar cal) {
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-
-		return cal.getTimeInMillis();
 	}
 
 	/**
@@ -186,7 +174,8 @@ public final class DateConverter {
 	public static long getCleanDate(long timestamp) {
 		Calendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(timestamp);
-		return DateConverter.getCleanDate(cal);
+		cleanDate(cal);
+		return cal.getTimeInMillis();
 	}
 
 	/**
@@ -216,7 +205,7 @@ public final class DateConverter {
 	}
 
 	/**
-	 * Returns the next day
+	 * Returns the time of <tt>timestamp</tt> one day later
 	 * 
 	 * @param timestamp
 	 *            Timestamp
@@ -238,7 +227,7 @@ public final class DateConverter {
 	}
 
 	/**
-	 * Returns the previous day
+	 * Returns the time of <tt>timestamp</tt> one day before
 	 * 
 	 * @param timestamp
 	 *            Timestamp

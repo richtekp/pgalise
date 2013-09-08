@@ -44,7 +44,7 @@ public abstract class StaticTrafficSensor extends Sensor {
 	 *            Update limit
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, Object sensorId, Coordinate position, int updateLimit)
+	protected StaticTrafficSensor(Output output, long sensorId, Coordinate position, int updateLimit)
 			throws IllegalArgumentException {
 		super(output, sensorId, position, updateLimit);
 	}
@@ -58,7 +58,7 @@ public abstract class StaticTrafficSensor extends Sensor {
 	 *            Position of the sensor
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, Object sensorId, Coordinate position) throws IllegalArgumentException {
+	protected StaticTrafficSensor(Output output, long sensorId, Coordinate position) throws IllegalArgumentException {
 		super(output, sensorId, position);
 	}
 

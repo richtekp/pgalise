@@ -45,6 +45,10 @@ import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.shared.traffic.BusRoute;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -127,12 +131,24 @@ public class DefaultEnergyControllerTest {
 
 		
 		// city
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+			new Coordinate(1,
+			1),
+			new Coordinate(1,
+			2),
+			new Coordinate(2,
+			2),
+			new Coordinate(2,
+			1),
+			new Coordinate(1,
+			1)
+		});
 		City city = new City("Berlin",
 			3375222,
 			80,
 			true,
 			true,
-			new Coordinate(52.516667, 13.4));
+			referenceArea);
 
 		// City information
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<EnergyProfileEnum, List<Building>>();
@@ -184,7 +200,7 @@ public class DefaultEnergyControllerTest {
 			80,
 			true,
 			true,
-			new Coordinate(52.516667, 13.4));
+			referenceArea);
 		DefaultEnergyControllerTest.startParameter = new StartParameter(city,
 				true, new ArrayList<WeatherEventHelper>(), new LinkedList<BusRoute>());
 		

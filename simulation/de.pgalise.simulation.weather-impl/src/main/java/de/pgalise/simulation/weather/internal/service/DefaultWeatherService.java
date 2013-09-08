@@ -148,7 +148,7 @@ public final class DefaultWeatherService implements WeatherService {
 		this.referenceValues = null;
 		this.parameters = new HashMap<>();
 		this.cachedParameters = new HashMap<>();
-		this.gridConverter = new LinearWeatherPositionConverter();
+		this.gridConverter = new LinearWeatherPositionConverter(city.getReferenceArea());
 		this.plannedEventModifiers = new ArrayList<>();
 
 		// Add parameters
@@ -424,9 +424,9 @@ public final class DefaultWeatherService implements WeatherService {
 	 * Add new weather informations
 	 * 
 	 * @param startTimestamp
-	 *            Start timestamp
+	 *            Start timestamp weather will be loaded from the next morning after 00:00
 	 * @param endTimestamp
-	 *            End timestamp
+	 *            End timestamp whether will be loaded until the next morning after 00:00
 	 * @param takeNormalData
 	 *            Option to take normal data
 	 * @param strategyList
@@ -440,7 +440,7 @@ public final class DefaultWeatherService implements WeatherService {
 		this.initValues();
 
 		// Convert dates to 00:00:00
-		startTimestamp = DateConverter.convertTimestampToMidnight(startTimestamp);
+		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(startTimestamp);
 		this.simEndTimestamp = DateConverter.convertTimestampToMidnight(endTimestamp)
 				+ DateConverter.NEXT_DAY_IN_MILLIS;
 
@@ -453,7 +453,7 @@ public final class DefaultWeatherService implements WeatherService {
 		}
 
 		// Add new weather data
-		this.loadWeather(startTimestamp);
+		this.loadWeather(startTimestampMidnight);
 	}
 
 	/**

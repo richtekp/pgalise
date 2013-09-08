@@ -176,7 +176,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 */
 	public boolean addSensor(final Node node, final Sensor sensor) throws IllegalArgumentException {
 		if (node == null)
-			log.error("Can't add sensor " + sensor.getSensorId() + " to an empty node");
+			log.error("Can't add sensor " + sensor.getId()+ " to an empty node");
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
