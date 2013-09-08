@@ -90,7 +90,7 @@ public class City implements Serializable {
 	/**
 	 * Default constructor
 	 */
-	public City() {
+	protected City() {
 	}
 
 	/**
@@ -106,6 +106,7 @@ public class City implements Serializable {
 	 *            Option that the city is near a river
 	 * @param nearSea
 	 *            Option that the city is near the sea
+	 * @param referencePoint  
 	 */
 	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Coordinate referencePoint) {
 		super();

@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.sql.Date;
 
@@ -27,6 +28,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
 /**
@@ -35,7 +37,7 @@ import javax.persistence.ManyToOne;
  * @author Andreas Rehfeldt
  * @version 1.0 (01.07.2012)
  */
-@MappedSuperclass
+@Entity
 public abstract class ServiceData extends AbstractIdentifiable implements Comparable<ServiceData>, ServiceDataCompleter {
 
 	/**

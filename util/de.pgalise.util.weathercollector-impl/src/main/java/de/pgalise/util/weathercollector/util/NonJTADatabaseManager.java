@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.util;
 
+import de.pgalise.simulation.shared.city.City;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
@@ -29,18 +30,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.TypedQuery;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.Condition;
 import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.ServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.model.StationData;
-import de.pgalise.util.weathercollector.weatherservice.WeatherServiceSaver;
-import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;

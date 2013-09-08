@@ -4,9 +4,10 @@
  */
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.util.weathercollector.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
@@ -57,7 +58,8 @@ public class YahooWeatherTest {
 			3400000,
 			80,
 			true,
-			true);
+			true,
+			new Coordinate(52.516667, 13.4));
 		DatabaseManager databaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
 		YahooWeather instance = new YahooWeather();
 		ServiceDataHelper result = instance.getWeather(city,

@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import java.sql.Date;
 import java.sql.Time;
@@ -25,7 +26,6 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.ServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;

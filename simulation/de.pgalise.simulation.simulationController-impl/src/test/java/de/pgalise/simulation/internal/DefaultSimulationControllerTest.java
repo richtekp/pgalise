@@ -135,7 +135,13 @@ public class DefaultSimulationControllerTest {
 				INTERVAL, CLOCK_GENERATOR_INTERVAL, "", "", new TrafficFuzzyData(0, 0.9, 1), new Boundary(
 						new Coordinate(), new Coordinate()));
 
-		startParameter = new StartParameter(new City(), false, null, null);
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
+		startParameter = new StartParameter(city, false, null, null);
 	}
 
 	/**

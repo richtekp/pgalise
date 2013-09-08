@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
+import de.pgalise.simulation.shared.city.City;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
@@ -25,7 +26,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.ServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;

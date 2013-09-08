@@ -16,8 +16,8 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 

@@ -16,21 +16,14 @@
  
 package de.pgalise.util.weathercollector.app;
 
-import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
-import de.pgalise.util.weathercollector.weatherservice.WeatherServiceSaver;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
-import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +41,6 @@ public class DefaultWeatherCollector {
 	/**
 	 * Constructor
 	 * 
-	 * @param testmode
-	 *            Option to enable the test mode (no database commits)
 	 */
 	public DefaultWeatherCollector() {
 	}

@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.shared.city.City;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Set;

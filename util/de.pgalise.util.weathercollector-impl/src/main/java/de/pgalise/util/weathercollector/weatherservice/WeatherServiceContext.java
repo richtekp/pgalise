@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import de.pgalise.simulation.shared.city.City;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;

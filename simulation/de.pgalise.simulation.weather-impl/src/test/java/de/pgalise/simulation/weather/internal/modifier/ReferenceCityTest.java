@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.modifier;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -77,8 +78,12 @@ public class ReferenceCityTest {
 		Context ctx = container.getContext();
 
 		// City
-		City city = new City();
-		city.setPopulation(200000);
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
 
 		// Load EJB for Weather loader
 		ReferenceCityTest.loader = (WeatherLoader) ctx

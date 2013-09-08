@@ -195,7 +195,13 @@ public class DefaultOCSimulationControllerTest {
 		DefaultOCSimulationControllerTest.INIT_PARAMETER = new InitParameter(null, null, 0, 0, 0, 0, "", "", null, null);
 
 		/* Create start parameter: */
-		DefaultOCSimulationControllerTest.START_PARAMTER = new StartParameter(new City(), true, null, new LinkedList<BusRoute>());
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
+		DefaultOCSimulationControllerTest.START_PARAMTER = new StartParameter(city, true, null, new LinkedList<BusRoute>());
 
 		DefaultOCSimulationControllerTest.TESTCLASS = new DefaultOCSimulationController(
 				DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE,

@@ -16,10 +16,11 @@
  
 package de.pgalise.util.weathercollector;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.City;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
@@ -78,7 +79,8 @@ public class WeatherCollectorTest {
 			3375222,
 			34,
 			true,
-			false);
+			false,
+			new Coordinate(52.516667, 13.4));
 		entityManager.getTransaction().begin();
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();
@@ -100,7 +102,8 @@ public class WeatherCollectorTest {
 			3375222,
 			34,
 			true,
-			false);
+			false,
+			new Coordinate(52.516667, 13.4));
 		entityManager.getTransaction().begin();
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();

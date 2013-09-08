@@ -6,7 +6,7 @@
     <class>de.pgalise.util.weathercollector.model.StationData</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataForecast</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataCurrent</class>
-    <class>de.pgalise.util.weathercollector.model.City</class>
+    <class>de.pgalise.simulation.shared.city.City</class>
     <class>de.pgalise.util.weathercollector.model.Condition</class>
     <properties>
       <property name="eclipselink.ddl-generation" value="create-tables"/>
@@ -25,7 +25,7 @@
     <class>de.pgalise.util.weathercollector.model.StationData</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataForecast</class>
     <class>de.pgalise.util.weathercollector.model.ServiceDataCurrent</class>
-    <class>de.pgalise.util.weathercollector.model.City</class>
+    <class>de.pgalise.simulation.shared.city.City</class>
     <class>de.pgalise.util.weathercollector.model.Condition</class>
     <!--<exclude-unlisted-classes>false</exclude-unlisted-classes>-->
     <properties>

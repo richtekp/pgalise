@@ -108,9 +108,12 @@ public class WeatherControllerTest {
 		serviceDictionary.init(WeatherControllerTest.produceServerConfiguration());
 
 		// Create city
-		WeatherControllerTest.city = new City();
-		WeatherControllerTest.city.setNearSea(true);
-		WeatherControllerTest.city.setPopulation(50000);
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
 
 		// Start
 		Calendar cal = new GregorianCalendar();

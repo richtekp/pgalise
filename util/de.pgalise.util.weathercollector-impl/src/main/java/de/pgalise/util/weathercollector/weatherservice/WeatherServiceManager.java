@@ -16,10 +16,10 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import de.pgalise.simulation.shared.city.City;
 import java.util.List;
 import java.util.logging.Level;
 
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;

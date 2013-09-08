@@ -16,9 +16,9 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import de.pgalise.simulation.shared.city.City;
 import java.util.List;
 
-import de.pgalise.util.weathercollector.model.City;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 
 /**

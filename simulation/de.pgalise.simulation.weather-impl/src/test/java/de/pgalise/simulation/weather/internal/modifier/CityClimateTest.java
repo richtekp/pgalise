@@ -78,8 +78,12 @@ public class CityClimateTest {
 		Context ctx = container.getContext();
 
 		// City
-		City city = new City();
-		city.setPopulation(200000);
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
 
 		// Load EJB for Weather loader
 		CityClimateTest.loader = (WeatherLoader) ctx

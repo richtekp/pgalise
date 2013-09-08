@@ -78,7 +78,13 @@ public class FuzzyTrafficGovernorTest {
 		long endTimestamp = cal.getTimeInMillis();
 
 		StartParameter parameter = new StartParameter();
-		parameter.setCity(new City());
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
+		parameter.setCity(city);
 		parameter.setWeatherEventHelperList(null);
 		parameter.setAggregatedWeatherDataEnabled(true);
 

@@ -127,9 +127,12 @@ public class DefaultEnergyControllerTest {
 
 		
 		// city
-		DefaultEnergyControllerTest.city = new City();
-		DefaultEnergyControllerTest.city.setNearSea(true);
-		DefaultEnergyControllerTest.city.setPopulation(50000);
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
 
 		// City information
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<EnergyProfileEnum, List<Building>>();
@@ -176,7 +179,13 @@ public class DefaultEnergyControllerTest {
 				"", null,
 				new Boundary(new Coordinate(), new Coordinate()));
 
-		DefaultEnergyControllerTest.startParameter = new StartParameter(new City(),
+		city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
+		DefaultEnergyControllerTest.startParameter = new StartParameter(city,
 				true, new ArrayList<WeatherEventHelper>(), new LinkedList<BusRoute>());
 		
 		// EnergyEventStrategy
