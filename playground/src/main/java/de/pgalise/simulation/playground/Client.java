@@ -139,7 +139,12 @@ public class Client {
 	/**
 	 * Used City
 	 */
-	private static final City CITY = new City();
+	private static final City CITY = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			new Coordinate(52.516667, 13.4));
 
 	/**
 	 * Set with all used sensor ids.
@@ -299,7 +304,7 @@ public class Client {
 		// }
 		Node randomNode = getRandomGeoLocation(cityInfrastructure,
 				new Random(RANDOM_SEED_SERVICE.getSeed(Client.class.getName())));
-		GeoLocation geoLocation = new GeoLocation(randomNode.getLatitude(), randomNode.getLongitude());
+		Coordinate geoLocation = new Coordinate(randomNode.getLatitude(), randomNode.getLongitude());
 
 		// KITT fährt darüber
 		sensorHelperList.add(new SensorHelper(getUniqueSensorID(), geoLocation, SensorType.INDUCTIONLOOP,
@@ -328,7 +333,7 @@ public class Client {
 
 		UUID id = UUID.randomUUID();
 		List<SensorHelper> sensorLists = new ArrayList<>();
-		sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.GPS_CAR,
+		sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_CAR,
 				new ArrayList<SensorInterfererType>(), ""));
 		// zwischen den knoten liegen noch 6 weitere
 		TrafficTrip trip = new TrafficTrip(null, null, SIMULATION_START.getTimeInMillis() + 60000);// sim
@@ -342,7 +347,7 @@ public class Client {
 		//
 		id = UUID.randomUUID();
 		sensorLists = new ArrayList<>();
-		sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.GPS_CAR,
+		sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_CAR,
 				new ArrayList<SensorInterfererType>(), ""));
 		// zwischen den knoten liegen noch 6 weitere
 		trip = new TrafficTrip(null, null, SIMULATION_START.getTimeInMillis() + 60000);// sim
@@ -356,7 +361,7 @@ public class Client {
 		//
 		id = UUID.randomUUID();
 		sensorLists = new ArrayList<>();
-		sensorLists.add(new SensorHelper(getUniqueSensorID(), new GeoLocation(), SensorType.GPS_CAR,
+		sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_CAR,
 				new ArrayList<SensorInterfererType>(), ""));
 		// zwischen den knoten liegen noch 6 weitere
 		trip = new TrafficTrip(null, null, SIMULATION_START.getTimeInMillis() + 60000);// sim

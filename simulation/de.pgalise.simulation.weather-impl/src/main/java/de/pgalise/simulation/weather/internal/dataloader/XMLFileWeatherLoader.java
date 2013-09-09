@@ -29,9 +29,9 @@ import java.util.Properties;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
-import de.pgalise.simulation.weather.dataloader.ServiceWeather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast;
 
 /**
  * This class loads the weather data from a xml file. <br />
@@ -102,12 +102,12 @@ public final class XMLFileWeatherLoader implements WeatherLoader {
 	}
 
 	@Override
-	public ServiceWeather loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public DefaultServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 		throw new RuntimeException("Not implemented!");
 	}
 
 	@Override
-	public ServiceWeather loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public DefaultServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 		throw new RuntimeException("Not implemented!");
 	}
 

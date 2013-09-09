@@ -44,7 +44,7 @@ public final class WindDirection extends WeatherParameterBase {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Number> T getValue(long time) throws NoWeatherDataFoundException {
-		Integer value = this.getWeather(time).getWindDirection();
+		Float value = this.getWeather(time).getWindDirection();
 		return (T) value;
 	}
 

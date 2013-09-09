@@ -21,14 +21,14 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameter;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import javax.vecmath.Vector2d;
+import javax.measure.quantity.Temperature;
+import javax.measure.unit.Unit;
 
 /**
  * The {@link WeatherService} coordinates the {@link WeatherParameter} requests and provides access with the help of the
@@ -157,5 +157,6 @@ public interface WeatherService {
 	 *            City
 	 */
 	public void setCity(City city);
-
+	
+	Unit<Temperature> getTemperatureUnit();
 }

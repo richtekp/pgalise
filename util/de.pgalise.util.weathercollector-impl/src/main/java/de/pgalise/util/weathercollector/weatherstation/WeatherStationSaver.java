@@ -16,10 +16,10 @@
  
 package de.pgalise.util.weathercollector.weatherstation;
 
+import de.pgalise.simulation.weather.model.StationData;
 import java.util.Set;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.model.StationData;
 
 /**
  * Interface for the saver of weather stations

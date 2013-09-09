@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector;
 
+import de.pgalise.it.TestUtils;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
@@ -24,7 +25,6 @@ import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
-import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.strategy.StationOldenburg;
@@ -56,16 +56,16 @@ public class WeatherStationManagerTest {
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
 	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
 
-	public WeatherStationManagerTest() {
-	}
-	
-	@Before
-	public void setUp() throws NamingException {
+	public WeatherStationManagerTest() throws NamingException {
 		Properties p = new Properties();
 		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
 		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
+	}
+	
+	@Before
+	public void setUp() throws NamingException {
 	}
 
 	@Test

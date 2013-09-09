@@ -18,7 +18,6 @@ package de.pgalise.simulation.weather.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 
 /**

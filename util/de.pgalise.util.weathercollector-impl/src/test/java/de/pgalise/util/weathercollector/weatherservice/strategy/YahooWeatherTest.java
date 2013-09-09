@@ -8,7 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
-import de.pgalise.util.weathercollector.TestUtils;
+import de.pgalise.it.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
@@ -35,16 +35,16 @@ public class YahooWeatherTest {
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
 	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
 	
-	public YahooWeatherTest() {
-	}
-
-	@Before
-	public void setUp() throws NamingException {
+	public YahooWeatherTest() throws NamingException {
 		Properties p = new Properties();
 		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
 		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
+	}
+
+	@Before
+	public void setUp() throws NamingException {
 	}
 
 	/**

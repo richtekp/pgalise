@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
  * superclass for all persistence related classes which need an {@link Id}
@@ -41,6 +42,12 @@ public abstract class AbstractIdentifiable implements Serializable {
 
 	protected void setId(Long id) {
 		this.id = id;
+	}
+
+	@Override
+	public String toString() {
+		String retValue = new ReflectionToStringBuilder(this).toString();
+		return retValue;
 	}
 	
 }

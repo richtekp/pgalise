@@ -56,11 +56,6 @@
 		</dependency>
  -->		
 
-<!--		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-		</dependency>-->
-
 		<dependency>
 			<groupId>de.pgalise.util</groupId>
 			<artifactId>parser</artifactId>

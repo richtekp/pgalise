@@ -21,45 +21,28 @@
 		<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-spatial</artifactId>
-				<version>4.0-M1</version>
 		</dependency>
-<!--		<dependency>
-				<groupId>org.hibernatespatial</groupId>
-				<artifactId>hibernate-spatial</artifactId>
-				<version>1.1</version>
-		</dependency>-->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.2.5.Final</version>
 		</dependency>
 		<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>4.2.5.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.2-1003.jdbc4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgis</groupId>
 			<artifactId>postgis-jdbc</artifactId>
-			<version>2.0.1</version>
 		</dependency>
-
-		<!-- the postgresql driver -->
+		
 		<dependency>
-				<groupId>postgresql</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>8.4-701.jdbc3</version>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>mysql</groupId> -->
-		<!-- <artifactId>mysql-connector-java</artifactId> -->
-		<!-- <version>5.1.18</version> -->
-		<!-- </dependency> -->
 	 <dependency>
 		 <groupId>org.apache.openejb</groupId>
 		 <artifactId>openejb-server</artifactId>
@@ -89,33 +72,29 @@
 	  <version>1.0-SNAPSHOT</version>
 	  <type>jar</type>
 	 </dependency>
-<!--	 <dependency>
-	  <groupId>org.apache.derby</groupId>
-	  <artifactId>derbynet</artifactId>
-	  <version>10.10.1.1</version>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>-->
-<!--		<dependency>
-		  <groupId>org.apache.derby</groupId>
-		  <artifactId>derbyclient</artifactId>
-			<version>10.10.1.1</version>
-		</dependency>-->
-	 <dependency>
-		 <groupId>org.hsqldb</groupId>
-		 <artifactId>hsqldb</artifactId>
-		 <version>2.3.0</version>
-	 </dependency>
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>shared</artifactId>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>pgalise-it</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>weather</artifactId>
 	  <version>2.0-SNAPSHOT</version>
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-		 <groupId>com.vividsolutions</groupId>
-		 <artifactId>jts</artifactId>
-		 <version>1.13</version>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>weather-impl</artifactId>
+	  <version>2.0-SNAPSHOT</version>
+	  <type>jar</type>
 	 </dependency>
 	</dependencies>
 	<build>
@@ -124,7 +103,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ejb-plugin</artifactId>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
@@ -136,37 +115,21 @@
 							<mainClass>de.pgalise.weathercollector.app.WeatherCollector</mainClass>
 						</manifest>
 					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
 				<executions>
 					<execution>
-						<id>make-assembly</id> <!-- this is used for inheritance merges -->
-						<phase>package</phase> <!-- bind to the packaging phase -->
+						<id>make-assembly</id>  this is used for inheritance merges 
+						<phase>package</phase>  bind to the packaging phase 
 						<goals>
 							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
-<!--			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.15</version>
-				<configuration>
-					<forkMode>pertest</forkMode>
-					<argLine>-javaagent:${basedir}/target/openejb-javaagent-4.0.0.jar</argLine>
-					<workingDirectory>${basedir}/target</workingDirectory>
-				</configuration>
 			</plugin>-->
-			<plugin>
+<!--			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
@@ -188,7 +151,7 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin>-->
 		</plugins>
 	</build>
 </project>

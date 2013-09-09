@@ -29,13 +29,13 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
 import de.pgalise.simulation.weather.internal.modifier.WeatherStrategyContext;
 import de.pgalise.simulation.weather.internal.positionconverter.LinearWeatherPositionConverter;
 import de.pgalise.simulation.weather.internal.util.comparator.WeatherStrategyComparator;
+import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameter;
@@ -46,7 +46,11 @@ import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import javax.vecmath.Vector2d;
+import java.sql.Date;
+import java.sql.Time;
+import javax.measure.quantity.Temperature;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 /**
  * The {@link WeatherService} coordinates the {@link WeatherParameter} requests and provides access with the help of the
@@ -72,7 +76,7 @@ import javax.vecmath.Vector2d;
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public final class DefaultWeatherService implements WeatherService {
+public class DefaultWeatherService implements WeatherService {
 
 	/**
 	 * Map with cached parameters
@@ -373,10 +377,11 @@ public final class DefaultWeatherService implements WeatherService {
 		WeatherMap map = new StationDataMap();
 
 		long nextDay;
-		for (Weather weather : this.referenceValues.values()) {
-			nextDay = weather.getTimestamp() + DateConverter.NEXT_DAY_IN_MILLIS;
+		for (MutableStationData weather : this.referenceValues.values()) {
+			nextDay = weather.getMeasureTime().getTime()+ DateConverter.NEXT_DAY_IN_MILLIS;
 			// Change date
-			weather.setTimestamp(nextDay);
+			weather.setMeasureTime(new Time(nextDay));
+			weather.setMeasureDate(new Date(nextDay));
 
 			// Add to new map
 			map.put(nextDay, weather);
@@ -590,5 +595,10 @@ public final class DefaultWeatherService implements WeatherService {
 		// System.out.println(new Date(w.getDate()) + " - " + new Time(w.getTime()) + " - "
 		// + new Timestamp(w.getTimestamp()));
 		// }
+	}
+
+	@Override
+	public Unit<Temperature> getTemperatureUnit() {
+		return SI.CELSIUS;
 	}
 }

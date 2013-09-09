@@ -17,6 +17,8 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
+import de.pgalise.simulation.weather.model.Condition;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
@@ -26,12 +28,15 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ServiceDataForecast;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import javax.persistence.EntityManagerFactory;
+import javax.measure.Measure;
+import javax.measure.quantity.Temperature;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 /**
  * Returns weather informations from MSN. Uses the strategy pattern.
@@ -39,19 +44,19 @@ import javax.persistence.EntityManagerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Apr 21, 2012)
  */
-public final class MSNWeather extends XMLAPIWeather {
+public class MSNWeather extends XMLAPIWeather {
 
 	/**
 	 * Constructor
 	 */
 	public MSNWeather() {
-		super("http://weather.service.msn.com/data.aspx?src=vista&weadegreetype=C&culture=en-US&weasearchstr=", "MSN",
-				"C");
+		super("http://weather.service.msn.com/data.aspx?src=vista&weadegreetype=C&culture=en-US&weasearchstr=", "MSN",SI.CELSIUS);
 	}
 
 	@Override
 	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		ServiceDataHelper weather = new ServiceDataHelper(city, this.apiname);
+		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
+		Unit<Temperature> unit = SI.CELSIUS;
 
 		// Read global data
 		NodeList nodes = doc.getElementsByTagName("weather");
@@ -63,7 +68,11 @@ public final class MSNWeather extends XMLAPIWeather {
 			// Temperature unit
 			String temp = node.getAttributes().getNamedItem("degreetype").getTextContent();
 			if (temp != null && !temp.isEmpty()) {
-				this.unitTemperature = temp;
+				if(temp.equals("C")) {
+					unit = SI.CELSIUS;
+				}else {
+					throw new IllegalArgumentException("degreetype is not C");
+				}
 			}
 
 			NodeList childnodes = node.getChildNodes();
@@ -74,7 +83,7 @@ public final class MSNWeather extends XMLAPIWeather {
 				if (childnode.getNodeName().equals("current")) {
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					ServiceDataCurrent condition;
+					ExtendedServiceDataCurrent condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
@@ -83,7 +92,11 @@ public final class MSNWeather extends XMLAPIWeather {
 						// Current date
 						Time time = Converter.convertTime(dateString, "yyyy-MM-dd h:mm:ss");
 						Date date = Converter.convertDate(dateString, "yyyy-MM-dd h:mm:ss");
-						condition = new ServiceDataCurrent(date, time);
+						condition = new ExtendedServiceDataCurrent(
+							date, 
+							time, 
+							city, 
+							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
 
 						// Date
 						weather.setMeasureTimestamp(Converter.convertTimestamp(dateString, "yyyy-MM-dd h:mm:ss"));
@@ -96,30 +109,27 @@ public final class MSNWeather extends XMLAPIWeather {
 
 					// Temperature
 					dataString = attributes.getNamedItem("temperature").getTextContent();
-					if ((dataString != null) && !dataString.equals("")) {
-						condition.setTemperature(Float.parseFloat(dataString));
+					if ((dataString != null) && !dataString.isEmpty()) {
+						condition.setTemperature(Measure.valueOf(Float.parseFloat(dataString), unit));
 					}
 
 					// Condition
 					dataString = attributes.getNamedItem("skycode").getTextContent();
-					if ((dataString != null) && !dataString.equals("")) {
-						condition.setCondition(Integer.parseInt(dataString));
+					if ((dataString != null) && !dataString.isEmpty()) {
+						condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// Relativ humidity
 					dataString = attributes.getNamedItem("humidity").getTextContent();
-					if ((dataString != null) && !dataString.equals("")) {
+					if ((dataString != null) && !dataString.isEmpty()) {
 						condition.setRelativHumidity(Float.parseFloat(dataString));
 					}
 
 					// Temperature
 					dataString = attributes.getNamedItem("windspeed").getTextContent();
-					if ((dataString != null) && !dataString.equals("")) {
+					if ((dataString != null) && !dataString.isEmpty()) {
 						condition.setWindVelocity(Float.parseFloat(dataString));
 					}
-
-					// Temperature unit
-					condition.setUnitTemperature(this.unitTemperature);
 
 					// City
 					condition.setCity(city);
@@ -130,43 +140,48 @@ public final class MSNWeather extends XMLAPIWeather {
 					// Forecast
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					ServiceDataForecast condition;
+					ExtendedServiceDataForecast condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
 
 						// Current date
-						condition = new ServiceDataForecast(Converter.convertDate(dateString, "yyyy-MM-dd"));
+						condition = new ExtendedServiceDataForecast(
+							Converter.convertDate(dateString, "yyyy-MM-dd"), 
+							new Time(System.currentTimeMillis()), 
+							city, 
+							Measure.valueOf(10.0f, SI.CELSIUS),  
+							Measure.valueOf(10.0f, SI.CELSIUS),
+							1.0f, 1.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
 					} catch (ParseException e) {
 						continue;
 					}
 
-					String dataString = "";
+					String dataString;
 
 					// Temperature (low)
 					dataString = attributes.getNamedItem("low").getTextContent();
-					if ((dataString != null) && !dataString.equals("")) {
-						condition.setTemperatureLow(Float.parseFloat(dataString));
+					if ((dataString != null) && !dataString.isEmpty()) {
+						condition.setTemperatureLow(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 					}
 
 					// Temperature (high)
 					dataString = attributes.getNamedItem("high").getTextContent();
-					if ((dataString != null) && !dataString.equals("")) {
-						condition.setTemperatureHigh(Float.parseFloat(dataString));
+					if ((dataString != null) && !dataString.isEmpty()) {
+						condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 					}
 
 					// Condition
 					dataString = attributes.getNamedItem("skycodeday").getTextContent();
-					if ((dataString != null) && !dataString.equals("")) {
-						condition.setCondition(Integer.parseInt(dataString));
+					if ((dataString != null) && !dataString.isEmpty()) {
+						condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// City
 					condition.setCity(city);
 
 					// Save informations
-					if (condition.getDate() != null) {
-						condition.setUnitTemperature(this.unitTemperature);
+					if (condition.getMeasureDate() != null) {
 						weather.getForecastConditions().add(condition);
 					}
 				}
@@ -175,10 +190,5 @@ public final class MSNWeather extends XMLAPIWeather {
 
 		// Return informations
 		return weather;
-	}
-
-	@Override
-	protected void setSearchCity(City city) {
-		this.searchCity = city.getName();
 	}
 }

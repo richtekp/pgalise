@@ -16,6 +16,8 @@
  
 package de.pgalise.util.weathercollector.weatherstation.strategy;
 
+import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
+import de.pgalise.simulation.weather.model.StationData;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +33,13 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.model.StationData;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
+import java.sql.Date;
+import java.sql.Time;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Jun 16, 2012)
  */
-public final class StationOldenburg implements StationStrategy {
+public class StationOldenburg implements StationStrategy {
 	private final static Logger LOGGER = LoggerFactory.getLogger(StationOldenburg.class);
 
 	/**
@@ -124,46 +129,25 @@ public final class StationOldenburg implements StationStrategy {
 			return null;
 		}
 
-		StationData weather = new StationData();
+		StationData weather;
 		String[] weatherLine = line.split("\t");
 
 		// Formatter for commas
 		NumberFormat formatter = NumberFormat.getNumberInstance(Locale.GERMANY);
 
 		try {
-			// Date
-			weather.setDate(Converter.convertDate(weatherLine[0], "dd.MM.yyyy"));
-
-			// Time
-			weather.setTime(Converter.convertTime(weatherLine[1], "h:mm:ss"));
-
-			// Wind velocity
-			weather.setWindVelocity(formatter.parse(weatherLine[2]).floatValue());
-
-			// Temperature
-			weather.setTemperature(formatter.parse(weatherLine[3]).floatValue());
-
-			// Temperature
-			weather.setPerceivedTemperature(formatter.parse(weatherLine[4]).floatValue());
-
-			// Light intensity
-			weather.setLightIntensity(Integer.parseInt(weatherLine[5]));
-
-			// relative humidity
-			weather.setRelativHumidity(formatter.parse(weatherLine[6]).floatValue());
-
-			// wind direction
-			weather.setWindDirection(Integer.parseInt(weatherLine[7]));
-
-			// radiation
-			weather.setRadiation(Integer.parseInt(weatherLine[8]));
-
-			// precipication amount
-			weather.setPrecipitationAmount(formatter.parse(weatherLine[9]).floatValue());
-
-			// air pressure
-			weather.setAirPressure(Integer.parseInt(weatherLine[10]));
-
+			weather = new StationDataNormal(
+				Converter.convertDate(weatherLine[0], "dd.MM.yyyy"),
+			Converter.convertTime(weatherLine[1], "h:mm:ss"),
+			Integer.parseInt(weatherLine[10]),
+			Integer.parseInt(weatherLine[5]),
+			formatter.parse(weatherLine[4]).floatValue(),
+			Measure.valueOf(formatter.parse(weatherLine[3]).floatValue(),SI.CELSIUS),
+			formatter.parse(weatherLine[9]).floatValue(),
+			Integer.parseInt(weatherLine[8]),
+			formatter.parse(weatherLine[6]).floatValue(),
+			formatter.parse(weatherLine[7]).floatValue(),
+			formatter.parse(weatherLine[2]).floatValue());
 		} catch (ParseException | IllegalArgumentException | ArrayIndexOutOfBoundsException e) {
 			return null;
 		}

@@ -45,10 +45,6 @@
 	</dependencies>
 	
 	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-ejb-plugin</artifactId>
-			</plugin>
-		</plugins>
+		<finalName>de.pgalise.simulation.services-impl</finalName>
 	</build>	
 </project>

@@ -30,6 +30,8 @@ import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
+import javax.measure.quantity.Temperature;
+import javax.measure.unit.Unit;
 import javax.persistence.EntityManagerFactory;
 
 /**
@@ -43,22 +45,17 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	/**
 	 * Name of the strategy
 	 */
-	protected final String apiname;
+	private String apiname;
 
 	/**
 	 * City
 	 */
-	protected City city;
-
-	/**
-	 * Search city of the weather service. Yahoo uses these string
-	 */
-	protected String searchCity;
+	private City city;
 
 	/**
 	 * Temperature unit
 	 */
-	protected String unitTemperature;
+	private Unit<Temperature> unitTemperature;
 
 	/**
 	 * URL
@@ -70,30 +67,33 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	 * 
 	 * @param url
 	 *            URL of the weather service
-	 * @param name
-	 *            API name
+	 * @param apiname 
 	 * @param unit
 	 *            Temperature unit
 	 */
-	public XMLAPIWeather(String url, String name, String unit) {
+	public XMLAPIWeather(String url, String apiname, Unit<Temperature> unit) {
 		this.URL = url;
-		this.apiname = name;
+		this.apiname = apiname;
 		this.unitTemperature = unit;
+	}
+
+	public XMLAPIWeather(String url, String apiname) {
+		this.URL = url;
+		this.apiname = apiname;
 	}
 
 	@Override
 	public ServiceDataHelper getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
 		// Remember city
-		this.city = city;
-		this.setSearchCity(this.city);
+		this.setCity(city);
 
 		// No City can be found
-		if (this.searchCity.equals("")) {
+		if (this.getCity().getName().isEmpty()) {
 			throw new ReadServiceDataException("Stadt fuer die Api kann nicht gefunden werden.");
 		}
 
 		// Extract data
-		return this.extractWeather(city, this.fetchWeatherData(this.searchCity), databaseManager);
+		return this.extractWeather(city, this.fetchWeatherData(this.getCity().getName()), databaseManager);
 	}
 
 	/**
@@ -138,10 +138,45 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	}
 
 	/**
-	 * Set the city for the API of the weather services
-	 * 
-	 * @param city
-	 *            City
+	 * @return the apiname
 	 */
-	protected abstract void setSearchCity(City city);
+	public String getApiname() {
+		return apiname;
+	}
+
+	/**
+	 * @param apiname the apiname to set
+	 */
+	public void setApiname(String apiname) {
+		this.apiname = apiname;
+	}
+
+	/**
+	 * @return the city
+	 */
+	public City getCity() {
+		return city;
+	}
+
+	/**
+	 * @param city the city to set
+	 */
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	/**
+	 * @return the unitTemperature
+	 */
+	public Unit<Temperature> getUnitTemperature() {
+		return unitTemperature;
+	}
+
+	/**
+	 * @param unitTemperature the unitTemperature to set
+	 */
+	public void setUnitTemperature(
+		Unit<Temperature> unitTemperature) {
+		this.unitTemperature = unitTemperature;
+	}
 }

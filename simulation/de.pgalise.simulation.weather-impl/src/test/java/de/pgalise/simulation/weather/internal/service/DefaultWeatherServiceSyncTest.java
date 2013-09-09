@@ -17,36 +17,30 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.it.TestUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Properties;
 
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
-import de.pgalise.simulation.weather.internal.modifier.DatabaseTestUtils;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
-import java.io.IOException;
-import java.util.logging.Level;
+import java.util.Properties;
+import javax.annotation.ManagedBean;
 import javax.naming.NamingException;
-import org.hibernate.cfg.Configuration;
-import org.junit.AfterClass;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * Tests the synchronization of the weather service
@@ -54,7 +48,10 @@ import org.junit.AfterClass;
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 29, 2012)
  */
+@LocalClient
+@ManagedBean
 public class DefaultWeatherServiceSyncTest {
+	private final static EJBContainer CONTAINER = TestUtils.createContainer();
 	
 	/**
 	 * End timestamp
@@ -89,8 +86,14 @@ public class DefaultWeatherServiceSyncTest {
 	private City city;
 
 	public DefaultWeatherServiceSyncTest() throws NamingException {
+		Properties p = new Properties();
+		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
+		p.put("openejb.tempclassloader.skip", "annotations");
+		CONTAINER.getContext().bind("inject",
+			this);
+		
 		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = DatabaseTestUtils.getGEOMETRY_FACTORY().createPolygon(
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
@@ -101,7 +104,7 @@ public class DefaultWeatherServiceSyncTest {
 		);
 		city = new City("test_city", 200000, 100, true, true, referenceArea);
 		
-		Context ctx = DatabaseTestUtils.getCONTAINER().getContext();
+		Context ctx = CONTAINER.getContext();
 
 		// Load EJB for Weather loader
 		loader = (WeatherLoader) ctx

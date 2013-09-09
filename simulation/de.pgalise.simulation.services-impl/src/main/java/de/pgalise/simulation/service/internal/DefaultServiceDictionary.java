@@ -43,7 +43,8 @@ import javax.ejb.Remote;
 
 @Lock(LockType.READ)
 @Local
-@Singleton(name = "de.pgalise.simulation.service.ServiceDictionary")
+@Remote
+@Singleton(name = "de.pgalise.simulation.service.ServiceDictionary", mappedName = "de.pgalise.simulation.service.ServiceDictionary")
 /**
  * Default implementation of the ServiceDictionary.
  * @author mustafa

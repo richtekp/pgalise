@@ -17,6 +17,8 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
+import de.pgalise.simulation.weather.model.Condition;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -31,13 +33,17 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ServiceDataForecast;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import java.sql.Date;
 import java.sql.Time;
+import javax.measure.Measure;
+import javax.measure.quantity.Temperature;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 /**
  * Returns weather informations from Yahoo. Uses the strategy pattern. More: http://developer.yahoo.com/weather/#terms
@@ -46,17 +52,22 @@ import java.sql.Time;
  * @version 1.0 (Mar 16, 2012)
  */
 public class YahooWeather extends XMLAPIWeather {
+	/**
+	 * Search city of the weather service. Yahoo uses these string
+	 */
+	private String searchCity;
 
 	/**
 	 * Constructor
 	 */
 	public YahooWeather() {
-		super("http://weather.yahooapis.com/forecastrss?u=c&w=", "Yahoo", "C");
+		super("http://weather.yahooapis.com/forecastrss?u=c&w=", "Yahoo", SI.CELSIUS);
 	}
 
 	@Override
 	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		ServiceDataHelper weather = new ServiceDataHelper(city, this.apiname);
+		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
+		Unit<Temperature> unit = null;
 
 		// City (<yweather:location city="Oldenburg" region="NI" country="Germany"/>)
 		NodeList nodes = doc.getElementsByTagName("yweather:location");
@@ -80,7 +91,11 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			String temp = nodes.item(i).getAttributes().getNamedItem("temperature").getTextContent();
 			if (temp != null && !temp.isEmpty()) {
-				this.unitTemperature = temp;
+				if(temp.equals("C")) {
+					unit = SI.CELSIUS;
+				}else {
+					throw new IllegalArgumentException("temperature has to be C");
+				}
 				break;
 			}
 		}
@@ -90,13 +105,17 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			ServiceDataCurrent condition;
+			ExtendedServiceDataCurrent condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
 				Date date = Converter.convertDate(dateString, "E, dd MMM yyyy h:mm a z");
 				Time time = Converter.convertTime(dateString, "E, dd MMM yyyy h:mm a z");
-				condition = new ServiceDataCurrent(date, time	);
+				condition = new ExtendedServiceDataCurrent(
+							date, 
+							time, 
+							city, 
+							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
 			} catch (ParseException e) {
 				e.printStackTrace();
 				return null;
@@ -107,17 +126,14 @@ public class YahooWeather extends XMLAPIWeather {
 			// Temperature
 			dataString = attributes.getNamedItem("temp").getTextContent();
 			if ((dataString != null) && !dataString.equals("")) {
-				condition.setTemperature(Float.parseFloat(dataString));
+				condition.setTemperature(Measure.valueOf(Float.parseFloat(dataString), unit));
 			}
 
 			// Condition
 			dataString = attributes.getNamedItem("code").getTextContent();
 			if ((dataString != null) && !dataString.equals("")) {
-				condition.setCondition(Integer.parseInt(dataString));
+				condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
 			}
-
-			// Temperature unit
-			condition.setUnitTemperature(this.unitTemperature);
 
 			// City
 			condition.setCity(city);
@@ -131,11 +147,17 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			ServiceDataForecast condition;
+			ExtendedServiceDataForecast condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
-				condition = new ServiceDataForecast(Converter.convertDate(dateString, "dd MMM yyyy"));
+				condition = new ExtendedServiceDataForecast(
+							Converter.convertDate(dateString, "yyyy-MM-dd"), 
+							new Time(System.currentTimeMillis()), 
+							city, 
+							Measure.valueOf(10.0f, SI.CELSIUS),  
+							Measure.valueOf(10.0f, SI.CELSIUS),
+							1.0f, 1.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
 			} catch (ParseException e) {
 				e.printStackTrace();
 				continue;
@@ -146,23 +168,20 @@ public class YahooWeather extends XMLAPIWeather {
 			// Temperature (low)
 			dataString = attributes.getNamedItem("low").getTextContent();
 			if ((dataString != null) && !dataString.equals("")) {
-				condition.setTemperatureLow(Float.parseFloat(dataString));
+				condition.setTemperatureLow(Measure.valueOf(Float.parseFloat(dataString), unit));
 			}
 
 			// Temperature (high)
 			dataString = attributes.getNamedItem("high").getTextContent();
 			if ((dataString != null) && !dataString.equals("")) {
-				condition.setTemperatureHigh(Float.parseFloat(dataString));
+				condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), unit));
 			}
 
 			// Condition
 			dataString = attributes.getNamedItem("code").getTextContent();
 			if ((dataString != null) && !dataString.equals("")) {
-				condition.setCondition(Integer.parseInt(dataString));
+				condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
 			}
-
-			// Temperature unit
-			condition.setUnitTemperature(this.unitTemperature);
 
 			// City
 			condition.setCity(city);
@@ -177,7 +196,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:atmosphere");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				ServiceDataCurrent condition = weather.getCurrentCondition();
+				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String humidity = attributes.getNamedItem("humidity").getTextContent();
 				if ((humidity != null) && !humidity.equals("")) {
@@ -194,7 +213,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:astronomy");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				ServiceDataCurrent condition = weather.getCurrentCondition();
+				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				try {
 					// Sunset
@@ -217,11 +236,11 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:wind");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				ServiceDataCurrent condition = weather.getCurrentCondition();
+				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String direction = attributes.getNamedItem("direction").getTextContent();
 				if ((direction != null) && !direction.equals("")) {
-					condition.setWindDirection(Integer.parseInt(direction));
+					condition.setWindDirection(Float.parseFloat(direction));
 				}
 
 				String speed = attributes.getNamedItem("speed").getTextContent();
@@ -236,12 +255,11 @@ public class YahooWeather extends XMLAPIWeather {
 		return weather;
 	}
 
-	@Override
 	protected void setSearchCity(City city) {
 		try {
-			this.searchCity = "" + this.getWoeid(city.getName());
+			this.searchCity = this.getWoeid(city.getName());
 		} catch (IOException | ParserConfigurationException | SAXException e) {
-			this.searchCity = "";
+			this.setSearchCity("");
 		}
 	}
 
@@ -277,6 +295,20 @@ public class YahooWeather extends XMLAPIWeather {
 		}
 
 		return "";
+	}
+
+	/**
+	 * @return the searchCity
+	 */
+	public String getSearchCity() {
+		return searchCity;
+	}
+
+	/**
+	 * @param searchCity the searchCity to set
+	 */
+	public void setSearchCity(String searchCity) {
+		this.searchCity = searchCity;
 	}
 
 }

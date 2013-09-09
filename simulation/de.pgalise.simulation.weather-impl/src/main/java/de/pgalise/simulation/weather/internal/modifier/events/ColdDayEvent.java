@@ -19,20 +19,24 @@ package de.pgalise.simulation.weather.internal.modifier.events;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
+import java.util.ArrayList;
+import java.util.List;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
 
 /**
  * Simulate a cold day ({@link WeatherMapModifier} and {@link WeatherStrategy}).<br />
@@ -43,7 +47,7 @@ import de.pgalise.simulation.weather.util.DateConverter;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public final class ColdDayEvent extends WeatherDayEventModifier {
+public class ColdDayEvent extends WeatherDayEventModifier {
 
 	/**
 	 * Parameter which will be changed
@@ -98,6 +102,7 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 	 *            Specified value
 	 * @param duration
 	 *            Maximal duration of the event
+	 * @param weatherLoader  
 	 */
 	public ColdDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
@@ -110,6 +115,7 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param props
 	 *            Properties
+	 * @param weatherLoader  
 	 */
 	public ColdDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
 		super(seed, props, weatherLoader);
@@ -120,6 +126,7 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 	 * 
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
 	public ColdDayEvent(long seed, WeatherLoader weatherLoader) {
 		super(seed, weatherLoader);
@@ -132,6 +139,7 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 	 *            WeatherMap
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
 	public ColdDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
 		super(map, seed, weatherLoader);
@@ -152,12 +160,12 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 			this.eventTimestamp = this.getRandomTimestamp(this.simulationTimestamp);
 		}
 
-		Weather min = this.getNextWeatherForTimestamp(this.eventTimestamp);
+		StationData min = this.getNextWeatherForTimestamp(this.eventTimestamp);
 
 		// Calculate difference between min (reference) and min (event)
-		float maxDifference = this.minValue - min.getTemperature();
+		float maxDifference = this.minValue - min.getTemperature().floatValue(SI.CELSIUS);
 
-		ColdDayEvent.log.debug("Min. value of event (" + new Date(min.getTimestamp()) + "): " + this.minValue
+		ColdDayEvent.log.debug("Min. value of event (" + min.getMeasureDate() + "): " + this.minValue
 				+ " (actual: " + min.getTemperature() + " ; difference: " + maxDifference + ")");
 
 		// If there is a difference
@@ -167,10 +175,10 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 			 * Create limits
 			 */
 			// Event limits
-			long minTime = this.getMinHour(min.getTimestamp(), this.eventDuration);
+			long minTime = this.getMinHour(min.getMeasureTime(), this.eventDuration);
 			ColdDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.eventDuration
 					+ ")");
-			long maxTime = this.getMaxHour(min.getTimestamp(), this.eventDuration);
+			long maxTime = this.getMaxHour(min.getMeasureTime(), this.eventDuration);
 			ColdDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.eventDuration
 					+ ")");
 			long actTime;
@@ -180,7 +188,7 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 			long maxTimeInterpolate = maxTime - DateConverter.HOUR;
 
 			// Sort values
-			Vector<Long> times = new Vector<Long>(this.map.keySet());
+			List<Long> times = new ArrayList<>(this.map.keySet());
 			Collections.sort(times);
 
 			/*
@@ -189,8 +197,8 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 			float value, difference;
 			for (Long time : times) {
 				// Get weather
-				Weather weather = this.map.get(time);
-				actTime = weather.getTimestamp();
+				MutableStationData weather = this.map.get(time);
+				actTime = weather.getMeasureTime().getTime();
 
 				// Between the interval?
 				if ((actTime < minTime) || (actTime > maxTime)) {
@@ -210,9 +218,9 @@ public final class ColdDayEvent extends WeatherDayEventModifier {
 				// log.debug("Difference: " + difference);
 
 				// Change parameters
-				value = weather.getTemperature() + difference;
+				value = weather.getTemperature().floatValue(SI.CELSIUS) + difference;
 				// log.debug("Value changes: " + value + " (actual: " + weather.getTemperature() + ")");
-				weather.setTemperature(value);
+				weather.setTemperature(Measure.valueOf(value, SI.CELSIUS));
 				value = weather.getPerceivedTemperature() + difference;
 				weather.setPerceivedTemperature(value);
 			}

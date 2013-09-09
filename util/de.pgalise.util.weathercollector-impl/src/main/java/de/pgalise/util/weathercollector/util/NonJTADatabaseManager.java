@@ -17,6 +17,8 @@
 package de.pgalise.util.weathercollector.util;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.StationData;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
@@ -33,11 +35,9 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.model.Condition;
-import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ServiceDataForecast;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
-import de.pgalise.util.weathercollector.model.StationData;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -184,7 +184,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 
 		// Get the last station data
 		StationData lastData = this.getLastStationData(em);
-		long lastTime = (lastData == null) ? 1 : lastData.getDate().getTime() + lastData.getTime().getTime();
+		long lastTime = (lastData == null) ? 1 : lastData.getMeasureDate().getTime() + lastData.getMeasureTime().getTime();
 
 		// Save all data
 		tx.begin();
@@ -192,11 +192,11 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		int count = 0;
 		long actTime = 0;
 		for (StationData station_data : list) {
-			actTime = station_data.getDate().getTime() + station_data.getTime().getTime();
+			actTime = station_data.getMeasureDate().getTime() + station_data.getMeasureTime().getTime();
 			// Check if there is any data
 			if (actTime <= lastTime) {
-				LOGGER.debug("Holen von Daten abgebrochen! Datensaetze bis zum " + station_data.getDate() + " - "
-						+ station_data.getTime() + " wurden gespeichert.", Level.INFO);
+				LOGGER.debug("Holen von Daten abgebrochen! Datensaetze bis zum " + station_data.getMeasureDate() + " - "
+						+ station_data.getMeasureTime() + " wurden gespeichert.", Level.INFO);
 
 				// Break!
 				result = false;
@@ -229,7 +229,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @param em
 	 *            EntityManager
 	 */
-	private void deleteCurrentWeather(List<ServiceDataCurrent> list, EntityManager em) {
+	private void deleteCurrentWeather(List<ExtendedServiceDataCurrent> list, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		} else if ((list == null) || list.isEmpty()) {
@@ -240,7 +240,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 
 		// Remove
 		tx.begin();
-		for (ServiceDataCurrent serviceData : list) {
+		for (ExtendedServiceDataCurrent serviceData : list) {
 			em.remove(serviceData);
 		}
 		tx.commit();
@@ -254,7 +254,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @param em
 	 *            EntityManager
 	 */
-	private void deleteForeCastWeather(List<ServiceDataForecast> list, EntityManager em) {
+	private void deleteForeCastWeather(List<ExtendedServiceDataForecast> list, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		} else if ((list == null) || list.isEmpty()) {
@@ -265,7 +265,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 
 		// Remove
 		tx.begin();
-		for (ServiceDataForecast serviceData : list) {
+		for (ExtendedServiceDataForecast serviceData : list) {
 			em.remove(serviceData);
 		}
 		tx.commit();
@@ -308,7 +308,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataCurrent objects
 	 */
-	private List<ServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
+	private List<ExtendedServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
@@ -317,11 +317,11 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		tx.begin();
 
 		// Get forecast service data
-		TypedQuery<ServiceDataCurrent> query = em.createNamedQuery("ServiceDataCurrent.findByCityAndDate",
-				ServiceDataCurrent.class);
+		TypedQuery<ExtendedServiceDataCurrent> query = em.createNamedQuery("ServiceDataCurrent.findByCityAndDate",
+				ExtendedServiceDataCurrent.class);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
-		List<ServiceDataCurrent> result = query.getResultList();
+		List<ExtendedServiceDataCurrent> result = query.getResultList();
 
 		tx.commit();
 
@@ -340,7 +340,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataForecast objects
 	 */
-	private List<ServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
+	private List<ExtendedServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
@@ -349,11 +349,11 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		tx.begin();
 
 		// Get forecast service data
-		TypedQuery<ServiceDataForecast> query = em.createNamedQuery("ServiceDataForecast.findByCityAndDate",
-				ServiceDataForecast.class);
+		TypedQuery<ExtendedServiceDataForecast> query = em.createNamedQuery("ServiceDataForecast.findByCityAndDate",
+				ExtendedServiceDataForecast.class);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
-		List<ServiceDataForecast> result = query.getResultList();
+		List<ExtendedServiceDataForecast> result = query.getResultList();
 
 		tx.commit();
 
@@ -369,15 +369,15 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @param service_data
 	 *            Current service weather data
 	 */
-	private void saveCurrentWeather(City cityID, ServiceDataCurrent service_data) {
-		if ((service_data == null) || (service_data.getDate() == null)) {
+	private void saveCurrentWeather(City cityID, ExtendedServiceDataCurrent service_data) {
+		if ((service_data == null) || (service_data.getMeasureDate() == null)) {
 			throw new IllegalArgumentException("service_data");
 		}
 
 		final EntityManager em = this.factory.createEntityManager();
 
 		// Delete old entries
-		this.deleteCurrentWeather(this.getServiceDataCurrent(cityID, service_data.getDate(), em), em);
+		this.deleteCurrentWeather(this.getServiceDataCurrent(cityID, service_data.getMeasureDate(), em), em);
 
 		final EntityTransaction tx = em.getTransaction();
 
@@ -395,7 +395,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 			em.close();
 		}
 
-		LOGGER.debug("Datensatz fuer Stadt " + cityID + " vom " + service_data.getDate() + " gespeichert.", Level.INFO);
+		LOGGER.debug("Datensatz fuer Stadt " + cityID + " vom " + service_data.getMeasureDate() + " gespeichert.", Level.INFO);
 	}
 
 	/**
@@ -406,7 +406,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @param service_data
 	 *            Set with forecasts for future days
 	 */
-	private void saveForecastWeather(City cityID, Set<ServiceDataForecast> service_data) {
+	private void saveForecastWeather(City cityID, Set<ExtendedServiceDataForecast> service_data) {
 		if ((service_data == null) || service_data.isEmpty()) {
 			throw new IllegalArgumentException("service_data");
 		}
@@ -414,9 +414,9 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		final EntityManager em = this.factory.createEntityManager();
 
 		// For all entries
-		for (ServiceDataForecast data : service_data) {
+		for (ExtendedServiceDataForecast data : service_data) {
 			// Delete old entries
-			this.deleteForeCastWeather(this.getServiceDataForecast(cityID, data.getDate(), em), em);
+			this.deleteForeCastWeather(this.getServiceDataForecast(cityID, data.getMeasureDate(), em), em);
 
 			final EntityTransaction tx = em.getTransaction();
 
@@ -429,7 +429,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 			// Commit
 			tx.commit();
 
-			LOGGER.debug("Datensatz fuer Stadt " + cityID + " vom " + data.getDate() + " gespeichert.", Level.INFO);
+			LOGGER.debug("Datensatz fuer Stadt " + cityID + " vom " + data.getMeasureDate() + " gespeichert.", Level.INFO);
 
 		}
 

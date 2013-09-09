@@ -19,20 +19,22 @@ package de.pgalise.simulation.weather.internal.modifier.events;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Changes the weather data for a rain day ({@link WeatherMapModifier} and {@link WeatherStrategy}).<br />
@@ -93,6 +95,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 	 *            Specified value
 	 * @param duration
 	 *            Maximal duration of the event
+	 * @param weatherLoader  
 	 */
 	public RainDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
@@ -105,6 +108,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param props
 	 *            Properties
+	 * @param weatherLoader  
 	 */
 	public RainDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
 		super(seed, props, weatherLoader);
@@ -115,6 +119,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 	 * 
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
 	public RainDayEvent(long seed, WeatherLoader weatherLoader) {
 		super(seed, weatherLoader);
@@ -127,6 +132,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 	 *            WeatherMap
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
 	public RainDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
 		super(map, seed, weatherLoader);
@@ -152,7 +158,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 			this.eventTimestamp = this.getRandomTimestamp(this.simulationTimestamp);
 		}
 
-		Weather max = this.getNextWeatherForTimestamp(this.eventTimestamp);
+		StationData max = this.getNextWeatherForTimestamp(this.eventTimestamp);
 
 		long minTime, maxTime, minTimeInterpolate, maxTimeInterpolate, actTime;
 
@@ -215,7 +221,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 		// Calculate difference between max (reference) and max (event)
 		float maxDifference = this.maxValue - max.getPrecipitationAmount();
 
-		RainDayEvent.log.debug("Max. value of event (" + new Date(max.getTimestamp()) + "): " + this.maxValue
+		RainDayEvent.log.debug("Max. value of event (" + max.getMeasureTime().getTime() + "): " + this.maxValue
 				+ " (actual: " + max.getPrecipitationAmount() + " ; difference: " + maxDifference + ")");
 
 		// If there is a difference
@@ -225,10 +231,10 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 			 * Create limits
 			 */
 			// Event limits
-			minTime = this.getMinHour(max.getTimestamp(), this.eventDuration);
+			minTime = this.getMinHour(max.getMeasureTime(), this.eventDuration);
 			RainDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.eventDuration
 					+ ")");
-			maxTime = this.getMaxHour(max.getTimestamp(), this.eventDuration);
+			maxTime = this.getMaxHour(max.getMeasureTime(), this.eventDuration);
 			RainDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.eventDuration
 					+ ")");
 
@@ -237,7 +243,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 			maxTimeInterpolate = maxTime - DateConverter.HOUR;
 
 			// Sort values
-			Vector<Long> times = new Vector<Long>(this.map.keySet());
+			List<Long> times = new ArrayList<>(this.map.keySet());
 			Collections.sort(times);
 
 			/*
@@ -246,8 +252,8 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 			float value, difference;
 			for (Long time : times) {
 				// Get weather
-				Weather weather = this.map.get(time);
-				actTime = weather.getTimestamp();
+				MutableStationData weather = this.map.get(time);
+				actTime = weather.getMeasureTime().getTime();
 
 				// Between the interval?
 				if ((actTime < minTime) || (actTime > maxTime)) {

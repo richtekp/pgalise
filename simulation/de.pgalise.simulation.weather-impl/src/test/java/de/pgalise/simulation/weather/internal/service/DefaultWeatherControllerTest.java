@@ -17,14 +17,12 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.it.TestUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -35,14 +33,12 @@ import javax.naming.NamingException;
 import junit.framework.Assert;
 
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.controller.Controller.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
@@ -54,13 +50,13 @@ import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
-import de.pgalise.simulation.weather.internal.modifier.DatabaseTestUtils;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import java.io.IOException;
-import javax.vecmath.Vector2d;
-import org.hibernate.cfg.Configuration;
-import org.junit.AfterClass;
+import java.util.Properties;
+import javax.annotation.ManagedBean;
+import javax.naming.InitialContext;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * JUnit Testcases for WeatherController
@@ -68,7 +64,10 @@ import org.junit.AfterClass;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 27, 2012)
  */
+@LocalClient
+@ManagedBean
 public class DefaultWeatherControllerTest {
+	private final static EJBContainer CONTAINER = TestUtils.createContainer();
 	/**
 	 * Logger
 	 */
@@ -95,17 +94,26 @@ public class DefaultWeatherControllerTest {
 	private long eventTimestamp;
 
 	public DefaultWeatherControllerTest() throws NamingException {
+		Properties p = new Properties();
+		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
+		p.put("openejb.tempclassloader.skip", "annotations");
+		CONTAINER.getContext().bind("inject",
+			this);
+		
 		System.setProperty("simulation.configuration.filepath","src/test/resources/simulation.conf");
-		Context ctx = DatabaseTestUtils.getCONTAINER().getContext();
+		Context ctx = CONTAINER.getContext();
 
 		/* Create simulation controller and init/start the simulation: */
-		ServiceDictionary serviceDictionary = (ServiceDictionary) ctx
-				.lookup("java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary");
+		InitialContext x = new InitialContext();
+		ServiceDictionary serviceDictionary = (ServiceDictionary) ctx.lookup(
+			//"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
+			"java:global/services-impl-2.0-SNAPSHOT/de.pgalise.simulation.service.ServiceDictionary"
+		);
 		serviceDictionary.init(DefaultWeatherControllerTest.produceServerConfiguration());
 
 		// Create city
 		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = DatabaseTestUtils.getGEOMETRY_FACTORY().createPolygon(
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
@@ -172,7 +180,7 @@ public class DefaultWeatherControllerTest {
 		parameter.setAggregatedWeatherDataEnabled(true);
 
 		// Create controller
-		Context ctx = DatabaseTestUtils.getCONTAINER().getContext();
+		Context ctx = CONTAINER.getContext();
 		ctrl = (WeatherController) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.service.WeatherController");
 

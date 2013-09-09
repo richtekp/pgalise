@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -39,9 +38,10 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import javax.measure.unit.SI;
 
 /**
  * Testcase Helper with JFreeChart
@@ -81,9 +81,9 @@ public class TimeSeriesChart extends ApplicationFrame {
 	 *            Map with weather objects
 	 * @return list with weather objects
 	 */
-	public static List<Weather> getList(WeatherMap map) {
-		List<Weather> list = new ArrayList<Weather>();
-		Vector<Long> times = new Vector<Long>(map.keySet());
+	public static List<StationData> getList(WeatherMap map) {
+		List<StationData> list = new ArrayList<>();
+		List<Long> times = new ArrayList<>(map.keySet());
 
 		Collections.sort(times);
 		for (Long time : times) {
@@ -104,13 +104,13 @@ public class TimeSeriesChart extends ApplicationFrame {
 	 *            WeatherParameterEnum
 	 * @return TimeSerie
 	 */
-	public static TimeSeries getTimeSerie(String title, List<Weather> list, WeatherParameterEnum key) {
+	public static TimeSeries getTimeSerie(String title, List<StationData> list, WeatherParameterEnum key) {
 		TimeSeries s1 = new TimeSeries(title);
 
 		// Add weather
-		for (Weather weather : list) {
+		for (StationData weather : list) {
 			try {
-				Timestamp time = new Timestamp(weather.getTimestamp() + 3600000);
+				Timestamp time = new Timestamp(weather.getMeasureTime().getTime()+ 3600000);
 				s1.add(new Millisecond(time), TimeSeriesChart.getValue(key, weather));
 			} catch (Exception ex) {
 				// Do nothing
@@ -144,7 +144,7 @@ public class TimeSeriesChart extends ApplicationFrame {
 	 *            Weather object
 	 * @return Value to the key
 	 */
-	private static double getValue(WeatherParameterEnum key, Weather weather) {
+	private static double getValue(WeatherParameterEnum key, StationData weather) {
 		double value;
 
 		switch (key) {
@@ -158,7 +158,7 @@ public class TimeSeriesChart extends ApplicationFrame {
 				value = weather.getPerceivedTemperature();
 				break;
 			case TEMPERATURE:
-				value = weather.getTemperature();
+				value = weather.getTemperature().floatValue(SI.CELSIUS);
 				break;
 			case PRECIPITATION_AMOUNT:
 				value = weather.getPrecipitationAmount();
@@ -243,8 +243,7 @@ public class TimeSeriesChart extends ApplicationFrame {
 	 *            Date as Timestamp
 	 * @param unit
 	 *            Unit of the values
-	 * @param list
-	 *            List with TimeSeries
+	 * @param series 
 	 */
 	public TimeSeriesChart(String title, long date, String unit, List<TimeSeries> series) {
 		this(title, date, unit, TimeSeriesChart.createDataset(series));

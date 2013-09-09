@@ -20,9 +20,9 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.Properties;
 
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.util.DateConverter;
 
 /**
@@ -165,31 +165,31 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	/**
 	 * Returns the maximal hour (in millis)
 	 * 
-	 * @param timestamp
+	 * @param time
 	 *            Timestamp
 	 * @param duration
 	 *            Duration in hour
 	 * @return Timestamp
 	 */
-	protected long getMaxHour(long timestamp, float duration) {
-		long max = (long) (timestamp + ((duration / 2) * DateConverter.HOUR));
-		long nextDay = DateConverter.getCleanDate(timestamp + DateConverter.NEXT_DAY_IN_MILLIS);
+	protected long getMaxHour(Time time, float duration) {
+		long max = (long) (time.getTime() + ((duration / 2) * DateConverter.HOUR));
+		long nextDay = DateConverter.getCleanDate(time.getTime() + DateConverter.NEXT_DAY_IN_MILLIS);
 
-		return (max > nextDay) ? nextDay - Weather.INTERPOLATE_INTERVAL : max;
+		return (max > nextDay) ? nextDay - WeatherMap.INTERPOLATE_INTERVAL : max;
 	}
 
 	/**
 	 * Returns the minimal hour (in millis)
 	 * 
-	 * @param timestamp
+	 * @param time
 	 *            Timestamp
 	 * @param duration
 	 *            Duration in hour
 	 * @return Timestamp
 	 */
-	protected long getMinHour(long timestamp, float duration) {
-		long min = (long) (timestamp - ((duration / 2) * DateConverter.HOUR));
-		long currentDay = DateConverter.getCleanDate(timestamp);
+	protected long getMinHour(Time time, float duration) {
+		long min = (long) (time.getTime() - ((duration / 2) * DateConverter.HOUR));
+		long currentDay = DateConverter.getCleanDate(time.getTime());
 		return (min < currentDay) ? currentDay + DateConverter.NEXT_DAY_IN_MILLIS : min;
 	}
 
@@ -200,13 +200,13 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 *            Event time
 	 * @return weather object
 	 */
-	protected Weather getNextWeatherForTimestamp(long timestamp) {
+	protected StationData getNextWeatherForTimestamp(long timestamp) {
 		// Get weather
-		Weather weather = this.map.get(timestamp);
+		StationData weather = this.map.get(timestamp);
 		if (weather == null) {
 
 			// Calculate next minute
-			long newTime = timestamp + (Weather.INTERPOLATE_INTERVAL - (timestamp % Weather.INTERPOLATE_INTERVAL));
+			long newTime = timestamp + (WeatherMap.INTERPOLATE_INTERVAL - (timestamp % WeatherMap.INTERPOLATE_INTERVAL));
 			weather = this.map.get(newTime);
 
 			// Get weather
@@ -214,7 +214,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 
 				// Look for the last 5 Minutes
 				for (int i = 0; i < 5; i++) {
-					newTime -= Weather.INTERPOLATE_INTERVAL;
+					newTime -= WeatherMap.INTERPOLATE_INTERVAL;
 					weather = this.map.get(newTime);
 					if (weather != null) {
 						break;
@@ -245,8 +245,8 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 *            Minimal hour
 	 * @return weather object
 	 */
-	protected Weather getNextWeatherForTimestamp(long timestamp, int maxTimeValue, int minTimeValue) {
-		Weather weather = null;
+	protected StationData getNextWeatherForTimestamp(long timestamp, int maxTimeValue, int minTimeValue) {
+		StationData weather = null;
 		int hour = DateConverter.getHourOfDay(timestamp);
 		if ((hour >= 0) && (hour < minTimeValue)) {
 			// Between 0 and min?

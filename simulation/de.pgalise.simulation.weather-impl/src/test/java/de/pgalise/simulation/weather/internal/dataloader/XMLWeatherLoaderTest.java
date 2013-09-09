@@ -26,9 +26,15 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
+import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
+import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.StationData;
+import java.sql.Date;
+import java.sql.Time;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
 
 /**
  * Tests the class to load station data from a xml file.
@@ -151,7 +157,7 @@ public class XMLWeatherLoaderTest {
 	@Test
 	public void testSaveWeatherMapToXML() {
 		WeatherMap map = new StationDataMap();
-		Weather weather = new Weather(System.currentTimeMillis(), 1, 1, 1.0f, 1.0f, 1, 1.0f, 1.0f, 1, 1.0f);
+		MutableStationData weather = new StationDataNormal(new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), 1, 1, 1.0f, Measure.valueOf(1.0f, SI.CELSIUS), 1.0f, 1, 1.0f, 1.0f, 1.0f);
 		map.put(System.currentTimeMillis(), weather);
 
 		// Test save
@@ -170,7 +176,7 @@ public class XMLWeatherLoaderTest {
 	 */
 	private void createTestFile() throws Exception {
 		WeatherMap map = new StationDataMap();
-		Weather weather = new Weather(System.currentTimeMillis(), 1, 1, 1.0f, 1.0f, 1, 1.0f, 1.0f, 1, 1.0f);
+		MutableStationData weather = new StationDataNormal(new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), 1, 1, 1.0f, Measure.valueOf(1.0f, SI.CELSIUS), 1.0f, 1, 1.0f, 1.0f, 1.0f);
 		map.put(System.currentTimeMillis(), weather);
 
 		XMLWeatherLoaderTest.testClass.saveWeatherMapToXML(map, XMLWeatherLoaderTest.testTimestamp);

@@ -69,7 +69,6 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.0</version>
-			<scope>test</scope>
 		</dependency>		
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -275,12 +274,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>de.pgalise.util</groupId>
-				<artifactId>vector</artifactId>
-				<version>${applicationVersion}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>org.graphstream</groupId>
 				<artifactId>gs-core</artifactId>
 				<version>1.1.1</version>
@@ -298,18 +291,42 @@
 				<version>2.6</version>
 			</dependency>				
 
+			
 			<dependency>
-				<groupId>org.eclipse.persistence</groupId>
-				<artifactId>eclipselink</artifactId>
-				<version>2.4.0</version>
-				<scope>provided</scope>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-spatial</artifactId>
+					<version>4.0-M1</version>
 			</dependency>
-
 			<dependency>
-				<groupId>org.eclipse.persistence</groupId>
-				<artifactId>javax.persistence</artifactId>
-				<version>2.0.0</version>
-				<scope>provided</scope>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>4.2.5.Final</version>
+			</dependency>
+			<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-entitymanager</artifactId>
+					<version>4.2.5.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>9.2-1003.jdbc4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgis</groupId>
+				<artifactId>postgis-jdbc</artifactId>
+				<version>2.0.1</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>1.13</version>
+			</dependency>
+			<dependency>
+				<groupId>com.javadocmd</groupId>
+				<artifactId>simplelatlng</artifactId>
+				<version>1.2.0</version>
 			</dependency>
 
 			<dependency>
@@ -317,13 +334,6 @@
 				<artifactId>ejb-api</artifactId>
 				<version>3.0</version>
 				<scope>provided</scope>
-			</dependency>
-			
-			<dependency>
-			  <groupId>org.apache.derby</groupId>
-			  <artifactId>derbyclient</artifactId>
-			  <version>10.8.1.2</version>
-			  <scope>provided</scope>
 			</dependency>
 
 			<dependency>
@@ -338,7 +348,7 @@
 					</exclusion>
 				</exclusions>
 				-->
-				<!--<scope>provided</scope>-->
+				<scope>provided</scope>
 			</dependency>
 
 			<dependency>
@@ -385,7 +395,7 @@
 	      	  	<version>1.1</version>
 	    	</dependency>	      	
 
-		<dependency>
+				<dependency>
 	      		<groupId>com.google.code.gson</groupId>
 	      		<artifactId>gson</artifactId>
 	      		<version>2.2.2</version>
@@ -448,6 +458,12 @@
 				<groupId>org.jfree</groupId>
 				<artifactId>jfreechart</artifactId>
 				<version>1.0.14</version>
+				<exclusions>
+					<exclusion>
+						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>	
 
 			<dependency>
@@ -509,6 +525,7 @@
 				</plugin>
 
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>2.4</version>
 					<configuration>

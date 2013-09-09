@@ -16,10 +16,9 @@
  
 package de.pgalise.simulation.weather.internal.util.comparator;
 
+import de.pgalise.simulation.weather.model.StationData;
 import java.io.Serializable;
 import java.util.Comparator;
-
-import de.pgalise.simulation.weather.dataloader.Weather;
 
 /**
  * Comparator for precipitation amount
@@ -27,7 +26,7 @@ import de.pgalise.simulation.weather.dataloader.Weather;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
-public final class PrecipitationAmountComparator implements Comparator<Weather>, Serializable {
+public class PrecipitationAmountComparator implements Comparator<StationData>, Serializable {
 
 	/**
 	 * Serial
@@ -35,7 +34,7 @@ public final class PrecipitationAmountComparator implements Comparator<Weather>,
 	private static final long serialVersionUID = 3714658416800270673L;
 
 	@Override
-	public int compare(Weather o1, Weather o2) {
+	public int compare(StationData o1, StationData o2) {
 		float thisValue = o1.getPrecipitationAmount();
 		float anotherValue = o2.getPrecipitationAmount();
 

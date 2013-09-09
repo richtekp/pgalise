@@ -17,7 +17,12 @@
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import java.sql.Date;
+import java.sql.Time;
+import javax.measure.Measure;
+import javax.measure.quantity.Temperature;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -30,45 +35,57 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-//@Table(name = "PGALISE.WEATHER_SERVICE_FORECAST")
-@NamedQuery(name = "ServiceDataForecast.findByDate", query = "SELECT i FROM ServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class ServiceDataForecast extends AbstractServiceData {
+@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_FORECAST")
+@NamedQuery(name = "DefaultServiceDataForecast.findByDate", query = "SELECT i FROM DefaultServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
+public class DefaultServiceDataForecast extends AbstractBaseServiceData implements ServiceDataForecast, Comparable<ServiceDataForecast> {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Temperature (high)
 	 */
 	@Column(name = "TEMPERATURE_HIGH")
-	private Float temperatureHigh;
+	private Measure<Float, Temperature> temperatureHigh;
 
 	/**
 	 * Temperature (low)
 	 */
 	@Column(name = "TEMPERATURE_LOW")
-	private Float temperatureLow;
+	private Measure<Float, Temperature> temperatureLow;
 
-	protected ServiceDataForecast() {
+	protected DefaultServiceDataForecast() {
 	}
 
-	public ServiceDataForecast(Float temperatureHigh, Float temperatureLow, Float relativHumidity, Float windDirection, Float windVelocity, City city, Date measureDate) {
-		super(relativHumidity, windDirection, windVelocity, city, measureDate);
+	public DefaultServiceDataForecast(
+		Date measureDate, 
+		Time measureTime,
+		City city, 
+		Measure<Float, Temperature> temperatureHigh, 
+		Measure<Float, Temperature> temperatureLow, 
+		Float relativHumidity, 
+		Float windDirection, 
+		Float windVelocity, 
+		DefaultCondition condition
+	) {
+		super(measureDate, measureTime, city, relativHumidity, windDirection, windVelocity, condition);
 		this.temperatureHigh = temperatureHigh;
 		this.temperatureLow = temperatureLow;
 	}
 
-	public Float getTemperatureHigh() {
+	@Override
+	public Measure<Float, Temperature> getTemperatureHigh() {
 		return this.temperatureHigh;
 	}
 
-	public Float getTemperatureLow() {
+	@Override
+	public Measure<Float, Temperature> getTemperatureLow() {
 		return this.temperatureLow;
 	}
 
-	public void setTemperatureHigh(Float temperature) {
+	public void setTemperatureHigh(Measure<Float, Temperature> temperature) {
 		this.temperatureHigh = temperature;
 	}
 
-	public void setTemperatureLow(Float temperature) {
+	public void setTemperatureLow(Measure<Float, Temperature> temperature) {
 		this.temperatureLow = temperature;
 	}
 
@@ -80,6 +97,11 @@ public class ServiceDataForecast extends AbstractServiceData {
 	public String toString() {
 		return "ServiceData [id=" + this.getId() + ", city=" + this.getCity() + ", measureDate=" + this.getMeasureDate()
 				+ ", temperatureLow=" + this.temperatureLow + ", temperatureHigh=" + this.temperatureHigh + "]";
+	}
+
+	@Override
+	public int compareTo(ServiceDataForecast o) {
+		return this.getMeasureTime().compareTo(o.getMeasureTime());
 	}
 
 }

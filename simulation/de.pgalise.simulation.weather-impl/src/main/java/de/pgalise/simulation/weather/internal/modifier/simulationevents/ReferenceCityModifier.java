@@ -19,16 +19,20 @@ package de.pgalise.simulation.weather.internal.modifier.simulationevents;
 import java.util.Properties;
 
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
-import de.pgalise.simulation.weather.dataloader.ServiceWeather;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.util.comparator.RelativHumidityComparator;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
 import de.pgalise.simulation.weather.internal.util.comparator.WindComparator;
+import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.ServiceDataForecast;
+import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherSimulationEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
 
 /**
  * Changes the values to reference cities ({@link WeatherMapModifier} and {@link WeatherStrategy}).<br />
@@ -98,13 +102,13 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 	public void deployChanges() {
 		if (this.city != null) {
 			// Get values from weather services
-			ServiceWeather serviceForecast = this.weatherLoader.loadForecastServiceWeatherData(
+			ServiceDataForecast serviceForecast = this.weatherLoader.loadForecastServiceWeatherData(
 					this.simulationTimestamp, this.city);
-			ServiceWeather serviceCurrent = this.weatherLoader.loadCurrentServiceWeatherData(
+			ServiceDataForecast serviceCurrent = this.weatherLoader.loadCurrentServiceWeatherData(
 					this.simulationTimestamp, this.city);
 
 			// Temperature
-			this.changeTemperature(serviceForecast.getTemperatureLow(), serviceForecast.getTemperatureHigh());
+			this.changeTemperature(serviceForecast.getTemperatureLow().floatValue(SI.CELSIUS), serviceForecast.getTemperatureHigh().floatValue(SI.CELSIUS));
 
 			// Relativ humidity
 			this.changeRelativHumidity(serviceCurrent.getRelativHumidity());
@@ -129,7 +133,7 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 	 *            relativ humidity of the weather service
 	 */
 	private void changeRelativHumidity(Float relativHumidity) {
-		Weather max = this.getMaxValue(new RelativHumidityComparator());
+		StationData max = this.getMaxValue(new RelativHumidityComparator());
 
 		// Values exists?
 		if ((max == null) || (relativHumidity == null)) {
@@ -143,12 +147,12 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 		if (difference != 0) {
 			// Changes all data
 			float value;
-			for (Weather weather : this.map.values()) {
+			for (MutableStationData weather : this.map.values()) {
 				value = weather.getRelativHumidity() + difference;
 				if (value < 0) {
-					weather.setRelativHumidity(0);
+					weather.setRelativHumidity(0.0f);
 				} else if (value > 100) {
-					weather.setRelativHumidity(100);
+					weather.setRelativHumidity(100.0f);
 				} else {
 					weather.setRelativHumidity(value);
 				}
@@ -171,13 +175,13 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 		}
 
 		// Get limits
-		Weather min = this.getMinValue(new TemperatureComparator());
-		Weather max = this.getMaxValue(new TemperatureComparator());
+		StationData min = this.getMinValue(new TemperatureComparator());
+		StationData max = this.getMaxValue(new TemperatureComparator());
 
 		// Calculate difference between service and reference
-		float differenceMin = temperatureLow - min.getTemperature();
+		float differenceMin = temperatureLow - min.getTemperature().floatValue(SI.CELSIUS);
 		// Calculate difference between service and reference
-		float differenceMax = temperatureHigh - max.getTemperature();
+		float differenceMax = temperatureHigh - max.getTemperature().floatValue(SI.CELSIUS);
 
 		// If there is a difference
 		if ((differenceMin != 0) || (differenceMax != 0)) {
@@ -185,21 +189,21 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 			// Changes all data
 			float value1, value2;
 			long timeMin, timeMax;
-			for (Weather weather : this.map.values()) {
-				timeMin = Math.abs(weather.getTimestamp() - min.getTimestamp());
-				timeMax = Math.abs(weather.getTimestamp() - max.getTimestamp());
+			for (MutableStationData weather : this.map.values()) {
+				timeMin = Math.abs(weather.getMeasureTime().getTime()- min.getMeasureTime().getTime());
+				timeMax = Math.abs(weather.getMeasureTime().getTime()- max.getMeasureTime().getTime());
 
 				// Calculate value
 				if (timeMax > timeMin) {
-					value1 = weather.getTemperature() + differenceMin;
+					value1 = weather.getTemperature().floatValue(SI.CELSIUS) + differenceMin;
 					value2 = weather.getPerceivedTemperature() + differenceMin;
 				} else {
-					value1 = weather.getTemperature() + differenceMax;
+					value1 = weather.getTemperature().floatValue(SI.CELSIUS) + differenceMax;
 					value2 = weather.getPerceivedTemperature() + differenceMax;
 				}
 
 				// Set value
-				weather.setTemperature(value1);
+				weather.setTemperature(Measure.valueOf(value1, SI.CELSIUS));
 				weather.setPerceivedTemperature(value2);
 			}
 		}
@@ -214,7 +218,7 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 	 */
 	private void changeWindVelocity(Float windVelocity) {
 		// Get limit
-		Weather max = this.getMaxValue(new WindComparator());
+		StationData max = this.getMaxValue(new WindComparator());
 
 		// Wind velocity values exists?
 		if ((max == null) || (windVelocity == null)) {
@@ -228,10 +232,10 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 		if (difference != 0) {
 			// Changes all data
 			float value;
-			for (Weather weather : this.map.values()) {
+			for (MutableStationData weather : this.map.values()) {
 				value = (float) ((weather.getWindVelocity() + difference) / 3.6);
 				if (value < 0) {
-					weather.setWindVelocity(0);
+					weather.setWindVelocity(0.0f);
 				} else {
 					weather.setWindVelocity(value);
 				}

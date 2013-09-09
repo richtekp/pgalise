@@ -28,7 +28,7 @@ import de.pgalise.simulation.weather.service.WeatherService;
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
-public final class Temperature extends WeatherParameterBase {
+public class Temperature extends WeatherParameterBase {
 
 	/**
 	 * Constructor
@@ -47,7 +47,7 @@ public final class Temperature extends WeatherParameterBase {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends Number> T getValue(long time) throws NoWeatherDataFoundException {
-		Float value = this.getWeather(time).getTemperature();
+		Float value = this.getWeather(time).getTemperature().floatValue(getWeatherService().getTemperatureUnit());
 		return (T) value;
 	}
 

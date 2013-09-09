@@ -58,9 +58,9 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	 *            Date
 	 * @return Forecast of the day or null
 	 */
-	public static ServiceDataForecast getForecastFromDate(Set<ServiceDataForecast> forecasts, Date date) {
-		for (ServiceDataForecast forecastCondition : forecasts) {
-			if (checkDate(forecastCondition.getDate(), date)) {
+	public static ExtendedServiceDataForecast getForecastFromDate(Set<ExtendedServiceDataForecast> forecasts, Date date) {
+		for (ExtendedServiceDataForecast forecastCondition : forecasts) {
+			if (checkDate(forecastCondition.getMeasureDate(), date)) {
 				return forecastCondition;
 			}
 		}
@@ -81,12 +81,12 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	/**
 	 * Current condition
 	 */
-	private ServiceDataCurrent currentCondition;
+	private ExtendedServiceDataCurrent currentCondition;
 
 	/**
 	 * Set with forecasts
 	 */
-	private Set<ServiceDataForecast> forecastConditions;
+	private Set<ExtendedServiceDataForecast> forecastConditions;
 
 	/**
 	 * Timestamp of the data
@@ -108,7 +108,7 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		this.source = apiSource;
 		this.city = city;
 		this.apicity = "";
-		this.forecastConditions = new TreeSet<ServiceDataForecast>();
+		this.forecastConditions = new TreeSet<ExtendedServiceDataForecast>();
 	}
 
 	@Override
@@ -135,17 +135,17 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		if ((this.forecastConditions == null) || (this.forecastConditions.size() == 0)) {
 			this.forecastConditions = newObj.getForecastConditions();
 		} else {
-			for (ServiceDataForecast condition : this.forecastConditions) {
-				ServiceDataForecast newCondition = getForecastFromDate(newObj.getForecastConditions(),
-						condition.getDate());
+			for (ExtendedServiceDataForecast condition : this.forecastConditions) {
+				ExtendedServiceDataForecast newCondition = getForecastFromDate(newObj.getForecastConditions(),
+						condition.getMeasureDate());
 				if (newCondition != null) {
 					condition.complete(newCondition);
 				}
 			}
 
-			for (ServiceDataForecast newCondition : newObj.getForecastConditions()) {
+			for (ExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
 
-				ServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getDate());
+				ExtendedServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getMeasureDate());
 				if (oldCondition == null) {
 					this.forecastConditions.add(newCondition);
 				}
@@ -162,11 +162,11 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		return this.city;
 	}
 
-	public ServiceDataCurrent getCurrentCondition() {
+	public ExtendedServiceDataCurrent getCurrentCondition() {
 		return this.currentCondition;
 	}
 
-	public Set<ServiceDataForecast> getForecastConditions() {
+	public Set<ExtendedServiceDataForecast> getForecastConditions() {
 		return this.forecastConditions;
 	}
 
@@ -186,7 +186,7 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		this.city = city;
 	}
 
-	public void setCurrentCondition(ServiceDataCurrent currentCondition) {
+	public void setCurrentCondition(ExtendedServiceDataCurrent currentCondition) {
 		this.currentCondition = currentCondition;
 	}
 
@@ -243,7 +243,7 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		}
 		if ((this.forecastConditions != null) && !this.forecastConditions.isEmpty()) {
 			builder.append("\n- forecastCondition=[");
-			for (ServiceDataForecast condition : this.forecastConditions) {
+			for (ExtendedServiceDataForecast condition : this.forecastConditions) {
 				builder.append(condition.toString());
 			}
 			builder.append("]");

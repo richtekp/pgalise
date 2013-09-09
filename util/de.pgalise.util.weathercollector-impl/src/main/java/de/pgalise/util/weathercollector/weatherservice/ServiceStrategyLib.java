@@ -16,10 +16,13 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.util.weathercollector.model.Condition;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
+import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManagerFactory;
 
 /**
@@ -28,12 +31,7 @@ import javax.persistence.EntityManagerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Apr 07, 2012)
  */
-public final class ServiceStrategyLib {
-
-	/**
-	 * Condition code for unknown weather condition
-	 */
-	public static final int UNKNOWN_CONDITION = 3200;
+public class ServiceStrategyLib {
 
 	/**
 	 * Completes the ServiceData objects to one better object
@@ -76,7 +74,7 @@ public final class ServiceStrategyLib {
 	 */
 	public static int getConditionCode(String condition, DatabaseManager databaseManager) {
 		if ((condition == null) || condition.equals("")) {
-			return UNKNOWN_CONDITION;
+			return Condition.UNKNOWN_CONDITION_CODE;
 		}
 
 		// Prepare
@@ -88,7 +86,10 @@ public final class ServiceStrategyLib {
 		if (result != null) {
 			return result.getCode();
 		} else {
-			return UNKNOWN_CONDITION;
+			return Condition.UNKNOWN_CONDITION_CODE;
 		}
+	}
+
+	private ServiceStrategyLib() {
 	}
 }

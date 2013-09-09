@@ -8,7 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
-import de.pgalise.util.weathercollector.TestUtils;
+import de.pgalise.it.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
@@ -30,7 +30,6 @@ import org.junit.Ignore;
 @ManagedBean
 @Ignore
 public class GoogleWeatherTest {
-	private final static EJBContainer CONTAINER = TestUtils.createContainer();
 	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
 	
 	public GoogleWeatherTest() {

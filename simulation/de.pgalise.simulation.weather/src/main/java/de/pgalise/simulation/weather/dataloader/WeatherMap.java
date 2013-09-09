@@ -19,6 +19,8 @@
  */
 package de.pgalise.simulation.weather.dataloader;
 
+import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.StationData;
 import java.util.HashMap;
 
 import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
@@ -31,12 +33,16 @@ import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
-public abstract class WeatherMap extends HashMap<Long, Weather> {
+public abstract class WeatherMap extends HashMap<Long, MutableStationData> {
 
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -3382960454776440036L;
+	/**
+	 * Interpolate interval
+	 */
+	public static final int INTERPOLATE_INTERVAL = 60000;
 
 	/**
 	 * Deploy changes to the map (decorator pattern)

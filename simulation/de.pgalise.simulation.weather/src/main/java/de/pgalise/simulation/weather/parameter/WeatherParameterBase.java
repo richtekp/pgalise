@@ -20,7 +20,8 @@ import java.sql.Date;
 import java.sql.Time;
 
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
-import de.pgalise.simulation.weather.dataloader.Weather;
+import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 
@@ -35,13 +36,12 @@ public abstract class WeatherParameterBase implements WeatherParameter {
 	/**
 	 * WeatherService
 	 */
-	protected WeatherService weatherService;
+	private WeatherService weatherService;
 
 	/**
 	 * Default constructor
 	 */
-	public WeatherParameterBase() {
-
+	protected WeatherParameterBase() {
 	}
 
 	/**
@@ -75,29 +75,29 @@ public abstract class WeatherParameterBase implements WeatherParameter {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no value for the given time.
 	 */
-	protected Weather getWeather(long time) throws NoWeatherDataFoundException {
+	protected StationData getWeather(long time) throws NoWeatherDataFoundException {
 		// Check if it is the right date
-		if ((this.weatherService.getLoadedTimestamp() < 1)
+		if ((this.getWeatherService().getLoadedTimestamp() < 1)
 				|| !DateConverter.isTheSameDay(this.weatherService.getLoadedTimestamp(), time)) {
 			throw new NoWeatherDataFoundException("Wrong date: " + new Date(time) + "! Date for the simulation is:  "
-					+ new Date(this.weatherService.getLoadedTimestamp()));
+					+ new Date(this.getWeatherService().getLoadedTimestamp()));
 		}
 
 		// Get weather
-		Weather weather = this.weatherService.getReferenceValues().get(time);
+		StationData weather = this.getWeatherService().getReferenceValues().get(time);
 		if (weather == null) {
 
 			// Calculate next minute
-			long newTime = time + (Weather.INTERPOLATE_INTERVAL - (time % Weather.INTERPOLATE_INTERVAL));
-			weather = this.weatherService.getReferenceValues().get(newTime);
+			long newTime = time + (WeatherMap.INTERPOLATE_INTERVAL - (time % WeatherMap.INTERPOLATE_INTERVAL));
+			weather = this.getWeatherService().getReferenceValues().get(newTime);
 
 			// Get weather
 			if (weather == null) {
 
 				// Look for the last 5 Minutes
 				for (int i = 0; i < 5; i++) {
-					newTime -= Weather.INTERPOLATE_INTERVAL;
-					weather = this.weatherService.getReferenceValues().get(newTime);
+					newTime -= WeatherMap.INTERPOLATE_INTERVAL;
+					weather = this.getWeatherService().getReferenceValues().get(newTime);
 					if (weather != null) {
 						break;
 					}
@@ -113,5 +113,12 @@ public abstract class WeatherParameterBase implements WeatherParameter {
 
 		// Returns
 		return weather;
+	}
+
+	/**
+	 * @return the weatherService
+	 */
+	public WeatherService getWeatherService() {
+		return weatherService;
 	}
 }

@@ -41,18 +41,23 @@ import javax.persistence.criteria.Root;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
-import de.pgalise.simulation.weather.dataloader.ReferenceCityEvaluator;
-import de.pgalise.simulation.weather.dataloader.ServiceWeather;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataCurrent;
-import de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataForecast;
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationData;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataCurrent;
+import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
+import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
+import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.ServiceDataForecast;
+import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
-import javax.persistence.Query;
+import java.sql.Time;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
 
 /**
  * This class loads the weather station data from the database. <br />
@@ -98,7 +103,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	/**
 	 * Class for station class
 	 */
-	private Class<StationData> stationDataClass = null;
+	private Class<AbstractStationData> stationDataClass = null;
 
 	/**
 	 * Name for station class
@@ -133,8 +138,8 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 
 	@Override
 	public boolean checkStationDataForDay(long timestamp) {
-		List<StationData> weatherList;
-		StationData lastday, nextday;
+		List<AbstractStationData> weatherList;
+		AbstractStationData lastday, nextday;
 //		try {
 			// Previous day
 			lastday = this.loadLastStationDataForDate(DateConverter.getPreviousDay(timestamp));
@@ -154,7 +159,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		}
 
 		// Check for null values
-		for (StationData stationData : weatherList) {
+		for (AbstractStationData stationData : weatherList) {
 			if ((stationData.getAirPressure() == null) || (stationData.getLightIntensity() == null)
 					|| (stationData.getPerceivedTemperature() == null)
 					|| (stationData.getPrecipitationAmount() == null) || (stationData.getRadiation() == null)
@@ -168,26 +173,28 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	}
 
 	@Override
-	public ServiceWeather loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public ServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 
 		// Get the data
-		ServiceDataCurrent data;
-		TypedQuery<ServiceDataCurrent> query = this.em.createNamedQuery("ServiceDataCurrent.findByDate",
-					ServiceDataCurrent.class);
+		DefaultServiceDataCurrent data;
+		TypedQuery<DefaultServiceDataCurrent> query = this.em.createNamedQuery("DefaultServiceDataCurrent.findByDate",
+					DefaultServiceDataCurrent.class);
 		query.setParameter("date", new Date(timestamp));
 		query.setParameter("city", city);
 		data = query.getSingleResult();
 		
 
 		// Copy informations to the weather object
-		ServiceWeather weather = new ServiceWeather(
-			data.getMeasureDate().getTime(),
+		ServiceDataForecast weather = new DefaultServiceDataForecast(
+			data.getMeasureDate(),
+			data.getMeasureTime(),
 			data.getCity(), 
+			data.getTemperature(),
+			data.getTemperature(),
 			data.getRelativHumidity(), 
-			data.getTemperature(),
-			data.getTemperature(),
 			data.getWindDirection(),
-			data.getWindVelocity()
+			data.getWindVelocity(),
+			DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}
@@ -204,12 +211,12 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	 * @return ServiceDataForecast
 	 */
 	@Override
-	public ServiceWeather loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 
 		// Get the data
 		ServiceDataForecast data;
-		TypedQuery<ServiceDataForecast> query = this.em.createNamedQuery("ServiceDataForecast.findByDate",
-				ServiceDataForecast.class);
+		TypedQuery<DefaultServiceDataForecast> query = this.em.createNamedQuery("DefaultServiceDataForecast.findByDate",
+				DefaultServiceDataForecast.class);
 		if(query == null) {
 			return null;
 		}
@@ -218,7 +225,17 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		data = query.getSingleResult();
 
 		// Copy informations to the weather object
-		ServiceWeather weather = new ServiceWeather(data.getMeasureDate().getTime(), data.getCity(), data.getRelativHumidity(), data.getTemperatureLow(), data.getTemperatureHigh(), data.getWindDirection(), data.getWindVelocity());
+		DefaultServiceDataForecast weather = new DefaultServiceDataForecast(
+			data.getMeasureDate(),
+			data.getMeasureTime(),
+			data.getCity(), 
+			data.getTemperatureLow(), 
+			data.getTemperatureHigh(), 
+			data.getRelativHumidity(), 
+			data.getWindDirection(),
+			data.getWindVelocity(),
+			DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
+		);
 		return weather;
 	}
 
@@ -234,7 +251,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	@Override
 	public WeatherMap loadStationData(long timestamp) throws NoWeatherDataFoundException {
 		// Get list
-		List<StationData> weatherList = this.getStationData(timestamp);
+		List<AbstractStationData> weatherList = this.getStationData(timestamp);
 
 		// Add values of the previous day
 		weatherList.add(this.loadLastStationDataForDate(DateConverter.getPreviousDay(timestamp)));
@@ -246,7 +263,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		Collections.sort(weatherList);
 
 		// Interpolate
-		return this.createWeatherMap(weatherList, Weather.INTERPOLATE_INTERVAL);
+		return this.createWeatherMap(weatherList, WeatherMap.INTERPOLATE_INTERVAL);
 	}
 
 	@Override
@@ -274,7 +291,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 
 		// Set class for StationData
 		try {
-			this.stationDataClass = (Class<StationData>) Class.forName(this.prop.getProperty(data));
+			this.stationDataClass = (Class<AbstractStationData>) Class.forName(this.prop.getProperty(data));
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
@@ -292,7 +309,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	 *            interpolate interval
 	 * @return WeatherMap
 	 */
-	private WeatherMap createWeatherMap(List<StationData> list, int interval) {
+	private WeatherMap createWeatherMap(List<AbstractStationData> list, int interval) {
 		WeatherMap map = new StationDataMap();
 
 		// No interpolate! --> Error
@@ -301,20 +318,31 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		}
 
 		// Add missing values
-		Weather weather = null;
+		MutableStationData weather;
 		for (int i = 1; i < list.size(); i++) {
-			StationData min = list.get(i - 1);
-			StationData max = list.get(i);
+			AbstractStationData min = list.get(i - 1);
+			AbstractStationData max = list.get(i);
 
 			// Set times and delete seconds and milliseconds
-			long minTime = min.getDate().getTime() + min.getTime().getTime() + DateConverter.HOUR;
+			long minTime = min.getMeasureDate().getTime() + min.getMeasureTime().getTime() + DateConverter.HOUR;
 			minTime -= minTime % DateConverter.MINUTE;
 			long actTime = minTime + interval;
-			long maxTime = max.getDate().getTime() + max.getTime().getTime() + DateConverter.HOUR;
+			long maxTime = max.getMeasureDate().getTime() + max.getMeasureTime().getTime() + DateConverter.HOUR;
 			maxTime -= maxTime % DateConverter.MINUTE;
 
 			// Add min to map
-			weather = new Weather(minTime, min.getAirPressure(), min.getLightIntensity(), min.getPerceivedTemperature(), min.getPrecipitationAmount(), min.getRadiation(), min.getRelativHumidity(), min.getTemperature(), min.getWindDirection(), min.getWindVelocity());
+			weather = new StationDataNormal(
+				new Date(minTime), 
+				new Time(minTime), 
+				min.getAirPressure(), 
+				min.getLightIntensity(), 
+				min.getPerceivedTemperature(), min.getTemperature(),
+				min.getPrecipitationAmount(), 
+				min.getRadiation(), 
+				min.getRelativHumidity(), 
+				min.getWindDirection(), 
+				min.getWindVelocity()
+			);
 			map.put(minTime, weather);
 
 			// Calculate missing values between max and min
@@ -327,40 +355,40 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 				 */
 				int airPressure = (int) this.interpolate(minTime, min.getAirPressure(), maxTime, max.getAirPressure(),
 						actTime);
-				weather.setAirPressure(airPressure);
 
 				int lightIntensity = (int) this.interpolate(minTime, min.getLightIntensity(), maxTime,
 						max.getLightIntensity(), actTime);
-				weather.setLightIntensity(lightIntensity);
 
 				float perceivedTemperature = (float) this.interpolate(minTime, min.getPerceivedTemperature(), maxTime,
 						max.getPerceivedTemperature(), actTime);
-				weather.setPerceivedTemperature(perceivedTemperature);
 
-				float temperature = (float) this.interpolate(minTime, min.getTemperature(), maxTime,
-						max.getTemperature(), actTime);
-				weather.setTemperature(temperature);
+				float temperature = (float) this.interpolate(minTime, min.getTemperature().floatValue(SI.CELSIUS), maxTime,
+						max.getTemperature().floatValue(SI.CELSIUS), actTime);
 
 				float precipitationAmount = (float) this.interpolate(minTime, min.getPrecipitationAmount(), maxTime,
 						max.getPrecipitationAmount(), actTime);
-				weather.setPrecipitationAmount(precipitationAmount);
 
 				int radiation = (int) this.interpolate(minTime, min.getRadiation(), maxTime, max.getRadiation(),
 						actTime);
-				weather.setRadiation(radiation);
 
 				float relativHumidity = (float) this.interpolate(minTime, min.getRelativHumidity(), maxTime,
 						max.getRelativHumidity(), actTime);
-				weather.setRelativHumidity(relativHumidity);
 
-				int windDirection = (int) this.interpolate(minTime, min.getWindDirection(), maxTime,
+				float windDirection = (int) this.interpolate(minTime, min.getWindDirection(), maxTime,
 						max.getWindDirection(), actTime);
-				weather.setWindDirection(windDirection);
 
 				float windVelocity = (float) this.interpolate(minTime, min.getWindVelocity(), maxTime,
 						max.getWindVelocity(), actTime);
-				weather.setWindVelocity(windVelocity);
-				weather = new Weather(actTime, airPressure, lightIntensity, perceivedTemperature, precipitationAmount, radiation, relativHumidity, temperature, windDirection, windVelocity);
+				weather = new StationDataNormal(
+					new Date(actTime), 
+					new Time(actTime),
+					airPressure, 
+					lightIntensity, 
+					perceivedTemperature, 
+					Measure.valueOf(temperature, SI.CELSIUS), 
+					precipitationAmount, 
+					radiation, 
+					relativHumidity, windDirection, windVelocity);
 
 				// Add a new object
 				map.put(actTime, weather);
@@ -431,15 +459,15 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no weather data for the given date.
 	 */
-	private List<StationData> getStationData(long timestamp) throws NoWeatherDataFoundException {
+	private List<AbstractStationData> getStationData(long timestamp) throws NoWeatherDataFoundException {
 		// Check station data
-		if ((this.stationDataClass == null) || !(this.stationDataClass.getSuperclass().equals(StationData.class))) {
+		if ((this.stationDataClass == null) || !(this.stationDataClass.getSuperclass().equals(AbstractStationData.class))) {
 			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("stationDataClass"));
 		}
 
 		// Get information for that day
-		List<StationData> weatherList;
-			TypedQuery<StationData> query = this.em.createNamedQuery(String.format("%s.findByDate", stationDataClass.getSimpleName()),
+		List<AbstractStationData> weatherList;
+			TypedQuery<AbstractStationData> query = this.em.createNamedQuery(String.format("%s.findByDate", stationDataClass.getSimpleName()),
 					this.stationDataClass);
 		query.setParameter("date", new Date(timestamp));
 		weatherList = query.getResultList();
@@ -487,16 +515,16 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	 *            Timestamp
 	 * @return First station data instance
 	 */
-	private StationData loadFirstStationDataForDate(long timestamp) {
+	private AbstractStationData loadFirstStationDataForDate(long timestamp) {
 		// Check station data
-		if ((this.stationDataClass == null) || !(this.stationDataClass.getSuperclass().equals(StationData.class))) {
+		if ((this.stationDataClass == null) || !(this.stationDataClass.getSuperclass().equals(AbstractStationData.class))) {
 			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("stationDataClass"));
 		}
 
 		// Get first result of that day
-		StationData data;
+		AbstractStationData data;
 		try {
-			TypedQuery<StationData> query = this.em.createNamedQuery(this.stationDataClassName
+			TypedQuery<AbstractStationData> query = this.em.createNamedQuery(this.stationDataClassName
 					+ ".findFirstEntryByDate", this.stationDataClass);
 			query.setParameter("date", new Date(timestamp));
 			query.setMaxResults(1);
@@ -515,16 +543,16 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	 *            Timestamp
 	 * @return Last station data instance
 	 */
-	private StationData loadLastStationDataForDate(long timestamp) {
+	private AbstractStationData loadLastStationDataForDate(long timestamp) {
 
 		// Check station data
-		if ((this.stationDataClass == null) || !(this.stationDataClass.getSuperclass().equals(StationData.class))) {
+		if ((this.stationDataClass == null) || !(this.stationDataClass.getSuperclass().equals(AbstractStationData.class))) {
 			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("stationDataClass"));
 		}
 
 		// Get last result of that day
-		StationData data;
-		TypedQuery<StationData> query = this.em.createNamedQuery(
+		AbstractStationData data;
+		TypedQuery<AbstractStationData> query = this.em.createNamedQuery(
 				this.stationDataClassName + ".findLastEntryByDate", this.stationDataClass);
 		query.setParameter("date", new Date(timestamp));
 		query.setMaxResults(1);

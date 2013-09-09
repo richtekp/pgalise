@@ -4,7 +4,8 @@
  */
 package de.pgalise.util.weathercollector.util;
 
-import de.pgalise.util.weathercollector.model.Condition;
+import de.pgalise.simulation.weather.model.Condition;
+
 
 /**
  *

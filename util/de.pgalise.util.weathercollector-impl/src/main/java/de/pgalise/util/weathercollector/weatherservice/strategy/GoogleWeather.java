@@ -17,6 +17,8 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
+import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import java.sql.Date;
 import java.sql.Time;
@@ -26,13 +28,14 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.ServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ServiceDataForecast;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
-import javax.persistence.EntityManagerFactory;
+import javax.measure.Measure;
+import javax.measure.unit.NonSI;
+import javax.measure.unit.SI;
 
 /**
  * Returns weather informations from Google. Uses the strategy pattern.
@@ -40,13 +43,13 @@ import javax.persistence.EntityManagerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public final class GoogleWeather extends XMLAPIWeather {
+public class GoogleWeather extends XMLAPIWeather {
 
 	/**
 	 * Constructor
 	 */
 	public GoogleWeather() {
-		super("http://www.google.com/ig/api?h1=en&weather=", "Google", "F");
+		super("http://www.google.com/ig/api?h1=en&weather=", "Google", NonSI.FAHRENHEIT);
 	}
 
 	@Override
@@ -56,7 +59,7 @@ public final class GoogleWeather extends XMLAPIWeather {
 
 	@Override
 	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
-		ServiceDataHelper weather = new ServiceDataHelper(city, this.apiname);
+		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
 
 		// Read general informations
 		NodeList nodes = doc.getElementsByTagName("forecast_information");
@@ -87,8 +90,13 @@ public final class GoogleWeather extends XMLAPIWeather {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
 			// Date
-			ServiceDataCurrent condition = new ServiceDataCurrent(new Date(weather.getMeasureTimestamp().getTime()),
-					new Time(weather.getMeasureTimestamp().getTime()));
+			ExtendedServiceDataCurrent condition = new ExtendedServiceDataCurrent(new Date(weather.getMeasureTimestamp().getTime()),
+					new Time(weather.getMeasureTimestamp().getTime()), city,
+				null, 1.0f,
+				Float.NaN,
+				Float.NaN,
+				Float.MAX_VALUE,
+				null, new Time(1), new Time(2));
 
 			for (int j = 0; j < childnodes.getLength(); j++) {
 				// Data
@@ -96,19 +104,16 @@ public final class GoogleWeather extends XMLAPIWeather {
 
 				// Temperature
 				if (childnodes.item(j).getNodeName() == "temp_c") {
-					condition.setTemperature(Float.parseFloat(dataString));
+					condition.setTemperature(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 				} else if (childnodes.item(j).getNodeName() == "humidity") {
 					// Relativ humidity
 					String[] segs = dataString.split(Pattern.quote(":"));
 					condition.setRelativHumidity(Float.parseFloat(segs[1].substring(0, (segs[1].length() - 1))));
 				} else if (childnodes.item(j).getNodeName() == "condition") {
 					// Condition
-					condition.setCondition(ServiceStrategyLib.getConditionCode(dataString, entityManagerFactory));
+					condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
-
-			// Unit
-			condition.setUnitTemperature("C");
 
 			// City
 			condition.setCity(city);
@@ -122,7 +127,13 @@ public final class GoogleWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
-			ServiceDataForecast condition = new ServiceDataForecast(null);
+			ExtendedServiceDataForecast condition = new ExtendedServiceDataForecast(
+							new Date(System.currentTimeMillis()), 
+							new Time(System.currentTimeMillis()), 
+							city, 
+							Measure.valueOf(10.0f, SI.CELSIUS),  
+							Measure.valueOf(10.0f, SI.CELSIUS),
+							1.0f, 1.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
 
 			for (int j = 0; j < childnodes.getLength(); j++) {
 				// Data
@@ -131,21 +142,21 @@ public final class GoogleWeather extends XMLAPIWeather {
 				if (childnodes.item(j).getNodeName() == "day_of_week") {
 					// Date
 					try {
-						condition.setDate(Converter.convertDateFromWeekday(dataString));
+						condition.setMeasureDate(Converter.convertDateFromWeekday(dataString));
 					} catch (ParseException e) {
 						e.printStackTrace(); // Exception ausgeben
 						break;
 					}
 				} else if (childnodes.item(j).getNodeName() == "low") {
 					// Temperature low
-					condition.setTemperatureLow(Float.parseFloat(dataString));
+					condition.setTemperatureLow(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 					// condition.setTemperatureLow(WeatherStrategyLib.convertToCelsius(temp));
 				} else if (childnodes.item(j).getNodeName() == "high") {
 					// Temperature high
-					condition.setTemperatureHigh(Float.parseFloat(dataString));
+					condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 				} else if (childnodes.item(j).getNodeName() == "condition") {
 					// Condition
-					condition.setCondition(ServiceStrategyLib.getConditionCode(dataString, entityManagerFactory));
+					condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
 
@@ -153,18 +164,12 @@ public final class GoogleWeather extends XMLAPIWeather {
 			condition.setCity(city);
 
 			// Save weather informations
-			if (condition.getDate() != null) {
-				condition.setUnitTemperature(this.unitTemperature);
+			if (condition.getMeasureDate() != null) {
 				weather.getForecastConditions().add(condition);
 			}
 		}
 
 		// Returns the weather informations
 		return weather;
-	}
-
-	@Override
-	protected void setSearchCity(City city) {
-		this.searchCity = city.getName();
 	}
 }

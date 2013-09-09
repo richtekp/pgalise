@@ -2,51 +2,25 @@
 <persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
-	<persistence-unit name="weather_data"
-		transaction-type="JTA">
-		<!--<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>-->	
-		    <provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>weatherData</jta-data-source>
-		<class>de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataCurrent</class>
-		<class>de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal</class>
-		<class>de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataForecast</class>
-		<class>de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataCurrent</class>
-		<class>de.pgalise.simulation.shared.city.City</class>
-		<!--<mapping-file>jpa/orm.xml</mapping-file>-->
-		<properties>
-			<!--<property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>-->
-			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
-      <property name="javax.persistence.jdbc.user" value="postgis"/>
-      <!--<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>-->
-			<property name="javax.persistence.jdbc.driver" value="org.postgis.DriverWrapper"/>
-      <property name="javax.persistence.jdbc.password" value="postgis"/>
-      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/data"/>
-      <!--<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>-->
-      <property name="hibernate.hbm2ddl.auto" value="update"/>
-			<property name="java.naming.factory.initial" value="org.apache.openejb.client.LocalInitialContextFactory"/>
-      <!--<property name="hibernate.transaction.manager_lookup_class"-->
-                <!--value="org.apache.openejb.hibernate.TransactionManagerLookup"/>-->
-		</properties>
-	</persistence-unit>
-  <persistence-unit name="weather_data_test" transaction-type="JTA">
+  <persistence-unit name="weather_data_test" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<jta-data-source>weatherDataTest</jta-data-source>
-		<class>de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataCurrent</class>
+		<!--<non-jta-data-source>weatherDataTest</non-jta-data-source>-->
+		<class>de.pgalise.simulation.weather.internal.dataloader.entity.StationDataAggregate</class>
 		<class>de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal</class>
 		<class>de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataForecast</class>
 		<class>de.pgalise.simulation.weather.internal.dataloader.entity.ServiceDataCurrent</class>
 		<class>de.pgalise.simulation.shared.city.City</class>
-    <properties>
+    <!--<properties>-->
 			
-			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
+<!--			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
       <property name="javax.persistence.jdbc.user" value="postgis"/>
-      <!--<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>-->
+      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
 			<property name="javax.persistence.jdbc.driver" value="org.postgis.DriverWrapper"/>
       <property name="javax.persistence.jdbc.password" value="postgis"/>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/data0"/>
-      <!--<property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>-->
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
-			<property name="java.naming.factory.initial" value="org.apache.openejb.client.LocalInitialContextFactory"/>
+			<property name="java.naming.factory.initial" value="org.apache.openejb.client.LocalInitialContextFactory"/>-->
 <!--			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
       <property name="hibernate.connection.username" value="postgis"/>
       <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
@@ -56,6 +30,6 @@
       <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
       <property name="hibernate.transaction.manager_lookup_class"
                 value="org.apache.openejb.hibernate.TransactionManagerLookup"/>-->
-    </properties>
+    <!--</properties>-->
   </persistence-unit>
 </persistence>

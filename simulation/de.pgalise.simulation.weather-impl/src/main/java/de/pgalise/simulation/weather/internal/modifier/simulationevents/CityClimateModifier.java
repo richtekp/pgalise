@@ -20,13 +20,15 @@ import java.util.Properties;
 
 import de.pgalise.simulation.shared.city.CityLocationEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
-import de.pgalise.simulation.weather.dataloader.Weather;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherSimulationEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.util.DateConverter;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
 
 /**
  * Changes the values according to the changes of the city climate ({@link WeatherMapModifier} and
@@ -38,7 +40,7 @@ import de.pgalise.simulation.weather.util.DateConverter;
  * @author Andreas Rehfeldt
  * @version 1.0 (29.07.2012)
  */
-public final class CityClimateModifier extends WeatherSimulationEventModifier {
+public class CityClimateModifier extends WeatherSimulationEventModifier {
 
 	/**
 	 * Event type
@@ -82,6 +84,7 @@ public final class CityClimateModifier extends WeatherSimulationEventModifier {
 	 *            Seed for random generators
 	 * @param props
 	 *            Properties
+	 * @param weatherLoader  
 	 */
 	public CityClimateModifier(long seed, Properties props, WeatherLoader weatherLoader) {
 		super(seed, props, weatherLoader);
@@ -92,6 +95,7 @@ public final class CityClimateModifier extends WeatherSimulationEventModifier {
 	 * 
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
 	public CityClimateModifier(long seed, WeatherLoader weatherLoader) {
 		super(seed, weatherLoader);
@@ -104,6 +108,7 @@ public final class CityClimateModifier extends WeatherSimulationEventModifier {
 	 *            WeatherMap
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
 	public CityClimateModifier(WeatherMap map, long seed, WeatherLoader weatherLoader) {
 		super(map, seed, weatherLoader);
@@ -121,10 +126,11 @@ public final class CityClimateModifier extends WeatherSimulationEventModifier {
 				: CityLocationEnum.DOWNTOWN_NORIVER;
 
 		// Change all values
-		for (Weather weather : this.map.values()) {
-			long time = weather.getTimestamp();
+		for (MutableStationData weather : this.map.values()) {
+			long time = weather.getMeasureTime().getTime();
 
-			weather.setTemperature(weather.getTemperature() - temperaturDiff);
+			float temp = weather.getTemperature().floatValue(SI.CELSIUS);
+			weather.setTemperature(Measure.valueOf(temp - temperaturDiff, SI.CELSIUS));
 			weather.setPerceivedTemperature(weather.getPerceivedTemperature() - temperaturDiff);
 
 			weather.setRadiation(this.getRadiation(weather.getRadiation(), this.city.getPopulation()));

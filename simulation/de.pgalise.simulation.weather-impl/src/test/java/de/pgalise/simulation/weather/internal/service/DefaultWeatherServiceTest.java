@@ -17,54 +17,52 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.it.TestUtils;
 import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Properties;
 
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
-import de.pgalise.simulation.weather.dataloader.ServiceWeather;
-import de.pgalise.simulation.weather.dataloader.Weather;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
 import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
-import de.pgalise.simulation.weather.internal.modifier.DatabaseTestUtils;
-import de.pgalise.simulation.weather.internal.modifier.DatabaseTests;
+import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
+import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import java.io.IOException;
-import java.net.Inet4Address;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.sql.Date;
+import java.util.Properties;
+import javax.annotation.ManagedBean;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
+import javax.measure.unit.Unit;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.vecmath.Vector2d;
-import static org.easymock.EasyMock.*;
-import org.hibernate.Hibernate;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.junit.AfterClass;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * JUnit Tests for WeatherService
@@ -72,7 +70,11 @@ import org.junit.AfterClass;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 27, 2012)
  */
+@LocalClient
+@ManagedBean
 public class DefaultWeatherServiceTest  {	
+	private final static EJBContainer CONTAINER = TestUtils.createContainer();
+	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
 	/**
 	 * End timestamp
 	 */
@@ -93,12 +95,17 @@ public class DefaultWeatherServiceTest  {
 	 */
 	private WeatherLoader loader;
 
-	private WeatherLoader weatherLoaderMock = createStrictMock(WeatherLoader.class);
 	private City city;
 
 	public DefaultWeatherServiceTest() throws NamingException {
+		Properties p = new Properties();
+		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
+		p.put("openejb.tempclassloader.skip", "annotations");
+		CONTAINER.getContext().bind("inject",
+			this);
+		
 		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = DatabaseTestUtils.getGEOMETRY_FACTORY().createPolygon(
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
@@ -109,10 +116,8 @@ public class DefaultWeatherServiceTest  {
 		);
 		city = new City("test_city", 200000, 100, true, true, referenceArea);
 		
-		Context ctx = DatabaseTestUtils.getCONTAINER().getContext();
+		Context ctx = CONTAINER.getContext();
 		// Load EJB for Weather loader
-		ctx.unbind("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
-		ctx.bind("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader", weatherLoaderMock);
 		loader = (WeatherLoader) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 		service = new DefaultWeatherService(city, loader);
@@ -137,7 +142,10 @@ public class DefaultWeatherServiceTest  {
 	}
 
 	@Test
-	public void testAddNextWeather() throws NoWeatherDataFoundException {
+	public void testAddNextWeather() throws NoWeatherDataFoundException, 
+	NamingException, NotSupportedException, SystemException, 
+	HeuristicMixedException, HeuristicRollbackException, IllegalStateException, 
+	RollbackException {
 		/*
 		 * Test cases
 		 */
@@ -145,9 +153,8 @@ public class DefaultWeatherServiceTest  {
 		// Test no weather data loaded
 		try {
 			service.addNextWeather();
-			Assert.assertTrue(false);
+			Assert.fail();
 		} catch (Exception e) {
-			Assert.assertTrue(true);
 		}
 
 		/*
@@ -155,6 +162,26 @@ public class DefaultWeatherServiceTest  {
 		 */
 
 		// Get weather
+		InitialContext initialContext = new InitialContext();
+		UserTransaction userTransaction = (UserTransaction) initialContext.lookup(
+			"java:comp/UserTransaction");
+		userTransaction.begin();
+		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+		em.joinTransaction();
+		AbstractStationData stationData = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
+		em.persist(stationData);
+		userTransaction.commit();
+		em.close();
 		service.addNewWeather(startTimestamp, endTimestamp,
 				true, null);
 
@@ -163,11 +190,6 @@ public class DefaultWeatherServiceTest  {
 		 */
 
 		// Test next day (normal)
-		reset(weatherLoaderMock);
-		expect(weatherLoaderMock.checkStationDataForDay(anyLong())).andReturn(true);
-		expect(weatherLoaderMock.loadStationData(anyLong())).andReturn(null);
-		expect(weatherLoaderMock.loadStationData(anyLong())).andReturn(null);
-		replay(weatherLoaderMock);
 		service.addNextWeather();
 	}
 
@@ -182,20 +204,42 @@ public class DefaultWeatherServiceTest  {
 				loader), startTimestamp));
 
 		// Test (normal)
-		reset(weatherLoaderMock);
-		ServiceWeather serviceWeather = new ServiceWeather(System.currentTimeMillis(), city, 0.2f, 0.2f, 0.3f, 1.0f, 20.0f);
-		weatherLoaderMock.setLoadOption(true);
-		expectLastCall();
+		MutableStationData serviceWeather = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
 		WeatherMap weatherMap = new StationDataMap() ;
-		expect(weatherLoaderMock.loadStationData(anyLong())).andReturn(weatherMap);
-		expect(weatherLoaderMock.loadForecastServiceWeatherData(
-					anyLong(), anyObject(City.class))).andReturn(serviceWeather);
-		ServiceWeather serviceWeatherForecast = new ServiceWeather(System.currentTimeMillis(), city, 0.3f, 0.3f, 1.1f, 20.0f, 2.9f);
-		expect(weatherLoaderMock.loadCurrentServiceWeatherData(anyLong(), anyObject(City.class))).andReturn(serviceWeatherForecast);
+		MutableStationData serviceWeatherForecast = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
 		long weatherTimestamp = System.currentTimeMillis();
-		Weather weather = new Weather(weatherTimestamp, 1, 1, 1.0f, 1.0f, 1, 1.0f, 1.0f, 1, 1.0f);
+		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
 		weatherMap.put(weatherTimestamp, weather);
-		replay(weatherLoaderMock);
 		service.addNewWeather(startTimestamp,
 					endTimestamp, true, strategyList);
 
@@ -217,25 +261,16 @@ public class DefaultWeatherServiceTest  {
 		 */
 
 		// Test check Date (normal)
-		try {
-			service.checkDate(startTimestamp);
-			Assert.assertTrue(true);
-		} catch (Exception e) {
-			Assert.assertTrue(false);
-		}
+		service.checkDate(startTimestamp);
 
 		// Test false Date
 		try {
 			service.checkDate(0);
-			Assert.assertTrue(false);
+			Assert.fail();
 		} catch (Exception e) {
-			Assert.assertTrue(true);
 		}
 
 		// Test false Date (future)
-		reset(weatherLoaderMock);
-		expect(weatherLoaderMock.checkStationDataForDay(anyLong())).andReturn(false).times(2);
-		replay(weatherLoaderMock);
 		Assert.assertTrue(!(service.checkDate(System.currentTimeMillis())));
 
 		// Test false Date (no data available)
@@ -269,13 +304,19 @@ public class DefaultWeatherServiceTest  {
 		Number value;
 
 		// Test (normal)
-		reset(weatherLoaderMock);
 		WeatherMap weatherMap = new StationDataMap();
-		Weather weather = new Weather(timestamp, 1008, 1, 1.0f, 1.0f, 1, 1.0f, 1.2f, 1, 1.3f);
+		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
 		weatherMap.put(timestamp, weather);
-		expect(weatherLoaderMock.checkStationDataForDay(anyLong())).andReturn(true);
-		expect(weatherLoaderMock.loadStationData(anyLong())).andReturn(weatherMap);
-		replay(weatherLoaderMock);
 		value = service.getValue(testParameter, timestamp);
 		Assert.assertEquals(1008.0, value.doubleValue(), 10.0); // Aggregate 1008
 
@@ -328,13 +369,19 @@ public class DefaultWeatherServiceTest  {
 		Number value;
 
 		// Test (normal)
-		reset(weatherLoaderMock);
 		WeatherMap weatherMap = new StationDataMap();
-		Weather weather = new Weather(timestamp, 1, 11000, 1.0f, 1.0f, 1, 1.0f, 1.2f, 1, 1.3f);
+		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
 		weatherMap.put(timestamp, weather);
-		expect(weatherLoaderMock.checkStationDataForDay(anyLong())).andReturn(true);
-		expect(weatherLoaderMock.loadStationData(anyLong())).andReturn(weatherMap);
-		replay(weatherLoaderMock);
 		value = service.getValue(testParameter, timestamp, position);
 		Assert.assertEquals(11000.000, value.doubleValue(), 5000);
 
@@ -371,13 +418,19 @@ public class DefaultWeatherServiceTest  {
 		}
 
 		// Test (normal) other date
-		reset(weatherLoaderMock);
 		weatherMap = new StationDataMap();
-		weather = new Weather(timestamp2, 1, 11000, 1.0f, 1.0f, 1, 1.0f, 1.2f, 1, 1.3f);
+		weather = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
 		weatherMap.put(timestamp2, weather);
-		expect(weatherLoaderMock.checkStationDataForDay(anyLong())).andReturn(true);
-		expect(weatherLoaderMock.loadStationData(anyLong())).andReturn(weatherMap);
-		replay(weatherLoaderMock);
 		value = service.getValue(testParameter, timestamp2, position);
 		Assert.assertEquals(11000.000, value.doubleValue(), 6000);
 

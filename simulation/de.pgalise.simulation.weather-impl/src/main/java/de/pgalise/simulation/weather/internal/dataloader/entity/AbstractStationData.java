@@ -17,11 +17,13 @@
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.weather.model.MutableStationData;
 import java.sql.Date;
 import java.sql.Time;
+import javax.measure.Measure;
+import javax.measure.quantity.Temperature;
 
 import javax.persistence.Column;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 /**
@@ -31,7 +33,7 @@ import javax.persistence.MappedSuperclass;
  * @version 1.0 (01.07.2012)
  */
 @MappedSuperclass
-public abstract class StationData extends AbstractIdentifiable implements Comparable<StationData> {
+public abstract class AbstractStationData extends AbstractIdentifiable implements MutableStationData, Comparable<AbstractStationData> {
 
 	/**
 	 * air pressure
@@ -85,13 +87,13 @@ public abstract class StationData extends AbstractIdentifiable implements Compar
 	 * temperature
 	 */
 	@Column(name = "TEMPERATURE")
-	private Float temperature;
+	private Measure<Float, Temperature> temperature;
 
 	/**
 	 * wind direction
 	 */
 	@Column(name = "WIND_DIRECTION")
-	private Integer windDirection;
+	private Float windDirection;
 
 	/**
 	 * wind velocity
@@ -102,7 +104,7 @@ public abstract class StationData extends AbstractIdentifiable implements Compar
 	/**
 	 * Default constructor
 	 */
-	protected StationData() {
+	protected AbstractStationData() {
 	}
 
 	/**
@@ -131,9 +133,19 @@ public abstract class StationData extends AbstractIdentifiable implements Compar
 	 * @param windVelocity
 	 *            wind velocity
 	 */
-	public StationData(Date date, Time time, Integer airPressure, Integer lightIntensity, Float perceivedTemperature,
-			Float temperature, Float precipitationAmount, Integer radiation, Float relativHumidity,
-			Integer windDirection, Float windVelocity) {
+	public AbstractStationData(
+		Date date, 
+		Time time, 
+		Integer airPressure, 
+		Integer lightIntensity, 
+		Float perceivedTemperature,
+		Measure<Float, Temperature> temperature, 
+		Float precipitationAmount, 
+		Integer radiation, 
+		Float relativHumidity,
+		Float windDirection, 
+		Float windVelocity
+	) {
 		this.measureDate = date;
 		this.measureTime = time;
 		this.airPressure = airPressure;
@@ -148,96 +160,118 @@ public abstract class StationData extends AbstractIdentifiable implements Compar
 	}
 
 	@Override
-	public int compareTo(StationData data) {
-		long thisTime = this.getDate().getTime() + this.getTime().getTime();
-		long anotherTime = data.getDate().getTime() + data.getTime().getTime();
+	public int compareTo(AbstractStationData data) {
+		long thisTime = this.getMeasureDate().getTime() + this.getMeasureTime().getTime();
+		long anotherTime = data.getMeasureDate().getTime() + data.getMeasureTime().getTime();
 		return (thisTime < anotherTime ? -1 : (thisTime == anotherTime ? 0 : 1));
 	}
 
+	@Override
 	public Integer getAirPressure() {
 		return this.airPressure;
 	}
 
-	public Date getDate() {
+	@Override
+	public Date getMeasureDate() {
 		return this.measureDate;
 	}
 
+	@Override
 	public Integer getLightIntensity() {
 		return this.lightIntensity;
 	}
 
+	@Override
 	public Float getPerceivedTemperature() {
 		return this.perceivedTemperature;
 	}
 
+	@Override
 	public Float getPrecipitationAmount() {
 		return this.precipitationAmount;
 	}
 
+	@Override
 	public Integer getRadiation() {
 		return this.radiation;
 	}
 
+	@Override
 	public Float getRelativHumidity() {
 		return this.relativHumidity;
 	}
 
-	public Float getTemperature() {
+	@Override
+	public Measure<Float, Temperature> getTemperature() {
 		return this.temperature;
 	}
 
-	public Time getTime() {
+	@Override
+	public Time getMeasureTime() {
 		return this.measureTime;
 	}
 
-	public Integer getWindDirection() {
+	@Override
+	public Float getWindDirection() {
 		return this.windDirection;
 	}
 
+	@Override
 	public Float getWindVelocity() {
 		return this.windVelocity;
 	}
 
+	@Override
 	public void setAirPressure(Integer airPressure) {
 		this.airPressure = airPressure;
 	}
 
-	public void setDate(Date date) {
+	@Override
+	public void setMeasureDate(Date date) {
 		this.measureDate = date;
 	}
 
+	@Override
 	public void setLightIntensity(Integer lightIntensity) {
 		this.lightIntensity = lightIntensity;
 	}
 
+	@Override
 	public void setPerceivedTemperature(Float perceivedTemperature) {
 		this.perceivedTemperature = perceivedTemperature;
 	}
 
+	@Override
 	public void setPrecipitationAmount(Float precipitationAmount) {
 		this.precipitationAmount = precipitationAmount;
 	}
 
+	@Override
 	public void setRadiation(Integer radiation) {
 		this.radiation = radiation;
 	}
 
+	@Override
 	public void setRelativHumidity(Float relativHumidity) {
 		this.relativHumidity = relativHumidity;
 	}
 
-	public void setTemperature(Float temperature) {
+	@Override
+	public void setTemperature(Measure<Float, Temperature> temperature) {
 		this.temperature = temperature;
 	}
 
-	public void setTime(Time time) {
+	@Override
+	public void setMeasureTime(Time time) {
 		this.measureTime = time;
 	}
 
-	public void setWindDirection(Integer windDirection) {
+	@Override
+	public void setWindDirection(Float windDirection) {
 		this.windDirection = windDirection;
 	}
 
+	@Override
 	public void setWindVelocity(Float windVelocity) {
 		this.windVelocity = windVelocity;
 	}

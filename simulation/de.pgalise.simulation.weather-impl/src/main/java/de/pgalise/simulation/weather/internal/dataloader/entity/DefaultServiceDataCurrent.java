@@ -17,7 +17,12 @@
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import java.sql.Date;
+import java.sql.Time;
+import javax.measure.Measure;
+import javax.measure.quantity.Temperature;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -30,30 +35,36 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-//@Table(name = "PGALISE.WEATHER_SERVICE_CURRENT")
-@NamedQuery(name = "ServiceDataCurrent.findByDate", query = "SELECT i FROM ServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
-public class ServiceDataCurrent extends AbstractServiceData {
+@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_CURRENT")
+@NamedQuery(name = "DefaultServiceDataCurrent.findByDate", query = "SELECT i FROM DefaultServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
+public class DefaultServiceDataCurrent extends AbstractBaseServiceData implements ServiceDataCurrent {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Temperature
 	 */
 	@Column(name = "TEMPERATURE")
-	private Float temperature;
+	private Measure<Float, Temperature> temperature;
 
-	protected ServiceDataCurrent() {
+	protected DefaultServiceDataCurrent() {
 	}
 
-	public ServiceDataCurrent(Float relativHumidity, Float temperature, Float windDirection, Float windVelocity, City city, Date measureDate) {
-		super(relativHumidity, windDirection, windVelocity, city, measureDate);
+	public DefaultServiceDataCurrent(
+		Date measureDate, 
+		Time measureTime, 
+		City city, 
+		Float relativHumidity, 
+		Measure<Float, Temperature> temperature, Float windDirection, Float windVelocity, DefaultCondition condition) {
+		super(measureDate, measureTime, city, relativHumidity, windDirection, windVelocity, condition);
 		this.temperature = temperature;
 	}
 
-	public Float getTemperature() {
+	@Override
+	public Measure<Float, Temperature> getTemperature() {
 		return this.temperature;
 	}
 
-	public void setTemperature(Float temperature) {
+	public void setTemperature(Measure<Float, Temperature> temperature) {
 		this.temperature = temperature;
 	}
 

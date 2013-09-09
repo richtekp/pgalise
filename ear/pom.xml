@@ -124,35 +124,11 @@
 		    <version>${applicationVersion}</version>
 		    <type>war</type>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>eclipselink</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbyclient</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>
 		<finalName>simulation</finalName>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>someid</id>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<phase>package</phase>
-						<configuration>
-							<outputDirectory>target/apache-tomee/lib</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
