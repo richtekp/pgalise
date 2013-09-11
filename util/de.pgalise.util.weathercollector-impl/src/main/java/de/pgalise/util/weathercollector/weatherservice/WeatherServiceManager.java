@@ -100,14 +100,12 @@ public final class WeatherServiceManager {
 	}
 	
 	private ServiceDataHelper getServiceData(City city, DatabaseManager databaseManager, Set<ServiceStrategy> serviceStrategys) {
-		ServiceDataHelper data = null;
-
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
 
 		WeatherServiceContext context = new WeatherServiceContext(serviceStrategys);
 
 		// Use best strategy
-		data = context.getBestWeather(city, databaseManager);
+		ServiceDataHelper data = context.getBestWeather(city, databaseManager);
 
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beendet.", Level.INFO);
 
@@ -151,8 +149,7 @@ public final class WeatherServiceManager {
 				LOGGER.debug("Speichern der Wetterdaten zur Stadt " + data.getCity().getName() + " war erfolgreich.", Level.INFO);
 			}
 		} catch (IllegalArgumentException e) {
-			LOGGER.debug(e.getMessage(), Level.WARNING);
-			e.printStackTrace();
+			throw new RuntimeException(e); //is thrown if the query fails, so this should be thrown
 		}
 	}
 

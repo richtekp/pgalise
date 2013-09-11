@@ -48,11 +48,6 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	private String apiname;
 
 	/**
-	 * City
-	 */
-	private City city;
-
-	/**
 	 * Temperature unit
 	 */
 	private Unit<Temperature> unitTemperature;
@@ -84,16 +79,13 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 
 	@Override
 	public ServiceDataHelper getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
-		// Remember city
-		this.setCity(city);
-
 		// No City can be found
-		if (this.getCity().getName().isEmpty()) {
+		if (city.getName().isEmpty()) {
 			throw new ReadServiceDataException("Stadt fuer die Api kann nicht gefunden werden.");
 		}
 
 		// Extract data
-		return this.extractWeather(city, this.fetchWeatherData(this.getCity().getName()), databaseManager);
+		return this.extractWeather(city, this.fetchWeatherData(city.getName()), databaseManager);
 	}
 
 	/**
@@ -149,20 +141,6 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	 */
 	public void setApiname(String apiname) {
 		this.apiname = apiname;
-	}
-
-	/**
-	 * @return the city
-	 */
-	public City getCity() {
-		return city;
-	}
-
-	/**
-	 * @param city the city to set
-	 */
-	public void setCity(City city) {
-		this.city = city;
 	}
 
 	/**

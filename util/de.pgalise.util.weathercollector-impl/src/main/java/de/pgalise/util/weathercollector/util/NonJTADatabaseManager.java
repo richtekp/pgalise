@@ -317,8 +317,10 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		tx.begin();
 
 		// Get forecast service data
-		TypedQuery<ExtendedServiceDataCurrent> query = em.createNamedQuery("ServiceDataCurrent.findByCityAndDate",
-				ExtendedServiceDataCurrent.class);
+		TypedQuery<ExtendedServiceDataCurrent> query = em.createNamedQuery(
+			String.format("%s.findByCityAndDate", ExtendedServiceDataCurrent.class.getSimpleName()),
+			ExtendedServiceDataCurrent.class
+		);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
 		List<ExtendedServiceDataCurrent> result = query.getResultList();
@@ -364,20 +366,20 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	/**
 	 * Saves entries of the current service weather
 	 * 
-	 * @param cityID
+	 * @param city
 	 *            Primary key of the city
-	 * @param service_data
+	 * @param serviceData
 	 *            Current service weather data
 	 */
-	private void saveCurrentWeather(City cityID, ExtendedServiceDataCurrent service_data) {
-		if ((service_data == null) || (service_data.getMeasureDate() == null)) {
-			throw new IllegalArgumentException("service_data");
+	private void saveCurrentWeather(City city, ExtendedServiceDataCurrent serviceData) {
+		if ((serviceData == null) || (serviceData.getMeasureDate() == null)) {
+			throw new IllegalArgumentException("serviceData");
 		}
 
 		final EntityManager em = this.factory.createEntityManager();
 
 		// Delete old entries
-		this.deleteCurrentWeather(this.getServiceDataCurrent(cityID, service_data.getMeasureDate(), em), em);
+		this.deleteCurrentWeather(this.getServiceDataCurrent(city, serviceData.getMeasureDate(), em), em);
 
 		final EntityTransaction tx = em.getTransaction();
 
@@ -385,7 +387,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		tx.begin();
 
 		// Save data
-		em.persist(service_data);
+		em.persist(serviceData);
 
 		// Commit
 		tx.commit();
@@ -395,7 +397,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 			em.close();
 		}
 
-		LOGGER.debug("Datensatz fuer Stadt " + cityID + " vom " + service_data.getMeasureDate() + " gespeichert.", Level.INFO);
+		LOGGER.debug("Datensatz fuer Stadt " + city + " vom " + serviceData.getMeasureDate() + " gespeichert.", Level.INFO);
 	}
 
 	/**

@@ -19,9 +19,7 @@ import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import org.apache.openejb.api.LocalClient;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,10 +39,6 @@ public class YahooWeatherTest {
 		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
-	}
-
-	@Before
-	public void setUp() throws NamingException {
 	}
 
 	/**
@@ -79,5 +73,6 @@ public class YahooWeatherTest {
 		ServiceDataHelper result = instance.getWeather(city,
 			databaseManager);
 		assertFalse(result.getForecastConditions().isEmpty());
+		assertFalse(result.getCurrentCondition() == null);
 	}
 }

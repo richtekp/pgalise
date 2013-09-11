@@ -19,6 +19,7 @@ package de.pgalise.util.weathercollector.weatherservice.strategy;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -40,6 +41,8 @@ import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
@@ -52,10 +55,6 @@ import javax.measure.unit.Unit;
  * @version 1.0 (Mar 16, 2012)
  */
 public class YahooWeather extends XMLAPIWeather {
-	/**
-	 * Search city of the weather service. Yahoo uses these string
-	 */
-	private String searchCity;
 
 	/**
 	 * Constructor
@@ -152,7 +151,10 @@ public class YahooWeather extends XMLAPIWeather {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
 				condition = new ExtendedServiceDataForecast(
-							Converter.convertDate(dateString, "yyyy-MM-dd"), 
+							Converter.convertDate(
+								dateString, 
+								"dd MMM yyyy" //"yyyy-MM-dd"
+							), 
 							new Time(System.currentTimeMillis()), 
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
@@ -255,12 +257,15 @@ public class YahooWeather extends XMLAPIWeather {
 		return weather;
 	}
 
-	protected void setSearchCity(City city) {
+	@Override
+	protected Document fetchWeatherData(String city) throws ReadServiceDataException {
+		String citySearchString = null;
 		try {
-			this.searchCity = this.getWoeid(city.getName());
-		} catch (IOException | ParserConfigurationException | SAXException e) {
-			this.setSearchCity("");
+			citySearchString = getWoeid(city);
+		} catch (IOException | ParserConfigurationException | SAXException ex) {
+			throw new ReadServiceDataException(String.format("yahoo woeid for %s could not be fetched", city));
 		}
+		return super.fetchWeatherData(citySearchString); 
 	}
 
 	/**
@@ -295,20 +300,6 @@ public class YahooWeather extends XMLAPIWeather {
 		}
 
 		return "";
-	}
-
-	/**
-	 * @return the searchCity
-	 */
-	public String getSearchCity() {
-		return searchCity;
-	}
-
-	/**
-	 * @param searchCity the searchCity to set
-	 */
-	public void setSearchCity(String searchCity) {
-		this.searchCity = searchCity;
 	}
 
 }
