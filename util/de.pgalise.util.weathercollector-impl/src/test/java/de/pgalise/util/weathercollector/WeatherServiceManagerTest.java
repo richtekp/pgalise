@@ -68,10 +68,6 @@ public class WeatherServiceManagerTest {
 		CONTAINER.getContext().bind("inject",
 			this);
 	}
-	
-	@Before
-	public void setUp() throws NamingException {
-	}
 
 	@Test
 	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {

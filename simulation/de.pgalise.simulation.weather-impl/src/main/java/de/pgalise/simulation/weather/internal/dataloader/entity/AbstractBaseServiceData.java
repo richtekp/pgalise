@@ -11,6 +11,7 @@ import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import java.sql.Date;
 import java.sql.Time;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -57,7 +58,7 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 	@Column(name = "WIND_VELOCITY")
 	private Float windVelocity;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private DefaultCondition condition;
 
 	protected AbstractBaseServiceData() {

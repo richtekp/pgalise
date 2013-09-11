@@ -351,8 +351,10 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		tx.begin();
 
 		// Get forecast service data
-		TypedQuery<ExtendedServiceDataForecast> query = em.createNamedQuery("ServiceDataForecast.findByCityAndDate",
-				ExtendedServiceDataForecast.class);
+		TypedQuery<ExtendedServiceDataForecast> query = em.createNamedQuery(
+			String.format("%s.findByCityAndDate", ExtendedServiceDataForecast.class.getSimpleName()),
+			ExtendedServiceDataForecast.class
+		);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
 		List<ExtendedServiceDataForecast> result = query.getResultList();
@@ -364,7 +366,9 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	}
 
 	/**
-	 * Saves entries of the current service weather
+	 * Saves entries of the current service weather (using 
+	 * {@link EntityManager#merge(java.lang.Object) }, so use <tt>merge</tt> 
+	 * after modifications to save them to the database)
 	 * 
 	 * @param city
 	 *            Primary key of the city
@@ -387,7 +391,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		tx.begin();
 
 		// Save data
-		em.persist(serviceData);
+		em.merge(serviceData);
 
 		// Commit
 		tx.commit();
@@ -401,7 +405,9 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	}
 
 	/**
-	 * Saves forecast weather data
+	 * Saves forecast weather data (using 
+	 * {@link EntityManager#merge(java.lang.Object) }, so use <tt>merge</tt> 
+	 * after modifications to save them to the database)
 	 * 
 	 * @param cityID
 	 *            Primary key of the city
@@ -426,7 +432,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 			tx.begin();
 
 			// Save data
-			em.persist(data);
+			em.merge(data);
 
 			// Commit
 			tx.commit();
