@@ -26,7 +26,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PGALISE.HQF_DATA")
+//@Table(name = "PGALISE.HQF_DATA")
 public class HQFData implements Serializable {
 
 	/**

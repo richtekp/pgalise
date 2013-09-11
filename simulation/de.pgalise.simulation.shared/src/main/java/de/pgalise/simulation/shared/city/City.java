@@ -40,7 +40,7 @@ import org.hibernate.annotations.Type;
  * @version 1.0 (Sep 11, 2012)
  */
 @Entity
-@Table(name = "PGALISE.WEATHER_CITY")
+//@Table(name = "PGALISE.WEATHER_CITY")
 @NamedQuery(name = "City.getAll", query = "SELECT i FROM City i")
 public class City extends AbstractIdentifiable {
 

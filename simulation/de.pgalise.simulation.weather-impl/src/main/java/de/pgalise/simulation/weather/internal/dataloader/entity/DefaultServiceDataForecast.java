@@ -35,7 +35,7 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_FORECAST")
+//@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_FORECAST")
 @NamedQuery(name = "DefaultServiceDataForecast.findByDate", query = "SELECT i FROM DefaultServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
 public class DefaultServiceDataForecast extends AbstractBaseServiceData implements ServiceDataForecast, Comparable<ServiceDataForecast> {
 	private static final long serialVersionUID = 1L;

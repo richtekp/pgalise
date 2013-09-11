@@ -31,7 +31,7 @@ import javax.persistence.TemporalType;
  *
  */
 @Entity
-@Table(name = "PGALISE.BUS_CALENDAR")
+//@Table(name = "PGALISE.BUS_CALENDAR")
 public final class BusCalendar {
 	
 	@Id

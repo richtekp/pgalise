@@ -27,7 +27,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "PGALISE.BUS_ROUTES")
+//@Table(name = "PGALISE.BUS_ROUTES")
 public final class BusRoute {
 	
 	@Id

@@ -35,7 +35,7 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_CURRENT")
+//@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_CURRENT")
 @NamedQuery(name = "DefaultServiceDataCurrent.findByDate", query = "SELECT i FROM DefaultServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
 public class DefaultServiceDataCurrent extends AbstractBaseServiceData implements ServiceDataCurrent {
 	private static final long serialVersionUID = 1L;

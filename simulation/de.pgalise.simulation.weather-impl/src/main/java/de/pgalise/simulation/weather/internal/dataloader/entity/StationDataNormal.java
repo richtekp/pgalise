@@ -34,7 +34,7 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.STATION_DATA_NORMAL")
+//@Table(name = "PGALISE.STATION_DATA_NORMAL")
 @NamedQueries({
 		@NamedQuery(name = "StationDataNormal.findByDate", query = "SELECT i FROM StationDataNormal i WHERE i.measureDate = :date"),
 		@NamedQuery(name = "StationDataNormal.findFirstEntryByDate", query = "SELECT i FROM StationDataNormal i WHERE i.measureDate = :date ORDER BY i.measureTime ASC"),

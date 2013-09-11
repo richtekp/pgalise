@@ -39,7 +39,7 @@ import javax.measure.quantity.Temperature;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_CURRENT")
+//@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_CURRENT")
 @NamedQuery(name = "ExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM ExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
 public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ServiceDataCompleter {
 	private static final long serialVersionUID = 1L;

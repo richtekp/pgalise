@@ -27,7 +27,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "PGALISE.BUS_STOPS")
+//@Table(name = "PGALISE.BUS_STOPS")
 public final class BusStop {
 	
 	@Column(name = "STOP_NAME")

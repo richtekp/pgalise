@@ -32,7 +32,7 @@ import javax.persistence.Table;
  * @version 1.0 (01.07.2012)
  */
 @Entity
-@Table(name = "PGALISE.STATION_DATA_AGGREGATE")
+//@Table(name = "PGALISE.STATION_DATA_AGGREGATE")
 @NamedQueries({
 		@NamedQuery(name = "StationDataAggregate.findByDate", query = "SELECT i FROM StationDataAggregate i WHERE i.measureDate = :date"),
 		@NamedQuery(name = "StationDataAggregate.findFirstEntryByDate", query = "SELECT i FROM StationDataAggregate i WHERE i.measureDate = :date ORDER BY i.measureTime ASC"),
