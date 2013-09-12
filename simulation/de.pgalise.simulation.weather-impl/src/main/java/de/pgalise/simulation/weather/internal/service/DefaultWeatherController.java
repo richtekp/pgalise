@@ -49,6 +49,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.HotDayEvent;
@@ -62,7 +63,6 @@ import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import javax.vecmath.Vector2d;
 
 /**
  * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the
@@ -226,7 +226,7 @@ public class DefaultWeatherController extends AbstractController implements Weat
 		}
 
 		// Create strategies
-		List<WeatherStrategyHelper> strategies = new ArrayList<>();
+		List<WeatherStrategyHelper> strategies = new ArrayList<>(eventList.size());
 		for (WeatherEventHelper event : eventList) {
 			WeatherStrategy strategy = this.createStrategyFromEnum(event.getEvent(), event.getTimestamp(),
 					event.getValue(), event.getDuration());
@@ -291,9 +291,10 @@ public class DefaultWeatherController extends AbstractController implements Weat
 	 */
 	@SuppressWarnings("unused")
 	private long getNextNewDateTimestamp(long timestamp, long interval) {
-		if (timestamp == this.startTimestamp) {
+		long timestamp0 = timestamp;
+		if (timestamp0 == this.startTimestamp) {
 			GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTimeInMillis(timestamp);
+			calendar.setTimeInMillis(timestamp0);
 
 			int currentHour = calendar.get(Calendar.HOUR);
 			int currentMin = calendar.get(Calendar.MINUTE);
@@ -301,7 +302,8 @@ public class DefaultWeatherController extends AbstractController implements Weat
 			int currentMillis = calendar.get(Calendar.MILLISECOND);
 
 			while (true) {
-				calendar.setTimeInMillis(timestamp += interval);
+				timestamp0 += interval;
+				calendar.setTimeInMillis(timestamp0);
 
 				int tmpHour = calendar.get(Calendar.HOUR);
 				int tmpMin = calendar.get(Calendar.MINUTE);
@@ -320,7 +322,7 @@ public class DefaultWeatherController extends AbstractController implements Weat
 				}
 			}
 		} else {
-			return timestamp + DefaultWeatherController.ONE_DAY_IN_MILLIS;
+			return timestamp0 + DefaultWeatherController.ONE_DAY_IN_MILLIS;
 		}
 	}
 
@@ -381,7 +383,7 @@ public class DefaultWeatherController extends AbstractController implements Weat
 						DefaultWeatherController.log.debug("Deploy modifier: " + cevent.getEvent());
 						DefaultWeatherController.this.weatherservice.deployStrategy(strategy);
 					}
-				} catch (Exception e) {
+				} catch (IllegalArgumentException | NoWeatherDataFoundException e) {
 					e.printStackTrace();
 					throw new RuntimeException(e.getMessage());
 				}

@@ -6,6 +6,7 @@ package de.pgalise.it;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Time;
 import java.util.Properties;
 import javax.ejb.embeddable.EJBContainer;
 import javax.persistence.EntityManagerFactory;
@@ -22,16 +23,16 @@ public class TestUtils {
 		try (InputStream propInFile = TestUtils.class.getResourceAsStream("/database.properties")) {
 			p = new Properties();
 //			p.loadFromXML(propInFile);
-			p.setProperty("javax.persistence.transactionType", "RESOURCE_LOCAL");
-			p.setProperty("weatherData", "new://Resource?type=javax.sql.DataSource");
+//			p.setProperty("javax.persistence.transactionType", "RESOURCE_LOCAL");
+			p.setProperty("weatherData", "new://Resource?type=DataSource");
 //			p.setProperty("weatherData.JdbcDriver", "org.hsqldb.jdbcDriver");
 //			p.setProperty("weatherData.JdbcUrl", "jdbc:hsqldb:hsql://127.0.0.1:5201/pgalise");
 //			p.setProperty("weatherData.userName", "pgalise");
 //			p.setProperty("weatherData.password", "somepw");
 			p.setProperty("weatherData.JdbcDriver", "org.postgresql.Driver");
 			p.setProperty("weatherData.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/weather_data");
-			p.setProperty("weatherData.userName", "postgis");
-			p.setProperty("weatherData.password", "postgis");
+			p.setProperty("weatherData.UserName", "postgis");
+			p.setProperty("weatherData.Password", "postgis");
 			p.setProperty("weatherData.JtaManaged",
 				"true");
 			
@@ -89,6 +90,7 @@ public class TestUtils {
 		p.setProperty("javax.persistence.jdbc.user", "postgis");
 		p.setProperty("javax.persistence.jdbc.password", "postgis");		
 		p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+		p.setProperty("hibernate.show_sql", "false");
 		EntityManagerFactory retValue = Persistence.createEntityManagerFactory(unitName, p);
 		return retValue;
 	}

@@ -24,7 +24,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverterBase;
 import de.pgalise.simulation.weather.util.DateConverter;
-import javax.vecmath.Vector2d;
 
 /**
  * The implementation {@link LinearWeatherPositionConverter} calculates the values on a linear base away from the
@@ -33,7 +32,7 @@ import javax.vecmath.Vector2d;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 12, 2012)
  */
-public final class LinearWeatherPositionConverter extends WeatherPositionConverterBase {
+public class LinearWeatherPositionConverter extends WeatherPositionConverterBase {
 
 	/**
 	 * Constructor
@@ -204,7 +203,7 @@ public final class LinearWeatherPositionConverter extends WeatherPositionConvert
 	 */
 	@SuppressWarnings("unchecked")
 	private <T extends Number> T getPrecipitationAmount(long time, T refValue, double distance) {
-		Double max = 0.0;
+		Double max;
 
 		/*
 		 * No new rain

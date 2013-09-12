@@ -27,7 +27,7 @@ import de.pgalise.simulation.weather.modifier.WeatherStrategy;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
-public final class WeatherStrategyComparator implements Comparator<WeatherStrategy>, Serializable {
+public class WeatherStrategyComparator implements Comparator<WeatherStrategy>, Serializable {
 
 	/**
 	 * Serial

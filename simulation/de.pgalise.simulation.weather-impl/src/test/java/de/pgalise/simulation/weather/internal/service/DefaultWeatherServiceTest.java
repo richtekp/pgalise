@@ -49,13 +49,17 @@ import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
 import java.sql.Date;
 import java.util.Properties;
 import javax.annotation.ManagedBean;
+import javax.annotation.Resource;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -72,9 +76,12 @@ import org.apache.openejb.api.LocalClient;
  */
 @LocalClient
 @ManagedBean
+//@Stateless
+//@TransactionManagement(TransactionManagementType.BEAN)
 public class DefaultWeatherServiceTest  {	
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
+	@PersistenceUnit(unitName = "weather_data")
+	private EntityManagerFactory ENTITY_MANAGER_FACTORY;// = TestUtils.createEntityManagerFactory("weather_data_test");
 	/**
 	 * End timestamp
 	 */
@@ -96,11 +103,14 @@ public class DefaultWeatherServiceTest  {
 	private WeatherLoader loader;
 
 	private City city;
+	
+//	@Resource
+//	private UserTransaction utx;
 
 	public DefaultWeatherServiceTest() throws NamingException {
 		Properties p = new Properties();
 		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
+//		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 		
@@ -163,13 +173,15 @@ public class DefaultWeatherServiceTest  {
 
 		// Get weather
 		InitialContext initialContext = new InitialContext();
-		UserTransaction userTransaction = (UserTransaction) initialContext.lookup(
+		UserTransaction utx = (UserTransaction) initialContext.lookup(
 			"java:comp/UserTransaction");
-		userTransaction.begin();
+//		UserTransaction userTransaction = new  
+//org.apache.openejb.core.CoreUserTransaction(null);
+		utx.begin();
 		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
 		em.joinTransaction();
 		AbstractStationData stationData = new StationDataNormal(new Date(startTimestamp),
-			new Time(startTimestamp),
+			new Time(DateConverter.convertTimestampToMidnight(startTimestamp)),
 			1,
 			1,
 			1.0f,
@@ -179,8 +191,27 @@ public class DefaultWeatherServiceTest  {
 			1.0f,
 			1.0f,
 			1.0f);
-		em.persist(stationData);
-		userTransaction.commit();
+		em.merge(stationData);
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+			new Coordinate(1,
+			1),
+			new Coordinate(1,
+			2),
+			new Coordinate(2,
+			2),
+			new Coordinate(2,
+			1),
+			new Coordinate(1,
+			1)
+		});
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			referenceArea);
+		em.merge(city);
+		utx.commit();
 		em.close();
 		service.addNewWeather(startTimestamp, endTimestamp,
 				true, null);
@@ -205,7 +236,7 @@ public class DefaultWeatherServiceTest  {
 
 		// Test (normal)
 		MutableStationData serviceWeather = new StationDataNormal(new Date(startTimestamp),
-			new Time(startTimestamp),
+			new Time(DateConverter.convertTimestampToMidnight(startTimestamp)),
 			1,
 			1,
 			1.0f,
@@ -217,7 +248,7 @@ public class DefaultWeatherServiceTest  {
 			1.0f);
 		WeatherMap weatherMap = new StationDataMap() ;
 		MutableStationData serviceWeatherForecast = new StationDataNormal(new Date(startTimestamp),
-			new Time(startTimestamp),
+			new Time(DateConverter.convertTimestampToMidnight(startTimestamp)),
 			1,
 			1,
 			1.0f,
@@ -229,7 +260,7 @@ public class DefaultWeatherServiceTest  {
 			1.0f);
 		long weatherTimestamp = System.currentTimeMillis();
 		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
-			new Time(startTimestamp),
+			new Time(DateConverter.convertTimestampToMidnight(startTimestamp)),
 			1,
 			1,
 			1.0f,
@@ -253,7 +284,6 @@ public class DefaultWeatherServiceTest  {
 
 	@Test
 	public void testCheckDate() throws ParseException {
-
 		long testFalseDate = DateConverter.convertDate("12.03.2002", "dd.mm.yyyy").getTime();
 
 		/*

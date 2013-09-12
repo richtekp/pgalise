@@ -53,24 +53,32 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 /**
- * The {@link WeatherService} coordinates the {@link WeatherParameter} requests and provides access with the help of the
- * {@link WeatherLoader} to the needed weather information. An implementation of that interface is the
- * {@link DefaultWeatherService}. This implementation realizes a synchronization concept between the loading of new data
- * and responding to value requests. Due to the fact that the component should not allocate too much space during
- * runtime, it provides only a specific amount of modified weather information. If there is a request for
- * {@link WeatherParameter} values, which cannot be calculated from the provided data, the WeatherService try to get the
- * needed data automatically. Only one thread can get the new information from the database. At that moment the other
- * requests have to wait till the new data are available. Many threads can request specific {@link WeatherParameter}
- * values simultaneously. At the time of the WeatherService creation, the class loads the {@link WeatherParameter} by
- * the help of the {@link WeatherParameterEnum} automatically. There are eleven {@link WeatherParameter} available. Some
- * of them are calculated by other {@link WeatherParameter}. These parameters will be cached by the
- * {@link WeatherService} for another request to reduce the CPU processing. An example is the parameter
- * {@link WindStrength}.<br />
+ * The {@link WeatherService} coordinates the {@link WeatherParameter} requests 
+ * and provides access with the help of the {@link WeatherLoader} to the needed 
+ * weather information. An implementation of that interface is the 
+ * {@link DefaultWeatherService}. This implementation realizes a 
+ * synchronization concept between the loading of new data and responding to 
+ * value requests. Due to the fact that the component should not allocate too 
+ * much space during runtime, it provides only a specific amount of modified 
+ * weather information. If there is a request for {@link WeatherParameter} 
+ * values, which cannot be calculated from the provided data, the 
+ * WeatherService try to get the needed data automatically. Only one thread can 
+ * get the new information from the database. At that moment the other requests 
+ * have to wait till the new data are available. Many threads can request 
+ * specific {@link WeatherParameter} values simultaneously. At the time of the 
+ * WeatherService creation, the class loads the {@link WeatherParameter} by the 
+ * help of the {@link WeatherParameterEnum} automatically. There are eleven 
+ * {@link WeatherParameter} available. Some of them are calculated by other 
+ * {@link WeatherParameter}. These parameters will be cached by the
+ * {@link WeatherService} for another request to reduce the CPU processing. An 
+ * example is the parameter {@link WindStrength}.<br />
  * <br />
- * Due to the fact that the component should not allocate too much space during runtime, it provides only a specific
- * amount of modified weather information. If there is a request for weather parameter values, which cannot be
- * calculated from the provided data, the {@link DefaultWeatherService} try to get the needed data automatically.
- * Requests for dates that not bear on the simulation date interval be ignored by the component and an exception occurs
+ * Due to the fact that the component should not allocate too much space during 
+ * runtime, it provides only a specific amount of modified weather information. 
+ * If there is a request for weather parameter values, which cannot be 
+ * calculated from the provided data, the {@link DefaultWeatherService} try to 
+ * get the needed data automatically. Requests for dates that not bear on the 
+ * simulation date interval be ignored by the component and an exception occurs
  * during runtime.
  * 
  * @author Andreas Rehfeldt

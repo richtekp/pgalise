@@ -62,17 +62,20 @@ import javax.measure.unit.SI;
 /**
  * This class loads the weather station data from the database. <br />
  * <br />
- * The file jndi.properties describes the configuration to the database. In particular, the file includes the settings
- * of the Java Persistence API (JPA) and the database authorization. To change the database, one has to change the
- * database driver in this file. Notice that the XML file persistence.xml in the META-INF folder configures the JPA
- * process of this component. <br />
+ * The file jndi.properties describes the configuration to the database. In 
+ * particular, the file includes the settingsof the Java Persistence API (JPA) 
+ * and the database authorization. To change the database, one has to change the
+ * database driver in this file. Notice that the XML file persistence.xml in 
+ * the META-INF folder configures the JPA process of this component. <br />
  * <br />
- * The file weatherloader.properties explains the configuration of the JPA in more detail. It indicates the used
- * persistence unit and the Java classes for the JPA entities concerning the {@link StationData}. Notice that the
- * database tables must be created before the {@link WeatherService} has started for the first time, otherwise an
- * exception will occur. If there are changes in the scheme, one has to change also the JPA entities in the package
- * dataloader.entity or the properties in the file weatherloader.properties regarding the classes for
- * {@link StationData}.
+ * The file weatherloader.properties explains the configuration of the JPA in 
+ * more detail. It indicates the used persistence unit and the Java classes for 
+ * the JPA entities concerning the {@link StationData}. Notice that the 
+ * database tables must be created before the {@link WeatherService} has 
+ * started for the first time, otherwise an exception will occur. If there are 
+ * changes in the scheme, one has to change also the JPA entities in the 
+ * package dataloader.entity or the properties in the file 
+ * weatherloader.properties regarding the classes for {@link StationData}.
  * 
  * @author Andreas Rehfeldt
  * @author Marcus
@@ -83,7 +86,7 @@ import javax.measure.unit.SI;
 @Singleton(name = "de.pgalise.simulation.weather.dataloader.WeatherLoader", mappedName = "de.pgalise.simulation.weather.dataloader.DatabaseWeatherLoader")
 public class DatabaseWeatherLoader implements WeatherLoader {
 
-	private EntityManager em;
+	private EntityManager entityManager;
 
 	/**
 	 * File path for property file
@@ -129,13 +132,18 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 
 	@PersistenceContext(unitName = "weather_data")
 	public void setEntityManager(EntityManager entityManager) {
-			em = entityManager;
+			this.entityManager = entityManager;
 	}
 
 	public EntityManager getEntityManager() {
-			return em;
+			return entityManager;
 	}
 
+	/**
+	 * ??? checks whether data for the day of the <tt>timestamp</tt> and the preceeding and following day are available (both at the same time of the day)
+	 * @param timestamp
+	 * @return 
+	 */
 	@Override
 	public boolean checkStationDataForDay(long timestamp) {
 		List<AbstractStationData> weatherList;
@@ -177,7 +185,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 
 		// Get the data
 		DefaultServiceDataCurrent data;
-		TypedQuery<DefaultServiceDataCurrent> query = this.em.createNamedQuery("DefaultServiceDataCurrent.findByDate",
+		TypedQuery<DefaultServiceDataCurrent> query = this.entityManager.createNamedQuery("DefaultServiceDataCurrent.findByDate",
 					DefaultServiceDataCurrent.class);
 		query.setParameter("date", new Date(timestamp));
 		query.setParameter("city", city);
@@ -215,7 +223,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 
 		// Get the data
 		ServiceDataForecast data;
-		TypedQuery<DefaultServiceDataForecast> query = this.em.createNamedQuery("DefaultServiceDataForecast.findByDate",
+		TypedQuery<DefaultServiceDataForecast> query = this.entityManager.createNamedQuery("DefaultServiceDataForecast.findByDate",
 				DefaultServiceDataForecast.class);
 		if(query == null) {
 			return null;
@@ -240,7 +248,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	}
 
 	/**
-	 * Returns the weather data of the weather station. They are sorted ascending.
+	 * Returns the weather data of the weather station for the day of <tt>timestamp</tt>, as well as the preceeding and following day (at the same time of the day). They are sorted ascending. This method assumes that the availability of weather data has been check before (using {@link #checkStationDataForDay(long) }). If the check didin't occur the returned <tt>WeatherMap</tt> possibly contains <code>null</code>.
 	 * 
 	 * @param timestamp
 	 *            Timestamp
@@ -467,7 +475,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 
 		// Get information for that day
 		List<AbstractStationData> weatherList;
-			TypedQuery<AbstractStationData> query = this.em.createNamedQuery(String.format("%s.findByDate", stationDataClass.getSimpleName()),
+			TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findByDate", stationDataClass.getSimpleName()),
 					this.stationDataClass);
 		query.setParameter("date", new Date(timestamp));
 		weatherList = query.getResultList();
@@ -524,7 +532,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		// Get first result of that day
 		AbstractStationData data;
 		try {
-			TypedQuery<AbstractStationData> query = this.em.createNamedQuery(this.stationDataClassName
+			TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(this.stationDataClassName
 					+ ".findFirstEntryByDate", this.stationDataClass);
 			query.setParameter("date", new Date(timestamp));
 			query.setMaxResults(1);
@@ -537,11 +545,11 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	}
 
 	/**
-	 * Returns the last station data for the given timestamp
+	 * Returns the last station data for the given timestamp 
 	 * 
 	 * @param timestamp
 	 *            Timestamp
-	 * @return Last station data instance
+	 * @return Last station data instance or <code>null</code> if no data has been found
 	 */
 	private AbstractStationData loadLastStationDataForDate(long timestamp) {
 
@@ -551,12 +559,14 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		}
 
 		// Get last result of that day
-		AbstractStationData data;
-		TypedQuery<AbstractStationData> query = this.em.createNamedQuery(
+		TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(
 				this.stationDataClassName + ".findLastEntryByDate", this.stationDataClass);
 		query.setParameter("date", new Date(timestamp));
 		query.setMaxResults(1);
-		data = query.getSingleResult();
-		return data;
+		try {
+			return query.getSingleResult();
+		}catch(javax.persistence.NoResultException ex) {
+			return null;
+		}
 	}
 }

@@ -23,7 +23,6 @@ import javax.measure.quantity.Temperature;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 /**
  * Aggregate weather data of weather services. This class uses EclipseLink.

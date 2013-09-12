@@ -27,7 +27,7 @@ import de.pgalise.simulation.shared.city.City;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
-public final class CityComparator implements Comparator<City>, Serializable {
+public class CityComparator implements Comparator<City>, Serializable {
 
 	/**
 	 * Serial

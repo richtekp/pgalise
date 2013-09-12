@@ -14,6 +14,7 @@
 	  <applicationVersion>2.0-SNAPSHOT</applicationVersion>
 	  <java.compiler.source>1.7</java.compiler.source>
 	  <java.compiler.target>1.7</java.compiler.target>
+		<de.pgalise.openejb.version>4.5.1</de.pgalise.openejb.version>
 	</properties>
 		
 	<modules>
@@ -339,7 +340,7 @@
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-server</artifactId>
-				<version>4.5.2</version>
+				<version>${de.pgalise.openejb.version}</version>
 				<!--
 				<exclusions>
 					<exclusion>
@@ -348,13 +349,13 @@
 					</exclusion>
 				</exclusions>
 				-->
-				<scope>provided</scope>
+				<!--<scope>provided</scope>-->
 			</dependency>
 
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-client</artifactId>
-				<version>4.5.2</version>
+				<version>${de.pgalise.openejb.version}</version>
 				<!--<scope>provided</scope>-->
 			</dependency>			
 

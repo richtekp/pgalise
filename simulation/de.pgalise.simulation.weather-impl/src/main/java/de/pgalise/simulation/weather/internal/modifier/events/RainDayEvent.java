@@ -37,10 +37,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Changes the weather data for a rain day ({@link WeatherMapModifier} and {@link WeatherStrategy}).<br />
+ * Changes the weather data for a rain day ({@link WeatherMapModifier} and 
+ * {@link WeatherStrategy}).<br />
  * <br />
- * The file weather_decorators.properties describes the default properties for the implemented modifier. If no
- * parameters are given in the constructor of an implemented modifier, the standard properties of the file will be used.
+ * The file weather_decorators.properties describes the default properties for 
+ * the implemented modifier. If no parameters are given in the constructor of 
+ * an implemented modifier, the standard properties of the file will be used.
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)

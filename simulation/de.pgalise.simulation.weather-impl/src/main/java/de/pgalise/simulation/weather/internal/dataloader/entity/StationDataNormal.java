@@ -24,8 +24,6 @@ import javax.measure.quantity.Temperature;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.QueryHint;
-import javax.persistence.Table;
 
 /**
  * Weather data of weather stations. This class uses EclipseLink.

@@ -27,7 +27,7 @@ import de.pgalise.simulation.weather.service.WeatherService;
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
-public final class WeatherStrategyContext {
+public class WeatherStrategyContext {
 
 	/**
 	 * Strategy

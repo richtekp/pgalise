@@ -7,8 +7,6 @@ package de.pgalise.simulation.weather.internal.dataloader.entity;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.weather.model.BaseServiceData;
-import de.pgalise.simulation.weather.model.Condition;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import java.sql.Date;
 import java.sql.Time;
 import javax.persistence.CascadeType;

@@ -29,7 +29,7 @@ import de.pgalise.simulation.weather.internal.util.comparator.CityComparator;
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 17, 2012)
  */
-public final class PointsReferenceCityEvaluator implements ReferenceCityEvaluator {
+public class PointsReferenceCityEvaluator implements ReferenceCityEvaluator {
 
 	@Override
 	public City evaluate(List<City> list, City simCity) {

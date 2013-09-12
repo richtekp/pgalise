@@ -41,7 +41,7 @@ import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDa
  * @author Andreas Rehfeldt
  * @version 1.0 (17.09.2012)
  */
-public final class XMLFileWeatherLoader implements WeatherLoader {
+public class XMLFileWeatherLoader implements WeatherLoader {
 
 	/**
 	 * File extension of the file
