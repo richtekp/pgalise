@@ -16,14 +16,9 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.model.Condition;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import java.util.HashMap;
-import java.util.Map;
-import javax.persistence.EntityManagerFactory;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 
 /**
  * Helper for weather service strategies

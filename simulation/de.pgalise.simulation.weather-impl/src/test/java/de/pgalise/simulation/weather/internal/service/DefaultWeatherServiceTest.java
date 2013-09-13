@@ -191,19 +191,17 @@ public class DefaultWeatherServiceTest  {
 			1.0f,
 			1.0f);
 		em.merge(stationData);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
-			new Coordinate(1,
-			1),
-			new Coordinate(1,
-			2),
-			new Coordinate(2,
-			2),
-			new Coordinate(2,
-			1),
-			new Coordinate(1,
-			1)
-		});
-		City city = new City("Berlin",
+		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+			new Coordinate[] {
+				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
+				new Coordinate(referencePoint.x-1, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y-1),
+				new Coordinate(referencePoint.x-1, referencePoint.y-1)
+			}
+		);
+		city = new City("Berlin",
 			3375222,
 			80,
 			true,

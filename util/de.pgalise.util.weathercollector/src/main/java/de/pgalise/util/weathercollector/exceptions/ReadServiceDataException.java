@@ -14,30 +14,36 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.weatherstation;
-
-import de.pgalise.simulation.weather.model.StationData;
-import java.util.Set;
-
-import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
+package de.pgalise.util.weathercollector.exceptions;
 
 /**
- * Interface for the saver of weather stations
+ * Service data could not be read
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Oct 14, 2012)
+ * @version 1.0 (Mar 16, 2012)
  */
-public interface WeatherStationSaver {
+public class ReadServiceDataException extends Exception {
 
 	/**
-	 * Saves a list of station data objects
-	 * 
-	 * @param list
-	 *            List of station data objects
-	 * @return true if all the list could be saved
-	 * @throws SaveStationDataException
-	 *             Will be thrown if the list can not be saved
+	 * Serial
 	 */
-	public boolean saveStationDataSet(Set<StationData> list) throws SaveStationDataException;
+	private static final long serialVersionUID = -3210493856731108208L;
+
+	/**
+	 * Constructor
+	 */
+	public ReadServiceDataException() {
+		super();
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param text
+	 *            Error
+	 */
+	public ReadServiceDataException(String text) {
+		super(text);
+	}
 
 }

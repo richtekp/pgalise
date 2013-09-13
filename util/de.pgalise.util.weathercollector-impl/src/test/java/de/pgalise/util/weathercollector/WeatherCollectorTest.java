@@ -24,13 +24,13 @@ import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
-import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
@@ -41,7 +41,6 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Before;
@@ -100,7 +99,7 @@ public class WeatherCollectorTest {
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();
 		weatherCollector.collectServiceData(baseDatabaseManager, serviceStrategys);
-		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", ExtendedServiceDataCurrent.class.getSimpleName()));
+		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", DefaultExtendedServiceDataCurrent.class.getSimpleName()));
 		assertFalse(query.getResultList().isEmpty());
 		entityManager.close();
 	}

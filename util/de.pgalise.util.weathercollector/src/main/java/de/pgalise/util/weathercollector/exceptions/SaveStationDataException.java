@@ -14,25 +14,36 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.weatherstation;
-
-import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+package de.pgalise.util.weathercollector.exceptions;
 
 /**
- * Interface for the weather stations
+ * Thrown if there is an exception while saving the station data
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public interface StationStrategy {
+public class SaveStationDataException extends Exception {
 
 	/**
-	 * Saves the informations of the weather station
-	 * 
-	 * @param saver
-	 *            WeatherStationSaver
-	 * @param testmode
-	 *            Option to enable the test mode (no database commits)
+	 * Serial
 	 */
-	public void saveWeather(WeatherStationSaver saver);
+	private static final long serialVersionUID = -3210493828131108101L;
+
+	/**
+	 * Constructor
+	 */
+	public SaveStationDataException() {
+		super();
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param text
+	 *            Error
+	 */
+	public SaveStationDataException(String text) {
+		super(text);
+	}
+
 }

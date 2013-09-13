@@ -14,25 +14,33 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.weatherstation;
+package de.pgalise.weathercollector.weatherservice;
 
-import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
+import java.util.List;
 
 /**
- * Interface for the weather stations
+ * Interface for the saver of weather services
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Mar 16, 2012)
+ * @version 1.0 (Oct 14, 2012)
  */
-public interface StationStrategy {
+public interface WeatherServiceSaver {
 
 	/**
-	 * Saves the informations of the weather station
+	 * Returns a list of reference cities from the database
 	 * 
-	 * @param saver
-	 *            WeatherStationSaver
-	 * @param testmode
-	 *            Option to enable the test mode (no database commits)
+	 * @return list of cities
 	 */
-	public void saveWeather(WeatherStationSaver saver);
+	public List<City> getReferenceCities();
+
+	/**
+	 * Saves all informations from the weather services
+	 * 
+	 * @param weather
+	 *            ServiceData instance
+	 */
+	public void saveServiceData(ServiceDataHelper weather);
+
 }

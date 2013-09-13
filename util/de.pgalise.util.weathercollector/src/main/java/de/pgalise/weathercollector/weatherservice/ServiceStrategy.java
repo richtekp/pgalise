@@ -14,12 +14,12 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.weatherservice;
+package de.pgalise.weathercollector.weatherservice;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 
 /**
  * Interface for weather service strategies. Uses the strategy pattern

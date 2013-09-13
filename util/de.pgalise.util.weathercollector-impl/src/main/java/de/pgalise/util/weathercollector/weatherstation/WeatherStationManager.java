@@ -16,12 +16,9 @@
  
 package de.pgalise.util.weathercollector.weatherstation;
 
-import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,11 +29,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.WeatherServiceContext;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.1 (Jun 16, 2012)
  */
-public final class WeatherStationManager {
+public class WeatherStationManager {
 	private final static Logger LOGGER = LoggerFactory.getLogger(WeatherStationManager.class);
 
 	/**

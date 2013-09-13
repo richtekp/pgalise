@@ -14,34 +14,22 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.weatherservice;
-
-import de.pgalise.simulation.shared.city.City;
-import java.util.List;
-
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+package de.pgalise.weathercollector.model;
 
 /**
- * Interface for the saver of weather services
+ * Interface to complete weather service data
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Oct 14, 2012)
+ * @version 1.0 (Apr 16, 2012)
  */
-public interface WeatherServiceSaver {
+public interface ExtendedServiceDataCurrentCompleter  {
 
 	/**
-	 * Returns a list of reference cities from the database
+	 * Concentrate the objects
 	 * 
-	 * @return list of cities
+	 * @param obj
+	 *            new obj
 	 */
-	public List<City> getReferenceCities();
-
-	/**
-	 * Saves all informations from the weather services
-	 * 
-	 * @param weather
-	 *            ServiceData instance
-	 */
-	public void saveServiceData(ServiceDataHelper weather);
+	public void complete(ExtendedServiceDataCurrent obj);
 
 }

@@ -92,7 +92,7 @@ public class DefaultWeatherServiceSyncTest {
 		CONTAINER.getContext().bind("inject",
 			this);
 		
-		Coordinate referencePoint = new Coordinate(20, 20);
+		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
@@ -102,7 +102,12 @@ public class DefaultWeatherServiceSyncTest {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1)
 			}
 		);
-		city = new City("test_city", 200000, 100, true, true, referenceArea);
+		city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			referenceArea);
 		
 		Context ctx = CONTAINER.getContext();
 

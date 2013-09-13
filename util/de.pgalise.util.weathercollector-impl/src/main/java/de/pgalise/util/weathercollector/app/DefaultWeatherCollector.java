@@ -17,12 +17,12 @@
 package de.pgalise.util.weathercollector.app;
 
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

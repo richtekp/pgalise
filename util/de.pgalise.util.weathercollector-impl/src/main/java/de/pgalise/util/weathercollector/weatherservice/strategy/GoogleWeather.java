@@ -17,7 +17,6 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import java.sql.Date;
@@ -28,11 +27,15 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
 import javax.measure.Measure;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -58,8 +61,8 @@ public class GoogleWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
-		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
+	protected DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
+		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
 
 		// Read general informations
 		NodeList nodes = doc.getElementsByTagName("forecast_information");
@@ -90,7 +93,7 @@ public class GoogleWeather extends XMLAPIWeather {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
 			// Date
-			ExtendedServiceDataCurrent condition = new ExtendedServiceDataCurrent(new Date(weather.getMeasureTimestamp().getTime()),
+			MutableExtendedServiceDataCurrent condition = new DefaultExtendedServiceDataCurrent(new Date(weather.getMeasureTimestamp().getTime()),
 					new Time(weather.getMeasureTimestamp().getTime()), city,
 				null, 1.0f,
 				Float.NaN,
@@ -111,7 +114,7 @@ public class GoogleWeather extends XMLAPIWeather {
 					condition.setRelativHumidity(Float.parseFloat(segs[1].substring(0, (segs[1].length() - 1))));
 				} else if (childnodes.item(j).getNodeName() == "condition") {
 					// Condition
-					condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
+					condition.setCondition(Condition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
 
@@ -127,13 +130,13 @@ public class GoogleWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
-			ExtendedServiceDataForecast condition = new ExtendedServiceDataForecast(
+			MutableExtendedServiceDataForecast condition = new DefaultExtendedServiceDataForecast(
 							new Date(System.currentTimeMillis()), 
 							new Time(System.currentTimeMillis()), 
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
+							1.0f, 1.0f, 10.0f, Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
 
 			for (int j = 0; j < childnodes.getLength(); j++) {
 				// Data
@@ -156,7 +159,7 @@ public class GoogleWeather extends XMLAPIWeather {
 					condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 				} else if (childnodes.item(j).getNodeName() == "condition") {
 					// Condition
-					condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
+					condition.setCondition(Condition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
 

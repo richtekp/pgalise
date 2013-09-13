@@ -17,6 +17,7 @@
 package de.pgalise.simulation.weather.internal.dataloader.entity;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import java.sql.Date;
 import java.sql.Time;
@@ -62,7 +63,7 @@ public class DefaultServiceDataForecast extends AbstractBaseServiceData implemen
 		Float relativHumidity, 
 		Float windDirection, 
 		Float windVelocity, 
-		DefaultCondition condition
+		Condition condition
 	) {
 		super(measureDate, measureTime, city, relativHumidity, windDirection, windVelocity, condition);
 		this.temperatureHigh = temperatureHigh;

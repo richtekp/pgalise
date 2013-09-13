@@ -16,8 +16,8 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.weathercollector.model.ExtendedServiceDataCurrentCompleter;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.Condition;
 import java.sql.Date;
@@ -26,9 +26,8 @@ import java.sql.Time;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
+import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 
@@ -40,8 +39,8 @@ import javax.measure.quantity.Temperature;
  */
 @Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_CURRENT")
-@NamedQuery(name = "ExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM ExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
-public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ServiceDataCompleter {
+@NamedQuery(name = "DefaultExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM DefaultExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
+public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ExtendedServiceDataCurrent, ExtendedServiceDataCurrentCompleter, MutableExtendedServiceDataCurrent {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -65,11 +64,11 @@ public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implem
 	/**
 	 * Default constructor
 	 */
-	protected ExtendedServiceDataCurrent() {
+	protected DefaultExtendedServiceDataCurrent() {
 	}
 
-	public ExtendedServiceDataCurrent(
-		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, DefaultCondition condition, Time sunrise, Time sunset) {
+	public DefaultExtendedServiceDataCurrent(
+		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, Condition condition, Time sunrise, Time sunset) {
 		super(
 			measureDate,
 			measureTime, 
@@ -85,11 +84,7 @@ public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implem
 	}
 
 	@Override
-	public void complete(ServiceDataCompleter obj) {
-		if (!(obj instanceof ExtendedServiceDataCurrent)) {
-			return;
-		}
-		ExtendedServiceDataCurrent newObj = (ExtendedServiceDataCurrent) obj;
+	public void complete(ExtendedServiceDataCurrent newObj) {
 
 		// Date
 		if (this.getMeasureDate() == null) {
@@ -105,7 +100,7 @@ public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implem
 			this.setTemperature(newObj.getTemperature());
 		}
 
-		if (this.getCondition() == DefaultCondition.UNKNOWN_CONDITION) {
+		if (this.getCondition() == Condition.UNKNOWN_CONDITION) {
 			this.setCondition(newObj.getCondition());
 		}
 

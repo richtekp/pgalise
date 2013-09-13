@@ -7,6 +7,7 @@ package de.pgalise.simulation.weather.internal.dataloader.entity;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.weather.model.BaseServiceData;
+import de.pgalise.simulation.weather.model.Condition;
 import java.sql.Date;
 import java.sql.Time;
 import javax.persistence.CascadeType;
@@ -57,12 +58,12 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 	private Float windVelocity;
 	
 	@OneToOne(cascade = CascadeType.PERSIST)
-	private DefaultCondition condition;
+	private Condition condition;
 
 	protected AbstractBaseServiceData() {
 	}
 
-	public AbstractBaseServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, DefaultCondition condition) {
+	public AbstractBaseServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, Condition condition) {
 		this.measureDate = measureDate;
 		this.measureTime = measureTime;
 		this.city = city;
@@ -135,12 +136,12 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 		this.windVelocity = windVelocity;
 	}
 
-	public void setCondition(DefaultCondition condition) {
+	public void setCondition(Condition condition) {
 		this.condition = condition;
 	}
 
 	@Override
-	public DefaultCondition getCondition() {
+	public Condition getCondition() {
 		return this.condition;
 	}
 }

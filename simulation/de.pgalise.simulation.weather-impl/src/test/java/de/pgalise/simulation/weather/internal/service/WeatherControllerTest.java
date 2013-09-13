@@ -17,6 +17,7 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -51,6 +52,7 @@ import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import javax.vecmath.Vector2d;
@@ -108,12 +110,22 @@ public class WeatherControllerTest {
 		serviceDictionary.init(WeatherControllerTest.produceServerConfiguration());
 
 		// Create city
-		City city = new City("Berlin",
+		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+			new Coordinate[] {
+				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
+				new Coordinate(referencePoint.x-1, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y-1),
+				new Coordinate(referencePoint.x-1, referencePoint.y-1)
+			}
+		);
+		city = new City("Berlin",
 			3375222,
 			80,
 			true,
 			true,
-			new Coordinate(52.516667, 13.4));
+			referenceArea);
 
 		// Start
 		Calendar cal = new GregorianCalendar();

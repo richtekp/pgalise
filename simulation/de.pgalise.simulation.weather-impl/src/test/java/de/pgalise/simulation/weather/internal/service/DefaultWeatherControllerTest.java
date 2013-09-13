@@ -111,7 +111,7 @@ public class DefaultWeatherControllerTest {
 		serviceDictionary.init(DefaultWeatherControllerTest.produceServerConfiguration());
 
 		// Create city
-		Coordinate referencePoint = new Coordinate(20, 20);
+		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
@@ -121,7 +121,13 @@ public class DefaultWeatherControllerTest {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1)
 			}
 		);
-		city = new City("test_city", 200000, 100, true, true, referenceArea);
+		city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			referenceArea);
+
 
 		// Start
 		Calendar cal = new GregorianCalendar();

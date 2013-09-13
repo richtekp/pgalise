@@ -44,7 +44,6 @@ import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
 import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
@@ -202,7 +201,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 			data.getRelativHumidity(), 
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
+			Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}
@@ -240,7 +239,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 			data.getRelativHumidity(), 
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
+			Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}

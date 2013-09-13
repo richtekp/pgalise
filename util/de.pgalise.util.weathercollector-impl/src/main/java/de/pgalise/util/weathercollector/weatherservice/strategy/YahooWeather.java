@@ -17,7 +17,6 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import java.io.IOException;
@@ -34,15 +33,16 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
@@ -65,7 +65,7 @@ public class YahooWeather extends XMLAPIWeather {
 
 	@Override
 	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
+		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
 		Unit<Temperature> unit = null;
 
 		// City (<yweather:location city="Oldenburg" region="NI" country="Germany"/>)
@@ -104,17 +104,17 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			ExtendedServiceDataCurrent condition;
+			DefaultExtendedServiceDataCurrent condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
 				Date date = Converter.convertDate(dateString, "E, dd MMM yyyy h:mm a z");
 				Time time = Converter.convertTime(dateString, "E, dd MMM yyyy h:mm a z");
-				condition = new ExtendedServiceDataCurrent(
+				condition = new DefaultExtendedServiceDataCurrent(
 							date, 
 							time, 
 							city, 
-							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
+							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
 			} catch (ParseException e) {
 				e.printStackTrace();
 				return null;
@@ -131,7 +131,7 @@ public class YahooWeather extends XMLAPIWeather {
 			// Condition
 			dataString = attributes.getNamedItem("code").getTextContent();
 			if ((dataString != null) && !dataString.equals("")) {
-				condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
+				condition.setCondition(Condition.retrieveCondition(Integer.parseInt(dataString)));
 			}
 
 			// City
@@ -146,11 +146,11 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			ExtendedServiceDataForecast condition;
+			DefaultExtendedServiceDataForecast condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
-				condition = new ExtendedServiceDataForecast(
+				condition = new DefaultExtendedServiceDataForecast(
 							Converter.convertDate(
 								dateString, 
 								"dd MMM yyyy" //"yyyy-MM-dd"
@@ -159,7 +159,7 @@ public class YahooWeather extends XMLAPIWeather {
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, DefaultCondition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
+							1.0f, 1.0f, 10.0f, Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
 			} catch (ParseException e) {
 				e.printStackTrace();
 				continue;
@@ -182,7 +182,7 @@ public class YahooWeather extends XMLAPIWeather {
 			// Condition
 			dataString = attributes.getNamedItem("code").getTextContent();
 			if ((dataString != null) && !dataString.equals("")) {
-				condition.setCondition(DefaultCondition.retrieveCondition(Integer.parseInt(dataString)));
+				condition.setCondition(Condition.retrieveCondition(Integer.parseInt(dataString)));
 			}
 
 			// City
@@ -198,7 +198,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:atmosphere");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				MutableExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String humidity = attributes.getNamedItem("humidity").getTextContent();
 				if ((humidity != null) && !humidity.equals("")) {
@@ -215,7 +215,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:astronomy");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				MutableExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				try {
 					// Sunset
@@ -238,7 +238,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:wind");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				MutableExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String direction = attributes.getNamedItem("direction").getTextContent();
 				if ((direction != null) && !direction.equals("")) {

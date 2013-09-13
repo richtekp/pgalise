@@ -16,7 +16,14 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.weathercollector.model.ServiceDataHelperCompleter;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableServiceDataHelper;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Set;
@@ -28,7 +35,7 @@ import java.util.TreeSet;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public class ServiceDataHelper implements ServiceDataCompleter {
+public class DefaultServiceDataHelper implements MutableServiceDataHelper {
 
 	/**
 	 * Checks data if the date is the same day
@@ -58,8 +65,8 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	 *            Date
 	 * @return Forecast of the day or null
 	 */
-	public static ExtendedServiceDataForecast getForecastFromDate(Set<ExtendedServiceDataForecast> forecasts, Date date) {
-		for (ExtendedServiceDataForecast forecastCondition : forecasts) {
+	public static <T extends ExtendedServiceDataForecast> T getForecastFromDate(Set<T> forecasts, Date date) {
+		for (T forecastCondition : forecasts) {
 			if (checkDate(forecastCondition.getMeasureDate(), date)) {
 				return forecastCondition;
 			}
@@ -81,12 +88,12 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	/**
 	 * Current condition
 	 */
-	private ExtendedServiceDataCurrent currentCondition;
+	private MutableExtendedServiceDataCurrent currentCondition;
 
 	/**
 	 * Set with forecasts
 	 */
-	private Set<ExtendedServiceDataForecast> forecastConditions;
+	private Set<MutableExtendedServiceDataForecast> forecastConditions;
 
 	/**
 	 * Timestamp of the data
@@ -104,21 +111,17 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	 * @param apiSource the name of the weather API used to retrieve the date 
 	 * (e.g. Yahoo)
 	 */
-	public ServiceDataHelper(City city, String apiSource) {
+	public DefaultServiceDataHelper(City city, String apiSource) {
 		this.source = apiSource;
 		this.city = city;
 		this.apicity = "";
-		this.forecastConditions = new TreeSet<ExtendedServiceDataForecast>();
+		this.forecastConditions = new TreeSet<>();
 	}
 
 	@Override
-	public void complete(ServiceDataCompleter obj) {
-		if (!(obj instanceof ServiceDataHelper)) {
-			return;
-		}
-		ServiceDataHelper newObj = (ServiceDataHelper) obj;
+	public void complete(ServiceDataHelper<MutableExtendedServiceDataCurrent, MutableExtendedServiceDataForecast> newObj) {
 
-		if ((this.city == null) || this.city.getName().equals("")) {
+		if ((this.city == null) || this.city.getName().isEmpty()) {
 			this.city = newObj.getCity();
 		}
 
@@ -143,7 +146,7 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 				}
 			}
 
-			for (ExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
+			for (MutableExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
 
 				ExtendedServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getMeasureDate());
 				if (oldCondition == null) {
@@ -154,46 +157,57 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		}
 	}
 
+	@Override
 	public String getApicity() {
 		return this.apicity;
 	}
 
+	@Override
 	public City getCity() {
 		return this.city;
 	}
 
-	public ExtendedServiceDataCurrent getCurrentCondition() {
+	@Override
+	public MutableExtendedServiceDataCurrent getCurrentCondition() {
 		return this.currentCondition;
 	}
 
-	public Set<ExtendedServiceDataForecast> getForecastConditions() {
+	@Override
+	public Set<MutableExtendedServiceDataForecast> getForecastConditions() {
 		return this.forecastConditions;
 	}
 
+	@Override
 	public Timestamp getMeasureTimestamp() {
 		return this.measureTimestamp;
 	}
 
+	@Override
 	public String getSource() {
 		return this.source;
 	}
 
+	@Override
 	public void setApicity(String apicity) {
 		this.apicity = apicity;
 	}
 
+	@Override
 	public void setCity(City city) {
 		this.city = city;
 	}
 
-	public void setCurrentCondition(ExtendedServiceDataCurrent currentCondition) {
+	@Override
+	public void setCurrentCondition(MutableExtendedServiceDataCurrent currentCondition) {
 		this.currentCondition = currentCondition;
 	}
 
+	@Override
 	public void setMeasureTimestamp(Timestamp timestamp) {
 		this.measureTimestamp = timestamp;
 	}
 
+	@Override
 	public void setSource(String source) {
 		this.source = source;
 	}
