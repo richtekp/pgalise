@@ -188,6 +188,8 @@ public class DefaultWeatherService implements WeatherService {
 					startTimestamp));
 		}
 		
+		if(!checkDate(startTimestamp))
+
 		// Add weather data
 		try {
 			// Only one thread can add new weather
@@ -202,7 +204,11 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public void addNewNextDayWeather() throws NoWeatherDataFoundException {
+<<<<<<< Updated upstream
+	public void addNextWeather() throws NoWeatherDataFoundException {
+=======
+	public void addNewNextDayWeather() {
+>>>>>>> Stashed changes
 		// Has a date been simulated before?
 		if (this.loadedTimestamp < 1) {
 			throw new RuntimeException("Service was not started before!");
@@ -234,7 +240,7 @@ public class DefaultWeatherService implements WeatherService {
 	public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException {
 		// There is no weather data added
 		if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
-			throw new IllegalStateException("No weather data has been added so far");
+			throw new NoWeatherDataFoundException();
 		}
 
 		if (WeatherEventEnum.SIMULATION_EVENTS.contains(strategy.getType())) {
@@ -447,8 +453,13 @@ public class DefaultWeatherService implements WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             No data found
 	 */
+<<<<<<< Updated upstream
 	private void internalAddNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
 			List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
+=======
+	private WeatherMap internalAddNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
+			List<WeatherStrategyHelper> strategyList) {
+>>>>>>> Stashed changes
 		// Delete all values
 		this.initValues();
 
@@ -466,7 +477,7 @@ public class DefaultWeatherService implements WeatherService {
 		}
 
 		// Add new weather data
-		this.loadWeather(startTimestampMidnight);
+		return this.loadWeather(startTimestampMidnight);
 	}
 
 	/**
@@ -490,7 +501,7 @@ public class DefaultWeatherService implements WeatherService {
 
 			// Check existing map
 			if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
-				throw new IllegalStateException();
+				throw new NoWeatherDataFoundException();
 			}
 
 			// Change map to next day
@@ -531,7 +542,11 @@ public class DefaultWeatherService implements WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             No data found for the given date
 	 */
+<<<<<<< Updated upstream
 	private void loadWeather(long timestamp) throws NoWeatherDataFoundException {
+=======
+	private WeatherMap loadWeather(long timestamp) {
+>>>>>>> Stashed changes
 		/*
 		 * Load data
 		 */
@@ -603,6 +618,7 @@ public class DefaultWeatherService implements WeatherService {
 		// System.out.println(new Date(w.getDate()) + " - " + new Time(w.getTime()) + " - "
 		// + new Timestamp(w.getTimestamp()));
 		// }
+		return map;
 	}
 
 	@Override

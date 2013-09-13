@@ -16,13 +16,11 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.simulation.shared.city.City;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,13 +32,13 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
+import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -159,7 +157,7 @@ public class WeatherServiceContext {
 	private static Set<ServiceStrategy> loadStrategiesFromFile() {
 		Set<ServiceStrategy> list = new HashSet<>();
 
-		try (InputStream propInFile = WeatherStationManager.class.getResourceAsStream(FILEPATH)) {
+		try (InputStream propInFile = DefaultWeatherStationManager.class.getResourceAsStream(FILEPATH)) {
 			// Read file
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

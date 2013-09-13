@@ -48,7 +48,7 @@ public interface WeatherService {
 	public void _clearValues();
 
 	/**
-	 * Get new weather informations for the given timestamp from the database
+	 * Get new weather informations for the given timestamp from the database 
 	 * which have to be present in the database. In case they're not present 
 	 * throws a {@link NoWeatherDataFoundException}.
 	 * 
@@ -74,7 +74,11 @@ public interface WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no data for the given date in the database
 	 */
+<<<<<<< Updated upstream
+	public void addNextWeather() throws NoWeatherDataFoundException;
+=======
 	public void addNewNextDayWeather() throws NoWeatherDataFoundException;
+>>>>>>> Stashed changes
 
 	/**
 	 * Checks if the weather data can be loaded for the given date.

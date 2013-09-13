@@ -10,7 +10,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.it.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import javax.annotation.ManagedBean;
@@ -62,7 +62,7 @@ public class GoogleWeatherTest {
 			referenceArea);
 		DatabaseManager databaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
 		GoogleWeather instance = new GoogleWeather();
-		ServiceDataHelper result = instance.getWeather(city,
+		DefaultServiceDataHelper result = instance.getWeather(city,
 			databaseManager);
 		assertFalse(result.getForecastConditions().isEmpty());
 	}

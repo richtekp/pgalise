@@ -24,9 +24,9 @@ import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import org.junit.Test;
 
-import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
+import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
+import de.pgalise.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.strategy.StationOldenburg;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -73,7 +73,7 @@ public class WeatherStationManagerTest {
 		BaseDatabaseManager baseDatabaseManager = NonJTADatabaseManager.getInstance(
 			entityManagerFactory);
 		Set<StationStrategy> serviceStrategys = new HashSet<StationStrategy>(Arrays.asList(new StationOldenburg()));
-		WeatherStationManager instance = new WeatherStationManager(
+		DefaultWeatherStationManager instance = new DefaultWeatherStationManager(
 			baseDatabaseManager);
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		

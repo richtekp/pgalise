@@ -16,13 +16,15 @@
  
 package de.pgalise.util.weathercollector.app;
 
+import de.pgalise.util.weathercollector.WeatherCollector;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
-import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
-import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
+import de.pgalise.weathercollector.weatherstation.StationStrategy;
+import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
+import de.pgalise.weathercollector.weatherstation.WeatherStationManager;
 import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 2.1 (Jun 24, 2012)
  */
-public class DefaultWeatherCollector {
+public class DefaultWeatherCollector implements WeatherCollector {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherCollector.class);
 	private static final long serialVersionUID = 1L;
 
@@ -45,6 +47,7 @@ public class DefaultWeatherCollector {
 	public DefaultWeatherCollector() {
 	}
 	
+	@Override
 	public void collectServiceData(BaseDatabaseManager weatherServiceSaver, Set<ServiceStrategy> serviceStrategys) {
 		WeatherServiceManager collector = new WeatherServiceManager(weatherServiceSaver, serviceStrategys);
 
@@ -62,7 +65,7 @@ public class DefaultWeatherCollector {
 	}
 	
 	public void collectStationData(BaseDatabaseManager databaseManager, Set<StationStrategy> stationStrategys) {
-		WeatherStationManager collector = new WeatherStationManager(databaseManager, stationStrategys);
+		WeatherStationManager collector = new DefaultWeatherStationManager(databaseManager, stationStrategys);
 
 		// Get informations and save them
 		LOGGER.debug("### --- Wetterstationen --- ###", Level.INFO);

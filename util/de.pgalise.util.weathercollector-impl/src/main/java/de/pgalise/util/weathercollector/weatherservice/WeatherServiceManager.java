@@ -16,13 +16,16 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.weathercollector.weatherservice.WeatherServiceSaver;
 import de.pgalise.simulation.shared.city.City;
 import java.util.List;
 import java.util.logging.Level;
 
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.util.Set;
 import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
@@ -34,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Jun 23, 2012)
  */
-public final class WeatherServiceManager {
+public class WeatherServiceManager {
 	private final static Logger LOGGER = LoggerFactory.getLogger(WeatherServiceManager.class);
 
 	/**
@@ -121,7 +124,7 @@ public final class WeatherServiceManager {
 	 * @return ServiceData
 	 */
 	private ServiceDataHelper getServiceData(City city, DatabaseManager databaseManager) {
-		ServiceDataHelper data = null;
+		ServiceDataHelper data;
 
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
 

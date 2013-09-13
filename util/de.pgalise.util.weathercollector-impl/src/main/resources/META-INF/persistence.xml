@@ -15,14 +15,14 @@
   <persistence-unit name="weather_data_test" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <!--<non-jta-data-source>weatherDataTest</non-jta-data-source>-->
-		<class>de.pgalise.simulation.shared.city.City</class>
+    <class>de.pgalise.simulation.shared.city.City</class>
     <class>de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition</class>
     <class>de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataCurrent</class>
     <class>de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast</class>
     <class>de.pgalise.simulation.weather.internal.dataloader.entity.StationDataAggregate</class>
-		<class>de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal</class>
+    <class>de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal</class>
     <class>de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent</class>
-		<class>de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast</class>
+    <class>de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast</class>
     <properties>
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>

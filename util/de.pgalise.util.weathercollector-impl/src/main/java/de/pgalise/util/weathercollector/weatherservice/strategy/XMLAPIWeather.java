@@ -27,9 +27,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.Unit;
 import javax.persistence.EntityManagerFactory;

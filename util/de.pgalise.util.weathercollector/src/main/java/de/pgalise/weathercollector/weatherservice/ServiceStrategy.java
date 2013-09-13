@@ -14,34 +14,29 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.weatherservice;
+package de.pgalise.weathercollector.weatherservice;
 
 import de.pgalise.simulation.shared.city.City;
-import java.util.List;
-
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
+import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 
 /**
- * Interface for the saver of weather services
+ * Interface for weather service strategies. Uses the strategy pattern
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Oct 14, 2012)
+ * @version 1.0 (Mar 16, 2012)
  */
-public interface WeatherServiceSaver {
+public interface ServiceStrategy {
 
 	/**
-	 * Returns a list of reference cities from the database
+	 * Returns the current weather informations to the given city
 	 * 
-	 * @return list of cities
+	 * @param city
+	 *            City
+	 * @return ServiceData instance
+	 * @throws ReadServiceDataException
+	 *             Data can not be read by strategy
 	 */
-	public List<City> getReferenceCities();
-
-	/**
-	 * Saves all informations from the weather services
-	 * 
-	 * @param weather
-	 *            ServiceData instance
-	 */
-	public void saveServiceData(ServiceDataHelper weather);
-
+	public ServiceDataHelper getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException;
 }

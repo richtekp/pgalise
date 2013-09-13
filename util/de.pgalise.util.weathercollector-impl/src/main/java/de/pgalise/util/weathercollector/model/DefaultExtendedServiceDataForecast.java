@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.weathercollector.model.ServiceDataCompleter;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast;
@@ -27,6 +28,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
+import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
 import java.sql.Time;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
@@ -39,17 +42,17 @@ import javax.measure.quantity.Temperature;
  */
 @Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_FORECAST")
-@NamedQuery(name = "ExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM ExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class ExtendedServiceDataForecast extends DefaultServiceDataForecast implements ServiceDataCompleter {
+@NamedQuery(name = "DefaultExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM DefaultExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
+public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForecast implements ExtendedServiceDataForecast {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default constructor
 	 */
-	protected ExtendedServiceDataForecast() {
+	protected DefaultExtendedServiceDataForecast() {
 	}
 
-	public ExtendedServiceDataForecast(
+	public DefaultExtendedServiceDataForecast(
 		Date measureDate,
 		Time measureTime, 
 		City city,
@@ -73,11 +76,11 @@ public class ExtendedServiceDataForecast extends DefaultServiceDataForecast impl
 
 	@Override
 	public void complete(ServiceDataCompleter obj) {
-		if (!(obj instanceof ExtendedServiceDataForecast)) {
+		if (!(obj instanceof DefaultExtendedServiceDataForecast)) {
 			return;
 		}
 
-		ExtendedServiceDataForecast newObj = (ExtendedServiceDataForecast) obj;
+		DefaultExtendedServiceDataForecast newObj = (DefaultExtendedServiceDataForecast) obj;
 
 		// Date
 		if (this.getMeasureDate() == null) {

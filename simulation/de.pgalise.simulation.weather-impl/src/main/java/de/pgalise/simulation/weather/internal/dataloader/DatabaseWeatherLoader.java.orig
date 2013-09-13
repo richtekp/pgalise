@@ -58,7 +58,6 @@ import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Time;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
-import javax.persistence.NoResultException;
 
 /**
  * This class loads the weather station data from the database. <br />
@@ -248,6 +247,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		return weather;
 	}
 
+<<<<<<< Updated upstream
 	/**
 	 * Returns the weather data of the weather station for the day of <tt>timestamp</tt>, as well as the preceeding and following day (at the same time of the day). They are sorted ascending. This method assumes that the availability of weather data has been check before (using {@link #checkStationDataForDay(long) }). If the check didin't occur the returned <tt>WeatherMap</tt> possibly contains <code>null</code>.
 	 * 
@@ -257,8 +257,11 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no weather data for the given date.
 	 */
+=======
+>>>>>>> Stashed changes
 	@Override
 	public WeatherMap loadStationData(long timestamp) throws NoWeatherDataFoundException {
+		// Get list
 		List<AbstractStationData> weatherList = this.getStationData(timestamp);
 
 		// Add values of the previous day
@@ -530,15 +533,18 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		}
 
 		// Get first result of that day
-		TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(this.stationDataClassName
-				+ ".findFirstEntryByDate", this.stationDataClass);
-		query.setParameter("date", new Date(timestamp));
-		query.setMaxResults(1);
+		AbstractStationData data;
 		try {
-			return query.getSingleResult();
-		} catch (NoResultException e) {
+			TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(this.stationDataClassName
+					+ ".findFirstEntryByDate", this.stationDataClass);
+			query.setParameter("date", new Date(timestamp));
+			query.setMaxResults(1);
+			data = query.getSingleResult();
+		} catch (Exception e) {
 			throw new NoWeatherDataFoundException(timestamp);
 		}
+
+		return data;
 	}
 
 	/**
@@ -562,8 +568,8 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		query.setMaxResults(1);
 		try {
 			return query.getSingleResult();
-		}catch(NoResultException ex) {
-			throw new NoWeatherDataFoundException(timestamp);
+		}catch(javax.persistence.NoResultException ex) {
+			return null;
 		}
 	}
 }

@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.weathercollector.model.ServiceDataCompleter;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataCurrent;
@@ -29,6 +30,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
+import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 
@@ -40,8 +43,8 @@ import javax.measure.quantity.Temperature;
  */
 @Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_CURRENT")
-@NamedQuery(name = "ExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM ExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
-public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ServiceDataCompleter {
+@NamedQuery(name = "DefaultExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM DefaultExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
+public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ExtendedServiceDataCurrent {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -65,10 +68,10 @@ public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implem
 	/**
 	 * Default constructor
 	 */
-	protected ExtendedServiceDataCurrent() {
+	protected DefaultExtendedServiceDataCurrent() {
 	}
 
-	public ExtendedServiceDataCurrent(
+	public DefaultExtendedServiceDataCurrent(
 		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, DefaultCondition condition, Time sunrise, Time sunset) {
 		super(
 			measureDate,
@@ -85,11 +88,11 @@ public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implem
 	}
 
 	@Override
-	public void complete(ServiceDataCompleter obj) {
-		if (!(obj instanceof ExtendedServiceDataCurrent)) {
+	public void complete(ServiceDataHelper obj) {
+		if (!(obj instanceof DefaultExtendedServiceDataCurrent)) {
 			return;
 		}
-		ExtendedServiceDataCurrent newObj = (ExtendedServiceDataCurrent) obj;
+		DefaultExtendedServiceDataCurrent newObj = (DefaultExtendedServiceDataCurrent) obj;
 
 		// Date
 		if (this.getMeasureDate() == null) {
@@ -134,14 +137,17 @@ public class ExtendedServiceDataCurrent extends DefaultServiceDataCurrent implem
 		}
 	}
 
+	@Override
 	public Time getSunrise() {
 		return this.sunrise;
 	}
 
+	@Override
 	public Time getSunset() {
 		return this.sunset;
 	}
 
+	@Override
 	public Float getVisibility() {
 		return this.visibility;
 	}

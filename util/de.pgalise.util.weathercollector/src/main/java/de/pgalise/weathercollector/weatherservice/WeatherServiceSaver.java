@@ -14,20 +14,33 @@
  * limitations under the License. 
  */
  
-package de.pgalise.ssf.test;
+package de.pgalise.weathercollector.weatherservice;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
+import java.util.List;
 
 /**
- * Tests all active JUnit tests of the package
+ * Interface for the saver of weather services
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Nov 22, 2012)
+ * @version 1.0 (Oct 14, 2012)
  */
-@RunWith(Suite.class)
-@SuiteClasses({ TcpIpSensorOutputTest.class, OdysseusConnectionTest.class})
-public class AllTests {
+public interface WeatherServiceSaver {
+
+	/**
+	 * Returns a list of reference cities from the database
+	 * 
+	 * @return list of cities
+	 */
+	public List<City> getReferenceCities();
+
+	/**
+	 * Saves all informations from the weather services
+	 * 
+	 * @param weather
+	 *            ServiceData instance
+	 */
+	public void saveServiceData(ServiceDataHelper weather);
 
 }

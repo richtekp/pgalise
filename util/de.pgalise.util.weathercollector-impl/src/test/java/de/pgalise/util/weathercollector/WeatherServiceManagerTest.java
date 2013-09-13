@@ -21,10 +21,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
@@ -99,7 +99,7 @@ public class WeatherServiceManagerTest {
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();
 		instance.saveInformations(baseDatabaseManager);
-		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", ExtendedServiceDataCurrent.class.getSimpleName()));
+		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", DefaultExtendedServiceDataCurrent.class.getSimpleName()));
 		assertFalse(query.getResultList().isEmpty());
 		entityManager.close();
 	}

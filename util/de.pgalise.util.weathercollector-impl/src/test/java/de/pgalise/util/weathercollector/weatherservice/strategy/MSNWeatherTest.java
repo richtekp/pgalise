@@ -10,7 +10,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.it.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import java.util.Properties;
@@ -74,7 +74,7 @@ public class MSNWeatherTest {
 			referenceArea);
 		DatabaseManager databaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
 		MSNWeather instance = new MSNWeather();
-		ServiceDataHelper result = instance.getWeather(city,
+		DefaultServiceDataHelper result = instance.getWeather(city,
 			databaseManager);
 		assertFalse(result.getForecastConditions().isEmpty());
 	}

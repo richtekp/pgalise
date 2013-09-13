@@ -18,9 +18,10 @@ package de.pgalise.util.weathercollector.weatherservice;
 
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultCondition;
 import de.pgalise.simulation.weather.model.Condition;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.EntityManagerFactory;
@@ -50,7 +51,7 @@ public class ServiceStrategyLib {
 		// Get current ServiceData
 		ServiceDataHelper bestWeather = null;
 		ServiceDataHelper tempWeather = null;
-		if (weather1.getMeasureTimestamp().getTime() > weather2.getMeasureTimestamp().getTime()) {
+		if (weather1.getMeasureTime().getTime() > weather2.getMeasureTime().getTime()) {
 			bestWeather = weather1;
 			tempWeather = weather2;
 		} else {

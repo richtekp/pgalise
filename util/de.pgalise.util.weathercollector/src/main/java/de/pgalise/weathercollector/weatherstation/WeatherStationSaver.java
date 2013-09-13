@@ -14,22 +14,30 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.model;
+package de.pgalise.weathercollector.weatherstation;
+
+import de.pgalise.simulation.weather.model.StationData;
+import java.util.Set;
+
+import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
 
 /**
- * Interface to complete weather service data
+ * Interface for the saver of weather stations
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Apr 16, 2012)
+ * @version 1.0 (Oct 14, 2012)
  */
-public interface ServiceDataCompleter {
+public interface WeatherStationSaver {
 
 	/**
-	 * Concentrate the objects
+	 * Saves a list of station data objects
 	 * 
-	 * @param obj
-	 *            new obj
+	 * @param list
+	 *            List of station data objects
+	 * @return true if all the list could be saved
+	 * @throws SaveStationDataException
+	 *             Will be thrown if the list can not be saved
 	 */
-	public void complete(ServiceDataCompleter obj);
+	public boolean saveStationDataSet(Set<StationData> list) throws SaveStationDataException;
 
 }

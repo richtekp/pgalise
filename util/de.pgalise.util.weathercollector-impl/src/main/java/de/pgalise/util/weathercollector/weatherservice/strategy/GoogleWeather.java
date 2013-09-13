@@ -28,11 +28,16 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableServiceDataHelper;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
+import java.sql.Timestamp;
 import javax.measure.Measure;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -59,7 +64,7 @@ public class GoogleWeather extends XMLAPIWeather {
 
 	@Override
 	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
-		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
+		MutableServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
 
 		// Read general informations
 		NodeList nodes = doc.getElementsByTagName("forecast_information");
@@ -75,7 +80,9 @@ public class GoogleWeather extends XMLAPIWeather {
 				} else if (childnodes.item(j).getNodeName() == "forecast_date") {
 					try {
 						// Date
-						weather.setMeasureTimestamp(Converter.convertTimestamp(dataString, "yyyy-MM-dd"));
+						Timestamp convertedTimestamp = Converter.convertTimestamp(dataString, "yyyy-MM-dd");
+						weather.setMeasureTime(new Time(convertedTimestamp.getTime()));
+						weather.setMeasureDate(new Date(convertedTimestamp.getTime()));
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
@@ -90,8 +97,8 @@ public class GoogleWeather extends XMLAPIWeather {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
 			// Date
-			ExtendedServiceDataCurrent condition = new ExtendedServiceDataCurrent(new Date(weather.getMeasureTimestamp().getTime()),
-					new Time(weather.getMeasureTimestamp().getTime()), city,
+			DefaultExtendedServiceDataCurrent condition = new DefaultExtendedServiceDataCurrent(new Date(weather.getMeasureTime().getTime()),
+					new Time(weather.getMeasureTime().getTime()), city,
 				null, 1.0f,
 				Float.NaN,
 				Float.NaN,
@@ -127,7 +134,7 @@ public class GoogleWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
-			ExtendedServiceDataForecast condition = new ExtendedServiceDataForecast(
+			MutableExtendedServiceDataForecast condition = new DefaultExtendedServiceDataForecast(
 							new Date(System.currentTimeMillis()), 
 							new Time(System.currentTimeMillis()), 
 							city, 

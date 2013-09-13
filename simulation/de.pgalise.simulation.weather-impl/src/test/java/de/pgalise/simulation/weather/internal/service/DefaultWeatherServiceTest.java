@@ -162,7 +162,7 @@ public class DefaultWeatherServiceTest  {
 
 		// Test no weather data loaded
 		try {
-			service.addNextWeather();
+			service.addNewNextDayWeather();
 			Assert.fail();
 		} catch (Exception e) {
 		}
@@ -221,7 +221,7 @@ public class DefaultWeatherServiceTest  {
 		 */
 
 		// Test next day (normal)
-		service.addNextWeather();
+		service.addNewNextDayWeather();
 	}
 
 	@Test

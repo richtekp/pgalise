@@ -1,35 +1,25 @@
-/* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
- 
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.ServiceDataCompleter;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.Time;
 import java.util.Set;
 import java.util.TreeSet;
 
 /**
- * Is a helper for weather service data
- * 
- * @author Andreas Rehfeldt
- * @version 1.0 (Mar 16, 2012)
+ *
+ * @author richter
  */
-public class ServiceDataHelper implements ServiceDataCompleter {
-
+public abstract class AbstractServiceDataHelper<T> implements ServiceDataHelper {
+	
 	/**
 	 * Checks data if the date is the same day
 	 * 
@@ -58,8 +48,8 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	 *            Date
 	 * @return Forecast of the day or null
 	 */
-	public static ExtendedServiceDataForecast getForecastFromDate(Set<ExtendedServiceDataForecast> forecasts, Date date) {
-		for (ExtendedServiceDataForecast forecastCondition : forecasts) {
+	public static ServiceDataHelper getForecastFromDate(Set<ServiceDataHelper> forecasts, Date date) {
+		for (ServiceDataHelper forecastCondition : forecasts) {
 			if (checkDate(forecastCondition.getMeasureDate(), date)) {
 				return forecastCondition;
 			}
@@ -67,7 +57,7 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 
 		return null;
 	}
-
+	
 	/**
 	 * City of the API
 	 */
@@ -81,17 +71,19 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	/**
 	 * Current condition
 	 */
-	private ExtendedServiceDataCurrent currentCondition;
+	private ServiceDataHelper currentCondition;
 
 	/**
 	 * Set with forecasts
 	 */
-	private Set<ExtendedServiceDataForecast> forecastConditions;
+	private Set<ServiceDataHelper> forecastConditions;
 
 	/**
 	 * Timestamp of the data
 	 */
-	private Timestamp measureTimestamp;
+	private Time measureTime;
+	
+	private Date measureDate;
 
 	/**
 	 * Source
@@ -104,26 +96,23 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 	 * @param apiSource the name of the weather API used to retrieve the date 
 	 * (e.g. Yahoo)
 	 */
-	public ServiceDataHelper(City city, String apiSource) {
+	public AbstractServiceDataHelper(City city, String apiSource) {
 		this.source = apiSource;
 		this.city = city;
 		this.apicity = "";
-		this.forecastConditions = new TreeSet<ExtendedServiceDataForecast>();
+		this.forecastConditions = new TreeSet<ServiceDataHelper>();
 	}
 
 	@Override
-	public void complete(ServiceDataCompleter obj) {
-		if (!(obj instanceof ServiceDataHelper)) {
-			return;
-		}
-		ServiceDataHelper newObj = (ServiceDataHelper) obj;
+	public void complete(ServiceDataHelper obj) {
+		ServiceDataHelper newObj = obj;
 
 		if ((this.city == null) || this.city.getName().equals("")) {
 			this.city = newObj.getCity();
 		}
 
-		if (this.measureTimestamp == null) {
-			this.measureTimestamp = newObj.getMeasureTimestamp();
+		if (this.measureTime == null) {
+			this.measureTime = newObj.getMeasureTime();
 		}
 
 		if (this.currentCondition == null) {
@@ -135,17 +124,17 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		if ((this.forecastConditions == null) || (this.forecastConditions.size() == 0)) {
 			this.forecastConditions = newObj.getForecastConditions();
 		} else {
-			for (ExtendedServiceDataForecast condition : this.forecastConditions) {
-				ExtendedServiceDataForecast newCondition = getForecastFromDate(newObj.getForecastConditions(),
+			for (ServiceDataHelper condition : this.forecastConditions) {
+				ServiceDataHelper newCondition = getForecastFromDate(newObj.getForecastConditions(),
 						condition.getMeasureDate());
 				if (newCondition != null) {
 					condition.complete(newCondition);
 				}
 			}
 
-			for (ExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
+			for (ServiceDataHelper newCondition : newObj.getForecastConditions()) {
 
-				ExtendedServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getMeasureDate());
+				ServiceDataHelper oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getMeasureDate());
 				if (oldCondition == null) {
 					this.forecastConditions.add(newCondition);
 				}
@@ -154,26 +143,37 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		}
 	}
 
+	@Override
 	public String getApicity() {
 		return this.apicity;
 	}
 
+	@Override
 	public City getCity() {
 		return this.city;
 	}
 
-	public ExtendedServiceDataCurrent getCurrentCondition() {
+	@Override
+	public ServiceDataHelper getCurrentCondition() {
 		return this.currentCondition;
 	}
 
-	public Set<ExtendedServiceDataForecast> getForecastConditions() {
+	@Override
+	public Set<ServiceDataHelper> getForecastConditions() {
 		return this.forecastConditions;
 	}
 
-	public Timestamp getMeasureTimestamp() {
-		return this.measureTimestamp;
+	@Override
+	public Time getMeasureTime() {
+		return this.measureTime;
 	}
 
+	@Override
+	public Date getMeasureDate() {
+		return measureDate;
+	}
+
+	@Override
 	public String getSource() {
 		return this.source;
 	}
@@ -186,27 +186,26 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		this.city = city;
 	}
 
-	public void setCurrentCondition(ExtendedServiceDataCurrent currentCondition) {
+	public void setCurrentCondition(ServiceDataHelper currentCondition) {
 		this.currentCondition = currentCondition;
 	}
 
-	public void setMeasureTimestamp(Timestamp timestamp) {
-		this.measureTimestamp = timestamp;
+	public void setForecastConditions(
+		Set<ServiceDataHelper> forecastConditions) {
+		this.forecastConditions = forecastConditions;
+	}
+
+	public void setMeasureTime(Time measureTime) {
+		this.measureTime = measureTime;
 	}
 
 	public void setSource(String source) {
 		this.source = source;
 	}
 
-	/**
-	 * Liefert die Vorhersage, die zum Datum passt.
-	 * 
-	 * @param conditions
-	 *            Set mit Vorhersagen
-	 * @param date
-	 *            Datum
-	 * @return Vorhersage zum Datum, ansonsten null
-	 */
+	public void setMeasureDate(Date measureDate) {
+		this.measureDate = measureDate;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -226,9 +225,9 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 			builder.append(this.apicity);
 			builder.append(", ");
 		}
-		if (this.measureTimestamp != null) {
+		if (this.measureTime != null) {
 			builder.append("measureTimestamp=");
-			builder.append(this.measureTimestamp);
+			builder.append(this.measureTime);
 			builder.append(", ");
 		}
 		if (this.source != null) {
@@ -243,7 +242,7 @@ public class ServiceDataHelper implements ServiceDataCompleter {
 		}
 		if ((this.forecastConditions != null) && !this.forecastConditions.isEmpty()) {
 			builder.append("\n- forecastCondition=[");
-			for (ExtendedServiceDataForecast condition : this.forecastConditions) {
+			for (ServiceDataHelper condition : this.forecastConditions) {
 				builder.append(condition.toString());
 			}
 			builder.append("]");
