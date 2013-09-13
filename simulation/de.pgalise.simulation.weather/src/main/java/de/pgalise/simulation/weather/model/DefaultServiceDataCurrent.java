@@ -14,9 +14,10 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.weather.internal.dataloader.entity;
+package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractBaseServiceData;
 import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import java.sql.Date;

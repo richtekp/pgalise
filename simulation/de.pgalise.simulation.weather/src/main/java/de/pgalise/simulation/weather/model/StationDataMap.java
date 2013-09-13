@@ -14,20 +14,30 @@
  * limitations under the License. 
  */
  
-package de.pgalise.ssf.test;
+package de.pgalise.simulation.weather.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import de.pgalise.simulation.weather.dataloader.WeatherMap;
 
 /**
- * Tests all active JUnit tests of the package
+ * Map that do nothing (no modification).
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Nov 22, 2012)
+ * @version 1.0 (Aug 23, 2012)
  */
-@RunWith(Suite.class)
-@SuiteClasses({ TcpIpSensorOutputTest.class, OdysseusConnectionTest.class})
-public class AllTests {
+public class StationDataMap extends WeatherMap {
+
+	/**
+	 * Serial
+	 */
+	private static final long serialVersionUID = -2597132635843869636L;
+
+	/*
+	 * (non-Javadoc)
+	 * @see de.pgalise.simulation.weather.database.Weather#deployChanges()
+	 */
+	@Override
+	public void deployChanges() {
+		// Do nothing
+	}
 
 }

@@ -16,14 +16,18 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.weathercollector.model.ExtendedServiceDataForecastCompleter;
+import de.pgalise.weathercollector.model.ServiceDataCompleter;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
+import de.pgalise.simulation.weather.model.MutableServiceDataForecast;
 import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
 import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
 import java.sql.Time;
@@ -36,10 +40,10 @@ import javax.measure.quantity.Temperature;
  * @author Andreas Rehfeldt
  * @version 1.0 (01.07.2012)
  */
-@Entity
+@Entity(name = "DefExtendedServiceDataForecast")
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_FORECAST")
-@NamedQuery(name = "DefaultExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM DefaultExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForecast implements ExtendedServiceDataForecastCompleter, ExtendedServiceDataForecast, MutableExtendedServiceDataForecast {
+@NamedQuery(name = "DefExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM DefExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
+public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForecast implements ExtendedServiceDataForecast, MutableExtendedServiceDataForecast {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -72,6 +76,7 @@ public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForeca
 
 	@Override
 	public void complete(ExtendedServiceDataForecast newObj) {
+
 		// Date
 		if (this.getMeasureDate() == null) {
 			this.setMeasureDate(newObj.getMeasureDate());

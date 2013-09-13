@@ -12,11 +12,10 @@ import java.sql.Time;
  *
  * @author richter
  */
-public interface BaseWeatherInformation extends BaseTimeSensitive {
-
-	Float getRelativHumidity(); 
-
-	Float getWindDirection() ;
-
-	Float getWindVelocity();
+public interface BaseTimeSensitive extends Identifiable {
+	
+	
+	Date getMeasureDate();
+	
+	Time getMeasureTime();
 }

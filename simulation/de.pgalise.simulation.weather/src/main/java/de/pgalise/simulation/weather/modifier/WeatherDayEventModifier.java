@@ -172,8 +172,8 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 * @return Timestamp
 	 */
 	protected long getMaxHour(Time time, float duration) {
-		long max = (long) (time.getTime() + ((duration / 2) * DateConverter.HOUR));
-		long nextDay = DateConverter.getCleanDate(time.getTime() + DateConverter.NEXT_DAY_IN_MILLIS);
+		long max = (long) (time.getTime() + ((duration / 2) * DateConverter.ONE_HOUR_IN_MILLIS));
+		long nextDay = DateConverter.getCleanDate(time.getTime() + DateConverter.ONE_DAY_IN_MILLIS);
 
 		return (max > nextDay) ? nextDay - WeatherMap.INTERPOLATE_INTERVAL : max;
 	}
@@ -188,9 +188,9 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 * @return Timestamp
 	 */
 	protected long getMinHour(Time time, float duration) {
-		long min = (long) (time.getTime() - ((duration / 2) * DateConverter.HOUR));
+		long min = (long) (time.getTime() - ((duration / 2) * DateConverter.ONE_HOUR_IN_MILLIS));
 		long currentDay = DateConverter.getCleanDate(time.getTime());
-		return (min < currentDay) ? currentDay + DateConverter.NEXT_DAY_IN_MILLIS : min;
+		return (min < currentDay) ? currentDay + DateConverter.ONE_DAY_IN_MILLIS : min;
 	}
 
 	/**
@@ -252,7 +252,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 			// Between 0 and min?
 
 			// Calculate for minTimeValue
-			long mintime = DateConverter.HOUR * minTimeValue;
+			long mintime = DateConverter.ONE_HOUR_IN_MILLIS * minTimeValue;
 			long newTime = timestamp + (mintime - (timestamp % mintime));
 			weather = this.map.get(newTime);
 
@@ -260,7 +260,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 			// Between max and 24?
 
 			// Calculate for maxTimeValue
-			long maxtime = DateConverter.HOUR * maxTimeValue;
+			long maxtime = DateConverter.ONE_HOUR_IN_MILLIS * maxTimeValue;
 			long newTime = timestamp + (maxtime - (timestamp % maxtime));
 			weather = this.map.get(newTime);
 
@@ -285,7 +285,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 		int limit = max - min;
 		int r = this.randomGen.nextInt(limit);
 
-		return ((r + min) * DateConverter.HOUR);
+		return ((r + min) * DateConverter.ONE_HOUR_IN_MILLIS);
 	}
 
 	/**
@@ -299,6 +299,6 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 		int hour = this.randomGen.nextInt(23);
 		int min = this.randomGen.nextInt(59);
 
-		return day + (hour * DateConverter.HOUR) + (min * DateConverter.MINUTE);
+		return day + (hour * DateConverter.ONE_HOUR_IN_MILLIS) + (min * DateConverter.ONE_MINUTE_IN_MILLIS);
 	}
 }

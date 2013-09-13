@@ -18,7 +18,11 @@ package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
@@ -27,15 +31,12 @@ import java.util.regex.Pattern;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
 import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableServiceDataHelper;
+import de.pgalise.weathercollector.model.ServiceDataHelper;
+import java.sql.Timestamp;
 import javax.measure.Measure;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
@@ -61,8 +62,8 @@ public class GoogleWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
-		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
+	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
+		MutableServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
 
 		// Read general informations
 		NodeList nodes = doc.getElementsByTagName("forecast_information");
@@ -78,7 +79,9 @@ public class GoogleWeather extends XMLAPIWeather {
 				} else if (childnodes.item(j).getNodeName() == "forecast_date") {
 					try {
 						// Date
-						weather.setMeasureTimestamp(Converter.convertTimestamp(dataString, "yyyy-MM-dd"));
+						Timestamp convertedTimestamp = DateConverter.convertTimestamp(dataString, "yyyy-MM-dd");
+						weather.setMeasureTime(new Time(convertedTimestamp.getTime()));
+						weather.setMeasureDate(new Date(convertedTimestamp.getTime()));
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
@@ -93,8 +96,8 @@ public class GoogleWeather extends XMLAPIWeather {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
 			// Date
-			MutableExtendedServiceDataCurrent condition = new DefaultExtendedServiceDataCurrent(new Date(weather.getMeasureTimestamp().getTime()),
-					new Time(weather.getMeasureTimestamp().getTime()), city,
+			MutableExtendedServiceDataCurrent condition = new DefaultExtendedServiceDataCurrent(new Date(weather.getMeasureTime().getTime()),
+					new Time(weather.getMeasureTime().getTime()), city,
 				null, 1.0f,
 				Float.NaN,
 				Float.NaN,
@@ -145,7 +148,7 @@ public class GoogleWeather extends XMLAPIWeather {
 				if (childnodes.item(j).getNodeName() == "day_of_week") {
 					// Date
 					try {
-						condition.setMeasureDate(Converter.convertDateFromWeekday(dataString));
+						condition.setMeasureDate(DateConverter.convertDateFromWeekday(dataString));
 					} catch (ParseException e) {
 						e.printStackTrace(); // Exception ausgeben
 						break;

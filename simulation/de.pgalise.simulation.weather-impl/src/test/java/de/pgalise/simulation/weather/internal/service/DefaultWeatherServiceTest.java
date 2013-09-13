@@ -30,22 +30,26 @@ import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 
 import org.junit.After;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
+import de.pgalise.simulation.weather.internal.modifier.events.RainDayEvent;
+import de.pgalise.simulation.weather.model.StationDataMap;
+import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
 import java.sql.Date;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Properties;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
@@ -103,8 +107,7 @@ public class DefaultWeatherServiceTest  {
 
 	private City city;
 	
-//	@Resource
-//	private UserTransaction utx;
+	private UserTransaction utx;
 
 	public DefaultWeatherServiceTest() throws NamingException {
 		Properties p = new Properties();
@@ -112,6 +115,10 @@ public class DefaultWeatherServiceTest  {
 //		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
+		
+		InitialContext initialContext = new InitialContext();
+		utx = (UserTransaction) initialContext.lookup(
+			"java:comp/UserTransaction");
 		
 		Coordinate referencePoint = new Coordinate(20, 20);
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
@@ -151,7 +158,7 @@ public class DefaultWeatherServiceTest  {
 	}
 
 	@Test
-	public void testAddNextWeather() throws NamingException, NotSupportedException, 
+	public void testAddNewNextDayWeather() throws NamingException, NotSupportedException, 
 		SystemException, 
 	HeuristicMixedException, HeuristicRollbackException, IllegalStateException, 
 	RollbackException {
@@ -161,21 +168,12 @@ public class DefaultWeatherServiceTest  {
 
 		// Test no weather data loaded
 		try {
-			service.addNextWeather();
-			Assert.fail();
-		} catch (Exception e) {
+			service.addNewNextDayWeather();
+			fail();
+		} catch (IllegalStateException expected) {
 		}
 
-		/*
-		 * Test preparations
-		 */
-
-		// Get weather
-		InitialContext initialContext = new InitialContext();
-		UserTransaction utx = (UserTransaction) initialContext.lookup(
-			"java:comp/UserTransaction");
-//		UserTransaction userTransaction = new  
-//org.apache.openejb.core.CoreUserTransaction(null);
+		//setup prequisites to an invocation of addNewWeahter (which is necessary to be able to invoke addNewNextDayWeather)
 		utx.begin();
 		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
 		em.joinTransaction();
@@ -209,104 +207,122 @@ public class DefaultWeatherServiceTest  {
 			referenceArea);
 		em.merge(city);
 		utx.commit();
-		em.close();
 		service.addNewWeather(startTimestamp, endTimestamp,
 				true, null);
-
-		/*
-		 * Test cases
-		 */
-
-		// Test next day (normal)
-		service.addNextWeather();
+		//the acutal test
+		service.addNewNextDayWeather();
+		
+		utx.begin();
+		em.remove(stationData);
+		utx.commit();
+		em.close();
 	}
 
 	@Test
-	public void testAddWeatherDate() throws ParseException {
-		/*
-		 * Test cases
-		 */
-
+	public void testAddNewWeather() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
 		List<WeatherStrategyHelper> strategyList = new ArrayList<>(1);
 		strategyList.add(new WeatherStrategyHelper(new ReferenceCityModifier(startTimestamp,
 				loader), startTimestamp));
 
 		// Test (normal)
-		MutableStationData serviceWeather = new StationDataNormal(new Date(startTimestamp),
-			new Time(DateConverter.convertTimestampToMidnight(startTimestamp)),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-		WeatherMap weatherMap = new StationDataMap() ;
-		MutableStationData serviceWeatherForecast = new StationDataNormal(new Date(startTimestamp),
-			new Time(DateConverter.convertTimestampToMidnight(startTimestamp)),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-		long weatherTimestamp = System.currentTimeMillis();
-		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
-			new Time(DateConverter.convertTimestampToMidnight(startTimestamp)),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-		weatherMap.put(weatherTimestamp, weather);
+		Collection<MutableStationData> prequisites = TestUtils.setUpWeatherData(
+			startTimestamp,
+			utx,
+			ENTITY_MANAGER_FACTORY);
+		
 		service.addNewWeather(startTimestamp,
 					endTimestamp, true, strategyList);
 
 		// Test false Date
 		try {
 			service.addNewWeather(0, 0, true, null);
-			Assert.fail();
-		} catch (Exception e) {
+			fail();
+		} catch (Exception excepted) {
 		}
+		
+		TestUtils.tearDownWeatherData(prequisites,
+			utx,
+			ENTITY_MANAGER_FACTORY);
 	}
 
 	@Test
-	public void testCheckDate() throws ParseException {
-		long testFalseDate = DateConverter.convertDate("12.03.2002", "dd.mm.yyyy").getTime();
+	public void testCheckDate() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		long testFalseDate = DateConverter.convertDate("12.03.2002", "dd.mm.yyyy").getTime(); //before simulation
 
-		/*
-		 * Test cases
-		 */
-
-		// Test check Date (normal)
-		service.checkDate(startTimestamp);
+		//test negative result
+		boolean expResult = false;
+		boolean result = service.checkDate(startTimestamp);
+		assertEquals(expResult,
+			result);
+		
+		//test positive result (need to set up for the exact date, the preceeding and the following date at the same hour of the day)
+		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
+			new Time(startTimestamp),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
+		MutableStationData weatherPreceeding = new StationDataNormal(new Date(startTimestamp-DateConverter.ONE_DAY_IN_MILLIS),
+			new Time(startTimestamp-DateConverter.ONE_DAY_IN_MILLIS),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
+		MutableStationData weatherFollowing = new StationDataNormal(new Date(startTimestamp+DateConverter.ONE_DAY_IN_MILLIS),
+			new Time(startTimestamp+DateConverter.ONE_DAY_IN_MILLIS),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
+		utx.begin();
+		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+		em.joinTransaction();
+		em.persist(weather);
+		em.persist(weatherFollowing);
+		em.persist(weatherPreceeding);
+		utx.commit();
+		expResult = true;
+		result = service.checkDate(startTimestamp);
+		assertEquals(expResult, result);
+		utx.begin();
+		em.remove(weather);
+		em.remove(weatherFollowing);
+		em.remove(weatherPreceeding);
+		utx.commit();
+		em.close();
 
 		// Test false Date
 		try {
 			service.checkDate(0);
-			Assert.fail();
-		} catch (Exception e) {
+			fail();
+		} catch (Exception expected) {
 		}
 
 		// Test false Date (future)
-		Assert.assertTrue(!(service.checkDate(System.currentTimeMillis())));
+		assertTrue(!(service.checkDate(System.currentTimeMillis())));
 
 		// Test false Date (no data available)
-		Assert.assertTrue(!(service.checkDate(testFalseDate)));
+		assertTrue(!(service.checkDate(testFalseDate)));
 
 	}
 
 	@Test
-	public void testGetValueWeatherParameterEnumLong() throws ParseException {
+	public void testGetValueWeatherParameterEnumLong() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
 		/*
 		 * Test preparations
 		 */
@@ -331,10 +347,10 @@ public class DefaultWeatherServiceTest  {
 		Number value;
 
 		// Test (normal)
-		WeatherMap weatherMap = new StationDataMap();
+//		WeatherMap weatherMap = new StationDataMap();
 		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
 			new Time(startTimestamp),
-			1,
+			1008,
 			1,
 			1.0f,
 			Measure.valueOf(1.0f, SI.CELSIUS),
@@ -343,14 +359,22 @@ public class DefaultWeatherServiceTest  {
 			1.0f,
 			1.0f,
 			1.0f);
-		weatherMap.put(timestamp, weather);
+//		weatherMap.put(timestamp, weather);
+		utx.begin();
+		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+		em.persist(weather);
+		utx.commit();
 		value = service.getValue(testParameter, timestamp);
-		Assert.assertEquals(1008.0, value.doubleValue(), 10.0); // Aggregate 1008
+		assertEquals(1008.0, value.doubleValue(), 10.0); // Aggregate 1008
+		utx.begin();
+		em.remove(weather);
+		utx.commit();
+		em.close();
 
 		// Test false timestamp
 		try {
 			value = service.getValue(testParameter, 0);
-			Assert.fail();
+			fail();
 		} catch (RuntimeException e) {
 			//expected
 		}
@@ -358,7 +382,7 @@ public class DefaultWeatherServiceTest  {
 		// Test false key
 		try {
 			value = service.getValue(null, 0);
-			Assert.fail();
+			fail();
 		} catch (IllegalArgumentException e) {
 			//expected
 		}
@@ -376,7 +400,7 @@ public class DefaultWeatherServiceTest  {
 		// Test times
 		Time time = DateConverter.convertTime("18:00:00", "hh:mm:ss");
 		long timestamp = startTimestamp + time.getTime();
-		long timestamp2 = startTimestamp + DateConverter.NEXT_DAY_IN_MILLIS + time.getTime();
+		long timestamp2 = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS + time.getTime();
 
 		// Test Position
 		Coordinate position = new Coordinate(2, 3);
@@ -410,12 +434,12 @@ public class DefaultWeatherServiceTest  {
 			1.0f);
 		weatherMap.put(timestamp, weather);
 		value = service.getValue(testParameter, timestamp, position);
-		Assert.assertEquals(11000.000, value.doubleValue(), 5000);
+		assertEquals(11000.000, value.doubleValue(), 5000);
 
 		// Test false key
 		try {
 			value = service.getValue(null, 0, position);
-			Assert.fail();
+			fail();
 		} catch (IllegalArgumentException e) {
 			//expected
 		}
@@ -423,7 +447,7 @@ public class DefaultWeatherServiceTest  {
 		// Test false timestamp
 		try {
 			value = service.getValue(testParameter, 0, position);
-			Assert.fail();
+			fail();
 		} catch (RuntimeException e) {
 			//expected
 		}
@@ -431,7 +455,7 @@ public class DefaultWeatherServiceTest  {
 		// Test false position
 		try {
 			value = service.getValue(testParameter, timestamp, null);
-			Assert.fail();
+			fail();
 		} catch (IllegalArgumentException e) {
 			//expected
 		}
@@ -439,7 +463,7 @@ public class DefaultWeatherServiceTest  {
 		// Test false position
 		try {
 			value = service.getValue(testParameter, timestamp, new Coordinate(-1, -1));
-			Assert.fail();
+			fail();
 		} catch (IllegalArgumentException e) {
 			//expected
 		}
@@ -459,13 +483,13 @@ public class DefaultWeatherServiceTest  {
 			1.0f);
 		weatherMap.put(timestamp2, weather);
 		value = service.getValue(testParameter, timestamp2, position);
-		Assert.assertEquals(11000.000, value.doubleValue(), 6000);
+		assertEquals(11000.000, value.doubleValue(), 6000);
 
 		// Test false timestamp
 		try {
 			value = service.getValue(testParameter, endTimestamp
-					+ DateConverter.NEXT_DAY_IN_MILLIS + time.getTime(), position);
-			Assert.fail();
+					+ DateConverter.ONE_DAY_IN_MILLIS + time.getTime(), position);
+			fail();
 		} catch (RuntimeException e) {
 			//expected
 		}

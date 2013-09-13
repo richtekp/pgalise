@@ -48,14 +48,14 @@ public abstract class AbstractChartTest {
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 	private final static EJBContainer container;
 	static {
-		try {
+//		try {
 			// Load EJB properties
 			Properties prop = new Properties();
-			prop.load(Controller.class.getResourceAsStream("/META-INF/jndi.properties"));
+//			prop.load(Controller.class.getResourceAsStream("/META-INF/jndi.properties"));
 			container = EJBContainer.createEJBContainer(prop);
-		} catch (IOException ex) {
-			throw new ExceptionInInitializerError(ex);
-		}
+//		} catch (IOException ex) {
+//			throw new ExceptionInInitializerError(ex);
+//		}
 	}
 
 	/**

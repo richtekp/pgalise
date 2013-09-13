@@ -8,10 +8,12 @@ import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.weathercollector.weatherstation.StationStrategy;
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
- *
+ * This program gets various informations of weather stations and
+ * weather services and saves these information to the given database. It only 
+ * retrieves current weather data and short term forecast data, it can not be 
+ * used to setup historical weather data!
  * @author richter
  */
 public interface WeatherCollector {

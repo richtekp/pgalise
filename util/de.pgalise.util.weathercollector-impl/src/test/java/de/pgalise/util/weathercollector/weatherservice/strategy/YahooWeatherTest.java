@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 @ManagedBean
 public class YahooWeatherTest {
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
+	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_collector_test");
 	
 	public YahooWeatherTest() throws NamingException {
 		Properties p = new Properties();

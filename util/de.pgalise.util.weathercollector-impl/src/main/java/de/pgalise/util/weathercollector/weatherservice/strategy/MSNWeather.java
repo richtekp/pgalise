@@ -18,6 +18,7 @@ package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
@@ -30,10 +31,12 @@ import org.w3c.dom.NodeList;
 import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
 import de.pgalise.weathercollector.model.MutableServiceDataHelper;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
+import java.sql.Timestamp;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
@@ -84,15 +87,15 @@ public class MSNWeather extends XMLAPIWeather {
 				if (childnode.getNodeName().equals("current")) {
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					DefaultExtendedServiceDataCurrent condition;
+					MutableExtendedServiceDataCurrent condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
 						dateString = dateString + " " + attributes.getNamedItem("observationtime").getTextContent();
 
 						// Current date
-						Time time = Converter.convertTime(dateString, "yyyy-MM-dd h:mm:ss");
-						Date date = Converter.convertDate(dateString, "yyyy-MM-dd h:mm:ss");
+						Time time = DateConverter.convertTime(dateString, "yyyy-MM-dd h:mm:ss");
+						Date date = DateConverter.convertDate(dateString, "yyyy-MM-dd h:mm:ss");
 						condition = new DefaultExtendedServiceDataCurrent(
 							date, 
 							time, 
@@ -100,7 +103,9 @@ public class MSNWeather extends XMLAPIWeather {
 							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
 
 						// Date
-						weather.setMeasureTimestamp(Converter.convertTimestamp(dateString, "yyyy-MM-dd h:mm:ss"));
+						Timestamp convertedTimestamp = DateConverter.convertTimestamp(dateString, "yyyy-MM-dd h:mm:ss");
+						weather.setMeasureTime(new Time(convertedTimestamp.getTime()));
+						weather.setMeasureDate(new Date(convertedTimestamp.getTime()));
 					} catch (ParseException e) {
 						e.printStackTrace();
 						return null;
@@ -141,14 +146,14 @@ public class MSNWeather extends XMLAPIWeather {
 					// Forecast
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					DefaultExtendedServiceDataForecast condition;
+					MutableExtendedServiceDataForecast condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
 
 						// Current date
 						condition = new DefaultExtendedServiceDataForecast(
-							Converter.convertDate(dateString, "yyyy-MM-dd"), 
+							DateConverter.convertDate(dateString, "yyyy-MM-dd"), 
 							new Time(System.currentTimeMillis()), 
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  

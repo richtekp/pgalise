@@ -6,10 +6,12 @@ package de.pgalise.util.weathercollector.util;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.BaseServiceData;
 import de.pgalise.simulation.weather.model.Condition;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
 import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
@@ -181,14 +183,14 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 * @param em
 	 *            EntityManager
 	 */
-	private void deleteCurrentWeather(List<DefaultExtendedServiceDataCurrent> list, EntityManager em) {
+	private void deleteCurrentWeather(List<ExtendedServiceDataCurrent> list, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		} else if ((list == null) || list.isEmpty()) {
 			return;
 		}
 
-		for (DefaultExtendedServiceDataCurrent serviceData : list) {
+		for (ExtendedServiceDataCurrent serviceData : list) {
 			em.remove(serviceData);
 		}
 	}
@@ -201,7 +203,7 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 * @param em
 	 *            EntityManager
 	 */
-	private void deleteForeCastWeather(List<DefaultExtendedServiceDataForecast> list, EntityManager em) {
+	private void deleteForeCastWeather(List<ExtendedServiceDataForecast> list, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		} else if ((list == null) || list.isEmpty()) {
@@ -209,7 +211,7 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 		}
 
 		// Remove
-		for (DefaultExtendedServiceDataForecast serviceData : list) {
+		for (ExtendedServiceDataForecast serviceData : list) {
 			em.remove(serviceData);
 		}
 	}
@@ -246,17 +248,17 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataCurrent objects
 	 */
-	private List<DefaultExtendedServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
+	private List<ExtendedServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
 
 		// Get forecast service data
-		TypedQuery<DefaultExtendedServiceDataCurrent> query = em.createNamedQuery("ServiceDataCurrent.findByCityAndDate",
-				DefaultExtendedServiceDataCurrent.class);
+		TypedQuery<ExtendedServiceDataCurrent> query = em.createNamedQuery("ServiceDataCurrent.findByCityAndDate",
+				ExtendedServiceDataCurrent.class);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
-		List<DefaultExtendedServiceDataCurrent> result = query.getResultList();
+		List<ExtendedServiceDataCurrent> result = query.getResultList();
 
 		// Return list
 		return result;
@@ -273,17 +275,17 @@ public class JTADatabaseManager extends BaseDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataForecast objects
 	 */
-	private List<DefaultExtendedServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
+	private List<ExtendedServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
 
 		// Get forecast service data
-		TypedQuery<DefaultExtendedServiceDataForecast> query = em.createNamedQuery("ServiceDataForecast.findByCityAndDate",
-				DefaultExtendedServiceDataForecast.class);
+		TypedQuery<ExtendedServiceDataForecast> query = em.createNamedQuery("ServiceDataForecast.findByCityAndDate",
+				ExtendedServiceDataForecast.class);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
-		List<DefaultExtendedServiceDataForecast> result = query.getResultList();
+		List<ExtendedServiceDataForecast> result = query.getResultList();
 
 		// Return list
 		return result;

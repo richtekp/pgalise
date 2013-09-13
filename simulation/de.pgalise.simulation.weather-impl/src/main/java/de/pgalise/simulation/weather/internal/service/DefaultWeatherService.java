@@ -28,9 +28,10 @@ import java.util.concurrent.Semaphore;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
+import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.internal.modifier.WeatherStrategyContext;
 import de.pgalise.simulation.weather.internal.positionconverter.LinearWeatherPositionConverter;
 import de.pgalise.simulation.weather.internal.util.comparator.WeatherStrategyComparator;
@@ -177,7 +178,7 @@ public class DefaultWeatherService implements WeatherService {
 
 	@Override
 	public void addNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
-			List<WeatherStrategyHelper> strategyList) {
+			List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
 		// We have only weather data after
 		if (startTimestamp < 1057528800000L) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForMustBetween("startTimestamp",
@@ -201,10 +202,10 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public void addNextWeather() {
+	public void addNewNextDayWeather() throws NoWeatherDataFoundException {
 		// Has a date been simulated before?
 		if (this.loadedTimestamp < 1) {
-			throw new RuntimeException("Service was not started before!");
+			throw new IllegalStateException("Weather hasn't been added before (you need to invoke addNewWeather once before you can invoke addNewNextDayWeather)!");
 		}
 
 		try {
@@ -230,7 +231,7 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public void deployStrategy(WeatherStrategy strategy)   {
+	public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException {
 		// There is no weather data added
 		if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
 			throw new IllegalStateException("No weather data has been added so far");
@@ -337,7 +338,7 @@ public class DefaultWeatherService implements WeatherService {
 
 	@Override
 	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position)
-			throws IllegalArgumentException {
+			throws IllegalArgumentException, NoWeatherDataFoundException {
 		if (key == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("key"));
 		} else if ((position == null)) {
@@ -385,7 +386,7 @@ public class DefaultWeatherService implements WeatherService {
 
 		long nextDay;
 		for (MutableStationData weather : this.referenceValues.values()) {
-			nextDay = weather.getMeasureTime().getTime()+ DateConverter.NEXT_DAY_IN_MILLIS;
+			nextDay = weather.getMeasureTime().getTime()+ DateConverter.ONE_DAY_IN_MILLIS;
 			// Change date
 			weather.setMeasureTime(new Time(nextDay));
 			weather.setMeasureDate(new Date(nextDay));
@@ -433,7 +434,7 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	/**
-	 * Add new weather informations
+	 * Add new weather informations which have to be present in the database 
 	 * 
 	 * @param startTimestamp
 	 *            Start timestamp weather will be loaded from the next morning after 00:00
@@ -447,14 +448,14 @@ public class DefaultWeatherService implements WeatherService {
 	 *             No data found
 	 */
 	private void internalAddNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
-			List<WeatherStrategyHelper> strategyList) {
+			List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
 		// Delete all values
 		this.initValues();
 
 		// Convert dates to 00:00:00
 		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(startTimestamp);
 		this.simEndTimestamp = DateConverter.convertTimestampToMidnight(endTimestamp)
-				+ DateConverter.NEXT_DAY_IN_MILLIS;
+				+ DateConverter.ONE_DAY_IN_MILLIS;
 
 		// Change loader
 		this.loader.setLoadOption(takeNormalData);
@@ -473,7 +474,7 @@ public class DefaultWeatherService implements WeatherService {
 	 */
 	private void internalAddNextWeather() {
 		// Calculate next day
-		long nextday = this.loadedTimestamp + DateConverter.NEXT_DAY_IN_MILLIS;
+		long nextday = this.loadedTimestamp + DateConverter.ONE_DAY_IN_MILLIS;
 
 		// Enddate?
 		if ((this.simEndTimestamp > 0) && (nextday > this.simEndTimestamp)) {
@@ -530,7 +531,7 @@ public class DefaultWeatherService implements WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             No data found for the given date
 	 */
-	private void loadWeather(long timestamp) {
+	private void loadWeather(long timestamp) throws NoWeatherDataFoundException {
 		/*
 		 * Load data
 		 */

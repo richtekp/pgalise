@@ -5,13 +5,15 @@
 package de.pgalise.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.MutableTimeSensitive;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
  *
  * @author richter
  */
-public interface MutableServiceDataHelper extends ServiceDataHelper<MutableExtendedServiceDataCurrent, MutableExtendedServiceDataForecast> {
+public interface MutableServiceDataHelper extends ServiceDataHelper<MutableExtendedServiceDataCurrent, MutableExtendedServiceDataForecast>, MutableTimeSensitive {
 	
 
 	public void setApicity(String apicity) ;
@@ -19,8 +21,6 @@ public interface MutableServiceDataHelper extends ServiceDataHelper<MutableExten
 	public void setCity(City city) ;
 
 	public void setCurrentCondition(MutableExtendedServiceDataCurrent currentCondition) ;
-
-	public void setMeasureTimestamp(Timestamp timestamp) ;
 
 	public void setSource(String source) ;
 }

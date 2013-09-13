@@ -16,8 +16,9 @@
  
 package de.pgalise.util.weathercollector.weatherstation.strategy;
 
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
 import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.model.StationDataNormal;
+import de.pgalise.simulation.weather.util.DateConverter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,8 +34,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.util.Converter;
-import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
+import de.pgalise.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
@@ -70,11 +70,11 @@ public class StationOldenburg implements StationStrategy {
 
 	@Override
 	public void saveWeather(WeatherStationSaver saver) {
-		Set<StationData> list = null;
+		Set<StationData> list;
 		int month = -1; // To identify the previous month
 
 		try {
-			boolean result = false;
+			boolean result;
 			do {
 				// Reduce month
 				month++;
@@ -111,7 +111,7 @@ public class StationOldenburg implements StationStrategy {
 		// Year
 		int year = cal.get(Calendar.YEAR) - 2000; // ASSUMPTION: NOT MORE THAN 2000
 
-		return URLPREFIX + Converter.getNumberWithNull(year) + Converter.getNumberWithNull(month) + FILETYP;
+		return URLPREFIX + DateConverter.getNumberWithNull(year) + DateConverter.getNumberWithNull(month) + FILETYP;
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class StationOldenburg implements StationStrategy {
 	 */
 	private StationData getWeatherFromLine(String line) {
 		// Nothing in the row?
-		if ((line == null) || line.equals("") || (line.split("\t").length == 0)) {
+		if ((line == null) || line.isEmpty() || (line.split("\t").length == 0)) {
 			return null;
 		}
 
@@ -135,8 +135,8 @@ public class StationOldenburg implements StationStrategy {
 
 		try {
 			weather = new StationDataNormal(
-				Converter.convertDate(weatherLine[0], "dd.MM.yyyy"),
-			Converter.convertTime(weatherLine[1], "h:mm:ss"),
+				DateConverter.convertDate(weatherLine[0], "dd.MM.yyyy"),
+			DateConverter.convertTime(weatherLine[1], "h:mm:ss"),
 			Integer.parseInt(weatherLine[10]),
 			Integer.parseInt(weatherLine[5]),
 			formatter.parse(weatherLine[4]).floatValue(),
@@ -164,13 +164,13 @@ public class StationOldenburg implements StationStrategy {
 	 */
 	private Set<StationData> readLinesFromFile(String fileurl) throws IOException {
 		// Sorted list (sort by time and date)
-		Set<StationData> list = new TreeSet<StationData>();
+		Set<StationData> list = new TreeSet<>();
 		URL url = new URL(fileurl);
 
 		try (InputStream inputStream = url.openStream()) {
 			// Read txt file
 			BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, "ISO-8859-1"));
-			String line = null;
+			String line;
 
 			while ((line = in.readLine()) != null) {
 				// Read weather informations

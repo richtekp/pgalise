@@ -16,16 +16,15 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.weathercollector.model.ServiceDataHelperCompleter;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
 import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
 import de.pgalise.weathercollector.model.MutableServiceDataHelper;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.Time;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -35,7 +34,8 @@ import java.util.TreeSet;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public class DefaultServiceDataHelper implements MutableServiceDataHelper {
+public class DefaultServiceDataHelper extends AbstractIdentifiable implements MutableServiceDataHelper {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Checks data if the date is the same day
@@ -98,7 +98,9 @@ public class DefaultServiceDataHelper implements MutableServiceDataHelper {
 	/**
 	 * Timestamp of the data
 	 */
-	private Timestamp measureTimestamp;
+	private Time measureTime;
+	
+	private Date measureDate;
 
 	/**
 	 * Source
@@ -125,8 +127,11 @@ public class DefaultServiceDataHelper implements MutableServiceDataHelper {
 			this.city = newObj.getCity();
 		}
 
-		if (this.measureTimestamp == null) {
-			this.measureTimestamp = newObj.getMeasureTimestamp();
+		if (this.measureTime == null) {
+			this.measureTime = newObj.getMeasureTime();
+		}
+		if(this.measureDate == null) {
+			this.measureDate = newObj.getMeasureDate();
 		}
 
 		if (this.currentCondition == null) {
@@ -135,7 +140,7 @@ public class DefaultServiceDataHelper implements MutableServiceDataHelper {
 			this.currentCondition.complete(newObj.getCurrentCondition());
 		}
 
-		if ((this.forecastConditions == null) || (this.forecastConditions.size() == 0)) {
+		if ((this.forecastConditions == null) || (this.forecastConditions.isEmpty())) {
 			this.forecastConditions = newObj.getForecastConditions();
 		} else {
 			for (ExtendedServiceDataForecast condition : this.forecastConditions) {
@@ -178,8 +183,12 @@ public class DefaultServiceDataHelper implements MutableServiceDataHelper {
 	}
 
 	@Override
-	public Timestamp getMeasureTimestamp() {
-		return this.measureTimestamp;
+	public Time getMeasureTime() {
+		return this.measureTime;
+	}
+
+	public Date getMeasureDate() {
+		return measureDate;
 	}
 
 	@Override
@@ -203,67 +212,16 @@ public class DefaultServiceDataHelper implements MutableServiceDataHelper {
 	}
 
 	@Override
-	public void setMeasureTimestamp(Timestamp timestamp) {
-		this.measureTimestamp = timestamp;
+	public void setMeasureTime(Time timestamp) {
+		this.measureTime = timestamp;
+	}
+
+	public void setMeasureDate(Date measureDate) {
+		this.measureDate = measureDate;
 	}
 
 	@Override
 	public void setSource(String source) {
 		this.source = source;
-	}
-
-	/**
-	 * Liefert die Vorhersage, die zum Datum passt.
-	 * 
-	 * @param conditions
-	 *            Set mit Vorhersagen
-	 * @param date
-	 *            Datum
-	 * @return Vorhersage zum Datum, ansonsten null
-	 */
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Weather [");
-		if (this.city != null) {
-			builder.append("city=");
-			builder.append(this.city);
-			builder.append(", ");
-		}
-		if (this.apicity != null) {
-			builder.append("apicity=");
-			builder.append(this.apicity);
-			builder.append(", ");
-		}
-		if (this.measureTimestamp != null) {
-			builder.append("measureTimestamp=");
-			builder.append(this.measureTimestamp);
-			builder.append(", ");
-		}
-		if (this.source != null) {
-			builder.append("source=");
-			builder.append(this.source);
-			builder.append(", ");
-		}
-		if (this.currentCondition != null) {
-			builder.append("\n- currentCondition=");
-			builder.append(this.currentCondition.toString());
-			builder.append(", ");
-		}
-		if ((this.forecastConditions != null) && !this.forecastConditions.isEmpty()) {
-			builder.append("\n- forecastCondition=[");
-			for (ExtendedServiceDataForecast condition : this.forecastConditions) {
-				builder.append(condition.toString());
-			}
-			builder.append("]");
-
-		}
-		builder.append("\n]");
-		return builder.toString();
 	}
 }

@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import java.util.Locale;
 
 /**
  * Helper to convert specific date formats
@@ -33,97 +34,22 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
  * @author Andreas Rehfeldt
  * @version 1.0 (Jun 22, 2012)
  */
-public final class DateConverter {
+public class DateConverter {
 
 	/**
 	 * One hour in millis
 	 */
-	public static final long HOUR = 3600000L;
+	public static final long ONE_HOUR_IN_MILLIS = 3600000L;
 
 	/**
 	 * One minute in millis
 	 */
-	public static final long MINUTE = 60000L;
+	public static final long ONE_MINUTE_IN_MILLIS = 60000L;
 
 	/**
 	 * 24 hours in millis
 	 */
-	public static final long NEXT_DAY_IN_MILLIS = 86400000L;
-
-	/**
-	 * Returns a date object to the given date string
-	 * 
-	 * @param dateString
-	 *            Date string
-	 * @param pattern
-	 *            Pattern for the string
-	 * @return Date object
-	 * @throws ParseException
-	 *             The string can not be interpreted
-	 */
-	public static Date convertDate(String dateString, String pattern) throws ParseException {
-		if (pattern == null) {
-			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("pattern"));
-		}
-		if (dateString == null) {
-			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("dateString"));
-		}
-
-		DateFormat formatter = new SimpleDateFormat(pattern);
-		Date date = new Date(formatter.parse(dateString).getTime());
-
-		return date;
-	}
-
-	/**
-	 * Returns a time object to the given time string
-	 * 
-	 * @param timeString
-	 *            Time string
-	 * @param pattern
-	 *            Pattern for the string
-	 * @return Time object
-	 * @throws ParseException
-	 *             The string can not be interpreted
-	 */
-	public static Time convertTime(String timeString, String pattern) throws ParseException {
-		if (pattern == null) {
-			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("pattern"));
-		}
-		if (timeString == null) {
-			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("timeString"));
-		}
-
-		DateFormat formatter = new SimpleDateFormat(pattern);
-		Time time = new Time(formatter.parse(timeString).getTime());
-
-		return time;
-	}
-
-	/**
-	 * Returns a timestamp object to the given string
-	 * 
-	 * @param timeString
-	 *            Timestamp string
-	 * @param pattern
-	 *            Pattern for the string
-	 * @return Timestamp object
-	 * @throws ParseException
-	 *             The string can not be interpreted
-	 */
-	public static Timestamp convertTimestamp(String timeString, String pattern) throws ParseException {
-		if (pattern == null) {
-			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("pattern"));
-		}
-		if (timeString == null) {
-			throw new RuntimeException(ExceptionMessages.getMessageForNotNull("timeString"));
-		}
-
-		DateFormat formatter = new SimpleDateFormat(pattern);
-		Timestamp timestamp = new Timestamp(formatter.parse(timeString).getTime());
-
-		return timestamp;
-	}
+	public static final long ONE_DAY_IN_MILLIS = 86400000L;
 
 	/**
 	 * Convert the timestamp to the format 00:00:00 (removes the hours, minutes, seconds and millis)
@@ -212,7 +138,7 @@ public final class DateConverter {
 	 * @return Next day as timestamp
 	 */
 	public static long getNextDay(long timestamp) {
-		return timestamp + DateConverter.NEXT_DAY_IN_MILLIS;
+		return timestamp + DateConverter.ONE_DAY_IN_MILLIS;
 	}
 
 	/**
@@ -234,7 +160,7 @@ public final class DateConverter {
 	 * @return Previous day as timestamp
 	 */
 	public static long getPreviousDay(long timestamp) {
-		return timestamp - DateConverter.NEXT_DAY_IN_MILLIS;
+		return timestamp - DateConverter.ONE_DAY_IN_MILLIS;
 	}
 
 	/**
@@ -307,6 +233,179 @@ public final class DateConverter {
 		int time2 = cal.get(Calendar.DAY_OF_YEAR);
 
 		return (time1 == time2) ? true : false;
+	}
+	/**
+	 * invokes {@link #convertDate(java.lang.String, java.lang.String, java.util.Locale) } with {@link Locale#US}
+	 * @param dateString
+	 * @param pattern
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Date convertDate(String dateString, String pattern) throws ParseException {
+		Date retValue = convertDate(dateString,
+			pattern, Locale.US);
+		return retValue;
+	}
+
+	/**
+	 * Returns a date object to the given date string
+	 * 
+	 * @param dateString
+	 *            Date string
+	 * @param pattern
+	 *            Pattern for the string
+	 * @param locale 
+	 * @return Date object
+	 * @throws ParseException
+	 *             The string can not be interpreted
+	 */
+	public static Date convertDate(String dateString, String pattern, Locale locale) throws ParseException {
+		if (dateString == null) {
+			throw new IllegalArgumentException("dateString");
+		} else if (pattern == null) {
+			throw new IllegalArgumentException("pattern");
+		}
+
+		DateFormat formatter = new SimpleDateFormat(pattern, locale);
+		Date date = new Date(formatter.parse(dateString).getTime());
+
+		return date;
+	}
+	
+	/**
+	 * invokes {@link #convertDateFromWeekday(java.lang.String, java.util.Locale) } with {@link Locale#US}
+	 * @param dateString
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Date convertDateFromWeekday(String dateString) throws ParseException {
+		Date retValue = convertDateFromWeekday(dateString, Locale.US);
+		return retValue;
+	}
+
+	/**
+	 * Returns the date object to the next weekday with the current hour, minute, second and millisecond
+	 * 
+	 * @param dateString
+	 *            Next weekday
+	 * @param locale 
+	 * @return Date object
+	 * @throws ParseException
+	 *             The string can not be interpreted
+	 */
+	public static Date convertDateFromWeekday(String dateString, Locale locale) throws ParseException {
+		if (dateString == null) {
+			throw new IllegalArgumentException("dateString");
+		}
+
+		Calendar cal = new GregorianCalendar();
+		DateFormat formatter = new SimpleDateFormat("E", locale);
+
+		// Current date
+		if (formatter.format(cal.getTime()).equals(dateString)) {
+			return new Date(cal.getTimeInMillis());
+		}
+
+		// Next days
+		for (int i = 0; i < 7; i++) {
+			cal.add(Calendar.DAY_OF_MONTH, 1);
+			if (formatter.format(cal.getTime()).equals(dateString)) {
+				return new Date(cal.getTimeInMillis());
+			}
+		}
+
+		// Nothing found?
+		return null;
+	}
+
+	/**
+	 * Returns a time object to the given string
+	 * 
+	 * @param timeString
+	 *            Time string
+	 * @param pattern
+	 *            Pattern for the string
+	 * @param locale 
+	 * @return Time object
+	 * @throws ParseException
+	 *             The string can not be interpreted
+	 */
+	public static Time convertTime(String timeString, String pattern, Locale locale) throws ParseException {
+		if (timeString == null) {
+			throw new IllegalArgumentException("timeString");
+		} else if (pattern == null) {
+			throw new IllegalArgumentException("pattern");
+		}
+
+		DateFormat formatter = new SimpleDateFormat(pattern, locale);
+		Time time = new Time(formatter.parse(timeString).getTime());
+
+		return time;
+	}
+	
+	/**
+	 * invokes {@link #convertTime(java.lang.String, java.lang.String, java.util.Locale) } with {@link Locale#US}
+	 * @param timeString
+	 * @param pattern
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Time convertTime(String timeString, String pattern) throws ParseException {
+		return convertTime(timeString,
+			pattern,
+			Locale.US);
+	}
+	
+	/**
+	 * invokes {@link #convertTimestamp(java.lang.String, java.lang.String, java.util.Locale) } with {@link Locale#US}
+	 * @param timestampString
+	 * @param pattern
+	 * @return
+	 * @throws ParseException 
+	 */
+	public static Timestamp convertTimestamp(String timestampString, String pattern) throws ParseException {
+		Timestamp retValue = convertTimestamp(timestampString,
+			pattern, Locale.US);
+		return retValue;
+	}
+
+	/**
+	 * Returns a timestamp object to the given string
+	 * 
+	 * @param timestampString
+	 *            Timestamp string
+	 * @param pattern
+	 *            Pattern for the string
+	 * @param locale 
+	 * @return Timestamp object
+	 * @throws ParseException
+	 *             The string can not be interpreted
+	 */
+	public static Timestamp convertTimestamp(String timestampString, String pattern, Locale locale) throws ParseException {
+		if (timestampString == null) {
+			throw new IllegalArgumentException("timestampString");
+		} else if (pattern == null) {
+			throw new IllegalArgumentException("pattern");
+		}
+
+		DateFormat formatter = new SimpleDateFormat(pattern, locale);
+		Timestamp timestamp = new Timestamp(formatter.parse(timestampString).getTime());
+
+		return timestamp;
+	}	
+
+	/**
+	 * Convert fahrenheit to celsius
+	 * 
+	 * @param fahrenheit
+	 *            Fahrenheit
+	 * @return Degree of Celsius
+	 */
+	public static float convertToCelsius(float fahrenheit) {
+		return (((fahrenheit - 32) * 5) / 9);
+	}
+
+	private DateConverter() {
 	}
 
 }

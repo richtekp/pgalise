@@ -185,8 +185,8 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 			long actTime;
 
 			// Interpolate limits for difference
-			long minTimeInterpolate = minTime + DateConverter.HOUR;
-			long maxTimeInterpolate = maxTime - DateConverter.HOUR;
+			long minTimeInterpolate = minTime + DateConverter.ONE_HOUR_IN_MILLIS;
+			long maxTimeInterpolate = maxTime - DateConverter.ONE_HOUR_IN_MILLIS;
 
 			// Sort values
 			List<Long> times = new ArrayList<>(this.map.keySet());

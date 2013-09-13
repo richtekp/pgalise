@@ -18,7 +18,11 @@ package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -33,16 +37,14 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.util.Converter;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
 import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
+import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
+import de.pgalise.weathercollector.model.MutableServiceDataHelper;
 import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
@@ -65,7 +67,7 @@ public class YahooWeather extends XMLAPIWeather {
 
 	@Override
 	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
+		MutableServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
 		Unit<Temperature> unit = null;
 
 		// City (<yweather:location city="Oldenburg" region="NI" country="Germany"/>)
@@ -79,7 +81,9 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			try {
 				String dateString = nodes.item(i).getTextContent();
-				weather.setMeasureTimestamp(Converter.convertTimestamp(dateString, "E, dd MMM yyyy h:mm a z"));
+				Timestamp convertedTimestamp = DateConverter.convertTimestamp(dateString, "E, dd MMM yyyy h:mm a z");
+				weather.setMeasureTime(new Time(convertedTimestamp.getTime()));
+				weather.setMeasureDate(new Date(convertedTimestamp.getTime()));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -104,12 +108,12 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			DefaultExtendedServiceDataCurrent condition;
+			MutableExtendedServiceDataCurrent condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
-				Date date = Converter.convertDate(dateString, "E, dd MMM yyyy h:mm a z");
-				Time time = Converter.convertTime(dateString, "E, dd MMM yyyy h:mm a z");
+				Date date = DateConverter.convertDate(dateString, "E, dd MMM yyyy h:mm a z");
+				Time time = DateConverter.convertTime(dateString, "E, dd MMM yyyy h:mm a z");
 				condition = new DefaultExtendedServiceDataCurrent(
 							date, 
 							time, 
@@ -146,12 +150,12 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			DefaultExtendedServiceDataForecast condition;
+			MutableExtendedServiceDataForecast condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
 				condition = new DefaultExtendedServiceDataForecast(
-							Converter.convertDate(
+							DateConverter.convertDate(
 								dateString, 
 								"dd MMM yyyy" //"yyyy-MM-dd"
 							), 
@@ -165,23 +169,23 @@ public class YahooWeather extends XMLAPIWeather {
 				continue;
 			}
 
-			String dataString = "";
+			String dataString;
 
 			// Temperature (low)
 			dataString = attributes.getNamedItem("low").getTextContent();
-			if ((dataString != null) && !dataString.equals("")) {
+			if ((dataString != null) && !dataString.isEmpty()) {
 				condition.setTemperatureLow(Measure.valueOf(Float.parseFloat(dataString), unit));
 			}
 
 			// Temperature (high)
 			dataString = attributes.getNamedItem("high").getTextContent();
-			if ((dataString != null) && !dataString.equals("")) {
+			if ((dataString != null) && !dataString.isEmpty()) {
 				condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), unit));
 			}
 
 			// Condition
 			dataString = attributes.getNamedItem("code").getTextContent();
-			if ((dataString != null) && !dataString.equals("")) {
+			if ((dataString != null) && !dataString.isEmpty()) {
 				condition.setCondition(Condition.retrieveCondition(Integer.parseInt(dataString)));
 			}
 
@@ -221,13 +225,13 @@ public class YahooWeather extends XMLAPIWeather {
 					// Sunset
 					String timeString = attributes.getNamedItem("sunrise").getTextContent();
 					if ((timeString != null) && !timeString.equals("")) {
-						condition.setSunrise(Converter.convertTime(timeString, "h:mm a"));
+						condition.setSunrise(DateConverter.convertTime(timeString, "h:mm a"));
 					}
 
 					// Sunrise
 					timeString = attributes.getNamedItem("sunset").getTextContent();
 					if ((timeString != null) && !timeString.equals("")) {
-						condition.setSunset(Converter.convertTime(timeString, "h:mm a"));
+						condition.setSunset(DateConverter.convertTime(timeString, "h:mm a"));
 					}
 				} catch (ParseException e) {
 					e.printStackTrace();

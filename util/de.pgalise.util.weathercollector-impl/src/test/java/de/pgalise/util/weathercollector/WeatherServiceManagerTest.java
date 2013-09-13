@@ -24,6 +24,7 @@ import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
@@ -59,7 +60,7 @@ import org.junit.Before;
 @ManagedBean
 public class WeatherServiceManagerTest {
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
+	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_collector_test");
 
 	public WeatherServiceManagerTest() throws NamingException {
 		Properties p = new Properties();
@@ -99,7 +100,7 @@ public class WeatherServiceManagerTest {
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();
 		instance.saveInformations(baseDatabaseManager);
-		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", DefaultExtendedServiceDataCurrent.class.getSimpleName()));
+		Query query = entityManager.createQuery("SELECT x FROM DefExtendedServiceDataCurrent x");
 		assertFalse(query.getResultList().isEmpty());
 		entityManager.close();
 	}

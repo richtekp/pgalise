@@ -38,7 +38,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
+import de.pgalise.simulation.weather.model.StationDataNormal;
 import static de.pgalise.simulation.weather.internal.modifier.ReferenceCityTest.endTimestamp;
 import static de.pgalise.simulation.weather.internal.modifier.ReferenceCityTest.startTimestamp;
 import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;

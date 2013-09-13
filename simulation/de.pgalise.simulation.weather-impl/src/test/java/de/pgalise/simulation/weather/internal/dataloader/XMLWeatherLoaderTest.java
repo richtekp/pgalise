@@ -27,8 +27,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
-import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataNormal;
+import de.pgalise.simulation.weather.model.StationDataMap;
+import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import java.sql.Date;

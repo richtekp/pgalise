@@ -4,13 +4,30 @@
  */
 package de.pgalise.it;
 
+import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.StationDataNormal;
+import de.pgalise.simulation.weather.util.DateConverter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 import java.sql.Time;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
 import javax.ejb.embeddable.EJBContainer;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 /**
  *
@@ -35,6 +52,11 @@ public class TestUtils {
 			p.setProperty("weatherData.Password", "postgis");
 			p.setProperty("weatherData.JtaManaged",
 				"true");
+		p.setProperty(
+			"hibernate.dialect",
+//			"org.hibernate.dialect.PostgreSQLDialect"
+			"org.hibernate.spatial.dialect.postgis.PostgisDialect"
+		);
 			
 //			p.setProperty("weatherDataTest", "new://Resource?type=javax.sql.DataSource");
 ////			p.setProperty("weatherDataTest.JdbcDriver", "org.hsqldb.jdbcDriver");
@@ -93,6 +115,87 @@ public class TestUtils {
 		p.setProperty("hibernate.show_sql", "false");
 		EntityManagerFactory retValue = Persistence.createEntityManagerFactory(unitName, p);
 		return retValue;
+	}
+	
+	/**
+	 * saves {@link StationDataNormal} for the day of timestamp at 00:00, the 
+	 * preceeding day at 00:00 and the following day at 00:00 and returns the 
+	 * persisted entities, which are supposed to be removed from the 
+	 * database/entity manager by the user
+	 * @param timestamp
+	 * @return 
+	 */
+	public static Collection<MutableStationData> setUpWeatherData(long timestamp, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			timestamp);
+		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			timestamp+DateConverter.ONE_DAY_IN_MILLIS);
+		MutableStationData serviceWeather = new StationDataNormal(new Date(startTimestampMidnight),
+			new Time(DateConverter.convertTimestampToMidnight(startTimestampMidnight)),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
+		
+		MutableStationData serviceWeatherPreviousDay = new StationDataNormal(new Date(startTimestampMidnight),
+			new Time(DateConverter.convertTimestampToMidnight(startTimestampMidnight-DateConverter.ONE_DAY_IN_MILLIS)),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f); //for the DatabaseWeatherLoader (loads current, previous and following day)
+		MutableStationData serviceWeatherForecast = new StationDataNormal(new Date(endTimestampMidnight),
+			new Time(DateConverter.convertTimestampToMidnight(endTimestampMidnight)),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
+		MutableStationData weather = new StationDataNormal(new Date(timestamp),
+			new Time(DateConverter.convertTimestampToMidnight(timestamp)),
+			1,
+			1,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1,
+			1.0f,
+			1.0f,
+			1.0f);
+		utx.begin();
+		EntityManager em = entityManagerFactory.createEntityManager();
+		em.joinTransaction();
+		em.persist(serviceWeather);
+		em.persist(serviceWeatherPreviousDay);
+		em.persist(serviceWeatherForecast);
+		em.persist(weather);
+		utx.commit();
+		Collection<MutableStationData> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
+		return retValue;
+	}
+	
+	public static void tearDownWeatherData(Collection<MutableStationData> mutableStationDatas, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		utx.begin();
+		EntityManager em = entityManagerFactory.createEntityManager();
+		em.joinTransaction();
+		for(MutableStationData mutableStationData : mutableStationDatas) {
+			em.remove(mutableStationData);
+		}
+		utx.commit();
+		em.close();
 	}
 
 	private TestUtils() {

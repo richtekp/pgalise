@@ -4,7 +4,6 @@
  */
 package de.pgalise.simulation.weather.model;
 
-import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -12,11 +11,10 @@ import java.sql.Time;
  *
  * @author richter
  */
-public interface BaseWeatherInformation extends BaseTimeSensitive {
+public interface MutableTimeSensitive extends BaseTimeSensitive {
+	
 
-	Float getRelativHumidity(); 
-
-	Float getWindDirection() ;
-
-	Float getWindVelocity();
+	public void setMeasureTime(Time measureTime) ;
+	
+	public void setMeasureDate(Date measureDate);
 }

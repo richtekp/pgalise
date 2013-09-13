@@ -30,7 +30,7 @@ import java.util.Properties;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast;
+import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 
 /**
  * This class loads the weather data from a xml file. <br />

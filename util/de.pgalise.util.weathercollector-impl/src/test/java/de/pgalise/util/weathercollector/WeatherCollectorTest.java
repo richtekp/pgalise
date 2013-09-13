@@ -28,9 +28,11 @@ import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
-import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
+import de.pgalise.weathercollector.weatherstation.StationStrategy;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
@@ -57,7 +59,7 @@ import static org.easymock.EasyMock.*;
 @ManagedBean
 public class WeatherCollectorTest {
 	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
+	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_collector_test");
 
 	public WeatherCollectorTest() throws NamingException {
 		Properties p = new Properties();
@@ -99,7 +101,7 @@ public class WeatherCollectorTest {
 		entityManager.persist(city);
 		entityManager.getTransaction().commit();
 		weatherCollector.collectServiceData(baseDatabaseManager, serviceStrategys);
-		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", DefaultExtendedServiceDataCurrent.class.getSimpleName()));
+		Query query = entityManager.createQuery("SELECT x FROM DefExtendedServiceDataCurrent x");
 		assertFalse(query.getResultList().isEmpty());
 		entityManager.close();
 	}

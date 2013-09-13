@@ -241,8 +241,8 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 					+ ")");
 
 			// Interpolate limits for difference
-			minTimeInterpolate = minTime + DateConverter.HOUR;
-			maxTimeInterpolate = maxTime - DateConverter.HOUR;
+			minTimeInterpolate = minTime + DateConverter.ONE_HOUR_IN_MILLIS;
+			maxTimeInterpolate = maxTime - DateConverter.ONE_HOUR_IN_MILLIS;
 
 			// Sort values
 			List<Long> times = new ArrayList<>(this.map.keySet());

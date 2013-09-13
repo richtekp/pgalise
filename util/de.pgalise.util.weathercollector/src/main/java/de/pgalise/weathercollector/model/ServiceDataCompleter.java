@@ -14,25 +14,24 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.weathercollector.weatherstation;
+package de.pgalise.weathercollector.model;
 
-import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 
 /**
- * Interface for the weather stations
+ * Interface to complete weather service data
  * 
  * @author Andreas Rehfeldt
- * @version 1.0 (Mar 16, 2012)
+ * @version 1.0 (Apr 16, 2012)
  */
-public interface StationStrategy {
+public interface ServiceDataCompleter {
 
 	/**
-	 * Saves the informations of the weather station
+	 * Concentrate the objects
 	 * 
-	 * @param saver
-	 *            WeatherStationSaver
-	 * @param testmode
-	 *            Option to enable the test mode (no database commits)
+	 * @param obj
+	 *            new obj
 	 */
-	public void saveWeather(WeatherStationSaver saver);
+	public void complete(ServiceDataCurrent obj);
+
 }

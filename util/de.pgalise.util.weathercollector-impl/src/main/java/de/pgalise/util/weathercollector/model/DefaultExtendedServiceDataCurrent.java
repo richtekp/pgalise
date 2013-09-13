@@ -16,10 +16,9 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.weathercollector.model.ExtendedServiceDataCurrentCompleter;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import java.sql.Date;
 import java.sql.Time;
 
@@ -37,10 +36,10 @@ import javax.measure.quantity.Temperature;
  * @author Andreas Rehfeldt
  * @version 1.0 (01.07.2012)
  */
-@Entity
+@Entity(name = "DefExtendedServiceDataCurrent")
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_CURRENT")
-@NamedQuery(name = "DefaultExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM DefaultExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
-public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ExtendedServiceDataCurrent, ExtendedServiceDataCurrentCompleter, MutableExtendedServiceDataCurrent {
+@NamedQuery(name = "DefExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM DefExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
+public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ExtendedServiceDataCurrent, MutableExtendedServiceDataCurrent {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -85,7 +84,6 @@ public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent
 
 	@Override
 	public void complete(ExtendedServiceDataCurrent newObj) {
-
 		// Date
 		if (this.getMeasureDate() == null) {
 			this.setMeasureDate(newObj.getMeasureDate());
@@ -129,14 +127,17 @@ public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent
 		}
 	}
 
+	@Override
 	public Time getSunrise() {
 		return this.sunrise;
 	}
 
+	@Override
 	public Time getSunset() {
 		return this.sunset;
 	}
 
+	@Override
 	public Float getVisibility() {
 		return this.visibility;
 	}

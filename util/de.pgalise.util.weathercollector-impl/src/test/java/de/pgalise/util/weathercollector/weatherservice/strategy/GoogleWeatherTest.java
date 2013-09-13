@@ -31,7 +31,7 @@ import org.junit.Ignore;
 @ManagedBean
 @Ignore
 public class GoogleWeatherTest {
-	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_data_test");
+	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_collector_test");
 	
 	public GoogleWeatherTest() {
 	}

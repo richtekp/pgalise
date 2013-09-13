@@ -61,7 +61,12 @@ public interface WeatherLoader {
 	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) ;
 
 	/**
-	 * Returns the weather data of the weather station. They are sorted ascending.
+	 * Returns the weather data of the weather station for the day of 
+	 * <tt>timestamp</tt>, as well as the preceeding and following day (at the 
+	 * same time of the day). They are sorted ascending. This method assumes that 
+	 * the availability of weather data has been check before (using 
+	 * {@link #checkStationDataForDay(long) }). If the check didin't occur the 
+	 * returned <tt>WeatherMap</tt> possibly contains <code>null</code>.
 	 * 
 	 * @param timestamp
 	 *            Timestamp

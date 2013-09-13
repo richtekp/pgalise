@@ -20,6 +20,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
@@ -48,6 +49,8 @@ public interface WeatherService {
 
 	/**
 	 * Get new weather informations for the given timestamp from the database
+	 * which have to be present in the database. In case they're not present 
+	 * throws a {@link NoWeatherDataFoundException}.
 	 * 
 	 * @param startTimestamp
 	 *            Timestamp (from 2003-07-07 to today)
@@ -61,15 +64,19 @@ public interface WeatherService {
 	 *             There is no data for the given date in the database
 	 */
 	public void addNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
-			List<WeatherStrategyHelper> strategyList) ;
+			List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException;
 
 	/**
-	 * Get new weather informations for the next day of the simulation date from the database
+	 * Get new weather informations for the next day of the simulation date from 
+	 * the database which have to be present in the database. In case they're not 
+	 * present throws a {@link NoWeatherDataFoundException}.
 	 * 
 	 * @throws NoWeatherDataFoundException
 	 *             There is no data for the given date in the database
+	 * @throws IllegalStateException if there's been no weather added for any day 
+	 * (which dertermines the next day used by this method)
 	 */
-	public void addNextWeather() ;
+	public void addNewNextDayWeather() throws NoWeatherDataFoundException;
 
 	/**
 	 * Checks if the weather data can be loaded for the given date.
@@ -87,7 +94,7 @@ public interface WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no data for the given date in the database
 	 */
-	public void deployStrategy(WeatherStrategy strategy)  ;
+	public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException;
 
 	/**
 	 * Returns the current loaded timestamp

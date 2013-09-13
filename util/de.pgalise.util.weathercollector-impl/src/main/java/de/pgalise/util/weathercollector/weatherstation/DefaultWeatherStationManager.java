@@ -16,9 +16,12 @@
  
 package de.pgalise.util.weathercollector.weatherstation;
 
-import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.util.weathercollector.util.DatabaseManager;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,8 +32,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
+import de.pgalise.util.weathercollector.weatherservice.WeatherServiceContext;
+import de.pgalise.weathercollector.weatherstation.StationStrategy;
+import de.pgalise.weathercollector.weatherstation.WeatherStationManager;
+import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +49,8 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.1 (Jun 16, 2012)
  */
-public class WeatherStationManager {
-	private final static Logger LOGGER = LoggerFactory.getLogger(WeatherStationManager.class);
+public class DefaultWeatherStationManager implements WeatherStationManager {
+	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherStationManager.class);
 
 	/**
 	 * Path to the file with strategies
@@ -66,11 +75,11 @@ public class WeatherStationManager {
 	 * @param testmode
 	 *            Option to enable the test mode (no database commits)
 	 */
-	public WeatherStationManager(WeatherStationSaver weatherStationSaver) {
+	public DefaultWeatherStationManager(WeatherStationSaver weatherStationSaver) {
 		this(weatherStationSaver, loadStrategiesFromFile());
 	}
 	
-	public WeatherStationManager(WeatherStationSaver weatherStationSaver, Set<StationStrategy> stationStrategys) {
+	public DefaultWeatherStationManager(WeatherStationSaver weatherStationSaver, Set<StationStrategy> stationStrategys) {
 		this.saver = weatherStationSaver;
 		this.stationStrategys = stationStrategys;
 	}
@@ -94,7 +103,7 @@ public class WeatherStationManager {
 	private static Set<StationStrategy> loadStrategiesFromFile() {
 		Set<StationStrategy> list = new HashSet<>();
 
-		try (InputStream propInFile = WeatherStationManager.class.getResourceAsStream(FILEPATH)) {
+		try (InputStream propInFile = DefaultWeatherStationManager.class.getResourceAsStream(FILEPATH)) {
 			// Read file
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
