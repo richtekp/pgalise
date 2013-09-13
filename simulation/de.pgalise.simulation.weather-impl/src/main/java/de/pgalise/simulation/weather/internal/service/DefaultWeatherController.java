@@ -49,7 +49,6 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.HotDayEvent;
@@ -383,7 +382,7 @@ public class DefaultWeatherController extends AbstractController implements Weat
 						DefaultWeatherController.log.debug("Deploy modifier: " + cevent.getEvent());
 						DefaultWeatherController.this.weatherservice.deployStrategy(strategy);
 					}
-				} catch (IllegalArgumentException | NoWeatherDataFoundException e) {
+				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 					throw new RuntimeException(e.getMessage());
 				}

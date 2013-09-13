@@ -20,7 +20,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
@@ -62,7 +61,7 @@ public interface WeatherService {
 	 *             There is no data for the given date in the database
 	 */
 	public void addNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
-			List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException;
+			List<WeatherStrategyHelper> strategyList) ;
 
 	/**
 	 * Get new weather informations for the next day of the simulation date from the database
@@ -70,7 +69,7 @@ public interface WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no data for the given date in the database
 	 */
-	public void addNextWeather() throws NoWeatherDataFoundException;
+	public void addNextWeather() ;
 
 	/**
 	 * Checks if the weather data can be loaded for the given date.
@@ -88,7 +87,7 @@ public interface WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no data for the given date in the database
 	 */
-	public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException;
+	public void deployStrategy(WeatherStrategy strategy)  ;
 
 	/**
 	 * Returns the current loaded timestamp

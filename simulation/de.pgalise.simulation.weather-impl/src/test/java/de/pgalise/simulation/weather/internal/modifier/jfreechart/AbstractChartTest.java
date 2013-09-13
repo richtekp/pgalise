@@ -17,7 +17,6 @@
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import java.io.IOException;
@@ -34,7 +33,6 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -124,7 +122,7 @@ public abstract class AbstractChartTest {
 	 * @throws NamingException
 	 */
 	public AbstractChartTest(long startdate, long enddate, WeatherParameterEnum parameter)
-			throws NoWeatherDataFoundException, IOException, NamingException {
+			throws IOException, NamingException {
 		this.random = new DefaultRandomSeedService();
 		this.startTimestamp = startdate;
 		this.endTimestamp = enddate;

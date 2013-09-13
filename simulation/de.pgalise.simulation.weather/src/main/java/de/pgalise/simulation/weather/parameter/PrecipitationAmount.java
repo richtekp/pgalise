@@ -19,7 +19,6 @@
  */
 package de.pgalise.simulation.weather.parameter;
 
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.service.WeatherService;
 
 /**
@@ -28,7 +27,7 @@ import de.pgalise.simulation.weather.service.WeatherService;
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
-public final class PrecipitationAmount extends WeatherParameterBase {
+public class PrecipitationAmount extends WeatherParameterBase {
 
 	/**
 	 * Constructor
@@ -46,7 +45,7 @@ public final class PrecipitationAmount extends WeatherParameterBase {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Number> T getValue(long time) throws NoWeatherDataFoundException {
+	public <T extends Number> T getValue(long time)  {
 		Float value = this.getWeather(time).getPrecipitationAmount();
 		return (T) value;
 	}

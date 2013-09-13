@@ -21,7 +21,7 @@ package de.pgalise.simulation.shared.exception;
  * 
  * @author Marcus
  */
-public final class ExceptionMessages {
+public class ExceptionMessages {
 
 	/**
 	 * Creates a string for {@link IllegalArgumentException} due to passing zero
@@ -156,5 +156,8 @@ public final class ExceptionMessages {
 		if(argName == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("param"));
 		}
+	}
+
+	private ExceptionMessages() {
 	}
 }

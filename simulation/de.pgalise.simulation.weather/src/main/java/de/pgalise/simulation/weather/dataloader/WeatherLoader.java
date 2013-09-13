@@ -17,7 +17,6 @@
 package de.pgalise.simulation.weather.dataloader;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 
 /**
@@ -46,11 +45,9 @@ public interface WeatherLoader {
 	 *            Timestamp
 	 * @param city
 	 *            ID to the city
-	 * @throws NoWeatherDataFoundException
-	 *             There is no service weather data for the given timestamp.
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException;
+	public ServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city) ;
 
 	/**
 	 * Returns the forecast weather informations form the weather services for the given city and timestamp
@@ -59,11 +56,9 @@ public interface WeatherLoader {
 	 *            Timestamp
 	 * @param city
 	 *            ID to the city
-	 * @throws NoWeatherDataFoundException
-	 *             There is no service weather data for the given timestamp.
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException;
+	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) ;
 
 	/**
 	 * Returns the weather data of the weather station. They are sorted ascending.
@@ -71,10 +66,8 @@ public interface WeatherLoader {
 	 * @param timestamp
 	 *            Timestamp
 	 * @return WeatherMap with weather data
-	 * @throws NoWeatherDataFoundException
-	 *             There is no weather data for the given date.
 	 */
-	public WeatherMap loadStationData(long timestamp) throws NoWeatherDataFoundException;
+	public WeatherMap loadStationData(long timestamp) ;
 
 	/**
 	 * Set the load option for station data

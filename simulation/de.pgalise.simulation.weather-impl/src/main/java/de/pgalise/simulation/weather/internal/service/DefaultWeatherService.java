@@ -28,7 +28,6 @@ import java.util.concurrent.Semaphore;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.entity.StationDataMap;
@@ -178,7 +177,7 @@ public class DefaultWeatherService implements WeatherService {
 
 	@Override
 	public void addNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
-			List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
+			List<WeatherStrategyHelper> strategyList) {
 		// We have only weather data after
 		if (startTimestamp < 1057528800000L) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForMustBetween("startTimestamp",
@@ -202,7 +201,7 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public void addNextWeather() throws NoWeatherDataFoundException {
+	public void addNextWeather() {
 		// Has a date been simulated before?
 		if (this.loadedTimestamp < 1) {
 			throw new RuntimeException("Service was not started before!");
@@ -231,10 +230,10 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException {
+	public void deployStrategy(WeatherStrategy strategy)   {
 		// There is no weather data added
 		if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
-			throw new NoWeatherDataFoundException();
+			throw new IllegalStateException("No weather data has been added so far");
 		}
 
 		if (WeatherEventEnum.SIMULATION_EVENTS.contains(strategy.getType())) {
@@ -338,7 +337,7 @@ public class DefaultWeatherService implements WeatherService {
 
 	@Override
 	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position)
-			throws IllegalArgumentException, NoWeatherDataFoundException {
+			throws IllegalArgumentException {
 		if (key == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("key"));
 		} else if ((position == null)) {
@@ -448,7 +447,7 @@ public class DefaultWeatherService implements WeatherService {
 	 *             No data found
 	 */
 	private void internalAddNewWeather(long startTimestamp, long endTimestamp, boolean takeNormalData,
-			List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
+			List<WeatherStrategyHelper> strategyList) {
 		// Delete all values
 		this.initValues();
 
@@ -490,7 +489,7 @@ public class DefaultWeatherService implements WeatherService {
 
 			// Check existing map
 			if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
-				throw new NoWeatherDataFoundException();
+				throw new IllegalStateException();
 			}
 
 			// Change map to next day
@@ -531,7 +530,7 @@ public class DefaultWeatherService implements WeatherService {
 	 * @throws NoWeatherDataFoundException
 	 *             No data found for the given date
 	 */
-	private void loadWeather(long timestamp) throws NoWeatherDataFoundException {
+	private void loadWeather(long timestamp) {
 		/*
 		 * Load data
 		 */

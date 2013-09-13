@@ -19,7 +19,6 @@ package de.pgalise.simulation.weather.parameter;
 import java.sql.Date;
 import java.sql.Time;
 
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.service.WeatherService;
@@ -75,11 +74,11 @@ public abstract class WeatherParameterBase implements WeatherParameter {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no value for the given time.
 	 */
-	protected StationData getWeather(long time) throws NoWeatherDataFoundException {
+	protected StationData getWeather(long time) {
 		// Check if it is the right date
 		if ((this.getWeatherService().getLoadedTimestamp() < 1)
 				|| !DateConverter.isTheSameDay(this.weatherService.getLoadedTimestamp(), time)) {
-			throw new NoWeatherDataFoundException("Wrong date: " + new Date(time) + "! Date for the simulation is:  "
+			throw new IllegalArgumentException("Wrong date: " + new Date(time) + "! Date for the simulation is:  "
 					+ new Date(this.getWeatherService().getLoadedTimestamp()));
 		}
 
@@ -101,12 +100,6 @@ public abstract class WeatherParameterBase implements WeatherParameter {
 					if (weather != null) {
 						break;
 					}
-				}
-
-				if (weather == null) {
-					// Load new Data
-					throw new NoWeatherDataFoundException("No weather information are available for "
-							+ new Date(newTime) + " - " + new Time(newTime));
 				}
 			}
 		}

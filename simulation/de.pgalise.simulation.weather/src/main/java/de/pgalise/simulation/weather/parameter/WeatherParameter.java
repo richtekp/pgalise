@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.weather.parameter;
 
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.service.WeatherService;
 
 /**
@@ -39,7 +38,7 @@ public interface WeatherParameter {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no value for the given time.
 	 */
-	public <T extends Number> T getValue(long time) throws NoWeatherDataFoundException;
+	public <T extends Number> T getValue(long time) ;
 
 	/**
 	 * Set the WeatherService

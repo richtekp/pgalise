@@ -49,7 +49,6 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -156,7 +155,7 @@ public class DefaultWeatherControllerTest {
 	private volatile Throwable throwable;
 
 	@Test
-	public void controllerTest() throws InterruptedException, NoWeatherDataFoundException, IllegalArgumentException,
+	public void controllerTest() throws InterruptedException, IllegalArgumentException,
 			ExecutionException, IllegalStateException, InitializationException, NamingException {
 		WeatherController ctrl;
 		Number testNumber = null;

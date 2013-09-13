@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Properties;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.entity.DefaultServiceDataForecast;
@@ -102,17 +101,17 @@ public class XMLFileWeatherLoader implements WeatherLoader {
 	}
 
 	@Override
-	public DefaultServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public DefaultServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city)  {
 		throw new RuntimeException("Not implemented!");
 	}
 
 	@Override
-	public DefaultServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public DefaultServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) {
 		throw new RuntimeException("Not implemented!");
 	}
 
 	@Override
-	public WeatherMap loadStationData(long timestamp) throws NoWeatherDataFoundException {
+	public WeatherMap loadStationData(long timestamp) {
 		// Deserialize
 		WeatherMap map = null;
 		long loadeddate;
@@ -121,14 +120,14 @@ public class XMLFileWeatherLoader implements WeatherLoader {
 			loadeddate = (long) dec.readObject();
 			map = (WeatherMap) dec.readObject();
 		} catch (IOException e) {
-			throw new NoWeatherDataFoundException();
+			throw new RuntimeException(e);
 		}
 
 		// Check if the date is correct
 		if (loadeddate == timestamp) {
 			return map;
 		} else {
-			throw new NoWeatherDataFoundException();
+			throw new IllegalStateException(String.format("loaded timestamp %d doesn't correspond to the requested timestamp %d", loadeddate, timestamp));
 		}
 	}
 

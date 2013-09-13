@@ -34,7 +34,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
@@ -152,8 +151,8 @@ public class DefaultWeatherServiceTest  {
 	}
 
 	@Test
-	public void testAddNextWeather() throws NoWeatherDataFoundException, 
-	NamingException, NotSupportedException, SystemException, 
+	public void testAddNextWeather() throws NamingException, NotSupportedException, 
+		SystemException, 
 	HeuristicMixedException, HeuristicRollbackException, IllegalStateException, 
 	RollbackException {
 		/*
@@ -309,7 +308,7 @@ public class DefaultWeatherServiceTest  {
 	}
 
 	@Test
-	public void testGetValueWeatherParameterEnumLong() throws NoWeatherDataFoundException, ParseException {
+	public void testGetValueWeatherParameterEnumLong() throws ParseException {
 		/*
 		 * Test preparations
 		 */
@@ -368,7 +367,7 @@ public class DefaultWeatherServiceTest  {
 	}
 
 	@Test
-	public void testGetValueWeatherParameterEnumLongVector2d() throws NoWeatherDataFoundException, ParseException {
+	public void testGetValueWeatherParameterEnumLongVector2d() throws ParseException {
 		/*
 		 * Test variables
 		 */
