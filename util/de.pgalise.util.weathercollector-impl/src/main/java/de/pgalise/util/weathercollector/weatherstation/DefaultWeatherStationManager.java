@@ -33,10 +33,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.WeatherServiceContext;
-import de.pgalise.weathercollector.weatherstation.StationStrategy;
-import de.pgalise.weathercollector.weatherstation.WeatherStationManager;
-import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceContext;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.EntityManagerFactory;

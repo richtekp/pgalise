@@ -17,8 +17,6 @@
 package de.pgalise.simulation.weather.internal.modifier;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
 import java.util.Calendar;
@@ -30,22 +28,17 @@ import javax.naming.Context;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataNormal;
-import static de.pgalise.simulation.weather.internal.modifier.ReferenceCityTest.endTimestamp;
-import static de.pgalise.simulation.weather.internal.modifier.ReferenceCityTest.startTimestamp;
 import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.LinkedList;
@@ -57,12 +50,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.hibernate.cfg.Configuration;
 import org.junit.After;
-import org.junit.AfterClass;
 
 /**
  * JUnit test for StormDayEvent
@@ -74,7 +64,7 @@ import org.junit.AfterClass;
 @ManagedBean
 public class StormDayEventTest {
 	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
-	private final static EJBContainer CONTAINER = TestUtils.createContainer();
+	private final static EJBContainer CONTAINER = TestUtils.getContainer();
 
 	/**
 	 * End timestamp

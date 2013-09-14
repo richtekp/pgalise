@@ -7,7 +7,7 @@ package de.pgalise.simulation.weather.internal.dataloader.entity;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.weather.model.BaseServiceData;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.sql.Date;
 import java.sql.Time;
 import javax.persistence.CascadeType;
@@ -27,7 +27,7 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 	/**
 	 * City
 	 */
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinColumn(name="CITY")
 	private City city;
 
@@ -57,13 +57,13 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 	@Column(name = "WIND_VELOCITY")
 	private Float windVelocity;
 	
-	@OneToOne(cascade = CascadeType.PERSIST)
-	private Condition condition;
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private WeatherCondition condition;
 
 	protected AbstractBaseServiceData() {
 	}
 
-	public AbstractBaseServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, Condition condition) {
+	public AbstractBaseServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, WeatherCondition condition) {
 		this.measureDate = measureDate;
 		this.measureTime = measureTime;
 		this.city = city;
@@ -136,12 +136,12 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 		this.windVelocity = windVelocity;
 	}
 
-	public void setCondition(Condition condition) {
+	public void setCondition(WeatherCondition condition) {
 		this.condition = condition;
 	}
 
 	@Override
-	public Condition getCondition() {
+	public WeatherCondition getCondition() {
 		return this.condition;
 	}
 }

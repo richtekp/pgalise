@@ -21,34 +21,33 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import org.junit.Test;
 
-import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
+import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceManager;
 import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
-import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import static org.junit.Assert.assertFalse;
-import org.junit.Before;
 
 /**
  * Tests the weather service manager
@@ -59,24 +58,26 @@ import org.junit.Before;
 @LocalClient
 @ManagedBean
 public class WeatherServiceManagerTest {
-	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_collector_test");
+	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	@PersistenceUnit(unitName = "weather_collector_test")
+	private EntityManagerFactory entityManagerFactory;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public WeatherServiceManagerTest() throws NamingException {
-		Properties p = new Properties();
-		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 	}
 
 	@Test
 	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
-		BaseDatabaseManager baseDatabaseManager = NonJTADatabaseManager.getInstance(
+		BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager = JTADatabaseManager.getInstance(
 			entityManagerFactory);
-		Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(Arrays.asList(new YahooWeather()));
-		WeatherServiceManager instance = new WeatherServiceManager(baseDatabaseManager, serviceStrategys);
+		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(Arrays.asList(new YahooWeather()));
+		DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(baseDatabaseManager, serviceStrategys);
 		
+		InitialContext initialContext = new InitialContext();
+		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
+		userTransaction.begin();
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
@@ -96,11 +97,10 @@ public class WeatherServiceManagerTest {
 			true,
 			true,
 			referenceArea);
-		entityManager.getTransaction().begin();
 		entityManager.persist(city);
-		entityManager.getTransaction().commit();
+		userTransaction.commit();
 		instance.saveInformations(baseDatabaseManager);
-		Query query = entityManager.createQuery("SELECT x FROM DefExtendedServiceDataCurrent x");
+		Query query = entityManager.createQuery("SELECT x FROM DefaultServiceDataHelper x");
 		assertFalse(query.getResultList().isEmpty());
 		entityManager.close();
 	}

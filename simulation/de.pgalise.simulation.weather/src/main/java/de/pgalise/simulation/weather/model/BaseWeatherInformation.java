@@ -4,10 +4,6 @@
  */
 package de.pgalise.simulation.weather.model;
 
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import java.sql.Date;
-import java.sql.Time;
-
 /**
  *
  * @author richter

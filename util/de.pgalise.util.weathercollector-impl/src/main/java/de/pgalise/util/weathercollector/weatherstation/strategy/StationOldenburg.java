@@ -34,8 +34,8 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.weathercollector.weatherstation.StationStrategy;
-import de.pgalise.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
+import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
 import org.slf4j.Logger;

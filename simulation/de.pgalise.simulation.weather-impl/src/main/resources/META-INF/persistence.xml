@@ -4,7 +4,7 @@
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>weatherData</jta-data-source>
     <class>de.pgalise.simulation.shared.city.City</class>
-    <class>de.pgalise.simulation.weather.model.Condition</class>
+    <class>de.pgalise.simulation.weather.model.WeatherCondition</class>
     <!--<exclude-unlisted-classes>false</exclude-unlisted-classes>-->
     <class>de.pgalise.simulation.weather.model.DefaultServiceDataCurrent</class>
     <class>de.pgalise.simulation.weather.model.DefaultServiceDataForecast</class>

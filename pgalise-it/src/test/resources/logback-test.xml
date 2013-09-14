@@ -7,8 +7,7 @@
 	</appender>
 
 	<logger name="org.hibernate" level="info"/>
-	<logger name="de.pgalise.it" level="DEBUG"/>
-	<root level="debug">
+	<root level="all">
 		<appender-ref ref="CONSOLE" />
 	</root>	
 </configuration>

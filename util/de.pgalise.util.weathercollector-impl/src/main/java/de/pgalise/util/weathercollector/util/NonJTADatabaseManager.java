@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.util;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,10 +35,10 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
-import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-public class NonJTADatabaseManager extends BaseDatabaseManager {
+public class NonJTADatabaseManager extends BaseDatabaseManager<DefaultServiceDataHelper> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(NonJTADatabaseManager.class);
 
 	/**
@@ -71,6 +71,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	/**
 	 * Returns the instance of the database manager
 	 * 
+	 * @param entityManagerFactory 
 	 * @return instance of the database manager
 	 */
 	public static synchronized NonJTADatabaseManager getInstance(EntityManagerFactory entityManagerFactory) {
@@ -118,13 +119,13 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @return condition code
 	 */
 	@Override
-	public Condition getCondition(String condition) {
+	public WeatherCondition getCondition(String condition) {
 		final EntityManager em = this.factory.createEntityManager();
 
 		// Get cities
-		Condition result;
+		WeatherCondition result;
 		try {
-			TypedQuery<Condition> query = em.createNamedQuery("Condition.getConditionByString", Condition.class);
+			TypedQuery<WeatherCondition> query = em.createNamedQuery("Condition.getConditionByString", WeatherCondition.class);
 			query.setParameter("condition", condition);
 			query.setMaxResults(1);
 			result = query.getSingleResult();
@@ -160,11 +161,11 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		}
 
 		// Returns
-		return (citylist == null) ? new ArrayList<City>() : citylist;
+		return (citylist == null) ? new ArrayList<City>(1) : citylist;
 	}
 
 	@Override
-	public void saveServiceData(ServiceDataHelper weather) {
+	public void saveServiceData(DefaultServiceDataHelper weather) {
 		// Get city
 		City city = weather.getCity();
 
@@ -192,7 +193,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 		tx.begin();
 		boolean result = true;
 		int count = 0;
-		long actTime = 0;
+		long actTime;
 		for (StationData station_data : list) {
 			actTime = station_data.getMeasureDate().getTime() + station_data.getMeasureTime().getTime();
 			// Check if there is any data
@@ -416,7 +417,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager {
 	 * @param service_data
 	 *            Set with forecasts for future days
 	 */
-	private void saveForecastWeather(City cityID, Set<ExtendedServiceDataForecast> service_data) {
+	private void saveForecastWeather(City cityID, Set<DefaultExtendedServiceDataForecast> service_data) {
 		if ((service_data == null) || service_data.isEmpty()) {
 			throw new IllegalArgumentException("service_data");
 		}

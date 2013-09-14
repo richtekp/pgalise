@@ -24,16 +24,16 @@ public abstract class AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY )
+//	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	private Long id;
-//	private static Set<Long> usedIds = new HashSet<>(16);
+	private static Set<Long> usedIds = new HashSet<>(16);
 
 	protected AbstractIdentifiable() {
-//		this.id = UUID.randomUUID().getMostSignificantBits();
-//		while(usedIds.contains(id)) {
-//			this.id = UUID.randomUUID().getMostSignificantBits();
-//		}
-//		usedIds.add(id);
+		this.id = UUID.randomUUID().getMostSignificantBits();
+		while(usedIds.contains(id)) {
+			this.id = UUID.randomUUID().getMostSignificantBits();
+		}
+		usedIds.add(id);
 	}
 
 	public AbstractIdentifiable(Long id) {

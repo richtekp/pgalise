@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.weathercollector.weatherstation;
+package de.pgalise.util.weathercollector.weatherstation;
 
 /**
  * Interface for the weather stations

@@ -16,7 +16,6 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.simulation.shared.city.City;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,12 +31,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +45,8 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.2 (Apr 15, 2012)
  */
-public class WeatherServiceContext {
-	private final static Logger LOGGER = LoggerFactory.getLogger(WeatherServiceContext.class);
+public class DefaultWeatherServiceContext implements WeatherServiceContext<DefaultServiceDataHelper> {
+	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherServiceContext.class);
 
 	/**
 	 * Path to the file with strategies
@@ -58,21 +56,21 @@ public class WeatherServiceContext {
 	/**
 	 * All available strategies
 	 */
-	private Set<ServiceStrategy> strategies;
+	private Set<ServiceStrategy<DefaultServiceDataHelper>> strategies;
 
 	/**
 	 * Current strategy
 	 */
-	private ServiceStrategy strategy;
+	private ServiceStrategy<DefaultServiceDataHelper> strategy;
 
 	/**
 	 * Constructor
 	 */
-	public WeatherServiceContext() {
+	public DefaultWeatherServiceContext() {
 		this(loadStrategiesFromFile());
 	}
 	
-	public WeatherServiceContext(Set<ServiceStrategy> serviceStrategys) {
+	public DefaultWeatherServiceContext(Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
 		this.strategies = serviceStrategys;
 	}
 
@@ -83,17 +81,18 @@ public class WeatherServiceContext {
 	 *            City
 	 * @return Best ServiceData
 	 */
-	public ServiceDataHelper getBestWeather(City city, DatabaseManager databaseManager) {
+	@Override
+	public DefaultServiceDataHelper getBestWeather(City city, DatabaseManager databaseManager) {
 
 		// ServiceData objects
-		ServiceDataHelper bestWeather = null;
-		ServiceDataHelper tempWeather = null;
+		DefaultServiceDataHelper bestWeather = null;
+		DefaultServiceDataHelper tempWeather;
 
 		// Deploy all strategies
-		for (ServiceStrategy strategy : this.strategies) {
+		for (ServiceStrategy<DefaultServiceDataHelper> strategy0 : this.strategies) {
 			try {
 				// Set current strategy
-				this.strategy = strategy;
+				this.strategy = strategy0;
 
 				// --- Get informations ---
 				tempWeather = this.strategy.getWeather(city, databaseManager);
@@ -103,7 +102,7 @@ public class WeatherServiceContext {
 						tempWeather);
 
 			} catch (ReadServiceDataException e) {
-				e.printStackTrace();
+				LOGGER.warn("see nested exception",e);
 				continue;
 			}
 		}
@@ -116,20 +115,20 @@ public class WeatherServiceContext {
 	 * 
 	 * @param city
 	 *            City
-	 * @param strategyIndex
-	 *            Index of the strategy
+	 * @param databaseManager 
 	 * @return ServiceData object
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public ServiceDataHelper getSingleWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
+	@Override
+	public DefaultServiceDataHelper getSingleWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
 		this.strategy = this.getRandomStrategy();
 
 		// Return informations
 		return this.strategy.getWeather(city, databaseManager);
 	}
 
-	public Set<ServiceStrategy> getStrategies() {
+	public Set<ServiceStrategy<DefaultServiceDataHelper>> getStrategies() {
 		return this.strategies;
 	}
 
@@ -138,7 +137,7 @@ public class WeatherServiceContext {
 	 * 
 	 * @return random ServiceStrategy
 	 */
-	private ServiceStrategy getRandomStrategy() {
+	private ServiceStrategy<DefaultServiceDataHelper> getRandomStrategy() {
 		
 		if (this.strategies.size() > 0) {
 			return new LinkedList<>(this.strategies).get(new Random().nextInt(this.strategies.size()));
@@ -153,10 +152,10 @@ public class WeatherServiceContext {
 	 * @return list with available strategies
 	 */
 	@SuppressWarnings("unchecked")
-	private static Set<ServiceStrategy> loadStrategiesFromFile() {
-		Set<ServiceStrategy> list = new HashSet<>();
+	private static Set<ServiceStrategy<DefaultServiceDataHelper>> loadStrategiesFromFile() {
+		Set<ServiceStrategy<DefaultServiceDataHelper>> list = new HashSet<>(3);
 
-		try (InputStream propInFile = WeatherServiceContext.class.getResourceAsStream(FILEPATH)) {
+		try (InputStream propInFile = DefaultWeatherServiceContext.class.getResourceAsStream(FILEPATH)) {
 			// Read file
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -172,7 +171,7 @@ public class WeatherServiceContext {
 				String classname = nNode.getTextContent();
 
 				// Add strategy
-				ServiceStrategy strategy = ((Class<ServiceStrategy>) Class.forName(classname)).newInstance();
+				ServiceStrategy<DefaultServiceDataHelper> strategy = ((Class<ServiceStrategy>) Class.forName(classname)).newInstance();
 				list.add(strategy);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException | InstantiationException

@@ -14,7 +14,9 @@
  * limitations under the License. 
  */
  
-package de.pgalise.weathercollector.model;
+package de.pgalise.util.weathercollector.model;
+
+import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 
 /**
  * Interface to complete weather service data
@@ -22,7 +24,7 @@ package de.pgalise.weathercollector.model;
  * @author Andreas Rehfeldt
  * @version 1.0 (Apr 16, 2012)
  */
-public interface ExtendedServiceDataCurrentCompleter  {
+public interface ServiceDataCompleter {
 
 	/**
 	 * Concentrate the objects
@@ -30,6 +32,6 @@ public interface ExtendedServiceDataCurrentCompleter  {
 	 * @param obj
 	 *            new obj
 	 */
-	public void complete(ExtendedServiceDataCurrent obj);
+	public void complete(ServiceDataCurrent obj);
 
 }

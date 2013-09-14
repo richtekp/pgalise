@@ -16,13 +16,11 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
-import java.util.HashMap;
-import java.util.Map;
-import javax.persistence.EntityManagerFactory;
+import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 
 /**
  * Helper for weather service strategies
@@ -35,20 +33,23 @@ public class ServiceStrategyLib {
 	/**
 	 * Completes the ServiceData objects to one better object
 	 * 
+	 * @param <A> enforces type security in the completion
+	 * @param <B> enforces type security in the completion
+	 * @param <T> 
 	 * @param weather1
 	 *            Best ServiceData
 	 * @param weather2
 	 *            New ServiceData
 	 * @return Better ServiceData
 	 */
-	public static ServiceDataHelper completeWeather(ServiceDataHelper weather1, ServiceDataHelper weather2) {
+	public static <A extends ExtendedServiceDataCurrent, B extends ExtendedServiceDataForecast, T extends ServiceDataHelper<A,B>> T completeWeather(T weather1, T weather2) {
 		if (weather2 == null) {
 			return weather1;
 		}
 
 		// Get current ServiceData
-		ServiceDataHelper bestWeather = null;
-		ServiceDataHelper tempWeather = null;
+		T bestWeather;
+		T tempWeather;
 		if (weather1.getMeasureTime().getTime() > weather2.getMeasureTime().getTime()) {
 			bestWeather = weather1;
 			tempWeather = weather2;
@@ -69,23 +70,24 @@ public class ServiceStrategyLib {
 	 * 
 	 * @param condition
 	 *            Condition
+	 * @param databaseManager 
 	 * @return Condition code
 	 */
 	public static int getConditionCode(String condition, DatabaseManager databaseManager) {
-		if ((condition == null) || condition.equals("")) {
-			return Condition.UNKNOWN_CONDITION_CODE;
+		if ((condition == null) || condition.isEmpty()) {
+			return WeatherCondition.UNKNOWN_CONDITION_CODE;
 		}
 
 		// Prepare
-		condition = condition.toLowerCase();
+		String condition0 = condition.toLowerCase();
 
 		// Get condition
-		Condition result = databaseManager.getCondition(condition);
+		WeatherCondition result = databaseManager.getCondition(condition0);
 
 		if (result != null) {
 			return result.getCode();
 		} else {
-			return Condition.UNKNOWN_CONDITION_CODE;
+			return WeatherCondition.UNKNOWN_CONDITION_CODE;
 		}
 	}
 

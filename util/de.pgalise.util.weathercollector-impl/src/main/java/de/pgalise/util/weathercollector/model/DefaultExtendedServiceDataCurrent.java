@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import java.sql.Date;
 import java.sql.Time;
@@ -25,8 +25,6 @@ import java.sql.Time;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
-import de.pgalise.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 
@@ -67,7 +65,7 @@ public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent
 	}
 
 	public DefaultExtendedServiceDataCurrent(
-		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, Condition condition, Time sunrise, Time sunset) {
+		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, WeatherCondition condition, Time sunrise, Time sunset) {
 		super(
 			measureDate,
 			measureTime, 
@@ -98,7 +96,7 @@ public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent
 			this.setTemperature(newObj.getTemperature());
 		}
 
-		if (this.getCondition() == Condition.UNKNOWN_CONDITION) {
+		if (this.getCondition() == WeatherCondition.UNKNOWN_CONDITION) {
 			this.setCondition(newObj.getCondition());
 		}
 
@@ -142,14 +140,17 @@ public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent
 		return this.visibility;
 	}
 
+	@Override
 	public void setSunrise(Time sunrise) {
 		this.sunrise = sunrise;
 	}
 
+	@Override
 	public void setSunset(Time sunset) {
 		this.sunset = sunset;
 	}
 
+	@Override
 	public void setVisibility(Float visibility) {
 		this.visibility = visibility;
 	}

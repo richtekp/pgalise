@@ -18,15 +18,13 @@ package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
-import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
-import de.pgalise.weathercollector.model.MutableServiceDataHelper;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 /**
  * Is a helper for weather service data
@@ -34,8 +32,12 @@ import java.util.TreeSet;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public class DefaultServiceDataHelper extends AbstractIdentifiable implements MutableServiceDataHelper {
+@Entity
+public class DefaultServiceDataHelper extends AbstractIdentifiable implements MutableServiceDataHelper<DefaultExtendedServiceDataCurrent, DefaultExtendedServiceDataForecast> {
 	private static final long serialVersionUID = 1L;
+
+	protected DefaultServiceDataHelper() {
+	}
 
 	/**
 	 * Checks data if the date is the same day
@@ -59,6 +61,7 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	/**
 	 * Returns the forecasts of the day
 	 * 
+	 * @param <T> 
 	 * @param forecasts
 	 *            Forecasts
 	 * @param date
@@ -83,17 +86,20 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	/**
 	 * City
 	 */
+	@OneToOne
 	private City city;
 
 	/**
 	 * Current condition
 	 */
-	private MutableExtendedServiceDataCurrent currentCondition;
+	@OneToOne
+	private DefaultExtendedServiceDataCurrent currentCondition;
 
 	/**
 	 * Set with forecasts
 	 */
-	private Set<MutableExtendedServiceDataForecast> forecastConditions;
+	@OneToMany
+	private Set<DefaultExtendedServiceDataForecast> forecastConditions;
 
 	/**
 	 * Timestamp of the data
@@ -110,6 +116,7 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	/**
 	 * Constructor
 	 * 
+	 * @param city 
 	 * @param apiSource the name of the weather API used to retrieve the date 
 	 * (e.g. Yahoo)
 	 */
@@ -121,7 +128,7 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	}
 
 	@Override
-	public void complete(ServiceDataHelper<MutableExtendedServiceDataCurrent, MutableExtendedServiceDataForecast> newObj) {
+	public void complete(ServiceDataHelper<DefaultExtendedServiceDataCurrent, DefaultExtendedServiceDataForecast> newObj) {
 
 		if ((this.city == null) || this.city.getName().isEmpty()) {
 			this.city = newObj.getCity();
@@ -151,7 +158,7 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 				}
 			}
 
-			for (MutableExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
+			for (DefaultExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
 
 				ExtendedServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getMeasureDate());
 				if (oldCondition == null) {
@@ -173,12 +180,12 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	}
 
 	@Override
-	public MutableExtendedServiceDataCurrent getCurrentCondition() {
+	public DefaultExtendedServiceDataCurrent getCurrentCondition() {
 		return this.currentCondition;
 	}
 
 	@Override
-	public Set<MutableExtendedServiceDataForecast> getForecastConditions() {
+	public Set<DefaultExtendedServiceDataForecast> getForecastConditions() {
 		return this.forecastConditions;
 	}
 
@@ -187,6 +194,7 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 		return this.measureTime;
 	}
 
+	@Override
 	public Date getMeasureDate() {
 		return measureDate;
 	}
@@ -207,8 +215,14 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	}
 
 	@Override
-	public void setCurrentCondition(MutableExtendedServiceDataCurrent currentCondition) {
+	public void setCurrentCondition(DefaultExtendedServiceDataCurrent currentCondition) {
 		this.currentCondition = currentCondition;
+	}
+
+	@Override
+	public void setForecastConditions(
+		Set<DefaultExtendedServiceDataForecast> forecastConditions) {
+		this.forecastConditions = forecastConditions;
 	}
 
 	@Override
@@ -216,6 +230,7 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 		this.measureTime = timestamp;
 	}
 
+	@Override
 	public void setMeasureDate(Date measureDate) {
 		this.measureDate = measureDate;
 	}

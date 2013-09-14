@@ -4,7 +4,7 @@
  */
 package de.pgalise.util.weathercollector.util;
 
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 
 
 /**
@@ -12,5 +12,5 @@ import de.pgalise.simulation.weather.model.Condition;
  * @author richter
  */
 public interface DatabaseManager {
-	Condition getCondition(String condition) ;
+	WeatherCondition getCondition(String condition);
 }

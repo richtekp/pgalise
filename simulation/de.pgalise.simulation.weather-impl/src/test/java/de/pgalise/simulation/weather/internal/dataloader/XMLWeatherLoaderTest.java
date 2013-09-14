@@ -30,7 +30,6 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.model.MutableStationData;
-import de.pgalise.simulation.weather.model.StationData;
 import java.sql.Date;
 import java.sql.Time;
 import javax.measure.Measure;

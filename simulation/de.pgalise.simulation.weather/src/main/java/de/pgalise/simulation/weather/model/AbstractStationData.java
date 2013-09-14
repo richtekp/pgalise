@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.weather.internal.dataloader.entity;
+package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.weather.model.MutableStationData;

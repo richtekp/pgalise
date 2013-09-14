@@ -14,7 +14,7 @@
 	  <applicationVersion>2.0-SNAPSHOT</applicationVersion>
 	  <java.compiler.source>1.7</java.compiler.source>
 	  <java.compiler.target>1.7</java.compiler.target>
-		<de.pgalise.openejb.version>4.5.1</de.pgalise.openejb.version>
+		<de.pgalise.openejb.version>4.5.2</de.pgalise.openejb.version>
 	</properties>
 		
 	<modules>
@@ -67,11 +67,6 @@
 			<version>1.6.2</version>
 		</dependency>
 		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.0.0</version>
-		</dependency>		
-		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 			<version>3.1</version>
@@ -83,6 +78,11 @@
 	<!-- Allerdings kann hier bestimmt werden, welche Versionen verwendet werden sollen! -->
 	<dependencyManagement>
 		<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>		
 			<dependency>
 				<groupId>de.pgalise.util</groupId>
 				<artifactId>btree</artifactId>

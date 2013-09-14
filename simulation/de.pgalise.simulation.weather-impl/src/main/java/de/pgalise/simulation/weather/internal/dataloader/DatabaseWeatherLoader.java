@@ -43,12 +43,12 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.AbstractStationData;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
-import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.model.StationDataNormal;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
@@ -202,7 +202,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 			data.getRelativHumidity(), 
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
+			WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}
@@ -230,7 +230,11 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		}
 		query.setParameter("date", new Date(timestamp));
 		query.setParameter("city", city);
-		data = query.getSingleResult();
+		try {
+			data = query.getSingleResult();
+		}catch(NoResultException ex) {
+			throw new NoWeatherDataFoundException(timestamp);
+		}		
 
 		// Copy informations to the weather object
 		DefaultServiceDataForecast weather = new DefaultServiceDataForecast(
@@ -242,7 +246,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 			data.getRelativHumidity(), 
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE)
+			WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}

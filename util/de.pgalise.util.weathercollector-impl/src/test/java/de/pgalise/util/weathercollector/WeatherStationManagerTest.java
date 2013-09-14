@@ -21,28 +21,32 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
+import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
-import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.weathercollector.weatherstation.StationStrategy;
+import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.strategy.StationOldenburg;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Properties;
 import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Before;
-import static org.junit.Assert.*;
 
 /**
  * Tests the weather station manager
@@ -53,13 +57,12 @@ import static org.junit.Assert.*;
 @LocalClient
 @ManagedBean
 public class WeatherStationManagerTest {
-	private final static EJBContainer CONTAINER = TestUtils.createContainer();
-	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_collector_test");
+	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	@PersistenceUnit(unitName = "weather_collector_test")
+	private EntityManagerFactory entityManagerFactory;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public WeatherStationManagerTest() throws NamingException {
-		Properties p = new Properties();
-		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 	}
@@ -69,14 +72,17 @@ public class WeatherStationManagerTest {
 	}
 
 	@Test
-	public void testSaveInformations() {
-		BaseDatabaseManager baseDatabaseManager = NonJTADatabaseManager.getInstance(
+	public void testSaveInformations() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+		BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager = JTADatabaseManager.getInstance(
 			entityManagerFactory);
 		Set<StationStrategy> serviceStrategys = new HashSet<StationStrategy>(Arrays.asList(new StationOldenburg()));
 		DefaultWeatherStationManager instance = new DefaultWeatherStationManager(
 			baseDatabaseManager);
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		
+		InitialContext initialContext = new InitialContext();
+		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
+		userTransaction.begin();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
@@ -95,9 +101,8 @@ public class WeatherStationManagerTest {
 			true,
 			true,
 			referenceArea);
-		entityManager.getTransaction().begin();
 		entityManager.persist(city);
-		entityManager.getTransaction().commit();
+		userTransaction.commit();
 		instance.saveInformations();
 //		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", ServiceDataCurrent.class.getSimpleName()));
 //		assertFalse(query.getResultList().isEmpty());

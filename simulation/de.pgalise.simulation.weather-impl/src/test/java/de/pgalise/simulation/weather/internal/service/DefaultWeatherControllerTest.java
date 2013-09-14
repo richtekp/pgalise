@@ -66,7 +66,7 @@ import org.apache.openejb.api.LocalClient;
 @LocalClient
 @ManagedBean
 public class DefaultWeatherControllerTest {
-	private final static EJBContainer CONTAINER = TestUtils.createContainer();
+	private final static EJBContainer CONTAINER = TestUtils.getContainer();
 	/**
 	 * Logger
 	 */

@@ -10,14 +10,14 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.it.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
+import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.PersistenceUnit;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -31,9 +31,14 @@ import org.junit.Ignore;
 @ManagedBean
 @Ignore
 public class GoogleWeatherTest {
-	private EntityManagerFactory entityManagerFactory = TestUtils.createEntityManagerFactory("weather_collector_test");
+	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	@PersistenceUnit(unitName = "weather_collector_test")
+	private EntityManagerFactory entityManagerFactory;
 	
-	public GoogleWeatherTest() {
+	@SuppressWarnings("LeakingThisInConstructor")
+	public GoogleWeatherTest() throws NamingException {
+		CONTAINER.getContext().bind("inject",
+			this);
 	}
 
 	/**
@@ -63,7 +68,7 @@ public class GoogleWeatherTest {
 			referenceArea);
 		DatabaseManager databaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
 		GoogleWeather instance = new GoogleWeather();
-		ServiceDataHelper result = instance.getWeather(city,
+		ServiceDataHelper<?,?> result = instance.getWeather(city,
 			databaseManager);
 		assertFalse(result.getForecastConditions().isEmpty());
 	}

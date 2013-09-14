@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractBaseServiceData;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import java.sql.Date;
 import java.sql.Time;
@@ -54,7 +54,7 @@ public class DefaultServiceDataCurrent extends AbstractBaseServiceData implement
 		Time measureTime, 
 		City city, 
 		Float relativHumidity, 
-		Measure<Float, Temperature> temperature, Float windDirection, Float windVelocity, Condition condition) {
+		Measure<Float, Temperature> temperature, Float windDirection, Float windVelocity, WeatherCondition condition) {
 		super(measureDate, measureTime, city, relativHumidity, windDirection, windVelocity, condition);
 		this.temperature = temperature;
 	}

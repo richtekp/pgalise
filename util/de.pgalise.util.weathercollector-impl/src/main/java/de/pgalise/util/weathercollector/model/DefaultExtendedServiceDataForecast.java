@@ -16,20 +16,13 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.weathercollector.model.ServiceDataCompleter;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.MutableServiceDataForecast;
 import java.sql.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategyLib;
-import de.pgalise.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
 import java.sql.Time;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
@@ -61,7 +54,7 @@ public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForeca
 		Float relativHumidity,
 		Float windDirection,
 		Float windVelocity,
-		Condition condition) {
+		WeatherCondition condition) {
 		super(
 			measureDate,
 			measureTime,
@@ -90,7 +83,7 @@ public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForeca
 			this.setTemperatureHigh(newObj.getTemperatureHigh());
 		}
 
-		if (this.getCondition() == Condition.UNKNOWN_CONDITION) {
+		if (this.getCondition() == WeatherCondition.UNKNOWN_CONDITION) {
 			this.setCondition(newObj.getCondition());
 		}
 	}

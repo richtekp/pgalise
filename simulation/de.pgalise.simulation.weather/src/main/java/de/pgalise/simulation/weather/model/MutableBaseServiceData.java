@@ -11,7 +11,7 @@ import de.pgalise.simulation.shared.city.City;
  * @author richter
  */
 public interface MutableBaseServiceData extends BaseServiceData, MutableBaseWeatherInformation {
-	void setCondition(Condition condition);
+	void setCondition(WeatherCondition condition);
 	
 	void setCity(City city);
 }

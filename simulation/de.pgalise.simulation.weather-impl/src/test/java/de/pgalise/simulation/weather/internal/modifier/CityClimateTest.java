@@ -67,7 +67,7 @@ import org.junit.After;
 @ManagedBean
 public class CityClimateTest {
 	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
-	private final static EJBContainer CONTAINER = TestUtils.createContainer();
+	private final static EJBContainer CONTAINER = TestUtils.getContainer();
 	
 	/**
 	 * End timestamp

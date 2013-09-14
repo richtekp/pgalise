@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
@@ -32,15 +32,13 @@ import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.weathercollector.model.MutableExtendedServiceDataCurrent;
-import de.pgalise.weathercollector.model.MutableExtendedServiceDataForecast;
-import de.pgalise.weathercollector.model.MutableServiceDataHelper;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
 import java.sql.Timestamp;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Returns weather informations from MSN. Uses the strategy pattern.
@@ -49,6 +47,7 @@ import javax.measure.unit.Unit;
  * @version 1.0 (Apr 21, 2012)
  */
 public class MSNWeather extends XMLAPIWeather {
+	private final static Logger LOGGER = LoggerFactory.getLogger(MSNWeather.class);
 
 	/**
 	 * Constructor
@@ -58,8 +57,8 @@ public class MSNWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		MutableServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
+	protected DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
+		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
 		Unit<Temperature> unit = SI.CELSIUS;
 
 		// Read global data
@@ -87,7 +86,7 @@ public class MSNWeather extends XMLAPIWeather {
 				if (childnode.getNodeName().equals("current")) {
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					MutableExtendedServiceDataCurrent condition;
+					DefaultExtendedServiceDataCurrent condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
@@ -100,19 +99,19 @@ public class MSNWeather extends XMLAPIWeather {
 							date, 
 							time, 
 							city, 
-							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
+							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
 
 						// Date
 						Timestamp convertedTimestamp = DateConverter.convertTimestamp(dateString, "yyyy-MM-dd h:mm:ss");
 						weather.setMeasureTime(new Time(convertedTimestamp.getTime()));
 						weather.setMeasureDate(new Date(convertedTimestamp.getTime()));
 					} catch (ParseException e) {
-						e.printStackTrace();
+						LOGGER.warn("see nested exception",
+							e);
 						return null;
 					}
 
-					String dataString = "";
-
+					String dataString;
 					// Temperature
 					dataString = attributes.getNamedItem("temperature").getTextContent();
 					if ((dataString != null) && !dataString.isEmpty()) {
@@ -122,7 +121,7 @@ public class MSNWeather extends XMLAPIWeather {
 					// Condition
 					dataString = attributes.getNamedItem("skycode").getTextContent();
 					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(Condition.retrieveCondition(Integer.parseInt(dataString)					));
+						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// Relativ humidity
@@ -146,7 +145,7 @@ public class MSNWeather extends XMLAPIWeather {
 					// Forecast
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					MutableExtendedServiceDataForecast condition;
+					DefaultExtendedServiceDataForecast condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
@@ -158,7 +157,7 @@ public class MSNWeather extends XMLAPIWeather {
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, Condition.retrieveCondition(Condition.UNKNOWN_CONDITION_CODE));
+							1.0f, 1.0f, 10.0f, WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE));
 					} catch (ParseException e) {
 						continue;
 					}
@@ -180,7 +179,7 @@ public class MSNWeather extends XMLAPIWeather {
 					// Condition
 					dataString = attributes.getNamedItem("skycodeday").getTextContent();
 					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(Condition.retrieveCondition(Integer.parseInt(dataString)					));
+						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// City

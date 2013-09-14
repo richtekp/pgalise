@@ -34,28 +34,21 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
-import de.pgalise.simulation.weather.internal.modifier.events.RainDayEvent;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
+import de.pgalise.simulation.weather.model.AbstractStationData;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
 import java.sql.Date;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Properties;
 import javax.annotation.ManagedBean;
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
 import javax.naming.InitialContext;
@@ -82,7 +75,7 @@ import org.apache.openejb.api.LocalClient;
 //@Stateless
 //@TransactionManagement(TransactionManagementType.BEAN)
 public class DefaultWeatherServiceTest  {	
-	private final static EJBContainer CONTAINER = TestUtils.createContainer();
+	private final static EJBContainer CONTAINER = TestUtils.getContainer();
 	@PersistenceUnit(unitName = "weather_data")
 	private EntityManagerFactory ENTITY_MANAGER_FACTORY;// = TestUtils.createEntityManagerFactory("weather_data_test");
 	/**
@@ -188,7 +181,6 @@ public class DefaultWeatherServiceTest  {
 			1.0f,
 			1.0f,
 			1.0f);
-		em.merge(stationData);
 		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
@@ -205,7 +197,8 @@ public class DefaultWeatherServiceTest  {
 			true,
 			true,
 			referenceArea);
-		em.merge(city);
+		em.persist(city);
+		em.persist(stationData);
 		utx.commit();
 		service.addNewWeather(startTimestamp, endTimestamp,
 				true, null);
@@ -214,6 +207,7 @@ public class DefaultWeatherServiceTest  {
 		
 		utx.begin();
 		em.remove(stationData);
+		em.remove(city);
 		utx.commit();
 		em.close();
 	}
@@ -225,8 +219,9 @@ public class DefaultWeatherServiceTest  {
 				loader), startTimestamp));
 
 		// Test (normal)
-		Collection<MutableStationData> prequisites = TestUtils.setUpWeatherData(
+		Collection<StationDataNormal> prequisites = TestUtils.setUpWeatherData(
 			startTimestamp,
+			endTimestamp,
 			utx,
 			ENTITY_MANAGER_FACTORY);
 		
@@ -326,6 +321,11 @@ public class DefaultWeatherServiceTest  {
 		/*
 		 * Test preparations
 		 */
+		Collection<StationDataNormal> prequisites = TestUtils.setUpWeatherData(
+			startTimestamp,
+			endTimestamp,
+			utx,
+			ENTITY_MANAGER_FACTORY);
 
 		// Get weather
 		service.addNewWeather(startTimestamp, endTimestamp,
@@ -348,34 +348,37 @@ public class DefaultWeatherServiceTest  {
 
 		// Test (normal)
 //		WeatherMap weatherMap = new StationDataMap();
-		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
-			new Time(startTimestamp),
-			1008,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-//		weatherMap.put(timestamp, weather);
-		utx.begin();
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-		em.persist(weather);
-		utx.commit();
+//		MutableStationData weather = new StationDataNormal(new Date(startTimestamp),
+//			new Time(startTimestamp),
+//			1008,
+//			1,
+//			1.0f,
+//			Measure.valueOf(1.0f, SI.CELSIUS),
+//			1.0f,
+//			1,
+//			1.0f,
+//			1.0f,
+//			1.0f);
+////		weatherMap.put(timestamp, weather);
+//		utx.begin();
+//		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
+//		em.persist(weather);
+//		utx.commit();
 		value = service.getValue(testParameter, timestamp);
-		assertEquals(1008.0, value.doubleValue(), 10.0); // Aggregate 1008
-		utx.begin();
-		em.remove(weather);
-		utx.commit();
-		em.close();
+//		assertEquals(1008.0, value.doubleValue(), 10.0); // Aggregate 1008
+//		utx.begin();
+//		em.remove(weather);
+//		utx.commit();
+//		em.close();
+		TestUtils.tearDownWeatherData(prequisites,
+			utx,
+			ENTITY_MANAGER_FACTORY);
 
 		// Test false timestamp
 		try {
 			value = service.getValue(testParameter, 0);
 			fail();
-		} catch (RuntimeException e) {
+		} catch (IllegalArgumentException e) {
 			//expected
 		}
 

@@ -29,11 +29,9 @@ import org.w3c.dom.Document;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
-import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.Unit;
-import javax.persistence.EntityManagerFactory;
 
 /**
  * Abstract superclass for weather service strategies which uses an URL
@@ -41,7 +39,7 @@ import javax.persistence.EntityManagerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public abstract class XMLAPIWeather implements ServiceStrategy {
+public abstract class XMLAPIWeather implements ServiceStrategy<DefaultServiceDataHelper> {
 
 	/**
 	 * Name of the strategy
@@ -79,7 +77,7 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	}
 
 	@Override
-	public ServiceDataHelper getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
+	public DefaultServiceDataHelper getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
 		// No City can be found
 		if (city.getName().isEmpty()) {
 			throw new ReadServiceDataException("Stadt fuer die Api kann nicht gefunden werden.");
@@ -96,9 +94,10 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	 *            City
 	 * @param doc
 	 *            Document root
+	 * @param databaseManager 
 	 * @return ServiceData object
 	 */
-	protected abstract ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager);
+	protected abstract DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager);
 
 	/**
 	 * Returns the weather service xml to the given city
@@ -112,13 +111,12 @@ public abstract class XMLAPIWeather implements ServiceStrategy {
 	protected Document fetchWeatherData(String city) throws ReadServiceDataException {
 		try {
 			URL url = new URL(this.URL + city);
-			InputStream inputStream = url.openStream();
-
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-			Document doc = docBuilder.parse(inputStream);
-
-			inputStream.close();
+			Document doc;
+			try (InputStream inputStream = url.openStream()) {
+				DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
+				doc = docBuilder.parse(inputStream);
+			}
 
 			return doc;
 		} catch (javax.xml.parsers.ParserConfigurationException pce) {

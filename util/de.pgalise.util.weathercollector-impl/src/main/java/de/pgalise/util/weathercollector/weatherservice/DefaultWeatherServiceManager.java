@@ -16,19 +16,13 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
-import de.pgalise.weathercollector.weatherservice.WeatherServiceSaver;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import java.util.List;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.weathercollector.model.ServiceDataHelper;
-import de.pgalise.weathercollector.weatherservice.ServiceStrategy;
-import de.pgalise.weathercollector.weatherservice.WeatherServiceSaver;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,34 +32,36 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Jun 23, 2012)
  */
-public class WeatherServiceManager {
-	private final static Logger LOGGER = LoggerFactory.getLogger(WeatherServiceManager.class);
+public class DefaultWeatherServiceManager implements WeatherServiceManager<DefaultServiceDataHelper> {
+	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherServiceManager.class);
 
 	/**
 	 * Class to save the informations
 	 */
-	public WeatherServiceSaver saver;
+	private WeatherServiceSaver<DefaultServiceDataHelper> saver;
 	
-	private Set<ServiceStrategy> serviceStrategys;
+	private Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param testmode
-	 *            Option to enable the test mode (no database commits)
+	 * @param weatherServiceSaver 
 	 */
-	public WeatherServiceManager(WeatherServiceSaver weatherServiceSaver) {
+	public DefaultWeatherServiceManager(WeatherServiceSaver<DefaultServiceDataHelper> weatherServiceSaver) {
 		this(weatherServiceSaver, null);
 	}
 	
-	public WeatherServiceManager(WeatherServiceSaver weatherServiceSaver, Set<ServiceStrategy> serviceStrategys) {
+	public DefaultWeatherServiceManager(WeatherServiceSaver<DefaultServiceDataHelper> weatherServiceSaver, Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
 		this.saver = weatherServiceSaver;
 		this.serviceStrategys = serviceStrategys;
 	}
 
 	/**
 	 * Gets informations from weather services
+	 * 
+	 * @param databaseManager 
 	 */
+	@Override
 	public void saveInformations(DatabaseManager databaseManager) {
 		// Read all cities
 		List<City> cities = this.getCities();
@@ -74,7 +70,7 @@ public class WeatherServiceManager {
 		if ((cities != null) && (cities.size() > 0)) {
 			for (City city : cities) {
 				// Get data
-				ServiceDataHelper weather;
+				DefaultServiceDataHelper weather;
 				if(this.serviceStrategys == null || this.serviceStrategys.isEmpty()) {
 					weather = this.getServiceData(city, databaseManager);
 				}else {
@@ -96,20 +92,20 @@ public class WeatherServiceManager {
 	private List<City> getCities() {
 		LOGGER.debug("Laden der Staedte aus der Datenbank.", Level.INFO);
 
-		List<City> cities = this.saver.getReferenceCities();
+		List<City> cities = this.getSaver().getReferenceCities();
 
 		LOGGER.debug(cities.size() + " Staedte wurden geladen.", Level.INFO);
 
 		return cities;
 	}
 	
-	private ServiceDataHelper getServiceData(City city, DatabaseManager databaseManager, Set<ServiceStrategy> serviceStrategys) {
+	private DefaultServiceDataHelper getServiceData(City city, DatabaseManager databaseManager, Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
 
-		WeatherServiceContext context = new WeatherServiceContext(serviceStrategys);
+		WeatherServiceContext<DefaultServiceDataHelper> context = new DefaultWeatherServiceContext(serviceStrategys);
 
 		// Use best strategy
-		ServiceDataHelper data = context.getBestWeather(city, databaseManager);
+		DefaultServiceDataHelper data = context.getBestWeather(city, databaseManager);
 
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beendet.", Level.INFO);
 
@@ -124,12 +120,12 @@ public class WeatherServiceManager {
 	 *            City
 	 * @return ServiceData
 	 */
-	private ServiceDataHelper getServiceData(City city, DatabaseManager databaseManager) {
-		ServiceDataHelper data;
+	private DefaultServiceDataHelper getServiceData(City city, DatabaseManager databaseManager) {
+		DefaultServiceDataHelper data;
 
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
 
-		WeatherServiceContext context = new WeatherServiceContext();
+		DefaultWeatherServiceContext context = new DefaultWeatherServiceContext();
 
 		// Use best strategy
 		data = context.getBestWeather(city, databaseManager);
@@ -145,16 +141,28 @@ public class WeatherServiceManager {
 	 * @param data
 	 *            ServiceData
 	 */
-	private void saveServiceData(ServiceDataHelper data) {
-		try {
-			if (data != null) {
-				LOGGER.debug("Speichern der Wetterdaten zur Stadt " + data.getCity().getName() + " beginnt.", Level.INFO);
-				this.saver.saveServiceData(data);
-				LOGGER.debug("Speichern der Wetterdaten zur Stadt " + data.getCity().getName() + " war erfolgreich.", Level.INFO);
-			}
-		} catch (IllegalArgumentException e) {
-			throw new RuntimeException(e); //is thrown if the query fails, so this should be thrown
+	private void saveServiceData(DefaultServiceDataHelper data) {
+		if (data != null) {
+			LOGGER.debug("Speichern der Wetterdaten zur Stadt " + data.getCity().getName() + " beginnt.", Level.INFO);
+			this.getSaver().saveServiceData(data);
+			LOGGER.debug("Speichern der Wetterdaten zur Stadt " + data.getCity().getName() + " war erfolgreich.", Level.INFO);
 		}
+	}
+
+	/**
+	 * @return the saver
+	 */
+	@Override
+	public WeatherServiceSaver<DefaultServiceDataHelper> getSaver() {
+		return saver;
+	}
+
+	/**
+	 * @param saver the saver to set
+	 */
+	protected void setSaver(
+		WeatherServiceSaver<DefaultServiceDataHelper> saver) {
+		this.saver = saver;
 	}
 
 }

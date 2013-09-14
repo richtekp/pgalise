@@ -1,0 +1,27 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.pgalise.util.weathercollector.model;
+
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.MutableTimeSensitive;
+import java.util.Set;
+
+/**
+ *
+ * @author richter
+ */
+public interface MutableServiceDataHelper<S extends MutableExtendedServiceDataCurrent, T extends MutableExtendedServiceDataForecast> extends ServiceDataHelper<S, T>, MutableTimeSensitive {
+	
+
+	void setApicity(String apicity) ;
+
+	void setCity(City city) ;
+
+	void setCurrentCondition(S currentCondition) ;
+	
+	void setForecastConditions(Set<T> forecastConditions) ;
+
+	void setSource(String source) ;
+}

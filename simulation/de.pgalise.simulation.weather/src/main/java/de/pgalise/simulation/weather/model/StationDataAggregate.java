@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.weather.model;
 
-import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
 import java.sql.Date;
 import java.sql.Time;
 import javax.measure.Measure;

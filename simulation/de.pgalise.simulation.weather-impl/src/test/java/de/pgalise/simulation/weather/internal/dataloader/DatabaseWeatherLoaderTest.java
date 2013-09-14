@@ -9,12 +9,12 @@ import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.AbstractStationData;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractStationData;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.model.StationDataNormal;
-import de.pgalise.simulation.weather.model.Condition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
 import java.sql.Date;
@@ -110,7 +110,7 @@ public class DatabaseWeatherLoaderTest {
 		Date serviceDataCurrentDate = new Date(timestamp);
 		float relativeHumidity = 1.0f, windDirection = 1.0f, windVelocity=2.0f;
 		DefaultServiceDataCurrent serviceDataCurrent = new DefaultServiceDataCurrent(new Date(
-			timestamp), new Time(timestamp), city, relativeHumidity, Measure.valueOf(20.0f, SI.CELSIUS), windDirection, windVelocity, Condition.retrieveCondition(1));
+			timestamp), new Time(timestamp), city, relativeHumidity, Measure.valueOf(20.0f, SI.CELSIUS), windDirection, windVelocity, WeatherCondition.retrieveCondition(1));
 		expect(entityManagerMock.createNamedQuery("DefaultServiceDataCurrent.findByDate",
 					DefaultServiceDataCurrent.class)).andReturn(queryMock);
 		expect(queryMock.setParameter(eq("date"), anyObject(Date.class))).andReturn(null);
@@ -125,7 +125,7 @@ public class DatabaseWeatherLoaderTest {
 			city, 
 			Measure.valueOf(20.9f, SI.CELSIUS),
 			Measure.valueOf(20.9f, SI.CELSIUS),
-			relativeHumidity, windDirection, windVelocity, Condition.retrieveCondition(0));
+			relativeHumidity, windDirection, windVelocity, WeatherCondition.retrieveCondition(0));
 		ServiceDataForecast result = instance.loadCurrentServiceWeatherData(timestamp, city);
 		assertEquals(expResult, result);
 	}
@@ -153,7 +153,7 @@ public class DatabaseWeatherLoaderTest {
 		Date serviceDataCurrentDate = new Date(timestamp);
 		int airPressure = 1, lightIntensity= 1, radiation = 2;
 		float perceivedTemperature = 1.0f, temperature = 1.0f, precipitationAmout = 2.0f, relativeHumidity =2.0f, windVelocity=1.7f, windDirection = 12;
-		DefaultServiceDataForecast serviceDataCurrent = new DefaultServiceDataForecast(new Date(timestamp), new Time(timestamp), city, Measure.valueOf(1.0f, SI.CELSIUS), Measure.valueOf(2.0f, SI.CELSIUS), relativeHumidity, windDirection, windVelocity, Condition.retrieveCondition(1));
+		DefaultServiceDataForecast serviceDataCurrent = new DefaultServiceDataForecast(new Date(timestamp), new Time(timestamp), city, Measure.valueOf(1.0f, SI.CELSIUS), Measure.valueOf(2.0f, SI.CELSIUS), relativeHumidity, windDirection, windVelocity, WeatherCondition.retrieveCondition(1));
 		expect(entityManagerMock.createNamedQuery("DefaultServiceDataForecast.findByDate",
 					DefaultServiceDataForecast.class)).andReturn(queryMock);
 		expect(queryMock.setParameter(eq("date"), anyObject(Date.class))).andReturn(null);
@@ -168,7 +168,7 @@ public class DatabaseWeatherLoaderTest {
 			city, 
 			Measure.valueOf(20.9f, SI.CELSIUS),
 			Measure.valueOf(20.9f, SI.CELSIUS),
-			relativeHumidity, windDirection, windVelocity, Condition.retrieveCondition(0));
+			relativeHumidity, windDirection, windVelocity, WeatherCondition.retrieveCondition(0));
 		ServiceDataForecast result = instance.loadForecastServiceWeatherData(timestamp, city);
 		assertEquals(expResult, result);
 	}

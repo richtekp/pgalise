@@ -14,12 +14,12 @@ import javax.persistence.Entity;
  * @author richter
  */
 @Entity
-public class Condition extends AbstractIdentifiable  {
+public class WeatherCondition extends AbstractIdentifiable  {
 	/**
 	 * Condition code for unknown weather condition
 	 */
 	public static final int UNKNOWN_CONDITION_CODE = 3200;
-	private final static Map<Integer,Condition> CODE_CONDITION_MAP = new HashMap<>(
+	private final static Map<Integer,WeatherCondition> CODE_CONDITION_MAP = new HashMap<>(
 		16);
 	private static final long serialVersionUID = 1L;
 	/**
@@ -28,22 +28,22 @@ public class Condition extends AbstractIdentifiable  {
 	 * @param stringRepresentation
 	 * @return 
 	 */
-	public static Condition retrieveCondition(Integer code, String stringRepresentation) {
-		Condition condition = CODE_CONDITION_MAP.get(code);
+	public static WeatherCondition retrieveCondition(Integer code, String stringRepresentation) {
+		WeatherCondition condition = CODE_CONDITION_MAP.get(code);
 		if(condition == null) {
-			condition = new Condition(code, stringRepresentation);
+			condition = new WeatherCondition(code, stringRepresentation);
 			CODE_CONDITION_MAP.put(code,
 				condition);
 		}
 		return condition;
 	}
-	public final static Condition UNKNOWN_CONDITION = retrieveCondition(
+	public final static WeatherCondition UNKNOWN_CONDITION = retrieveCondition(
 		UNKNOWN_CONDITION_CODE,
 		"unknown condition");
-	public static Condition retrieveCondition(int code) {
-		Condition condition = CODE_CONDITION_MAP.get(code);
+	public static WeatherCondition retrieveCondition(int code) {
+		WeatherCondition condition = CODE_CONDITION_MAP.get(code);
 		if(condition == null) {
-			condition = new Condition(code,
+			condition = new WeatherCondition(code,
 				"");
 			CODE_CONDITION_MAP.put(code,
 				condition);
@@ -54,10 +54,10 @@ public class Condition extends AbstractIdentifiable  {
 	private int code;
 	private String stringRepresentation;
 
-	protected Condition() {
+	protected WeatherCondition() {
 	}
 
-	private Condition(int code,
+	private WeatherCondition(int code,
 		String stringRepresentation
 	) {
 		this.code = code;
