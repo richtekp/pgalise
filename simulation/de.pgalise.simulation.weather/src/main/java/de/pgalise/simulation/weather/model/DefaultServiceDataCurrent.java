@@ -17,9 +17,6 @@
 package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.internal.dataloader.entity.AbstractBaseServiceData;
-import de.pgalise.simulation.weather.model.WeatherCondition;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import java.sql.Date;
 import java.sql.Time;
 import javax.measure.Measure;

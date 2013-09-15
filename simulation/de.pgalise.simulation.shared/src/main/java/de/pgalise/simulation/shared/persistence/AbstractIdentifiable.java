@@ -16,7 +16,8 @@ import javax.persistence.MappedSuperclass;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 
 /**
- * superclass for all persistence related classes which need an {@link Id}
+ * superclass for all persistence related classes which need an {@link Id}. It 
+ * assumes that the space of {@link Long#MAX_VALUE } + abs({@link Long#MIN_VALUE}) is never exhausted and doesn't provide any action to react to this situation (due to performance reasons).
  * @author richter
  */
 @MappedSuperclass
@@ -24,16 +25,10 @@ public abstract class AbstractIdentifiable implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-//	@GeneratedValue( strategy = GenerationType.IDENTITY )
+	@GeneratedValue( strategy = GenerationType.IDENTITY )
 	private Long id;
-	private static Set<Long> usedIds = new HashSet<>(16);
 
 	protected AbstractIdentifiable() {
-		this.id = UUID.randomUUID().getMostSignificantBits();
-		while(usedIds.contains(id)) {
-			this.id = UUID.randomUUID().getMostSignificantBits();
-		}
-		usedIds.add(id);
 	}
 
 	public AbstractIdentifiable(Long id) {

@@ -10,8 +10,9 @@ import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
 
 /**
  *
+ * @param <T> 
  * @author richter
  */
-public abstract class BaseDatabaseManager<T extends ServiceDataHelper<?,?>> implements DatabaseManager, WeatherServiceSaver<T>, WeatherStationSaver {
+public interface BaseDatabaseManager<T extends ServiceDataHelper<?,?>> extends DatabaseManager, WeatherServiceSaver<T>, WeatherStationSaver {
 	
 }

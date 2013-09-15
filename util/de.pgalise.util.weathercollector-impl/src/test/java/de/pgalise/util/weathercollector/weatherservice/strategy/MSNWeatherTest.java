@@ -10,18 +10,19 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.it.TestUtils;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import org.apache.openejb.api.LocalClient;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 /**
  *
@@ -30,18 +31,22 @@ import static org.junit.Assert.*;
 @LocalClient
 @ManagedBean
 public class MSNWeatherTest {
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_collector_test")
-	private EntityManagerFactory entityManagerFactory;
+	private EntityManagerFactory entityManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
 	
 	@SuppressWarnings("LeakingThisInConstructor")
 	public MSNWeatherTest() throws NamingException {
 		CONTAINER.getContext().bind("inject",
 			this);
+		this.baseDatabaseManager = new JTADatabaseManager(
+		entityManager);
 	}
-
-	@Before
-	public void setUp() throws NamingException {
+	
+	@BeforeClass
+	public static void setUpClass() throws NamingException {
+		CONTAINER = TestUtils.getContainer();
 	}
 
 	/**
@@ -69,10 +74,10 @@ public class MSNWeatherTest {
 			true,
 			true,
 			referenceArea);
-		DatabaseManager databaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
 		MSNWeather instance = new MSNWeather();
 		ServiceDataHelper<?,?> result = instance.getWeather(city,
-			databaseManager);
+			baseDatabaseManager);
 		assertFalse(result.getForecastConditions().isEmpty());
 	}
+
 }

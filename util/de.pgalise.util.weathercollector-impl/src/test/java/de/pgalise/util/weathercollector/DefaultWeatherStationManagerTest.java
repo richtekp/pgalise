@@ -28,11 +28,12 @@ import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
-import de.pgalise.util.weathercollector.weatherstation.strategy.StationOldenburg;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.ManagedBean;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -46,43 +47,53 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.Before;
+import org.easymock.EasyMock;
+import org.junit.BeforeClass;
 
 /**
- * Tests the weather station manager
+ * Tests the weather station manager. Doesn't inject BaseDatabaseManager in 
+ * because the injected test EntityManager factory can be passed as parameter 
+ * in the constructor.
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
 @LocalClient
 @ManagedBean
-public class WeatherStationManagerTest {
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+public class DefaultWeatherStationManagerTest {
+	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_collector_test")
-	private EntityManagerFactory entityManagerFactory;
+	private EntityManagerFactory entityManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
-	public WeatherStationManagerTest() throws NamingException {
+	public DefaultWeatherStationManagerTest() throws NamingException {
 		CONTAINER.getContext().bind("inject",
 			this);
+		this.baseDatabaseManager = new JTADatabaseManager(
+		entityManager);
 	}
 	
-	@Before
-	public void setUp() throws NamingException {
+	@BeforeClass
+	public static void setUpClass() throws NamingException {
+		CONTAINER = TestUtils.getContainer();
 	}
 
 	@Test
 	public void testSaveInformations() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
-		BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager = JTADatabaseManager.getInstance(
-			entityManagerFactory);
-		Set<StationStrategy> serviceStrategys = new HashSet<StationStrategy>(Arrays.asList(new StationOldenburg()));
+		StationStrategy strategyMock = EasyMock.createStrictMock(StationStrategy.class); // mock because StationOldenburg doesn't work or needs credentials
+		Set<StationStrategy> serviceStrategys = new HashSet<>(Arrays.asList(strategyMock ));
 		DefaultWeatherStationManager instance = new DefaultWeatherStationManager(
-			baseDatabaseManager);
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
+			baseDatabaseManager, serviceStrategys);
+		strategyMock.saveWeather(baseDatabaseManager);
+		EasyMock.expectLastCall().once();
+		EasyMock.replay(strategyMock);
 		
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
+		EntityManager entityManager0 = entityManager.createEntityManager();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
@@ -101,11 +112,10 @@ public class WeatherStationManagerTest {
 			true,
 			true,
 			referenceArea);
-		entityManager.persist(city);
+		entityManager0.persist(city);
 		userTransaction.commit();
 		instance.saveInformations();
-//		Query query = entityManager.createQuery(String.format("SELECT x FROM %s x", ServiceDataCurrent.class.getSimpleName()));
-//		assertFalse(query.getResultList().isEmpty());
-		entityManager.close();
+		//only test that StationStrategy.saveWeather is invoked
 	}
+
 }

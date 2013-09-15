@@ -23,6 +23,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
+import de.pgalise.util.weathercollector.util.EntityDatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import org.junit.Test;
 
@@ -32,8 +33,11 @@ import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -48,9 +52,12 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import static org.junit.Assert.assertFalse;
+import org.junit.BeforeClass;
 
 /**
- * Tests the weather service manager
+ * Tests the weather service manager. Doesn't inject BaseDatabaseManager in 
+ * because the injected test EntityManager factory can be passed as parameter 
+ * in the constructor.
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
@@ -58,27 +65,33 @@ import static org.junit.Assert.assertFalse;
 @LocalClient
 @ManagedBean
 public class DefaultWeatherServiceManagerTest {
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_collector_test")
-	private EntityManagerFactory entityManagerFactory;
+	private EntityManagerFactory entityManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 	public DefaultWeatherServiceManagerTest() throws NamingException {
 		CONTAINER.getContext().bind("inject",
 			this);
+		this.baseDatabaseManager = new JTADatabaseManager(
+		entityManager);
+	}
+	
+	@BeforeClass
+	public static void setUpClass() throws NamingException {
+		CONTAINER = TestUtils.getContainer();
 	}
 
 	@Test
 	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
-		BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager = JTADatabaseManager.getInstance(
-			entityManagerFactory);
 		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(Arrays.asList(new YahooWeather()));
 		DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(baseDatabaseManager, serviceStrategys);
 		
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
-		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		EntityManager entityManager0 = entityManager.createEntityManager();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
@@ -97,12 +110,13 @@ public class DefaultWeatherServiceManagerTest {
 			true,
 			true,
 			referenceArea);
-		entityManager.persist(city);
+		entityManager0.persist(city);
 		userTransaction.commit();
 		instance.saveInformations(baseDatabaseManager);
-		Query query = entityManager.createQuery("SELECT x FROM DefaultServiceDataHelper x");
-		assertFalse(query.getResultList().isEmpty());
-		entityManager.close();
+		Query queryCurrent = entityManager0.createQuery("SELECT x FROM DefaultServiceDataCurrent x");
+		Query queryForecast = entityManager0.createQuery("SELECT y FROM DefaultServiceDataForecast y");
+		assertFalse(queryCurrent.getResultList().isEmpty());
+		assertFalse(queryForecast.getResultList().isEmpty());
 	}
 
 }

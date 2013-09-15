@@ -39,6 +39,7 @@ import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -50,13 +51,13 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-public class NonJTADatabaseManager extends BaseDatabaseManager<DefaultServiceDataHelper> {
+public class NonJTADatabaseManager implements BaseDatabaseManager<DefaultServiceDataHelper> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(NonJTADatabaseManager.class);
 
 	/**
 	 * Instance of the class
 	 */
-	private static Map<EntityManagerFactory,NonJTADatabaseManager> instances = new HashMap<>(1);
+//	private static Map<EntityManagerFactory,NonJTADatabaseManager> instances = new HashMap<>(1);
 
 	/**
 	 * File path for property file
@@ -69,22 +70,6 @@ public class NonJTADatabaseManager extends BaseDatabaseManager<DefaultServiceDat
 	private String PERSISTENT_UNIT_NAME = "weather_collector";
 
 	/**
-	 * Returns the instance of the database manager
-	 * 
-	 * @param entityManagerFactory 
-	 * @return instance of the database manager
-	 */
-	public static synchronized NonJTADatabaseManager getInstance(EntityManagerFactory entityManagerFactory) {
-		NonJTADatabaseManager instance = instances.get(entityManagerFactory);
-		if (instance == null) {
-			instance = new NonJTADatabaseManager(entityManagerFactory);
-			instances.put(entityManagerFactory,
-				instance);
-		}
-		return instance;
-	}
-
-	/**
 	 * Factory for the database connection
 	 */
 	private EntityManagerFactory factory;
@@ -92,7 +77,7 @@ public class NonJTADatabaseManager extends BaseDatabaseManager<DefaultServiceDat
 	/**
 	 * Private constructor for singleton pattern
 	 */
-	private NonJTADatabaseManager() {
+	public NonJTADatabaseManager() {
 		Properties database = null;
 
 		// Read database props

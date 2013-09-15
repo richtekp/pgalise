@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.ejb.Local;
+import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +32,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-public class JTADatabaseManager extends BaseDatabaseManager<DefaultServiceDataHelper> {
+@Singleton(name = "de.pgalise.util.weathercollector.util.JTADatabaseManager", mappedName = "de.pgalise.util.weathercollector.util.EntityDatabaseManager")
+@Local
+public class JTADatabaseManager implements EntityDatabaseManager {
 	private final static Logger LOGGER = LoggerFactory.getLogger(JTADatabaseManager.class);
 
 	/**
@@ -45,28 +50,17 @@ public class JTADatabaseManager extends BaseDatabaseManager<DefaultServiceDataHe
 	/**
 	 * Name of the persistent unit
 	 */
+	@PersistenceUnit(unitName = "weather_collector")
 	private EntityManagerFactory factory;
 
-	/**
-	 * Returns the instance of the database manager
-	 * 
-	 * @param entityManagerFactory 
-	 * @return instance of the database manager
-	 */
-	public static synchronized JTADatabaseManager getInstance(EntityManagerFactory entityManagerFactory) {
-		JTADatabaseManager instance = instances.get(entityManagerFactory);
-		if (instance == null) {
-			instance = new JTADatabaseManager(entityManagerFactory);
-			instances.put(entityManagerFactory,
-				instance);
-		}
-		return instance;
+	public JTADatabaseManager() {
 	}
 
 	/**
-	 * Private constructor for singleton pattern
+	 *  
+	 * @param entityManagerFactory 
 	 */
-	private JTADatabaseManager(EntityManagerFactory entityManagerFactory) {
+	public JTADatabaseManager(EntityManagerFactory entityManagerFactory) {
 		this.factory = entityManagerFactory;
 	}
 
@@ -159,7 +153,7 @@ public class JTADatabaseManager extends BaseDatabaseManager<DefaultServiceDataHe
 			}
 
 			// Save data
-			em.persist(station_data);
+			em.merge(station_data);
 			count++;
 		}
 
@@ -309,7 +303,7 @@ public class JTADatabaseManager extends BaseDatabaseManager<DefaultServiceDataHe
 		this.deleteCurrentWeather(this.getServiceDataCurrent(city, service_data.getMeasureDate(), em), em);
 
 		// Save data
-		em.persist(service_data);
+		em.merge(service_data);
 
 		// Close Manager ?
 		if (em.isOpen()) {
@@ -340,7 +334,7 @@ public class JTADatabaseManager extends BaseDatabaseManager<DefaultServiceDataHe
 			this.deleteForeCastWeather(this.getServiceDataForecast(city, data.getMeasureDate(), em), em);
 
 			// Save data
-			em.persist(data);
+			em.merge(data); //need to merge due to references to city.referenceArea
 
 			LOGGER.debug("Datensatz fuer Stadt " + city + " vom " + data.getMeasureDate() + " gespeichert.", Level.INFO);
 
