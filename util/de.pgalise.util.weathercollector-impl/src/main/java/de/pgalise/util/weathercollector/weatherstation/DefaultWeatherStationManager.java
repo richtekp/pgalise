@@ -16,12 +16,8 @@
  
 package de.pgalise.util.weathercollector.weatherstation;
 
-import de.pgalise.util.weathercollector.util.DatabaseManager;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,11 +28,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.pgalise.util.weathercollector.util.NonJTADatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceContext;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,20 +50,15 @@ public class DefaultWeatherStationManager implements WeatherStationManager {
 	/**
 	 * Class to save the informations
 	 */
-	public WeatherStationSaver saver;
-
-	/**
-	 * Option to enable the test mode (no database commits)
-	 */
-	public boolean testmode = false;
+	private WeatherStationSaver saver;
 	
 	private Set<StationStrategy> stationStrategys;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param testmode
-	 *            Option to enable the test mode (no database commits)
+	 * 
+	 * @param weatherStationSaver 
 	 */
 	public DefaultWeatherStationManager(WeatherStationSaver weatherStationSaver) {
 		this(weatherStationSaver, loadStrategiesFromFile());
@@ -84,10 +72,11 @@ public class DefaultWeatherStationManager implements WeatherStationManager {
 	/**
 	 * Saves all informations of the weather stations
 	 */
+	@Override
 	public void saveInformations() {
 		// Execute all strategies
 		for (StationStrategy strategy : stationStrategys) {
-			strategy.saveWeather(this.saver);
+			strategy.saveWeather(this.getSaver());
 		}
 	}
 
@@ -96,9 +85,8 @@ public class DefaultWeatherStationManager implements WeatherStationManager {
 	 * 
 	 * @return list with available strategies
 	 */
-	@SuppressWarnings("unchecked")
 	private static Set<StationStrategy> loadStrategiesFromFile() {
-		Set<StationStrategy> list = new HashSet<>();
+		Set<StationStrategy> list = new HashSet<>(3);
 
 		try (InputStream propInFile = DefaultWeatherStationManager.class.getResourceAsStream(FILEPATH)) {
 			// Read file
@@ -116,7 +104,11 @@ public class DefaultWeatherStationManager implements WeatherStationManager {
 				String classname = nNode.getTextContent();
 
 				// Add strategy
-				StationStrategy strategy = ((Class<StationStrategy>) Class.forName(classname)).newInstance();
+				Object strategyRaw = Class.forName(classname).newInstance();
+				if(!(strategyRaw instanceof StationStrategy)) {
+					throw new IllegalArgumentException("file in %s contains invalid classname %s");
+				}
+				StationStrategy strategy = (StationStrategy) strategyRaw;
 				list.add(strategy);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException | InstantiationException
@@ -126,5 +118,20 @@ public class DefaultWeatherStationManager implements WeatherStationManager {
 
 		// Return list
 		return list;
+	}
+
+	/**
+	 * @return the saver
+	 */
+	public WeatherStationSaver getSaver() {
+		return saver;
+	}
+
+	/**
+	 * @param saver the saver to set
+	 */
+	public void setSaver(
+		WeatherStationSaver saver) {
+		this.saver = saver;
 	}
 }

@@ -34,4 +34,21 @@
       <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
     </properties>
   </persistence-unit>
+  <persistence-unit name="weather_collector_local" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <jta-data-source>weatherData</jta-data-source>
+    <class>de.pgalise.simulation.shared.city.City</class>
+    <class>de.pgalise.simulation.weather.model.DefaultServiceDataCurrent</class>
+    <class>de.pgalise.simulation.weather.model.DefaultServiceDataForecast</class>
+    <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
+    <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
+    <class>de.pgalise.simulation.weather.model.WeatherCondition</class>
+    <class>de.pgalise.util.weathercollector.model.DefaultServiceDataHelper</class>
+    <class>de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast</class>
+    <class>de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent</class>
+    <properties>
+      <property name="eclipselink.ddl-generation" value="create-tables"/>
+      <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+    </properties>
+  </persistence-unit>
 </persistence>

@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import com.google.gson.reflect.TypeToken;
 import de.pgalise.simulation.shared.city.City;
 import java.io.IOException;
 import java.io.InputStream;
@@ -171,7 +172,11 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 				String classname = nNode.getTextContent();
 
 				// Add strategy
-				ServiceStrategy<DefaultServiceDataHelper> strategy = ((Class<ServiceStrategy>) Class.forName(classname)).newInstance();
+				Object strategyRaw = Class.forName(classname).newInstance();
+				if(!(strategyRaw instanceof ServiceStrategy)) {
+					throw new IllegalArgumentException(String.format("file %s contains illegal class name %s", FILEPATH, classname));
+				}
+				ServiceStrategy<DefaultServiceDataHelper> strategy =  (ServiceStrategy<DefaultServiceDataHelper>) strategyRaw;
 				list.add(strategy);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException | InstantiationException

@@ -21,14 +21,16 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import org.junit.Test;
+
+import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
-import org.junit.Test;
-
-import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceManager;
-import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
+import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
+import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -47,34 +49,72 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.easymock.EasyMock.*;
+import org.junit.BeforeClass;
 
 /**
- * Tests the weather service manager
+ * Tests the weather collector
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
 @LocalClient
 @ManagedBean
-public class WeatherServiceManagerTest {
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+public class DefaultWeatherCollectorTest {
+	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_collector_test")
 	private EntityManagerFactory entityManagerFactory;
 
 	@SuppressWarnings("LeakingThisInConstructor")
-	public WeatherServiceManagerTest() throws NamingException {
+	public DefaultWeatherCollectorTest() throws NamingException {
 		CONTAINER.getContext().bind("inject",
 			this);
 	}
+	
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
+	}
+	
+	@Test
+	public void testCollectServiceData() {
+		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
+		BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager = NonJTADatabaseManager.getInstance(entityManagerFactory);
+		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(Arrays.asList(new YahooWeather()));
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+			new Coordinate(1,
+			1),
+			new Coordinate(1,
+			2),
+			new Coordinate(2,
+			2),
+			new Coordinate(2,
+			1),
+			new Coordinate(1,
+			1)
+		});
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			referenceArea);
+		entityManager.persist(city);
+		weatherCollector.collectServiceData(baseDatabaseManager, serviceStrategys);
+		Query query = entityManager.createQuery("SELECT x FROM DefExtendedServiceDataCurrent x");
+		assertFalse(query.getResultList().isEmpty());
+		entityManager.close();
+	}
 
 	@Test
-	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
-		BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager = JTADatabaseManager.getInstance(
-			entityManagerFactory);
-		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(Arrays.asList(new YahooWeather()));
-		DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(baseDatabaseManager, serviceStrategys);
-		
+	public void testCollectStationData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
+		BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager = JTADatabaseManager.getInstance(entityManagerFactory);
+		StationStrategy stationStrategy = createMock(StationStrategy.class);
+		stationStrategy.saveWeather(anyObject(WeatherStationSaver.class));
+		expectLastCall().atLeastOnce();
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
@@ -97,11 +137,11 @@ public class WeatherServiceManagerTest {
 			true,
 			true,
 			referenceArea);
+		entityManager.joinTransaction();
 		entityManager.persist(city);
 		userTransaction.commit();
-		instance.saveInformations(baseDatabaseManager);
-		Query query = entityManager.createQuery("SELECT x FROM DefaultServiceDataHelper x");
-		assertFalse(query.getResultList().isEmpty());
+		weatherCollector.collectStationData(baseDatabaseManager, new HashSet<>(Arrays.asList(stationStrategy)));
+		//nothing to test (depends all on functionality of station)
 		entityManager.close();
 	}
 
