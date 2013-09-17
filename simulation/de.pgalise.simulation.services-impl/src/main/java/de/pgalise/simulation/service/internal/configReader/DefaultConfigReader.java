@@ -46,7 +46,7 @@ public class DefaultConfigReader implements ConfigReader {
 	private static final Logger log = LoggerFactory.getLogger(DefaultConfigReader.class);
 	private Properties prop;
 	
-	public DefaultConfigReader() throws  Exception {
+	public DefaultConfigReader() throws IOException {
 		prop = new Properties();
 		
 		setDefaultProperties(prop);
@@ -76,8 +76,9 @@ public class DefaultConfigReader implements ConfigReader {
 	}
 	
 	private void setDefaultProperties(Properties prop) {
-		if(System.getProperty("catalina.base")==null)
+		if(System.getProperty("catalina.base")==null) {
 			System.setProperty("catalina.base", System.getProperty("user.dir"));
+		}
 		// scaletest config	
 		prop.put(Identifier.SCALE_TEST.getName(), "false");
 	
@@ -133,8 +134,9 @@ public class DefaultConfigReader implements ConfigReader {
 	}
 	
 	private void storeConfig(boolean store) throws IOException {
-		if(!store)
+		if(!store) {
 			return;
+		}
 		
 		log.info("Simulation configuration file not found. Creating one under "+System.getProperty("catalina.base")+"/applib");
 		File file = new File(System.getProperty("catalina.base")+"/applib");

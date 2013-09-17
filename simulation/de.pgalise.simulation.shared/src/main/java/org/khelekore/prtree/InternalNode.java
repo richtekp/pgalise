@@ -12,28 +12,34 @@ class InternalNode<T> extends NodeBase<Node<T>, T> {
 
     @Override public MBR computeMBR (MBRConverter<T> converter) {
 	MBR ret = null;
-	for (int i = 0, s = size (); i < s; i++)
-	    ret = getUnion (ret, get (i).getMBR (converter));
+	for (int i = 0, s = size (); i < s; i++) {
+		ret = getUnion (ret, get (i).getMBR (converter));
+	}
 	return ret;
     }
 
+	@Override
     public void expand (MBR mbr, MBRConverter<T> converter, List<T> found,
 			List<Node<T>> nodesToExpand) {
 	for (int i = 0, s = size (); i < s; i++) {
 	    Node<T> n = get (i);
-	    if (mbr.intersects (n.getMBR (converter)))
-		nodesToExpand.add (n);
+	    if (mbr.intersects (n.getMBR (converter))) {
+				nodesToExpand.add (n);
+			}
 	}
     }
 
+	@Override
     public void find (MBR mbr, MBRConverter<T> converter, List<T> result) {
 	for (int i = 0, s = size (); i < s; i++) {
 	    Node<T> n = get (i);
-	    if (mbr.intersects (n.getMBR (converter)))
-		n.find (mbr, converter, result);
+	    if (mbr.intersects (n.getMBR (converter))) {
+				n.find (mbr, converter, result);
+			}
 	}
     }
 
+	@Override
     public void nnExpand (DistanceCalculator<T> dc,
 			  NodeFilter<T> filter,
 			  List<DistanceResult<T>> drs,
@@ -47,8 +53,9 @@ class InternalNode<T> extends NodeBase<Node<T>, T> {
 	    double minDist = MinDist.get (mbr, mdc.p);
 	    int t = drs.size ();
 	    // drs is sorted so we can check only the last entry
-	    if (t < maxHits || minDist <= drs.get (t - 1).getDistance ())
-		queue.add (n);
+	    if (t < maxHits || minDist <= drs.get (t - 1).getDistance ()) {
+				queue.add (n);
+			}
 	}
     }
 }

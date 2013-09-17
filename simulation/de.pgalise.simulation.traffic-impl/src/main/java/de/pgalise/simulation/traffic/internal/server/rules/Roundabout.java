@@ -45,7 +45,7 @@ import javax.vecmath.Vector3d;
  * @author Marcus
  * @version 1.0 (Oct 28, 2012)
  */
-public final class Roundabout extends TrafficRule {
+public class Roundabout extends TrafficRule {
 
 	/**
 	 * 

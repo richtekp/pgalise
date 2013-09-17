@@ -17,7 +17,7 @@
 package de.pgalise.simulation;
 
 import de.pgalise.simulation.event.EventInitiator;
-import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.service.SensorManagerController;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;

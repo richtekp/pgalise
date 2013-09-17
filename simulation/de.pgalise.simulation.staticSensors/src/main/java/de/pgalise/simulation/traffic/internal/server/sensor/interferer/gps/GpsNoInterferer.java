@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that shows no errors
@@ -26,7 +25,7 @@ import javax.vecmath.Vector2d;
  * @author Marcus
  * @version 1.0 (Nov 12, 2012)
  */
-public final class GpsNoInterferer implements GpsInterferer {
+public class GpsNoInterferer implements GpsInterferer {
 
 	@Override
 	public Coordinate interfere(Coordinate mutablePosition, Coordinate realPosition, long simTime) {

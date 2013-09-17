@@ -4,6 +4,10 @@
  */
 package de.pgalise.it;
 
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.persistence.Identifiable;
+import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -41,19 +45,19 @@ public class TestUtils {
 		if(container == null) {
 			Properties p;
 			p = new Properties();
-			p.setProperty("weatherData", "new://Resource?type=DataSource");
-			p.setProperty("weatherData.JdbcDriver", "org.postgresql.Driver");
-			p.setProperty("weatherData.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise");
-			p.setProperty("weatherData.UserName", "postgis");
-			p.setProperty("weatherData.Password", "postgis");
-			p.setProperty("weatherData.JtaManaged",	"true");
+			p.setProperty("pgalise", "new://Resource?type=DataSource");
+			p.setProperty("pgalise.JdbcDriver", "org.postgresql.Driver");
+			p.setProperty("pgalise.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise");
+			p.setProperty("pgalise.UserName", "postgis");
+			p.setProperty("pgalise.Password", "postgis");
+			p.setProperty("pgalise.JtaManaged",	"true");
 			
-			p.setProperty("weatherDataTest", "new://Resource?type=DataSource");
-			p.setProperty("weatherDataTest.JdbcDriver", "org.postgresql.Driver");
-			p.setProperty("weatherDataTest.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
-			p.setProperty("weatherDataTest.UserName", "postgis");
-			p.setProperty("weatherDataTest.Password", "postgis");
-			p.setProperty("weatherDataTest.JtaManaged",	"true");
+			p.setProperty("pgaliseTest", "new://Resource?type=DataSource");
+			p.setProperty("pgaliseTest.JdbcDriver", "org.postgresql.Driver");
+			p.setProperty("pgaliseTest.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
+			p.setProperty("pgaliseTest.UserName", "postgis");
+			p.setProperty("pgaliseTest.Password", "postgis");
+			p.setProperty("pgaliseTest.JtaManaged",	"true");
 
 			p.setProperty(
 				"hibernate.dialect",
@@ -91,6 +95,63 @@ public class TestUtils {
 		return retValue;
 	}
 	
+	public static Collection<DefaultServiceDataCurrent> setUpWeatherServiceData(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			startTimestamp);
+		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			endTimestamp);
+		utx.begin();
+		EntityManager em = entityManagerFactory.createEntityManager();
+		DefaultServiceDataCurrent serviceWeather = new DefaultServiceDataCurrent(new Date(startTimestampMidnight),
+			new Time(startTimestampMidnight),
+			city,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		
+		long preceedingDayTimestamp = startTimestampMidnight-DateConverter.ONE_DAY_IN_MILLIS;
+		DefaultServiceDataCurrent serviceWeatherPreviousDay = new DefaultServiceDataCurrent(new Date(preceedingDayTimestamp),
+			new Time(preceedingDayTimestamp),
+			city,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		DefaultServiceDataCurrent serviceWeatherForecast = new DefaultServiceDataCurrent(new Date(endTimestampMidnight),
+			new Time(endTimestampMidnight),
+			city,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		DefaultServiceDataCurrent weather = new DefaultServiceDataCurrent(new Date(startTimestamp),
+			new Time(startTimestamp),
+			city,
+			1.0f,
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		em.joinTransaction();
+		em.persist(serviceWeather);
+		em.persist(serviceWeatherPreviousDay);
+		em.persist(serviceWeatherForecast);
+		em.persist(weather);
+		em.close();
+		utx.commit();
+		Collection<DefaultServiceDataCurrent> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
+		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", MutableStationData.class.getSimpleName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
+		return retValue;
+	}
+	
 	/**
 	 * saves {@link StationDataNormal} for the day of timestamp at the actual tima and at 00:00, the 
 	 * preceeding day at 00:00 and the following day at 00:00 and returns the 
@@ -109,7 +170,7 @@ public class TestUtils {
 	 * @throws IllegalStateException 
 	 * @see #tearDownWeatherData(java.util.Collection, javax.transaction.UserTransaction, javax.persistence.EntityManagerFactory) 
 	 */
-	public static Collection<StationDataNormal> setUpWeatherData(long startTimestamp, long endTimestamp, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+	public static Collection<StationDataNormal> setUpWeatherStationData(long startTimestamp, long endTimestamp, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
 		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
 			startTimestamp);
 		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
@@ -167,20 +228,20 @@ public class TestUtils {
 		em.persist(serviceWeatherPreviousDay);
 		em.persist(serviceWeatherForecast);
 		em.persist(weather);
-		utx.commit();
 		em.close();
+		utx.commit();
 		Collection<StationDataNormal> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
 		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", MutableStationData.class.getSimpleName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
 		return retValue;
 	}
 	
-	public static void tearDownWeatherData(Collection<StationDataNormal> mutableStationDatas, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+	public static <T extends Identifiable> void tearDownWeatherData(Collection<T> mutableStationDatas, Class<T> clazz, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
 		utx.begin();
 		EntityManager em = entityManagerFactory.createEntityManager();
 		em.joinTransaction();
-		for(StationDataNormal mutableStationData : mutableStationDatas) {
+		for(T mutableStationData : mutableStationDatas) {
 //			em.refresh(mutableStationData);
-			StationDataNormal attached = em.find(StationDataNormal.class,
+			T attached = em.find(clazz,
 				mutableStationData.getId());
 			em.remove(attached);
 		}

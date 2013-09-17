@@ -102,7 +102,7 @@ public enum Identifier implements Serializable {
 	/**
 	 * Set of all Identifier to iterate over them easily.
 	 */
-	public static EnumSet<Identifier> ALL = EnumSet.of(
+	public final static EnumSet<Identifier> ALL = EnumSet.of(
 			SERVER_IP,
 			SERVER_EJBD_PORT,
 			SERVER_HTTP_PORT,

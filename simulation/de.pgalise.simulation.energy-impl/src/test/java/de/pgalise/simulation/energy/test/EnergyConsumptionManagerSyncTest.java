@@ -35,7 +35,6 @@ import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
-import javax.vecmath.Vector2d;
 
 /**
  * Tests the synchronization of the {@link EnergyConsumptionManager}
@@ -76,7 +75,7 @@ public class EnergyConsumptionManagerSyncTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Map<EnergyProfileEnum, List<Building>> map = new HashMap<EnergyProfileEnum, List<Building>>();
+		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
 		List<Building> buildingList = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {

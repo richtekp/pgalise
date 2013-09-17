@@ -21,7 +21,7 @@ import org.graphstream.graph.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.controller.SimulationComponent;
+import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -221,7 +221,7 @@ public abstract class TrafficRule implements SimulationComponent {
 	 *             the {@link Vehicle} wants to turn around and turning around
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
-	public final void register(final Vehicle<? extends VehicleData> vehicle,
+	public void register(final Vehicle<? extends VehicleData> vehicle,
 			final Node from, final Node to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException {
 		if (from == null) {
@@ -271,7 +271,7 @@ public abstract class TrafficRule implements SimulationComponent {
 	 * 
 	 * @return the {@link Node} on which this {@link TrafficRule} is applied
 	 */
-	public final Node getNode() {
+	public Node getNode() {
 		return this.node;
 	}
 }

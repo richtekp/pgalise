@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.server.sensor.interferer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Interface for an interferer which manipulates the {@link GpsSensor}'s input

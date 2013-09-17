@@ -32,7 +32,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * 
  * @author marcus
  */
-public final class ExtendedVehiclePassedNodeHandler implements VehicleEventHandler {
+public class ExtendedVehiclePassedNodeHandler implements VehicleEventHandler {
 	private VehiclePassedNodeHandler defaultHandler;
 
 	public ExtendedVehiclePassedNodeHandler() {

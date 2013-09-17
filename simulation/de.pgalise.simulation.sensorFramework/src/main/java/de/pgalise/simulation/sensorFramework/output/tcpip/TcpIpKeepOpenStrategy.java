@@ -24,7 +24,7 @@ import java.nio.channels.SocketChannel;
  * 
  * @author Marcus
  */
-public final class TcpIpKeepOpenStrategy extends TcpIpConnectionStrategy {
+public class TcpIpKeepOpenStrategy extends TcpIpConnectionStrategy {
 
 	/**
 	 * Returns always TcpIpConnectionStrategyEnum.KEEP_OPEN.

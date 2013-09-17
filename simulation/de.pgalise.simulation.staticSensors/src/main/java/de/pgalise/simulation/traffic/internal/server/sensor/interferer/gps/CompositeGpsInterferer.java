@@ -22,7 +22,6 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Implementation of an {@link GpsInterferer} that hold several other {@link GpsInterferer}s
@@ -30,7 +29,7 @@ import javax.vecmath.Vector2d;
  * @author Marcus
  * @version 1.0
  */
-public final class CompositeGpsInterferer implements GpsInterferer {
+public class CompositeGpsInterferer implements GpsInterferer {
 
 	/**
 	 * the composite {@link GpsInterferer}s

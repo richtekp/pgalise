@@ -19,7 +19,6 @@ package de.pgalise.simulation.service;
 import java.util.Collection;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.shared.controller.Controller;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 
 /**
@@ -43,6 +42,8 @@ public interface ServiceDictionary {
 
 	/**
 	 * Initializes this ServiceFactory. Used to determine which service lies on which server.
+	 * 
+	 * @param serverConfig 
 	 */
 	public void init(ServerConfiguration serverConfig);
 
@@ -52,6 +53,7 @@ public interface ServiceDictionary {
 	public Collection<Controller> getControllers();
 
 	/**
+	 * @param <C> 
 	 * @param clazz
 	 *            class name of the desired controller
 	 * @return a specific controller identified by its class name if available otherwise null.

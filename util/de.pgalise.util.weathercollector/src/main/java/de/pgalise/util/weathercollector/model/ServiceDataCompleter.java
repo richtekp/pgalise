@@ -17,14 +17,16 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 
 /**
  * Interface to complete weather service data
  * 
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (Apr 16, 2012)
  */
-public interface ServiceDataCompleter {
+public interface ServiceDataCompleter<C extends WeatherCondition> {
 
 	/**
 	 * Concentrate the objects
@@ -32,6 +34,6 @@ public interface ServiceDataCompleter {
 	 * @param obj
 	 *            new obj
 	 */
-	public void complete(ServiceDataCurrent obj);
+	public void complete(ServiceDataCurrent<C> obj);
 
 }

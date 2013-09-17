@@ -30,10 +30,12 @@ class NodeUsage<T> implements Serializable {
     }
 
     public void use () {
-	if (id >= 0)
-	    id = -id;
-	else 
-	    throw new RuntimeException ("Trying to use already used node");
+	if (id >= 0) {
+		id = -id;
+	}
+	else {
+		throw new RuntimeException ("Trying to use already used node");
+	}
     }
 
     public boolean isUsed () {

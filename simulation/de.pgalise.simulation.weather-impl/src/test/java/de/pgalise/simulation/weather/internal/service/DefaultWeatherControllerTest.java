@@ -32,14 +32,13 @@ import javax.naming.NamingException;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.Controller.StatusEnum;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
@@ -50,12 +49,22 @@ import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import java.util.Properties;
+import java.util.Collection;
 import javax.annotation.ManagedBean;
-import javax.naming.InitialContext;
+import javax.annotation.Resource;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
+import org.junit.BeforeClass;
 
 /**
  * JUnit Testcases for WeatherController
@@ -66,7 +75,9 @@ import org.apache.openejb.api.LocalClient;
 @LocalClient
 @ManagedBean
 public class DefaultWeatherControllerTest {
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	private static EJBContainer CONTAINER;
+	@PersistenceUnit(name="weather_test_DefaultWeatherControllerTest", unitName = "weather_test")
+	private EntityManagerFactory entityManagerFactory;
 	/**
 	 * Logger
 	 */
@@ -91,11 +102,12 @@ public class DefaultWeatherControllerTest {
 	 * Test timestamp of the events
 	 */
 	private long eventTimestamp;
+	
+	@Resource
+	private UserTransaction userTransaction;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public DefaultWeatherControllerTest() throws NamingException {
-		Properties p = new Properties();
-		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 		
@@ -103,7 +115,6 @@ public class DefaultWeatherControllerTest {
 		Context ctx = CONTAINER.getContext();
 
 		/* Create simulation controller and init/start the simulation: */
-		InitialContext x = new InitialContext();
 		ServiceDictionary serviceDictionary = (ServiceDictionary) ctx.lookup(
 			//"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
 			"java:global/services-impl-2.0-SNAPSHOT/de.pgalise.simulation.service.ServiceDictionary"
@@ -142,6 +153,11 @@ public class DefaultWeatherControllerTest {
 		cal.set(2010, 1, 1, 18, 0, 0);
 		eventTimestamp = cal.getTimeInMillis();
 	}
+	
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
+	}
 
 	/**
 	 * Creates the server configuration. Change this for more traffic servers or for distributed servers.
@@ -150,7 +166,7 @@ public class DefaultWeatherControllerTest {
 	 */
 	private static ServerConfiguration produceServerConfiguration() {
 		ServerConfiguration conf = new ServerConfiguration();
-		List<Entity> entities = new ArrayList<>();
+		List<Entity> entities = new ArrayList<>(2);
 		entities.add(new Entity(ServiceDictionary.RANDOM_SEED_SERVICE));
 		entities.add(new Entity(ServiceDictionary.WEATHER_CONTROLLER));
 		conf.getConfiguration().put("127.0.0.1:8081", entities);
@@ -158,19 +174,17 @@ public class DefaultWeatherControllerTest {
 		return conf;
 	}
 
-	private volatile Throwable throwable;
-
 	@Test
 	public void controllerTest() throws InterruptedException, IllegalArgumentException,
-			ExecutionException, IllegalStateException, InitializationException, NamingException {
+			ExecutionException, IllegalStateException, InitializationException, NamingException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, RollbackException {
 		WeatherController ctrl;
-		Number testNumber = null;
+		Number testNumber;
 
 		// Local test variables
 		long valueTime = startTimestamp + 360000;
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
 		Coordinate testPosition = new Coordinate(2, 3);
-		List<SimulationEvent> testEventList = new ArrayList<>();
+		List<SimulationEvent> testEventList = new ArrayList<>(1);
 		testEventList.add(new ChangeWeatherEvent(UUID.randomUUID(), WeatherEventEnum.HOTDAY, 30.0f,
 				eventTimestamp, 6.0f));
 		SimulationEventList testEvent = new SimulationEventList(testEventList, valueTime, UUID.randomUUID());
@@ -204,6 +218,10 @@ public class DefaultWeatherControllerTest {
 		log.debug("Testmethod: start()");
 
 		// Test (normal) -> call onSuccess
+		Collection<StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+			endTimestamp,
+			userTransaction,
+			entityManagerFactory);
 		ctrl.start(parameter);
 
 		Assert.assertEquals(StatusEnum.STARTED, ctrl.getStatus());
@@ -295,14 +313,10 @@ public class DefaultWeatherControllerTest {
 		// controller has the init state.
 		ctrl.reset();
 		Assert.assertEquals(StatusEnum.INIT, ctrl.getStatus());
-	}
-
-	@After
-	public void tearDown() throws Throwable {
-		// Is there an error in an other thread?
-		if (this.throwable != null) {
-			throw this.throwable;
-		}
+		
+		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+			userTransaction,
+			entityManagerFactory);
 	}
 
 }

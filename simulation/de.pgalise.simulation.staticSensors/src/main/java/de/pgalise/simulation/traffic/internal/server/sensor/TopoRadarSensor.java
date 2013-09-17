@@ -29,7 +29,6 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Represents a topo radar sensor

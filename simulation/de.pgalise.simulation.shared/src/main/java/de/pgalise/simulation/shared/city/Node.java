@@ -112,31 +112,41 @@ public class Node implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Node other = (Node) obj;
 		if (id == null) {
-			if (other.id != null)
+			if (other.id != null) {
 				return false;
-		} else if (!id.equals(other.id))
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
-		if (isRoundabout != other.isRoundabout)
+		}
+		if (isRoundabout != other.isRoundabout) {
 			return false;
+		}
 		if (landuse == null) {
-			if (other.landuse != null)
+			if (other.landuse != null) {
 				return false;
-		} else if (!landuse.equals(other.landuse))
+			}
+		} else if (!landuse.equals(other.landuse)) {
 			return false;
+		}
 		if (Double.doubleToLongBits(latitude) != Double
-				.doubleToLongBits(other.latitude))
+				.doubleToLongBits(other.latitude)) {
 			return false;
+		}
 		if (Double.doubleToLongBits(longitude) != Double
-				.doubleToLongBits(other.longitude))
+				.doubleToLongBits(other.longitude)) {
 			return false;
+		}
 		return true;
 	}
 

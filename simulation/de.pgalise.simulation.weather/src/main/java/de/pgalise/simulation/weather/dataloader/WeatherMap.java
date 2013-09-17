@@ -20,10 +20,8 @@
 package de.pgalise.simulation.weather.dataloader;
 
 import de.pgalise.simulation.weather.model.MutableStationData;
-import de.pgalise.simulation.weather.model.StationData;
 import java.util.HashMap;
 
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 
 /**
  * The class {@link Weather} represents every single weather information entry to a particular timestamp. This class

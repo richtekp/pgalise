@@ -5,16 +5,15 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.weather.model.MutableServiceDataCurrent;
-import de.pgalise.simulation.weather.model.MutableServiceDataForecast;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.sql.Time;
-import javax.persistence.MappedSuperclass;
 
 /**
  *
+ * @param <C> 
  * @author richter
  */
-@MappedSuperclass
-public interface MutableExtendedServiceDataCurrent extends ExtendedServiceDataCurrent, MutableServiceDataCurrent {
+public interface MutableExtendedServiceDataCurrent<C extends WeatherCondition> extends ExtendedServiceDataCurrent<C>, MutableServiceDataCurrent<C> {
 	
 	void setSunrise(Time sunrise);
 

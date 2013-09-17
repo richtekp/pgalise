@@ -282,7 +282,7 @@ public class CCWebSocketUser extends MessageInbound {
 				}
 				
 			case CCWebSocketMessage.MessageType.CREATE_SENSORS_MESSAGE:
-				List<SensorHelper> sensorHelperList = new LinkedList<SensorHelper>(this.gson.fromJson(message, CreateSensorsMessage.class).getContent());
+				List<SensorHelper> sensorHelperList = new LinkedList<>(this.gson.fromJson(message, CreateSensorsMessage.class).getContent());
 				for(SensorHelper sensorHelper : sensorHelperList) {
 					sensorHelper.setSensorInterfererType(sensorInterfererService.getSensorInterferes(sensorHelper.getSensorType(), 
 							this.simulationStartParameter.isWithSensorInterferes()));

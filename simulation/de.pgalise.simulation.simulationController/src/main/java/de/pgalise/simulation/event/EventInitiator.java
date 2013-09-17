@@ -16,11 +16,9 @@
  
 package de.pgalise.simulation.event;
 
+import de.pgalise.simulation.service.Controller;
 import java.util.List;
 
-import de.pgalise.simulation.SpentTimeLogger;
-import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.simulation.shared.controller.SimulationComponent;
 import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
@@ -44,7 +42,7 @@ public interface EventInitiator extends Controller {
 	 * 
 	 * @return event thread
 	 */
-	public Thread _getEventThread();
+	public Thread getEventThread();
 	
 	/**
 	 * Adds an event list.
@@ -62,19 +60,14 @@ public interface EventInitiator extends Controller {
 	 * Use this only for testing.
 	 * @param operationCenterController
 	 */
-	public void _setOperationCenterController(OperationCenterController operationCenterController);
+	public void setOperationCenterController(OperationCenterController operationCenterController);
 	
 	/**
 	 * Use this only for testing.
 	 * @param controlCenterController
 	 */
-	public void _setControlCenterController(ControlCenterController controlCenterController);
+	public void setControlCenterController(ControlCenterController controlCenterController);
 	
 	public void setFrontController(List<Controller> frontController);
 
-	/**
-	 * Use this only for testing.
-	 * @param spentTimeLogger
-	 */
-	void _setSpentTimeLogger(SpentTimeLogger spentTimeLogger);
 }

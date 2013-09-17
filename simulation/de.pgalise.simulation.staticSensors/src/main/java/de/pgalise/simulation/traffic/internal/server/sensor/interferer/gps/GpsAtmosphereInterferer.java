@@ -21,7 +21,6 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that shows errors caused by the atmosphere
@@ -29,7 +28,7 @@ import javax.vecmath.Vector2d;
  * @author Marcus
  * @version 1.0 (Nov 14, 2012)
  */
-public final class GpsAtmosphereInterferer extends GpsBaseInterferer {
+public class GpsAtmosphereInterferer extends GpsBaseInterferer {
 
 	/**
 	 * File path for property file

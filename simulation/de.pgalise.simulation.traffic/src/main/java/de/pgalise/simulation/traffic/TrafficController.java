@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.service.SensorManagerController;
 
 /**
  * Remote view of the TrafficController.<br/><br/>

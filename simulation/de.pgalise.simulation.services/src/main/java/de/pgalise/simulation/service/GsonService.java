@@ -23,7 +23,7 @@ import com.google.gson.Gson;
  * has a lot of interfaces and abstract classes. A default gson instance can not handle this.
  * @author Timo
  */
-public interface GsonService {
+public interface GsonService extends Service {
 	/**
 	 * Returns a gson instance with type adapters.
 	 * @return

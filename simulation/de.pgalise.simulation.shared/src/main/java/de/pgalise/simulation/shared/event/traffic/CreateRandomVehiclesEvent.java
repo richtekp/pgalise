@@ -71,18 +71,23 @@ public class CreateRandomVehiclesEvent extends TrafficEvent {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CreateRandomVehiclesEvent other = (CreateRandomVehiclesEvent) obj;
 		if (createRandomVehicleDataList == null) {
-			if (other.createRandomVehicleDataList != null)
+			if (other.createRandomVehicleDataList != null) {
 				return false;
-		} else if (!createRandomVehicleDataList.equals(other.createRandomVehicleDataList))
+			}
+		} else if (!createRandomVehicleDataList.equals(other.createRandomVehicleDataList)) {
 			return false;
+		}
 		return true;
 	}
 }

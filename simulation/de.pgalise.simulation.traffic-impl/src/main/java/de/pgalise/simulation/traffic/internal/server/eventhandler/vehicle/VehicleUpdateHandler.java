@@ -56,9 +56,11 @@ public class VehicleUpdateHandler implements VehicleEventHandler {
 		if (jamModel == null) {
 			jamModel = new DefaultNaSchModel(event.getServiceDictionary().getRandomSeedService());
 		}
-		if(VehicleTypeEnum.MOTORIZED_VEHICLES.contains(event.getVehicle().getData().getType()))			
+		if(VehicleTypeEnum.MOTORIZED_VEHICLES.contains(event.getVehicle().getData().getType())) {			
 			jamModel.update(event.getVehicle(), event.getElapsedTime(), event.getGraph(), 0.01);
-		else
+		}
+		else {
 			event.getVehicle().update(event.getElapsedTime());
+		}
 	}
 }

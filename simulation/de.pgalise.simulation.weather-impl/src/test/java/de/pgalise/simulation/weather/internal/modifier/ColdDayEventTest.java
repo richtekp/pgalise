@@ -34,12 +34,11 @@ import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
+import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.LinkedList;
-import java.util.Properties;
 import java.util.Queue;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
@@ -49,10 +48,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.After;
-import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * JUnit test for ColdDayEvent
@@ -63,8 +63,9 @@ import org.junit.AfterClass;
 @LocalClient
 @ManagedBean
 public class ColdDayEventTest {
-	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	@PersistenceUnit(unitName = "weather_test", name="weather_test_ColdDayEventTest")
+	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
+	private static EJBContainer CONTAINER;
 
 	/**
 	 * End timestamp
@@ -103,10 +104,8 @@ public class ColdDayEventTest {
 	
 	private	City city;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public ColdDayEventTest() throws NamingException {
-		Properties p = new Properties();
-		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 		
@@ -144,9 +143,9 @@ public class ColdDayEventTest {
 		service = new DefaultWeatherService(city, loader);
 	}
 	
-	@AfterClass
-	public static void tearDownClass() throws Exception {
-		ENTITY_MANAGER_FACTORY.close();
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
 	}
 	
 	private Queue<Object> deletes = new LinkedList<>();
@@ -249,7 +248,7 @@ public class ColdDayEventTest {
 		Assert.assertTrue(refvalue > decvalue);
 
 		// Test 2: Min are as high event - Temperature
-		Assert.assertEquals(WeatherMapModifier.round(event.getMinValue(), 3), WeatherMapModifier.round(decvalue, 3), 1);
+		Assert.assertEquals(AbstractWeatherMapModifier.round(event.getMinValue(), 3), AbstractWeatherMapModifier.round(decvalue, 3), 1);
 	}
 
 }

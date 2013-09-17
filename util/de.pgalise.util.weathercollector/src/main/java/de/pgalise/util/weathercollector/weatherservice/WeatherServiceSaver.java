@@ -17,6 +17,7 @@
 package de.pgalise.util.weathercollector.weatherservice;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import java.util.List;
 
@@ -24,10 +25,11 @@ import java.util.List;
  * Interface for the saver of weather services
  * 
  * @param <T> the type of the {@link ServiceDataHelper} (in subclasses which use JPA, a persistent class can be enforced)
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-public interface WeatherServiceSaver<T extends ServiceDataHelper<?,?>> {
+public interface WeatherServiceSaver<T extends ServiceDataHelper<?,?,C>, C extends WeatherCondition> {
 
 	/**
 	 * Returns a list of reference cities from the database

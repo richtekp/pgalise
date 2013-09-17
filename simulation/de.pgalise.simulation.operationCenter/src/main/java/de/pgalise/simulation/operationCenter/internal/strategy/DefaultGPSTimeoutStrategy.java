@@ -53,7 +53,7 @@ public class DefaultGPSTimeoutStrategy implements GPSSensorTimeoutStrategy {
 	@Override
 	public void init(long interval, int missedGPSUpdateStepsBeforeTimeout) {
 		log.debug("Init with interval: " +interval +" and missedGPSUpdateStepsBeforeTimeout: " +missedGPSUpdateStepsBeforeTimeout);
-		this.timeoutSensorHelperMap = new HashMap<Long, Map<Integer, SensorHelper>>();
+		this.timeoutSensorHelperMap = new HashMap<>();
 		this.missedGPSUpdateStepsBeforeTimeout = missedGPSUpdateStepsBeforeTimeout;
 		this.interval = interval;
 	}

@@ -40,14 +40,15 @@ public class PRTree<T> implements Serializable {
      * @throws IllegalStateException if the tree is already loaded
      */
     public void load (Collection<? extends T> data) {
-	if (root != null)
-	    throw new IllegalStateException ("Tree is already loaded");
+	if (root != null) {
+		throw new IllegalStateException ("Tree is already loaded");
+	}
 	numLeafs = data.size ();
 	LeafBuilder lb = new LeafBuilder (converter.getDimensions (), branchFactor);
 
 	List<LeafNode<T>> leafNodes =
-	    new ArrayList<LeafNode<T>> (estimateSize (numLeafs));
-	lb.buildLeafs (data, new DataComparators<T> (converter),
+	    new ArrayList<> (estimateSize (numLeafs));
+	lb.buildLeafs (data, new DataComparators<> (converter),
 		       new LeafNodeFactory (), leafNodes);
 
 	height = 1;
@@ -55,8 +56,8 @@ public class PRTree<T> implements Serializable {
 	while (nodes.size () > branchFactor) {
 	    height++;
 	    List<InternalNode<T>> internalNodes =
-		new ArrayList<InternalNode<T>> (estimateSize (nodes.size ()));
-	    lb.buildLeafs (nodes, new InternalNodeComparators<T> (converter),
+		new ArrayList<> (estimateSize (nodes.size ()));
+	    lb.buildLeafs (nodes, new InternalNodeComparators<> (converter),
 			   new InternalNodeFactory (), internalNodes);
 	    nodes = internalNodes;
 	}
@@ -68,13 +69,14 @@ public class PRTree<T> implements Serializable {
     }
 
     private <N extends Node<T>> void setRoot (List<N> nodes) {
-	if (nodes.size () == 0)
-	    root = new InternalNode<T> (new Object[0]);
+	if (nodes.size () == 0) {
+		root = new InternalNode<> (new Object[0]);
+	}
 	else if (nodes.size () == 1) {
 	    root = nodes.get (0);
 	} else {
 	    height++;
-	    root = new InternalNode<T> (nodes.toArray ());
+	    root = new InternalNode<> (nodes.toArray ());
 	}
     }
 
@@ -82,8 +84,9 @@ public class PRTree<T> implements Serializable {
 	implements NodeFactory<LeafNode<T>> {
 		private static final long serialVersionUID = -7963739738726323294L;
 
+		@Override
 	public LeafNode<T> create (Object[] data) {
-	    return new LeafNode<T> (data);
+	    return new LeafNode<> (data);
 	}
     }
 
@@ -91,8 +94,9 @@ public class PRTree<T> implements Serializable {
 	implements NodeFactory<InternalNode<T>> {
 		private static final long serialVersionUID = 4815667863621525751L;
 
+		@Override
 	public InternalNode<T> create (Object[] data) {
-	    return new InternalNode<T> (data);
+	    return new InternalNode<> (data);
 	}
     }
 
@@ -102,8 +106,9 @@ public class PRTree<T> implements Serializable {
      */
     public MBR2D getMBR2D () {
 	MBR mbr = getMBR ();
-	if (mbr == null)
-	    return null;
+	if (mbr == null) {
+		return null;
+	}
 	return new SimpleMBR2D (mbr.getMin (0), mbr.getMin (1),
 				mbr.getMax (0), mbr.getMax (1));
     }
@@ -186,6 +191,7 @@ public class PRTree<T> implements Serializable {
     public Iterable<T> find (final MBR query) {
 	validateRect (query);
 	return new Iterable<T> () {
+			@Override
 	    public Iterator<T> iterator () {
 		return new Finder (query);
 	    }
@@ -196,19 +202,20 @@ public class PRTree<T> implements Serializable {
 	for (int i = 0; i < converter.getDimensions (); i++) {
 	    double max = query.getMax (i);
 	    double min = query.getMin (i);
-	    if (max < min)
-		throw new IllegalArgumentException ("max: " + max +
-						    " < min: " + min +
-						    ", axis: " + i + 
-						    ", query: " + query);
+	    if (max < min) {
+				throw new IllegalArgumentException ("max: " + max +
+										" < min: " + min +
+										", axis: " + i + 
+										", query: " + query);
+			}
 	}
     }
 
     private class Finder implements Iterator<T> {
 	private MBR mbr;
 
-	private List<T> ts = new ArrayList<T> ();
-	private List<Node<T>> toVisit = new ArrayList<Node<T>> ();
+	private List<T> ts = new ArrayList<> ();
+	private List<Node<T>> toVisit = new ArrayList<> ();
 	private T next;
 
 	private int visitedNodes = 0;
@@ -220,10 +227,12 @@ public class PRTree<T> implements Serializable {
 	    findNext ();
 	}
 
+	@Override
 	public boolean hasNext () {
 	    return next != null;
 	}
 
+	@Override
 	public T next () {
 	    T toReturn = next;
 	    findNext ();
@@ -244,6 +253,7 @@ public class PRTree<T> implements Serializable {
 	    }
 	}
 
+	@Override
 	public void remove () {
 	    throw new UnsupportedOperationException ("Not implemented");
 	}
@@ -261,10 +271,11 @@ public class PRTree<T> implements Serializable {
 						     NodeFilter<T> filter,
 						     int maxHits,
 						     PointND p) {
-	if (isEmpty ())
-	    return Collections.emptyList ();
+	if (isEmpty ()) {
+		return Collections.emptyList ();
+	}
 	NearestNeighbour<T> nn =
-	    new NearestNeighbour<T> (converter, filter, maxHits, root, dc, p);
+	    new NearestNeighbour<> (converter, filter, maxHits, root, dc, p);
 	return nn.find ();
     }
 }

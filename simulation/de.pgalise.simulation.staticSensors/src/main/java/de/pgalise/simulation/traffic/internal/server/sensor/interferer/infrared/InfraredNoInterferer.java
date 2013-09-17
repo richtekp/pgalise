@@ -24,7 +24,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
-public final class InfraredNoInterferer implements InfraredInterferer {
+public class InfraredNoInterferer implements InfraredInterferer {
 
 	@Override
 	public int interfere(final int passengersCount) {

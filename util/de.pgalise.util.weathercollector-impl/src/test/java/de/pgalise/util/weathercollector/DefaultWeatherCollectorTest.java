@@ -21,12 +21,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.util.EntityDatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
@@ -35,11 +35,8 @@ import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -72,7 +69,7 @@ public class DefaultWeatherCollectorTest {
 	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_collector_test")
 	private EntityManagerFactory entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 	public DefaultWeatherCollectorTest() throws NamingException {
@@ -90,7 +87,7 @@ public class DefaultWeatherCollectorTest {
 	@Test
 	public void testCollectServiceData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
-		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(Arrays.asList(new YahooWeather()));
+		Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>>(Arrays.asList(new YahooWeather()));
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();

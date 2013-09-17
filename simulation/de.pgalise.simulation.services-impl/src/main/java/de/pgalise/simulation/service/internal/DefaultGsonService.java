@@ -35,8 +35,15 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 import de.pgalise.simulation.service.GsonService;
+import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.SimulationEvent;
+import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default gson service with type adapters for {@link SensorHelper} and {@link SimulationEvent}.
@@ -45,7 +52,8 @@ import de.pgalise.simulation.shared.sensor.SensorHelper;
 @Lock(LockType.READ)
 @Local
 @Singleton(name="de.pgalise.simulation.service.GsonService")
-public class DefaultGsonService implements GsonService {
+public class DefaultGsonService extends AbstractController implements GsonService {
+	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultGsonService.class);
 
 	@Override
 	public Gson getGson() {
@@ -53,6 +61,36 @@ public class DefaultGsonService implements GsonService {
 				registerTypeAdapter(SensorHelper.class, new SensorHelperTypeDeserializer()).
 				registerTypeAdapter(SimulationEvent.class, new SimulationEventAdapter()).
 				create();
+	}
+
+	@Override
+	protected void onInit(InitParameter param) throws InitializationException {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	protected void onReset() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	protected void onStart(StartParameter param) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	protected void onStop() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	protected void onResume() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	protected void onUpdate(SimulationEventList simulationEventList) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	
 	/**
@@ -133,7 +171,7 @@ public class DefaultGsonService implements GsonService {
 			try {
 				klass = Class.forName(className);
 			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
+				LOGGER.error("see nested exception", e);
 				throw new JsonParseException(e.getMessage());
 			}
 

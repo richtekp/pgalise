@@ -121,7 +121,7 @@ public class DefaultGPSTimeoutStrategyTest {
 	 *            Data 2
 	 * @return true if the collections are equals
 	 */
-	private static final boolean compareSensorHelperCollections(Collection<SensorData> collection1,
+	private static boolean compareSensorHelperCollections(Collection<SensorData> collection1,
 			Collection<SensorData> collection2) {
 
 		if (collection1.size() != collection2.size()) {

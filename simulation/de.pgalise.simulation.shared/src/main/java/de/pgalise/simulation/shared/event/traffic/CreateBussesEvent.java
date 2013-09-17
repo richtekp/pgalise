@@ -69,8 +69,9 @@ public class CreateBussesEvent extends TrafficEvent {
 		// this.busRoutes = busRoutes;
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
 		this.routeIds = new ArrayList<>();
-		for (BusRoute r : busRoutes)
+		for (BusRoute r : busRoutes) {
 			this.routeIds.add(r.getRouteId());
+		}
 	}
 
 	/**
@@ -130,25 +131,33 @@ public class CreateBussesEvent extends TrafficEvent {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CreateBussesEvent other = (CreateBussesEvent) obj;
 		if (routeIds == null) {
-			if (other.routeIds != null)
+			if (other.routeIds != null) {
 				return false;
-		} else if (!routeIds.equals(other.routeIds))
+			}
+		} else if (!routeIds.equals(other.routeIds)) {
 			return false;
+		}
 		if (createRandomVehicleDataList == null) {
-			if (other.createRandomVehicleDataList != null)
+			if (other.createRandomVehicleDataList != null) {
 				return false;
-		} else if (!createRandomVehicleDataList.equals(other.createRandomVehicleDataList))
+			}
+		} else if (!createRandomVehicleDataList.equals(other.createRandomVehicleDataList)) {
 			return false;
-		if (time != other.time)
+		}
+		if (time != other.time) {
 			return false;
+		}
 		return true;
 	}
 }

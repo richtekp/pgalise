@@ -33,15 +33,15 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerLocal;
-import de.pgalise.simulation.SpentTimeLogger;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.InitParameter;
-import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.SimulationEventList;
@@ -101,13 +101,11 @@ public class DefaultSimulationController extends AbstractController implements S
 	private ServiceDictionary serviceDictionary;
 
 	@EJB
-	private ServerConfigurationReader serverConfigReader;
+	private ServerConfigurationReader<Controller> serverConfigReader;
 	
 	@EJB
 	private ConfigReader configReader;
-	
-	@EJB
-	private SpentTimeLogger spentTimeLogger;
+
 	/**
 	 * Start parameter
 	 */
@@ -217,31 +215,29 @@ public class DefaultSimulationController extends AbstractController implements S
 
 	@Override
 	protected void onInit(final InitParameter param) throws InitializationException {
-		this.spentTimeLogger.init(param);
-		
 		// init the operation center
 		this.operationCenterController.init(param);
 		
 		// init the control center
 		this.controlCenterController.init(param);
 		
-		spentTimeLogger.begin("init");
 		// Delete all Sensors from database
 		this.sensorPersistenceService.clear();
 
 		final MutableBoolean exception = new MutableBoolean();
 		exception.setValue(false);
 		
-		serverConfigReader.read(param.getServerConfiguration(), 
+		serverConfigReader.read(
+			param.getServerConfiguration(), 
 				new ServiceHandler<Controller>() {
 					@Override
-					public String getSearchedName() {
+					public String getName() {
 						return ServiceDictionary.FRONT_CONTROLLER;
 					}
 		
 					@Override
 					public void handle(String server, Controller service) {
-						log.info(String.format("Using %s on server %s", getSearchedName(), server));
+						log.info(String.format("Using %s on server %s", getName(), server));
 						if (!(service instanceof SimulationController)) {
 							try {
 								if (service.getStatus() != StatusEnum.INIT) {
@@ -273,13 +269,11 @@ public class DefaultSimulationController extends AbstractController implements S
 
 		// init the event initiator
 		this.eventInitiator.setFrontController(frontControllerList);
-		spentTimeLogger.end("init");
 		this.eventInitiator.init(param);
 	}
 
 	@Override
 	protected void onReset() {
-		spentTimeLogger.begin("reset");
 		this.frontControllerList.clear();
 		
 		// reset controller
@@ -301,13 +295,10 @@ public class DefaultSimulationController extends AbstractController implements S
 		// reset the operation center
 		this.operationCenterController.reset();
 		this.controlCenterController.reset();
-		spentTimeLogger.end("reset");
-		this.spentTimeLogger.reset();
 	}
 
 	@Override
 	protected void onStart(StartParameter param) {
-		spentTimeLogger.begin("start");
 		this.startParameter = param;
 
 		// start the controllers
@@ -331,13 +322,10 @@ public class DefaultSimulationController extends AbstractController implements S
 		
 		// start the event initiator
 		this.eventInitiator.start(param);
-		spentTimeLogger.end("start");
-		this.spentTimeLogger.start(param);
 	}
 
 	@Override
 	protected void onStop() {
-		spentTimeLogger.begin("stop");
 		// stop the event initiator
 		if (this.eventInitiator.getStatus() == StatusEnum.STARTED) {
 			this.eventInitiator.stop();
@@ -361,13 +349,10 @@ public class DefaultSimulationController extends AbstractController implements S
 				c.stop();
 			}
 		}
-		spentTimeLogger.end("stop");
-		this.spentTimeLogger.stop();
 	}
 
 	@Override
 	protected void onResume() {	
-		spentTimeLogger.begin("resume");
 		// start the controllers
 		for (Controller c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
@@ -387,8 +372,6 @@ public class DefaultSimulationController extends AbstractController implements S
 
 		// start the operation center
 		this.operationCenterController.start(this.startParameter);
-		spentTimeLogger.end("resume");
-		this.spentTimeLogger.start(this.startParameter);
 	}
 
 	@Override
@@ -472,14 +455,6 @@ public class DefaultSimulationController extends AbstractController implements S
 		this.controlCenterController = controlCenterController;
 	}
 	
-	/**
-	 * Only for JUnit tests.
-	 * @param spentTimeLogger
-	 */
-	public void _setSpentTimeLogger(SpentTimeLogger spentTimeLogger) {
-		this.spentTimeLogger = spentTimeLogger;
-	}
-
 	@Override
 	public String getName() {
 		return NAME;

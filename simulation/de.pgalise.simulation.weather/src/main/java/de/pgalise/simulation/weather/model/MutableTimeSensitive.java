@@ -11,7 +11,7 @@ import java.sql.Time;
  *
  * @author richter
  */
-public interface MutableTimeSensitive extends BaseTimeSensitive {
+public interface MutableTimeSensitive extends TimeSensitive {
 	
 
 	public void setMeasureTime(Time measureTime) ;

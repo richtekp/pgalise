@@ -87,7 +87,6 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Default implementation of the SensorFactory.
@@ -126,8 +125,6 @@ public class DefaultSensorFactory implements SensorFactory {
 	 *            Weather controller
 	 * @param ectrl
 	 *            Energy controller
-	 * @param mapper
-	 *            GPS mapper
 	 * @param sensorOutput
 	 *            Sensor output
 	 */
@@ -218,7 +215,7 @@ public class DefaultSensorFactory implements SensorFactory {
 				// Can't be returned here, because of missing dependencies
 				return null;
 			case INFRARED: // Infrared
-				InfraredInterferer infraredInterferer = null;
+				InfraredInterferer infraredInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
 					List<InfraredInterferer> infraredInterferers = new ArrayList<>();
 					infraredInterferer = new CompositeInfraredInterferer(infraredInterferers);
@@ -242,7 +239,7 @@ public class DefaultSensorFactory implements SensorFactory {
 
 			case INDUCTIONLOOP: // Inductionloop
 
-				InductionLoopInterferer inductionLoopInterferer = null;
+				InductionLoopInterferer inductionLoopInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
 					List<InductionLoopInterferer> inductionLoopInterfers = new ArrayList<>();
 					inductionLoopInterferer = new CompositeInductionLoopInterferer(inductionLoopInterfers);
@@ -265,7 +262,7 @@ public class DefaultSensorFactory implements SensorFactory {
 
 			case TOPORADAR: // Toporadar
 
-				TopoRadarInterferer toporadarInterferer = null;
+				TopoRadarInterferer toporadarInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
 					List<TopoRadarInterferer> toporadarInterfers = new ArrayList<>();
 					toporadarInterferer = new CompositeTopoRadarInterferer(toporadarInterfers);
@@ -293,7 +290,7 @@ public class DefaultSensorFactory implements SensorFactory {
 			case GPS_TRUCK:
 			case GPS_MOTORCYCLE:
 
-				GpsInterferer gpsInterferer = null;
+				GpsInterferer gpsInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
 
 					List<GpsInterferer> gpsInterferes = new ArrayList<>();

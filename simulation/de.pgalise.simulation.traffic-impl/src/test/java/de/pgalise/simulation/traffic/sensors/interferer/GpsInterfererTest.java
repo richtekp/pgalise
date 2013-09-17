@@ -42,7 +42,6 @@ import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsWh
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Tests the all GPSInterferer

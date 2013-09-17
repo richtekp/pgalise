@@ -94,15 +94,19 @@ public class PercentageChangeEnergyEvent extends ChangeEnergyConsumptionEvent {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		PercentageChangeEnergyEvent other = (PercentageChangeEnergyEvent) obj;
-		if (Double.doubleToLongBits(percentage) != Double.doubleToLongBits(other.percentage))
+		if (Double.doubleToLongBits(percentage) != Double.doubleToLongBits(other.percentage)) {
 			return false;
+		}
 		return true;
 	}
 }

@@ -10,8 +10,10 @@ class InternalNodeComparators<T> implements NodeComparators<Node<T>> {
 	this.converter = converter;
     }
 
+	@Override
     public Comparator<Node<T>> getMinComparator (final int axis) {
 	return new Comparator<Node<T>> () {
+			@Override
 	    public int compare (Node<T> n1, Node<T> n2) {
 		double d1 = n1.getMBR (converter).getMin (axis);
 		double d2 = n2.getMBR (converter).getMin (axis);
@@ -20,8 +22,10 @@ class InternalNodeComparators<T> implements NodeComparators<Node<T>> {
 	};
     }
 
+	@Override
     public Comparator<Node<T>> getMaxComparator (final int axis) {
 	return new Comparator<Node<T>> () {
+			@Override
 	    public int compare (Node<T> n1, Node<T> n2) {
 		double d1 = n1.getMBR (converter).getMax (axis);
 		double d2 = n2.getMBR (converter).getMax (axis);

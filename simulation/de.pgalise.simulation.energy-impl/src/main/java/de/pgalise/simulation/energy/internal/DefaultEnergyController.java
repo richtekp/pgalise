@@ -48,8 +48,8 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Default implementation of an energy controller.
@@ -88,7 +88,7 @@ public class DefaultEnergyController extends AbstractController implements
 		 * @param geoLocation
 		 * @param measureRadiusInMeter
 		 */
-		public GeoRadiusWrapper(Coordinate geoLocation,
+		GeoRadiusWrapper(Coordinate geoLocation,
 				int measureRadiusInMeter) {
 			this.geoLocation = geoLocation;
 			this.measureRadiusInMeter = measureRadiusInMeter;
@@ -96,29 +96,33 @@ public class DefaultEnergyController extends AbstractController implements
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
+			if (this == obj) {
 				return true;
-			if (obj == null)
+			}
+			if (obj == null) {
 				return false;
-			if (getClass() != obj.getClass())
+			}
+			if (getClass() != obj.getClass()) {
 				return false;
+			}
 			GeoRadiusWrapper other = (GeoRadiusWrapper) obj;
 			if (geoLocation == null) {
-				if (other.geoLocation != null)
+				if (other.geoLocation != null) {
 					return false;
-			} else if (!geoLocation.equals(other.geoLocation))
+				}
+			} else if (!geoLocation.equals(other.geoLocation)) {
 				return false;
-			if (measureRadiusInMeter != other.measureRadiusInMeter)
+			}
+			if (measureRadiusInMeter != other.measureRadiusInMeter) {
 				return false;
+			}
 			return true;
 		}
 
-		@SuppressWarnings("unused")
 		public Coordinate getGeoLocation() {
 			return geoLocation;
 		}
 
-		@SuppressWarnings("unused")
 		public int getMeasureRadiusInMeter() {
 			return measureRadiusInMeter;
 		}
@@ -133,12 +137,10 @@ public class DefaultEnergyController extends AbstractController implements
 			return result;
 		}
 
-		@SuppressWarnings("unused")
 		public void setGeoLocation(Coordinate geoLocation) {
 			this.geoLocation = geoLocation;
 		}
 
-		@SuppressWarnings("unused")
 		public void setMeasureRadiusInMeter(int measureRadiusInMeter) {
 			this.measureRadiusInMeter = measureRadiusInMeter;
 		}

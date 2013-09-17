@@ -17,8 +17,8 @@
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.it.TestUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -32,11 +32,11 @@ import org.jfree.data.time.TimeSeries;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import org.junit.AfterClass;
+import org.junit.BeforeClass;
 
 /**
  * Abstract super class for chart tests. Theses tests are used to test the weather decorators.
@@ -45,18 +45,7 @@ import org.junit.AfterClass;
  * @version 1.0 (Sep 11, 2012)
  */
 public abstract class AbstractChartTest {
-	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
-	private final static EJBContainer container;
-	static {
-//		try {
-			// Load EJB properties
-			Properties prop = new Properties();
-//			prop.load(Controller.class.getResourceAsStream("/META-INF/jndi.properties"));
-			container = EJBContainer.createEJBContainer(prop);
-//		} catch (IOException ex) {
-//			throw new ExceptionInInitializerError(ex);
-//		}
-	}
+	private static EJBContainer container;
 
 	/**
 	 * Title for decorator dataset
@@ -142,7 +131,7 @@ public abstract class AbstractChartTest {
 
 		// City
 		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = GEOMETRY_FACTORY.createPolygon(
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
@@ -164,9 +153,9 @@ public abstract class AbstractChartTest {
 
 	}
 	
-	@AfterClass
-	public static void tearDownClass() {
-		container.close();
+	@BeforeClass
+	public static void setUpClass() {
+		container = TestUtils.getContainer();
 	}
 
 	public WeatherLoader getLoader() {

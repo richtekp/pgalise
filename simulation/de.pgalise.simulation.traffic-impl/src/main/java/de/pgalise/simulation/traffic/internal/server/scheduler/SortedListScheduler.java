@@ -58,8 +58,8 @@ public class SortedListScheduler extends Scheduler {
 	 * Default constructor
 	 */
 	private SortedListScheduler() {
-		this.scheduledItems = new SortedList<Item>();
-		this.vehicles = new ArrayList<Item>();
+		this.scheduledItems = new SortedList<>();
+		this.vehicles = new ArrayList<>();
 		handlerList = new LinkedList<>();
 	}
 
@@ -209,7 +209,7 @@ public class SortedListScheduler extends Scheduler {
 		/**
 		 * Internal list
 		 */
-		private ArrayList<E> internalList = new ArrayList<E>();
+		private ArrayList<E> internalList = new ArrayList<>();
 
 		@Override
 		public void add(int position, E e) {

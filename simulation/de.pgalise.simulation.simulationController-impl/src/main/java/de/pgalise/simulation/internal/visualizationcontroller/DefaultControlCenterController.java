@@ -33,6 +33,7 @@ import javax.ejb.Singleton;
 import com.google.gson.Gson;
 
 import de.pgalise.simulation.service.GsonService;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.SimulationEventList;
@@ -83,21 +84,21 @@ public class DefaultControlCenterController implements ControlCenterController {
 
 	@Override
 	public void start(StartParameter param) throws IllegalStateException {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("start", "true");
 		this.performRequest(requestParameterMap);
 	}
 
 	@Override
 	public void stop() throws IllegalStateException {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("stop", "true");
 		this.performRequest(requestParameterMap);
 	}
 
 	@Override
 	public void update(SimulationEventList simulationEventList) throws IllegalStateException {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("update", "true");
 		requestParameterMap.put("json", this.gson.toJson(simulationEventList));
 		this.performRequest(requestParameterMap);
@@ -124,9 +125,9 @@ public class DefaultControlCenterController implements ControlCenterController {
 	 * @throws MalformedURLException
 	 */
 	private void performRequest(Map<String, String> requestParameterMap) {
-		StringBuilder parameters = null;
+		StringBuilder parameters;
 		try {
-			HttpURLConnection connection = null;
+			HttpURLConnection connection;
 			connection = (HttpURLConnection) new java.net.URL(this.servletURL).openConnection();
 			connection.setRequestMethod("POST");
 
@@ -139,21 +140,19 @@ public class DefaultControlCenterController implements ControlCenterController {
 					parameters.append("&");
 				}
 
-				parameters.append(entry.getKey().replaceAll("\\s", "%20") + "="
-						+ entry.getValue().replaceAll("\\s", "%20"));
+				parameters.append(entry.getKey().replaceAll("\\s", "%20")).append("=").append(entry.getValue().replaceAll("\\s", "%20"));
 			}
-
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(parameters.toString());
-			wr.flush();
-			wr.close();
+			try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+				wr.writeBytes(parameters.toString());
+				wr.flush();
+			}
 
 			int responseCode = connection.getResponseCode();
 			if (responseCode != HttpURLConnection.HTTP_OK) {
 				throw new RuntimeException("Got responseCode: " + responseCode + " for url: " + this.servletURL);
 			}
 			connection.disconnect();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}

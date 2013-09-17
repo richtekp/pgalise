@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.SensorManagerController;
 
 /**
  * Interface to handle gate messages.

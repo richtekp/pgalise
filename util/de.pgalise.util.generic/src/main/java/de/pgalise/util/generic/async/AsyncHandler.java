@@ -36,12 +36,12 @@ public abstract class AsyncHandler {
 	private List<Function> tasks;
 
 	public AsyncHandler() {
-		this.tasks = new LinkedList<Function>();
+		this.tasks = new LinkedList<>();
 	}
 
 	public AsyncHandler(Function callback) {
 		this.callback = callback;
-		this.tasks = new LinkedList<Function>();
+		this.tasks = new LinkedList<>();
 	}
 
 	/**
@@ -101,8 +101,9 @@ public abstract class AsyncHandler {
 			log.debug("Task removed. Total num: " + this.countTasks);
 		}
 		if (this.countTasks == 0) {
-			if(this.callback!=null)
+			if(this.callback!=null) {
 				this.callback.delegate();
+			}
 			this.callback=null;
 			this.tasks.clear();
 		}

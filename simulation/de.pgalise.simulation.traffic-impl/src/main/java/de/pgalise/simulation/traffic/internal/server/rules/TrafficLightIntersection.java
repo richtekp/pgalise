@@ -61,7 +61,7 @@ public class TrafficLightIntersection extends TrafficRule {
 	/**
 	 * a hash map that holds to each edge the traffic light that is responsible for the edge
 	 */
-	private final HashMap<Edge, TrafficLight> edgesToTrafficLights = new HashMap<Edge, TrafficLight>();
+	private final HashMap<Edge, TrafficLight> edgesToTrafficLights = new HashMap<>();
 
 	/**
 	 * flag whether this TrafficLightSetofs needs recalibration due to activating after it was inactive
@@ -217,7 +217,7 @@ public class TrafficLightIntersection extends TrafficRule {
 			}
 
 			// Sort list
-			final ArrayList<Double> sortedAngles = new ArrayList<Double>(anglesToEdges.keySet());
+			final ArrayList<Double> sortedAngles = new ArrayList<>(anglesToEdges.keySet());
 			Collections.sort(sortedAngles);
 
 			this.trafficLight0 = new TrafficLight(anglesToEdges.get(sortedAngles.get(0)),

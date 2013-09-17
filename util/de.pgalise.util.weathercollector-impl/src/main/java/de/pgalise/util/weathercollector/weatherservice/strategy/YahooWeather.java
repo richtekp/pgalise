@@ -17,11 +17,11 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import java.io.IOException;
 import java.io.InputStream;
@@ -109,17 +109,17 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			DefaultExtendedServiceDataCurrent condition;
+			MyExtendedServiceDataCurrent condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
 				Date date = DateConverter.convertDate(dateString, "E, dd MMM yyyy h:mm a z");
 				Time time = DateConverter.convertTime(dateString, "E, dd MMM yyyy h:mm a z");
-				condition = new DefaultExtendedServiceDataCurrent(
+				condition = new MyExtendedServiceDataCurrent(
 							date, 
 							time, 
 							city, 
-							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
+							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION, new Time(1), new Time(2));
 			} catch (ParseException e) {
 				LOGGER.warn("see nested exception",
 					e);
@@ -136,7 +136,7 @@ public class YahooWeather extends XMLAPIWeather {
 			// Condition
 			dataString = attributes.getNamedItem("code").getTextContent();
 			if ((dataString != null) && !dataString.isEmpty()) {
-				condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
+				condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
 			}
 
 			// City
@@ -151,11 +151,11 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			DefaultExtendedServiceDataForecast condition;
+			MyExtendedServiceDataForecast condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
-				condition = new DefaultExtendedServiceDataForecast(
+				condition = new MyExtendedServiceDataForecast(
 							DateConverter.convertDate(
 								dateString, 
 								"dd MMM yyyy" //"yyyy-MM-dd"
@@ -164,7 +164,7 @@ public class YahooWeather extends XMLAPIWeather {
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE));
+							1.0f, 1.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION);
 			} catch (ParseException e) {
 				LOGGER.warn("see nested exception",
 					e);
@@ -188,7 +188,7 @@ public class YahooWeather extends XMLAPIWeather {
 			// Condition
 			dataString = attributes.getNamedItem("code").getTextContent();
 			if ((dataString != null) && !dataString.isEmpty()) {
-				condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
+				condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
 			}
 
 			// City

@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.server;
 
-import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.service.SensorManagerController;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;

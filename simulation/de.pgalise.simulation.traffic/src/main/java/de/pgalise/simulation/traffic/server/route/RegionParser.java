@@ -46,11 +46,11 @@ public class RegionParser {
 		}
 	}
 
-	private List<org.graphstream.graph.Node> homeNodes = new ArrayList<org.graphstream.graph.Node>();
+	private List<org.graphstream.graph.Node> homeNodes = new ArrayList<>();
 
 	private CityInfrastructureData trafficInformation;
 
-	private List<org.graphstream.graph.Node> workNodes = new ArrayList<org.graphstream.graph.Node>();
+	private List<org.graphstream.graph.Node> workNodes = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -71,7 +71,7 @@ public class RegionParser {
 	}
 
 	public void parseLanduse(Graph graph) {
-		List<EnrichedPolygon> polygons = new ArrayList<EnrichedPolygon>();
+		List<EnrichedPolygon> polygons = new ArrayList<>();
 		List<Way> ways = this.trafficInformation.getMotorWays();
 		List<Way> landuses = this.trafficInformation.getLandUseWays();
 

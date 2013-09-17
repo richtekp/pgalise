@@ -23,7 +23,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventTyp
 /**
  * @author marcus
  */
-public final class VehicleRemovedHandler implements VehicleEventHandler {
+public class VehicleRemovedHandler implements VehicleEventHandler {
 
 	@Override
 	public VehicleEventType getType() {

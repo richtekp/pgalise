@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.FileOutputServer;
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.sensorFramework.Server;
@@ -80,7 +79,6 @@ import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.scheduler.Item;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -215,13 +213,13 @@ public class RoadBarrierTest {
 		log.debug("TEST: Set road barrier with new path for vehicle");
 		log.debug("###########");
 
-		TrafficServerLocal server = createTrafficServer(null);
+		TrafficServerLocal server0 = createTrafficServer(null);
 
 		StartParameter startParam = new StartParameter();
-		server.start(startParam);
+		server0.start(startParam);
 
 		// Create car
-		Vehicle<CarData> car = server.getCarFactory().createRandomCar(
+		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(
 				UUID.randomUUID(),
 				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
 						""));
@@ -229,9 +227,9 @@ public class RoadBarrierTest {
 
 		Path path;
 		do {
-			TrafficTrip trip = server.createTrip(server.getCityZone(), car.getData().getType());
-			path = server.getShortestPath(server.getGraph().getNode(trip.getStartNode()),
-					server.getGraph().getNode(trip.getTargetNode()));
+			TrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
+			path = server0.getShortestPath(server0.getGraph().getNode(trip.getStartNode()),
+					server0.getGraph().getNode(trip.getTargetNode()));
 		} while (path.getNodeCount() < 5);
 
 		// Set path
@@ -243,7 +241,7 @@ public class RoadBarrierTest {
 
 		log.debug("#### STEP 0 ##########################################################################");
 
-		server.getScheduler().scheduleItem(new Item(car, SIMULATION_START, 1000));
+		server0.getScheduler().scheduleItem(new Item(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
 		SimulationEventList eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
@@ -251,12 +249,12 @@ public class RoadBarrierTest {
 		/*
 		 * Test: One car should be scheduled
 		 */
-		assertEquals(1, (server.getScheduler().getScheduledItems().size()));
+		assertEquals(1, (server0.getScheduler().getScheduledItems().size()));
 
 		/*
 		 * UPDATE
 		 */
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -267,18 +265,18 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		assertEquals(0, (server.getBlockedRoads(currentTime).size()));
+		assertEquals(0, (server0.getBlockedRoads(currentTime).size()));
 
 		log.debug("#### STEP +1000 ##########################################################################");
 
 		currentTime += 1000;
-		long numberOfEdgesInGraph = server.getGraph().getEdgeCount();
+		long numberOfEdgesInGraph = server0.getGraph().getEdgeCount();
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
 				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -289,19 +287,19 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		long numberOfBlockedRoads = server.getBlockedRoads(currentTime).size();
+		long numberOfBlockedRoads = server0.getBlockedRoads(currentTime).size();
 		assertEquals(3, numberOfBlockedRoads);
 
 		/*
 		 * Test: Removed edges from graph
 		 */
-		assertEquals((numberOfEdgesInGraph - numberOfBlockedRoads), server.getGraph().getEdgeCount());
+		assertEquals((numberOfEdgesInGraph - numberOfBlockedRoads), server0.getGraph().getEdgeCount());
 
 		log.debug("#### STEP +2000 ##########################################################################");
 
 		currentTime += 1000;
 		eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -312,13 +310,13 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		numberOfBlockedRoads = server.getBlockedRoads(currentTime).size();
+		numberOfBlockedRoads = server0.getBlockedRoads(currentTime).size();
 		assertEquals(0, numberOfBlockedRoads);
 
 		/*
 		 * Test: Removed edges from graph
 		 */
-		assertEquals(numberOfEdgesInGraph, server.getGraph().getEdgeCount());
+		assertEquals(numberOfEdgesInGraph, server0.getGraph().getEdgeCount());
 	}
 
 	// @Test
@@ -327,13 +325,13 @@ public class RoadBarrierTest {
 		log.debug("TEST - No new path");
 		log.debug("###########");
 
-		TrafficServerLocal server = createTrafficServer(null);
+		TrafficServerLocal server0 = createTrafficServer(null);
 
 		StartParameter startParam = new StartParameter();
-		server.start(startParam);
+		server0.start(startParam);
 
 		// Create car
-		Vehicle<CarData> car = server.getCarFactory().createRandomCar(
+		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(
 				UUID.randomUUID(),
 				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
 						""));
@@ -341,9 +339,9 @@ public class RoadBarrierTest {
 
 		Path path;
 		do {
-			TrafficTrip trip = server.createTrip(server.getCityZone(), car.getData().getType());
-			path = server.getShortestPath(server.getGraph().getNode(trip.getStartNode()),
-					server.getGraph().getNode(trip.getTargetNode()));
+			TrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
+			path = server0.getShortestPath(server0.getGraph().getNode(trip.getStartNode()),
+					server0.getGraph().getNode(trip.getTargetNode()));
 		} while (path.getNodeCount() < 5);
 
 		// Set path
@@ -355,7 +353,7 @@ public class RoadBarrierTest {
 		log.debug("Node " + closedNode + " Current node=" + car.getCurrentNode() + " Next node=" + car.getNextNode());
 		log.debug("#### STEP 0 ##########################################################################");
 
-		server.getScheduler().scheduleItem(new Item(car, SIMULATION_START, 1000));
+		server0.getScheduler().scheduleItem(new Item(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
 		SimulationEventList eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
@@ -363,12 +361,12 @@ public class RoadBarrierTest {
 		/*
 		 * Test: One car should be scheduled
 		 */
-		assertEquals(1, (server.getScheduler().getScheduledItems().size()));
+		assertEquals(1, (server0.getScheduler().getScheduledItems().size()));
 
 		/*
 		 * UPDATE
 		 */
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -379,18 +377,18 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		assertEquals(0, (server.getBlockedRoads(currentTime).size()));
+		assertEquals(0, (server0.getBlockedRoads(currentTime).size()));
 		log.debug("Node " + closedNode + " Current node=" + car.getCurrentNode() + " Next node=" + car.getNextNode());
 		log.debug("#### STEP +1000 ##########################################################################");
 
 		currentTime += 1000;
-		long numberOfEdgesInGraph = server.getGraph().getEdgeCount();
+		long numberOfEdgesInGraph = server0.getGraph().getEdgeCount();
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
 				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -401,19 +399,19 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		long numberOfBlockedRoads = server.getBlockedRoads(currentTime).size();
+		long numberOfBlockedRoads = server0.getBlockedRoads(currentTime).size();
 		assertEquals(3, numberOfBlockedRoads);
 
 		/*
 		 * Test: Removed edges from graph
 		 */
-		assertEquals((numberOfEdgesInGraph - numberOfBlockedRoads), server.getGraph().getEdgeCount());
+		assertEquals((numberOfEdgesInGraph - numberOfBlockedRoads), server0.getGraph().getEdgeCount());
 		log.debug("Node " + closedNode + " Current node=" + car.getCurrentNode() + " Next node=" + car.getNextNode());
 		log.debug("#### STEP +2000 ##########################################################################");
 
 		currentTime += 1000;
 		eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -424,13 +422,13 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		numberOfBlockedRoads = server.getBlockedRoads(currentTime).size();
+		numberOfBlockedRoads = server0.getBlockedRoads(currentTime).size();
 		assertEquals(0, numberOfBlockedRoads);
 
 		/*
 		 * Test: Removed edges from graph
 		 */
-		assertEquals(numberOfEdgesInGraph, server.getGraph().getEdgeCount());
+		assertEquals(numberOfEdgesInGraph, server0.getGraph().getEdgeCount());
 		log.debug("Node " + closedNode + " Current node=" + car.getCurrentNode() + " Next node=" + car.getNextNode());
 	}
 
@@ -459,16 +457,16 @@ public class RoadBarrierTest {
 		trafficEventList.add(new CreateBussesEvent(UUID.randomUUID(), busDataList, SIMULATION_START, busRoutes));
 		SimulationEventList eventList = new SimulationEventList(trafficEventList, SIMULATION_START, UUID.randomUUID());
 
-		TrafficServerLocal server = createTrafficServer(null);
+		TrafficServerLocal server0 = createTrafficServer(null);
 
 		StartParameter startParam = new StartParameter();
-		server.start(startParam);
+		server0.start(startParam);
 
-		server.update(eventList);
+		server0.update(eventList);
 
 		log.debug("#### STEP 0 ##########################################################################");
 
-		List<Item> vehicleItems = server.getScheduler().getExpiredItems(SIMULATION_END);
+		List<Item> vehicleItems = server0.getScheduler().getExpiredItems(SIMULATION_END);
 		Vehicle<? extends VehicleData> bus = vehicleItems.get(0).getVehicle();
 		vehicleItems.get(0).setDepartureTime(SIMULATION_START);
 		Path path = bus.getPath();
@@ -514,7 +512,7 @@ public class RoadBarrierTest {
 		/*
 		 * UPDATE
 		 */
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -525,18 +523,18 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		assertEquals(0, (server.getBlockedRoads(currentTime).size()));
+		assertEquals(0, (server0.getBlockedRoads(currentTime).size()));
 
 		log.debug("#### STEP +1000 ##########################################################################");
 
 		currentTime += 1000;
-		long numberOfEdgesInGraph = server.getGraph().getEdgeCount();
+		long numberOfEdgesInGraph = server0.getGraph().getEdgeCount();
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
 				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -547,19 +545,19 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		long numberOfBlockedRoads = server.getBlockedRoads(currentTime).size();
+		long numberOfBlockedRoads = server0.getBlockedRoads(currentTime).size();
 		assertEquals(3, numberOfBlockedRoads);
 
 		/*
 		 * Test: Removed edges from graph
 		 */
-		assertEquals((numberOfEdgesInGraph - numberOfBlockedRoads), server.getGraph().getEdgeCount());
+		assertEquals((numberOfEdgesInGraph - numberOfBlockedRoads), server0.getGraph().getEdgeCount());
 
 		log.debug("#### STEP +2000 ##########################################################################");
 
 		currentTime += 1000;
 		eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
-		server.update(eventList);
+		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
 		/*
@@ -570,13 +568,13 @@ public class RoadBarrierTest {
 		/*
 		 * Test: RoadBarrier are installed
 		 */
-		numberOfBlockedRoads = server.getBlockedRoads(currentTime).size();
+		numberOfBlockedRoads = server0.getBlockedRoads(currentTime).size();
 		assertEquals(0, numberOfBlockedRoads);
 
 		/*
 		 * Test: Removed edges from graph
 		 */
-		assertEquals(numberOfEdgesInGraph, server.getGraph().getEdgeCount());
+		assertEquals(numberOfEdgesInGraph, server0.getGraph().getEdgeCount());
 	}
 
 	/**
@@ -597,7 +595,8 @@ public class RoadBarrierTest {
 		EntityManager entityManager = EasyMock.createMock(EntityManager.class);
 		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
 
-		TrafficServerLocal server = new DefaultTrafficServer(sd, SENSOR_REGISTRY,
+		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
+		TrafficServerLocal server0 = new DefaultTrafficServer(referencePoint, sd, SENSOR_REGISTRY,
 				new DefaultSimulationEventHandlerManager(), serverList, sensorFactory, null);
 
 		InitParameter initParam = new InitParameter();
@@ -606,7 +605,7 @@ public class RoadBarrierTest {
 		initParam.setEndTimestamp(SIMULATION_END);
 		initParam.setInterval(1000);
 		initParam.setTrafficFuzzyData(new TrafficFuzzyData(1, 0.9, 1));
-		server.init(initParam);
-		return server;
+		server0.init(initParam);
+		return server0;
 	}
 }

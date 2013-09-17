@@ -24,7 +24,7 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * 
  * @author Marcus
  */
-final class TcpIpOutputTransmittingState extends TcpIpOutputState {
+class TcpIpOutputTransmittingState extends TcpIpOutputState {
 
 	/**
 	 * Creates an instance of {@link TcpIpOutputTransmittingState}.

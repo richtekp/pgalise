@@ -68,18 +68,23 @@ public class DeleteVehiclesEvent extends TrafficEvent {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		DeleteVehiclesEvent other = (DeleteVehiclesEvent) obj;
 		if (deleteVehicleIDList == null) {
-			if (other.deleteVehicleIDList != null)
+			if (other.deleteVehicleIDList != null) {
 				return false;
-		} else if (!deleteVehicleIDList.equals(other.deleteVehicleIDList))
+			}
+		} else if (!deleteVehicleIDList.equals(other.deleteVehicleIDList)) {
 			return false;
+		}
 		return true;
 	}
 }

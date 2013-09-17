@@ -17,12 +17,11 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
 import java.sql.Time;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.measure.Measure;
@@ -34,38 +33,38 @@ import javax.measure.quantity.Temperature;
  * @author Andreas Rehfeldt
  * @version 1.0 (01.07.2012)
  */
-@Entity(name = "DefExtendedServiceDataCurrent")
+@Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_CURRENT")
-@NamedQuery(name = "DefExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM DefExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
-public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ExtendedServiceDataCurrent, MutableExtendedServiceDataCurrent {
+@NamedQuery(name = "MyExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM MyExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
+public class MyExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements MutableExtendedServiceDataCurrent<DefaultWeatherCondition> {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Sunrise
 	 */
-	@Column(name = "SUNRISE")
+//	@Column(name = "SUNRISE")
 	private Time sunrise;
 
 	/**
 	 * Sunset
 	 */
-	@Column(name = "SUNSET")
+//	@Column(name = "SUNSET")
 	private Time sunset;
 
 	/**
 	 * Visibility
 	 */
-	@Column(name = "VISIBILITY")
+//	@Column(name = "VISIBILITY")
 	private Float visibility;
 
 	/**
 	 * Default constructor
 	 */
-	protected DefaultExtendedServiceDataCurrent() {
+	protected MyExtendedServiceDataCurrent() {
 	}
 
-	public DefaultExtendedServiceDataCurrent(
-		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, WeatherCondition condition, Time sunrise, Time sunset) {
+	public MyExtendedServiceDataCurrent(
+		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, DefaultWeatherCondition condition, Time sunrise, Time sunset) {
 		super(
 			measureDate,
 			measureTime, 
@@ -81,7 +80,7 @@ public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent
 	}
 
 	@Override
-	public void complete(ExtendedServiceDataCurrent newObj) {
+	public void complete(ExtendedServiceDataCurrent<DefaultWeatherCondition> newObj) {
 		// Date
 		if (this.getMeasureDate() == null) {
 			this.setMeasureDate(newObj.getMeasureDate());
@@ -96,7 +95,7 @@ public class DefaultExtendedServiceDataCurrent extends DefaultServiceDataCurrent
 			this.setTemperature(newObj.getTemperature());
 		}
 
-		if (this.getCondition() == WeatherCondition.UNKNOWN_CONDITION) {
+		if (this.getCondition() == DefaultWeatherCondition.UNKNOWN_CONDITION) {
 			this.setCondition(newObj.getCondition());
 		}
 

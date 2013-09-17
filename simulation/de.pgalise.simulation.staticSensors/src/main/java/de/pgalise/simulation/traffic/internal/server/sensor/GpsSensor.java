@@ -29,7 +29,6 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Class to generate a GPS sensor
@@ -38,7 +37,7 @@ import javax.vecmath.Vector2d;
  * @author Mischa
  * @version 1.1
  */
-public final class GpsSensor extends Sensor {
+public class GpsSensor extends Sensor {
 
 	/**
 	 * Search signal time for GPS connection

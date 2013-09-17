@@ -90,7 +90,7 @@ public class StationOldenburg implements StationStrategy {
 				result = saver.saveStationDataSet(list);
 			} while (result);
 		} catch (SaveStationDataException | IOException e) {
-			e.printStackTrace();
+			LOGGER.warn("see nested exception", e);
 		}
 	}
 
@@ -162,6 +162,7 @@ public class StationOldenburg implements StationStrategy {
 	 * @throws IOException
 	 *             Will be thrown if the file can not be read
 	 */
+	@SuppressWarnings("NestedAssignment")
 	private Set<StationData> readLinesFromFile(String fileurl) throws IOException {
 		// Sorted list (sort by time and date)
 		Set<StationData> list = new TreeSet<>();

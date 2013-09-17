@@ -29,8 +29,6 @@ public interface StationStrategy {
 	 * 
 	 * @param saver
 	 *            WeatherStationSaver
-	 * @param testmode
-	 *            Option to enable the test mode (no database commits)
 	 */
 	public void saveWeather(WeatherStationSaver saver);
 }

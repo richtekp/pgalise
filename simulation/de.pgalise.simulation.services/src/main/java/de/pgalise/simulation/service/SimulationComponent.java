@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.controller;
+package de.pgalise.simulation.service;
 
 import de.pgalise.simulation.shared.event.SimulationEventList;
 

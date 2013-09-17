@@ -58,8 +58,8 @@ public class TreeSetScheduler extends Scheduler {
 	 * Default constructor
 	 */
 	private TreeSetScheduler() {
-		this.scheduledItems = new TreeSet<Item>();
-		this.vehicles = new ArrayList<Item>();
+		this.scheduledItems = new TreeSet<>();
+		this.vehicles = new ArrayList<>();
 		handlerList = new LinkedList<>();
 	}
 
@@ -204,7 +204,7 @@ public class TreeSetScheduler extends Scheduler {
 		/**
 		 * Internal list
 		 */
-		private ArrayList<E> internalList = new ArrayList<E>();
+		private ArrayList<E> internalList = new ArrayList<>();
 
 		@Override
 		public void add(int position, E e) {

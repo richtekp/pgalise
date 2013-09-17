@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.service.configReader;
 
+import de.pgalise.simulation.service.Service;
+
 /**
  * The ConfigReader enables the user to read
  * properties found in the simulation configuration.
@@ -27,7 +29,7 @@ package de.pgalise.simulation.service.configReader;
  * @author mustafa
  *
  */
-public interface ConfigReader {
+public interface ConfigReader extends Service {
 	/**
 	 * Returns values of properties used to configure the simulation.
 	 * 

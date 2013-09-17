@@ -364,7 +364,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	 * 
 	 * @return
 	 */
-	private final Edge _getNextEdge() {
+	private Edge _getNextEdge() {
 		Edge nextEdge = null;
 		try {
 			int index = this.path.getEdgePath().indexOf(this.currentEdge);
@@ -382,7 +382,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	 * 
 	 * @return
 	 */
-	private final Node _getNextNode() {
+	private Node _getNextNode() {
 		Node nextNode = null;
 		try {
 			int index = this.path.getNodePath().indexOf(this.currentNode);
@@ -394,7 +394,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 		return nextNode;
 	}
 
-	protected final Vector2d getDirection(Coordinate a, Coordinate b) {
+	protected Vector2d getDirection(Coordinate a, Coordinate b) {
 		Vector2d dir = new Vector2d(b.x, b.y);
 		Vector2d aVector = new Vector2d(a.x, a.y);
 		dir.sub(aVector);
@@ -407,11 +407,11 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	 * 
 	 * @return Direction enum
 	 */
-	protected final Orientation getOrientation(Vector2d direction) {
+	protected Orientation getOrientation(Vector2d direction) {
 		return Orientation.getOrientation(direction);
 	}
 
-	protected final void handleReachedNode() {
+	protected void handleReachedNode() {
 		boolean reachedNextNode = this.hasReachedNextNode(this.orientation, this.position);
 		if (reachedNextNode && (this._getNextNode() != this.nodes.get(this.nodes.size() - 1))) {
 			// new direction and orientation
@@ -477,7 +477,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	 * @param position
 	 * @return true, if the next node is reached
 	 */
-	protected final boolean hasReachedNextNode(Orientation orientation, Coordinate position) {
+	protected boolean hasReachedNextNode(Orientation orientation, Coordinate position) {
 		return Orientation.isBeyond(orientation, position,
 				this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
 	}
@@ -523,7 +523,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	protected void preUpdate(long elapsedTime) {
 	}
 
-	protected final Coordinate update(long elapsedTime, Coordinate pos, Vector2d dir) {
+	protected Coordinate update(long elapsedTime, Coordinate pos, Vector2d dir) {
 		// log.debug("elapsedTime == 0 " + (elapsedTime == 0) + ", velocity == 0 " + (this.velocity == 0));
 		if (elapsedTime == 0 || this.velocity == 0) {
 			return pos;

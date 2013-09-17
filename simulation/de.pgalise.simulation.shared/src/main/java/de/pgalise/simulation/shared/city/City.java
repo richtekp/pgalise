@@ -88,8 +88,6 @@ public class City extends AbstractIdentifiable {
 	 * Default constructor
 	 */
 	protected City() {
-//		GeometryUserType
-		Geometry x = null;
 	}
 
 	/**

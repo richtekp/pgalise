@@ -37,7 +37,6 @@ import de.pgalise.staticsensor.internal.sensor.energy.interferer.EnergyBaseInter
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.PhotovoltaikWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.SmartMeterWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.WindPowerWhiteNoiseInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Tests the all {@link EnergyInterferer}

@@ -86,12 +86,14 @@ public class DefaultBusService implements BusService {
 		String date = "0000-00-00";
 		int m = cal.get(Calendar.MONTH) + 1;
 		String month = String.valueOf(m);
-		if (m < 10)
+		if (m < 10) {
 			month = "0" + m;
+		}
 		int d = cal.get(Calendar.DAY_OF_MONTH);
 		String day = String.valueOf(d);
-		if (d < 9)
+		if (d < 9) {
 			day = "0" + d;
+		}
 		date = cal.get(Calendar.YEAR) + "-" + month + "-" + day;
 
 		// System.out.println(weekday + " " + date);
@@ -106,8 +108,9 @@ public class DefaultBusService implements BusService {
 
 		// just get the first row in the unlikely case of getting more than one
 		// service_id
-		if (rs.next())
+		if (rs.next()) {
 			serviceId = rs.getString(1);
+		}
 
 		if (!serviceId.isEmpty()) {
 			// String query2 =
@@ -257,12 +260,14 @@ public class DefaultBusService implements BusService {
 			String date = "0000-00-00";
 			int m = cal.get(Calendar.MONTH) + 1;
 			String month = String.valueOf(m);
-			if (m < 9)
+			if (m < 9) {
 				month = "0" + m;
+			}
 			int d = cal.get(Calendar.DAY_OF_MONTH);
 			String day = String.valueOf(d);
-			if (d < 9)
+			if (d < 9) {
 				day = "0" + d;
+			}
 			date = cal.get(Calendar.YEAR) + "-" + month + "-" + day;
 
 			String query1 = "select distinct c.service_id from pgalise.bus_calendar c join pgalise.bus_trips t on c.service_id=t.service_id where "
@@ -275,8 +280,9 @@ public class DefaultBusService implements BusService {
 
 			// just get the first row in the unlikely case of getting more than
 			// one service_id
-			if (rs.next())
+			if (rs.next()) {
 				serviceId = rs.getString(1);
+			}
 
 			int count = 0;
 			if (!serviceId.isEmpty()) {

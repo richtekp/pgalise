@@ -25,7 +25,6 @@ import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.LuxmeterWhiteNoiseInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Class to generate a luxmeter.
@@ -34,7 +33,7 @@ import javax.vecmath.Vector2d;
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public final class Luxmeter extends WeatherSensor {
+public class Luxmeter extends WeatherSensor {
 
 	/**
 	 * Light intensity

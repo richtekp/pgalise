@@ -47,7 +47,7 @@ import javax.vecmath.Vector3d;
  * 
  * @author Marcus
  */
-public final class LeftYieldsToRight extends TrafficRule {
+public class LeftYieldsToRight extends TrafficRule {
 
 	/**
 	 * maps the right {@link Edge} for each {@link Edge}
@@ -115,7 +115,7 @@ public final class LeftYieldsToRight extends TrafficRule {
 	/**
 	 * Sets up the instance members
 	 */
-	private final void setUp() {
+	private void setUp() {
 		if (this.getNode().getEdgeSet().size() == 3) {
 			double maxAngle = Double.MIN_VALUE;
 			Edge straight1 = null;

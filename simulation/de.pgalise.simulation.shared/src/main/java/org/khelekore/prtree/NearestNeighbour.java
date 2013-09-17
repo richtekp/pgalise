@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.PriorityQueue;
 import java.util.ArrayList;
 import java.util.List;
-import org.khelekore.prtree.DistanceResult;
-import org.khelekore.prtree.NodeFilter;
 
 class NearestNeighbour<T> implements Serializable {
 	private static final long serialVersionUID = -3765806454262865818L;
@@ -35,10 +33,10 @@ class NearestNeighbour<T> implements Serializable {
      */
     public List<DistanceResult<T>> find () {
 	List<DistanceResult<T>> ret =
-	    new ArrayList<DistanceResult<T>> (maxHits);
+	    new ArrayList<> (maxHits);
 	MinDistComparator<T, Node<T>> nc =
-	    new MinDistComparator<T, Node<T>> (converter, p);
-	PriorityQueue<Node<T>> queue = new PriorityQueue<Node<T>> (20, nc);
+	    new MinDistComparator<> (converter, p);
+	PriorityQueue<Node<T>> queue = new PriorityQueue<> (20, nc);
 	queue.add (root);
 	while (!queue.isEmpty ()) {
 	    Node<T> n = queue.remove ();

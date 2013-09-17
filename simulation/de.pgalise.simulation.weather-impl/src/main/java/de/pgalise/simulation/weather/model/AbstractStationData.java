@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.weather.model;
 
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.weather.model.MutableStationData;
 import java.sql.Date;
 import java.sql.Time;
 import javax.measure.Measure;
@@ -33,7 +31,7 @@ import javax.persistence.MappedSuperclass;
  * @version 1.0 (01.07.2012)
  */
 @MappedSuperclass
-public abstract class AbstractStationData extends AbstractIdentifiable implements MutableStationData, Comparable<AbstractStationData> {
+public abstract class AbstractStationData extends AbstractMutableTimeSensitive implements MutableStationData, Comparable<AbstractStationData> {
 
 	/**
 	 * air pressure
@@ -46,18 +44,6 @@ public abstract class AbstractStationData extends AbstractIdentifiable implement
 	 */
 	@Column(name = "LIGHT_INTENSITY")
 	private Integer lightIntensity;
-
-	/**
-	 * Date
-	 */
-//	@Column(name = "MEASURE_DATE")
-	private Date measureDate;
-
-	/**
-	 * Time
-	 */
-	@Column(name = "MEASURE_TIME")
-	private Time measureTime;
 
 	/**
 	 * perceived temperature
@@ -146,8 +132,8 @@ public abstract class AbstractStationData extends AbstractIdentifiable implement
 		Float windDirection, 
 		Float windVelocity
 	) {
-		this.measureDate = date;
-		this.measureTime = time;
+		super(date,
+			time);
 		this.airPressure = airPressure;
 		this.lightIntensity = lightIntensity;
 		this.perceivedTemperature = perceivedTemperature;
@@ -169,11 +155,6 @@ public abstract class AbstractStationData extends AbstractIdentifiable implement
 	@Override
 	public Integer getAirPressure() {
 		return this.airPressure;
-	}
-
-	@Override
-	public Date getMeasureDate() {
-		return this.measureDate;
 	}
 
 	@Override
@@ -207,11 +188,6 @@ public abstract class AbstractStationData extends AbstractIdentifiable implement
 	}
 
 	@Override
-	public Time getMeasureTime() {
-		return this.measureTime;
-	}
-
-	@Override
 	public Float getWindDirection() {
 		return this.windDirection;
 	}
@@ -224,11 +200,6 @@ public abstract class AbstractStationData extends AbstractIdentifiable implement
 	@Override
 	public void setAirPressure(Integer airPressure) {
 		this.airPressure = airPressure;
-	}
-
-	@Override
-	public void setMeasureDate(Date date) {
-		this.measureDate = date;
 	}
 
 	@Override
@@ -262,11 +233,6 @@ public abstract class AbstractStationData extends AbstractIdentifiable implement
 	}
 
 	@Override
-	public void setMeasureTime(Time time) {
-		this.measureTime = time;
-	}
-
-	@Override
 	public void setWindDirection(Float windDirection) {
 		this.windDirection = windDirection;
 	}
@@ -274,20 +240,6 @@ public abstract class AbstractStationData extends AbstractIdentifiable implement
 	@Override
 	public void setWindVelocity(Float windVelocity) {
 		this.windVelocity = windVelocity;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		return "Weather [" + (this.measureDate != null ? "date=" + this.measureDate + ", " : "")
-				+ (this.measureTime != null ? "time=" + this.measureTime + ", " : "") + "windVelocity="
-				+ this.windVelocity + ", temperature=" + this.temperature + ", perceivedTemperature="
-				+ this.perceivedTemperature + ", lightIntensity=" + this.lightIntensity + ", relativHumidity="
-				+ this.relativHumidity + ", windDirection=" + this.windDirection + ", radiation=" + this.radiation
-				+ ", precipitationAmount=" + this.precipitationAmount + ", airPressure=" + this.airPressure + "]";
 	}
 
 }

@@ -5,13 +5,15 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.sql.Time;
 
 /**
  *
+ * @param <C> 
  * @author richter
  */
-public interface  ExtendedServiceDataCurrent extends ServiceDataCurrent, ExtendedServiceDataCurrentCompleter {
+public interface  ExtendedServiceDataCurrent<C extends WeatherCondition> extends ServiceDataCurrent<C>, ExtendedServiceDataCurrentCompleter<C> {
 	
 	Time getSunrise();
 

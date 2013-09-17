@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.service.SensorManagerController;
 
 /**
  * Interface for controlling static sensors in the environment.

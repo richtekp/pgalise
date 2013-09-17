@@ -27,20 +27,23 @@ class LeafBuilder implements Serializable {
 				   NodeComparators<T> comparators,
 				   NodeFactory<N> nf,
 				   List<N> leafNodes) {
-	List<NodeUsage<T>> nodes = new ArrayList<NodeUsage<T>> (ls.size ());
-	for (T t : ls)
-	    nodes.add (new NodeUsage<T> (t, 1));
+	List<NodeUsage<T>> nodes = new ArrayList<> (ls.size ());
+	for (T t : ls) {
+		nodes.add (new NodeUsage<> (t, 1));
+	}
 
 	Circle<Noder<T, N>> getters =
-	    new Circle<Noder<T, N>> (dimensions * 2);
+	    new Circle<> (dimensions * 2);
 
-	for (int i = 0; i < dimensions; i++)
-	    addGetterAndSplitter (nodes, comparators.getMinComparator (i),
-				  getters);
+	for (int i = 0; i < dimensions; i++) {
+		addGetterAndSplitter (nodes, comparators.getMinComparator (i),
+				getters);
+	}
 
-	for (int i = 0; i < dimensions; i++)
-	    addGetterAndSplitter (nodes, comparators.getMaxComparator (i),
-				  getters);
+	for (int i = 0; i < dimensions; i++) {
+		addGetterAndSplitter (nodes, comparators.getMaxComparator (i),
+				getters);
+	}
 
 	getLeafs (1, ls.size (), getters, nf, leafNodes);
     }
@@ -48,16 +51,16 @@ class LeafBuilder implements Serializable {
     private <T, N> void addGetterAndSplitter (List<NodeUsage<T>> nodes,
 					      Comparator<T> tcomp,
 					      Circle<Noder<T, N>> getters) {
-	Comparator<NodeUsage<T>> comp = new NodeUsageComparator<T> (tcomp);
+	Comparator<NodeUsage<T>> comp = new NodeUsageComparator<> (tcomp);
 	Collections.sort (nodes, comp);
-	List<NodeUsage<T>> sortedNodes = new ArrayList<NodeUsage<T>> (nodes);
+	List<NodeUsage<T>> sortedNodes = new ArrayList<> (nodes);
 	getters.add (new Noder<T, N> (sortedNodes));
     }
 
     private <T, N> void getLeafs (int id, int totalNumberOfElements,
 				  Circle<Noder<T, N>> getters,
 				  NodeFactory<N> nf, List<N> leafNodes) {
-	List<Partition> partitionsToExpand = new ArrayList<Partition> ();
+	List<Partition> partitionsToExpand = new ArrayList<> ();
 	int[] pos = new int[2 * dimensions];
 	partitionsToExpand.add (new Partition (id, totalNumberOfElements, pos));
 	while (!partitionsToExpand.isEmpty ()) {
@@ -66,8 +69,9 @@ class LeafBuilder implements Serializable {
 	    getters.reset ();
 	    for (int i = 0; i < getters.getNumElements (); i++) {
 		int nodesToGet = Math.min (p.numElementsLeft, branchFactor);
-		if (nodesToGet == 0)
-		    break;
+		if (nodesToGet == 0) {
+			break;
+		}
 		Noder<T, N> noder = getters.getNext ();
 		leafNodes.add (noder.getNextNode (p, i, nodesToGet, nf));
 		p.numElementsLeft -= nodesToGet;
@@ -102,6 +106,7 @@ class LeafBuilder implements Serializable {
 	    this.sorter = sorter;
 	}
 
+	@Override
 	public int compare (NodeUsage<T> n1, NodeUsage<T> n2) {
 	    return sorter.compare (n1.getData (), n2.getData ());
 	}
@@ -138,8 +143,9 @@ class LeafBuilder implements Serializable {
 	    
 	    for (int i = 0; i < nodeData.length; i++) {
 		if (nodeData[i] == null) {
-		    for (int j = 0; j < data.size (); j++)
-			System.err.println (j + ": " + data.get (j));
+		    for (int j = 0; j < data.size (); j++) {
+					System.err.println (j + ": " + data.get (j));
+				}
 		    throw new NullPointerException ("Null data found at: " + i);
 		}
 	    }
@@ -170,8 +176,9 @@ class LeafBuilder implements Serializable {
 	    NodeUsage<T> nu;
 	    while (numToMark > 0) {
 		while ((nu = data.get (startPos)) == null || 
-		       nu.getOwner () != fromId)
-		    startPos++;
+		       nu.getOwner () != fromId) {
+			startPos++;
+		}
 		nu.changeOwner (toId);
 		numToMark--;
 	    }

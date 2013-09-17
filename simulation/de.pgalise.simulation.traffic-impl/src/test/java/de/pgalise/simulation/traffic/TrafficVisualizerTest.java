@@ -109,8 +109,9 @@ public class TrafficVisualizerTest {
 			public void delegate() {
 				long allTime = 0;
 				for (int i = 0; i < 200; i++) {
-					if (vehicles.size() == 0)
+					if (vehicles.size() == 0) {
 						break;
+					}
 					long currentTime = 1000;
 					allTime += currentTime;
 					for (Iterator<Vehicle<? extends VehicleData>> it = vehicles.iterator(); it.hasNext();) {
@@ -125,8 +126,9 @@ public class TrafficVisualizerTest {
 							}
 						}
 						// v.update(currentTime);
-						if (v.getState() == State.REACHED_TARGET)
+						if (v.getState() == State.REACHED_TARGET) {
 							it.remove();
+						}
 					}
 
 					try {

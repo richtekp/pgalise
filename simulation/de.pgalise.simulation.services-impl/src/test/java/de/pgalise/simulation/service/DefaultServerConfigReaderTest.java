@@ -21,10 +21,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.NamingException;
 
 import org.easymock.EasyMock;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
@@ -42,9 +40,8 @@ import de.pgalise.util.generic.MutableBoolean;
  * @author Mustafa
  * @version 1.0 (Feb 6, 2013)
  */
-@Ignore
-public class ServerConfigReaderTest {
-	@SuppressWarnings("rawtypes")
+public class DefaultServerConfigReaderTest {
+
 	@Test
 	public void readLocalTest() {
 		ConfigReader configReader = EasyMock.createNiceMock(ConfigReader.class);
@@ -52,24 +49,23 @@ public class ServerConfigReaderTest {
 		EasyMock.expect(configReader.getProperty(Identifier.SERVER_HOST)).andReturn("127.0.0.1:8081");
 		EasyMock.replay(configReader);
 
-		ServerConfigurationReader reader = new DefaultServerConfigurationReader(configReader);
-		List<ServiceHandler> handlers = new ArrayList<>();
+		ServerConfigurationReader<Service> reader = new DefaultServerConfigurationReader(configReader);
+		List<ServiceHandler<Service>> handlers = new ArrayList<>();
 		final MutableBoolean b = new MutableBoolean();
 		b.setValue(false);
-		handlers.add(new ServiceHandler<RandomSeedService>() {
+		handlers.add(new ServiceHandler<Service>() {
 			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return ServiceDictionary.RANDOM_SEED_SERVICE;
 			}
 
 			@Override
-			public void handle(String server, RandomSeedService service) {
+			public void handle(String server, Service service) {
 				b.setValue(true);
 			}
 
 		});
 		reader.read(getServerConfiguration(), handlers);
-		System.out.println(b.getValue());
 
 		assertTrue(b.getValue());
 	}
@@ -91,15 +87,4 @@ public class ServerConfigReaderTest {
 		return conf;
 	}
 
-	/**
-	 * Start
-	 * 
-	 * @param args
-	 * @throws NamingException
-	 */
-	public static void main(String args[]) throws NamingException {
-		ServerConfigReaderTest a = new ServerConfigReaderTest();
-		a.readLocalTest();
-
-	}
 }

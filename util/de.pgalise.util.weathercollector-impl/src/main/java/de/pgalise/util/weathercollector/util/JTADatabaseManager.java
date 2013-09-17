@@ -6,17 +6,14 @@ package de.pgalise.util.weathercollector.util;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.ejb.Local;
@@ -36,11 +33,6 @@ import org.slf4j.LoggerFactory;
 @Local
 public class JTADatabaseManager implements EntityDatabaseManager {
 	private final static Logger LOGGER = LoggerFactory.getLogger(JTADatabaseManager.class);
-
-	/**
-	 * Instance of the class
-	 */
-	private static final Map<EntityManagerFactory,JTADatabaseManager> instances = new HashMap<>(1);
 
 	/**
 	 * File path for property file
@@ -72,13 +64,13 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 * @return condition code
 	 */
 	@Override
-	public WeatherCondition getCondition(String condition) {
+	public DefaultWeatherCondition getCondition(String condition) {
 		final EntityManager em = this.factory.createEntityManager();
 
 		// Get cities
-		WeatherCondition result;
+		DefaultWeatherCondition result;
 		try {
-			TypedQuery<WeatherCondition> query = em.createNamedQuery("Condition.getConditionByString", WeatherCondition.class);
+			TypedQuery<DefaultWeatherCondition> query = em.createNamedQuery("Condition.getConditionByString", DefaultWeatherCondition.class);
 			query.setParameter("condition", condition);
 			query.setMaxResults(1);
 			result = query.getSingleResult();
@@ -176,14 +168,14 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 * @param em
 	 *            EntityManager
 	 */
-	private void deleteCurrentWeather(List<ExtendedServiceDataCurrent> list, EntityManager em) {
+	private void deleteCurrentWeather(List<MyExtendedServiceDataCurrent> list, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		} else if ((list == null) || list.isEmpty()) {
 			return;
 		}
 
-		for (ExtendedServiceDataCurrent serviceData : list) {
+		for (MyExtendedServiceDataCurrent serviceData : list) {
 			em.remove(serviceData);
 		}
 	}
@@ -196,7 +188,7 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 * @param em
 	 *            EntityManager
 	 */
-	private void deleteForeCastWeather(List<ExtendedServiceDataForecast> list, EntityManager em) {
+	private void deleteForeCastWeather(List<MyExtendedServiceDataForecast> list, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		} else if ((list == null) || list.isEmpty()) {
@@ -204,7 +196,7 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 		}
 
 		// Remove
-		for (ExtendedServiceDataForecast serviceData : list) {
+		for (MyExtendedServiceDataForecast serviceData : list) {
 			em.remove(serviceData);
 		}
 	}
@@ -241,17 +233,17 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataCurrent objects
 	 */
-	private List<ExtendedServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
+	private List<MyExtendedServiceDataCurrent> getServiceDataCurrent(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
 
 		// Get forecast service data
-		TypedQuery<ExtendedServiceDataCurrent> query = em.createNamedQuery("DefExtendedServiceDataCurrent.findByCityAndDate",
-				ExtendedServiceDataCurrent.class);
+		TypedQuery<MyExtendedServiceDataCurrent> query = em.createNamedQuery("MyExtendedServiceDataCurrent.findByCityAndDate",
+				MyExtendedServiceDataCurrent.class);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
-		List<ExtendedServiceDataCurrent> result = query.getResultList();
+		List<MyExtendedServiceDataCurrent> result = query.getResultList();
 
 		// Return list
 		return result;
@@ -268,17 +260,17 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 *            EntityManager
 	 * @return List with ServiceDataForecast objects
 	 */
-	private List<ExtendedServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
+	private List<MyExtendedServiceDataForecast> getServiceDataForecast(City city, Date date, EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
 
 		// Get forecast service data
-		TypedQuery<ExtendedServiceDataForecast> query = em.createNamedQuery("DefExtendedServiceDataForecast.findByCityAndDate",
-				ExtendedServiceDataForecast.class);
+		TypedQuery<MyExtendedServiceDataForecast> query = em.createNamedQuery("MyExtendedServiceDataForecast.findByCityAndDate",
+				MyExtendedServiceDataForecast.class);
 		query.setParameter("date", date);
 		query.setParameter("city", city);
-		List<ExtendedServiceDataForecast> result = query.getResultList();
+		List<MyExtendedServiceDataForecast> result = query.getResultList();
 
 		// Return list
 		return result;
@@ -292,7 +284,7 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 * @param service_data
 	 *            Current service weather data
 	 */
-	private void saveCurrentWeather(City city, ExtendedServiceDataCurrent service_data) {
+	private void saveCurrentWeather(City city, MyExtendedServiceDataCurrent service_data) {
 		if ((service_data == null) || (service_data.getMeasureDate() == null)) {
 			throw new IllegalArgumentException("service_data");
 		}
@@ -321,7 +313,7 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 * @param service_data
 	 *            Set with forecasts for future days
 	 */
-	private void saveForecastWeather(City city, Set<DefaultExtendedServiceDataForecast> service_data) {
+	private void saveForecastWeather(City city, Set<MyExtendedServiceDataForecast> service_data) {
 		if ((service_data == null) || service_data.isEmpty()) {
 			throw new IllegalArgumentException("service_data");
 		}
@@ -329,7 +321,7 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 		final EntityManager em = this.factory.createEntityManager();
 
 		// For all entries
-		for (ExtendedServiceDataForecast data : service_data) {
+		for (MyExtendedServiceDataForecast data : service_data) {
 			// Delete old entries
 			this.deleteForeCastWeather(this.getServiceDataForecast(city, data.getMeasureDate(), em), em);
 

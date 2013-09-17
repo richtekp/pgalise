@@ -51,7 +51,6 @@ import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
 import de.pgalise.simulation.traffic.server.route.RegionParser;
 import de.pgalise.simulation.traffic.server.route.RouteConstructor;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
-import javax.vecmath.Vector2d;
 
 /**
  * Default implementation of a {@link RouteConstructor}.
@@ -85,7 +84,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 
 	// private static Logger log = LoggerFactory.getLogger(DefaultRouteConstructor.class);
 
-	private static final class Foo {
+	private static class Foo {
 
 		private boolean inUse;
 		private Graph graph;
@@ -159,13 +158,16 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	@Override
 	public TrafficTrip createTimedTrip(int serverId, Geometry cityZone, VehicleTypeEnum vehicleType, Date date,
 			int buffer) {
-		if (cityZone == null) // for tests (if there is just 1 server and cityzone is undefined)
+		if (cityZone == null) {
 			return this.gen.createVehicleTrip(getAllHomeNodes(), getAllWorkNodes(), vehicleType, date, buffer);
+		}
 		else {
-			if (startHomeNodesForServer.get(serverId) == null)
+			if (startHomeNodesForServer.get(serverId) == null) {
 				startHomeNodesForServer.put(serverId, getStartHomeNodes(cityZone));
-			if (startWorkNodesForServer.get(serverId) == null)
+			}
+			if (startWorkNodesForServer.get(serverId) == null) {
 				startWorkNodesForServer.put(serverId, getStartWorkNodes(cityZone));
+			}
 
 			return this.gen.createVehicleTrip(startHomeNodesForServer.get(serverId),
 					startWorkNodesForServer.get(serverId), vehicleType, date, buffer);
@@ -177,10 +179,12 @@ public class DefaultRouteConstructor implements RouteConstructor {
 		if (cityZone == null) {// for tests (if there is just 1 server and cityzone is undefined)
 			return this.gen.createVehicleTrip(getAllHomeNodes(), getAllWorkNodes(), vehicleType, null, -1);
 		} else {
-			if (startHomeNodesForServer.get(serverId) == null)
+			if (startHomeNodesForServer.get(serverId) == null) {
 				startHomeNodesForServer.put(serverId, getStartHomeNodes(cityZone));
-			if (startWorkNodesForServer.get(serverId) == null)
+			}
+			if (startWorkNodesForServer.get(serverId) == null) {
 				startWorkNodesForServer.put(serverId, getStartWorkNodes(cityZone));
+			}
 
 			return this.gen.createVehicleTrip(startHomeNodesForServer.get(serverId),
 					startWorkNodesForServer.get(serverId), vehicleType, null, -1);
@@ -194,15 +198,18 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	public TrafficTrip createTrip(int serverId, Geometry cityZone, String nodeID, long startTimestamp,
 			boolean isStartNode) {
 		if (!isStartNode) {
-			if (startHomeNodesForServer.get(serverId) == null)
+			if (startHomeNodesForServer.get(serverId) == null) {
 				startHomeNodesForServer.put(serverId, getStartHomeNodes(cityZone));
+			}
 
 			return this.gen.createVehicleTrip(startHomeNodesForServer.get(serverId), nodeID, startTimestamp);
 		} else {
-			if (cityZone == null || cityZone.covers(GEOMETRY_FACTORY.createPoint((Coordinate) graph.getNode(nodeID).getAttribute("position"))))
+			if (cityZone == null || cityZone.covers(GEOMETRY_FACTORY.createPoint((Coordinate) graph.getNode(nodeID).getAttribute("position")))) {
 				return this.gen.createVehicleTrip(nodeID, getAllHomeNodes(), startTimestamp);
-			else
+			}
+			else {
 				return null;
+			}
 		}
 		// return (isStartNode) ? this.gen.createVehicleTrip(nodeID, getAllHomeNodes(), startTimestamp) : this.gen
 		// .createVehicleTrip(lastUsedStartHomeNodes, nodeID, startTimestamp);
@@ -234,8 +241,9 @@ public class DefaultRouteConstructor implements RouteConstructor {
 		List<Node> stopNodes = new LinkedList<>();
 		for (String stopId : busStopIds) {
 			Node n = stopMap.get(stopId);
-			if (n != null)
+			if (n != null) {
 				stopNodes.add(n);
+			}
 		}
 
 		Path path = new Path();
@@ -277,8 +285,9 @@ public class DefaultRouteConstructor implements RouteConstructor {
 		HashMap<String, Node> resultMap = new HashMap<>();
 		for (String stopId : busStopIds) {
 			Node n = stopMap.get(stopId);
-			if (n != null)
+			if (n != null) {
 				resultMap.put(stopId, n);
+			}
 		}
 
 		return resultMap;
@@ -362,8 +371,9 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	public List<Node> getStartHomeNodes(Geometry cityZone) {
 		List<Node> nodes = new ArrayList<>();
 		for (Node node : getAllHomeNodes()) {
-			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node))))
+			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node)))) {
 				nodes.add(node);
+			}
 		}
 		return nodes;
 	}
@@ -372,8 +382,9 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	public List<Node> getStartWorkNodes(Geometry cityZone) {
 		List<Node> nodes = new ArrayList<>();
 		for (Node node : getAllWorkNodes()) {
-			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node))))
+			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node)))) {
 				nodes.add(node);
+			}
 		}
 		return nodes;
 	}

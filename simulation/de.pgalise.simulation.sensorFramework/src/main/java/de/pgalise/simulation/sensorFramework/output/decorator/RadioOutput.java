@@ -28,7 +28,7 @@ import de.pgalise.simulation.service.RandomSeedService;
  * @author marcus
  *
  */
-public final class RadioOutput extends OutputDecorator{
+public class RadioOutput extends OutputDecorator{
 
 	/** Random generator **/
 	private final Random random;

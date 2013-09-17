@@ -25,7 +25,7 @@ import java.nio.channels.SocketChannel;
  * 
  * @author Marcus
  */
-public final class TcpIpForceCloseStrategy extends TcpIpConnectionStrategy {
+public class TcpIpForceCloseStrategy extends TcpIpConnectionStrategy {
 
 	/**
 	 * Returns always TcpIpConnectionStrategyEnum.FORCE_CLOSE.

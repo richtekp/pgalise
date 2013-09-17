@@ -29,7 +29,6 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -153,15 +152,15 @@ public class HotDayEvent extends WeatherDayEventModifier {
 	@Override
 	public void deployChanges() {
 		// Calculate max value
-		this.maxValue = (this.eventValue != null) ? this.eventValue : this.max_value
+		this.maxValue = (this.getEventValue() != null) ? this.getEventValue() : this.max_value
 				+ this.getRandomDouble(this.max_value_range);
 
 		// Get time
-		if (this.eventTimestamp < 1) {
-			this.eventTimestamp = this.getRandomTimestamp(this.simulationTimestamp);
+		if (this.getEventTimestamp() < 1) {
+			this.setEventTimestamp(this.getRandomTimestamp(this.getSimulationTimestamp()));
 		}
 
-		StationData max = this.getNextWeatherForTimestamp(this.eventTimestamp);
+		StationData max = this.getNextWeatherForTimestamp(this.getEventTimestamp());
 		// Calculate difference between min (reference) and min (event)
 		float maxDifference = this.maxValue - max.getTemperature().floatValue(SI.CELSIUS);
 
@@ -175,11 +174,11 @@ public class HotDayEvent extends WeatherDayEventModifier {
 			 * Create limits
 			 */
 			// Event limits
-			long minTime = this.getMinHour(max.getMeasureTime(), this.eventDuration);
-			HotDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.eventDuration
+			long minTime = this.getMinHour(max.getMeasureTime(), this.getEventDuration());
+			HotDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.getEventDuration()
 					+ ")");
-			long maxTime = this.getMaxHour(max.getMeasureTime(), this.eventDuration);
-			HotDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.eventDuration
+			long maxTime = this.getMaxHour(max.getMeasureTime(), this.getEventDuration());
+			HotDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.getEventDuration()
 					+ ")");
 			long actTime;
 
@@ -188,7 +187,7 @@ public class HotDayEvent extends WeatherDayEventModifier {
 			long maxTimeInterpolate = maxTime - DateConverter.ONE_HOUR_IN_MILLIS;
 
 			// Sort values
-			List<Long> times = new ArrayList<>(this.map.keySet());
+			List<Long> times = new ArrayList<>(this.getMap().keySet());
 			Collections.sort(times);
 
 			/*
@@ -197,7 +196,7 @@ public class HotDayEvent extends WeatherDayEventModifier {
 			float value, difference;
 			for (Long time : times) {
 				// Get weather
-				MutableStationData weather = this.map.get(time);
+				MutableStationData weather = this.getMap().get(time);
 				actTime = weather.getMeasureTime().getTime();
 
 				// Between the interval?
@@ -250,18 +249,19 @@ public class HotDayEvent extends WeatherDayEventModifier {
 	 */
 	@Override
 	protected void initDecorator() {
-		if (this.props != null) {
+		if (this.getProps() != null) {
 			// Load properties from file
-			this.orderID = Integer.parseInt(this.props.getProperty("hotday_order_id"));
-			this.max_value = Integer.parseInt(this.props.getProperty("hotday_max_value"));
-			this.max_value_range = Integer.parseInt(this.props.getProperty("hotday_max_value_range"));
-			this.eventDuration = Float.parseFloat(this.props.getProperty("hotday_max_duration"));
+			this.setOrderID(Integer.parseInt(this.getProps().
+				getProperty("hotday_order_id")));
+			this.max_value = Integer.parseInt(this.getProps().getProperty("hotday_max_value"));
+			this.max_value_range = Integer.parseInt(this.getProps().getProperty("hotday_max_value_range"));
+			this.setEventDuration((Float) Float.parseFloat(this.getProps().getProperty("hotday_max_duration")));
 		} else {
 			// Take default values
-			this.orderID = HotDayEvent.ORDER_ID;
+			this.setOrderID(HotDayEvent.ORDER_ID);
 			this.max_value = 25;
 			this.max_value_range = 10;
-			this.eventDuration = 6.0f;
+			this.setEventDuration((Float) 6.0f);
 		}
 	}
 }

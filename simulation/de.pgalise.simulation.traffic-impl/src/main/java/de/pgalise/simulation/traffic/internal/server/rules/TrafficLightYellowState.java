@@ -22,7 +22,7 @@ package de.pgalise.simulation.traffic.internal.server.rules;
  * 
  * @author Marcus
  */
-final class TrafficLightYellowState extends TrafficLightState {
+class TrafficLightYellowState extends TrafficLightState {
 
 	/**
 	 * Returns the TrafficLightYellowState as an enum constant (TrafficLightStateEnum.YELLOW).

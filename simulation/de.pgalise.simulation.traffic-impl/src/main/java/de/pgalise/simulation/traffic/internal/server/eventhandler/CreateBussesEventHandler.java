@@ -50,7 +50,7 @@ import de.pgalise.util.GTFS.service.DefaultBusService;
  * @author Andreas
  * @version 1.0
  */
-public final class CreateBussesEventHandler implements TrafficEventHandler {
+public class CreateBussesEventHandler implements TrafficEventHandler {
 
 	/**
 	 * Log
@@ -219,8 +219,9 @@ public final class CreateBussesEventHandler implements TrafficEventHandler {
 			cal.set(Calendar.SECOND, tempCal.get(Calendar.SECOND));
 			cal.set(Calendar.MILLISECOND, 0);
 
-			if (cal.getTimeInMillis() > cbe.getTime())
+			if (cal.getTimeInMillis() > cbe.getTime()) {
 				trips.add(t);
+			}
 		}
 
 		// Create busses

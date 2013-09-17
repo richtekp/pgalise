@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 
 /**
  * The {@link WeatherMap} serves as the root for the weather modifiers that are all derived from the class
@@ -30,10 +31,11 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
  * {@link WeatherSimulationEventModifier}, can be activated only once and are always active for the complete simulation
  * runtime.
  * 
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (08.10.2012)
  */
-public abstract class WeatherSimulationEventModifier extends WeatherMapModifier {
+public abstract class WeatherSimulationEventModifier<C extends WeatherCondition> extends AbstractWeatherMapModifier<C> {
 
 	/**
 	 * Serial

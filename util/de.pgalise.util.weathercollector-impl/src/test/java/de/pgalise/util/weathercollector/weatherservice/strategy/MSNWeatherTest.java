@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.it.TestUtils;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
@@ -34,7 +35,7 @@ public class MSNWeatherTest {
 	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_collector_test")
 	private EntityManagerFactory entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 	
 	@SuppressWarnings("LeakingThisInConstructor")
 	public MSNWeatherTest() throws NamingException {
@@ -75,7 +76,7 @@ public class MSNWeatherTest {
 			true,
 			referenceArea);
 		MSNWeather instance = new MSNWeather();
-		ServiceDataHelper<?,?> result = instance.getWeather(city,
+		ServiceDataHelper<?,?,?> result = instance.getWeather(city,
 			baseDatabaseManager);
 		assertFalse(result.getForecastConditions().isEmpty());
 	}

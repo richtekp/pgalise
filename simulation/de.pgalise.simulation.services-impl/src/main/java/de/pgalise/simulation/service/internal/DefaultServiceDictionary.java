@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.service.internal;
 
+import de.pgalise.simulation.SimulationController;
+import de.pgalise.simulation.energy.EnergyController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,141 +35,137 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.Service;
+import de.pgalise.simulation.service.FrontController;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import de.pgalise.simulation.staticsensor.StaticSensorController;
+import de.pgalise.simulation.traffic.TrafficController;
 import javax.ejb.Remote;
 
-@Lock(LockType.READ)
-@Local
-@Remote
-@Singleton(name = "de.pgalise.simulation.service.ServiceDictionary", mappedName = "de.pgalise.simulation.service.ServiceDictionary")
 /**
  * Default implementation of the ServiceDictionary.
  * @author mustafa
  *
  */
+@Lock(LockType.READ)
+@Local
+@Remote
+@Singleton(name = "de.pgalise.simulation.service.ServiceDictionary", mappedName = "de.pgalise.simulation.service.ServiceDictionary")
 public class DefaultServiceDictionary implements ServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultServiceDictionary.class);
 
-	private Map<String, Controller> controllers;
-	private Map<String, Object> services;
+	private Map<Class<? extends Controller>, Controller> controllers;
+	private Map<Class<? extends Service>, Service> services;
 
 	@EJB
-	private ServerConfigurationReader serverConfigReader;
+	private ServerConfigurationReader<Controller> serverConfigReader;
 
 	public DefaultServiceDictionary() throws NamingException {
-		controllers = new HashMap<>();
-		services = new HashMap<>();
+		controllers = new HashMap<>(7);
+		services = new HashMap<>(7);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public void init(ServerConfiguration serverConfig) {
-		List<ServiceHandler> list = new ArrayList<>();
+		List<ServiceHandler<Controller>> list = new ArrayList<>(7);
 		controllers.clear();
 		services.clear();
 		list.add(new ServiceHandler<Controller>() {
 
 			@Override
-			public String getSearchedName() {
-				return WEATHER_CONTROLLER;
+			public String getName() {
+				return ServiceDictionary.FRONT_CONTROLLER;
 			}
 
 			@Override
-			public void handle(String server, Controller service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				controllers.put(getSearchedName(), service);
+			public void handle(String server,
+				Controller service) {
+				log.info(String.format("Using %s on server %s", getName(), server));
+				controllers.put(FrontController.class, service);
 			}
 		});
+		 list.add(new ServiceHandler<Controller>() {
 
+			@Override
+			public String getName() {
+				return ServiceDictionary.ENERGY_CONTROLLER;
+			}
+
+			@Override
+			public void handle(String server,
+				Controller service) {
+				log.info(String.format("Using %s on server %s", getName(), server));
+				controllers.put(EnergyController.class, service);
+			}
+		});
 		list.add(new ServiceHandler<Controller>() {
 
 			@Override
-			public String getSearchedName() {
-				return ENERGY_CONTROLLER;
-			}
-
-			@Override
-			public void handle(String server, Controller service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				controllers.put(getSearchedName(), service);
-			}
-		});
-
-		list.add(new ServiceHandler<Controller>() {
-
-			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return TRAFFIC_CONTROLLER;
 			}
 
 			@Override
 			public void handle(String server, Controller service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				controllers.put(getSearchedName(), service);
+				log.info(String.format("Using %s on server %s", getName(), server));
+				controllers.put(TrafficController.class, service);
 			}
 		});
-
 		list.add(new ServiceHandler<Controller>() {
 
 			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return STATIC_SENSOR_CONTROLLER;
 			}
 
 			@Override
 			public void handle(String server, Controller service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				controllers.put(getSearchedName(), service);
+				log.info(String.format("Using %s on server %s", getName(), server));
+				controllers.put(StaticSensorController.class, service);
 			}
 		});
-
-		/*
-		 * Services
-		 */
-		list.add(new ServiceHandler<RandomSeedService>() {
+		list.add(new ServiceHandler<Controller>() {
 
 			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return RANDOM_SEED_SERVICE;
 			}
 
 			@Override
-			public void handle(String server, RandomSeedService service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				services.put(getSearchedName(), service);
+			public void handle(String server, Controller service) {
+				log.info(String.format("Using %s on server %s", getName(), server));
+				services.put(RandomSeedService.class, service);
 			}
 		});
-
-		list.add(new ServiceHandler<ConfigReader>() {
+		list.add(new ServiceHandler<Controller>() {
 
 			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return CONFIG_READER_SERVICE;
 			}
 
 			@Override
-			public void handle(String server, ConfigReader service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				services.put(getSearchedName(), service);
+			public void handle(String server, Controller service) {
+				log.info(String.format("Using %s on server %s", getName(), server));
+				services.put(ConfigReader.class, service);
 			}
 		});
-
 		list.add(new ServiceHandler<Controller>() {
 
 			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return SIMULATION_CONTROLLER;
 			}
 
 			@Override
 			public void handle(String server, Controller service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				controllers.put(getSearchedName(), service);
+				log.info(String.format("Using %s on server %s", getName(), server));
+				controllers.put(SimulationController.class, service);
 			}
 		});
 
@@ -179,19 +177,31 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 		return controllers.values();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
+	@SuppressWarnings("unchecked")
 	public <C extends Controller> C getController(Class<C> clazz) {
-		return (C) controllers.get(clazz.getName());
+		Controller retValue = controllers.get(clazz);
+		if(!clazz.isAssignableFrom(retValue.getClass())) {
+			throw new IllegalStateException(String.format("%s has been mapped to wrong type", clazz));
+		}
+		return (C) retValue;
 	}
 
 	@Override
 	public RandomSeedService getRandomSeedService() {
-		return (RandomSeedService) services.get(RANDOM_SEED_SERVICE);
+		Service retValue = services.get(RandomSeedService.class);
+		if(!(retValue instanceof RandomSeedService)) {
+			throw new IllegalStateException(String.format("%s has been mapped to wrong type", RandomSeedService.class));
+		}
+		return (RandomSeedService) retValue;
 	}
 
 	@Override
 	public ConfigReader getGlobalConfigReader() {
-		return (ConfigReader) services.get(CONFIG_READER_SERVICE);
+		Service retValue = services.get(ConfigReader.class);
+		if(!(retValue instanceof ConfigReader)) {
+			throw new IllegalStateException(String.format("%s has been mapped to wrong type", ConfigReader.class));
+		}
+		return (ConfigReader) retValue;
 	}
 }

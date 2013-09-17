@@ -17,11 +17,12 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.weather.model.AbstractMutableTimeSensitive;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
-import java.sql.Time;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -33,11 +34,8 @@ import javax.persistence.OneToOne;
  * @version 1.0 (Mar 16, 2012)
  */
 @Entity
-public class DefaultServiceDataHelper extends AbstractIdentifiable implements MutableServiceDataHelper<DefaultExtendedServiceDataCurrent, DefaultExtendedServiceDataForecast> {
+public class DefaultServiceDataHelper extends AbstractMutableTimeSensitive implements MutableServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> {
 	private static final long serialVersionUID = 1L;
-
-	protected DefaultServiceDataHelper() {
-	}
 
 	/**
 	 * Checks data if the date is the same day
@@ -68,7 +66,7 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	 *            Date
 	 * @return Forecast of the day or null
 	 */
-	public static <T extends ExtendedServiceDataForecast> T getForecastFromDate(Set<T> forecasts, Date date) {
+	public static <T extends MyExtendedServiceDataForecast> T getForecastFromDate(Set<T> forecasts, Date date) {
 		for (T forecastCondition : forecasts) {
 			if (checkDate(forecastCondition.getMeasureDate(), date)) {
 				return forecastCondition;
@@ -86,32 +84,28 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	/**
 	 * City
 	 */
-	@OneToOne
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private City city;
 
 	/**
 	 * Current condition
 	 */
-	@OneToOne
-	private DefaultExtendedServiceDataCurrent currentCondition;
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private MyExtendedServiceDataCurrent currentCondition;
 
 	/**
 	 * Set with forecasts
 	 */
-	@OneToMany
-	private Set<DefaultExtendedServiceDataForecast> forecastConditions;
-
-	/**
-	 * Timestamp of the data
-	 */
-	private Time measureTime;
-	
-	private Date measureDate;
+	@OneToMany(cascade = {CascadeType.ALL})
+	private Set<MyExtendedServiceDataForecast> forecastConditions;
 
 	/**
 	 * Source
 	 */
 	private String source;
+
+	protected DefaultServiceDataHelper() {
+	}
 
 	/**
 	 * Constructor
@@ -128,17 +122,17 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	}
 
 	@Override
-	public void complete(ServiceDataHelper<DefaultExtendedServiceDataCurrent, DefaultExtendedServiceDataForecast> newObj) {
+	public void complete(ServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> newObj) {
 
 		if ((this.city == null) || this.city.getName().isEmpty()) {
 			this.city = newObj.getCity();
 		}
 
-		if (this.measureTime == null) {
-			this.measureTime = newObj.getMeasureTime();
+		if (this.getMeasureTime() == null) {
+			this.setMeasureTime(newObj.getMeasureTime());
 		}
-		if(this.measureDate == null) {
-			this.measureDate = newObj.getMeasureDate();
+		if(this.getMeasureDate() == null) {
+			this.setMeasureDate(newObj.getMeasureDate());
 		}
 
 		if (this.currentCondition == null) {
@@ -150,17 +144,17 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 		if ((this.forecastConditions == null) || (this.forecastConditions.isEmpty())) {
 			this.forecastConditions = newObj.getForecastConditions();
 		} else {
-			for (ExtendedServiceDataForecast condition : this.forecastConditions) {
-				ExtendedServiceDataForecast newCondition = getForecastFromDate(newObj.getForecastConditions(),
+			for (MyExtendedServiceDataForecast condition : this.forecastConditions) {
+				MyExtendedServiceDataForecast newCondition = getForecastFromDate(newObj.getForecastConditions(),
 						condition.getMeasureDate());
 				if (newCondition != null) {
 					condition.complete(newCondition);
 				}
 			}
 
-			for (DefaultExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
+			for (MyExtendedServiceDataForecast newCondition : newObj.getForecastConditions()) {
 
-				ExtendedServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getMeasureDate());
+				MyExtendedServiceDataForecast oldCondition = getForecastFromDate(this.forecastConditions, newCondition.getMeasureDate());
 				if (oldCondition == null) {
 					this.forecastConditions.add(newCondition);
 				}
@@ -180,23 +174,13 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	}
 
 	@Override
-	public DefaultExtendedServiceDataCurrent getCurrentCondition() {
+	public MyExtendedServiceDataCurrent getCurrentCondition() {
 		return this.currentCondition;
 	}
 
 	@Override
-	public Set<DefaultExtendedServiceDataForecast> getForecastConditions() {
+	public Set<MyExtendedServiceDataForecast> getForecastConditions() {
 		return this.forecastConditions;
-	}
-
-	@Override
-	public Time getMeasureTime() {
-		return this.measureTime;
-	}
-
-	@Override
-	public Date getMeasureDate() {
-		return measureDate;
 	}
 
 	@Override
@@ -215,24 +199,14 @@ public class DefaultServiceDataHelper extends AbstractIdentifiable implements Mu
 	}
 
 	@Override
-	public void setCurrentCondition(DefaultExtendedServiceDataCurrent currentCondition) {
+	public void setCurrentCondition(MyExtendedServiceDataCurrent currentCondition) {
 		this.currentCondition = currentCondition;
 	}
 
 	@Override
 	public void setForecastConditions(
-		Set<DefaultExtendedServiceDataForecast> forecastConditions) {
+		Set<MyExtendedServiceDataForecast> forecastConditions) {
 		this.forecastConditions = forecastConditions;
-	}
-
-	@Override
-	public void setMeasureTime(Time timestamp) {
-		this.measureTime = timestamp;
-	}
-
-	@Override
-	public void setMeasureDate(Date measureDate) {
-		this.measureDate = measureDate;
 	}
 
 	@Override

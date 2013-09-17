@@ -37,10 +37,10 @@ import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
-import java.util.Properties;
 import javax.annotation.ManagedBean;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.junit.BeforeClass;
 
 /**
  * Tests the synchronization of the weather service
@@ -51,44 +51,42 @@ import org.apache.openejb.api.LocalClient;
 @LocalClient
 @ManagedBean
 public class DefaultWeatherServiceSyncTest {
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	private static EJBContainer CONTAINER;
 	
 	/**
 	 * End timestamp
 	 */
-	public long endTime = 0;
+	private long endTime = 0;
 
 	/**
 	 * Logger
 	 */
-	public static final Logger log = LoggerFactory.getLogger(DefaultWeatherServiceSyncTest.class);
+	private static final Logger log = LoggerFactory.getLogger(DefaultWeatherServiceSyncTest.class);
 
 	/**
 	 * Start timestamp
 	 */
-	public long startTime = 0;
+	private long startTime = 0;
 
 	/**
 	 * Test class
 	 */
-	public WeatherService testclass;
+	private WeatherService testclass;
 
 	/**
 	 * Number of test threads
 	 */
-	public final int testNumberOfThreads = 100;
+	private final int testNumberOfThreads = 100;
 
 	/**
 	 * Weather loader
 	 */
-	private WeatherLoader loader;
+	private WeatherLoader<?> loader;
 		
 	private City city;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public DefaultWeatherServiceSyncTest() throws NamingException {
-		Properties p = new Properties();
-		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 		
@@ -130,6 +128,11 @@ public class DefaultWeatherServiceSyncTest {
 		testclass.addNewWeather(startTime,
 				endTime, true, null);
 	}
+	
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
+	}
 
 	@Test
 	public void testGetValue() throws InterruptedException {
@@ -144,7 +147,7 @@ public class DefaultWeatherServiceSyncTest {
 			Thread thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
-					Number value = null;
+					Number value;
 
 					// Sleep with random value
 					try {
@@ -163,8 +166,8 @@ public class DefaultWeatherServiceSyncTest {
 						// Get test value
 						value = testclass.getValue(WeatherParameterEnum.TEMPERATURE,
 								testTime);
-						log.debug("Thread (" + y + ") value: " + value.floatValue());
 						Assert.assertTrue(value != null);
+						log.debug("Thread (" + y + ") value: " + value.floatValue());
 					}
 				}
 			});

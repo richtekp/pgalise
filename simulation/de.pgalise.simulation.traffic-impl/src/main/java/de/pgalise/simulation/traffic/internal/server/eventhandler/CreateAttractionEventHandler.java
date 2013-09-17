@@ -33,7 +33,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas
  * @version 1.0
  */
-public final class CreateAttractionEventHandler extends CreateRandomVehicleEventHandler {
+public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandler {
 	/**
 	 * Logger
 	 */
@@ -78,8 +78,9 @@ public final class CreateAttractionEventHandler extends CreateRandomVehicleEvent
 			// Create vehicle
 			Vehicle<? extends VehicleData> v = this.createVehicle(data, trip);
 
-			if (v == null)
+			if (v == null) {
 				continue;
+			}
 
 			// Schedule vehicle
 			this.scheduleVehicle(v, trip.getStartTime());

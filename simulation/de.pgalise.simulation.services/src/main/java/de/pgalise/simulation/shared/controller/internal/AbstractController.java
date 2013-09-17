@@ -19,7 +19,8 @@ package de.pgalise.simulation.shared.controller.internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.SimulationEventList;
@@ -45,11 +46,15 @@ public abstract class AbstractController implements Controller {
 	private StatusEnum status = StatusEnum.INIT;
 
 	@Override
-	public final void init(InitParameter param) throws InitializationException, IllegalStateException {
+	public void init(InitParameter param) {
 		switch (status) {
 			case INIT:
-//				log.info("Initializing "+getName()+" ...");
-				onInit(param);
+		try {
+			//				log.info("Initializing "+getName()+" ...");
+							onInit(param);
+		} catch (InitializationException ex) {
+			throw new RuntimeException(ex);
+		}
 				status = StatusEnum.INITIALIZED;
 
 				// Log
@@ -62,7 +67,7 @@ public abstract class AbstractController implements Controller {
 	}
 
 	@Override
-	public final void reset() throws IllegalStateException {
+	public void reset() throws IllegalStateException {
 		switch (status) {
 			case INITIALIZED:
 			case STOPPED:
@@ -80,7 +85,7 @@ public abstract class AbstractController implements Controller {
 	}
 
 	@Override
-	public final void start(StartParameter param) throws IllegalStateException {
+	public void start(StartParameter param) throws IllegalStateException {
 		switch (status) {
 			case INITIALIZED:
 //				log.info("Starting "+getName()+" ...");
@@ -105,7 +110,7 @@ public abstract class AbstractController implements Controller {
 	}
 
 	@Override
-	public final void stop() throws IllegalStateException {
+	public void stop() throws IllegalStateException {
 		switch (status) {
 			case STARTED:
 //				log.info("Stopping "+getName()+" ...");
@@ -136,7 +141,7 @@ public abstract class AbstractController implements Controller {
 	}
 
 	@Override
-	public final void update(SimulationEventList simulationEventList) throws IllegalStateException {
+	public void update(SimulationEventList simulationEventList) throws IllegalStateException {
 		switch (status) {
 			case STARTED:
 //				log.debug("Updating "+getName() +" on simulation time "+simulationEventList.getTimestamp());
@@ -190,4 +195,9 @@ public abstract class AbstractController implements Controller {
 	 * @see Controller#update(SimulationEventList)
 	 */
 	protected abstract void onUpdate(SimulationEventList simulationEventList);
+
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
 }

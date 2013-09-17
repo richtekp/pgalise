@@ -16,11 +16,12 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.util.EntityDatabaseManager;
 
 /**
  * Helper for weather service strategies
@@ -35,6 +36,7 @@ public class ServiceStrategyLib {
 	 * 
 	 * @param <A> enforces type security in the completion
 	 * @param <B> enforces type security in the completion
+	 * @param <C> 
 	 * @param <T> 
 	 * @param weather1
 	 *            Best ServiceData
@@ -42,7 +44,7 @@ public class ServiceStrategyLib {
 	 *            New ServiceData
 	 * @return Better ServiceData
 	 */
-	public static <A extends ExtendedServiceDataCurrent, B extends ExtendedServiceDataForecast, T extends ServiceDataHelper<A,B>> T completeWeather(T weather1, T weather2) {
+	public static <A extends ExtendedServiceDataCurrent<C>, B extends ExtendedServiceDataForecast<C>, C extends WeatherCondition, T extends ServiceDataHelper<A,B,C>> T completeWeather(T weather1, T weather2) {
 		if (weather2 == null) {
 			return weather1;
 		}
@@ -73,21 +75,21 @@ public class ServiceStrategyLib {
 	 * @param databaseManager 
 	 * @return Condition code
 	 */
-	public static int getConditionCode(String condition, DatabaseManager databaseManager) {
+	public static int getConditionCode(String condition, EntityDatabaseManager databaseManager) {
 		if ((condition == null) || condition.isEmpty()) {
-			return WeatherCondition.UNKNOWN_CONDITION_CODE;
+			return DefaultWeatherCondition.UNKNOWN_CONDITION_CODE;
 		}
 
 		// Prepare
 		String condition0 = condition.toLowerCase();
 
 		// Get condition
-		WeatherCondition result = databaseManager.getCondition(condition0);
+		DefaultWeatherCondition result = databaseManager.getCondition(condition0);
 
 		if (result != null) {
 			return result.getCode();
 		} else {
-			return WeatherCondition.UNKNOWN_CONDITION_CODE;
+			return DefaultWeatherCondition.UNKNOWN_CONDITION_CODE;
 		}
 	}
 

@@ -116,14 +116,18 @@ public class GTFSParser {
 				rowAsTokens.clear();
 				firstRow = txtReader.read();
 				for (int i = 0; i < firstRow.size(); i++) {
-					if (firstRow.get(i).trim().equalsIgnoreCase("agency_id"))
+					if (firstRow.get(i).trim().equalsIgnoreCase("agency_id")) {
 						indexAgencyId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("agency_name"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("agency_name")) {
 						indexAgencyName = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("agency_url"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("agency_url")) {
 						indexAgencyUrl = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("agency_timezone"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("agency_timezone")) {
 						indexAgencyTimezone = i;
+					}
 				}
 
 				while ((rowAsTokens = txtReader.read()) != null) {
@@ -159,26 +163,36 @@ public class GTFSParser {
 				rowAsTokens.clear();
 				firstRow = txtReader.read();
 				for (int i = 0; i < firstRow.size(); i++) {
-					if (firstRow.get(i).trim().equalsIgnoreCase("service_id"))
+					if (firstRow.get(i).trim().equalsIgnoreCase("service_id")) {
 						indexServiceId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("monday"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("monday")) {
 						indexMon = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("tuesday"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("tuesday")) {
 						indexTue = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("wednesday"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("wednesday")) {
 						indexWed = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("thursday"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("thursday")) {
 						indexThu = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("friday"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("friday")) {
 						indexFri = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("saturday"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("saturday")) {
 						indexSat = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("sunday"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("sunday")) {
 						indexSun = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("start_date"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("start_date")) {
 						indexStartDate = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("end_date"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("end_date")) {
 						indexEndDate = i;
+					}
 				}
 
 				while ((rowAsTokens = txtReader.read()) != null) {
@@ -217,14 +231,18 @@ public class GTFSParser {
 				rowAsTokens.clear();
 				firstRow = txtReader.read();
 				for (int i = 0; i < firstRow.size(); i++) {
-					if (firstRow.get(i).trim().equalsIgnoreCase("route_id"))
+					if (firstRow.get(i).trim().equalsIgnoreCase("route_id")) {
 						indexRouteId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("route_short_name"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("route_short_name")) {
 						indexShort = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("route_long_name"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("route_long_name")) {
 						indexLong = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("route_type"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("route_type")) {
 						indexType = i;
+					}
 				}
 
 				while ((rowAsTokens = txtReader.read()) != null) {
@@ -254,14 +272,18 @@ public class GTFSParser {
 				rowAsTokens.clear();
 				firstRow = txtReader.read();
 				for (int i = 0; i < firstRow.size(); i++) {
-					if (firstRow.get(i).trim().equalsIgnoreCase("stop_name"))
+					if (firstRow.get(i).trim().equalsIgnoreCase("stop_name")) {
 						indexStopName = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_id"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_id")) {
 						indexStopId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_lat"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_lat")) {
 						indexLat = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_lon"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_lon")) {
 						indexLong = i;
+					}
 				}
 
 				while ((rowAsTokens = txtReader.read()) != null) {
@@ -290,12 +312,15 @@ public class GTFSParser {
 				rowAsTokens.clear();
 				firstRow = txtReader.read();
 				for (int i = 0; i < firstRow.size(); i++) {
-					if (firstRow.get(i).trim().equalsIgnoreCase("service_id"))
+					if (firstRow.get(i).trim().equalsIgnoreCase("service_id")) {
 						indexServiceId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("route_id"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("route_id")) {
 						indexRouteId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("trip_id"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("trip_id")) {
 						indexTripId = i;
+					}
 				}
 
 				while ((rowAsTokens = txtReader.read()) != null) {
@@ -326,16 +351,21 @@ public class GTFSParser {
 				rowAsTokens.clear();
 				firstRow = txtReader.read();
 				for (int i = 0; i < firstRow.size(); i++) {
-					if (firstRow.get(i).trim().equalsIgnoreCase("trip_id"))
+					if (firstRow.get(i).trim().equalsIgnoreCase("trip_id")) {
 						indexTripId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_id"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_id")) {
 						indexStopId = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("arrival_time"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("arrival_time")) {
 						indexArrival = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("departure_time"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("departure_time")) {
 						indexDeparture = i;
-					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_sequence"))
+					}
+					else if (firstRow.get(i).trim().equalsIgnoreCase("stop_sequence")) {
 						indexSeq = i;
+					}
 				}
 
 				while ((rowAsTokens = txtReader.read()) != null) {

@@ -296,8 +296,9 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of bicycles: " + changingAmount);
 			int count = 1;
 			for (Iterator<Vehicle> i = this.spareBicycles.iterator(); i.hasNext();) {
-				if (count > changingAmount)
+				if (count > changingAmount) {
 					break;
+				}
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
@@ -311,14 +312,17 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of bicycles: -" + changingAmount);
 			List<Item> bicycles = new ArrayList<>();
 			for (Item item : this.scheduler.getScheduledItems()) {
-				if (item.getVehicle().getData().getClass().equals(BicycleData.class))
+				if (item.getVehicle().getData().getClass().equals(BicycleData.class)) {
 					bicycles.add(item);
+				}
 			}
 			int tmp = 0;
-			if (bicycles.size() < changingAmount)
+			if (bicycles.size() < changingAmount) {
 				tmp = bicycles.size();
-			else
+			}
+			else {
 				tmp = changingAmount;
+			}
 
 			for (int i = 0; i < tmp; i++) {
 				int index = rand.nextInt(bicycles.size());
@@ -339,8 +343,9 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of cars: " + changingAmount);
 			int count = 1;
 			for (Iterator<Vehicle> i = this.spareCars.iterator(); i.hasNext();) {
-				if (count > changingAmount)
+				if (count > changingAmount) {
 					break;
+				}
 				Vehicle v = i.next();
 
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
@@ -355,16 +360,19 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of cars: -" + changingAmount);
 			List<Item> cars = new ArrayList<>();
 			for (Item item : this.scheduler.getScheduledItems()) {
-				if (item.getVehicle().getData().getClass().equals(CarData.class))
+				if (item.getVehicle().getData().getClass().equals(CarData.class)) {
 					cars.add(item);
+				}
 				// if (item.getVehicle().getData() instanceof CarData)
 			}
 
 			int tmp = 0;
-			if (cars.size() < changingAmount)
+			if (cars.size() < changingAmount) {
 				tmp = cars.size();
-			else
+			}
+			else {
 				tmp = changingAmount;
+			}
 
 			for (int i = 0; i < tmp; i++) {
 				int index = rand.nextInt(cars.size());
@@ -383,8 +391,9 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of motorcycles: " + changingAmount);
 			int count = 1;
 			for (Iterator<Vehicle> i = this.spareMotorcycles.iterator(); i.hasNext();) {
-				if (count > changingAmount)
+				if (count > changingAmount) {
 					break;
+				}
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
@@ -398,15 +407,18 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of motorcycles: -" + changingAmount);
 			List<Item> motorcycles = new ArrayList<>();
 			for (Item item : this.scheduler.getScheduledItems()) {
-				if (item.getVehicle().getData().getClass().equals(MotorcycleData.class))
+				if (item.getVehicle().getData().getClass().equals(MotorcycleData.class)) {
 					motorcycles.add(item);
+				}
 			}
 
 			int tmp = 0;
-			if (motorcycles.size() < changingAmount)
+			if (motorcycles.size() < changingAmount) {
 				tmp = motorcycles.size();
-			else
+			}
+			else {
 				tmp = changingAmount;
+			}
 
 			for (int i = 0; i < tmp; i++) {
 				int index = rand.nextInt(motorcycles.size());
@@ -425,8 +437,9 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of trucks: " + changingAmount);
 			int count = 1;
 			for (Iterator<Vehicle> i = this.spareTrucks.iterator(); i.hasNext();) {
-				if (count > changingAmount)
+				if (count > changingAmount) {
 					break;
+				}
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
@@ -440,15 +453,18 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			log.debug("changingAmount of trucks: -" + changingAmount);
 			List<Item> trucks = new ArrayList<>();
 			for (Item item : this.scheduler.getScheduledItems()) {
-				if (item.getVehicle().getData().getClass().equals(TruckData.class))
+				if (item.getVehicle().getData().getClass().equals(TruckData.class)) {
 					trucks.add(item);
+				}
 			}
 
 			int tmp = 0;
-			if (trucks.size() < changingAmount)
+			if (trucks.size() < changingAmount) {
 				tmp = trucks.size();
-			else
+			}
+			else {
 				tmp = changingAmount;
+			}
 
 			for (int i = 0; i < tmp; i++) {
 				int index = rand.nextInt(trucks.size());

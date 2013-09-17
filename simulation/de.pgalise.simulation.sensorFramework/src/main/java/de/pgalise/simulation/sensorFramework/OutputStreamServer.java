@@ -87,8 +87,9 @@ public class OutputStreamServer extends Server {
 	@Override
 	protected void releaseResources() {
 		try {
-			if (out != null)
+			if (out != null) {
 				this.out.close();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

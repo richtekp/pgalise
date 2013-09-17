@@ -18,11 +18,8 @@ package de.pgalise.simulation.sensorFramework.internal;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -140,7 +137,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	}
 
 	@Override
-	public final synchronized void removeAllSensors() {
+	public synchronized void removeAllSensors() {
 		Set<Long> sensorIds = new HashSet<>();
 
 		// Save all IDs
@@ -155,7 +152,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	}
 
 	@Override
-	public final synchronized Sensor removeSensor(final long sensorId) {
+	public synchronized Sensor removeSensor(final long sensorId) {
 		final Sensor result = this.persistenceService.find(Sensor.class, sensorId);
 		if (result != null) {
 			log.debug("Sensor is to be removed from Database (id:" + sensorId + ")");
@@ -169,13 +166,13 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	}
 
 	@Override
-	public final synchronized Sensor removeSensor(final Sensor sensor) {
+	public synchronized Sensor removeSensor(final Sensor sensor) {
 		// Delete the Sensor from RAM
 		return this.removeSensor(sensor.getId());
 	}
 
 	@Override
-	public final synchronized void setSensorsActivated(final boolean activated) {
+	public synchronized void setSensorsActivated(final boolean activated) {
 		for (final Sensor sensor : this) {
 			sensor.setActivated(activated);
 		}
@@ -188,7 +185,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	 *            the simulation event used by the sensors
 	 */
 	@Override
-	public synchronized final void update(final SimulationEventList eventList) {
+	public synchronized void update(final SimulationEventList eventList) {
 		for (final Sensor sensor : this) {
 			sensor.update(eventList);
 		}

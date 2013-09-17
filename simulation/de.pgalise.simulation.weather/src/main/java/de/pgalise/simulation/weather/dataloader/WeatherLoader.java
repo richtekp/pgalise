@@ -18,16 +18,18 @@ package de.pgalise.simulation.weather.dataloader;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 
 /**
  * The aim and the purpose of the interface {@link WeatherLoader} is to get weather information from a source during
  * runtime. It is implemented as an EJB. The tasks of this interface are to load weather station values and to load
  * weather service values as well as reference cities.
  * 
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public interface WeatherLoader {
+public interface WeatherLoader<C extends WeatherCondition> {
 
 	/**
 	 * Checks if the weather informations for that day are correct
@@ -47,7 +49,7 @@ public interface WeatherLoader {
 	 *            ID to the city
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city) ;
+	public ServiceDataForecast<C> loadCurrentServiceWeatherData(long timestamp, City city) ;
 
 	/**
 	 * Returns the forecast weather informations form the weather services for the given city and timestamp
@@ -58,7 +60,7 @@ public interface WeatherLoader {
 	 *            ID to the city
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) ;
+	public ServiceDataForecast<C> loadForecastServiceWeatherData(long timestamp, City city) ;
 
 	/**
 	 * Returns the weather data of the weather station for the day of 

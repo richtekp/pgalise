@@ -17,6 +17,7 @@ class MinDistComparator<T, S extends Node<T>> implements Comparator<S>, Serializ
 	this.p = p;
     }
 
+	@Override
     public int compare (S t1, S t2) {
 	MBR mbr1 = t1.getMBR (converter);
 	MBR mbr2 = t2.getMBR (converter);

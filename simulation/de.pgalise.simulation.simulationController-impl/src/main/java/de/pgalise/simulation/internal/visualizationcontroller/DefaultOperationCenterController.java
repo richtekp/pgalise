@@ -78,7 +78,6 @@ public class DefaultOperationCenterController extends AbstractController impleme
 	/**
 	 * Constructor
 	 * 
-	 * @param gson
 	 * @throws IOException
 	 */
 	public DefaultOperationCenterController() throws IOException {
@@ -87,7 +86,7 @@ public class DefaultOperationCenterController extends AbstractController impleme
 
 	@Override
 	public void createSensor(SensorHelper sensor) throws IllegalStateException {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("createsensor", "true");
 		requestParameterMap.put("json", gson.toJson(sensor));
 		this.performRequest(requestParameterMap);
@@ -95,7 +94,7 @@ public class DefaultOperationCenterController extends AbstractController impleme
 
 	@Override
 	public void deleteSensor(SensorHelper sensor) throws IllegalStateException {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("deletesensor", "true");
 		requestParameterMap.put("json", gson.toJson(sensor));
 		this.performRequest(requestParameterMap);
@@ -125,9 +124,9 @@ public class DefaultOperationCenterController extends AbstractController impleme
 	 * @throws MalformedURLException
 	 */
 	private void performRequest(Map<String, String> requestParameterMap) {
-		StringBuilder parameters = null;
+		StringBuilder parameters;
 		try {
-			HttpURLConnection connection = null;
+			HttpURLConnection connection;
 			connection = (HttpURLConnection) new java.net.URL(this.servletURL).openConnection();
 			connection.setRequestMethod("POST");
 
@@ -140,21 +139,19 @@ public class DefaultOperationCenterController extends AbstractController impleme
 					parameters.append("&");
 				}
 
-				parameters.append(entry.getKey().replaceAll("\\s", "%20") + "="
-						+ entry.getValue().replaceAll("\\s", "%20"));
+				parameters.append(entry.getKey().replaceAll("\\s", "%20")).append("=").append(entry.getValue().replaceAll("\\s", "%20"));
 			}
-
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(parameters.toString());
-			wr.flush();
-			wr.close();
+			try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+				wr.writeBytes(parameters.toString());
+				wr.flush();
+			}
 
 			int responseCode = connection.getResponseCode();
 			if (responseCode != HttpURLConnection.HTTP_OK) {
 				throw new RuntimeException("Got responseCode: " + responseCode + " for url: " + this.servletURL);
 			}
 			connection.disconnect();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 	}
@@ -180,7 +177,7 @@ public class DefaultOperationCenterController extends AbstractController impleme
 				param.getStartTimestamp(), param.getEndTimestamp(), param.getInterval(),
 				param.getClockGeneratorInterval(), param.getOperationCenterURL(), param.getControlCenterURL(),
 				param.getTrafficFuzzyData(), param.getCityBoundary());
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("init", "true");
 		requestParameterMap.put("json", this.gson.toJson(initParameter));
 		this.performRequest(requestParameterMap);
@@ -188,7 +185,7 @@ public class DefaultOperationCenterController extends AbstractController impleme
 
 	@Override
 	protected void onReset() {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("reset", "true");
 	}
 
@@ -199,7 +196,7 @@ public class DefaultOperationCenterController extends AbstractController impleme
 				param.isAggregatedWeatherDataEnabled(),
 				param.getWeatherEventHelperList(),
 				param.getBusRouteList());
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("start", "true");
 		requestParameterMap.put("json", this.gson.toJson(startParameterCopy));
 		this.performRequest(requestParameterMap);
@@ -207,14 +204,14 @@ public class DefaultOperationCenterController extends AbstractController impleme
 
 	@Override
 	protected void onStop() {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("stop", "true");
 		this.performRequest(requestParameterMap);
 	}
 
 	@Override
 	protected void onUpdate(SimulationEventList simulationEventList) {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("update", "true");
 		requestParameterMap.put("json", this.gson.toJson(simulationEventList));		
 		this.performRequest(requestParameterMap);
@@ -222,13 +219,13 @@ public class DefaultOperationCenterController extends AbstractController impleme
 
 	@Override
 	protected void onResume() {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("resume", "true");
 	}
 
 	@Override
 	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("createsensors", "true");
 		requestParameterMap.put("json", gson.toJson(sensors, sensorCollectionTypeToken.getType()));
 		this.performRequest(requestParameterMap);
@@ -236,7 +233,7 @@ public class DefaultOperationCenterController extends AbstractController impleme
 
 	@Override
 	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
-		Map<String, String> requestParameterMap = new HashMap<String, String>();
+		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("deletesensors", "true");
 		requestParameterMap.put("json", gson.toJson(sensors, sensorCollectionTypeToken.getType()));
 		this.performRequest(requestParameterMap);

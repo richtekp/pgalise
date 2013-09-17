@@ -32,10 +32,7 @@ import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import java.awt.Rectangle;
 import de.pgalise.util.graph.disassembler.Disassembler;
-import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import javax.vecmath.Vector2d;
 import org.geotools.geometry.jts.JTS;
 
 /**

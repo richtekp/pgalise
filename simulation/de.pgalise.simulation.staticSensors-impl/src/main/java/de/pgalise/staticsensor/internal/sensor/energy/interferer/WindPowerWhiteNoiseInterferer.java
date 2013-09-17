@@ -18,7 +18,6 @@ package de.pgalise.staticsensor.internal.sensor.energy.interferer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
-import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that creates generally low errors

@@ -8,7 +8,7 @@ package de.pgalise.simulation.weather.model;
  *
  * @author richter
  */
-public interface BaseWeatherInformation extends BaseTimeSensitive {
+public interface WeatherInformation extends TimeSensitive {
 
 	Float getRelativHumidity(); 
 

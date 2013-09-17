@@ -11,7 +11,7 @@ import java.sql.Time;
  *
  * @author richter
  */
-public interface MutableBaseWeatherInformation extends BaseWeatherInformation {
+public interface MutableBaseWeatherInformation extends WeatherInformation {
 
 	void setMeasureDate(Date measureDate);
 

@@ -25,7 +25,7 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * @author marcus
  *
  */
-public final class OdysseusOutput extends OutputDecorator {
+public class OdysseusOutput extends OutputDecorator {
 
 	/**
 	 * Constructor

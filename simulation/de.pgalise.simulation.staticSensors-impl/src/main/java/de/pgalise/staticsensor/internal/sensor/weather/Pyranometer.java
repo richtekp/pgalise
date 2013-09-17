@@ -25,7 +25,6 @@ import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.PyranometerWhiteNoiseInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Class to generate a pyranometer.
@@ -35,7 +34,7 @@ import javax.vecmath.Vector2d;
  * @author marcus
  * @version 1.0
  */
-public final class Pyranometer extends WeatherSensor {
+public class Pyranometer extends WeatherSensor {
 
 	/**
 	 * Radiation

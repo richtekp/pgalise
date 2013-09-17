@@ -37,12 +37,12 @@ public class ThreadPoolHandler extends AsyncHandler {
 
 	public ThreadPoolHandler() {
 		super();
-		futures = new LinkedList<Future<?>>();
+		futures = new LinkedList<>();
 	}
 
 	public ThreadPoolHandler(Function callback) {
 		super(callback);
-		futures = new LinkedList<Future<?>>();
+		futures = new LinkedList<>();
 	}
 
 	@Override

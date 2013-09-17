@@ -48,7 +48,7 @@ public class OCWebSocketServlet extends WebSocketServlet implements OCWebSocketS
 	/**
 	 * All online users.
 	 */
-	private static final Set<OCWebSocketUser> onlineUsers = new CopyOnWriteArraySet<OCWebSocketUser>();
+	private static final Set<OCWebSocketUser> onlineUsers = new CopyOnWriteArraySet<>();
 
 	@EJB
 	private GsonService gsonService;

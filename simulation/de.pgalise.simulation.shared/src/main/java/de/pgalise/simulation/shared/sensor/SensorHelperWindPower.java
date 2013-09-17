@@ -123,17 +123,22 @@ public class SensorHelperWindPower extends SensorHelper {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		SensorHelperWindPower other = (SensorHelperWindPower) obj;
-		if (Double.doubleToLongBits(activityValue) != Double.doubleToLongBits(other.activityValue))
+		if (Double.doubleToLongBits(activityValue) != Double.doubleToLongBits(other.activityValue)) {
 			return false;
-		if (Double.doubleToLongBits(rotorLength) != Double.doubleToLongBits(other.rotorLength))
+		}
+		if (Double.doubleToLongBits(rotorLength) != Double.doubleToLongBits(other.rotorLength)) {
 			return false;
+		}
 		return true;
 	}
 }

@@ -24,7 +24,6 @@ import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Class to generate a wind flag sensor.
@@ -34,7 +33,7 @@ import javax.vecmath.Vector2d;
  * @author marcus
  * @version 1.0
  */
-public final class WindFlagSensor extends WeatherSensor {
+public class WindFlagSensor extends WeatherSensor {
 
 	/**
 	 * Wind direction

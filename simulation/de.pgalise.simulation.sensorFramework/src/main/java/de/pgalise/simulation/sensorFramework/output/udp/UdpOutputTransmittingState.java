@@ -26,7 +26,7 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * 
  * @author Marcus
  */
-final class UdpOutputTransmittingState extends UdpOutputState {
+class UdpOutputTransmittingState extends UdpOutputState {
 
 	/**
 	 * Creates an instance of {@link UdpOutputTransmittingState}.

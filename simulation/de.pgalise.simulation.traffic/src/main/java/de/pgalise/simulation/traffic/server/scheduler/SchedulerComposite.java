@@ -34,12 +34,12 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author mustafa
  *
  */
-public final class SchedulerComposite extends Scheduler {
+public class SchedulerComposite extends Scheduler {
 	private EnumMap<VehicleTypeEnum, Scheduler> schedulerMap;
 	private List<Scheduler> list;
 
 	public SchedulerComposite() {
-		schedulerMap = new EnumMap<VehicleTypeEnum, Scheduler>(VehicleTypeEnum.class);
+		schedulerMap = new EnumMap<>(VehicleTypeEnum.class);
 		list = new LinkedList<>();
 	}
 

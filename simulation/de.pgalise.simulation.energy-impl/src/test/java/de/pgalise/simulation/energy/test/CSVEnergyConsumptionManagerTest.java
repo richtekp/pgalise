@@ -35,7 +35,6 @@ import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
-import javax.vecmath.Vector2d;
 
 /**
  * Tests the public methods of the CSVEnergyConsumptionManager.
@@ -78,7 +77,7 @@ public class CSVEnergyConsumptionManagerTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Map<EnergyProfileEnum, List<Building>> map = new HashMap<EnergyProfileEnum, List<Building>>();
+		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
 		List<Building> buildingList = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
 			buildingList.add(new Building(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));

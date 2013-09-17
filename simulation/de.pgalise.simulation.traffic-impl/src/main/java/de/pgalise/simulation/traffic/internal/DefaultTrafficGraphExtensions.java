@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic.internal;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -80,7 +79,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	/**
 	 * Set with traffic rules
 	 */
-	private final Set<TrafficRule> trafficRules = new HashSet<>();
+	private final Set<TrafficRule> trafficRules = new HashSet<>(1);
 
 	private RandomSeedService rss;
 
@@ -108,10 +107,12 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 		this.rss = rss;
 	}
 
+	@Override
 	public void setRandomSeedService(RandomSeedService rss) {
 		this.rss = rss;
 	}
 
+	@Override
 	public RandomSeedService getRandomSeedService() {
 		return rss;
 	}
@@ -174,9 +175,11 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
+	@Override
 	public boolean addSensor(final Node node, final Sensor sensor) throws IllegalArgumentException {
-		if (node == null)
+		if (node == null) {
 			log.error("Can't add sensor " + sensor.getId()+ " to an empty node");
+		}
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
@@ -193,6 +196,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
+	@Override
 	public Set<Sensor> getSensorsAsUnmodifialable(final Node node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		return Collections.unmodifiableSet(this.getSensors(node));
@@ -208,6 +212,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
+	@Override
 	public synchronized TrafficRule getTrafficRule(final Node node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (!node.hasAttribute(DefaultTrafficGraphExtensions.TRAFFICLIGHT_RULE)) {
@@ -235,7 +240,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("vehicle"));
 		}
 
-		String mapName = null;
+		String mapName;
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicle.getData().getType())) {
 			mapName = "cars";
 		} else {
@@ -245,11 +250,12 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 		List<Vehicle<? extends VehicleData>> vehicles = node.getAttribute(mapName + "_" + node.getId());
 
 		if (vehicles == null) {
-			vehicles = new ArrayList<>();
+			vehicles = new ArrayList<>(16);
 			node.setAttribute(mapName + "_" + node.getId(), vehicles);
 		}
-		if (!vehicles.contains(vehicle))
+		if (!vehicles.contains(vehicle)) {
 			vehicles.add(vehicle);
+		}
 	}
 
 	/**
@@ -263,9 +269,10 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' or argument 'vehicle' is 'null'
 	 */
+	@Override
 	public void unregisterFromNode(final Node node, final Vehicle<? extends VehicleData> vehicle)
 			throws IllegalArgumentException {
-		String mapName = null;
+		String mapName;
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicle.getData().getType())) {
 			mapName = "cars";
 		} else {
@@ -278,17 +285,19 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 		}
 	}
 
+	@Override
 	public List<Vehicle<? extends VehicleData>> getVehiclesOnNode(final Node node, final VehicleTypeEnum vehicleType) {
-		List<Vehicle<? extends VehicleData>> vehicles = new ArrayList<>();
-		String mapName = null;
+		List<Vehicle<? extends VehicleData>> vehicles = new ArrayList<>(16);
+		String mapName;
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicleType)) {
 			mapName = "cars";
 		} else {
 			mapName = "bicycles";
 		}
 
-		if (node.getAttribute(mapName + "_" + node.getId()) != null)
+		if (node.getAttribute(mapName + "_" + node.getId()) != null) {
 			vehicles = node.getAttribute(mapName + "_" + node.getId());
+		}
 
 		return vehicles;
 	}
@@ -304,6 +313,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
+	@Override
 	public boolean removeSensor(final Node node, final Sensor sensor) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (sensor == null) {
@@ -323,6 +333,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
+	@Override
 	public synchronized Node setTrafficRule(final Node node, final TrafficRule trafficRule)
 			throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
@@ -343,6 +354,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * 
 	 * @return the {@link TrafficRule}s as an unmodifiable {@link Set}
 	 */
+	@Override
 	public Set<TrafficRule> getTrafficRulesAsUnmodifiableSet() {
 		return Collections.unmodifiableSet(this.trafficRules);
 	}
@@ -353,6 +365,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @param simulationEventList
 	 *            the {@link SimulationEventList}
 	 */
+	@Override
 	public void updateTrafficRules(SimulationEventList simulationEventList) {
 		this.currentSimTime = simulationEventList.getTimestamp();
 		for (final TrafficRule trafficRule : this.trafficRules) {
@@ -370,7 +383,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 */
 	private void createSensorSet(final Node node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
-		node.setAttribute(DefaultTrafficGraphExtensions.SENSORS, new HashSet<StaticTrafficSensor>());
+		node.setAttribute(DefaultTrafficGraphExtensions.SENSORS, new HashSet<StaticTrafficSensor>(16));
 	}
 
 	/**
@@ -382,6 +395,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
+	@Override
 	public Set<Sensor> getSensors(final Node node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (!node.hasAttribute(DefaultTrafficGraphExtensions.SENSORS)) {
@@ -396,6 +410,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
+	@Override
 	public boolean addVehicle(final Edge edge, final Vehicle<? extends VehicleData> vehicle)
 			throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
@@ -411,11 +426,11 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	}
 
 	/**
-	 * @param edge
 	 * @param vehicle
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
+	@Override
 	public boolean removeVehicleFromItsEdge(final Vehicle<? extends VehicleData> vehicle)
 			throws IllegalArgumentException {
 		if (vehicle == null) {
@@ -433,6 +448,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
+	@Override
 	public Set<Vehicle<? extends VehicleData>> getVehiclesAsUnmodifialable(final Edge edge)
 			throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
@@ -444,6 +460,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
+	@Override
 	public Edge getEdgeFor(final Vehicle<? extends VehicleData> vehicle) throws IllegalArgumentException {
 		if (vehicle == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("vehicle"));
@@ -463,6 +480,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @return A list with vehicles registered on the given edge
 	 * @throws IllegalArgumentException
 	 */
+	@Override
 	public List<Vehicle<? extends VehicleData>> getVehiclesFor(Edge edge, Node from, Node to)
 			throws IllegalArgumentException {
 		List<Vehicle<? extends VehicleData>> registeredCars = edge.getAttribute("cars_" + from.getId() + "_"
@@ -509,8 +527,9 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @param v
 	 *            Vehicle to register
 	 */
+	@Override
 	public void registerOnEdge(Edge edge, Node from, Node to, Vehicle<? extends VehicleData> v) {
-		String mapName = null;
+		String mapName;
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(v.getData().getType())) {
 			mapName = "cars";
 		} else {
@@ -539,8 +558,9 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @param v
 	 *            Vehicle to unregister
 	 */
+	@Override
 	public void unregisterFromEdge(Edge edge, Node from, Node to, Vehicle<? extends VehicleData> v) {
-		String mapName = null;
+		String mapName;
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(v.getData().getType())) {
 			mapName = "cars";
 		} else {

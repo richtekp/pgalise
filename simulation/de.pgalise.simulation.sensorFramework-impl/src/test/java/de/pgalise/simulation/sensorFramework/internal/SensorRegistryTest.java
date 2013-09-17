@@ -31,11 +31,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -119,7 +118,7 @@ public class SensorRegistryTest {
 	 */
 	@Test
 	public void testNumberOfSensors() {
-		final ArrayList<Sensor> sensors = new ArrayList<Sensor>();
+		final ArrayList<Sensor> sensors = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			sensors.add(this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i))));
 		}

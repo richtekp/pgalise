@@ -21,13 +21,11 @@ import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Properties;
 
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
@@ -37,22 +35,17 @@ import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
+import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Collection;
 import javax.annotation.ManagedBean;
-import javax.measure.Measure;
-import javax.measure.unit.SI;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.After;
+import org.junit.BeforeClass;
 
 /**
  * JUnit test for StormDayEvent
@@ -63,8 +56,9 @@ import org.junit.After;
 @LocalClient
 @ManagedBean
 public class StormDayEventTest {
-	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	@PersistenceUnit(unitName = "weather_test", name="weather_test_StormDayEventTest")
+	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
+	private static EJBContainer CONTAINER;
 
 	/**
 	 * End timestamp
@@ -103,10 +97,8 @@ public class StormDayEventTest {
 	
 	private	City city;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public StormDayEventTest() throws NamingException {
-		Properties p = new Properties();
-		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 		
@@ -145,93 +137,27 @@ public class StormDayEventTest {
 		service = new DefaultWeatherService(city, loader);
 	}
 	
-	private Queue<Object> deletes = new LinkedList<>();
-
-	@Before
-	public void setUp() throws Exception {
-		service = new DefaultWeatherService(city, loader);
-		Calendar cal = new GregorianCalendar();
-		cal.setTimeInMillis(startTimestamp);
-		cal.add(Calendar.DATE, -1);
-		long previousDayTimestamp = cal.getTimeInMillis();
-		StationDataNormal stationDataNormal0 = new StationDataNormal(new Date(previousDayTimestamp),
-			new Time(previousDayTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f),
-			stationDataNormal = new StationDataNormal(new Date(startTimestamp),
-			new Time(startTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f),
-			stationDataNormal1 = new StationDataNormal(new Date(testTimestamp),
-			new Time(testTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f),
-			stationDataNormal2 = new StationDataNormal(new Date(endTimestamp),
-			new Time(endTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-		UserTransaction transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
-		transaction.begin();
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-		em.joinTransaction();
-		em.persist(stationDataNormal0);
-		em.persist(stationDataNormal);
-//		em.persist(stationDataNormal1);
-		em.persist(stationDataNormal2);
-		transaction.commit();
-		deletes.add(stationDataNormal0);
-		deletes.add(stationDataNormal);
-//		deletes.add(stationDataNormal1);
-		deletes.add(stationDataNormal2);
-		service.addNewWeather(startTimestamp, endTimestamp, true,
-				null);
-		em.close();
-	}
-	
-	@After 
-	public void tearDown() throws Exception {
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-		UserTransaction transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
-		transaction.begin();
-		em.joinTransaction();
-		while(!deletes.isEmpty()) {
-			Object delete = deletes.poll();
-			em.remove(delete);
-		}
-		transaction.commit();
-		em.close();
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
 	}
 
 	@Test
 	public void testDeployChanges() throws Exception {
+		service = new DefaultWeatherService(city, loader);
+		
+		//preparation
+		UserTransaction transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
+		Collection<StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+			endTimestamp,
+			transaction,
+			ENTITY_MANAGER_FACTORY);
+		service.addNewWeather(startTimestamp, endTimestamp, true,
+				null);
+		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+			transaction,
+			ENTITY_MANAGER_FACTORY);
+		
 		// Get extrema of reference values
 		float refvalue = service.getValue(WeatherParameterEnum.WIND_VELOCITY,
 				testTimestamp).floatValue();
@@ -254,7 +180,7 @@ public class StormDayEventTest {
 		Assert.assertTrue(refvalue < decvalue);
 
 		// Test 2: extrema are as high event
-		Assert.assertEquals(WeatherMapModifier.round(event.getMaxValue(), 3), WeatherMapModifier.round(decvalue, 3), 1);
+		Assert.assertEquals(AbstractWeatherMapModifier.round(event.getMaxValue(), 3), AbstractWeatherMapModifier.round(decvalue, 3), 1);
 	}
 
 }

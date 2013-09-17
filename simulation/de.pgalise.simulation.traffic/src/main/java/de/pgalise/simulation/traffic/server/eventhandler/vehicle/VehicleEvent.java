@@ -36,7 +36,7 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
  * @author mustafa
  *
  */
-public final class VehicleEvent {
+public class VehicleEvent {
 	private final TrafficServerLocal server;
 	private final Vehicle<? extends VehicleData> currentVehicle;
 	private final long simulationTime;

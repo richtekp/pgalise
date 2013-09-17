@@ -5,39 +5,31 @@
 package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.weather.model.BaseServiceData;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.sql.Date;
 import java.sql.Time;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
 /**
  *
+ * @param <C> 
  * @author richter
  */
+/*
+ * persistable WeatherCondition needs to be enforced already at the level of 
+ * the MappedSuperclass (if usage of @Type annotation should be avoided)
+ */
 @MappedSuperclass
-public abstract class AbstractBaseServiceData extends AbstractIdentifiable implements BaseServiceData {
+public abstract class AbstractBaseServiceData<C extends WeatherCondition> extends AbstractMutableTimeSensitive implements BaseServiceData<C>, MutableBaseServiceData<C> {
 	
 	/**
 	 * City
 	 */
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	@JoinColumn(name="CITY")
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
 	private City city;
-
-	/**
-	 * Timestamp
-	 */
-	@Column(name = "MEASURE_DATE")
-	private Date measureDate;
-	
-	private Time measureTime;
 	
 	/**
 	 * Relativ humidity
@@ -57,15 +49,15 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 	@Column(name = "WIND_VELOCITY")
 	private Float windVelocity;
 	
-	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private WeatherCondition condition;
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+	private C condition;
 
 	protected AbstractBaseServiceData() {
 	}
 
-	public AbstractBaseServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, WeatherCondition condition) {
-		this.measureDate = measureDate;
-		this.measureTime = measureTime;
+	public AbstractBaseServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, C condition) {
+		super(measureDate,
+			measureTime);
 		this.city = city;
 		this.relativHumidity = relativHumidity;
 		this.windDirection = windDirection;
@@ -81,32 +73,9 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 	/**
 	 * @param city the city to set
 	 */
+	@Override
 	public void setCity(City city) {
 		this.city = city;
-	}
-
-	/**
-	 * @return the measureDate
-	 */
-	@Override
-	public Date getMeasureDate() {
-		return measureDate;
-	}
-
-	@Override
-	public Time getMeasureTime() {
-		return measureTime;
-	}
-
-	/**
-	 * @param measureDate the measureDate to set
-	 */
-	public void setMeasureDate(Date measureDate) {
-		this.measureDate = measureDate;
-	}
-
-	public void setMeasureTime(Time measureTime) {
-		this.measureTime = measureTime;
 	}
 
 	@Override
@@ -124,24 +93,28 @@ public abstract class AbstractBaseServiceData extends AbstractIdentifiable imple
 		return this.windVelocity;
 	}
 
+	@Override
 	public void setRelativHumidity(Float relativHumidity) {
 		this.relativHumidity = relativHumidity;
 	}
 
+	@Override
 	public void setWindDirection(Float windDirection) {
 		this.windDirection = windDirection;
 	}
 
+	@Override
 	public void setWindVelocity(Float windVelocity) {
 		this.windVelocity = windVelocity;
 	}
 
-	public void setCondition(WeatherCondition condition) {
+	@Override
+	public void setCondition(C condition) {
 		this.condition = condition;
 	}
 
 	@Override
-	public WeatherCondition getCondition() {
+	public C getCondition() {
 		return this.condition;
 	}
 }

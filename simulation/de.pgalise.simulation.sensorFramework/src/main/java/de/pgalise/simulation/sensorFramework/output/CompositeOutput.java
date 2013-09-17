@@ -27,7 +27,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
  * 
  * @author Marcus
  */
-public final class CompositeOutput implements Output {
+public class CompositeOutput implements Output {
 	/**
 	 * {@link Set} with {@link Output}s
 	 */

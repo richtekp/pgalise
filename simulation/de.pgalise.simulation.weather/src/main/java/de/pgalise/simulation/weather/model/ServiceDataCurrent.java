@@ -11,7 +11,7 @@ import javax.measure.quantity.Temperature;
  *
  * @author richter
  */
-public interface ServiceDataCurrent extends BaseServiceData {
+public interface ServiceDataCurrent<C extends WeatherCondition> extends BaseServiceData<C> {
 
 	Measure<Float, Temperature> getTemperature() ;
 }

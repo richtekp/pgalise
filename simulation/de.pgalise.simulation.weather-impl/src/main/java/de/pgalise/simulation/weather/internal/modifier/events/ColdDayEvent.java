@@ -29,7 +29,6 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -153,15 +152,15 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 	@Override
 	public void deployChanges() {
 		// Calculate min value
-		this.minValue = (this.eventValue != null) ? this.eventValue : this.min_value
+		this.minValue = (this.getEventValue() != null) ? this.getEventValue() : this.min_value
 				- this.getRandomDouble(this.min_value_range);
 
 		// Get time
-		if (this.eventTimestamp < 1) {
-			this.eventTimestamp = this.getRandomTimestamp(this.simulationTimestamp);
+		if (this.getEventTimestamp() < 1) {
+			this.setEventTimestamp(this.getRandomTimestamp(this.getSimulationTimestamp()));
 		}
 
-		StationData min = this.getNextWeatherForTimestamp(this.eventTimestamp);
+		StationData min = this.getNextWeatherForTimestamp(this.getEventTimestamp());
 
 		// Calculate difference between min (reference) and min (event)
 		float maxDifference = this.minValue - min.getTemperature().floatValue(SI.CELSIUS);
@@ -176,11 +175,11 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 			 * Create limits
 			 */
 			// Event limits
-			long minTime = this.getMinHour(min.getMeasureTime(), this.eventDuration);
-			ColdDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.eventDuration
+			long minTime = this.getMinHour(min.getMeasureTime(), this.getEventDuration());
+			ColdDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.getEventDuration()
 					+ ")");
-			long maxTime = this.getMaxHour(min.getMeasureTime(), this.eventDuration);
-			ColdDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.eventDuration
+			long maxTime = this.getMaxHour(min.getMeasureTime(), this.getEventDuration());
+			ColdDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.getEventDuration()
 					+ ")");
 			long actTime;
 
@@ -189,7 +188,7 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 			long maxTimeInterpolate = maxTime - DateConverter.ONE_HOUR_IN_MILLIS;
 
 			// Sort values
-			List<Long> times = new ArrayList<>(this.map.keySet());
+			List<Long> times = new ArrayList<>(this.getMap().keySet());
 			Collections.sort(times);
 
 			/*
@@ -198,7 +197,7 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 			float value, difference;
 			for (Long time : times) {
 				// Get weather
-				MutableStationData weather = this.map.get(time);
+				MutableStationData weather = this.getMap().get(time);
 				actTime = weather.getMeasureTime().getTime();
 
 				// Between the interval?
@@ -250,18 +249,19 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 	 */
 	@Override
 	protected void initDecorator() {
-		if (this.props != null) {
+		if (this.getProps() != null) {
 			// Load properties from file
-			this.orderID = Integer.parseInt(this.props.getProperty("coldday_order_id"));
-			this.min_value = Integer.parseInt(this.props.getProperty("coldday_min_value"));
-			this.min_value_range = Integer.parseInt(this.props.getProperty("coldday_min_value_range"));
-			this.eventDuration = Float.parseFloat(this.props.getProperty("coldday_max_duration"));
+			this.setOrderID(Integer.parseInt(this.getProps().
+				getProperty("coldday_order_id")));
+			this.min_value = Integer.parseInt(this.getProps().getProperty("coldday_min_value"));
+			this.min_value_range = Integer.parseInt(this.getProps().getProperty("coldday_min_value_range"));
+			this.setEventDuration((Float) Float.parseFloat(this.getProps().getProperty("coldday_max_duration")));
 		} else {
 			// Take default values
-			this.orderID = ColdDayEvent.ORDER_ID;
+			this.setOrderID(ColdDayEvent.ORDER_ID);
 			this.min_value = 5;
 			this.min_value_range = 15;
-			this.eventDuration = 6.0f;
+			this.setEventDuration((Float) 6.0f);
 		}
 	}
 

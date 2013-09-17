@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.visualizationcontroller;
 
-import de.pgalise.simulation.shared.controller.SensorManagerController;
+import de.pgalise.simulation.service.SensorManagerController;
 
 /**
  * The interface for the operation center. It receives all information from the simulation

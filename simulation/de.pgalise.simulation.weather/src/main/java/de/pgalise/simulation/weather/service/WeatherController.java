@@ -17,7 +17,7 @@
 package de.pgalise.simulation.weather.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 
 /**
@@ -38,6 +38,7 @@ public interface WeatherController extends Controller {
 	 * 
 	 * @param timestamp
 	 *            Timestamp
+	 * @throws IllegalArgumentException  
 	 */
 	public void checkDate(long timestamp) throws IllegalArgumentException;
 

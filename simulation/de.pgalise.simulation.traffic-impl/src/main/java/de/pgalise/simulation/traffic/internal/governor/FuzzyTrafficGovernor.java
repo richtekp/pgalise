@@ -45,7 +45,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficGovernor")
 @Local(TrafficGovernor.class)
-public final class FuzzyTrafficGovernor implements TrafficGovernor {
+public class FuzzyTrafficGovernor implements TrafficGovernor {
 
 	/**
 	 * Path to FCL-file (FCL = Fuzzy Control Language) for {@link Car}s. To gain further information about FLC see
@@ -306,8 +306,6 @@ public final class FuzzyTrafficGovernor implements TrafficGovernor {
 	/**
 	 * Creates a default FuzzyTrafficGovernor from file {@link src /main/resources/traffic.fcl}
 	 * 
-	 * @param weatherController
-	 *            the necessary weatherController for setting the input variable
 	 * @exception IllegalArgumentException
 	 *                Is thrown if an argument is "null"
 	 */
@@ -322,7 +320,7 @@ public final class FuzzyTrafficGovernor implements TrafficGovernor {
 	 *             if ServiceDictionary returns 'null' for WeatherController.
 	 */
 	@PostConstruct
-	private void init() throws IllegalStateException {
+	public void init() {
 		// Extract WeatherController
 		this.weatherController = this.serviceDictionary.getController(WeatherController.class);
 		if (this.weatherController == null) {

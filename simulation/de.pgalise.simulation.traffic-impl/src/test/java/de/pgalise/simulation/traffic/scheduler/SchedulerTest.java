@@ -40,7 +40,6 @@ import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
-import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
@@ -84,22 +83,22 @@ public class SchedulerTest {
 
 		List<Vehicle<? extends VehicleData>> vehicles = new ArrayList<>();
 
-		Vehicle<? extends VehicleData> a = new BaseVehicle<CarData>(ee);
+		Vehicle<? extends VehicleData> a = new BaseVehicle<>(ee);
 		a.setName("a");
 		a.setPath(shortestPath);
 		vehicles.add(a);
 
-		Vehicle<? extends VehicleData> b = new BaseVehicle<CarData>(ee);
+		Vehicle<? extends VehicleData> b = new BaseVehicle<>(ee);
 		b.setName("b");
 		b.setPath(shortestPath);
 		vehicles.add(b);
 
-		Vehicle<? extends VehicleData> c = new BaseVehicle<CarData>(ee);
+		Vehicle<? extends VehicleData> c = new BaseVehicle<>(ee);
 		c.setName("c");
 		c.setPath(shortestPath);
 		vehicles.add(c);
 
-		Vehicle<? extends VehicleData> d = new BaseVehicle<CarData>(ee);
+		Vehicle<? extends VehicleData> d = new BaseVehicle<>(ee);
 		d.setName("d");
 		d.setPath(shortestPath);
 		vehicles.add(d);

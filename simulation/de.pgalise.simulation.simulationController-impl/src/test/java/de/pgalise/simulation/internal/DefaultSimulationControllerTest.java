@@ -28,7 +28,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.SimulationController;
-import de.pgalise.simulation.SpentTimeLogger;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.service.ServiceDictionary;
@@ -36,7 +35,7 @@ import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -47,9 +46,9 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -86,7 +85,7 @@ public class DefaultSimulationControllerTest {
 	private static EnergyController energyController;
 	private static WeatherController weatherController;
 	private static EntityManager sensorPersistenceService;
-	private static ServerConfigurationReader serverConfigurationReader;
+	private static ServerConfigurationReader<?> serverConfigurationReader;
 	private static CityInfrastructureData cityInfrastructureData;
 	private static ServerConfiguration serverConfiguration;
 
@@ -131,7 +130,6 @@ public class DefaultSimulationControllerTest {
 		testClass._setSensorPersistenceService(sensorPersistenceService);
 		testClass._setServerConfigurationReader(serverConfigurationReader);
 		testClass._setControlCenterController(controlCenterController);
-		testClass._setSpentTimeLogger(EasyMock.createNiceMock(SpentTimeLogger.class));
 
 		serverConfiguration = new ServerConfiguration();
 
@@ -139,17 +137,23 @@ public class DefaultSimulationControllerTest {
 				INTERVAL, CLOCK_GENERATOR_INTERVAL, "", "", new TrafficFuzzyData(0, 0.9, 1), new Boundary(
 						new Coordinate(), new Coordinate()));
 
-		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = GEOMETRY_FACTORY.createPolygon(
+		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
 				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1)
+				new Coordinate(referencePoint.x, referencePoint.y-1),
+				new Coordinate(referencePoint.x-1, referencePoint.y-1)
 			}
 		);
-		City city = new City("test_city", 200000, 100, true, true, referenceArea);
-		startParameter = new StartParameter(city, false, null, null);
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			referenceArea);
+
 	}
 
 	/**
@@ -455,7 +459,7 @@ public class DefaultSimulationControllerTest {
 		private SimulationEventList simulationEventList;
 
 		@Override
-		public Thread _getEventThread() {
+		public Thread getEventThread() {
 			return null;
 		}
 
@@ -470,7 +474,7 @@ public class DefaultSimulationControllerTest {
 		}
 
 		@Override
-		public void _setOperationCenterController(OperationCenterController operationCenterController) {
+		public void setOperationCenterController(OperationCenterController operationCenterController) {
 		}
 
 		@Override
@@ -503,7 +507,7 @@ public class DefaultSimulationControllerTest {
 		}
 
 		@Override
-		public void _setControlCenterController(ControlCenterController controlCenterController) {
+		public void setControlCenterController(ControlCenterController controlCenterController) {
 		}
 
 		@Override
@@ -516,7 +520,5 @@ public class DefaultSimulationControllerTest {
 
 		}
 
-		@Override
-		public void _setSpentTimeLogger(SpentTimeLogger spentTimeLogger) {}
 	}
 }

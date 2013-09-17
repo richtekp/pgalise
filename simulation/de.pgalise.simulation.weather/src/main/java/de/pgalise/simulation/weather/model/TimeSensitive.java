@@ -12,8 +12,7 @@ import java.sql.Time;
  *
  * @author richter
  */
-public interface BaseTimeSensitive extends Identifiable {
-	
+public interface TimeSensitive extends Identifiable {
 	
 	Date getMeasureDate();
 	

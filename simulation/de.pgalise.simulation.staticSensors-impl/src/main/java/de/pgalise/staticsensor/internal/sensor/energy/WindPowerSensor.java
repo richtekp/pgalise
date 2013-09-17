@@ -28,7 +28,6 @@ import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergySensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Class to generate a wind power sensor.
@@ -37,7 +36,7 @@ import javax.vecmath.Vector2d;
  * @author Marcus
  * @version 1.0
  */
-public final class WindPowerSensor extends EnergySensor {
+public class WindPowerSensor extends EnergySensor {
 
 	/**
 	 * Calculate the air density.

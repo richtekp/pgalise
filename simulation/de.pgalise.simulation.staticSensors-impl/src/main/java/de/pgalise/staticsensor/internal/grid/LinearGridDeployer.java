@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
-import java.awt.Rectangle;
 import de.pgalise.simulation.staticsensor.grid.GridDeployer;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;

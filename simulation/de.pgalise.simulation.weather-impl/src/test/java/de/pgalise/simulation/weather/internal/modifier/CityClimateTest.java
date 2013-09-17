@@ -22,7 +22,6 @@ import de.pgalise.it.TestUtils;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
-import java.util.Properties;
 
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
@@ -53,9 +52,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.After;
+import org.junit.BeforeClass;
 
 /**
  * JUnit test for CityClimatemodifier
@@ -66,8 +67,9 @@ import org.junit.After;
 @LocalClient
 @ManagedBean
 public class CityClimateTest {
-	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	@PersistenceUnit(unitName = "weather_test", name="weather_test_CityClimateTest")
+	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
+	private static EJBContainer CONTAINER;
 	
 	/**
 	 * End timestamp
@@ -101,11 +103,8 @@ public class CityClimateTest {
 	
 	private	City city;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public CityClimateTest() throws NamingException {
-		service = new DefaultWeatherService(city, loader);
-		 Properties p = new Properties();
-    p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 		
@@ -129,6 +128,11 @@ public class CityClimateTest {
 
 		// Create service
 		service = new DefaultWeatherService(city, loader);
+	}
+	
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
 	}
 	
 	private Queue<Object> deletes = new LinkedList<>();

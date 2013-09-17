@@ -19,7 +19,6 @@ package de.pgalise.util.datamodel;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * 
@@ -28,7 +27,7 @@ import javax.persistence.Table;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_STOPS")
-public final class BusStop {
+public class BusStop {
 	
 	@Column(name = "STOP_NAME")
 	private String stopName;

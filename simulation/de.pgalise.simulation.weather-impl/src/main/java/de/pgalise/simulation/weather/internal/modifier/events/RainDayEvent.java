@@ -29,7 +29,6 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -47,7 +46,7 @@ import java.util.List;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public final class RainDayEvent extends WeatherDayEventModifier {
+public class RainDayEvent extends WeatherDayEventModifier {
 
 	/**
 	 * Event type
@@ -147,8 +146,8 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 	@Override
 	public void deployChanges() {
 		// Calculate value
-		if (this.eventValue != null) {
-			this.maxValue = this.eventValue;
+		if (this.getEventValue() != null) {
+			this.maxValue = this.getEventValue();
 		} else {
 			do {
 				this.maxValue = this.getRandomDouble(this.max_value);
@@ -156,11 +155,11 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 		}
 
 		// Get time
-		if (this.eventTimestamp < 1) {
-			this.eventTimestamp = this.getRandomTimestamp(this.simulationTimestamp);
+		if (this.getEventTimestamp() < 1) {
+			this.setEventTimestamp(this.getRandomTimestamp(this.getSimulationTimestamp()));
 		}
 
-		StationData max = this.getNextWeatherForTimestamp(this.eventTimestamp);
+		StationData max = this.getNextWeatherForTimestamp(this.getEventTimestamp());
 
 		long minTime, maxTime, minTimeInterpolate, maxTimeInterpolate, actTime;
 
@@ -233,11 +232,11 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 			 * Create limits
 			 */
 			// Event limits
-			minTime = this.getMinHour(max.getMeasureTime(), this.eventDuration);
-			RainDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.eventDuration
+			minTime = this.getMinHour(max.getMeasureTime(), this.getEventDuration());
+			RainDayEvent.log.debug("Min. time of event: " + new Date(minTime) + " (Duration: " + this.getEventDuration()
 					+ ")");
-			maxTime = this.getMaxHour(max.getMeasureTime(), this.eventDuration);
-			RainDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.eventDuration
+			maxTime = this.getMaxHour(max.getMeasureTime(), this.getEventDuration());
+			RainDayEvent.log.debug("Max. time of event: " + new Date(maxTime) + " (Duration: " + this.getEventDuration()
 					+ ")");
 
 			// Interpolate limits for difference
@@ -245,7 +244,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 			maxTimeInterpolate = maxTime - DateConverter.ONE_HOUR_IN_MILLIS;
 
 			// Sort values
-			List<Long> times = new ArrayList<>(this.map.keySet());
+			List<Long> times = new ArrayList<>(this.getMap().keySet());
 			Collections.sort(times);
 
 			/*
@@ -254,7 +253,7 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 			float value, difference;
 			for (Long time : times) {
 				// Get weather
-				MutableStationData weather = this.map.get(time);
+				MutableStationData weather = this.getMap().get(time);
 				actTime = weather.getMeasureTime().getTime();
 
 				// Between the interval?
@@ -304,16 +303,17 @@ public final class RainDayEvent extends WeatherDayEventModifier {
 	 */
 	@Override
 	protected void initDecorator() {
-		if (this.props != null) {
+		if (this.getProps() != null) {
 			// Load properties from file
-			this.orderID = Integer.parseInt(this.props.getProperty("rainday_order_id"));
-			this.max_value = Integer.parseInt(this.props.getProperty("rainday_max_value"));
-			this.eventDuration = Float.parseFloat(this.props.getProperty("rainday_max_duration"));
+			this.setOrderID(Integer.parseInt(this.getProps().
+				getProperty("rainday_order_id")));
+			this.max_value = Integer.parseInt(this.getProps().getProperty("rainday_max_value"));
+			this.setEventDuration((Float) Float.parseFloat(this.getProps().getProperty("rainday_max_duration")));
 		} else {
 			// Take default values
-			this.orderID = RainDayEvent.ORDER_ID;
+			this.setOrderID(RainDayEvent.ORDER_ID);
 			this.max_value = 5;
-			this.eventDuration = 5.0f;
+			this.setEventDuration((Float) 5.0f);
 		}
 	}
 }

@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterfere
  * @author Marcus
  * @version 1.0
  */
-public final class CompositeTopoRadarInterferer implements TopoRadarInterferer {
+public class CompositeTopoRadarInterferer implements TopoRadarInterferer {
 
 	/**
 	 * the composite {@link TopoRadarInterferer}s

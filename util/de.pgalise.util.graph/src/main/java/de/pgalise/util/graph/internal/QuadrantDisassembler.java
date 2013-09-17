@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
-import java.awt.Rectangle;
 import de.pgalise.util.btree.BNode;
 import de.pgalise.util.btree.BTree;
 import de.pgalise.util.graph.disassembler.Disassembler;
@@ -36,7 +35,7 @@ import org.geotools.geometry.jts.JTS;
 public class QuadrantDisassembler implements Disassembler {
 	@Override
 	public List<Geometry> disassemble(Geometry geometry, int numServers) {
-		final List<Geometry> result = new ArrayList<Geometry>();
+		final List<Geometry> result = new ArrayList<>();
 
 		BTree<Geometry> tree = this.getTree(geometry, numServers);
 		for (int i = 0; i < tree.getLeafs().size(); i++) {
@@ -57,7 +56,7 @@ public class QuadrantDisassembler implements Disassembler {
 	 * @return BTree
 	 */
 	public BTree<Geometry> getTree(Geometry rootData, int numServers) {
-		BTree<Geometry> tree = new BTree<Geometry>();
+		BTree<Geometry> tree = new BTree<>();
 		tree.getRoot().setData(rootData);
 		if (numServers > 1) {
 			do {

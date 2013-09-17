@@ -11,7 +11,7 @@ import javax.measure.quantity.Temperature;
  *
  * @author richter
  */
-public interface StationData extends BaseWeatherInformation {
+public interface StationData extends WeatherInformation {
 
 	Integer getAirPressure();
 

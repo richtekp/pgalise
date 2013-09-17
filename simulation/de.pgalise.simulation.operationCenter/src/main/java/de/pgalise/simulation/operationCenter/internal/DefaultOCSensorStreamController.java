@@ -17,9 +17,7 @@
 package de.pgalise.simulation.operationCenter.internal;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Date;
@@ -27,8 +25,6 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.Ostermiller.util.CSVParse;
-import com.Ostermiller.util.CSVParser;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;

@@ -55,8 +55,8 @@ public class ListScheduler extends Scheduler {
 	 * Default constructor
 	 */
 	private ListScheduler() {
-		this.scheduledItems = new ArrayList<Item>();
-		this.vehicles = new ArrayList<Item>();
+		this.scheduledItems = new ArrayList<>();
+		this.vehicles = new ArrayList<>();
 		handlerList = new LinkedList<>();
 	}
 

@@ -41,6 +41,8 @@ import javax.persistence.criteria.Root;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
+import de.pgalise.simulation.shared.exception.NoWeatherServiceDataFoundException;
+import de.pgalise.simulation.shared.exception.NoWeatherStationDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.AbstractStationData;
@@ -48,16 +50,17 @@ import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.model.StationDataNormal;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Time;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
 import javax.persistence.NoResultException;
+import javax.persistence.TemporalType;
 
 /**
  * This class loads the weather station data from the database. <br />
@@ -84,7 +87,7 @@ import javax.persistence.NoResultException;
 @Lock(LockType.READ)
 @Local
 @Singleton(name = "de.pgalise.simulation.weather.dataloader.WeatherLoader", mappedName = "de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader")
-public class DatabaseWeatherLoader implements WeatherLoader {
+public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondition> {
 
 	private EntityManager entityManager;
 
@@ -109,11 +112,6 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	private Class<AbstractStationData> stationDataClass = null;
 
 	/**
-	 * Name for station class
-	 */
-	private String stationDataClassName = "";
-
-	/**
 	 * Default constructor
 	 */
 	public DatabaseWeatherLoader() {
@@ -130,7 +128,12 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		this.changeLoadOption();
 	}
 
-	@PersistenceContext(unitName = "weather_data")
+	public DatabaseWeatherLoader(EntityManager entityManager) {
+		this();
+		this.entityManager = entityManager;
+	}
+
+	@PersistenceContext(unitName = "weather")
 	public void setEntityManager(EntityManager entityManager) {
 			this.entityManager = entityManager;
 	}
@@ -181,7 +184,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	}
 
 	@Override
-	public ServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public ServiceDataForecast<DefaultWeatherCondition> loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 
 		// Get the data
 		DefaultServiceDataCurrent data;
@@ -193,7 +196,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		
 
 		// Copy informations to the weather object
-		ServiceDataForecast weather = new DefaultServiceDataForecast(
+		ServiceDataForecast<DefaultWeatherCondition> weather = new DefaultServiceDataForecast(
 			data.getMeasureDate(),
 			data.getMeasureTime(),
 			data.getCity(), 
@@ -202,7 +205,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 			data.getRelativHumidity(), 
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE)
+			DefaultWeatherCondition.retrieveCondition(DefaultWeatherCondition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}
@@ -219,21 +222,20 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 	 * @return ServiceDataForecast
 	 */
 	@Override
-	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public ServiceDataForecast<DefaultWeatherCondition> loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+		//check that city has been persisted to avoid exception query in following method invocations
+		this.entityManager.persist(city);
 
 		// Get the data
-		ServiceDataForecast data;
+		ServiceDataForecast<DefaultWeatherCondition> data;
 		TypedQuery<DefaultServiceDataForecast> query = this.entityManager.createNamedQuery("DefaultServiceDataForecast.findByDate",
 				DefaultServiceDataForecast.class);
-		if(query == null) {
-			return null;
-		}
 		query.setParameter("date", new Date(timestamp));
 		query.setParameter("city", city);
 		try {
 			data = query.getSingleResult();
 		}catch(NoResultException ex) {
-			throw new NoWeatherDataFoundException(timestamp);
+			throw new NoWeatherServiceDataFoundException(timestamp);
 		}		
 
 		// Copy informations to the weather object
@@ -246,7 +248,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 			data.getRelativHumidity(), 
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE)
+			DefaultWeatherCondition.retrieveCondition(DefaultWeatherCondition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}
@@ -307,9 +309,6 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
-
-		// Set class name
-		this.stationDataClassName = this.prop.getProperty(classdata);
 	}
 
 	/**
@@ -479,13 +478,12 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 
 		// Get information for that day
 		List<AbstractStationData> weatherList;
-			TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findByDate", stationDataClass.getSimpleName()),
-					this.stationDataClass);
-		query.setParameter("date", new Date(timestamp));
+		TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findByDate", stationDataClass.getSimpleName()), stationDataClass);
+		query.setParameter("date", new Date(timestamp), TemporalType.DATE);
 		weatherList = query.getResultList();
 
 		if ((weatherList == null) || weatherList.isEmpty()) {
-			throw new NoWeatherDataFoundException(timestamp);
+			throw new NoWeatherStationDataFoundException(timestamp);
 		}
 
 		return weatherList;
@@ -534,14 +532,13 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		}
 
 		// Get first result of that day
-			TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(this.stationDataClassName
-					+ ".findFirstEntryByDate", this.stationDataClass);
+			TypedQuery<? extends AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findFirstEntryByDate", stationDataClass), this.stationDataClass);
 			query.setParameter("date", new Date(timestamp));
 			query.setMaxResults(1);
 		try {
 			return query.getSingleResult();
 		} catch (NoResultException e) {
-			throw new NoWeatherDataFoundException(timestamp);
+			throw new NoWeatherStationDataFoundException(timestamp);
 		}
 	}
 
@@ -560,14 +557,13 @@ public class DatabaseWeatherLoader implements WeatherLoader {
 		}
 
 		// Get last result of that day
-		TypedQuery<AbstractStationData> query = this.entityManager.createNamedQuery(
-				this.stationDataClassName + ".findLastEntryByDate", this.stationDataClass);
-		query.setParameter("date", new Date(timestamp));
+		TypedQuery<? extends AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findLastEntryByDate", stationDataClass), this.stationDataClass);
+		query.setParameter("date", new Date(timestamp), TemporalType.DATE);
 		query.setMaxResults(1);
 		try {
 			return query.getSingleResult();
 		}catch(NoResultException ex) {
-			throw new NoWeatherDataFoundException(timestamp);
+			throw new NoWeatherStationDataFoundException(timestamp);
 		}
 	}
 }

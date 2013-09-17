@@ -45,7 +45,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public final class XMLVehicleFactory implements CarFactory, BusFactory, TruckFactory, MotorcycleFactory, BicycleFactory {
+public class XMLVehicleFactory implements CarFactory, BusFactory, TruckFactory, MotorcycleFactory, BicycleFactory {
 
 	/**
 	 * Car factory

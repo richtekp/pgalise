@@ -19,6 +19,7 @@ package de.pgalise.simulation.service.manager;
 import java.util.List;
 
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import de.pgalise.simulation.service.Service;
 
 /**
  * The ServerConfigurationReader looks for services the user is interested in
@@ -26,25 +27,24 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
  * Whenever a service could be found a callback function is executed in order to inform the user 
  * and pass him the resolved reference to the service.
  *  
+ * @param <T> 
  * @see de.pgalise.simulation.shared.controller.ServerConfiguration
  * @see de.pgalise.simulation.service.manager.ServiceHandler
  * @author mustafa
  *
  */
-public interface ServerConfigurationReader {
+public interface ServerConfigurationReader<T extends Service> {
 	/**
 	 * 
 	 * @param serverConfig list of servers and distributed services
 	 * @param handler list of callback functions used to inform the user about the services he is looking for
 	 */
-	@SuppressWarnings("rawtypes")
-	public void read(ServerConfiguration serverConfig, List<ServiceHandler> handler);
+	public void read(ServerConfiguration serverConfig, List<ServiceHandler<T>> handler);
 
 	/**
 	 * 
 	 * @param serverConfig list of servers and distributed services
 	 * @param handler callback function used to inform the user about the service he is looking for
 	 */
-	@SuppressWarnings("rawtypes")
-	public void read(ServerConfiguration serverConfig, ServiceHandler handler);
+	public void read(ServerConfiguration serverConfig, ServiceHandler<T> handler);
 }

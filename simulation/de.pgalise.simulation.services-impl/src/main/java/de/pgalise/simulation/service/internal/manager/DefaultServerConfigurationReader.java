@@ -37,6 +37,7 @@ import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
+import de.pgalise.simulation.service.Service;
 
 /**
  * Default implementation of the SeverConfigurationReader.
@@ -47,7 +48,7 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
 @Lock(LockType.READ)
 @Local
 @Singleton
-public class DefaultServerConfigurationReader implements ServerConfigurationReader {
+public class DefaultServerConfigurationReader implements ServerConfigurationReader<Service> {
 
 	/**
 	 * Suffix for remote
@@ -66,7 +67,6 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 	 * Default constructor
 	 */
 	public DefaultServerConfigurationReader() {
-
 	}
 
 	/**
@@ -79,9 +79,8 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 		localConfigReader = reader;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked", "unused" })
 	@Override
-	public void read(ServerConfiguration serverConfig, List<ServiceHandler> handlerList) {
+	public void read(ServerConfiguration serverConfig, List<ServiceHandler<Service>> handlerList) {
 		// remote referenzen beziehen
 		try {
 			String host = localConfigReader.getProperty(Identifier.SERVER_HOST);
@@ -101,11 +100,11 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 				if (!((ip.equals("127.0.0.1") || ip.equals(lip)) && port.equals(lport))) {
 					// log.debug("Resolving ejbs on remote host (" + server +") ...");
 					Properties props = new Properties();
-					props.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
+					props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.RemoteInitialContextFactory");
 					if (!useEjbdProtocol) {
-						props.put(Context.PROVIDER_URL, "http://" + server + "/tomee/ejb");
+						props.setProperty(Context.PROVIDER_URL, "http://" + server + "/tomee/ejb");
 					} else {
-						props.put(Context.PROVIDER_URL, "ejbd://" + server);
+						props.setProperty(Context.PROVIDER_URL, "ejbd://" + server);
 					}
 					// props.put("java.naming.security.principal", "tomee");
 					// props.put("java.naming.security.credentials", "tomee");
@@ -113,9 +112,9 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 
 					List<Entity> entities = config.get(server);
 					for (Entity entity : entities) {
-						for (ServiceHandler handler : handlerList) {
-							if (handler.getSearchedName().equals(entity.getName())) {
-								Object o = remoteContext.lookup(entity.getName() + REMOTE_SUFFIX);
+						for (ServiceHandler<Service> handler : handlerList) {
+							if (handler.getName().equals(entity.getName())) {
+								Service o = (Service) remoteContext.lookup(entity.getName() + REMOTE_SUFFIX);
 								handler.handle(server, o);
 							}
 						}
@@ -123,26 +122,27 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 				} else {
 					// log.debug("Resolving ejbs on local host: (" + server +") ...");
 					Properties props = new Properties();
-					props.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
+					props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
 					Context localContext = new InitialContext(props);
 
 					List<Entity> entities = config.get(server);
 					for (Entity entity : entities) {
-						for (ServiceHandler handler : handlerList) {
-							if (handler.getSearchedName().equals(entity.getName())) {
-								if (handler.getSearchedName().equals(ServiceDictionary.FRONT_CONTROLLER)) {
+						for (ServiceHandler<Service> handler : handlerList) {
+							if (handler.getName().equals(entity.getName())) {
+								if (handler.getName().equals(ServiceDictionary.FRONT_CONTROLLER)) {
 									Properties p = new Properties();
-									p.put(Context.INITIAL_CONTEXT_FACTORY,
+									p.setProperty(Context.INITIAL_CONTEXT_FACTORY,
 											"org.apache.openejb.client.RemoteInitialContextFactory");
 									if (!useEjbdProtocol) {
-										props.put(Context.PROVIDER_URL, "http://" + server + "/tomee/ejb");
+										props.setProperty(Context.PROVIDER_URL, "http://" + server + "/tomee/ejb");
 									} else {
-										props.put(Context.PROVIDER_URL, "ejbd://" + server);
+										props.setProperty(Context.PROVIDER_URL, "ejbd://" + server);
 									}
-									Context remoteContext = new InitialContext(props);
-									handler.handle(server, localContext.lookup(entity.getName() + REMOTE_SUFFIX));
+									Service service = (Service) localContext.lookup(entity.getName() + REMOTE_SUFFIX);
+									handler.handle(server, service);
 								} else {
-									handler.handle(server, localContext.lookup(entity.getName() + LOCAL_SUFFIX));
+									Service service = (Service) localContext.lookup(entity.getName() + LOCAL_SUFFIX);
+									handler.handle(server, service);
 								}
 							}
 						}
@@ -150,14 +150,13 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 				}
 			}
 		} catch (NamingException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public void read(ServerConfiguration serverConfig, ServiceHandler handler) {
-		List<ServiceHandler> list = new LinkedList<>();
+	public void read(ServerConfiguration serverConfig, ServiceHandler<Service> handler) {
+		List<ServiceHandler<Service>> list = new LinkedList<>();
 		list.add(handler);
 		this.read(serverConfig, list);
 	}

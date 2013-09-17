@@ -18,7 +18,6 @@ package de.pgalise.staticsensor.internal.sensor.energy.interferer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that shows no errors
@@ -27,7 +26,7 @@ import javax.vecmath.Vector2d;
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
-public final class EnergyNoInterferer implements EnergyInterferer {
+public class EnergyNoInterferer implements EnergyInterferer {
 
 	@Override
 	public double interfere(double mutableValue, Coordinate position, long simTime) {

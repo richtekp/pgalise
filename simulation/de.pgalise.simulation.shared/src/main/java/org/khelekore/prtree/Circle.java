@@ -14,7 +14,7 @@ class Circle<T> implements Serializable {
     private int currentPos;
 
     public Circle (int size) {
-	data = new ArrayList<T> (size);
+	data = new ArrayList<> (size);
     }
 
     public void add (T t) {

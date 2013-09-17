@@ -105,7 +105,7 @@ public abstract class SendSensorDataStrategy {
 	 * @param sensorData
 	 * @throws IOException
 	 */
-	public final synchronized void addSensorData(long timestamp, SensorData sensorData) throws IOException {
+	public synchronized void addSensorData(long timestamp, SensorData sensorData) throws IOException {
 		logger.debug("AddSensorData");
 		if(this.isItTimeToSend(timestamp)) {
 			logger.debug("SendSensorData");

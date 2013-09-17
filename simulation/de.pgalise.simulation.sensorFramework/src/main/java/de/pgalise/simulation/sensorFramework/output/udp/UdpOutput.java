@@ -32,7 +32,7 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * @version 0.1
  *
  */
-public final class UdpOutput implements Output {
+public class UdpOutput implements Output {
 
 	/** datagram to send */
 	private DatagramSocket datagramSocket;

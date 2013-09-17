@@ -177,7 +177,7 @@ public class TcpIpOutput implements Output {
 	 *                if output is not in 'Transmitting' state
 	 */
 	@Override
-	public final void transmitDouble(final double value) throws IllegalStateException {
+	public void transmitDouble(final double value) throws IllegalStateException {
 		this.getCurrentState().transmitDouble(value);
 	}
 
@@ -190,7 +190,7 @@ public class TcpIpOutput implements Output {
 	 *                if output is not in 'Transmitting' state
 	 */
 	@Override
-	public final void transmitFloat(final float value) throws IllegalStateException {
+	public void transmitFloat(final float value) throws IllegalStateException {
 		this.getCurrentState().transmitFloat(value);
 	}
 
@@ -216,7 +216,7 @@ public class TcpIpOutput implements Output {
 	 *                if output is not in 'Transmitting' state
 	 */
 	@Override
-	public final void transmitInt(final int value) throws IllegalStateException {
+	public void transmitInt(final int value) throws IllegalStateException {
 		this.getCurrentState().transmitInt(value);
 	}
 
@@ -229,7 +229,7 @@ public class TcpIpOutput implements Output {
 	 *                if output is not in 'Transmitting' state
 	 */
 	@Override
-	public final void transmitLong(final long value) throws IllegalStateException {
+	public void transmitLong(final long value) throws IllegalStateException {
 		this.getCurrentState().transmitLong(value);
 	}
 
@@ -242,7 +242,7 @@ public class TcpIpOutput implements Output {
 	 *                if output is not in 'Transmitting' state
 	 */
 	@Override
-	public final void transmitShort(final short value) throws IllegalStateException {
+	public void transmitShort(final short value) throws IllegalStateException {
 		this.getCurrentState().transmitShort(value);
 	}
 
@@ -257,7 +257,7 @@ public class TcpIpOutput implements Output {
 	 *                if output is not in \"Transmitting\" state
 	 */
 	@Override
-	public final void transmitString(final String value) throws IllegalArgumentException, IllegalStateException {
+	public void transmitString(final String value) throws IllegalArgumentException, IllegalStateException {
 		this.getCurrentState().transmitString(value);
 	}
 

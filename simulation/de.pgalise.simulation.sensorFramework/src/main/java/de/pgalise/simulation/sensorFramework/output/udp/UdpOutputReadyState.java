@@ -23,7 +23,7 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * @author marcus
  *
  */
-final class UdpOutputReadyState extends UdpOutputState {
+class UdpOutputReadyState extends UdpOutputState {
 
 	/**
 	 * Constructor

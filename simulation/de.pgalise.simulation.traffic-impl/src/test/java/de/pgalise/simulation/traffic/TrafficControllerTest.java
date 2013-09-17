@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.easymock.IAnswer;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.pgalise.simulation.shared.controller.InitParameter;
@@ -48,7 +47,6 @@ import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
 import de.pgalise.simulation.traffic.server.TrafficServer;
-import javax.vecmath.Vector2d;
 
 /**
  * Tests the DefaultTrafficController

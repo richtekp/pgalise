@@ -16,8 +16,9 @@
  
 package de.pgalise.simulation.visualizationcontroller;
 
-import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.simulation.shared.controller.SimulationComponent;
+import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.SimulationComponent;
+
 /**
  * The interface for the control center. It receives all information from the simulation
  * and sends it e.g. to the ControlCenter web application via HTTP.
@@ -29,8 +30,8 @@ public interface ControlCenterController extends VisualizationController, Contro
 	 * Displays an exception.
 	 * 
 	 * @param exception
-	 * @throws StopAllException
 	 * @throws IllegalStateException
 	 */
+	@Override
 	public void displayException(Exception exception) throws IllegalStateException;
 }

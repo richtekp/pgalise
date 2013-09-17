@@ -38,7 +38,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * 
  * @author Marcus
  */
-public final class PriorityRoad extends TrafficRule {
+public class PriorityRoad extends TrafficRule {
 
 	/**
 	 * TrafficGraphExtensions used for further calculations

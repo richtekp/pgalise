@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
-import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that creates generally low errors

@@ -21,9 +21,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.util.EntityDatabaseManager;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
 import org.junit.Test;
 
@@ -33,11 +33,8 @@ import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -68,7 +65,7 @@ public class DefaultWeatherServiceManagerTest {
 	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_collector_test")
 	private EntityManagerFactory entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 	public DefaultWeatherServiceManagerTest() throws NamingException {
@@ -85,7 +82,7 @@ public class DefaultWeatherServiceManagerTest {
 
 	@Test
 	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
-		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(Arrays.asList(new YahooWeather()));
+		Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>>(Arrays.asList(new YahooWeather()));
 		DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(baseDatabaseManager, serviceStrategys);
 		
 		InitialContext initialContext = new InitialContext();

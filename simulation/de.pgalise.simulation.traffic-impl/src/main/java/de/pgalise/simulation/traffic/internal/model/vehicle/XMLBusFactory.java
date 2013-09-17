@@ -81,7 +81,7 @@ public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFac
 		BusData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
 		data.setInfraredSensorHelper(infraredSensor);
-		return new DefaultMotorizedVehicle<BusData>(id, "bus" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>(id, "bus" + getNextCounter(), data, this.trafficGraphExtensions);
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFac
 		BusData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
 		data.setInfraredSensorHelper(infraredSensor);
-		return new DefaultMotorizedVehicle<BusData>(id, "bus" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>(id, "bus" + getNextCounter(), data, this.trafficGraphExtensions);
 	}
 
 	@Override

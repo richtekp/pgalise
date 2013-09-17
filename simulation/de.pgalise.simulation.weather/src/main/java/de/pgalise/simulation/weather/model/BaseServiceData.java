@@ -10,9 +10,9 @@ import de.pgalise.simulation.shared.city.City;
  *
  * @author richter
  */
-public interface BaseServiceData extends BaseWeatherInformation {
+public interface BaseServiceData<C extends WeatherCondition> extends WeatherInformation {
 	
-	WeatherCondition getCondition();
+	C getCondition();
 	
 	City getCity();
 	

@@ -141,7 +141,7 @@ public abstract class XMLAbstractFactory<T extends VehicleData> {
 		}
 
 		// return random value
-		List<T> valuesList = new ArrayList<T>(vehicleData.values());
+		List<T> valuesList = new ArrayList<>(vehicleData.values());
 		int randomIndex = random.nextInt(valuesList.size());
 
 		return valuesList.get(randomIndex);

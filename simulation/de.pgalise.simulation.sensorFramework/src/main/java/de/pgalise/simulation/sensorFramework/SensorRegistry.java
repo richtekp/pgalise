@@ -18,7 +18,7 @@ package de.pgalise.simulation.sensorFramework;
 
 import java.util.Set;
 
-import de.pgalise.simulation.shared.controller.SimulationComponent;
+import de.pgalise.simulation.service.SimulationComponent;
 
 /**
  * SensorRegistry

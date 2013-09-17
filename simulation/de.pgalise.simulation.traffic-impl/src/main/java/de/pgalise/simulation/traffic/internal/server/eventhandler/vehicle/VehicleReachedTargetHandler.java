@@ -46,7 +46,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author marcus
  * @author Lena
  */
-public final class VehicleReachedTargetHandler implements VehicleEventHandler {
+public class VehicleReachedTargetHandler implements VehicleEventHandler {
 
 	@Override
 	public VehicleEventType getType() {
@@ -56,8 +56,9 @@ public final class VehicleReachedTargetHandler implements VehicleEventHandler {
 	@Override
 	public void handleEvent(VehicleEvent event) {
 		for (final Sensor sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
-			if (sensor instanceof StaticTrafficSensor)
+			if (sensor instanceof StaticTrafficSensor) {
 				((StaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());
+			}
 		}
 
 		if (event.getVehicle().getData() instanceof BusData) {
@@ -71,8 +72,9 @@ public final class VehicleReachedTargetHandler implements VehicleEventHandler {
 				BusData temp = (BusData) event.getVehicle().getData();
 				temp.setCurrentPassengerCount(random.nextInt(max));
 
-				if (temp.getInfraredSensor() != null)
+				if (temp.getInfraredSensor() != null) {
 					((InfraredSensor) temp.getInfraredSensor()).sendDataOnNextUpdate();
+				}
 			}
 		}
 
@@ -83,8 +85,9 @@ public final class VehicleReachedTargetHandler implements VehicleEventHandler {
 				AttractionTrafficEvent e = ((AttractionTrafficEvent) te);
 				long startTime = e.getAttractionEndTimestamp();
 
-				if (event.getSimulationTime() >= e.getAttractionEndTimestamp())
+				if (event.getSimulationTime() >= e.getAttractionEndTimestamp()) {
 					startTime = event.getSimulationTime() + event.getServer().getUpdateIntervall();
+				}
 
 				/*
 				 * Way back: Create way from the target node ID to a random node

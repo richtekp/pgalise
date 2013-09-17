@@ -131,7 +131,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	 * @author Mustafa
 	 * @version 1.0 (Feb 17, 2013)
 	 */
-	public static class ReceivedVehicle implements Comparable<ReceivedVehicle> {
+	private static class ReceivedVehicle implements Comparable<ReceivedVehicle> {
 
 		/**
 		 * Vehicle
@@ -151,7 +151,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 		 * @param serverId
 		 *            ID of the server
 		 */
-		public ReceivedVehicle(Vehicle<? extends VehicleData> vehicle, int serverId) {
+		ReceivedVehicle(Vehicle<? extends VehicleData> vehicle, int serverId) {
 			this.vehicle = vehicle;
 			this.serverId = serverId;
 		}
@@ -194,7 +194,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	/**
 	 * GPS mapper (as EJB)
 	 */
-	private Coordinate mapper;
+	private Coordinate coordinate;
 
 	/**
 	 * Service dictionary (as EJB)
@@ -244,7 +244,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	 * Server configurations
 	 */
 	@EJB
-	private ServerConfigurationReader serverConfigReader;
+	private ServerConfigurationReader<TrafficServerLocal> serverConfigReader;
 
 	/**
 	 * Config reader
@@ -294,7 +294,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	/**
 	 * List of all known traffic servers
 	 */
-	private List<TrafficServer> serverList;
+	private List<TrafficServerLocal> serverList;
 
 	private List<Integer> serverIds;
 
@@ -339,8 +339,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	/**
 	 * Constructor (for tests)
 	 * 
-	 * @param mapper
-	 *            GPS mapper
+	 * @param coordinate 
 	 * @param serviceDictionary
 	 *            Service dictionary
 	 * @param sensorRegistry
@@ -349,14 +348,15 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	 *            Event handler manager
 	 * @param slist
 	 *            List with all known traffic servers
+	 * @param sensorFactory
+	 * @param graph  
 	 */
-	@SuppressWarnings("unchecked")
-	public DefaultTrafficServer(ServiceDictionary serviceDictionary, SensorRegistry sensorRegistry,
+	public DefaultTrafficServer(Coordinate coordinate, ServiceDictionary serviceDictionary, SensorRegistry sensorRegistry,
 			SimulationEventHandlerManager eventHandlerManager, List<TrafficServerLocal> slist,
 			SensorFactory sensorFactory, Graph graph) {
 		DefaultTrafficServer.JUNIT_TEST = true;
 
-		this.mapper = mapper;
+		this.coordinate = coordinate;
 		this.serviceDictionary = serviceDictionary;
 		this.sensorRegistry = sensorRegistry;
 		this.sensorFactory = sensorFactory;
@@ -371,7 +371,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 		this.instanciateDependencies();
 
 		if (slist != null) {
-			this.serverList = (List<TrafficServer>) (List<?>) slist;
+			this.serverList = slist;
 			for (TrafficServer s : slist) {
 				this.serverIds.add(s.getServerId());
 			}
@@ -547,14 +547,13 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 
 			List<Vehicle<? extends VehicleData>> vehicles = this.trafficGraphExtensions.getVehiclesOnNode(rv
 					.getVehicle().getCurrentNode(), rv.getVehicle().getData().getType());
-			if (vehicles.size() == 0) {
+			if (vehicles.isEmpty()) {
 				if (rv.getVehicle().getPosition().toString().equals(posBeforeUpdate)) {
 					vehicles.add(rv.getVehicle());
 					log.debug("Vehicle " + rv.getVehicle().getName() + " registered on node "
 							+ rv.getVehicle().getCurrentNode().getId());
 				}
 				try {
-					;
 					rv.getVehicle().setState(State.NOT_STARTED);
 					Item item = new Item(rv.getVehicle(), this.currentTime, this.updateIntervall);
 					log.debug(String.format("Scheduled moved vehicle %s to drive on next update: %s", item.getVehicle()
@@ -563,7 +562,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 					this.scheduler.scheduleItem(item);
 					i.remove();
 				} catch (IllegalAccessException e) {
-					e.printStackTrace();
+					log.warn("see nested exception", e);
 				}
 			} else {
 				log.debug("Could not process moved vehicle " + rv.getVehicle().getName()
@@ -609,16 +608,18 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	 *            server configuration
 	 * @return List of all traffic servers
 	 */
-	private List<TrafficServer> getTrafficServer(ServerConfiguration serverConfig) {
-		this.serverConfigReader.read(serverConfig, new ServiceHandler<TrafficServer>() {
+	private List<TrafficServerLocal> getTrafficServer(ServerConfiguration serverConfig) {
+		this.serverConfigReader.read(
+			serverConfig, 
+			new ServiceHandler<TrafficServerLocal>() {
 
 			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return ServiceDictionary.TRAFFIC_SERVER;
 			}
 
 			@Override
-			public void handle(String server, TrafficServer service) {
+			public void handle(String server, TrafficServerLocal service) {
 				if (!server.equals(DefaultTrafficServer.this.configReader.getProperty(Identifier.SERVER_HOST))) {
 					log.debug("Found another traffic server on host: " + server);
 					DefaultTrafficServer.this.serverList.add(service);
@@ -639,7 +640,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 		this.serverList = new ArrayList<>();
 		this.receivedVehicles = new ArrayList<>();
 		this.listedRoadBarriers = new HashSet<>();
-		this.eventForVehicle = new HashMap<UUID, TrafficEvent>();
+		this.eventForVehicle = new HashMap<>();
 		this.itemsToScheduleAfterAttractionReached = new ArrayList<>();
 		this.itemsToScheduleAfterFuzzy = new ArrayList<>();
 		this.itemsToRemoveAfterFuzzy = new ArrayList<>();
@@ -661,7 +662,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 			s.addScheduleHandler(this);
 			s2.addScheduleHandler(this);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			log.warn("see nested exception", e);
 		}
 	}
 
@@ -696,7 +697,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	 * @throws Exception
 	 */
 	private void loadSensorDependencies(InitParameter param) throws Exception {
-		this.sensorController = new DefaultSensorController(this, this.sensorRegistry, this.sensorFactory, this.mapper,
+		this.sensorController = new DefaultSensorController(this, this.sensorRegistry, this.sensorFactory, this.coordinate,
 				this.trafficGraphExtensions);
 	}
 	
@@ -779,10 +780,12 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 							this, vehicle, currentTime, 0));
 				}
 				// }
-			} else if (vehicle.getState() == State.IN_TRAFFIC_RULE)
+			} else if (vehicle.getState() == State.IN_TRAFFIC_RULE) {
 				item.setLastUpdate(currentTime);
-			else if (vehicle.getState() == State.IN_TRAFFIC_RULE)
+			}
+			else if (vehicle.getState() == State.IN_TRAFFIC_RULE) {
 				item.setLastUpdate(currentTime);
+			}
 			// log.debug(String.format("Vehicle %s changed position to %s", vehicle.getName(), vehicle.getPosition()));
 		}
 
@@ -799,7 +802,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 			this.loadEventHandler();
 			this.sensorController.init(param);
 
-			this.routeConstructor = new DefaultRouteConstructor(this.mapper, param.getCityInfrastructureData(),
+			this.routeConstructor = new DefaultRouteConstructor(this.coordinate, param.getCityInfrastructureData(),
 					param.getStartTimestamp(), this.serviceDictionary.getRandomSeedService(),
 					this.trafficGraphExtensions);
 			this.updateIntervall = param.getInterval();
@@ -818,7 +821,6 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 			// this.trafficGraphExtensions.setGraph(this.getGraph());
 			// this.trafficGraphExtensions.setRouteConstructor(this.routeConstructor);
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new InitializationException(e.getMessage());
 		}
 	}
@@ -834,7 +836,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 			// log.debug("Scheduler resetted, scheduled #items: "
 			// + this.scheduler.getScheduledItems().size());
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			log.warn("see nested exception", e);
 		}
 		this.listedRoadBarriers.clear();
 		this.trafficGraphExtensions.reset();
@@ -893,25 +895,26 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 		try {
 			this.getScheduler().removeExpiredItems(removeableVehicles);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			log.warn("see nested exception", e);
 		}
 
 		for (Item item : itemsToScheduleAfterAttractionReached) {
 			try {
 				this.getScheduler().scheduleItem(item);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+				log.warn("see nested exception", e);
 			}
 		}
 		itemsToScheduleAfterAttractionReached.clear();
 
-		if (this.fuzzyTrafficGovernor != null)
+		if (this.fuzzyTrafficGovernor != null) {
 			this.vehicleFuzzyManager.checkVehicleAmount(simulationEventList.getTimestamp());
+		}
 
 		try {
 			this.scheduler.removeScheduledItems(itemsToRemoveAfterFuzzy);
 		} catch (IllegalAccessException e1) {
-			e1.printStackTrace();
+			log.warn("see nested exception", e1);
 		}
 		itemsToRemoveAfterFuzzy.clear();
 
@@ -919,7 +922,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 			try {
 				this.getScheduler().scheduleItem(item);
 			} catch (IllegalAccessException e) {
-				e.printStackTrace();
+			log.warn("see nested exception", e);
 			}
 		}
 		itemsToScheduleAfterFuzzy.clear();
@@ -940,6 +943,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 		return eventHandlerManager;
 	}
 
+	@Override
 	public int getServerListSize() {
 		return serverList.size();
 	}

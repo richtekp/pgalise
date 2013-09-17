@@ -4,10 +4,13 @@
  */
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.weather.model.WeatherCondition;
+
 /**
  *
+ * @param <C> 
  * @author richter
  */
-public interface ExtendedServiceDataForecastCompleter {
-	void complete(ExtendedServiceDataForecast serviceDataForecast);
+public interface ExtendedServiceDataForecastCompleter<C extends WeatherCondition> {
+	void complete(ExtendedServiceDataForecast<C> serviceDataForecast);
 }

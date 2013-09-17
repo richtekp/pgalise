@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
+import de.pgalise.simulation.service.StatusEnum;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Collection;

@@ -4,10 +4,15 @@
  */
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.weather.model.WeatherCondition;
+
 /**
  *
+ * @param <S> 
+ * @param <T> 
+ * @param <C> 
  * @author richter
  */
-public interface ServiceDataHelperCompleter<S extends ExtendedServiceDataCurrent, T extends ExtendedServiceDataForecast>{
-	void complete(ServiceDataHelper<S,T> serviceDataHelper);
+public interface ServiceDataHelperCompleter<S extends ExtendedServiceDataCurrent<C>, T extends ExtendedServiceDataForecast<C>, C extends WeatherCondition>{
+	void complete(ServiceDataHelper<S,T,C> serviceDataHelper);
 }

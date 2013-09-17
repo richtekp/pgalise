@@ -31,10 +31,12 @@ public class MinDist implements Serializable {
 
     private static double r (double x, double min, double max) {
 	double r = x;
-	if (x < min)
-	    r = min;
-	if (x > max)
-	    r = max;
+	if (x < min) {
+		r = min;
+	}
+	if (x > max) {
+		r = max;
+	}
 	return r;
     }
 }

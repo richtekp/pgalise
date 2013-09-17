@@ -21,7 +21,6 @@ package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
-import javax.vecmath.Vector2d;
 
 /**
  * Represents an interferer that shows errors caused by corrupted antenna calibration
@@ -29,7 +28,7 @@ import javax.vecmath.Vector2d;
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
-public final class GpsReceiverInterferer extends GpsBaseInterferer {
+public class GpsReceiverInterferer extends GpsBaseInterferer {
 
 	/**
 	 * File path for property file

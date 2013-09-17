@@ -21,7 +21,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Properties;
 
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
@@ -37,7 +36,7 @@ import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.events.RainDayEvent;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
+import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import java.sql.Date;
 import java.sql.Time;
@@ -50,9 +49,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.After;
+import org.junit.BeforeClass;
 
 /**
  * JUnit test for RainDayEvent
@@ -63,8 +64,9 @@ import org.junit.After;
 @LocalClient
 @ManagedBean
 public class RainDayEventTest {
-	private final static EntityManagerFactory ENTITY_MANAGER_FACTORY = TestUtils.createEntityManagerFactory("weather_data_test");
-	private final static EJBContainer CONTAINER = TestUtils.getContainer();
+	@PersistenceUnit(unitName = "weather_test", name="weather_test_RainDayEventTest")
+	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
+	private static EJBContainer CONTAINER;
 
 	/**
 	 * End timestamp
@@ -103,10 +105,8 @@ public class RainDayEventTest {
 	
 	private	City city;
 
+	@SuppressWarnings("LeakingThisInConstructor")
 	public RainDayEventTest() throws NamingException {
-		Properties p = new Properties();
-		p.put(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
-		p.put("openejb.tempclassloader.skip", "annotations");
 		CONTAINER.getContext().bind("inject",
 			this);
 		
@@ -145,6 +145,11 @@ public class RainDayEventTest {
 
 		// Create service
 		service = new DefaultWeatherService(city, RainDayEventTest.loader);
+	}
+	
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
 	}
 	
 	private Queue<Object> deletes = new LinkedList<>();
@@ -301,7 +306,7 @@ public class RainDayEventTest {
 		Assert.assertTrue(refvalue < decvalue);
 
 		// Test 2: extrema are as high event
-		Assert.assertEquals(WeatherMapModifier.round(event.getMaxValue(), 3), WeatherMapModifier.round(decvalue, 3), 1);
+		Assert.assertEquals(AbstractWeatherMapModifier.round(event.getMaxValue(), 3), AbstractWeatherMapModifier.round(decvalue, 3), 1);
 
 	}
 }

@@ -19,12 +19,12 @@ package de.pgalise.simulation.shared.exception;
 import java.sql.Date;
 
 /**
- * There are no weather data for the given date.
+ * There are no weather data for the given date. Subclasses should specify whether service data or station data was required.
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 18, 2012)
  */
-public class NoWeatherDataFoundException extends RuntimeException {
+public abstract class NoWeatherDataFoundException extends RuntimeException {
 
 	/**
 	 * Serial

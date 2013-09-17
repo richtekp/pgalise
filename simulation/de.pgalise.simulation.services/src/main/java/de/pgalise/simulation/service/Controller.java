@@ -14,8 +14,10 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.controller;
+package de.pgalise.simulation.service;
 
+import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 
@@ -28,7 +30,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
  * @author mustafa
  *
  */
-public interface Controller extends SimulationComponent {
+public interface Controller extends SimulationComponent, Service {
 	/**
 	 * Initializes this controller.
 	 * Implementations can use this method to initialize default values
@@ -89,15 +91,6 @@ public interface Controller extends SimulationComponent {
 	 * @return current state
 	 */
 	public StatusEnum getStatus();
-	
-	/**
-	 * Represents a controller's possible states.
-	 * @author mustafa
-	 *
-	 */
-	public static enum StatusEnum {
-		INIT, INITIALIZED, STARTED, STOPPED
-	}
 	
 	/**
 	 * @return name of this controller

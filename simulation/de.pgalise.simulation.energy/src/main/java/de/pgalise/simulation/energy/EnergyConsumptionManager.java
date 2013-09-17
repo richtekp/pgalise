@@ -19,7 +19,6 @@ package de.pgalise.simulation.energy;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * The energy consumption manager returns the energy consumption for a given energy profile

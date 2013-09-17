@@ -16,8 +16,7 @@
  
 package de.pgalise.simulation.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -78,12 +77,12 @@ public class EventHandlerManagerTest {
 	 * @author Andreas Rehfeldt
 	 * @version 1.0 (Mar 20, 2013)
 	 */
-	public static class DummyEventHandler implements SimulationEventHandler {
+	private static class DummyEventHandler implements SimulationEventHandler {
 
 		@Override
 		public SimulationEventTypeEnum getType() {
 			return SimulationEventTypeEnum.CREATE_VEHICLES_EVENT;
-		}
+}
 
 		@Override
 		public void handleEvent(SimulationEvent event) {

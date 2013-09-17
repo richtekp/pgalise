@@ -100,8 +100,6 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	 * 
 	 * @param energyProfile
 	 *            Energy profile
-	 * @param geoLocation
-	 *            Position
 	 * @param currentEnergyConsumption
 	 *            Current energy consumption
 	 * @return new energy consumption
@@ -139,24 +137,32 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ChangeEnergyConsumptionEvent other = (ChangeEnergyConsumptionEvent) obj;
-		if (endTimestamp != other.endTimestamp)
+		if (endTimestamp != other.endTimestamp) {
 			return false;
-		if (measureRadiusInMeter != other.measureRadiusInMeter)
+		}
+		if (measureRadiusInMeter != other.measureRadiusInMeter) {
 			return false;
+		}
 		if (position == null) {
-			if (other.position != null)
+			if (other.position != null) {
 				return false;
-		} else if (!position.equals(other.position))
+			}
+		} else if (!position.equals(other.position)) {
 			return false;
-		if (startTimestamp != other.startTimestamp)
+		}
+		if (startTimestamp != other.startTimestamp) {
 			return false;
+		}
 		return true;
 	}
 }

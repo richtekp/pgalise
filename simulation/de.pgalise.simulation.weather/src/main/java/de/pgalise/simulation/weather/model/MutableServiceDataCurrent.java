@@ -9,9 +9,10 @@ import javax.measure.quantity.Temperature;
 
 /**
  *
+ * @param <C> 
  * @author richter
  */
-public interface MutableServiceDataCurrent extends ServiceDataCurrent, MutableBaseServiceData {
+public interface MutableServiceDataCurrent<C extends WeatherCondition> extends ServiceDataCurrent<C>, MutableBaseServiceData<C> {
 	
 	void setTemperature(Measure<Float, Temperature> temperature);
 }

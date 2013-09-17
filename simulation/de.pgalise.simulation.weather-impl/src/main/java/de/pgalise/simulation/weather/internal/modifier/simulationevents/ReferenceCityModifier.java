@@ -27,12 +27,10 @@ import de.pgalise.simulation.weather.internal.util.comparator.WindComparator;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherSimulationEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
 
 /**
  * Changes the values to reference cities ({@link WeatherMapModifier} and {@link WeatherStrategy}).<br />
@@ -43,7 +41,7 @@ import javax.measure.unit.Unit;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public final class ReferenceCityModifier extends WeatherSimulationEventModifier {
+public class ReferenceCityModifier extends WeatherSimulationEventModifier {
 
 	/**
 	 * Event type
@@ -100,12 +98,13 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 	 */
 	@Override
 	public void deployChanges() {
-		if (this.city != null) {
+		if (this.getCity() != null) {
+			
 			// Get values from weather services
-			ServiceDataForecast serviceForecast = this.weatherLoader.loadForecastServiceWeatherData(
-					this.simulationTimestamp, this.city);
-			ServiceDataForecast serviceCurrent = this.weatherLoader.loadCurrentServiceWeatherData(
-					this.simulationTimestamp, this.city);
+			ServiceDataForecast serviceForecast = this.getWeatherLoader().loadForecastServiceWeatherData(
+					this.getSimulationTimestamp(), this.getCity());
+			ServiceDataForecast serviceCurrent = this.getWeatherLoader().loadCurrentServiceWeatherData(
+					this.getSimulationTimestamp(), this.getCity());
 
 			// Temperature
 			this.changeTemperature(serviceForecast.getTemperatureLow().floatValue(SI.CELSIUS), serviceForecast.getTemperatureHigh().floatValue(SI.CELSIUS));
@@ -147,7 +146,7 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 		if (difference != 0) {
 			// Changes all data
 			float value;
-			for (MutableStationData weather : this.map.values()) {
+			for (MutableStationData weather : this.getMap().values()) {
 				value = weather.getRelativHumidity() + difference;
 				if (value < 0) {
 					weather.setRelativHumidity(0.0f);
@@ -189,7 +188,7 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 			// Changes all data
 			float value1, value2;
 			long timeMin, timeMax;
-			for (MutableStationData weather : this.map.values()) {
+			for (MutableStationData weather : this.getMap().values()) {
 				timeMin = Math.abs(weather.getMeasureTime().getTime()- min.getMeasureTime().getTime());
 				timeMax = Math.abs(weather.getMeasureTime().getTime()- max.getMeasureTime().getTime());
 
@@ -232,7 +231,7 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 		if (difference != 0) {
 			// Changes all data
 			float value;
-			for (MutableStationData weather : this.map.values()) {
+			for (MutableStationData weather : this.getMap().values()) {
 				value = (float) ((weather.getWindVelocity() + difference) / 3.6);
 				if (value < 0) {
 					weather.setWindVelocity(0.0f);
@@ -245,10 +244,11 @@ public final class ReferenceCityModifier extends WeatherSimulationEventModifier 
 
 	@Override
 	protected void initDecorator() {
-		if (this.props != null) {
-			this.orderID = Integer.parseInt(this.props.getProperty("referencecity_order_id"));
+		if (this.getProps() != null) {
+			this.setOrderID(Integer.parseInt(this.getProps().
+				getProperty("referencecity_order_id")));
 		} else {
-			this.orderID = ReferenceCityModifier.ORDER_ID;
+			this.setOrderID(ReferenceCityModifier.ORDER_ID);
 		}
 	}
 }

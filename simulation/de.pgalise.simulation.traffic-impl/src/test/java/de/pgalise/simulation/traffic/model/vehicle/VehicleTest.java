@@ -119,7 +119,7 @@ public class VehicleTest {
 		Path shortestPath = algo.getPath(graph.getNode("c"));
 		log.debug("Shortest path: " + shortestPath.toString());
 
-		Vehicle<? extends VehicleData> car = new BaseVehicle<CarData>(this.ee);
+		Vehicle<? extends VehicleData> car = new BaseVehicle<>(this.ee);
 
 		car.setCurrentNode(graph.getNode("a"));
 		car.setPosition(ee.getPosition(graph.getNode("a")));
@@ -186,7 +186,7 @@ public class VehicleTest {
 
 		Path shortestPath = algo.getPath(graph.getNode("e"));
 
-		Vehicle<? extends VehicleData> v = new BaseVehicle<CarData>(null, "carA", this.ee);
+		Vehicle<? extends VehicleData> v = new BaseVehicle<>(null, "carA", this.ee);
 		v.setVelocity(9.5);
 		v.setPath(shortestPath);
 
@@ -323,7 +323,7 @@ public class VehicleTest {
 	 */
 	private Vehicle<CarData> createCar() {
 		CarData data = new CarData(Color.BLACK, 0, 0, 0, 0, 0, 0, 0, 0.0d, 0, 0, "description", new SensorHelper(), VehicleTypeEnum.CAR);
-		Vehicle<CarData> car = new DefaultMotorizedVehicle<CarData>(UUID.randomUUID(), data, ee);
+		Vehicle<CarData> car = new DefaultMotorizedVehicle<>(UUID.randomUUID(), data, ee);
 		return car;
 	}
 

@@ -72,14 +72,14 @@ public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> imp
 	public Vehicle<MotorcycleData> createRandomMotorcycle(UUID id, SensorHelper helper) {
 		MotorcycleData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<MotorcycleData>(id, updateMotorcycleData(data, Color.BLACK), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>(id, updateMotorcycleData(data, Color.BLACK), trafficGraphExtensions);
 	}
 
 	@Override
 	public Vehicle<MotorcycleData> createMotorcycle(UUID id, String typeId, Color color, SensorHelper helper) {
 		MotorcycleData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<MotorcycleData>(id, updateMotorcycleData(data, color), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>(id, updateMotorcycleData(data, color), trafficGraphExtensions);
 	}
 
 	/**

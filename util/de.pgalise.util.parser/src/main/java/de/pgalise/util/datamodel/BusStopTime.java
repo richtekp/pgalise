@@ -25,7 +25,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -37,7 +36,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_STOP_TIMES")
-public final class BusStopTime {
+public class BusStopTime {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

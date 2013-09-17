@@ -70,18 +70,23 @@ public class CreateVehiclesEvent extends TrafficEvent {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CreateVehiclesEvent other = (CreateVehiclesEvent) obj;
 		if (vehicles == null) {
-			if (other.vehicles != null)
+			if (other.vehicles != null) {
 				return false;
-		} else if (!vehicles.equals(other.vehicles))
+			}
+		} else if (!vehicles.equals(other.vehicles)) {
 			return false;
+		}
 		return true;
 	}
 

@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.service.manager;
 
+import de.pgalise.simulation.service.Service;
+
 /**
  * The ServiceHandler has two jobs: <br/>
  * 1) To tell the ServerConfigurationReader which service 
@@ -29,12 +31,12 @@ package de.pgalise.simulation.service.manager;
  * @author mustafa
  * @param <T> type of the service (may be a class or interface)
  */
-public interface ServiceHandler<T> {
+public interface ServiceHandler<T extends Service> {
 	/**
 	 * 
 	 * @return name of the service the user is looking for
 	 */
-	public String getSearchedName();
+	public String getName();
 	
 	/**
 	 * Callback method invoked whenever the searched service 

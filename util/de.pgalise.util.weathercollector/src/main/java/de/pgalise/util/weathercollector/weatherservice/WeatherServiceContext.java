@@ -5,6 +5,7 @@
 package de.pgalise.util.weathercollector.weatherservice;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
@@ -12,9 +13,10 @@ import de.pgalise.util.weathercollector.util.DatabaseManager;
 /**
  *
  * @param <T> the type of the {@link ServiceDataHelper} (in subclasses which use JPA, a persistent class can be enforced)
+ * @param <C> 
  * @author richter
  */
-public interface WeatherServiceContext<T extends ServiceDataHelper<?,?>> {
+public interface WeatherServiceContext<T extends ServiceDataHelper<?,?,C>, C extends WeatherCondition> {
 	
 	/**
 	 * Returns the best ServiceData
@@ -24,7 +26,7 @@ public interface WeatherServiceContext<T extends ServiceDataHelper<?,?>> {
 	 * @param databaseManager 
 	 * @return Best ServiceData
 	 */
-	public T getBestWeather(City city, DatabaseManager databaseManager) ;
+	public T getBestWeather(City city, DatabaseManager<C> databaseManager) ;
 
 	/**
 	 * Returns the weather informations with the help of a random strategy for the given city
@@ -36,7 +38,7 @@ public interface WeatherServiceContext<T extends ServiceDataHelper<?,?>> {
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public T getSingleWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException;
+	public T getSingleWeather(City city, DatabaseManager<C> databaseManager) throws ReadServiceDataException;
 
 }
 

@@ -59,23 +59,30 @@ public class CreateRandomVehicleData implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		CreateRandomVehicleData other = (CreateRandomVehicleData) obj;
 		if (sensorHelpers == null) {
-			if (other.sensorHelpers != null)
+			if (other.sensorHelpers != null) {
 				return false;
-		} else if (!sensorHelpers.equals(other.sensorHelpers))
+			}
+		} else if (!sensorHelpers.equals(other.sensorHelpers)) {
 			return false;
+		}
 		if (vehicleInformation == null) {
-			if (other.vehicleInformation != null)
+			if (other.vehicleInformation != null) {
 				return false;
-		} else if (!vehicleInformation.equals(other.vehicleInformation))
+			}
+		} else if (!vehicleInformation.equals(other.vehicleInformation)) {
 			return false;
+		}
 		return true;
 	}
 

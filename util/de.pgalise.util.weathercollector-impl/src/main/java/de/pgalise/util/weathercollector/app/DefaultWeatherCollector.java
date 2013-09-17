@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.app;
 
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.util.weathercollector.WeatherCollector;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 2.1 (Jun 24, 2012)
  */
-public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceDataHelper> {
+public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceDataHelper, DefaultWeatherCondition> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherCollector.class);
 	private static final long serialVersionUID = 1L;
 
@@ -48,7 +49,7 @@ public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceD
 	}
 	
 	@Override
-	public void collectServiceData(BaseDatabaseManager<DefaultServiceDataHelper> weatherServiceSaver, Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
+	public void collectServiceData(BaseDatabaseManager<DefaultServiceDataHelper, DefaultWeatherCondition> weatherServiceSaver, Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys) {
 		DefaultWeatherServiceManager collector = new DefaultWeatherServiceManager(weatherServiceSaver, serviceStrategys);
 
 		// Get informations and save them
@@ -60,13 +61,13 @@ public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceD
 	 * Collect weather informations of the weather services
 	 */
 	@Override
-	public void collectServiceData(BaseDatabaseManager<DefaultServiceDataHelper> weatherServiceSaver) {
+	public void collectServiceData(BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> weatherServiceSaver) {
 		collectServiceData(weatherServiceSaver,
 			null);
 	}
 	
 	@Override
-	public void collectStationData(BaseDatabaseManager<DefaultServiceDataHelper> databaseManager, Set<StationStrategy> stationStrategys) {
+	public void collectStationData(BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> databaseManager, Set<StationStrategy> stationStrategys) {
 		WeatherStationManager collector = new DefaultWeatherStationManager(databaseManager, stationStrategys);
 
 		// Get informations and save them
@@ -78,7 +79,7 @@ public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceD
 	 * Collect weather informations of the weather stations
 	 */
 	@Override
-	public void collectStationData(BaseDatabaseManager<DefaultServiceDataHelper> databaseManager) {
+	public void collectStationData(BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> databaseManager) {
 		collectStationData(databaseManager,
 			null);
 	}

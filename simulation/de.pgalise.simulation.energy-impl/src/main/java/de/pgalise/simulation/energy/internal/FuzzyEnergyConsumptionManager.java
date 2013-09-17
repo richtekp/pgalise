@@ -30,7 +30,6 @@ import de.pgalise.simulation.energy.EnergyConsumptionManagerLocal;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Energy Consumption manager that uses fuzzy rules and maximum energy values to determine the current energy consumption.
@@ -110,7 +109,7 @@ public class FuzzyEnergyConsumptionManager implements EnergyConsumptionManagerLo
 		this.energyFIS = FIS.load(FuzzyEnergyConsumptionManager.class.getResourceAsStream("/fuzzy/energy_fuzzy.fcl"), true);
 
 		/* fill max energy map*/
-		this.maxEnergyConsumptionMap = new HashMap<EnergyProfileEnum, Double>();
+		this.maxEnergyConsumptionMap = new HashMap<>();
 		for(EnergyProfileEnum energyProfile : EnergyProfileEnum.values()) {
 			this.maxEnergyConsumptionMap.put(energyProfile, Double.valueOf(this.properties.getProperty(energyProfile.getKey() +"-max")));
 		}

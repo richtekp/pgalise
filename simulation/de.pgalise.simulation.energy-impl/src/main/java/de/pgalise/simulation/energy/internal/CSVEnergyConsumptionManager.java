@@ -34,7 +34,6 @@ import de.pgalise.simulation.energy.profile.EnergyProfile;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * Handles all energy consumption calculations and the load of the energy profiles from CSV files.
@@ -139,7 +138,7 @@ public class CSVEnergyConsumptionManager implements EnergyConsumptionManagerLoca
 	 * Constructor
 	 */
 	public CSVEnergyConsumptionManager() {
-		this.profiles = new HashMap<EnergyProfileEnum, EnergyProfile>();
+		this.profiles = new HashMap<>();
 
 		// Read props with the filepath to the energy profiles
 		try (InputStream propInFile = CSVEnergyConsumptionManager.class.getResourceAsStream(PROPERTIES_FILE_PATH)) {

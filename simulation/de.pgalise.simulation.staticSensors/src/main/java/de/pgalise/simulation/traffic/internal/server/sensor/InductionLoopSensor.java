@@ -29,7 +29,6 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Class to generate an induction loop sensor
@@ -38,7 +37,7 @@ import javax.vecmath.Vector2d;
  * @author Lena
  * @version 1.0
  */
-public final class InductionLoopSensor extends StaticTrafficSensor {
+public class InductionLoopSensor extends StaticTrafficSensor {
 
 	/**
 	 * Logger
@@ -122,8 +121,9 @@ public final class InductionLoopSensor extends StaticTrafficSensor {
 	 */
 	@Override
 	public void transmitUsageData(SimulationEventList eventList) {
-		if(this.vehicleCount>0)
+		if(this.vehicleCount>0) {
 			log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getId());
+		}
 
 		// Send data
 		this.getOutput().transmitDouble(this.vehicleCount);

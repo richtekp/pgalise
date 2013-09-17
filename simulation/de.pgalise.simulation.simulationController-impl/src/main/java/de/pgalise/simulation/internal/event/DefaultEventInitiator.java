@@ -34,14 +34,14 @@ import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.SpentTimeLogger;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.DefaultFrontController;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.controller.Controller;
+import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.InitParameter;
-import de.pgalise.simulation.shared.controller.SimulationComponent;
+import de.pgalise.simulation.service.SimulationComponent;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.SimulationEvent;
@@ -84,12 +84,12 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 		private long lastLogDebug = -1;
 		
 		@Override
+		@SuppressWarnings("SleepWhileInLoop")
 		public void run() {
 			while (DefaultEventInitiator.this.getStatus() == StatusEnum.STARTED) {
 				if (DefaultEventInitiator.this.currentTimestamp <= DefaultEventInitiator.this.endTimestamp) {
 					long startTimestamp;
 					synchronized (DefaultEventInitiator.this.lockThreadLoop) {
-						DefaultEventInitiator.this.spentTimeLogger.begin("update_"+sdf.format(new Date(DefaultEventInitiator.this.currentTimestamp)));
 						startTimestamp = new Date().getTime();
 
 						// Log
@@ -106,8 +106,8 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 						}
 
 						/* WeatherService / Controller */
-						List<WeatherEvent> weatherEventList = null;
-						synchronized (DefaultEventInitiator.this.weatherEventMap) {
+						List<WeatherEvent> weatherEventList;
+						synchronized (weatherEventMap) {
 							weatherEventList = DefaultEventInitiator.this.weatherEventMap
 									.get(DefaultEventInitiator.this.currentTimestamp);
 							DefaultEventInitiator.this.weatherEventMap
@@ -122,7 +122,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 										UUID.randomUUID()));
 
 						/* Update EnergyController: */
-						List<EnergyEvent> energyEventList = null;
+						List<EnergyEvent> energyEventList;
 						synchronized (DefaultEventInitiator.this.energyEventMap) {
 							energyEventList = DefaultEventInitiator.this.energyEventMap
 									.get(DefaultEventInitiator.this.currentTimestamp);
@@ -146,8 +146,8 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 						}
 
 						/* Traffic */
-						List<TrafficEvent> trafficEventList = null;
-						synchronized (DefaultEventInitiator.this.trafficEventMap) {
+						List<TrafficEvent> trafficEventList;
+						synchronized (trafficEventMap) {
 							trafficEventList = DefaultEventInitiator.this.trafficEventMap
 									.get(DefaultEventInitiator.this.currentTimestamp);
 							DefaultEventInitiator.this.trafficEventMap
@@ -169,15 +169,9 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 								new SimulationEventList(new ArrayList<>(trafficEventList),
 										DefaultEventInitiator.this.currentTimestamp, UUID.randomUUID()));
 
-						DefaultEventInitiator.this.spentTimeLogger.end("update_"+sdf.format(new Date(DefaultEventInitiator.this.currentTimestamp)));
-						
-						DefaultEventInitiator.this.spentTimeLogger.update(new SimulationEventList(new ArrayList<SimulationEvent>(),
-								DefaultEventInitiator.this.currentTimestamp, UUID.randomUUID()));
-						
 						/* update time */
 						synchronized (DefaultEventInitiator.this.lockTimestamp) {
-							DefaultEventInitiator.this.currentTimestamp = DefaultEventInitiator.this.currentTimestamp
-									+ DefaultEventInitiator.this.interval;
+							DefaultEventInitiator.this.currentTimestamp += DefaultEventInitiator.this.interval;
 						}
 					}
 					/* Perform clock generator interval: */
@@ -205,7 +199,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	/**
 	 * Map with timestamp and future energy events
 	 */
-	private Map<Long, List<EnergyEvent>> energyEventMap;
+	private final Map<Long, List<EnergyEvent>> energyEventMap = new HashMap<>();
 
 	/**
 	 * Event thread
@@ -215,19 +209,19 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	/**
 	 * Lock object
 	 */
-	private Object lockThreadLoop, lockTimestamp;
+	private final Object lockThreadLoop, lockTimestamp;
 
 	private long currentTimestamp, endTimestamp, interval, clockGeneratorInterval;
 
 	/**
 	 * Map with timestamp and traffic events
 	 */
-	private Map<Long, List<TrafficEvent>> trafficEventMap;
+	private final Map<Long, List<TrafficEvent>> trafficEventMap = new HashMap<>();
 
 	/**
 	 * Map with timestamp and weather events
 	 */
-	private Map<Long, List<WeatherEvent>> weatherEventMap;
+	private final Map<Long, List<WeatherEvent>> weatherEventMap = new HashMap<>();
 
 	@EJB
 	private ServiceDictionary serviceDictionary;
@@ -241,9 +235,6 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	private OperationCenterController operationCenterController;
 	
 	private ControlCenterController controlCenterController;
-	
-	@EJB
-	private SpentTimeLogger spentTimeLogger;
 	
 	private List<Controller> frontControllerList;
 
@@ -267,7 +258,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	}
 	
 	@Override
-	public Thread _getEventThread() {
+	public Thread getEventThread() {
 		return this.eventThread;
 	}
 
@@ -285,7 +276,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 			List<EnergyEvent> energyEventList = this.energyEventMap.get(bestTimestamp);
 
 			if (energyEventList == null) {
-				energyEventList = new ArrayList<EnergyEvent>();
+				energyEventList = new ArrayList<>();
 				this.energyEventMap.put(bestTimestamp, energyEventList);
 			}
 
@@ -307,7 +298,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 			List<TrafficEvent> trafficEventList = this.trafficEventMap.get(bestTimestamp);
 
 			if (trafficEventList == null) {
-				trafficEventList = new ArrayList<TrafficEvent>();
+				trafficEventList = new ArrayList<>();
 				this.trafficEventMap.put(bestTimestamp, trafficEventList);
 			}
 
@@ -329,7 +320,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 			List<WeatherEvent> weatherEventList = this.weatherEventMap.get(bestTimestamp);
 
 			if (weatherEventList == null) {
-				weatherEventList = new ArrayList<WeatherEvent>();
+				weatherEventList = new ArrayList<>();
 				this.weatherEventMap.put(bestTimestamp, weatherEventList);
 			}
 
@@ -352,7 +343,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 		synchronized (this.lockTimestamp) {
 			long bestTimestamp = this.currentTimestamp;
 			for (; timestamp > bestTimestamp; bestTimestamp += this.interval) {
-				;
+				
 			}
 
 			if (bestTimestamp == this.currentTimestamp) {
@@ -425,9 +416,6 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 		this.interval = param.getInterval();
 		this.clockGeneratorInterval = param.getClockGeneratorInterval();
 		this.currentTimestamp = param.getStartTimestamp();
-		this.energyEventMap = new HashMap<>();
-		this.weatherEventMap = new HashMap<>();
-		this.trafficEventMap = new HashMap<>();
 	}
 
 	@Override
@@ -441,7 +429,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	}
 
 	@Override
-	public void _setOperationCenterController(OperationCenterController operationCenterController) {
+	public void setOperationCenterController(OperationCenterController operationCenterController) {
 		this.operationCenterController = operationCenterController;
 	}
 
@@ -461,7 +449,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	}
 
 	@Override
-	public void _setControlCenterController(
+	public void setControlCenterController(
 			ControlCenterController controlCenterController) {
 		this.controlCenterController = controlCenterController;
 	}
@@ -474,10 +462,5 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	@Override
 	public void setFrontController(List<Controller> controller) {
 		this.frontControllerList = controller;
-	}
-
-	@Override
-	public void _setSpentTimeLogger(SpentTimeLogger spentTimeLogger) {
-		this.spentTimeLogger = spentTimeLogger;
 	}
 }

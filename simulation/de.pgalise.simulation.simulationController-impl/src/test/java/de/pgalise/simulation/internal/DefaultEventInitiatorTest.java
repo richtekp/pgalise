@@ -29,13 +29,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.SimulationController;
-import de.pgalise.simulation.SpentTimeLogger;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.event.DefaultEventInitiator;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.controller.Controller;
-import de.pgalise.simulation.shared.controller.Controller.StatusEnum;
+import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.SimulationEventList;
@@ -49,7 +48,6 @@ import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.vecmath.Vector2d;
 
 /**
  * J-Unit test for {@link DefaultEventInitiator}, which will test if every controller gets it's updates and if the event
@@ -108,12 +106,11 @@ public class DefaultEventInitiatorTest {
 
 		testClass = new DefaultEventInitiator();
 		testClass._setServiceDictionary(serviceDictionary);
-		testClass._setOperationCenterController(operationCenterController);
+		testClass.setOperationCenterController(operationCenterController);
 		List<Controller> controllerCollection = new LinkedList<>();
 		controllerCollection.add(staticSensorController);
 		testClass.setFrontController(controllerCollection);
-		testClass._setControlCenterController(controlCenterController);
-		testClass._setSpentTimeLogger(EasyMock.createNiceMock(SpentTimeLogger.class));
+		testClass.setControlCenterController(controlCenterController);
 	}
 
 	@Test
@@ -133,7 +130,7 @@ public class DefaultEventInitiatorTest {
 		// Status test
 		assertEquals(StatusEnum.STARTED, testClass.getStatus());
 
-		testClass._getEventThread().join();
+		testClass.getEventThread().join();
 
 		// Test all counters
 		assertEquals(updateIntervals, energyController.getUpdateCounter());

@@ -16,8 +16,8 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
-import com.google.gson.reflect.TypeToken;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Random;
@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.2 (Apr 15, 2012)
  */
-public class DefaultWeatherServiceContext implements WeatherServiceContext<DefaultServiceDataHelper> {
+public class DefaultWeatherServiceContext implements WeatherServiceContext<DefaultServiceDataHelper, DefaultWeatherCondition> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherServiceContext.class);
 
 	/**
@@ -57,12 +57,12 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 	/**
 	 * All available strategies
 	 */
-	private Set<ServiceStrategy<DefaultServiceDataHelper>> strategies;
+	private Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> strategies;
 
 	/**
 	 * Current strategy
 	 */
-	private ServiceStrategy<DefaultServiceDataHelper> strategy;
+	private ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition> strategy;
 
 	/**
 	 * Constructor
@@ -71,7 +71,7 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 		this(loadStrategiesFromFile());
 	}
 	
-	public DefaultWeatherServiceContext(Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
+	public DefaultWeatherServiceContext(Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys) {
 		this.strategies = serviceStrategys;
 	}
 
@@ -83,14 +83,14 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 	 * @return Best ServiceData
 	 */
 	@Override
-	public DefaultServiceDataHelper getBestWeather(City city, DatabaseManager databaseManager) {
+	public DefaultServiceDataHelper getBestWeather(City city, DatabaseManager<DefaultWeatherCondition> databaseManager) {
 
 		// ServiceData objects
 		DefaultServiceDataHelper bestWeather = null;
 		DefaultServiceDataHelper tempWeather;
 
 		// Deploy all strategies
-		for (ServiceStrategy<DefaultServiceDataHelper> strategy0 : this.strategies) {
+		for (ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition> strategy0 : this.strategies) {
 			try {
 				// Set current strategy
 				this.strategy = strategy0;
@@ -122,14 +122,14 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 	 *             Data can not be read by strategy
 	 */
 	@Override
-	public DefaultServiceDataHelper getSingleWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
+	public DefaultServiceDataHelper getSingleWeather(City city, DatabaseManager<DefaultWeatherCondition> databaseManager) throws ReadServiceDataException {
 		this.strategy = this.getRandomStrategy();
 
 		// Return informations
 		return this.strategy.getWeather(city, databaseManager);
 	}
 
-	public Set<ServiceStrategy<DefaultServiceDataHelper>> getStrategies() {
+	public Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> getStrategies() {
 		return this.strategies;
 	}
 
@@ -138,7 +138,7 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 	 * 
 	 * @return random ServiceStrategy
 	 */
-	private ServiceStrategy<DefaultServiceDataHelper> getRandomStrategy() {
+	private ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition> getRandomStrategy() {
 		
 		if (this.strategies.size() > 0) {
 			return new LinkedList<>(this.strategies).get(new Random().nextInt(this.strategies.size()));
@@ -153,8 +153,8 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 	 * @return list with available strategies
 	 */
 	@SuppressWarnings("unchecked")
-	private static Set<ServiceStrategy<DefaultServiceDataHelper>> loadStrategiesFromFile() {
-		Set<ServiceStrategy<DefaultServiceDataHelper>> list = new HashSet<>(3);
+	private static Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> loadStrategiesFromFile() {
+		Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> list = new HashSet<>(3);
 
 		try (InputStream propInFile = DefaultWeatherServiceContext.class.getResourceAsStream(FILEPATH)) {
 			// Read file
@@ -176,7 +176,7 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 				if(!(strategyRaw instanceof ServiceStrategy)) {
 					throw new IllegalArgumentException(String.format("file %s contains illegal class name %s", FILEPATH, classname));
 				}
-				ServiceStrategy<DefaultServiceDataHelper> strategy =  (ServiceStrategy<DefaultServiceDataHelper>) strategyRaw;
+				ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition> strategy =  (ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>) strategyRaw;
 				list.add(strategy);
 			}
 		} catch (ParserConfigurationException | SAXException | IOException | InstantiationException

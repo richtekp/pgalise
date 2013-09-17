@@ -24,7 +24,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterfere
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
-public final class TopoRadarNoInterferer implements TopoRadarInterferer {
+public class TopoRadarNoInterferer implements TopoRadarInterferer {
 
 	@Override
 	public int[] interfere(final int mutableAxleCount, final int mutableLength, final int mutableWheelbase1,

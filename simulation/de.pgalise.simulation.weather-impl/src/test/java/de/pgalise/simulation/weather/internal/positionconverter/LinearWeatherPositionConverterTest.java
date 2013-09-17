@@ -18,18 +18,15 @@ package de.pgalise.simulation.weather.internal.positionconverter;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.util.DateConverter;
-import javax.vecmath.Vector2d;
 
 /**
  * Tests the linear weather grid converter
@@ -38,7 +35,6 @@ import javax.vecmath.Vector2d;
  * @version 1.0 (Oct 22, 2012)
  */
 public class LinearWeatherPositionConverterTest {
-	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	public LinearWeatherPositionConverterTest() {
 	}
@@ -55,7 +51,7 @@ public class LinearWeatherPositionConverterTest {
 		 * Test: Temperature
 		 */
 		Coordinate referencePoint = new Coordinate(20, 20);
-		Geometry referenceArea = GEOMETRY_FACTORY.createPolygon(
+		Geometry referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 

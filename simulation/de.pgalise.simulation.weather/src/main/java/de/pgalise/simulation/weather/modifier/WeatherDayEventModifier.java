@@ -23,6 +23,7 @@ import java.util.Properties;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 
 /**
@@ -33,10 +34,11 @@ import de.pgalise.simulation.weather.util.DateConverter;
  * class {@link WeatherSimulationEventModifier}. The event modifiers, which expand the {@link WeatherDayEventModifier},
  * can be activated more than one time for each day during a simulation runtime.
  * 
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public abstract class WeatherDayEventModifier extends WeatherMapModifier {
+public abstract class WeatherDayEventModifier<C extends WeatherCondition> extends AbstractWeatherMapModifier<C> {
 
 	/**
 	 * Serial
@@ -64,23 +66,23 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 		 */
 		double value = minValue + (((maxValue - minValue) / (maxTime - minTime)) * (actTime - minTime));
 
-		return WeatherMapModifier.round(value, 3);
+		return AbstractWeatherMapModifier.round(value, 3);
 	}
 
 	/**
 	 * Timestamp of the simulation event
 	 */
-	protected long eventTimestamp = -1;
+	private long eventTimestamp = -1;
 
 	/**
 	 * Specified min or max value of the event
 	 */
-	protected Float eventValue = null;
+	private Float eventValue = null;
 
 	/**
 	 * Maximal duration of the event
 	 */
-	protected Float eventDuration;
+	private Float eventDuration;
 
 	/**
 	 * Constructor
@@ -95,9 +97,10 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 *            Specified value
 	 * @param duration
 	 *            Maximal duration of the event
+	 * @param weatherLoader  
 	 */
 	public WeatherDayEventModifier(long seed, long time, Properties props, Float value, Float duration,
-			WeatherLoader weatherLoader) {
+			WeatherLoader<C> weatherLoader) {
 		super(seed, props, weatherLoader);
 		this.eventTimestamp = time;
 		this.eventValue = value;
@@ -111,8 +114,9 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 *            Properties
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
-	public WeatherDayEventModifier(long seed, Properties props, WeatherLoader weatherLoader) {
+	public WeatherDayEventModifier(long seed, Properties props, WeatherLoader<C> weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -121,8 +125,9 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 * 
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
-	public WeatherDayEventModifier(long seed, WeatherLoader weatherLoader) {
+	public WeatherDayEventModifier(long seed, WeatherLoader<C> weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -133,8 +138,9 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 *            WeatherMap
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
-	public WeatherDayEventModifier(WeatherMap map, long seed, WeatherLoader weatherLoader) {
+	public WeatherDayEventModifier(WeatherMap map, long seed, WeatherLoader<C> weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 
@@ -202,12 +208,12 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 */
 	protected StationData getNextWeatherForTimestamp(long timestamp) {
 		// Get weather
-		StationData weather = this.map.get(timestamp);
+		StationData weather = this.getMap().get(timestamp);
 		if (weather == null) {
 
 			// Calculate next minute
 			long newTime = timestamp + (WeatherMap.INTERPOLATE_INTERVAL - (timestamp % WeatherMap.INTERPOLATE_INTERVAL));
-			weather = this.map.get(newTime);
+			weather = this.getMap().get(newTime);
 
 			// Get weather
 			if (weather == null) {
@@ -215,7 +221,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 				// Look for the last 5 Minutes
 				for (int i = 0; i < 5; i++) {
 					newTime -= WeatherMap.INTERPOLATE_INTERVAL;
-					weather = this.map.get(newTime);
+					weather = this.getMap().get(newTime);
 					if (weather != null) {
 						break;
 					}
@@ -246,7 +252,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 * @return weather object
 	 */
 	protected StationData getNextWeatherForTimestamp(long timestamp, int maxTimeValue, int minTimeValue) {
-		StationData weather = null;
+		StationData weather;
 		int hour = DateConverter.getHourOfDay(timestamp);
 		if ((hour >= 0) && (hour < minTimeValue)) {
 			// Between 0 and min?
@@ -254,7 +260,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 			// Calculate for minTimeValue
 			long mintime = DateConverter.ONE_HOUR_IN_MILLIS * minTimeValue;
 			long newTime = timestamp + (mintime - (timestamp % mintime));
-			weather = this.map.get(newTime);
+			weather = this.getMap().get(newTime);
 
 		} else if ((hour > maxTimeValue) && (hour < 24)) {
 			// Between max and 24?
@@ -262,7 +268,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 			// Calculate for maxTimeValue
 			long maxtime = DateConverter.ONE_HOUR_IN_MILLIS * maxTimeValue;
 			long newTime = timestamp + (maxtime - (timestamp % maxtime));
-			weather = this.map.get(newTime);
+			weather = this.getMap().get(newTime);
 
 		} else {
 			// Correct interval?
@@ -283,7 +289,7 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 */
 	protected long getRandomHour(int min, int max) {
 		int limit = max - min;
-		int r = this.randomGen.nextInt(limit);
+		int r = this.getRandomGen().nextInt(limit);
 
 		return ((r + min) * DateConverter.ONE_HOUR_IN_MILLIS);
 	}
@@ -296,8 +302,8 @@ public abstract class WeatherDayEventModifier extends WeatherMapModifier {
 	 * @return random timestamp
 	 */
 	protected long getRandomTimestamp(long day) {
-		int hour = this.randomGen.nextInt(23);
-		int min = this.randomGen.nextInt(59);
+		int hour = this.getRandomGen().nextInt(23);
+		int min = this.getRandomGen().nextInt(59);
 
 		return day + (hour * DateConverter.ONE_HOUR_IN_MILLIS) + (min * DateConverter.ONE_MINUTE_IN_MILLIS);
 	}

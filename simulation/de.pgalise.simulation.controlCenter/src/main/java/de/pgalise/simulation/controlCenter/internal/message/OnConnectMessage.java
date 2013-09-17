@@ -170,7 +170,7 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 * @return
 	 */
 	private static Map<Integer, String> getWeatherEventEnumTypeMap() {
-		Map<Integer, String> weatherEventEnumTypeMap = new HashMap<Integer, String>();
+		Map<Integer, String> weatherEventEnumTypeMap = new HashMap<>();
 		Map<Integer, WeatherEventEnum> weatherEventEnumMap = WeatherEventEnum.getWeatherEventEnumIdsAsUnmodifiable();
 		for (Entry<Integer, WeatherEventEnum> entry : weatherEventEnumMap.entrySet()) {
 			weatherEventEnumTypeMap.put(entry.getKey(), entry.getValue().toString());
@@ -184,7 +184,7 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 * @return
 	 */
 	private static Map<Integer, String> getSimulationEventEnumTypeMap() {
-		Map<Integer, String> simulationEventTypeMap = new HashMap<Integer, String>();
+		Map<Integer, String> simulationEventTypeMap = new HashMap<>();
 		Map<Integer, SimulationEventTypeEnum> simulationEventEnumMap = SimulationEventTypeEnum
 				.getSimulationEventTypeMapAsUnmodifiable();
 		for (Entry<Integer, SimulationEventTypeEnum> entry : simulationEventEnumMap.entrySet()) {
@@ -199,7 +199,7 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 * @return
 	 */
 	private static Map<Integer, String> getVehicleTypeEnumTypeMap() {
-		Map<Integer, String> vehicleTypeMap = new HashMap<Integer, String>();
+		Map<Integer, String> vehicleTypeMap = new HashMap<>();
 		Map<Integer, VehicleTypeEnum> vehicleTypeEnumMap = VehicleTypeEnum.getVehicleTypeIdsAsUnmodifiable();
 		for (Entry<Integer, VehicleTypeEnum> entry : vehicleTypeEnumMap.entrySet()) {
 			vehicleTypeMap.put(entry.getKey(), entry.getValue().toString());
@@ -213,7 +213,7 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 * @return
 	 */
 	private static Map<Integer, String> getVehicleModelEnumTypeMap() {
-		Map<Integer, String> vehicleModelMap = new HashMap<Integer, String>();
+		Map<Integer, String> vehicleModelMap = new HashMap<>();
 		Map<Integer, VehicleModelEnum> vehicleModelEnumMap = VehicleModelEnum.getVehicleModelIdsAsUnmodifiable();
 		for (Entry<Integer, VehicleModelEnum> entry : vehicleModelEnumMap.entrySet()) {
 			vehicleModelMap.put(entry.getKey(), entry.getValue().toString());

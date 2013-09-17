@@ -31,6 +31,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 
 /**
  * This class loads the weather data from a xml file. <br />
@@ -40,7 +41,7 @@ import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
  * @author Andreas Rehfeldt
  * @version 1.0 (17.09.2012)
  */
-public class XMLFileWeatherLoader implements WeatherLoader {
+public class XMLFileWeatherLoader implements WeatherLoader<DefaultWeatherCondition> {
 
 	/**
 	 * File extension of the file

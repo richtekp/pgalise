@@ -18,7 +18,7 @@ package de.pgalise.simulation.sensorFramework;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.controller.SimulationComponent;
+import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.sensor.SensorType;

@@ -24,7 +24,7 @@ package de.pgalise.simulation.service;
  * 
  * @author Timo
  */
-public interface RandomSeedService {
+public interface RandomSeedService extends Service {
 
 	/**
 	 * Gives a seed for random objects.

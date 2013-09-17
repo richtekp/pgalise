@@ -37,9 +37,10 @@ import java.util.Properties;
  */
 public abstract class AbstractEventHandlerManager<H extends EventHandler<E, T>, E, T> implements
 		EventHandlerManager<H, E, T> {
-	protected List<H> handlers = new ArrayList<>();
+	private List<H> handlers = new ArrayList<>();
 
 	@SuppressWarnings({ "rawtypes", "static-access", "unchecked" })
+	@Override
 	public void init(InputStream config, Class clazz) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IOException {
 
@@ -47,26 +48,31 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E, T>, 
 		prop.load(config);
 		for (Object key : prop.keySet()) {
 			String eventHanlderClazz = (String) key;
-			Class handlerClass = null;
-			if (clazz != null)
+			Class handlerClass;
+			if (clazz != null) {
 				handlerClass = clazz.forName(eventHanlderClazz);
-			else
+			}
+			else {
 				handlerClass = Class.forName(eventHanlderClazz);
+			}
 			H handler = (H) handlerClass.newInstance();
-			handlers.add(handler);
+			getHandlers().add(handler);
 		}
 	}
 
+	@Override
 	public H getEventHandler(T type) {
-		for (H handler : handlers) {
-			if (handler.getType().equals(type))
+		for (H handler : getHandlers()) {
+			if (handler.getType().equals(type)) {
 				return handler;
+			}
 		}
 		return null;
 	}
 
+	@Override
 	public void handleEvent(E event) {
-		for (H handler : handlers) {
+		for (H handler : getHandlers()) {
 			if (responsibleFor(handler, event)) {
 				handler.handleEvent(event);
 				break;
@@ -77,14 +83,14 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E, T>, 
 	@Override
 	public void addHandler(H handler) {
 		remoteHandler(handler.getType());
-		handlers.add(handler);
+		getHandlers().add(handler);
 	}
 
 	@Override
 	public void remoteHandler(T type) {
-		for (H handler : handlers) {
+		for (H handler : getHandlers()) {
 			if (handler.getType().equals(type)) {
-				handlers.remove(handler);
+				getHandlers().remove(handler);
 				break;
 			}
 		}
@@ -92,12 +98,28 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E, T>, 
 
 	@Override
 	public Iterator<H> iterator() {
-		return handlers.iterator();
+		return getHandlers().iterator();
 	}
 
+	@Override
 	public void clear() {
-		this.handlers.clear();
+		this.getHandlers().clear();
 	}
 
 	public abstract boolean responsibleFor(H handler, E event);
+
+	/**
+	 * @return the handlers
+	 */
+	public List<H> getHandlers() {
+		return handlers;
+	}
+
+	/**
+	 * @param handlers the handlers to set
+	 */
+	public void setHandlers(
+		List<H> handlers) {
+		this.handlers = handlers;
+	}
 }

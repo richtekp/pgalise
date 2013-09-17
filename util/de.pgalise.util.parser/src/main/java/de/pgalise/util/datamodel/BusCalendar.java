@@ -21,7 +21,6 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -32,7 +31,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_CALENDAR")
-public final class BusCalendar {
+public class BusCalendar {
 	
 	@Id
 	@Column(name = "SERVICE_ID")

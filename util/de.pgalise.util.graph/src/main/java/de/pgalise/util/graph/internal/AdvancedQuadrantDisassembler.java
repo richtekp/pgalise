@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import java.awt.Rectangle;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import org.geotools.geometry.jts.JTS;
 
@@ -35,11 +34,11 @@ public class AdvancedQuadrantDisassembler implements Disassembler {
 
 	@Override
 	public List<Geometry> disassemble(Geometry mapper, int numServers) {
-		List<Geometry> GeometryList = new ArrayList<Geometry>();
+		List<Geometry> GeometryList = new ArrayList<>();
 		GeometryList.add(mapper);
 
 		for (int i = 1; i < numServers; i++) {
-			List<Geometry> tmpGeometryList = new ArrayList<Geometry>();
+			List<Geometry> tmpGeometryList = new ArrayList<>();
 			Geometry tmpBiggestGeometry = null;
 
 			for (Geometry geometry : GeometryList) {
@@ -61,7 +60,7 @@ public class AdvancedQuadrantDisassembler implements Disassembler {
 			GeometryList = tmpGeometryList;
 		}
 
-		return new ArrayList<Geometry>(GeometryList);
+		return new ArrayList<>(GeometryList);
 	}
 	
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
@@ -73,7 +72,7 @@ public class AdvancedQuadrantDisassembler implements Disassembler {
 	 * @return List with Geometry objects
 	 */
 	private List<Geometry> halveGeometry(Geometry geometry) {
-		List<Geometry> dividedGeometryList = new ArrayList<Geometry>();
+		List<Geometry> dividedGeometryList = new ArrayList<>();
 
 		/* horizontal or vertical cut? */
 		if (geometry.getEnvelopeInternal().getWidth() <= geometry.getEnvelopeInternal().getHeight()) {

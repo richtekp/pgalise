@@ -6,13 +6,17 @@ package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.MutableTimeSensitive;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.util.Set;
 
 /**
  *
+ * @param <S> 
+ * @param <T> 
+ * @param <C> 
  * @author richter
  */
-public interface MutableServiceDataHelper<S extends MutableExtendedServiceDataCurrent, T extends MutableExtendedServiceDataForecast> extends ServiceDataHelper<S, T>, MutableTimeSensitive {
+public interface MutableServiceDataHelper<S extends MutableExtendedServiceDataCurrent<C>, T extends MutableExtendedServiceDataForecast<C>, C extends WeatherCondition> extends ServiceDataHelper<S, T,C>, MutableTimeSensitive {
 	
 
 	void setApicity(String apicity) ;

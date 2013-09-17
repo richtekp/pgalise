@@ -106,7 +106,7 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 	 * 
 	 * @author marcus
 	 */
-	private static final class CreateThread extends Thread {
+	private static class CreateThread extends Thread {
 
 		private final CreateRandomVehicleEventHandler eHandler;
 		private final List<CreateRandomVehicleData> vehicleList;
@@ -237,10 +237,12 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 						countScheduledBike++;
 					} else {
 						this.eHandler.getServer().getVehicleFuzzyManager().addSpareBicycle(v);
-						if (counterBikes > limitBikes)
+						if (counterBikes > limitBikes) {
 							countSpareBike++;
-						else
+						}
+						else {
 							countDelayedBike++;
+						}
 					}
 				} else if (v.getData().getClass().equals(TruckData.class)) { // must be proved before CarDate (because
 																				// of inheritance)
@@ -251,10 +253,12 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 						countScheduledTruck++;
 					} else {
 						this.eHandler.getServer().getVehicleFuzzyManager().addSpareTruck(v);
-						if (counterTrucks > limitTrucks)
+						if (counterTrucks > limitTrucks) {
 							countSpareTruck++;
-						else
+						}
+						else {
 							countDelayedTruck++;
+						}
 					}
 				} else if (v.getData().getClass().equals(CarData.class)) {
 					this.eHandler.getServer().getVehicleFuzzyManager().increaseMaxCars();
@@ -264,10 +268,12 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 						countScheduledCar++;
 					} else {
 						this.eHandler.getServer().getVehicleFuzzyManager().addSpareCar(v);
-						if (counterCars > limitCars)
+						if (counterCars > limitCars) {
 							countSpareCar++;
-						else
+						}
+						else {
 							countDelayedCar++;
+						}
 					}
 				} else if (v.getData().getClass().equals(MotorcycleData.class)) {
 					this.eHandler.getServer().getVehicleFuzzyManager().increaseMaxMotorcycles();
@@ -277,10 +283,12 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 						countScheduledMoto++;
 					} else {
 						this.eHandler.getServer().getVehicleFuzzyManager().addSpareMotorcycle(v);
-						if (counterMotorcycles > limitMotorcycles)
+						if (counterMotorcycles > limitMotorcycles) {
 							countSpareMoto++;
-						else
+						}
+						else {
 							countDelayedMoto++;
+						}
 					}
 				}
 			}

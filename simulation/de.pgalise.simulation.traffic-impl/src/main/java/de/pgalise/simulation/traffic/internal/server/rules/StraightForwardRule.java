@@ -35,7 +35,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * 
  * @author Marcus
  */
-public final class StraightForwardRule extends TrafficRule {
+public class StraightForwardRule extends TrafficRule {
 	/**
 	 * contains for both {@link Edge}s the {@link Vehicle}s that are in there
 	 */

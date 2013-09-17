@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  * @author Marcus
  * @version 1.0
  */
-public final class CompositeInfraredInterferer implements InfraredInterferer {
+public class CompositeInfraredInterferer implements InfraredInterferer {
 
 	/**
 	 * the composite {@link InfraredInterferer}s

@@ -17,6 +17,7 @@
 package de.pgalise.util.weathercollector.weatherservice;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
@@ -25,10 +26,11 @@ import de.pgalise.util.weathercollector.model.ServiceDataHelper;
  * Interface for weather service strategies. Uses the strategy pattern
  * 
  * @param <T> the type of the {@link ServiceDataHelper} (in subclasses which use JPA, a persistent class can be enforced)
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public interface ServiceStrategy<T extends ServiceDataHelper<?,?>> {
+public interface ServiceStrategy<T extends ServiceDataHelper<?,?,C>,C extends WeatherCondition> {
 
 	/**
 	 * Returns the current weather informations to the given city
@@ -40,5 +42,5 @@ public interface ServiceStrategy<T extends ServiceDataHelper<?,?>> {
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public T getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException;
+	public T getWeather(City city, DatabaseManager<C> databaseManager) throws ReadServiceDataException;
 }

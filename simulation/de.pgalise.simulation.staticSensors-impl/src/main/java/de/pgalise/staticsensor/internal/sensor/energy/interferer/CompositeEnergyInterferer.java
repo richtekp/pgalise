@@ -22,7 +22,6 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Implementation of an {@link EnergyInterferer} that hold several other {@link EnergyInterferer}s
@@ -31,7 +30,7 @@ import javax.vecmath.Vector2d;
  * @author Andreas
  * @version 1.0
  */
-public final class CompositeEnergyInterferer implements EnergyInterferer {
+public class CompositeEnergyInterferer implements EnergyInterferer {
 
 	/**
 	 * the composite {@link EnergyInterferer}s

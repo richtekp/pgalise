@@ -30,7 +30,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @author Andreas
  * @version 1.0
  */
-public final class CompositeWeatherInterferer implements WeatherInterferer {
+public class CompositeWeatherInterferer implements WeatherInterferer {
 
 	/**
 	 * the composite {@link WeatherInterferer}s

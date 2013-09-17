@@ -187,29 +187,39 @@ public class SensorHelper implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		SensorHelper other = (SensorHelper) obj;
 		if (position == null) {
-			if (other.position != null)
+			if (other.position != null) {
 				return false;
-		} else if (!position.equals(other.position))
+			}
+		} else if (!position.equals(other.position)) {
 			return false;
-		if (sensorID != other.sensorID)
+		}
+		if (sensorID != other.sensorID) {
 			return false;
+		}
 		if (sensorInterfererType == null) {
-			if (other.sensorInterfererType != null)
+			if (other.sensorInterfererType != null) {
 				return false;
-		} else if (!sensorInterfererType.equals(other.sensorInterfererType))
+			}
+		} else if (!sensorInterfererType.equals(other.sensorInterfererType)) {
 			return false;
-		if (sensorType != other.sensorType)
+		}
+		if (sensorType != other.sensorType) {
 			return false;
-		if (updateSteps != other.updateSteps)
+		}
+		if (updateSteps != other.updateSteps) {
 			return false;
+		}
 		return true;
 	}
 

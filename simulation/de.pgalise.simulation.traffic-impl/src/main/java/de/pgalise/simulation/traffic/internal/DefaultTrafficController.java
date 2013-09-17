@@ -50,7 +50,6 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import java.awt.Rectangle;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
@@ -60,7 +59,6 @@ import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import javax.vecmath.Vector2d;
 
 /**
  * Implementation of the traffic controller
@@ -102,18 +100,18 @@ public class DefaultTrafficController extends AbstractController implements Traf
 
 	private AsyncHandler asyncHandler;
 
-	/**
-	 * help variable for JUnit tests
-	 */
-	private final boolean JUNIT_TEST;
-	
 	private Geometry area;
+	
+	public DefaultTrafficController() {
+		
+	}
 
 	/**
 	 * Default constructor
+	 * 
+	 * @param area 
 	 */
 	public DefaultTrafficController(Geometry area) {
-		JUNIT_TEST = false;
 		disassembler = new QuadrantDisassembler();
 		asyncHandler = new ThreadPoolHandler();
 		this.area = area;
@@ -122,13 +120,11 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	/**
 	 * Constructor for JUnit tests
 	 * 
-	 * @param mapper
-	 *            GPS mapper
+	 * @param area 
 	 * @param trafficServer
 	 *            List with traffic servers
 	 */
 	public DefaultTrafficController(Geometry area, List<TrafficServer> trafficServer) {
-		JUNIT_TEST = true;
 		this.serverList = trafficServer;
 		asyncHandler = new ThreadPoolHandler();
 
@@ -138,15 +134,13 @@ public class DefaultTrafficController extends AbstractController implements Traf
 
 	@Override
 	protected void onInit(final InitParameter param) throws InitializationException {
-		if (!JUNIT_TEST) {
-			serverList = getTrafficServer(param.getServerConfiguration());
-		}
+		serverList = getTrafficServer(param.getServerConfiguration());
 
 		// stadt in gleichgroße teile aufteilen
 		cityZones = createCityZones();
 
 		// server graphdaten übergeben
-		final List<Exception> exceptions = new ArrayList<>();
+		final List<Exception> exceptions = new ArrayList<>(1);
 		for (int i = 0; i < serverList.size(); i++) {
 			final int serverId = i;
 			asyncHandler.addDelegateFunction(new Function() {
@@ -211,18 +205,17 @@ public class DefaultTrafficController extends AbstractController implements Traf
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onUpdate(SimulationEventList simulationEventList) {
-		if(serverList.size()>1)
+		if(serverList.size()>1) {
 			updateAsynchronous(simulationEventList);
+		}
 		
 		serverList.get(0).update(simulationEventList);
 	}
 	
 	private void updateAsynchronous(SimulationEventList simulationEventList) {
-		List<SimulationEvent> eventList = (List<SimulationEvent>) (List<?>) simulationEventList.getEventList();
-		eventList = new ArrayList<>();
+		List<SimulationEvent> eventList = new ArrayList<>(16);
 		for (SimulationEvent e : simulationEventList.getEventList()) {
 			if (!e.getEventType().equals(SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT)) {
 				log.info(String.format(
@@ -268,7 +261,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private List<SimulationEvent> divideEvent(SimulationEvent e) {
-		List<SimulationEvent> eventList = new ArrayList<>();
+		List<SimulationEvent> eventList = new ArrayList<>(16);
 		if (e.getEventType().equals(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT)) {
 			CreateVehiclesEvent originalEvent = (CreateVehiclesEvent) e;
 
@@ -276,7 +269,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 			CreateVehiclesEvent eventForEachServer[] = new CreateVehiclesEvent[this.serverList.size()];
 			for (int i = 0; i < eventForEachServer.length; i++) {
 				eventForEachServer[i] = new CreateVehiclesEvent(UUID.randomUUID(),
-						new ArrayList<CreateRandomVehicleData>());
+						new ArrayList<CreateRandomVehicleData>(16));
 				eventForEachServer[i].setResponsibleServer(i);
 			}
 
@@ -287,7 +280,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 				String targetNode = data.getVehicleInformation().getTrip().getTargetNode();
 
 				// distribute the load equally for random routes
-				if ((startNode == null || startNode.equals("")) && (targetNode == null || targetNode.equals(""))) {
+				if ((startNode == null || startNode.isEmpty()) && (targetNode == null || targetNode.isEmpty())) {
 					eventForEachServer[responsibleServer].getVehicles().add(data);
 					responsibleServer = (responsibleServer + 1) % this.serverList.size();
 				}
@@ -350,8 +343,9 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
 		for (int i = 0; i < cityZones.size(); i++) {
 			Coordinate pos = sensor.getPosition();
-			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos)))
+			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos))) {
 				return serverList.get(i).statusOfSensor(sensor);
+			}
 		}
 		throw new SensorException("Could not find sensor.");
 	}
@@ -364,22 +358,22 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	 * @return List with traffic servers
 	 */
 	private List<TrafficServer> getTrafficServer(ServerConfiguration serverConfig) {
-		final List<TrafficServer> serverList = new ArrayList<>();
+		final List<TrafficServer> serverList0 = new ArrayList<>(16);
 		serverConfigReader.read(serverConfig, new ServiceHandler<TrafficServer>() {
 
 			@Override
-			public String getSearchedName() {
+			public String getName() {
 				return ServiceDictionary.TRAFFIC_SERVER;
 			}
 
 			@Override
 			public void handle(String server, TrafficServer service) {
-				log.info(String.format("Using %s on server %s", getSearchedName(), server));
-				serverList.add(service);
+				log.info(String.format("Using %s on server %s", getName(), server));
+				serverList0.add(service);
 			}
 
 		});
-		return serverList;
+		return serverList0;
 	}
 
 	/**

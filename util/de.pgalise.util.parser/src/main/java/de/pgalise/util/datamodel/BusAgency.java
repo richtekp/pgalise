@@ -19,7 +19,6 @@ package de.pgalise.util.datamodel;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * 
@@ -28,7 +27,7 @@ import javax.persistence.Table;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_AGENCY")
-public final class BusAgency {
+public class BusAgency {
 	
 	@Id
 	@Column(name = "AGENCY_ID")

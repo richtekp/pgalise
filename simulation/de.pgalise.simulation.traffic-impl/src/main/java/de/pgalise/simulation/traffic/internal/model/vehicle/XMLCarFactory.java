@@ -46,14 +46,14 @@ public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFac
 	public Vehicle<CarData> createCar(UUID id, String typeId, Color color, SensorHelper helper) {
 		CarData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<CarData>(id, updateCarData(data, color), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>(id, updateCarData(data, color), trafficGraphExtensions);
 	}
 
 	@Override
 	public Vehicle<CarData> createRandomCar(UUID id, SensorHelper helper) {
 		CarData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<CarData>(id, updateCarData(data, Color.BLACK), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>(id, updateCarData(data, Color.BLACK), trafficGraphExtensions);
 	}
 
 	/**

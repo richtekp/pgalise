@@ -71,7 +71,7 @@ public class ExtendedXMLTruckFactory extends XMLAbstractFactory<TruckData> imple
 	public Vehicle<TruckData> createRandomTruck(UUID id, SensorHelper helper) {
 		TruckData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<TruckData>(id, updateTruckData(data, Color.BLACK, random.nextInt(2)),
+		return new DefaultMotorizedVehicle<>(id, updateTruckData(data, Color.BLACK, random.nextInt(2)),
 				trafficGraphExtensions);
 	}
 
@@ -79,7 +79,7 @@ public class ExtendedXMLTruckFactory extends XMLAbstractFactory<TruckData> imple
 	public Vehicle<TruckData> createTruck(UUID id, String typeId, Color color, int trailercount, SensorHelper helper) {
 		TruckData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<TruckData>(id, updateTruckData(data, color, trailercount), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>(id, updateTruckData(data, color, trailercount), trafficGraphExtensions);
 	}
 
 	/**

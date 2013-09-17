@@ -23,7 +23,6 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.MutableStationData;
-import de.pgalise.simulation.weather.modifier.WeatherMapModifier;
 import de.pgalise.simulation.weather.modifier.WeatherSimulationEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -121,19 +120,19 @@ public class CityClimateModifier extends WeatherSimulationEventModifier {
 	@Override
 	public void deployChanges() {
 		// Calculate general informations
-		float temperaturDiff = (float) this.getUHI(this.city.getPopulation());
-		de.pgalise.simulation.shared.city.CityLocationEnum cityEnum = (this.city.isNearRiver() || this.city.isNearSea()) ? CityLocationEnum.DOWNTOWN_RIVER
+		float temperaturDiff = (float) this.getUHI(this.getCity().getPopulation());
+		de.pgalise.simulation.shared.city.CityLocationEnum cityEnum = (this.getCity().isNearRiver() || this.getCity().isNearSea()) ? CityLocationEnum.DOWNTOWN_RIVER
 				: CityLocationEnum.DOWNTOWN_NORIVER;
 
 		// Change all values
-		for (MutableStationData weather : this.map.values()) {
+		for (MutableStationData weather : this.getMap().values()) {
 			long time = weather.getMeasureTime().getTime();
 
 			float temp = weather.getTemperature().floatValue(SI.CELSIUS);
 			weather.setTemperature(Measure.valueOf(temp - temperaturDiff, SI.CELSIUS));
 			weather.setPerceivedTemperature(weather.getPerceivedTemperature() - temperaturDiff);
 
-			weather.setRadiation(this.getRadiation(weather.getRadiation(), this.city.getPopulation()));
+			weather.setRadiation(this.getRadiation(weather.getRadiation(), this.getCity().getPopulation()));
 
 			weather.setRelativHumidity(this.getRelativHumidity(weather.getRelativHumidity(), time));
 
@@ -329,14 +328,15 @@ public class CityClimateModifier extends WeatherSimulationEventModifier {
 	 */
 	@Override
 	protected void initDecorator() {
-		if (this.props != null) {
+		if (this.getProps() != null) {
 			// Load properties from file
-			this.orderID = Integer.parseInt(this.props.getProperty("cityclimate_order_id"));
-			this.rainDayStart = Integer.parseInt(this.props.getProperty("cityclimate_rainday_start"));
-			this.rainDayEnds = Integer.parseInt(this.props.getProperty("cityclimate_rainday_end"));
+			this.setOrderID(Integer.parseInt(this.getProps().
+				getProperty("cityclimate_order_id")));
+			this.rainDayStart = Integer.parseInt(this.getProps().getProperty("cityclimate_rainday_start"));
+			this.rainDayEnds = Integer.parseInt(this.getProps().getProperty("cityclimate_rainday_end"));
 		} else {
 			// Take default values
-			this.orderID = CityClimateModifier.ORDER_ID;
+			this.setOrderID(CityClimateModifier.ORDER_ID);
 			this.rainDayStart = 0;
 			this.rainDayEnds = 23;
 		}

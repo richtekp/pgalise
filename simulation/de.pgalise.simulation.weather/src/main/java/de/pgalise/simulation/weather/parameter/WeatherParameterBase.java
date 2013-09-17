@@ -17,7 +17,6 @@
 package de.pgalise.simulation.weather.parameter;
 
 import java.sql.Date;
-import java.sql.Time;
 
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.StationData;

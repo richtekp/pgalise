@@ -112,16 +112,20 @@ public class Item implements Comparable<Item> {
 		long thisTime = this.getDepartureTime();
 		long anotherTime = o.getDepartureTime();
 
-		if (thisTime < anotherTime)
+		if (thisTime < anotherTime) {
 			return -1;
-		if (thisTime > anotherTime)
+		}
+		if (thisTime > anotherTime) {
 			return 1;
+		}
 
 		// Same time
-		if (vehicle == null)
+		if (vehicle == null) {
 			return -1;
-		if (vehicle.equals(o.getVehicle()))
+		}
+		if (vehicle.equals(o.getVehicle())) {
 			return 0;
+		}
 
 		return 1;
 	}
@@ -137,20 +141,26 @@ public class Item implements Comparable<Item> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Item other = (Item) obj;
-		if (time != other.time)
+		if (time != other.time) {
 			return false;
+		}
 		if (vehicle == null) {
-			if (other.vehicle != null)
+			if (other.vehicle != null) {
 				return false;
-		} else if (!vehicle.equals(other.vehicle))
+			}
+		} else if (!vehicle.equals(other.vehicle)) {
 			return false;
+		}
 		return true;
 	}
 

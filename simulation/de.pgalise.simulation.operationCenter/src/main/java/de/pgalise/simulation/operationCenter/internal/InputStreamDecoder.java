@@ -18,8 +18,9 @@ public class InputStreamDecoder {
 	public String[] getLine() throws IOException {
 		// 4+13 bytes = odysseus header + sensor meta data 
 		byte metaData[] = new byte[17];
-		if(input.read(metaData)==-1)
+		if(input.read(metaData)==-1) {
 			return null;
+		}
 		
 		int tupleSize = ByteBuffer.wrap(copyBytes(metaData, 0, 4)).getInt();
 		
@@ -85,10 +86,11 @@ public class InputStreamDecoder {
 	}
 
 	public byte[] copyBytes(final byte bytes[], int beginIndex, int count) {
-		if(count>(bytes.length-beginIndex))
+		if(count>(bytes.length-beginIndex)) {
 			throw new IllegalArgumentException(
 					String.format("Can't copy input byte array of size %s from %s to %s",
 							bytes.length, beginIndex, beginIndex+count));
+		}
 		byte copy[] = new byte[count];
 		for(int i=0; i<count; i++) {
 			copy[i] = bytes[beginIndex+i];

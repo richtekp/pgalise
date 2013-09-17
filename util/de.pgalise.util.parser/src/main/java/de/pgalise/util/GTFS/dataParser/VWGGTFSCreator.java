@@ -171,8 +171,9 @@ public class VWGGTFSCreator {
 				// }
 
 				for (BusStop stop : stopsList) {
-					if (busStopName.equals(stop.name))
+					if (busStopName.equals(stop.name)) {
 						stop_id = stop.id;
+					}
 				}
 				// System.out.println("Count: "+c+", ListSize: "+stopsList.size());
 
@@ -182,10 +183,12 @@ public class VWGGTFSCreator {
 				if (!stop_id.isEmpty()) {
 					int hour = Integer.parseInt(stopTime.split(":")[0]);
 					int minute = Integer.parseInt(stopTime.split(":")[1]);
-					if (minute < 10)
+					if (minute < 10) {
 						arrival_time = hour + ":0" + minute;
-					else
+					}
+					else {
 						arrival_time = hour + ":" + minute;
+					}
 					departure_time = arrival_time;
 					trip_id = base_trip_id + 1;
 					System.out.println(trip_id + "," + stop_id + "," + arrival_time + ":00," + departure_time + ":00,"
@@ -194,22 +197,27 @@ public class VWGGTFSCreator {
 					int minutes = hour * 60 + minute;
 
 					int minutesToAdd = 15;
-					if (busLineToken.equals("HW") || busLineToken.equals("RW"))
+					if (busLineToken.equals("HW") || busLineToken.equals("RW")) {
 						minutesToAdd = 15;
-					else if (busLineToken.equals("HE") || busLineToken.equals("RE"))
+					}
+					else if (busLineToken.equals("HE") || busLineToken.equals("RE")) {
 						minutesToAdd = 30;
+					}
 
 					for (int j = 2; j < numberOfTrips + 1; j++) {
 						trip_id = base_trip_id + j;
 						minutes += minutesToAdd;
 						hour = (int) Math.floor(minutes / 60);
 						minute = minutes - (hour * 60);
-						if (hour >= 24)
+						if (hour >= 24) {
 							hour -= 24;
-						if (minute < 10)
+						}
+						if (minute < 10) {
 							arrival_time = hour + ":0" + minute;
-						else
+						}
+						else {
 							arrival_time = hour + ":" + minute;
+						}
 						departure_time = arrival_time;
 						System.out.println(trip_id + "," + stop_id + "," + arrival_time + ":00," + departure_time
 								+ ":00," + stop_sequence);
@@ -245,8 +253,9 @@ public class VWGGTFSCreator {
 		while ((rowAsTokensStops = csvReaderStops.read()) != null) {
 			stopsStopName = rowAsTokensStops.get(0).trim();
 			for (String stop : stops) {
-				if (stop.equals(stopsStopName))
+				if (stop.equals(stopsStopName)) {
 					contains = true;
+				}
 			}
 			if (!contains) {
 				System.out.println(stopsStopName + "," + count + ",,");

@@ -32,9 +32,10 @@ public enum Orientation {
 	 * Returns a direction enum for the coordinates of the private transport
 	 * vehicle.
 	 * 
+	 * @param direction 
 	 * @return Direction enum
 	 */
-	public final static Orientation getOrientation(Vector2d direction) {
+	public static Orientation getOrientation(Vector2d direction) {
 		Orientation orientation;
 		if ((direction.x == 0) && (direction.y < 0)) {
 			orientation = Orientation.NORTH;
@@ -69,7 +70,7 @@ public enum Orientation {
 	 *            Border position
 	 * @return True, if the position is beyond the border position
 	 */
-	public final static boolean isBeyond(Orientation orientation,
+	public static boolean isBeyond(Orientation orientation,
 			Coordinate position, Coordinate borderPosition) {
 		return (((orientation == Orientation.NORTH) && (position.y <= borderPosition
 				.y))

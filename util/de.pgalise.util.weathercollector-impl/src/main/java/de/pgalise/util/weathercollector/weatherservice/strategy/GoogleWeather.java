@@ -17,11 +17,11 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import java.sql.Date;
 import java.sql.Time;
@@ -96,7 +96,7 @@ public class GoogleWeather extends XMLAPIWeather {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
 			// Date
-			DefaultExtendedServiceDataCurrent condition = new DefaultExtendedServiceDataCurrent(new Date(weather.getMeasureTime().getTime()),
+			MyExtendedServiceDataCurrent condition = new MyExtendedServiceDataCurrent(new Date(weather.getMeasureTime().getTime()),
 					new Time(weather.getMeasureTime().getTime()), city,
 				null, 1.0f,
 				Float.NaN,
@@ -117,7 +117,7 @@ public class GoogleWeather extends XMLAPIWeather {
 					condition.setRelativHumidity(Float.parseFloat(segs[1].substring(0, (segs[1].length() - 1))));
 				} else if ("condition".equals(childnodes.item(j).getNodeName())) {
 					// Condition
-					condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
+					condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
 
@@ -133,13 +133,13 @@ public class GoogleWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
-			DefaultExtendedServiceDataForecast condition = new DefaultExtendedServiceDataForecast(
+			MyExtendedServiceDataForecast condition = new MyExtendedServiceDataForecast(
 							new Date(System.currentTimeMillis()), 
 							new Time(System.currentTimeMillis()), 
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE));
+							1.0f, 1.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION);
 
 			for (int j = 0; j < childnodes.getLength(); j++) {
 				// Data
@@ -163,7 +163,7 @@ public class GoogleWeather extends XMLAPIWeather {
 					condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 				} else if ("condition".equals(childnodes.item(j).getNodeName())) {
 					// Condition
-					condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
+					condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
 

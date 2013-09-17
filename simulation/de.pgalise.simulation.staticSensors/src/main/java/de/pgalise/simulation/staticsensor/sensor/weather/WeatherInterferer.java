@@ -18,7 +18,6 @@ package de.pgalise.simulation.staticsensor.sensor.weather;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
-import javax.vecmath.Vector2d;
 
 /**
  * Interface for an interferer which manipulates the weather input

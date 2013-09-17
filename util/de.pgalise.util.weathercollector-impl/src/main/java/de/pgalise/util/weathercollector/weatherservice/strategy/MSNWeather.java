@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
@@ -28,8 +28,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.DefaultExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import java.sql.Timestamp;
@@ -86,7 +86,7 @@ public class MSNWeather extends XMLAPIWeather {
 				if (childnode.getNodeName().equals("current")) {
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					DefaultExtendedServiceDataCurrent condition;
+					MyExtendedServiceDataCurrent condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
@@ -95,11 +95,11 @@ public class MSNWeather extends XMLAPIWeather {
 						// Current date
 						Time time = DateConverter.convertTime(dateString, "yyyy-MM-dd h:mm:ss");
 						Date date = DateConverter.convertDate(dateString, "yyyy-MM-dd h:mm:ss");
-						condition = new DefaultExtendedServiceDataCurrent(
+						condition = new MyExtendedServiceDataCurrent(
 							date, 
 							time, 
 							city, 
-							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE), new Time(1), new Time(2));
+							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION, new Time(1), new Time(2));
 
 						// Date
 						Timestamp convertedTimestamp = DateConverter.convertTimestamp(dateString, "yyyy-MM-dd h:mm:ss");
@@ -121,7 +121,7 @@ public class MSNWeather extends XMLAPIWeather {
 					// Condition
 					dataString = attributes.getNamedItem("skycode").getTextContent();
 					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
+						condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// Relativ humidity
@@ -145,19 +145,19 @@ public class MSNWeather extends XMLAPIWeather {
 					// Forecast
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					DefaultExtendedServiceDataForecast condition;
+					MyExtendedServiceDataForecast condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
 
 						// Current date
-						condition = new DefaultExtendedServiceDataForecast(
+						condition = new MyExtendedServiceDataForecast(
 							DateConverter.convertDate(dateString, "yyyy-MM-dd"), 
 							new Time(System.currentTimeMillis()), 
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE));
+							1.0f, 1.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION);
 					} catch (ParseException e) {
 						continue;
 					}
@@ -179,7 +179,7 @@ public class MSNWeather extends XMLAPIWeather {
 					// Condition
 					dataString = attributes.getNamedItem("skycodeday").getTextContent();
 					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
+						condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// City

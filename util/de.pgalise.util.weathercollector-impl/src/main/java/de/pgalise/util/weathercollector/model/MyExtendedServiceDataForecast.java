@@ -17,8 +17,8 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
 
 import javax.persistence.Entity;
@@ -33,19 +33,19 @@ import javax.measure.quantity.Temperature;
  * @author Andreas Rehfeldt
  * @version 1.0 (01.07.2012)
  */
-@Entity(name = "DefExtendedServiceDataForecast")
+@Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_FORECAST")
-@NamedQuery(name = "DefExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM DefExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForecast implements ExtendedServiceDataForecast, MutableExtendedServiceDataForecast {
+@NamedQuery(name = "MyExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM MyExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
+public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast implements MutableExtendedServiceDataForecast<DefaultWeatherCondition> {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default constructor
 	 */
-	protected DefaultExtendedServiceDataForecast() {
+	protected MyExtendedServiceDataForecast() {
 	}
 
-	public DefaultExtendedServiceDataForecast(
+	public MyExtendedServiceDataForecast(
 		Date measureDate,
 		Time measureTime, 
 		City city,
@@ -54,7 +54,7 @@ public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForeca
 		Float relativHumidity,
 		Float windDirection,
 		Float windVelocity,
-		WeatherCondition condition) {
+		DefaultWeatherCondition condition) {
 		super(
 			measureDate,
 			measureTime,
@@ -68,7 +68,7 @@ public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForeca
 	}
 
 	@Override
-	public void complete(ExtendedServiceDataForecast newObj) {
+	public void complete(ExtendedServiceDataForecast<DefaultWeatherCondition> newObj) {
 
 		// Date
 		if (this.getMeasureDate() == null) {
@@ -83,7 +83,7 @@ public class DefaultExtendedServiceDataForecast extends DefaultServiceDataForeca
 			this.setTemperatureHigh(newObj.getTemperatureHigh());
 		}
 
-		if (this.getCondition() == WeatherCondition.UNKNOWN_CONDITION) {
+		if (this.getCondition() == DefaultWeatherCondition.UNKNOWN_CONDITION) {
 			this.setCondition(newObj.getCondition());
 		}
 	}

@@ -24,7 +24,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInter
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
-public final class InductionLoopNoInterferer implements InductionLoopInterferer {
+public class InductionLoopNoInterferer implements InductionLoopInterferer {
 
 	@Override
 	public int interfere(final int vehicleLength, final int vehicleCount, final double vehicleVelocity) {

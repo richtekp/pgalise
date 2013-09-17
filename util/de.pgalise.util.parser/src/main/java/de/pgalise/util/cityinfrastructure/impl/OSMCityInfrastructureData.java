@@ -190,7 +190,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		private List<String> nodeReferenceList;
 
 		public TmpWay() {
-			this.nodeReferenceList = new ArrayList<String>();
+			this.nodeReferenceList = new ArrayList<>();
 			super.setOneWay(false);
 			super.setBuildingTypeMap(new HashMap<String, String>());
 		}
@@ -345,8 +345,8 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		List<Way> wayList = new ArrayList<>(motorWays);
 
 		/* Eliminate multiple bus stops: */
-		Set<String> busStopNameSet = new HashSet<String>();
-		List<BusStop> tmpBusStop = new ArrayList<BusStop>();
+		Set<String> busStopNameSet = new HashSet<>();
+		List<BusStop> tmpBusStop = new ArrayList<>();
 		for (BusStop busStop : busStops) {
 			if (busStop != null) {
 				int before = busStopNameSet.size();
@@ -358,12 +358,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		}
 
 		/* Build a node way map: */
-		Map<Node, List<Way>> nodeWayMap = new HashMap<Node, List<Way>>();
+		Map<Node, List<Way>> nodeWayMap = new HashMap<>();
 		for (Way way : wayList) {
 			for (Node node : way.getNodeList()) {
 				List<Way> tmpWayList = nodeWayMap.get(node);
 				if (tmpWayList == null) {
-					tmpWayList = new ArrayList<Way>();
+					tmpWayList = new ArrayList<>();
 					nodeWayMap.put(node, tmpWayList);
 				}
 				tmpWayList.add(way);
@@ -391,7 +391,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 		BusStopLoop: for (BusStop busStop : busStops) {
 
-			List<NodeDistanceWrapper> nodeDistanceList = new ArrayList<NodeDistanceWrapper>();
+			List<NodeDistanceWrapper> nodeDistanceList = new ArrayList<>();
 
 			for (Node node : nodeWayMap.keySet()) {
 				nodeDistanceList.add(new NodeDistanceWrapper(node, this.getDistanceInKM(busStop.getLatitude(),
@@ -433,7 +433,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 										busStop.getLongitude()))) {
 
 							/* Insert busstop as new node: */
-							List<Node> newNodeList = new ArrayList<Node>();
+							List<Node> newNodeList = new ArrayList<>();
 							boolean nodeFound = false;
 							for (Node node : possibleWay.getNodeList()) {
 								if (!nodeFound && (node.equals(node1) || node.equals(node2))) {
@@ -738,7 +738,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @return
 	 */
 	private List<Way> extractMotorWays(List<Way> ways) {
-		List<Way> wayList = new ArrayList<Way>();
+		List<Way> wayList = new ArrayList<>();
 
 		OuterLoop: for (Way way : ways) {
 			if (way.getHighway() != null) {
@@ -965,10 +965,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 */
 	private void parse(InputStream osmIN, InputStream busStopIN) throws IOException {
 		/* Holds the way data till we collected every node */
-		List<TmpWay> tmpWayList = new ArrayList<OSMCityInfrastructureData.TmpWay>();
-		List<BusStop> tmpBusStopList = new ArrayList<BusStop>();
+		List<TmpWay> tmpWayList = new ArrayList<>();
+		List<BusStop> tmpBusStopList = new ArrayList<>();
 		/* String = node id / nd ref */
-		Map<String, Node> nodeMap = new HashMap<String, Node>();
+		Map<String, Node> nodeMap = new HashMap<>();
 
 		Node northEastBoundary = null;
 		Node southWestBoundary = null;
@@ -1184,9 +1184,9 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 		/* Set real nodes for all ways and save used nodes */
 		Set<Node> usedNodes = new HashSet<>();
-		List<Way> wayList = new ArrayList<Way>();
+		List<Way> wayList = new ArrayList<>();
 		OuterLoop: for (TmpWay way : tmpWayList) {
-			List<Node> nodeList = new ArrayList<Node>();
+			List<Node> nodeList = new ArrayList<>();
 			for (String nodeReference : way.getNodeReferenceList()) {
 				Node node = nodeMap.get(nodeReference);
 				if (node == null) {

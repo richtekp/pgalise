@@ -5,17 +5,18 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.BaseTimeSensitive;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import de.pgalise.simulation.weather.model.TimeSensitive;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.util.Set;
 
 /**
  *
+ * @param <S> 
+ * @param <T> 
+ * @param <C> 
  * @author richter
  */
-public interface ServiceDataHelper<S extends ExtendedServiceDataCurrent, T extends ExtendedServiceDataForecast> extends BaseTimeSensitive, ServiceDataHelperCompleter<S,T> {
+public interface ServiceDataHelper<S extends ExtendedServiceDataCurrent<C>, T extends ExtendedServiceDataForecast<C>, C extends WeatherCondition> extends TimeSensitive, ServiceDataHelperCompleter<S,T,C> {
 	
 	public String getApicity() ;
 
