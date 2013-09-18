@@ -39,7 +39,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
  * @author Timo
  */
 @SuppressWarnings("deprecation")
-public enum SimulationEventTypeEnum {
+public enum SimulationEventTypeEnum implements EventType {
 	/**
 	 * Creates new random vehicles
 	 */

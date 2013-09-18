@@ -76,7 +76,7 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherControllerTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(name="weather_test_DefaultWeatherControllerTest", unitName = "weather_test")
+	@PersistenceUnit(unitName = "weather_test")
 	private EntityManagerFactory entityManagerFactory;
 	/**
 	 * Logger
@@ -117,7 +117,7 @@ public class DefaultWeatherControllerTest {
 		/* Create simulation controller and init/start the simulation: */
 		ServiceDictionary serviceDictionary = (ServiceDictionary) ctx.lookup(
 			//"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
-			"java:global/services-impl-2.0-SNAPSHOT/de.pgalise.simulation.service.ServiceDictionary"
+			"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
 		);
 		serviceDictionary.init(DefaultWeatherControllerTest.produceServerConfiguration());
 
@@ -185,7 +185,7 @@ public class DefaultWeatherControllerTest {
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
 		Coordinate testPosition = new Coordinate(2, 3);
 		List<SimulationEvent> testEventList = new ArrayList<>(1);
-		testEventList.add(new ChangeWeatherEvent(UUID.randomUUID(), WeatherEventEnum.HOTDAY, 30.0f,
+		testEventList.add(new ChangeWeatherEvent( WeatherEventEnum.HOTDAY, 30.0f,
 				eventTimestamp, 6.0f));
 		SimulationEventList testEvent = new SimulationEventList(testEventList, valueTime, UUID.randomUUID());
 

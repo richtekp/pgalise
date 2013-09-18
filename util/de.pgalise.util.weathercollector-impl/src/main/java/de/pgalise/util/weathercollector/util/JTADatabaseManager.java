@@ -19,8 +19,7 @@ import java.util.logging.Level;
 import javax.ejb.Local;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +41,8 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	/**
 	 * Name of the persistent unit
 	 */
-	@PersistenceUnit(unitName = "weather_collector")
-	private EntityManagerFactory factory;
+	@PersistenceContext(unitName = "weather")
+	private EntityManager em;
 
 	public JTADatabaseManager() {
 	}
@@ -52,8 +51,8 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 *  
 	 * @param entityManagerFactory 
 	 */
-	public JTADatabaseManager(EntityManagerFactory entityManagerFactory) {
-		this.factory = entityManagerFactory;
+	public JTADatabaseManager(EntityManager entityManagerFactory) {
+		this.em = entityManagerFactory;
 	}
 
 	/**
@@ -65,8 +64,6 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 */
 	@Override
 	public DefaultWeatherCondition getCondition(String condition) {
-		final EntityManager em = this.factory.createEntityManager();
-
 		// Get cities
 		DefaultWeatherCondition result;
 		try {
@@ -84,8 +81,6 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 
 	@Override
 	public List<City> getReferenceCities() {
-		final EntityManager em = this.factory.createEntityManager();
-
 		// Get cities
 		List<City> citylist;
 		try {
@@ -93,11 +88,6 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 			citylist = query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-
-		// Close Manager
-		if (em.isOpen()) {
-			em.close();
 		}
 
 		// Returns
@@ -108,6 +98,7 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	public void saveServiceData(DefaultServiceDataHelper weather) {
 		// Get city
 		City city = weather.getCity();
+		em.persist(city);
 
 		// Current weather
 		this.saveCurrentWeather(city, weather.getCurrentCondition());
@@ -121,8 +112,6 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 		if ((list == null) || list.isEmpty()) {
 			throw new SaveStationDataException("No data available");
 		}
-
-		final EntityManager em = this.factory.createEntityManager();
 
 		// Get the last station data
 		StationData lastData = this.getLastStationData(em);
@@ -147,11 +136,6 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 			// Save data
 			em.merge(station_data);
 			count++;
-		}
-
-		// Close Manager
-		if (em.isOpen()) {
-			em.close();
 		}
 
 		LOGGER.debug(count + " Datensaetze wurden gespeichert.", Level.INFO);
@@ -281,28 +265,21 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 * 
 	 * @param cityID
 	 *            Primary key of the city
-	 * @param service_data
+	 * @param serviceData
 	 *            Current service weather data
 	 */
-	private void saveCurrentWeather(City city, MyExtendedServiceDataCurrent service_data) {
-		if ((service_data == null) || (service_data.getMeasureDate() == null)) {
-			throw new IllegalArgumentException("service_data");
+	private void saveCurrentWeather(City city, MyExtendedServiceDataCurrent serviceData) {
+		if ((serviceData == null) || (serviceData.getMeasureDate() == null)) {
+			throw new IllegalArgumentException("serviceData");
 		}
-
-		final EntityManager em = this.factory.createEntityManager();
 
 		// Delete old entries
-		this.deleteCurrentWeather(this.getServiceDataCurrent(city, service_data.getMeasureDate(), em), em);
+		this.deleteCurrentWeather(this.getServiceDataCurrent(city, serviceData.getMeasureDate(), em), em);
 
 		// Save data
-		em.merge(service_data);
+		em.merge(serviceData);
 
-		// Close Manager ?
-		if (em.isOpen()) {
-			em.close();
-		}
-
-		LOGGER.debug("Datensatz fuer Stadt " + city + " vom " + service_data.getMeasureDate() + " gespeichert.", Level.INFO);
+		LOGGER.debug("Datensatz fuer Stadt " + city + " vom " + serviceData.getMeasureDate() + " gespeichert.", Level.INFO);
 	}
 
 	/**
@@ -310,18 +287,16 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	 * 
 	 * @param cityID
 	 *            Primary key of the city
-	 * @param service_data
+	 * @param serviceData
 	 *            Set with forecasts for future days
 	 */
-	private void saveForecastWeather(City city, Set<MyExtendedServiceDataForecast> service_data) {
-		if ((service_data == null) || service_data.isEmpty()) {
-			throw new IllegalArgumentException("service_data");
+	private void saveForecastWeather(City city, Set<MyExtendedServiceDataForecast> serviceData) {
+		if ((serviceData == null) || serviceData.isEmpty()) {
+			throw new IllegalArgumentException("serviceData");
 		}
 
-		final EntityManager em = this.factory.createEntityManager();
-
 		// For all entries
-		for (MyExtendedServiceDataForecast data : service_data) {
+		for (MyExtendedServiceDataForecast data : serviceData) {
 			// Delete old entries
 			this.deleteForeCastWeather(this.getServiceDataForecast(city, data.getMeasureDate(), em), em);
 
@@ -330,11 +305,6 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 
 			LOGGER.debug("Datensatz fuer Stadt " + city + " vom " + data.getMeasureDate() + " gespeichert.", Level.INFO);
 
-		}
-
-		// Close Manager ?
-		if (em.isOpen()) {
-			em.close();
 		}
 	}
 }

@@ -56,34 +56,34 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class StormDayEventTest {
-	@PersistenceUnit(unitName = "weather_test", name="weather_test_StormDayEventTest")
+	@PersistenceUnit(unitName = "weather_test")
 	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
 	private static EJBContainer CONTAINER;
 
 	/**
 	 * End timestamp
 	 */
-	public long endTimestamp;
+	private long endTimestamp;
 
 	/**
 	 * Start timestamp
 	 */
-	public long startTimestamp;
+	private long startTimestamp;
 
 	/**
 	 * Test timestamp
 	 */
-	public long testTimestamp;
+	private long testTimestamp;
 
 	/**
 	 * Test value
 	 */
-	public float testValue = 10.0f;
+	private float testValue = 10.0f;
 
 	/**
 	 * Test duration
 	 */
-	public float testDuration = 4.0f;
+	private float testDuration = 4.0f;
 
 	/**
 	 * Service Class
@@ -93,7 +93,7 @@ public class StormDayEventTest {
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader loader;
+	private WeatherLoader<?> loader;
 	
 	private	City city;
 
@@ -117,7 +117,7 @@ public class StormDayEventTest {
 		Context ctx = CONTAINER.getContext();
 
 		// Load EJB for Weather loader
-		loader = (WeatherLoader) ctx
+		loader = (WeatherLoader<?>) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
 		// Start

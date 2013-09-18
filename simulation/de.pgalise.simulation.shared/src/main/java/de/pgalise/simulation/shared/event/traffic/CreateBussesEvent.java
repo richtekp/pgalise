@@ -62,9 +62,9 @@ public class CreateBussesEvent extends TrafficEvent {
 	 * @param busRoutes
 	 *            List with bus routes
 	 */
-	public CreateBussesEvent(UUID id, List<CreateRandomVehicleData> createRandomVehicleDataList, long time,
+	public CreateBussesEvent(List<CreateRandomVehicleData> createRandomVehicleDataList, long time,
 			List<BusRoute> busRoutes) {
-		super(id, SimulationEventTypeEnum.CREATE_BUSSES_EVENT);
+		super(SimulationEventTypeEnum.CREATE_BUSSES_EVENT);
 		this.time = time;
 		// this.busRoutes = busRoutes;
 		this.createRandomVehicleDataList = createRandomVehicleDataList;

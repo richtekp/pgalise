@@ -217,7 +217,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	private void updateAsynchronous(SimulationEventList simulationEventList) {
 		List<SimulationEvent> eventList = new ArrayList<>(16);
 		for (SimulationEvent e : simulationEventList.getEventList()) {
-			if (!e.getEventType().equals(SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT)) {
+			if (!e.getType().equals(SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT)) {
 				log.info(String.format(
 						"Received event (%s) will be splitted into multiple events to distribute the load equally",
 						e.getId()));
@@ -262,13 +262,13 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private List<SimulationEvent> divideEvent(SimulationEvent e) {
 		List<SimulationEvent> eventList = new ArrayList<>(16);
-		if (e.getEventType().equals(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT)) {
+		if (e.getType().equals(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT)) {
 			CreateVehiclesEvent originalEvent = (CreateVehiclesEvent) e;
 
 			// creat an event for each server
 			CreateVehiclesEvent eventForEachServer[] = new CreateVehiclesEvent[this.serverList.size()];
 			for (int i = 0; i < eventForEachServer.length; i++) {
-				eventForEachServer[i] = new CreateVehiclesEvent(UUID.randomUUID(),
+				eventForEachServer[i] = new CreateVehiclesEvent(
 						new ArrayList<CreateRandomVehicleData>(16));
 				eventForEachServer[i].setResponsibleServer(i);
 			}
@@ -293,7 +293,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 				}
 			}
 			eventList.addAll(Arrays.asList(eventForEachServer));
-		} else if (e.getEventType().equals(SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
+		} else if (e.getType().equals(SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
 			CreateRandomVehiclesEvent originalEvent = (CreateRandomVehiclesEvent) e;
 
 			int sizeForEachServer = originalEvent.getCreateRandomVehicleDataList().size() / serverList.size();
@@ -314,7 +314,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 
 				log.info(String.format("Creating new event from original [%s - %s)", a, b));
 
-				CreateRandomVehiclesEvent newEvent = new CreateRandomVehiclesEvent(originalEvent.getId(),
+				CreateRandomVehiclesEvent newEvent = new CreateRandomVehiclesEvent(
 						new ArrayList(originalEvent.getCreateRandomVehicleDataList().subList(a, b)));
 				newEvent.setResponsibleServer(i);
 				eventList.add(newEvent);

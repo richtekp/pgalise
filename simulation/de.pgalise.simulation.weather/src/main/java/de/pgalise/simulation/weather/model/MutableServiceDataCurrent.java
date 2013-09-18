@@ -12,7 +12,7 @@ import javax.measure.quantity.Temperature;
  * @param <C> 
  * @author richter
  */
-public interface MutableServiceDataCurrent<C extends WeatherCondition> extends ServiceDataCurrent<C>, MutableBaseServiceData<C> {
+public interface MutableServiceDataCurrent<C extends WeatherCondition> extends ServiceDataCurrent<C>, MutableServiceData<C> {
 	
 	void setTemperature(Measure<Float, Temperature> temperature);
 }

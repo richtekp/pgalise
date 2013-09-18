@@ -28,6 +28,7 @@ import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -44,10 +45,11 @@ import javax.measure.unit.SI;
  * the implemented modifier. If no parameters are given in the constructor of 
  * an implemented modifier, the standard properties of the file will be used.
  * 
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public class ColdDayEvent extends WeatherDayEventModifier {
+public class ColdDayEvent<C extends WeatherCondition> extends WeatherDayEventModifier<C> {
 
 	/**
 	 * Parameter which will be changed

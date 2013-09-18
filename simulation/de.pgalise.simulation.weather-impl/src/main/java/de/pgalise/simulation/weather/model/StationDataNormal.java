@@ -36,7 +36,7 @@ import javax.persistence.NamedQuery;
 @NamedQueries({
 		@NamedQuery(name = "StationDataNormal.findByDate", query = "SELECT x FROM StationDataNormal x WHERE x.measureDate = :date"),
 		@NamedQuery(name = "StationDataNormal.findFirstEntryByDate", query = "SELECT i FROM StationDataNormal i WHERE i.measureDate = :date ORDER BY i.measureTime ASC"),
-		@NamedQuery(name = "StationDataNormal.findLastEntryByDate", query = "SELECT i FROM StationDataNormal i WHERE i.measureDate = :date ORDER BY i.measureTime DESC"), })
+		@NamedQuery(name = "StationDataNormal.findLastEntryByDate", query = "SELECT i FROM StationDataNormal i WHERE i.measureDate = :date ORDER BY i.measureTime DESC") })
 public class StationDataNormal extends AbstractStationData implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -64,7 +64,7 @@ public class DefaultEventStrategyTest {
 		/* with event */
 		double percentage = 0.5;
 		List<EnergyEvent> eventList = new ArrayList<>();
-		eventList.add(new PercentageChangeEnergyEvent(UUID.randomUUID(), DefaultEventStrategyTest.testGeoLocation, 50,
+		eventList.add(new PercentageChangeEnergyEvent(DefaultEventStrategyTest.testGeoLocation, 50,
 				DefaultEventStrategyTest.eventStartTimestamp, DefaultEventStrategyTest.eventEndTimestamp, percentage));
 		eventStrategy.update(DefaultEventStrategyTest.eventStartTimestamp, eventList);
 

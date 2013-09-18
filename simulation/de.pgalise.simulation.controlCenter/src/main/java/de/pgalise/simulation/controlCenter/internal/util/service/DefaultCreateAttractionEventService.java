@@ -58,7 +58,7 @@ public class DefaultCreateAttractionEventService implements CreateAttractionEven
 						randomSeedService, 
 						withSensorInterferer);
 		
-		return new AttractionTrafficEvent(UUID.randomUUID(),
+		return new AttractionTrafficEvent(
 				startTimestamp, 
 				endTimestamp, 
 				nodeID, 

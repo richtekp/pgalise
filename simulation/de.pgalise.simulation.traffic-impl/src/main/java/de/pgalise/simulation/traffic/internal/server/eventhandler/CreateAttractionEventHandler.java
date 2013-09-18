@@ -51,7 +51,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 	}
 
 	@Override
-	public SimulationEventTypeEnum getType() {
+	public SimulationEventTypeEnum getTargetEventType() {
 		return CreateAttractionEventHandler.type;
 	}
 

@@ -23,12 +23,12 @@ import javax.persistence.OneToOne;
  * the MappedSuperclass (if usage of @Type annotation should be avoided)
  */
 @MappedSuperclass
-public abstract class AbstractBaseServiceData<C extends WeatherCondition> extends AbstractMutableTimeSensitive implements BaseServiceData<C>, MutableBaseServiceData<C> {
+public abstract class AbstractServiceData<C extends WeatherCondition> extends AbstractMutableTimeSensitive implements ServiceData<C>, MutableServiceData<C> {
 	
 	/**
 	 * City
 	 */
-	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+	@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private City city;
 	
 	/**
@@ -49,13 +49,13 @@ public abstract class AbstractBaseServiceData<C extends WeatherCondition> extend
 	@Column(name = "WIND_VELOCITY")
 	private Float windVelocity;
 	
-	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.ALL})
+	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private C condition;
 
-	protected AbstractBaseServiceData() {
+	protected AbstractServiceData() {
 	}
 
-	public AbstractBaseServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, C condition) {
+	public AbstractServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, C condition) {
 		super(measureDate,
 			measureTime);
 		this.city = city;

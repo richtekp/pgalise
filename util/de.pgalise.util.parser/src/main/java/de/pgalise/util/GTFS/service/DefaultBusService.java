@@ -31,11 +31,14 @@ import java.util.List;
 import de.pgalise.simulation.shared.traffic.BusRoute;
 import de.pgalise.simulation.shared.traffic.BusStopTimes;
 import de.pgalise.simulation.shared.traffic.BusTrip;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Lena
  */
 public class DefaultBusService implements BusService {
+	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultBusService.class);
 	private Connection con;
 
 	// public static void main(String[] args) {
@@ -83,7 +86,7 @@ public class DefaultBusService implements BusService {
 				break;
 		}
 
-		String date = "0000-00-00";
+		String date;
 		int m = cal.get(Calendar.MONTH) + 1;
 		String month = String.valueOf(m);
 		if (m < 10) {
@@ -220,8 +223,9 @@ public class DefaultBusService implements BusService {
 	@Override
 	public int getTotalNumberOfBusTrips(List<BusRoute> busRoutes, long timeInMs) {
 		List<String> routeIds = new ArrayList<>();
-		for (BusRoute r : busRoutes)
+		for (BusRoute r : busRoutes) {
 			routeIds.add(r.getRouteId());
+		}
 		try {
 			Class.forName("org.apache.derby.jdbc.ClientDriver");
 			con = DriverManager
@@ -257,7 +261,7 @@ public class DefaultBusService implements BusService {
 					break;
 			}
 
-			String date = "0000-00-00";
+			String date;
 			int m = cal.get(Calendar.MONTH) + 1;
 			String month = String.valueOf(m);
 			if (m < 9) {
@@ -307,7 +311,8 @@ public class DefaultBusService implements BusService {
 
 			return count;
 		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+			LOGGER.warn("see nested exception",
+				e);
 			return -1;
 		}
 	}

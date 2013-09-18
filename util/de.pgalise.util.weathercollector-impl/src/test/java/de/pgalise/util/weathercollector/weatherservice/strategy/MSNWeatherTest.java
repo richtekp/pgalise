@@ -18,7 +18,9 @@ import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Test;
@@ -33,8 +35,8 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class MSNWeatherTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_collector_test")
-	private EntityManagerFactory entityManager;
+	@PersistenceContext(unitName = "weather_test")
+	private EntityManager entityManager;
 	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 	
 	@SuppressWarnings("LeakingThisInConstructor")

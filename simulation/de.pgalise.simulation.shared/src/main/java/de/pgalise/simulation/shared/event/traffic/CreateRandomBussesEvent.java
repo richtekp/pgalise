@@ -56,8 +56,8 @@ public class CreateRandomBussesEvent extends TrafficEvent {
 	 * @param agencyName
 	 *            Agency name
 	 */
-	public CreateRandomBussesEvent(UUID id, List<String> busLines, String agencyName) {
-		super(id, SimulationEventTypeEnum.CREATE_RANDOM_BUSSES_EVENT);
+	public CreateRandomBussesEvent(List<String> busLines, String agencyName) {
+		super(SimulationEventTypeEnum.CREATE_RANDOM_BUSSES_EVENT);
 		this.busLines = busLines;
 		this.agencyName = agencyName;
 	}

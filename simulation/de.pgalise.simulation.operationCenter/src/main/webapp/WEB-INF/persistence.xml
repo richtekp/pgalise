@@ -3,8 +3,12 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
 	<persistence-unit name="HQFDATA" transaction-type="JTA">
-		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>	
-		<jta-data-source>weather-database</jta-data-source>
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>	
+		<jta-data-source>pgalise</jta-data-source>
 		<class>de.pgalise.simulation.operationCenter.hqf.persistence.HQFData</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+		</properties>
 	</persistence-unit>
 </persistence>

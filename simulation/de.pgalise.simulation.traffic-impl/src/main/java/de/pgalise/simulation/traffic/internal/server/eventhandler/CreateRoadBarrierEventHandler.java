@@ -81,7 +81,7 @@ public class CreateRoadBarrierEventHandler implements TrafficEventHandler {
 	private TrafficServerLocal server;
 
 	@Override
-	public SimulationEventTypeEnum getType() {
+	public SimulationEventTypeEnum getTargetEventType() {
 		return CreateRoadBarrierEventHandler.type;
 	}
 

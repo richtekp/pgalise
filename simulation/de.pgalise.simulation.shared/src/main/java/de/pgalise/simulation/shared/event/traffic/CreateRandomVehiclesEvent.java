@@ -48,8 +48,15 @@ public class CreateRandomVehiclesEvent extends TrafficEvent {
 	 * @param createRandomVehicleDataList
 	 *            List with CreateRandomVehicleData
 	 */
-	public CreateRandomVehiclesEvent(UUID id, List<CreateRandomVehicleData> createRandomVehicleDataList) {
-		super(id, SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
+	public CreateRandomVehiclesEvent(List<CreateRandomVehicleData> createRandomVehicleDataList) {
+		super(SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
+		this.createRandomVehicleDataList = createRandomVehicleDataList;
+	}
+
+	public CreateRandomVehiclesEvent(Long id,
+		List<CreateRandomVehicleData> createRandomVehicleDataList	) {
+		super(id,
+			SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
 	}
 

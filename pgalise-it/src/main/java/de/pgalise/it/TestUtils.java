@@ -7,8 +7,8 @@ package de.pgalise.it;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
+import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
-import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
@@ -95,7 +95,72 @@ public class TestUtils {
 		return retValue;
 	}
 	
-	public static Collection<DefaultServiceDataCurrent> setUpWeatherServiceData(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+	public static Collection<DefaultServiceDataForecast> setUpWeatherServiceDataForecast(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			startTimestamp);
+		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			endTimestamp);
+		utx.begin();
+		EntityManager em = entityManagerFactory.createEntityManager();
+		DefaultServiceDataForecast serviceWeather = new DefaultServiceDataForecast(new Date(startTimestampMidnight),
+			new Time(startTimestampMidnight),
+			city,
+			Measure.valueOf(10.0f,
+			SI.CELSIUS),
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		
+		long preceedingDayTimestamp = startTimestampMidnight-DateConverter.ONE_DAY_IN_MILLIS;
+		DefaultServiceDataForecast serviceWeatherPreviousDay = new DefaultServiceDataForecast(new Date(preceedingDayTimestamp),
+			new Time(preceedingDayTimestamp),
+			city,
+			Measure.valueOf(10.0f,
+			SI.CELSIUS),
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		DefaultServiceDataForecast serviceWeatherForecast = new DefaultServiceDataForecast(new Date(startTimestampMidnight),
+			new Time(startTimestampMidnight),
+			city,
+			Measure.valueOf(10.0f,
+			SI.CELSIUS),
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		DefaultServiceDataForecast weather = new DefaultServiceDataForecast(new Date(startTimestampMidnight),
+			new Time(startTimestampMidnight),
+			city,
+			Measure.valueOf(10.0f,
+			SI.CELSIUS),
+			Measure.valueOf(1.0f, SI.CELSIUS),
+			1.0f,
+			1.0f,
+			1.0f,
+			DefaultWeatherCondition.UNKNOWN_CONDITION
+		);
+		em.joinTransaction();
+		em.merge(serviceWeather);
+		em.merge(serviceWeatherPreviousDay);
+		em.merge(serviceWeatherForecast);
+		em.merge(weather);
+		em.close();
+		utx.commit();
+		Collection<DefaultServiceDataForecast> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
+		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", DefaultServiceDataForecast.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
+		return retValue;
+	}
+	
+	public static Collection<DefaultServiceDataCurrent> setUpWeatherServiceDataCurrent(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
 		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
 			startTimestamp);
 		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
@@ -141,14 +206,14 @@ public class TestUtils {
 			DefaultWeatherCondition.UNKNOWN_CONDITION
 		);
 		em.joinTransaction();
-		em.persist(serviceWeather);
-		em.persist(serviceWeatherPreviousDay);
-		em.persist(serviceWeatherForecast);
-		em.persist(weather);
+		em.merge(serviceWeather);
+		em.merge(serviceWeatherPreviousDay);
+		em.merge(serviceWeatherForecast);
+		em.merge(weather);
 		em.close();
 		utx.commit();
 		Collection<DefaultServiceDataCurrent> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
-		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", MutableStationData.class.getSimpleName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
+		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", DefaultServiceDataCurrent.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
 		return retValue;
 	}
 	
@@ -224,14 +289,14 @@ public class TestUtils {
 			1.0f,
 			1.0f);
 		em.joinTransaction();
-		em.persist(serviceWeather);
-		em.persist(serviceWeatherPreviousDay);
-		em.persist(serviceWeatherForecast);
-		em.persist(weather);
-		em.close();
+		em.merge(serviceWeather);
+		em.merge(serviceWeatherPreviousDay);
+		em.merge(serviceWeatherForecast);
+		em.merge(weather);
 		utx.commit();
+		em.close();
 		Collection<StationDataNormal> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
-		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", MutableStationData.class.getSimpleName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
+		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", StationDataNormal.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
 		return retValue;
 	}
 	

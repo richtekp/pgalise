@@ -29,12 +29,13 @@ public abstract class EnergyEvent extends SimulationEvent {
 	 * Constructor
 	 * 
 	 * @param id
-	 *            ID of the event
+	 * ID of the event
 	 * @param eventType
-	 *            Event type
+	 * Event type
 	 */
-	public EnergyEvent(UUID id, SimulationEventTypeEnum eventType) {
-		super(id, eventType);
+	
+	public EnergyEvent(SimulationEventTypeEnum eventType) {
+		super(eventType);
 	}
 
 	/**

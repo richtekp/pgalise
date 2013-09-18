@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.shared.event.weather;
 
-import java.util.UUID;
-
 import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
 
@@ -36,12 +34,10 @@ public abstract class WeatherEvent extends SimulationEvent {
 	/**
 	 * Constructor
 	 * 
-	 * @param id
-	 *            ID of the event
 	 * @param eventType
 	 *            Event type
 	 */
-	public WeatherEvent(UUID id, SimulationEventTypeEnum eventType) {
-		super(id, eventType);
+	public WeatherEvent(SimulationEventTypeEnum eventType) {
+		super(eventType);
 	}
 }

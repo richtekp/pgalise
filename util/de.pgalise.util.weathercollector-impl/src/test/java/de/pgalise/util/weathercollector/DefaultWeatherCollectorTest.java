@@ -41,6 +41,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 import javax.transaction.HeuristicMixedException;
@@ -67,8 +68,8 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherCollectorTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_collector_test")
-	private EntityManagerFactory entityManager;
+	@PersistenceContext(unitName = "weather_test")
+	private EntityManager entityManager;
 	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
@@ -91,7 +92,6 @@ public class DefaultWeatherCollectorTest {
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
-		EntityManager entityManager0 = entityManager.createEntityManager();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
@@ -110,13 +110,13 @@ public class DefaultWeatherCollectorTest {
 			true,
 			true,
 			referenceArea);
-		entityManager0.persist(city);
+		entityManager.persist(city);
 //		CONTAINER.getContext().unbind("inject");
 //		baseDatabaseManager = lookupJTADatabaseManagerBean();
 		weatherCollector.collectServiceData(baseDatabaseManager, serviceStrategys);
-		Query query = entityManager0.createQuery("SELECT x FROM DefaultServiceDataCurrent x");
-		userTransaction.commit();
+		Query query = entityManager.createQuery("SELECT x FROM DefaultServiceDataCurrent x");
 		assertFalse(query.getResultList().isEmpty());
+		userTransaction.commit();
 	}
 
 	@Test
@@ -129,7 +129,6 @@ public class DefaultWeatherCollectorTest {
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
-		EntityManager entityManager0 = entityManager.createEntityManager();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
@@ -148,7 +147,7 @@ public class DefaultWeatherCollectorTest {
 			true,
 			true,
 			referenceArea);
-		entityManager0.persist(city);
+		entityManager.persist(city);
 		userTransaction.commit();
 		weatherCollector.collectStationData(baseDatabaseManager, new HashSet<>(Arrays.asList(stationStrategy)));
 		//only test that StationStrategy.saveWeather is invoked

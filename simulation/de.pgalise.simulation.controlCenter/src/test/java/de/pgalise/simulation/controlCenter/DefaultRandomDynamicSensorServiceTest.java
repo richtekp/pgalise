@@ -115,7 +115,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 		TrafficEvent result = testClass.createRandomDynamicSensors(testData, randomSeedService, true);
 
 		/* Count vehicles and their gps ratio: */
-		if (result.getEventType() == SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT) {
+		if (result.getType() == SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT) {
 			for (CreateRandomVehicleData createRandomVehicleData : ((CreateRandomVehiclesEvent) result)
 					.getCreateRandomVehicleDataList()) {
 				switch (createRandomVehicleData.getVehicleInformation().getVehicleType()) {

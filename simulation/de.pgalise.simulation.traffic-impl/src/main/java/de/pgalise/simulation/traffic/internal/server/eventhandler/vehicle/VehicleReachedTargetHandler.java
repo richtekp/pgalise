@@ -49,7 +49,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 public class VehicleReachedTargetHandler implements VehicleEventHandler {
 
 	@Override
-	public VehicleEventType getType() {
+	public VehicleEventType getTargetEventType() {
 		return VehicleEventType.VEHICLE_REACHED_TARGET;
 	}
 

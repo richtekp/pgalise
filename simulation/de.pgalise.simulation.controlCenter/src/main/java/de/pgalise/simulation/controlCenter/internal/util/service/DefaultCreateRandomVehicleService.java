@@ -173,6 +173,6 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 		}
 
 
-		return new CreateRandomVehiclesEvent(UUID.randomUUID(), createRandomVehicleDataList);
+		return new CreateRandomVehiclesEvent( createRandomVehicleDataList);
 	}
 }

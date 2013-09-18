@@ -94,7 +94,7 @@ import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle.DefaultVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 import de.pgalise.simulation.traffic.server.route.RouteConstructor;
@@ -318,7 +318,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	 */
 	private long updateIntervall;
 
-	private Map<UUID, TrafficEvent> eventForVehicle;
+	private Map<Long, TrafficEvent> eventForVehicle;
 
 	@EJB
 	private TrafficGovernor fuzzyTrafficGovernor;
@@ -505,14 +505,14 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 
 	@Override
 	public void onRemove(Item v) {
-		this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(VehicleEventType.VEHICLE_REMOVED, this, v
+		this.vehicleEventHandlerManager.handleEvent(new DefaultVehicleEvent(VehicleEventType.VEHICLE_REMOVED, this, v
 				.getVehicle(), 0, 0));
 		this.sensorController.onRemove(v.getVehicle());
 	}
 
 	@Override
 	public void onSchedule(Item v) {
-		this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(VehicleEventType.VEHICLE_ADDED, this, v
+		this.vehicleEventHandlerManager.handleEvent(new DefaultVehicleEvent(VehicleEventType.VEHICLE_ADDED, this, v
 				.getVehicle(), 0, 0));
 		this.sensorController.onSchedule(v.getVehicle());
 	}
@@ -542,7 +542,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 		for (Iterator<ReceivedVehicle> i = this.receivedVehicles.iterator(); i.hasNext();) {
 			ReceivedVehicle rv = i.next();
 			posBeforeUpdate = rv.getVehicle().getPosition().toString();
-			this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(VehicleEventType.VEHICLE_UPDATE, this, rv
+			this.vehicleEventHandlerManager.handleEvent(new DefaultVehicleEvent(VehicleEventType.VEHICLE_UPDATE, this, rv
 					.getVehicle(), this.currentTime, this.updateIntervall));
 
 			List<Vehicle<? extends VehicleData>> vehicles = this.trafficGraphExtensions.getVehiclesOnNode(rv
@@ -678,15 +678,16 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 			IOException {
 		// Load event handlers
 		try (InputStream stream = DefaultTrafficServer.class.getResourceAsStream("/eventhandler.conf")) {
-			this.eventHandlerManager.init(stream, this.getClass());
-			for (SimulationEventHandler handler : this.eventHandlerManager) {
-				((TrafficEventHandler) handler).init(this);
-			}
+			throw new UnsupportedOperationException("is DefaultTrafficServer supposed to be a SimulationEventHandler or not?");
+//			this.eventHandlerManager.init(stream, DefaultTrafficServer.class);
+//			for (SimulationEventHandler handler : this.eventHandlerManager) {
+//				((TrafficEventHandler) handler).init(this);
+//			}
 		}
 		// Load update handlers
-		try (InputStream stream = DefaultTrafficServer.class.getResourceAsStream("/updatehandler.conf")) {
-			this.vehicleEventHandlerManager.init(stream, this.getClass());
-		}
+//		try (InputStream stream = DefaultTrafficServer.class.getResourceAsStream("/updatehandler.conf")) {
+//			this.vehicleEventHandlerManager.init(stream, DefaultTrafficServer.class);
+//		}
 	}
 
 	/**
@@ -729,7 +730,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 				// log.debug("Elapsed time since last vehicle update: "+elapsedTime);/
 				Node varNode = vehicle.getCurrentNode();
 
-				this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(VehicleEventType.VEHICLE_UPDATE, this,
+				this.vehicleEventHandlerManager.handleEvent(new DefaultVehicleEvent(VehicleEventType.VEHICLE_UPDATE, this,
 						vehicle, currentTime, elapsedTime));
 
 				// if (!varNode.getId().equals(vehicle.getCurrentNode().getId())) {
@@ -745,7 +746,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 						log.debug("Vehicle " + vehicle.getName() + " passed node " + curNode.getId());
 						if (this.cityZone == null
 								|| this.cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(curNode)))) {
-							this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(
+							this.vehicleEventHandlerManager.handleEvent(new DefaultVehicleEvent(
 									VehicleEventType.VEHICLE_PASSED_NODE, this, vehicle, currentTime, 0));
 						} else {
 							// vehicle is driving out of boundaries
@@ -768,7 +769,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 						}
 					} else if (!varNode.getId().equals(curNode.getId()) && (vehicle.getState() == State.REACHED_TARGET)) {
 						removeableVehicles.add(vehicle);
-						this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(
+						this.vehicleEventHandlerManager.handleEvent(new DefaultVehicleEvent(
 								VehicleEventType.VEHICLE_REACHED_TARGET, this, vehicle, currentTime, 0));
 					}
 				}
@@ -776,7 +777,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 				if (varNode.getId().equals(vehicle.getPath().getNodePath().get(0).getId())
 						&& (item.getScheduleTime() == currentTime)) {
 					log.debug("Vehicle " + vehicle.getName() + " passed startNode " + varNode.getId());
-					this.vehicleEventHandlerManager.handleEvent(new VehicleEvent(VehicleEventType.VEHICLE_PASSED_NODE,
+					this.vehicleEventHandlerManager.handleEvent(new DefaultVehicleEvent(VehicleEventType.VEHICLE_PASSED_NODE,
 							this, vehicle, currentTime, 0));
 				}
 				// }
@@ -1009,7 +1010,7 @@ public class DefaultTrafficServer extends AbstractController implements TrafficS
 	}
 
 	@Override
-	public Map<UUID, TrafficEvent> getEventForVehicle() {
+	public Map<Long, TrafficEvent> getEventForVehicle() {
 		return eventForVehicle;
 	}
 

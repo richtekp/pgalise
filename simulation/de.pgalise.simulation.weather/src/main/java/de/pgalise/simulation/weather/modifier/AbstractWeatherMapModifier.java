@@ -31,6 +31,7 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * Abstract super class for weather modifiers. (Decorator pattern (http://de.wikipedia.org/wiki/Decorator) and strategy
  * pattern).
  * 
+ * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */

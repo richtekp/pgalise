@@ -26,6 +26,6 @@ import de.pgalise.simulation.service.event.EventHandler;
  * @author mustafa
  *
  */
-public interface VehicleEventHandler extends EventHandler<VehicleEvent, VehicleEventType > {
+public interface VehicleEventHandler extends EventHandler<VehicleEvent, VehicleEventType> {
 
 }

@@ -30,11 +30,14 @@ import java.util.List;
 import de.pgalise.simulation.shared.traffic.BusRoute;
 import de.pgalise.simulation.shared.traffic.BusStopTimes;
 import de.pgalise.simulation.shared.traffic.BusTrip;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Lena
  */
 public class SharedConBusService implements BusService {
+	private final static Logger LOGGER = LoggerFactory.getLogger(SharedConBusService.class);
 	private Connection con;
 	
 	public SharedConBusService(Connection con) {
@@ -74,7 +77,7 @@ public class SharedConBusService implements BusService {
 				break;
 		}
 
-		String date = "0000-00-00";
+		String date;
 		int m = cal.get(Calendar.MONTH) + 1;
 		String month = String.valueOf(m);
 		if (m < 10) {
@@ -211,8 +214,9 @@ public class SharedConBusService implements BusService {
 	@Override
 	public int getTotalNumberOfBusTrips(List<BusRoute> busRoutes, long timeInMs) {
 		List<String> routeIds = new ArrayList<>();
-		for (BusRoute r : busRoutes)
+		for (BusRoute r : busRoutes) {
 			routeIds.add(r.getRouteId());
+		}
 		try {
 
 			String weekday = "monday";
@@ -245,7 +249,7 @@ public class SharedConBusService implements BusService {
 					break;
 			}
 
-			String date = "0000-00-00";
+			String date;
 			int m = cal.get(Calendar.MONTH) + 1;
 			String month = String.valueOf(m);
 			if (m < 9) {
@@ -295,7 +299,8 @@ public class SharedConBusService implements BusService {
 
 			return count;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			LOGGER.warn("see nested exception",
+				e);
 			return -1;
 		}
 	}

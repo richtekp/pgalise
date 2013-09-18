@@ -60,9 +60,7 @@ public class DefaultBuildingEnergyProfileStrategy implements BuildingEnergyProfi
 			properties.load(propertiesInputStream);
 			this.minSquareMetersForIndustry = Double.valueOf(properties.getProperty("too-small-size-for-house"));
 			this.tooSmallBuilding = Double.valueOf(properties.getProperty("min-size-for-industry"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} 
 	}
 
 	@Override

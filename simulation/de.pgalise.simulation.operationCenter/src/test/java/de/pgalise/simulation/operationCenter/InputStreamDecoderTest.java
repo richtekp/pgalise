@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.operationCenter.internal.InputStreamDecoder;
+import org.junit.Ignore;
 
 // IntegrationTest with Odysseus
+@Ignore
 public class InputStreamDecoderTest {
 	private static final Logger log = LoggerFactory.getLogger(InputStreamDecoderTest.class);
 	private InputStreamDecoder parser;

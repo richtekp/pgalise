@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.service.event;
 
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.Event;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,7 +35,7 @@ import java.io.InputStream;
  * @author mustafa
  *
  */
-public interface EventHandlerManager<H extends EventHandler<E, T>, E, T> extends Iterable<H> {
+public interface EventHandlerManager<H extends EventHandler<E, T>, E extends Event<T>, T extends EventType> extends Iterable<H> {
 	/**
 	 * Registers all listed EventHandlers on this EventHandlerManager.
 	 * All previously registered handler will be deleted.
@@ -51,8 +53,7 @@ public interface EventHandlerManager<H extends EventHandler<E, T>, E, T> extends
 	 * @throws IOException
 	 *             if an error occurred processing the inputstream
 	 */
-	@SuppressWarnings("rawtypes")
-	public void init(InputStream config, Class clazz) throws ClassNotFoundException, InstantiationException,
+	public <J extends H> void init(InputStream config, Class<J> clazz) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IOException;
 
 	/**

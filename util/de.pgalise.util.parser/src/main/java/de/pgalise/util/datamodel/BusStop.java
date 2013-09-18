@@ -16,9 +16,11 @@
  
 package de.pgalise.util.datamodel;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import org.hibernate.annotations.Type;
 
 /**
  * 
@@ -27,20 +29,15 @@ import javax.persistence.Id;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_STOPS")
-public class BusStop {
+public class BusStop extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "STOP_NAME")
 	private String stopName;
 	
-	@Id
-	@Column(name = "STOP_ID")
-	private String stopId;
-	
-	@Column(name = "STOP_LAT")
-	private double stopLat;
-	
-	@Column(name = "STOP_LON")
-	private double stopLon;
+	@Type(type="org.hibernate.spatial.GeometryType")
+	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
+	private Coordinate position;
 	
 	@Column(name = "STOP_CODE")
 	private String stopCode;
@@ -65,15 +62,11 @@ public class BusStop {
 	
 	public BusStop() {}
 
-	public BusStop(String stopName, String stopId, double stopLat,
-			double stopLon, String stopCode, String zoneId, String stopUrl,
+	public BusStop(String stopName, Coordinate position, String stopCode, String zoneId, String stopUrl,
 			String locationType, String parentStation, String stopTimezone,
 			String wheelchairBoarding) {
 		super();
 		this.stopName = stopName;
-		this.stopId = stopId;
-		this.stopLat = stopLat;
-		this.stopLon = stopLon;
 		this.stopCode = stopCode;
 		this.zoneId = zoneId;
 		this.stopUrl = stopUrl;
@@ -91,28 +84,12 @@ public class BusStop {
 		this.stopName = stopName;
 	}
 
-	public String getStopId() {
-		return stopId;
+	public void setPosition(Coordinate position) {
+		this.position = position;
 	}
 
-	public void setStopId(String stopId) {
-		this.stopId = stopId;
-	}
-
-	public double getStopLat() {
-		return stopLat;
-	}
-
-	public void setStopLat(double stopLat) {
-		this.stopLat = stopLat;
-	}
-
-	public double getStopLon() {
-		return stopLon;
-	}
-
-	public void setStopLon(double stopLon) {
-		this.stopLon = stopLon;
+	public Coordinate getPosition() {
+		return position;
 	}
 
 	public String getStopCode() {

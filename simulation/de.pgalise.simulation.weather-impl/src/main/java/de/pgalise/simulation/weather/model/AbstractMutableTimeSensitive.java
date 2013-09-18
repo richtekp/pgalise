@@ -33,7 +33,8 @@ public class AbstractMutableTimeSensitive extends AbstractIdentifiable implement
 	public AbstractMutableTimeSensitive(Date measureDate,
 		Time measureTime
 	) {
-		this();
+		super(generateId(measureDate,
+			measureTime));
 		this.measureDate = measureDate;
 		this.measureTime = measureTime;
 	}
@@ -58,5 +59,13 @@ public class AbstractMutableTimeSensitive extends AbstractIdentifiable implement
 		this.measureDate = measureDate;
 	}
 
-	
+	public static Long generateId(Date measureDate, Time measureTime) {
+		if(measureDate == null) {
+			throw new IllegalArgumentException("measureDate");
+		}
+		if(measureTime == null) {
+			throw new IllegalArgumentException("measureTime");
+		}
+		return measureDate.getTime()+measureTime.getTime();
+	}
 }

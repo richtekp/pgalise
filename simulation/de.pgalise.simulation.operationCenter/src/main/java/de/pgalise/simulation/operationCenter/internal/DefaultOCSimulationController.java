@@ -234,11 +234,10 @@ public class DefaultOCSimulationController extends AbstractController implements
 			Collection<SensorData> gpsSensorsWithTimeout = this.gpsTimeoutStrategy
 					.processUpdateStep(timestamp, this.currentGPSSensorHelpers);
 			this.currentGPSSensorHelpers = new HashSet<>();
-			
-			log.debug("Found: " +gpsSensorsWithTimeout.size() +" timeouts. ");
-			
+						
 			if (gpsSensorsWithTimeout != null
 					&& !gpsSensorsWithTimeout.isEmpty()) {
+				log.debug("Found: " +gpsSensorsWithTimeout.size() +" timeouts. ");
 				try {
 					this.ocWebSocketService
 							.sendMessageToAllUsers(new GPSSensorTimeoutMessage(
@@ -246,6 +245,8 @@ public class DefaultOCSimulationController extends AbstractController implements
 				} catch (IOException e) {
 					log.error("Exception", e);
 				}
+			}else {
+				log.debug("Found: no timeouts. ");
 			}
 		}
 
@@ -380,8 +381,8 @@ public class DefaultOCSimulationController extends AbstractController implements
 	protected void onResume() {
 		try {
 			this.init(this.getInitParameter());
-		} catch (IllegalStateException | InitializationException e) {
-			log.warn(e.getCause().toString());
+		} catch (IllegalStateException e) {
+			log.warn("see nested exception", e);
 			try {
 				this.ocWebSocketService.sendMessageToAllUsers(new ErrorMessage(
 						e.getLocalizedMessage()));
@@ -412,7 +413,7 @@ public class DefaultOCSimulationController extends AbstractController implements
 		/* Add new events here: */
 		for (SimulationEvent event : simulationEventList.getEventList()) {
 			try {
-				switch (event.getEventType()) {
+				switch (event.getType()) {
 				case CREATE_VEHICLES_EVENT: {
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
 					log.warn("Create new vehicles");
@@ -471,7 +472,7 @@ public class DefaultOCSimulationController extends AbstractController implements
 					break;
 				}
 				default:
-					log.warn(event.getEventType().toString());
+					log.warn(event.getType().toString());
 				}
 			} catch (Exception e) {
 				log.error("Exception", e);

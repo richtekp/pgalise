@@ -16,6 +16,9 @@
  
 package de.pgalise.simulation.service.event;
 
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventType;
+
 
 /**
  * An EventHandler is responsible for processing a particular event.
@@ -27,11 +30,9 @@ package de.pgalise.simulation.service.event;
  * @param <E> event to be processed by this handler
  * @param <T> type of event E (usually an enum class)  
  */
-public interface EventHandler<E, T> {
-	/**
-	 * @return type of the events this EventHandler is able to process 
-	 */
-	public T getType();
+public interface EventHandler<E extends Event<T>, T extends EventType> {
+	
+	public T getTargetEventType();
 	
 	/**
 	 * Handles the incoming event.

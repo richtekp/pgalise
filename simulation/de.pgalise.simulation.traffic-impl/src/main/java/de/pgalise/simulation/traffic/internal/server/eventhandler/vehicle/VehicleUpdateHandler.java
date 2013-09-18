@@ -42,7 +42,7 @@ public class VehicleUpdateHandler implements VehicleEventHandler {
 	}
 
 	@Override
-	public VehicleEventType getType() {
+	public VehicleEventType getTargetEventType() {
 		return VehicleEventType.VEHICLE_UPDATE;
 	}
 

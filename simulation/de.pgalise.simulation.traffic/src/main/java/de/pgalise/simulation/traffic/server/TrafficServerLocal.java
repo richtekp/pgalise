@@ -21,7 +21,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
@@ -207,7 +206,7 @@ public interface TrafficServerLocal extends TrafficServer {
 	 * by an attraction event this function will return this event.
 	 * @return
 	 */
-	public Map<UUID, TrafficEvent> getEventForVehicle();
+	public Map<Long, TrafficEvent> getEventForVehicle();
 
 	/**
 	 * Items to schedule after the corresponding vehicle reached the attraction.

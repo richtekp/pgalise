@@ -51,8 +51,6 @@ public class GraphConstructor {
 	/**
 	 * Constructor
 	 * 
-	 * @param mapper
-	 *            GPS mapper
 	 * @param graphExtensions
 	 *            Graph extension
 	 */

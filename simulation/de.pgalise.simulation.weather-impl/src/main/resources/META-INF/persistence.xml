@@ -9,7 +9,10 @@
     <class>de.pgalise.simulation.weather.model.DefaultWeatherCondition</class>
     <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
     <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
-		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<class>de.pgalise.util.weathercollector.model.DefaultServiceDataHelper</class>
+		<class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent</class>
+		<class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
     <validation-mode>NONE</validation-mode>
     <properties>
       <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
@@ -24,6 +27,10 @@
     <class>de.pgalise.simulation.weather.model.DefaultWeatherCondition</class>
     <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
     <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
+		<class>de.pgalise.util.weathercollector.model.DefaultServiceDataHelper</class>
+		<class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent</class>
+		<class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
     </properties>

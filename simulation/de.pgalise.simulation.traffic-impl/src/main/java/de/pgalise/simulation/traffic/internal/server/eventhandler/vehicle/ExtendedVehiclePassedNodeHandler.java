@@ -40,7 +40,7 @@ public class ExtendedVehiclePassedNodeHandler implements VehicleEventHandler {
 	}
 
 	@Override
-	public VehicleEventType getType() {
+	public VehicleEventType getTargetEventType() {
 		return VehicleEventType.VEHICLE_PASSED_NODE;
 	}
 

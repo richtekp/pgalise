@@ -52,7 +52,7 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultSimulationEventHandlerManager;
+import de.pgalise.simulation.service.internal.event.DefaultSimulationEventHandlerManager;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -273,7 +273,7 @@ public class RoadBarrierTest {
 		long numberOfEdgesInGraph = server0.getGraph().getEdgeCount();
 
 		// Create RoadBarrier
-		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
+		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(currentTime, currentTime + 1000,
 				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server0.update(eventList);
@@ -385,7 +385,7 @@ public class RoadBarrierTest {
 		long numberOfEdgesInGraph = server0.getGraph().getEdgeCount();
 
 		// Create RoadBarrier
-		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
+		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(currentTime, currentTime + 1000,
 				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server0.update(eventList);
@@ -454,7 +454,7 @@ public class RoadBarrierTest {
 			busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true,
 					VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
 		}
-		trafficEventList.add(new CreateBussesEvent(UUID.randomUUID(), busDataList, SIMULATION_START, busRoutes));
+		trafficEventList.add(new CreateBussesEvent(busDataList, SIMULATION_START, busRoutes));
 		SimulationEventList eventList = new SimulationEventList(trafficEventList, SIMULATION_START, UUID.randomUUID());
 
 		TrafficServerLocal server0 = createTrafficServer(null);
@@ -531,7 +531,7 @@ public class RoadBarrierTest {
 		long numberOfEdgesInGraph = server0.getGraph().getEdgeCount();
 
 		// Create RoadBarrier
-		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(UUID.randomUUID(), currentTime, currentTime + 1000,
+		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(currentTime, currentTime + 1000,
 				new Coordinate(), closedNode.getId());
 		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server0.update(eventList);

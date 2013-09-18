@@ -16,15 +16,13 @@
  
 package de.pgalise.util.datamodel;
 
-import java.math.BigInteger;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -36,18 +34,16 @@ import javax.persistence.TemporalType;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_STOP_TIMES")
-public class BusStopTime {
-	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name = "STOP_TIMES_ID")
-	private BigInteger stopTimesId;
+public class BusStopTime extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 	
 	@JoinColumn(name = "TRIP_ID")
-	private BusTrip tripId;
+	@OneToOne
+	private BusTrip busTrip;
 	
 	@JoinColumn(name = "STOP_ID")
-	private BusStop stopId;
+	@OneToOne
+	private BusStop busStop;
 	
 	@Column(name = "ARRIVAL_TIME")
 	@Temporal(TemporalType.TIME)
@@ -74,12 +70,12 @@ public class BusStopTime {
 	
 	public BusStopTime() {}
 
-	public BusStopTime(BusTrip tripId,
-			BusStop stopId, Date arrivalTime, Date departureTime,
+	public BusStopTime(BusTrip trip,
+			BusStop busStop, Date arrivalTime, Date departureTime,
 			int stopSequence, String pickupTime, String stopHeadsign,
 			String dropOffType, String shapeDistTraveled) {
-		this.tripId = tripId;
-		this.stopId = stopId;
+		this.busTrip = trip;
+		this.busStop = busStop;
 		this.arrivalTime = arrivalTime;
 		this.departureTime = departureTime;
 		this.stopSequence = stopSequence;
@@ -89,28 +85,20 @@ public class BusStopTime {
 		this.shapeDistTraveled = shapeDistTraveled;
 	}
 
-	public BigInteger getStopTimesId() {
-		return stopTimesId;
-	}
-
-	public void setStopTimesId(BigInteger stopTimesId) {
-		this.stopTimesId = stopTimesId;
-	}
-
 	public BusTrip getTripId() {
-		return tripId;
+		return busTrip;
 	}
 
-	public void setTripId(BusTrip tripId) {
-		this.tripId = tripId;
-	}
+	public void setTripId(BusTrip busTrip) {
+		this.busTrip = busTrip
+;	}
 
 	public BusStop getStopId() {
-		return stopId;
+		return busStop;
 	}
 
-	public void setStopId(BusStop stopId) {
-		this.stopId = stopId;
+	public void setStopId(BusStop busStop) {
+		this.busStop = busStop;
 	}
 
 	public Date getArrivalTime() {

@@ -84,18 +84,15 @@ public class ReferenceCityChart extends AbstractChartTest {
 	@Override
 	protected TimeSeries getDecoratorTimeSerie() throws Exception {
 		// Deploy strategy
-		this.service.deployStrategy(new ReferenceCityModifier(this.random.getSeed(ReferenceCityChart.class.toString()),
-				this.props, this.getLoader()));
+		this.getService().deployStrategy(new ReferenceCityModifier(this.getRandom().getSeed(ReferenceCityChart.class.toString()), this.getProps(), this.getLoader()));
 
 		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.service.getReferenceValues(),
-				this.parameter);
+		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.getService().getReferenceValues(), this.getParameter());
 	}
 
 	@Override
 	protected TimeSeries getReferenceTimeSerie() {
 		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.service.getReferenceValues(),
-				this.parameter);
+		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.getService().getReferenceValues(), this.getParameter());
 	}
 }

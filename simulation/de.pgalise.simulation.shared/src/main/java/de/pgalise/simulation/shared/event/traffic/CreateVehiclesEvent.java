@@ -55,8 +55,8 @@ public class CreateVehiclesEvent extends TrafficEvent {
 	 * @param targetNodeID
 	 *            Target node id in graph
 	 */
-	public CreateVehiclesEvent(UUID id, List<CreateRandomVehicleData> vehicleList) {
-		super(id, SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
+	public CreateVehiclesEvent(List<CreateRandomVehicleData> vehicleList) {
+		super(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
 		this.vehicles = vehicleList;
 	}
 

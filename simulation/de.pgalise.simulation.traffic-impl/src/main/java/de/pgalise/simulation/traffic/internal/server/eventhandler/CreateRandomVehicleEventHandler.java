@@ -58,7 +58,7 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 	}
 
 	@Override
-	public SimulationEventTypeEnum getType() {
+	public SimulationEventTypeEnum getTargetEventType() {
 		return CreateRandomVehicleEventHandler.type;
 	}
 

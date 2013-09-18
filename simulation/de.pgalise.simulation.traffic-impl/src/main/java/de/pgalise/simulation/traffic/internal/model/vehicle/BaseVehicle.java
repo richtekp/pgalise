@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
-import java.util.UUID;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
@@ -27,20 +26,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.Orientation;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import java.util.UUID;
 import javax.vecmath.Vector2d;
 
 /**
  * Superclass for vehicles
  * 
+ * @param <E> 
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 1, 2012)
  */
-public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
+public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable implements Vehicle<E> {
 	/**
 	 * Serial
 	 */
@@ -102,11 +104,6 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	private State state = State.NOT_STARTED;
 
 	/**
-	 * Id of the vehicle
-	 */
-	private UUID id;
-
-	/**
 	 * Path
 	 */
 	private transient Path path;
@@ -137,28 +134,41 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 
 	public BaseVehicle(TrafficGraphExtensions trafficGraphExtensions) {
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		setState(State.NOT_STARTED);
+		this.state = (State.NOT_STARTED);
+	}
+	
+	public BaseVehicle(UUID id, TrafficGraphExtensions trafficGraphExtensions) {
+		throw new UnsupportedOperationException("clearify the purpose of passing of id");
+//		this.trafficGraphExtensions = trafficGraphExtensions;
+//		this.state = (State.NOT_STARTED);
 	}
 
-	public BaseVehicle(UUID id, TrafficGraphExtensions trafficGraphExtensions) {
-		this.id = id;
+	public BaseVehicle( String name, TrafficGraphExtensions trafficGraphExtensions) {
+		this.name = name;
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		setState(State.NOT_STARTED);
+		this.state = (State.NOT_STARTED);
 	}
 
 	public BaseVehicle(UUID id, String name, TrafficGraphExtensions trafficGraphExtensions) {
-		this.id = id;
-		this.name = name;
-		this.trafficGraphExtensions = trafficGraphExtensions;
-		setState(State.NOT_STARTED);
+		throw new UnsupportedOperationException("clearify the purpose of passing of id");
+//		this.name = name;
+//		this.trafficGraphExtensions = trafficGraphExtensions;
+//		this.state = (State.NOT_STARTED);
 	}
 
-	public BaseVehicle(UUID id, String name, E data, TrafficGraphExtensions trafficGraphExtensions) {
-		this.id = id;
+	public BaseVehicle(String name, E data, TrafficGraphExtensions trafficGraphExtensions) {
 		this.name = name;
 		this.data = data;
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		setState(State.NOT_STARTED);
+		this.state = (State.NOT_STARTED);
+	}
+
+	public BaseVehicle(UUID id, String name, E data, TrafficGraphExtensions trafficGraphExtensions) {
+		throw new UnsupportedOperationException("clearify the purpose of passing of id");
+//		this.name = name;
+//		this.data = data;
+//		this.trafficGraphExtensions = trafficGraphExtensions;
+//		this.state = (State.NOT_STARTED);
 	}
 
 	@Override
@@ -179,11 +189,6 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	@Override
 	public Vector2d getDirection() {
 		return this.direction;
-	}
-
-	@Override
-	public UUID getId() {
-		return this.id;
 	}
 
 	@Override
@@ -273,11 +278,6 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	@Override
 	public void setHasGPS(boolean hasGPS) {
 		this.hasGPS = hasGPS;
-	}
-
-	@Override
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	@Override
@@ -405,6 +405,7 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	/**
 	 * Returns a direction enum for the coordinates of the private transport vehicle.
 	 * 
+	 * @param direction 
 	 * @return Direction enum
 	 */
 	protected Orientation getOrientation(Vector2d direction) {
@@ -548,13 +549,6 @@ public class BaseVehicle<E extends VehicleData> implements Vehicle<E> {
 	@Override
 	public void setTrafficGraphExtensions(TrafficGraphExtensions trafficGraphExtensions) {
 		this.trafficGraphExtensions = trafficGraphExtensions;
-	}
-
-	@Override
-	public String toString() {
-		return "BaseVehicle [hasGPS=" + hasGPS + ", velocity=" + velocity + ", position=" + position + ", direction="
-				+ direction + ", orientation=" + orientation + ", name=" + name + ", state=" + state + ", id=" + id
-				+ ", data=" + data + ", isVirgin=" + isVirgin + "]";
 	}
 
 	@Override

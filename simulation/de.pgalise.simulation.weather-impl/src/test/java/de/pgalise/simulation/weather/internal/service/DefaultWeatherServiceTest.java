@@ -39,6 +39,8 @@ import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
+import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
+import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -46,6 +48,7 @@ import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
 import java.sql.Date;
 import java.util.Collection;
 import javax.annotation.ManagedBean;
+import javax.annotation.Resource;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
 import javax.naming.InitialContext;
@@ -72,7 +75,7 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherServiceTest  {	
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_test", name = "weather_test_DefaultWeatherServiceTest")
+	@PersistenceUnit(unitName = "weather_test")
 	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
 	/**
 	 * End timestamp
@@ -91,6 +94,7 @@ public class DefaultWeatherServiceTest  {
 
 	private City city;
 	
+	@Resource
 	private UserTransaction utx;
 
 	@SuppressWarnings("LeakingThisInConstructor")
@@ -99,8 +103,8 @@ public class DefaultWeatherServiceTest  {
 			this);
 		
 		InitialContext initialContext = new InitialContext();
-		utx = (UserTransaction) initialContext.lookup(
-			"java:comp/UserTransaction");
+//		utx = (UserTransaction) initialContext.lookup(
+//			"java:comp/UserTransaction");
 		
 		
 		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
@@ -184,16 +188,34 @@ public class DefaultWeatherServiceTest  {
 		}
 
 		// Test (normal)
-		Collection<StationDataNormal> prequisites = TestUtils.setUpWeatherStationData(
+		Collection<DefaultServiceDataCurrent> prequisites = TestUtils.setUpWeatherServiceDataCurrent(
 			startTimestamp,
 			endTimestamp,
+			city,
+			utx,
+			ENTITY_MANAGER_FACTORY);
+		Collection<StationDataNormal> prequisites0 = TestUtils.setUpWeatherStationData(startTimestamp,
+			endTimestamp,
+			utx,
+			ENTITY_MANAGER_FACTORY);
+		Collection<DefaultServiceDataForecast> prequisites1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+			endTimestamp,
+			city,
 			utx,
 			ENTITY_MANAGER_FACTORY);
 		
 		service.addNewWeather(startTimestamp,
 					endTimestamp, true, strategyList);
 		
-		TestUtils.tearDownWeatherData(prequisites,StationDataNormal.class,
+		TestUtils.tearDownWeatherData(prequisites,DefaultServiceDataCurrent.class,
+			utx,
+			ENTITY_MANAGER_FACTORY);
+		TestUtils.tearDownWeatherData(prequisites0,
+			StationDataNormal.class,
+			utx,
+			ENTITY_MANAGER_FACTORY);
+		TestUtils.tearDownWeatherData(prequisites1,
+			DefaultServiceDataForecast.class,
 			utx,
 			ENTITY_MANAGER_FACTORY);
 	}

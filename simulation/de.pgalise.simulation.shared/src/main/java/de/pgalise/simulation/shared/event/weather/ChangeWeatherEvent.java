@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.shared.event.weather;
 
-import java.util.UUID;
-
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
 
 /**
@@ -56,17 +54,16 @@ public class ChangeWeatherEvent extends WeatherEvent {
 	/**
 	 * Constructor
 	 * 
-	 * @param id
-	 *            ID of the event
 	 * @param strategy
 	 *            Strategy to modify weather data
+	 * @param eventTime 
 	 * @param value
 	 *            Specified value
 	 * @param duration
 	 *            Specified duration
 	 */
-	public ChangeWeatherEvent(UUID id, WeatherEventEnum strategy, Float value, long eventTime, Float duration) {
-		super(id, SimulationEventTypeEnum.CHANGE_WEATHER_EVENT);
+	public ChangeWeatherEvent(WeatherEventEnum strategy, Float value, long eventTime, Float duration) {
+		super(SimulationEventTypeEnum.CHANGE_WEATHER_EVENT);
 		this.event = strategy;
 		this.value = value;
 		this.timestamp = eventTime;

@@ -89,6 +89,7 @@ import javax.persistence.TemporalType;
 @Singleton(name = "de.pgalise.simulation.weather.dataloader.WeatherLoader", mappedName = "de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader")
 public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondition> {
 
+	@PersistenceContext(unitName = "weather")
 	private EntityManager entityManager;
 
 	/**
@@ -133,7 +134,6 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 		this.entityManager = entityManager;
 	}
 
-	@PersistenceContext(unitName = "weather")
 	public void setEntityManager(EntityManager entityManager) {
 			this.entityManager = entityManager;
 	}
@@ -224,7 +224,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 	@Override
 	public ServiceDataForecast<DefaultWeatherCondition> loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 		//check that city has been persisted to avoid exception query in following method invocations
-		this.entityManager.persist(city);
+		this.entityManager.merge(city);
 
 		// Get the data
 		ServiceDataForecast<DefaultWeatherCondition> data;
@@ -532,7 +532,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 		}
 
 		// Get first result of that day
-			TypedQuery<? extends AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findFirstEntryByDate", stationDataClass), this.stationDataClass);
+			TypedQuery<? extends AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findFirstEntryByDate", stationDataClass.getSimpleName()), this.stationDataClass);
 			query.setParameter("date", new Date(timestamp));
 			query.setMaxResults(1);
 		try {
@@ -557,7 +557,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 		}
 
 		// Get last result of that day
-		TypedQuery<? extends AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findLastEntryByDate", stationDataClass), this.stationDataClass);
+		TypedQuery<? extends AbstractStationData> query = this.entityManager.createNamedQuery(String.format("%s.findLastEntryByDate", stationDataClass.getSimpleName()), this.stationDataClass);
 		query.setParameter("date", new Date(timestamp), TemporalType.DATE);
 		query.setMaxResults(1);
 		try {

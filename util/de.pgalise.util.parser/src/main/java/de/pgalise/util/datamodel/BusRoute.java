@@ -16,9 +16,9 @@
  
 package de.pgalise.util.datamodel;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 /**
  * 
@@ -27,11 +27,8 @@ import javax.persistence.Id;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_ROUTES")
-public class BusRoute {
-	
-	@Id
-	@Column(name = "ROUTE_ID")
-	private String routeId;
+public class BusRoute extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "ROUTE_SHORT_NAME")
 	private String routeShortName;
@@ -59,11 +56,10 @@ public class BusRoute {
 	
 	public BusRoute() {}
 
-	public BusRoute(String routeId, String routeShortName,
+	public BusRoute(String routeShortName,
 			String routeLongName, short routeType, String agencyId,
 			String routeDesc, String routeUrl, String routeColor,
 			String routeTextColor) {
-		this.routeId = routeId;
 		this.routeShortName = routeShortName;
 		this.routeLongName = routeLongName;
 		this.routeType = routeType;
@@ -72,14 +68,6 @@ public class BusRoute {
 		this.routeUrl = routeUrl;
 		this.routeColor = routeColor;
 		this.routeTextColor = routeTextColor;
-	}
-
-	public String getRouteId() {
-		return routeId;
-	}
-
-	public void setRouteId(String routeId) {
-		this.routeId = routeId;
 	}
 
 	public String getRouteShortName() {

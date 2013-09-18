@@ -67,7 +67,7 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class ReferenceCityTest {
-	@PersistenceUnit(unitName = "weather_test", name="weather_test_ReferenceCityTest")
+	@PersistenceUnit(unitName = "weather_test")
 	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
 	private static EJBContainer CONTAINER;
 
@@ -75,12 +75,12 @@ public class ReferenceCityTest {
 	/**
 	 * End timestamp
 	 */
-	public static long endTimestamp;
+	private static long endTimestamp;
 
 	/**
 	 * Start timestamp
 	 */
-	public static long startTimestamp;
+	private static long startTimestamp;
 
 	/**
 	 * Service Class
@@ -92,7 +92,7 @@ public class ReferenceCityTest {
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader loader;
+	private WeatherLoader<?> loader;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 	public ReferenceCityTest() throws NamingException {
@@ -114,7 +114,7 @@ public class ReferenceCityTest {
 		Context ctx = CONTAINER.getContext();
 
 		// Load EJB for Weather loader
-		loader = (WeatherLoader) ctx
+		loader = (WeatherLoader<?>) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
 		// Start

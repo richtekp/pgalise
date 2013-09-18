@@ -59,6 +59,9 @@ import de.pgalise.simulation.shared.city.Way;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
+import java.util.logging.Level;
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * The OSMCityInfrastructureData is the used {@link CityInfrastructureData}
@@ -189,7 +192,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		private static final long serialVersionUID = 2310070836622850662L;
 		private List<String> nodeReferenceList;
 
-		public TmpWay() {
+		TmpWay() {
 			this.nodeReferenceList = new ArrayList<>();
 			super.setOneWay(false);
 			super.setBuildingTypeMap(new HashMap<String, String>());
@@ -702,15 +705,15 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @return
 	 */
 	private List<Way> extractCycleWays(List<Way> wayList) {
-		List<Way> cycleWays = new ArrayList<>();
+		List<Way> cycleWays0 = new ArrayList<>();
 
 		for (Way way : wayList) {
 			if ((way.getHighway() != null) && way.getHighway().trim().equalsIgnoreCase("cycleway")) {
-				cycleWays.add(way);
+				cycleWays0.add(way);
 			}
 		}
 
-		return cycleWays;
+		return cycleWays0;
 	}
 
 	/**
@@ -749,7 +752,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 				}
 
 				if (way.getRailway() != null) {
-					System.out.println(way.getRailway());
+					log.debug(way.getRailway());
 				}
 				wayList.add(way);
 			}
@@ -806,23 +809,23 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 	@Override
 	public List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter) {
-		Boundary boundary = this.circleToRectangle(centerPoint, radiusInMeter);
+		Boundary boundary0 = this.circleToRectangle(centerPoint, radiusInMeter);
 		List<Building> tmpBuildings = new ArrayList<>();
-		for (Building building : this.buildingTree.find(boundary.getSouthWest().x, boundary
-				.getSouthWest().y, boundary.getNorthEast().x, boundary
+		for (Building building : this.buildingTree.find(boundary0.getSouthWest().x, boundary0
+				.getSouthWest().y, boundary0.getNorthEast().x, boundary0
 				.getNorthEast().y)) {
 			tmpBuildings.add(building);
 		}
 
 		/* check the distance for every found building, because we used a rectangle instead of a circle: */
-		List<Building> buildings = new ArrayList<>();
+		List<Building> buildings0 = new ArrayList<>();
 		for (Building building : tmpBuildings) {
 			if (this.getDistanceInMeter(centerPoint, building.getCenterPoint()) <= radiusInMeter) {
-				buildings.add(building);
+				buildings0.add(building);
 			}
 		}
 
-		return buildings;
+		return buildings0;
 	}
 
 	@Override
@@ -1171,19 +1174,21 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 				parser.next();
 			}
-		} catch (Exception e) {
+		} catch (FactoryConfigurationError | XMLStreamException | NumberFormatException e) {
 			log.error(e.getMessage(), e);
-			e.printStackTrace();
 		} finally {
-			try {
-				parser.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			if(parser != null) {
+				try {
+					parser.close();
+				} catch (XMLStreamException ex) {
+					log.warn("see nested exception",
+						ex);
+				}
 			}
 		}
 
 		/* Set real nodes for all ways and save used nodes */
-		Set<Node> usedNodes = new HashSet<>();
+		Set<Node> usedNodes0 = new HashSet<>();
 		List<Way> wayList = new ArrayList<>();
 		OuterLoop: for (TmpWay way : tmpWayList) {
 			List<Node> nodeList = new ArrayList<>();
@@ -1194,14 +1199,14 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 				}
 
 				nodeList.add(node);
-				usedNodes.add(node);
+				usedNodes0.add(node);
 			}
 
 			wayList.add(new Way(way.getMaxSpeed(), nodeList, way.isOneWay(), way.isBuilding(), way.getStreetname(), way
 					.getHighway(), way.getLanduse(), way.getRailway(), way.getBuildingTypeMap(), way.getCycleway()));
 		}
 
-		this.usedNodes = new ArrayList<>(usedNodes);
+		this.usedNodes = new ArrayList<>(usedNodes0);
 
 		this.ways = wayList;
 		this.motorWays = this.extractMotorWays(wayList);
@@ -1337,12 +1342,14 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 			try {
 				csvParser.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.warn("see nested exception",
+					e);
 			}
 			try {
 				busstopGTFSFile.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.warn("see nested exception",
+					e);
 			}
 		}
 

@@ -16,9 +16,9 @@
  
 package de.pgalise.util.datamodel;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 /**
  * 
@@ -27,12 +27,9 @@ import javax.persistence.Id;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_AGENCY")
-public class BusAgency {
-	
-	@Id
-	@Column(name = "AGENCY_ID")
-	private String agencyId;
-	
+public class BusAgency extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
+		
 	@Column(name = "AGENCY_NAME")
 	private String agencyName;
 	
@@ -53,27 +50,14 @@ public class BusAgency {
 	
 	public BusAgency() {}
 	
-	public BusAgency(final String agencyId, final String agencyName, final String agencyUrl, final String agencyTimezone, final String agencyLang,
+	public BusAgency(final String agencyName, final String agencyUrl, final String agencyTimezone, final String agencyLang,
 			final String agencyPhone, final String agencyFareUrl) {
-		
-		if(agencyId == null) {
-			throw new IllegalArgumentException("agencyId may not be null");
-		}
-		this.agencyId = agencyId;
 		this.agencyName = agencyName;
 		this.agencyUrl = agencyUrl;
 		this.agencyTimezone = agencyTimezone;
 		this.agencyLang = agencyLang;
 		this.agencyPhone = agencyPhone;
 		this.agencyFareUrl = agencyFareUrl;
-	}
-
-	public String getAgencyId() {
-		return agencyId;
-	}
-
-	public void setAgencyId(String agencyId) {
-		this.agencyId = agencyId;
 	}
 
 	public String getAgencyName() {

@@ -16,9 +16,10 @@
  
 package de.pgalise.util.datamodel;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 /**
  * 
@@ -27,17 +28,14 @@ import javax.persistence.Id;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_TRIPS")
-public class BusTrip {
+public class BusTrip extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "SERVICE_ID")
-	private String serviceId;
+	@ManyToOne
+	private BusCalendar busCalendar;
 	
 	@Column(name = "ROUTE_ID")
 	private String routeId;
-	
-	@Id
-	@Column(name = "TRIP_ID")
-	private String tripId;
 	
 	@Column(name = "TRIP_HEADSIGN")
 	private String tripHeadsign;
@@ -59,12 +57,10 @@ public class BusTrip {
 	
 	public BusTrip() {}
 
-	public BusTrip(String serviceId, String routeId, String tripId,
-			String tripHeadsign, String tripShortName, String directionId,
+	public BusTrip(BusCalendar busCalendar, String routeId, String tripHeadsign, String tripShortName, String directionId,
 			String blockId, String shapeId, String wheelchairAccessible) {
-		this.serviceId = serviceId;
+		this.busCalendar = busCalendar;
 		this.routeId = routeId;
-		this.tripId = tripId;
 		this.tripHeadsign = tripHeadsign;
 		this.tripShortName = tripShortName;
 		this.directionId = directionId;
@@ -73,12 +69,12 @@ public class BusTrip {
 		this.wheelchairAccessible = wheelchairAccessible;
 	}
 
-	public String getServiceId() {
-		return serviceId;
+	public BusCalendar getServiceId() {
+		return busCalendar;
 	}
 
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
+	public void setServiceId(BusCalendar serviceId) {
+		this.busCalendar = serviceId;
 	}
 
 	public String getRouteId() {
@@ -87,14 +83,6 @@ public class BusTrip {
 
 	public void setRouteId(String routeId) {
 		this.routeId = routeId;
-	}
-
-	public String getTripId() {
-		return tripId;
-	}
-
-	public void setTripId(String tripId) {
-		this.tripId = tripId;
 	}
 
 	public String getTripHeadsign() {

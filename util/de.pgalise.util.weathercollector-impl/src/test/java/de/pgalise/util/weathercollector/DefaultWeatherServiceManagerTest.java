@@ -39,6 +39,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.Query;
 import javax.transaction.HeuristicMixedException;
@@ -63,8 +64,8 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherServiceManagerTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_collector_test")
-	private EntityManagerFactory entityManager;
+	@PersistenceContext(unitName = "weather_test")
+	private EntityManager entityManager;
 	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
@@ -88,7 +89,7 @@ public class DefaultWeatherServiceManagerTest {
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
-		EntityManager entityManager0 = entityManager.createEntityManager();
+		entityManager.joinTransaction();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
@@ -107,13 +108,13 @@ public class DefaultWeatherServiceManagerTest {
 			true,
 			true,
 			referenceArea);
-		entityManager0.persist(city);
-		userTransaction.commit();
+		entityManager.persist(city);
 		instance.saveInformations(baseDatabaseManager);
-		Query queryCurrent = entityManager0.createQuery("SELECT x FROM DefaultServiceDataCurrent x");
-		Query queryForecast = entityManager0.createQuery("SELECT y FROM DefaultServiceDataForecast y");
+		Query queryCurrent = entityManager.createQuery("SELECT x FROM DefaultServiceDataCurrent x");
+		Query queryForecast = entityManager.createQuery("SELECT y FROM DefaultServiceDataForecast y");
 		assertFalse(queryCurrent.getResultList().isEmpty());
 		assertFalse(queryForecast.getResultList().isEmpty());
+		userTransaction.commit();
 	}
 
 }

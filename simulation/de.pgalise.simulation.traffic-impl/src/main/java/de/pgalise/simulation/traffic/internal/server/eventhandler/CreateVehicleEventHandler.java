@@ -58,7 +58,7 @@ public class CreateVehicleEventHandler extends AbstractVehicleEventHandler {
 	}
 
 	@Override
-	public SimulationEventTypeEnum getType() {
+	public SimulationEventTypeEnum getTargetEventType() {
 		return CreateVehicleEventHandler.type;
 	}
 	
@@ -79,7 +79,7 @@ public class CreateVehicleEventHandler extends AbstractVehicleEventHandler {
 		for (CreateRandomVehicleData data : e.getVehicles()) {
 			TrafficTrip trip = data.getVehicleInformation().getTrip();
 			
-			if((trip.getStartNode()==null || trip.getStartNode().equals("")) &&
+			if((trip.getStartNode()==null || trip.getStartNode().isEmpty()) &&
 					(trip.getTargetNode()==null || trip.getTargetNode().equals(""))) {
 //				log.debug("No trip was specified. Creating random route...");
 				trip = getServer().createTrip(getServer().getCityZone(), 

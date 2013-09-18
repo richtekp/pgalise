@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.service.internal;
 
-import de.pgalise.simulation.SimulationController;
-import de.pgalise.simulation.energy.EnergyController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -36,15 +34,12 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.service.FrontController;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
-import de.pgalise.simulation.staticsensor.StaticSensorController;
-import de.pgalise.simulation.traffic.TrafficController;
 import javax.ejb.Remote;
 
 /**
@@ -55,12 +50,12 @@ import javax.ejb.Remote;
 @Lock(LockType.READ)
 @Local
 @Remote
-@Singleton(name = "de.pgalise.simulation.service.ServiceDictionary", mappedName = "de.pgalise.simulation.service.ServiceDictionary")
+@Singleton(name = "de.pgalise.simulation.service.ServiceDictionary")
 public class DefaultServiceDictionary implements ServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultServiceDictionary.class);
 
-	private Map<Class<? extends Controller>, Controller> controllers;
-	private Map<Class<? extends Service>, Service> services;
+	private Map<String, Controller> controllers;
+	private Map<String, Service> services;
 
 	@EJB
 	private ServerConfigurationReader<Controller> serverConfigReader;
@@ -86,7 +81,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			public void handle(String server,
 				Controller service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(FrontController.class, service);
+				controllers.put(getName(), service);
 			}
 		});
 		 list.add(new ServiceHandler<Controller>() {
@@ -100,7 +95,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			public void handle(String server,
 				Controller service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(EnergyController.class, service);
+				controllers.put(getName(), service);
 			}
 		});
 		list.add(new ServiceHandler<Controller>() {
@@ -113,7 +108,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			@Override
 			public void handle(String server, Controller service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(TrafficController.class, service);
+				controllers.put(getName(), service);
 			}
 		});
 		list.add(new ServiceHandler<Controller>() {
@@ -126,7 +121,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			@Override
 			public void handle(String server, Controller service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(StaticSensorController.class, service);
+				controllers.put(getName(), service);
 			}
 		});
 		list.add(new ServiceHandler<Controller>() {
@@ -139,7 +134,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			@Override
 			public void handle(String server, Controller service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				services.put(RandomSeedService.class, service);
+				services.put(getName(), service);
 			}
 		});
 		list.add(new ServiceHandler<Controller>() {
@@ -152,7 +147,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			@Override
 			public void handle(String server, Controller service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				services.put(ConfigReader.class, service);
+				services.put(getName(), service);
 			}
 		});
 		list.add(new ServiceHandler<Controller>() {
@@ -165,7 +160,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			@Override
 			public void handle(String server, Controller service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(SimulationController.class, service);
+				controllers.put(getName(), service);
 			}
 		});
 
@@ -180,7 +175,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 	@Override
 	@SuppressWarnings("unchecked")
 	public <C extends Controller> C getController(Class<C> clazz) {
-		Controller retValue = controllers.get(clazz);
+		Controller retValue = controllers.get(clazz.getName());
 		if(!clazz.isAssignableFrom(retValue.getClass())) {
 			throw new IllegalStateException(String.format("%s has been mapped to wrong type", clazz));
 		}
@@ -189,7 +184,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 
 	@Override
 	public RandomSeedService getRandomSeedService() {
-		Service retValue = services.get(RandomSeedService.class);
+		Service retValue = services.get(RandomSeedService.class.getName());
 		if(!(retValue instanceof RandomSeedService)) {
 			throw new IllegalStateException(String.format("%s has been mapped to wrong type", RandomSeedService.class));
 		}
@@ -198,7 +193,7 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 
 	@Override
 	public ConfigReader getGlobalConfigReader() {
-		Service retValue = services.get(ConfigReader.class);
+		Service retValue = services.get(ConfigReader.class.getName());
 		if(!(retValue instanceof ConfigReader)) {
 			throw new IllegalStateException(String.format("%s has been mapped to wrong type", ConfigReader.class));
 		}

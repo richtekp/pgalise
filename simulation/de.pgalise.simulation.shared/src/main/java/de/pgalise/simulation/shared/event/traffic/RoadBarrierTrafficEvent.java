@@ -67,9 +67,9 @@ public class RoadBarrierTrafficEvent extends TrafficEvent {
 	 * @param nodeID
 	 *            node id in graph
 	 */
-	public RoadBarrierTrafficEvent(UUID id, long roadBarrierStartTimestamp, long roadBarrierEndTimestamp,
+	public RoadBarrierTrafficEvent(long roadBarrierStartTimestamp, long roadBarrierEndTimestamp,
 			Coordinate roadBarrierPoint, String nodeID) {
-		super(id, SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT);
+		super(SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT);
 		this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
 		this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
 		this.roadBarrierPoint = roadBarrierPoint;

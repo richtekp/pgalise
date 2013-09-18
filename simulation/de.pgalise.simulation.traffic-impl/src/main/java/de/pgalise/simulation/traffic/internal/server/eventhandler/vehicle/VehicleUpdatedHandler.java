@@ -26,7 +26,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventTyp
 public class VehicleUpdatedHandler implements VehicleEventHandler {
 
 	@Override
-	public VehicleEventType getType() {
+	public VehicleEventType getTargetEventType() {
 		return VehicleEventType.VEHICLES_UPDATED;
 	}
 

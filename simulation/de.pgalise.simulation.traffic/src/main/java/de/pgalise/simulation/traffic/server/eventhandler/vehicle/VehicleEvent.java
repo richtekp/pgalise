@@ -1,97 +1,47 @@
-/* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
- 
 package de.pgalise.simulation.traffic.server.eventhandler.vehicle;
 
-import java.util.Map;
-import java.util.UUID;
-
-import org.graphstream.graph.Graph;
-
 import de.pgalise.simulation.service.ServiceDictionary;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
+import java.util.Map;
+import org.graphstream.graph.Graph;
 
 /**
- * This type of events is raised whenever something happens that concerns a single vehicle,
- * e.g. a vehicle has passed a node.
- * 
- * @author mustafa
  *
+ * @author richter
  */
-public class VehicleEvent {
-	private final TrafficServerLocal server;
-	private final Vehicle<? extends VehicleData> currentVehicle;
-	private final long simulationTime;
-	private final long elapsedTime;
-	private final VehicleEventType type;
+public interface VehicleEvent extends Event<VehicleEventType> {
 
-	public VehicleEvent(VehicleEventType type, TrafficServerLocal server,
-			Vehicle<? extends VehicleData> currentVehicle, long simulationTime, long elapsedTime) {
-		this.server = server;
-		this.currentVehicle = currentVehicle;
-		this.simulationTime = simulationTime;
-		this.elapsedTime = elapsedTime;
-		this.type = type;
-	}
+	Vehicle<? extends VehicleData> getVehicle()  ;
 
-	public Vehicle<? extends VehicleData> getVehicle() {
-		return currentVehicle;
-	}
+	long getSimulationTime()  ;
 
-	public long getSimulationTime() {
-		return simulationTime;
-	}
+	long getElapsedTime()  ;
 
-	public long getElapsedTime() {
-		return elapsedTime;
-	}
-
-	public ServiceDictionary getServiceDictionary() {
-		return server.getServiceDictionary();
-	}
+	ServiceDictionary getServiceDictionary() ;
 
 	/**
 	 * @return shallow copy of currently driving vehicles
 	 */
-	public Scheduler getDrivingVehicles() {
-		return server.getScheduler();
-	}
+	Scheduler getDrivingVehicles() ;
 
-	public VehicleEventType getType() {
-		return type;
-	}
+	VehicleEventType getTargetEventType() ;
 
-	public Graph getGraph() {
-		return server.getGraph();
-	}
+	Graph getGraph()  ;
 
-	public TrafficGraphExtensions getTrafficGraphExtensions() {
-		return server.getTrafficGraphExtesions();
-	}
+	TrafficGraphExtensions getTrafficGraphExtensions()  ;
 	
-	public Map<UUID, TrafficEvent> getEventForVehicleMap() {
-		return server.getEventForVehicle();
-	}
+	Map<Long, TrafficEvent> getEventForVehicleMap()  ;
 	
-	public TrafficServerLocal getServer() {
-		return server;
-	}
+	TrafficServerLocal getServer() ;
+	
 }

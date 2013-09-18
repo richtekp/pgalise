@@ -80,7 +80,7 @@ public class City extends AbstractIdentifiable {
 	@Transient
 	private int rate = 0;
 	
-	@Type(type="org.hibernate.spatial.GeometryType")//"org.hibernate.spatial.GeometryType") //org.hibernatespatial.GeometryUserType")//
+	@Type(type="org.hibernate.spatial.GeometryType")
 	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
 	private Polygon referenceArea;
 

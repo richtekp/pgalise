@@ -87,18 +87,15 @@ public class CityClimateChart extends AbstractChartTest {
 	@Override
 	protected TimeSeries getDecoratorTimeSerie() throws Exception {
 		// Deploy strategy
-		this.service.deployStrategy(new CityClimateModifier(this.random.getSeed(CityClimateChart.class.toString()),
-				this.props, this.getLoader()));
+		this.getService().deployStrategy(new CityClimateModifier(this.getRandom().getSeed(CityClimateChart.class.toString()), this.getProps(), this.getLoader()));
 
 		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.service.getReferenceValues(),
-				this.parameter);
+		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.getService().getReferenceValues(), this.getParameter());
 	}
 
 	@Override
 	protected TimeSeries getReferenceTimeSerie() {
 		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.service.getReferenceValues(),
-				this.parameter);
+		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.getService().getReferenceValues(), this.getParameter());
 	}
 }

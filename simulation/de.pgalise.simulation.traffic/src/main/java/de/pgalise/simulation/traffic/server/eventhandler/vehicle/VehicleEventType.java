@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.EnumSet;
 
 /**
@@ -23,7 +24,7 @@ import java.util.EnumSet;
  * 
  * @author mustafa
  */
-public enum VehicleEventType {
+public enum VehicleEventType implements EventType {
 	/**
 	 * Event is fired before the vehicles in the simulation get updated one by one.
 	 */

@@ -14,24 +14,23 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.service.internal;
+package de.pgalise.simulation.service.internal.event;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
-import de.pgalise.simulation.service.event.AbstractEventHandlerManager;
 import de.pgalise.simulation.service.event.SimulationEventHandler;
 import de.pgalise.simulation.service.event.SimulationEventHandlerManager;
 import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
 
-@Local(SimulationEventHandlerManager.class)
-@Stateless(name = "de.pgalise.simulation.service.event.SimulationEventHandlerManager")
 /**
  * Default implementation of the SimulationEventHandler
  * @author mustafa
  *
  */
+@Local(SimulationEventHandlerManager.class)
+@Stateless(name = "de.pgalise.simulation.service.event.SimulationEventHandlerManager")
 public class DefaultSimulationEventHandlerManager extends
 		AbstractEventHandlerManager<SimulationEventHandler, SimulationEvent, SimulationEventTypeEnum> implements
 		SimulationEventHandlerManager {
@@ -45,7 +44,7 @@ public class DefaultSimulationEventHandlerManager extends
 
 	@Override
 	public boolean responsibleFor(SimulationEventHandler handler, SimulationEvent event) {
-		return handler.getType().equals(event.getEventType());
+		return handler.getTargetEventType().equals(event.getType());
 	}
 
 }

@@ -16,8 +16,7 @@
  
 package de.pgalise.simulation.shared.event;
 
-import java.io.Serializable;
-import java.util.UUID;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 
 /**
  * Superclass for every simulation event. It contains a uniqe
@@ -27,16 +26,11 @@ import java.util.UUID;
  * 
  * @author Timo
  */
-public class SimulationEvent implements Serializable {
+public class SimulationEvent extends AbstractIdentifiable implements Event<SimulationEventTypeEnum> {
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -7362721454716905390L;
-
-	/**
-	 * ID of the event
-	 */
-	private UUID id;
 
 	/**
 	 * Event type
@@ -46,29 +40,24 @@ public class SimulationEvent implements Serializable {
 	/**
 	 * Constructor
 	 * 
-	 * @param id
-	 *            ID of the event
 	 * @param eventType
 	 *            Event type
 	 */
-	public SimulationEvent(UUID id, SimulationEventTypeEnum eventType) {
-		this.id = id;
+	public SimulationEvent(SimulationEventTypeEnum eventType) {
 		this.eventType = eventType;
 	}
 
-	public UUID getId() {
-		return id;
+	public SimulationEvent(Long id, SimulationEventTypeEnum eventType) {
+		super(id);
+		this.eventType = eventType;
 	}
 
-	public void setId(UUID id) {
-		this.id = id;
-	}
-
-	public SimulationEventTypeEnum getEventType() {
+	@Override
+	public SimulationEventTypeEnum getType() {
 		return eventType;
 	}
 
-	public void setEventType(SimulationEventTypeEnum eventType) {
+	public void setType(SimulationEventTypeEnum eventType) {
 		this.eventType = eventType;
 	}
 
@@ -77,7 +66,7 @@ public class SimulationEvent implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((eventType == null) ? 0 : eventType.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
 		return result;
 	}
 
@@ -96,11 +85,11 @@ public class SimulationEvent implements Serializable {
 		if (eventType != other.eventType) {
 			return false;
 		}
-		if (id == null) {
-			if (other.id != null) {
+		if (getId() == null) {
+			if (other.getId() != null) {
 				return false;
 			}
-		} else if (!id.equals(other.id)) {
+		} else if (!getId().equals(other.getId())) {
 			return false;
 		}
 		return true;

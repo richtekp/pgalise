@@ -61,7 +61,7 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultSimulationEventHandlerManager;
+import de.pgalise.simulation.service.internal.event.DefaultSimulationEventHandlerManager;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -457,7 +457,7 @@ public class TrafficServerTest {
 			busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true,
 					VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
 		}
-		trafficEventList.add(new CreateBussesEvent(UUID.randomUUID(), busDataList, SIMULATION_START, busRoutes));
+		trafficEventList.add(new CreateBussesEvent(busDataList, SIMULATION_START, busRoutes));
 
 		SimulationEventList eventList = new SimulationEventList(trafficEventList, SIMULATION_START, UUID.randomUUID());
 
@@ -663,7 +663,7 @@ public class TrafficServerTest {
 				vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(UUID.randomUUID(),
 						true, VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1, trip, "K.A.R.R")));
 
-				list.add(new CreateVehiclesEvent(UUID.randomUUID(), vehicleDataList));
+				list.add(new CreateVehiclesEvent( vehicleDataList));
 				eventList = new SimulationEventList(list, SIMULATION_START + i, UUID.randomUUID());
 			} else {
 				eventList = new SimulationEventList(null, SIMULATION_START + i, UUID.randomUUID());
@@ -724,7 +724,7 @@ public class TrafficServerTest {
 				vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(UUID.randomUUID(),
 						true, VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1, null, "K.A.R.R")));
 
-				list.add(new AttractionTrafficEvent(UUID.randomUUID(), SIMULATION_START + 4000,
+				list.add(new AttractionTrafficEvent( SIMULATION_START + 4000,
 						SIMULATION_START + 8000, "242052866", vehicleDataList));
 				eventList = new SimulationEventList(list, SIMULATION_START + i, UUID.randomUUID());
 			} else {
@@ -805,7 +805,7 @@ public class TrafficServerTest {
 			vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true, vehicleType,
 					vehicleModel, null, id.toString())));
 		}
-		return new CreateRandomVehiclesEvent(UUID.randomUUID(), vehicleDataList);
+		return new CreateRandomVehiclesEvent( vehicleDataList);
 	}
 
 	/**

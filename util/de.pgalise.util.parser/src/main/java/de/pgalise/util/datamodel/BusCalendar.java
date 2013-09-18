@@ -16,6 +16,7 @@
  
 package de.pgalise.util.datamodel;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -31,11 +32,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_CALENDAR")
-public class BusCalendar {
-	
-	@Id
-	@Column(name = "SERVICE_ID")
-	private String serviceId;
+public class BusCalendar extends AbstractIdentifiable {
 	
 	@Column(name = "MONDAY")
 	private char monday;
@@ -68,10 +65,9 @@ public class BusCalendar {
 	
 	public BusCalendar() {}
 
-	public BusCalendar(String serviceId, char monday, char thuesday,
+	public BusCalendar(char monday, char thuesday,
 			char wednesday, char thursday, char friday, char saturday,
 			char sunday, Date startDate, Date endDate) {
-		this.serviceId = serviceId;
 		this.monday = monday;
 		this.thuesday = thuesday;
 		this.wednesday = wednesday;
@@ -81,14 +77,6 @@ public class BusCalendar {
 		this.sunday = sunday;
 		this.startDate = startDate;
 		this.endDate = endDate;
-	}
-
-	public String getServiceId() {
-		return serviceId;
-	}
-
-	public void setServiceId(String serviceId) {
-		this.serviceId = serviceId;
 	}
 
 	public char getMonday() {

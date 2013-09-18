@@ -40,6 +40,7 @@ import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
 import java.sql.Date;
 import java.sql.Time;
@@ -67,7 +68,7 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class CityClimateTest {
-	@PersistenceUnit(unitName = "weather_test", name="weather_test_CityClimateTest")
+	@PersistenceUnit(unitName = "weather_test")
 	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
 	private static EJBContainer CONTAINER;
 	
@@ -99,7 +100,7 @@ public class CityClimateTest {
 	/**
 	 * Weather Loader
 	 */
-	private static WeatherLoader loader;
+	private static WeatherLoader<?> loader;
 	
 	private	City city;
 
@@ -123,7 +124,7 @@ public class CityClimateTest {
 		Context ctx =  CONTAINER.getContext();
 
 		// Load EJB for Weather loader
-		loader = (WeatherLoader) ctx
+		loader = (WeatherLoader<?>) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
 		// Create service

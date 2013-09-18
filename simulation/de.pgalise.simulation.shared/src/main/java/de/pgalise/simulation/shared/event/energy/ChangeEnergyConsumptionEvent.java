@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.shared.event.energy;
 
-import java.util.UUID;
-
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -57,22 +55,34 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	 * Constructor
 	 * 
 	 * @param eventID
-	 *            ID of the event
+	 * ID of the event
 	 * @param position
-	 *            Position
+	 * Position
 	 * @param measureRadiusInMeter
-	 *            Measure radius (in meter)
+	 * Measure radius (in meter)
 	 * @param startTimestamp
-	 *            Start timestamp of the event
+	 * Start timestamp of the event
 	 * @param endTimestamp
-	 *            End timestamp of the event
+	 * End timestamp of the event
 	 */
-	public ChangeEnergyConsumptionEvent(UUID eventID, SimulationEventTypeEnum simulationEventType,
-			Coordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
-		super(eventID, simulationEventType);
+	
+	public ChangeEnergyConsumptionEvent(SimulationEventTypeEnum simulationEventType, Coordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
+		super(simulationEventType);
 		if (measureRadiusInMeter <= 0.0) {
 			throw new IllegalArgumentException("measureRadiusInMeter is negative");
 		}
+		this.position = position;
+		this.measureRadiusInMeter = measureRadiusInMeter;
+		this.startTimestamp = startTimestamp;
+		this.endTimestamp = endTimestamp;
+	}
+
+	public ChangeEnergyConsumptionEvent(Coordinate position,
+		int measureRadiusInMeter,
+		long startTimestamp,
+		long endTimestamp,
+		SimulationEventTypeEnum eventType) {
+		super(eventType);
 		this.position = position;
 		this.measureRadiusInMeter = measureRadiusInMeter;
 		this.startTimestamp = startTimestamp;

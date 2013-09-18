@@ -40,6 +40,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -64,8 +65,8 @@ import org.junit.BeforeClass;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class DefaultWeatherStationManagerTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_collector_test")
-	private EntityManagerFactory entityManager;
+	@PersistenceContext(unitName = "weather_test")
+	private EntityManager entityManager;
 	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
@@ -94,7 +95,6 @@ public class DefaultWeatherStationManagerTest {
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
-		EntityManager entityManager0 = entityManager.createEntityManager();
 		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
@@ -113,7 +113,7 @@ public class DefaultWeatherStationManagerTest {
 			true,
 			true,
 			referenceArea);
-		entityManager0.persist(city);
+		entityManager.persist(city);
 		userTransaction.commit();
 		instance.saveInformations();
 		//only test that StationStrategy.saveWeather is invoked

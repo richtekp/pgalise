@@ -186,7 +186,7 @@ public class VehicleTest {
 
 		Path shortestPath = algo.getPath(graph.getNode("e"));
 
-		Vehicle<? extends VehicleData> v = new BaseVehicle<>(null, "carA", this.ee);
+		Vehicle<? extends VehicleData> v = new BaseVehicle<BicycleData>(null, "carA", this.ee);
 		v.setVelocity(9.5);
 		v.setPath(shortestPath);
 

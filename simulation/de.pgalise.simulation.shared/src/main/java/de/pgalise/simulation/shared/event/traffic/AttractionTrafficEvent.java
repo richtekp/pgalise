@@ -59,13 +59,13 @@ public class AttractionTrafficEvent extends CreateRandomVehiclesEvent {
 	 * @param nodeID
 	 * 			node id in graph.
 	 */
-	public AttractionTrafficEvent(UUID id, long attractionStartTimestamp, long attractionEndTimestamp,
+	public AttractionTrafficEvent(long attractionStartTimestamp, long attractionEndTimestamp,
 			String nodeID, List<CreateRandomVehicleData> createRandomVehicleDataList) {
-		super(id,createRandomVehicleDataList);
+		super(createRandomVehicleDataList);
 		this.attractionStartTimestamp = attractionStartTimestamp;
 		this.attractionEndTimestamp = attractionEndTimestamp;
 		this.nodeID = nodeID;
-		super.setEventType(SimulationEventTypeEnum.ATTRACTION_TRAFFIC_EVENT);
+		super.setType(SimulationEventTypeEnum.ATTRACTION_TRAFFIC_EVENT);
 	}
 
 	public long getAttractionStartTimestamp() {

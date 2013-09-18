@@ -14,10 +14,16 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.service.event;
+package de.pgalise.simulation.service.internal.event;
 
+import de.pgalise.simulation.service.event.EventHandler;
+import de.pgalise.simulation.service.event.EventHandlerManager;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.Event;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,27 +41,41 @@ import java.util.Properties;
  * @param <E>
  * @param <T>
  */
-public abstract class AbstractEventHandlerManager<H extends EventHandler<E, T>, E, T> implements
+public abstract class AbstractEventHandlerManager<H extends EventHandler<E,T>, E extends Event<T>, T extends EventType> implements
 		EventHandlerManager<H, E, T> {
 	private List<H> handlers = new ArrayList<>();
 
-	@SuppressWarnings({ "rawtypes", "static-access", "unchecked" })
 	@Override
-	public void init(InputStream config, Class clazz) throws ClassNotFoundException, InstantiationException,
+	public <J extends H> void  init(InputStream config, Class<J> clazz) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IOException {
-
 		Properties prop = new Properties();
 		prop.load(config);
 		for (Object key : prop.keySet()) {
 			String eventHanlderClazz = (String) key;
-			Class handlerClass;
+			Class<H> handlerClass;
 			if (clazz != null) {
-				handlerClass = clazz.forName(eventHanlderClazz);
+				handlerClass = (Class<H>) Class.forName(eventHanlderClazz);
 			}
 			else {
-				handlerClass = Class.forName(eventHanlderClazz);
+				handlerClass = (Class<H>) Class.forName(eventHanlderClazz);
 			}
-			H handler = (H) handlerClass.newInstance();
+			Constructor<H> handlerClassConstructor;
+			try {
+				handlerClassConstructor = handlerClass.getDeclaredConstructor();
+			} catch (NoSuchMethodException ex) {
+				throw new IllegalArgumentException(String.format("clazz %s doesn't have a default constructor (can have any modifier, but has to be present)", handlerClass.getName()),
+					ex);
+			} catch (SecurityException ex) {
+				throw new RuntimeException("an unexpected SecurtiyException occured (see nested exception for details)",
+					ex);
+			}
+			handlerClassConstructor.setAccessible(true);
+			H handler = null;
+			try {
+				handler = handlerClassConstructor.newInstance();
+			} catch (IllegalArgumentException | InvocationTargetException ex) {
+				throw new RuntimeException(ex);
+			}
 			getHandlers().add(handler);
 		}
 	}
@@ -63,7 +83,7 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E, T>, 
 	@Override
 	public H getEventHandler(T type) {
 		for (H handler : getHandlers()) {
-			if (handler.getType().equals(type)) {
+			if (handler.getTargetEventType().equals(type)) {
 				return handler;
 			}
 		}
@@ -82,14 +102,14 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E, T>, 
 
 	@Override
 	public void addHandler(H handler) {
-		remoteHandler(handler.getType());
+		remoteHandler(handler.getTargetEventType());
 		getHandlers().add(handler);
 	}
 
 	@Override
 	public void remoteHandler(T type) {
 		for (H handler : getHandlers()) {
-			if (handler.getType().equals(type)) {
+			if (handler.getTargetEventType().equals(type)) {
 				getHandlers().remove(handler);
 				break;
 			}

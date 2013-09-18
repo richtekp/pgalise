@@ -34,7 +34,7 @@ import javax.persistence.NamedQuery;
 @Entity
 //@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_FORECAST")
 @NamedQuery(name = "DefaultServiceDataForecast.findByDate", query = "SELECT i FROM DefaultServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class DefaultServiceDataForecast extends AbstractBaseServiceData<DefaultWeatherCondition> implements ServiceDataForecast<DefaultWeatherCondition>, Comparable<ServiceDataForecast<?>> {
+public class DefaultServiceDataForecast extends AbstractServiceData<DefaultWeatherCondition> implements ServiceDataForecast<DefaultWeatherCondition>, Comparable<ServiceDataForecast<?>> {
 	private static final long serialVersionUID = 1L;
 
 	/**

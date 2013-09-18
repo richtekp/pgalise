@@ -17,7 +17,6 @@
 package de.pgalise.simulation.shared.event.weather;
 
 import java.util.List;
-import java.util.UUID;
 
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
 
@@ -47,8 +46,8 @@ public class NewDayEvent extends WeatherEvent {
 	 * @param list
 	 *            List with Strategies to modify weather data
 	 */
-	public NewDayEvent(UUID id, List<WeatherEventEnum> list) {
-		super(id, SimulationEventTypeEnum.NEW_DAY_EVENT);
+	public NewDayEvent(List<WeatherEventEnum> list) {
+		super(SimulationEventTypeEnum.NEW_DAY_EVENT);
 		this.strategyList = list;
 	}
 

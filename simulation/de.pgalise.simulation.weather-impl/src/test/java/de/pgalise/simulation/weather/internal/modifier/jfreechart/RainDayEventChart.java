@@ -102,19 +102,17 @@ public class RainDayEventChart extends AbstractChartTest {
 	@Override
 	protected TimeSeries getDecoratorTimeSerie() throws Exception {
 		// Deploy strategy
-		this.service.deployStrategy(new RainDayEvent(this.random.getSeed(RainDayEventChart.class.toString()),
-				RainDayEventChart.testTimestamp, this.props, RainDayEventChart.testValue,
+		this.getService().deployStrategy(new RainDayEvent(this.getRandom().getSeed(RainDayEventChart.class.toString()),
+				RainDayEventChart.testTimestamp, this.getProps(), RainDayEventChart.testValue,
 				RainDayEventChart.testDuration, this.getLoader()));
 
 		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.service.getReferenceValues(),
-				this.parameter);
+		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.getService().getReferenceValues(), this.getParameter());
 	}
 
 	@Override
 	protected TimeSeries getReferenceTimeSerie() {
 		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.service.getReferenceValues(),
-				this.parameter);
+		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.getService().getReferenceValues(), this.getParameter());
 	}
 }

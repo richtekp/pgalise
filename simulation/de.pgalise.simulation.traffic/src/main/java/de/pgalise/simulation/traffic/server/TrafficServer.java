@@ -50,8 +50,9 @@ public interface TrafficServer extends SensorManagerController {
 	/**
 	 * Let this server take care of the passed vehicle.
 	 * 
-	 * @param path
+	 * @param vehicle 
 	 * @param startNodeId
+	 * @param serverId 
 	 * @param targetNodeId
 	 */
 	public void takeVehicle(Vehicle<? extends VehicleData> vehicle, String startNodeId, String targetNodeId,

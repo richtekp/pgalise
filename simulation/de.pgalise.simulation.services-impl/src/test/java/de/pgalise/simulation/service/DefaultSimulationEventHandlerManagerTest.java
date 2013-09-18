@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.service.event.SimulationEventHandler;
 import de.pgalise.simulation.service.event.SimulationEventHandlerManager;
-import de.pgalise.simulation.service.internal.DefaultSimulationEventHandlerManager;
+import de.pgalise.simulation.service.internal.event.DefaultSimulationEventHandlerManager;
 import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
 
@@ -37,14 +37,14 @@ import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
  * @author Mustafa
  * @version 1.0 (Feb 15, 2013)
  */
-public class EventHandlerManagerTest {
+public class DefaultSimulationEventHandlerManagerTest {
 	@Test
 	public void initializationTest() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
 			IOException {
 		SimulationEventHandlerManager manager = new DefaultSimulationEventHandlerManager();
 		String handlerName = DummyEventHandler.class.getName();
 		InputStream in = new ByteArrayInputStream(handlerName.getBytes());
-		manager.init(in, EventHandlerManagerTest.class);
+		manager.init(in, DummyEventHandler.class);
 
 		SimulationEventHandler handler = manager.getEventHandler(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
 		assertNotNull(handler);
@@ -56,11 +56,11 @@ public class EventHandlerManagerTest {
 			IOException {
 
 		SimulationEvent event = EasyMock.createNiceMock(SimulationEvent.class);
-		EasyMock.expect(event.getEventType()).andReturn(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
+		EasyMock.expect(event.getType()).andReturn(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
 		EasyMock.replay(event);
 
 		SimulationEventHandler handler = EasyMock.createMock(SimulationEventHandler.class);
-		EasyMock.expect(handler.getType()).andStubReturn(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
+		EasyMock.expect(handler.getTargetEventType()).andStubReturn(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
 		handler.handleEvent(event);
 		EasyMock.replay(handler);
 
@@ -79,8 +79,11 @@ public class EventHandlerManagerTest {
 	 */
 	private static class DummyEventHandler implements SimulationEventHandler {
 
+		DummyEventHandler() {
+		}
+
 		@Override
-		public SimulationEventTypeEnum getType() {
+		public SimulationEventTypeEnum getTargetEventType() {
 			return SimulationEventTypeEnum.CREATE_VEHICLES_EVENT;
 }
 

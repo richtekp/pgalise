@@ -18,6 +18,27 @@
 
 	<dependencies>
 		<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-spatial</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgis</groupId>
+			<artifactId>postgis-jdbc</artifactId>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.graphstream</groupId>
 			<artifactId>gs-core</artifactId>
 		</dependency>

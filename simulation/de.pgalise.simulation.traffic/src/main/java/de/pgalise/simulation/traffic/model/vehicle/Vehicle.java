@@ -17,6 +17,7 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.io.Serializable;
 import java.util.EnumSet;
 import java.util.UUID;
@@ -31,11 +32,12 @@ import javax.vecmath.Vector2d;
 /**
  * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).
  * 
+ * @param <E> 
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 12, 2012)
  */
-public interface Vehicle<E extends VehicleData> extends Serializable {
+public interface Vehicle<E extends VehicleData> extends Identifiable {
 
 	/**
 	 * Status
@@ -177,17 +179,6 @@ public interface Vehicle<E extends VehicleData> extends Serializable {
 	 * @return the state
 	 */
 	public State getState();
-
-	/**
-	 * @return the id
-	 */
-	public UUID getId();
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	public void setId(UUID id);
 
 	/**
 	 * Updates this vehicle's position, direction, orientation and status. If this vehicle reaches its target its status

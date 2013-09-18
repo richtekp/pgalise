@@ -45,8 +45,8 @@ public class DeleteVehiclesEvent extends TrafficEvent {
 	 * @param vehicleIDList
 	 *            List with IDs of vehicles to delete
 	 */
-	public DeleteVehiclesEvent(UUID id, List<UUID> vehicleIDList) {
-		super(id, SimulationEventTypeEnum.DELETE_VEHICLES_EVENT);
+	public DeleteVehiclesEvent(List<UUID> vehicleIDList) {
+		super(SimulationEventTypeEnum.DELETE_VEHICLES_EVENT);
 		this.deleteVehicleIDList = vehicleIDList;
 	}
 

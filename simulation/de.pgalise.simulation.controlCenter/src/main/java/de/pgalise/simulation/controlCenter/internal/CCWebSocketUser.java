@@ -508,7 +508,7 @@ public class CCWebSocketUser extends MessageInbound {
 					busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true,
 							VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
 				}
-				simulationEventList.add(new CreateBussesEvent(UUID.randomUUID(), busDataList, ccSimulationStartParameter.getStartTimestamp(), busRouteList));
+				simulationEventList.add(new CreateBussesEvent(busDataList, ccSimulationStartParameter.getStartTimestamp(), busRouteList));
 				
 				/* Add events to simulation: */
 				this.simulationController.addSimulationEventList(new SimulationEventList(simulationEventList, 0, UUID.randomUUID()));

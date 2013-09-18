@@ -112,13 +112,13 @@ public class DefaultGsonService extends AbstractController implements GsonServic
 		public SimulationEvent deserialize(JsonElement json, Type type,
 				JsonDeserializationContext context) throws JsonParseException {
 			SimulationEvent simulationEvent = this.gson.fromJson(json, SimulationEvent.class);			
-			return (SimulationEvent) this.gson.fromJson(json, simulationEvent.getEventType().getImplementationClass());
+			return (SimulationEvent) this.gson.fromJson(json, simulationEvent.getType().getImplementationClass());
 		}
 
 		@Override
 		public JsonElement serialize(SimulationEvent src, Type typeOfSrc,
 				JsonSerializationContext context) {
-			return this.gson.toJsonTree(src, src.getEventType().getImplementationClass());
+			return this.gson.toJsonTree(src, src.getType().getImplementationClass());
 		}
 	}
 	

@@ -157,7 +157,7 @@ public class CreateBussesEventHandler implements TrafficEventHandler {
 	}
 
 	@Override
-	public SimulationEventTypeEnum getType() {
+	public SimulationEventTypeEnum getTargetEventType() {
 		return CreateBussesEventHandler.type;
 	}
 

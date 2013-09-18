@@ -34,6 +34,7 @@ import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import java.sql.Date;
@@ -63,7 +64,7 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class ColdDayEventTest {
-	@PersistenceUnit(unitName = "weather_test", name="weather_test_ColdDayEventTest")
+	@PersistenceUnit(unitName = "weather_test")
 	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
 	private static EJBContainer CONTAINER;
 
@@ -100,7 +101,7 @@ public class ColdDayEventTest {
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader loader;
+	private WeatherLoader<?> loader;
 	
 	private	City city;
 
@@ -123,7 +124,7 @@ public class ColdDayEventTest {
 		Context ctx = CONTAINER.getContext();
 
 		// Load EJB for Weather loader
-		loader = (WeatherLoader) ctx
+		loader = (WeatherLoader<?>) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
 		// Start

@@ -65,37 +65,37 @@ public abstract class AbstractChartTest {
 	/**
 	 * End timestamp
 	 */
-	protected long endTimestamp;
+	private long endTimestamp;
 
 	/**
 	 * Parameter
 	 */
-	protected WeatherParameterEnum parameter;
+	private WeatherParameterEnum parameter;
 
 	/**
 	 * Properties
 	 */
-	protected Properties props;
+	private Properties props;
 
 	/**
 	 * RandomSeedService
 	 */
-	protected RandomSeedService random;
+	private RandomSeedService random;
 
 	/**
 	 * Service Class
 	 */
-	protected DefaultWeatherService service;
+	private DefaultWeatherService service;
 
 	/**
 	 * Start timestamp
 	 */
-	protected long startTimestamp;
+	private long startTimestamp;
 
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader loader;
+	private WeatherLoader<?> loader;
 
 	/**
 	 * Constructor
@@ -106,7 +106,6 @@ public abstract class AbstractChartTest {
 	 *            Date as timestamp
 	 * @param parameter
 	 *            WeatherParameterEnum
-	 * @throws NoWeatherDataFoundException
 	 * @throws IOException
 	 * @throws NamingException
 	 */
@@ -158,7 +157,7 @@ public abstract class AbstractChartTest {
 		container = TestUtils.getContainer();
 	}
 
-	public WeatherLoader getLoader() {
+	public WeatherLoader<?> getLoader() {
 		return this.loader;
 	}
 
@@ -176,4 +175,98 @@ public abstract class AbstractChartTest {
 	 * @return Timeserie
 	 */
 	protected abstract TimeSeries getReferenceTimeSerie();
+
+	/**
+	 * @return the random
+	 */
+	public RandomSeedService getRandom() {
+		return random;
+	}
+
+	/**
+	 * @param random the random to set
+	 */
+	public void setRandom(RandomSeedService random) {
+		this.random = random;
+	}
+
+	/**
+	 * @return the service
+	 */
+	public DefaultWeatherService getService() {
+		return service;
+	}
+
+	/**
+	 * @param service the service to set
+	 */
+	public void setService(
+		DefaultWeatherService service) {
+		this.service = service;
+	}
+
+	/**
+	 * @return the startTimestamp
+	 */
+	public long getStartTimestamp() {
+		return startTimestamp;
+	}
+
+	/**
+	 * @param startTimestamp the startTimestamp to set
+	 */
+	public void setStartTimestamp(long startTimestamp) {
+		this.startTimestamp = startTimestamp;
+	}
+
+	/**
+	 * @param loader the loader to set
+	 */
+	public void setLoader(
+		WeatherLoader<?> loader) {
+		this.loader = loader;
+	}
+
+	/**
+	 * @return the props
+	 */
+	public Properties getProps() {
+		return props;
+	}
+
+	/**
+	 * @param props the props to set
+	 */
+	public void setProps(Properties props) {
+		this.props = props;
+	}
+
+	/**
+	 * @return the parameter
+	 */
+	public WeatherParameterEnum getParameter() {
+		return parameter;
+	}
+
+	/**
+	 * @param parameter the parameter to set
+	 */
+	public void setParameter(
+		WeatherParameterEnum parameter) {
+		this.parameter = parameter;
+	}
+
+	/**
+	 * @return the endTimestamp
+	 */
+	public long getEndTimestamp() {
+		return endTimestamp;
+	}
+
+	/**
+	 * @param endTimestamp the endTimestamp to set
+	 */
+	public void setEndTimestamp(long endTimestamp) {
+		this.endTimestamp = endTimestamp;
+	}
 }

@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.shared.event.traffic;
 
-import java.util.UUID;
-
 import de.pgalise.simulation.shared.event.SimulationEvent;
 import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
 
@@ -41,8 +39,12 @@ public abstract class TrafficEvent extends SimulationEvent {
 	 * @param eventType
 	 *            Event type
 	 */
-	public TrafficEvent(UUID id, SimulationEventTypeEnum eventType) {
+	public TrafficEvent(Long id, SimulationEventTypeEnum eventType) {
 		super(id, eventType);
+	}
+
+	public TrafficEvent(SimulationEventTypeEnum eventType) {
+		super(eventType);
 	}
 	
 	public void setResponsibleServer(int serverId) {

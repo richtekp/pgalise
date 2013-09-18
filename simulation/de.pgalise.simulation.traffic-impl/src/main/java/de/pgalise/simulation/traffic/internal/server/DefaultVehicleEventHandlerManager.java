@@ -16,10 +16,11 @@
  
 package de.pgalise.simulation.traffic.internal.server;
 
+import de.pgalise.simulation.service.internal.event.AbstractEventHandlerManager;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
-import de.pgalise.simulation.service.event.AbstractEventHandlerManager;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle.DefaultVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
@@ -39,7 +40,7 @@ public class DefaultVehicleEventHandlerManager extends
 
 	@Override
 	public boolean responsibleFor(VehicleEventHandler handler, VehicleEvent event) {
-		return handler.getType().equals(event.getType());
+		return handler.getTargetEventType().equals(event.getTargetEventType());
 	}
 
 }
