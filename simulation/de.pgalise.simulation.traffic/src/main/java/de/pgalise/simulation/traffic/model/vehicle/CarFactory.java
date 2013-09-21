@@ -17,7 +17,6 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.awt.Color;
-import java.util.UUID;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
@@ -41,7 +40,7 @@ public interface CarFactory {
 	 *            Color of the {@link Car}
 	 * @return created {@link Car}
 	 */
-	public Vehicle<CarData> createCar(UUID id, String typeId, Color color, SensorHelper gpsSensor);
+	public Vehicle<CarData> createCar( String typeId, Color color, SensorHelper gpsSensor);
 
 	/**
 	 * Method to create a random {@link Car}.
@@ -50,7 +49,7 @@ public interface CarFactory {
 	 *            ID of the {@link Car}
 	 * @return created {@link Car}
 	 */
-	public Vehicle<CarData> createRandomCar(UUID id, SensorHelper gpsSensor);
+	public Vehicle<CarData> createRandomCar( SensorHelper gpsSensor);
 
 	public RandomSeedService getRandomSeedService();
 }

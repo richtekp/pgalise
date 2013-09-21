@@ -43,7 +43,7 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler.Modus;
 import javax.vecmath.Vector2d;
@@ -120,12 +120,12 @@ public class SchedulerTest {
 	 *            Start time of the vehicles
 	 */
 	public static void testScheduler(Scheduler scheduler, long startTime) {
-		List<Item> vehicles = null;
+		List<ScheduleItem> vehicles = null;
 		vehicles = scheduler.getExpiredItems(startTime);
 		Assert.assertNotNull(vehicles);
 		Assert.assertEquals(0, vehicles.size());
 
-		List<Item> items = null;
+		List<ScheduleItem> items = null;
 		items = scheduler.getScheduledItems();
 		Assert.assertNotNull(items);
 		Assert.assertEquals(4, items.size());
@@ -211,7 +211,7 @@ public class SchedulerTest {
 	 *            List with vehicles
 	 * @return List of vehicles names as String
 	 */
-	private static String getVehicles(List<Item> vehicles) {
+	private static String getVehicles(List<ScheduleItem> vehicles) {
 		StringBuilder str = new StringBuilder();
 		str.append("(");
 		for (int i = 0; i < vehicles.size(); i++) {
@@ -243,10 +243,10 @@ public class SchedulerTest {
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new Item(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the ListScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));
@@ -267,10 +267,10 @@ public class SchedulerTest {
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new Item(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the SortedListScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));
@@ -291,10 +291,10 @@ public class SchedulerTest {
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new Item(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new Item(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the TreeSetScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));

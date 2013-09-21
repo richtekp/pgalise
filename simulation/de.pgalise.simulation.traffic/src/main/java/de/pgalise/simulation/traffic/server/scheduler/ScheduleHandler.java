@@ -23,6 +23,6 @@ package de.pgalise.simulation.traffic.server.scheduler;
  *
  */
 public interface ScheduleHandler {
-	public void onRemove(Item v);
-	public void onSchedule(Item v);
+	public void onRemove(ScheduleItem v);
+	public void onSchedule(ScheduleItem v);
 }

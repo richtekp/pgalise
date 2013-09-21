@@ -26,7 +26,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public class Item implements Comparable<Item> {
+public class ScheduleItem implements Comparable<ScheduleItem> {
 
 	/**
 	 * Departure time
@@ -59,7 +59,7 @@ public class Item implements Comparable<Item> {
 	 * @param reversePath
 	 *            True if the vehicle's path shall be reversed before it begins its journey
 	 */
-	public Item(Vehicle<? extends VehicleData> vehicle, long time, long updateIntervall) {
+	public ScheduleItem(Vehicle<? extends VehicleData> vehicle, long time, long updateIntervall) {
 		this.vehicle = vehicle;
 		this.time = time;
 		this.lastUpdate = time - updateIntervall;
@@ -108,7 +108,7 @@ public class Item implements Comparable<Item> {
 	}
 
 	@Override
-	public int compareTo(Item o) {
+	public int compareTo(ScheduleItem o) {
 		long thisTime = this.getDepartureTime();
 		long anotherTime = o.getDepartureTime();
 
@@ -150,7 +150,7 @@ public class Item implements Comparable<Item> {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Item other = (Item) obj;
+		ScheduleItem other = (ScheduleItem) obj;
 		if (time != other.time) {
 			return false;
 		}

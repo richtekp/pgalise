@@ -43,7 +43,7 @@ public class CreateRandomVehicleData implements Serializable {
 	 * Information about the vehicle
 	 */
 	private VehicleInformation vehicleInformation;
-
+	
 	/**
 	 * Constructor
 	 * 

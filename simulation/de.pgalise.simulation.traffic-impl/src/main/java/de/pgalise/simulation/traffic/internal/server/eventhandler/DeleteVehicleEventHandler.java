@@ -19,14 +19,10 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 
 /**
  * The event handler removes vehicles with the given List of UUIDs from the server. The class are used by the
@@ -75,7 +71,7 @@ public class DeleteVehicleEventHandler extends AbstractTrafficEventHandler<Delet
 
 	@Override
 	public void handleEvent(DeleteVehiclesEvent event) {
-		log.debug("Processing DELETE_VEHICLES_EVENT handleEvent: VehiclesToDelete=" + event.getDeleteVehicles().size());
+		log.debug("Processing DELETE_VEHICLES_EVENT handleEvent: VehiclesToDelete=" + event.getVehicle());
 
 		throw new RuntimeException("Not implemented!");
 	}

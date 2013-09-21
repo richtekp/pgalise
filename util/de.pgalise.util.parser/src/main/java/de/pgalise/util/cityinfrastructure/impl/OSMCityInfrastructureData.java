@@ -59,7 +59,6 @@ import de.pgalise.simulation.shared.city.Way;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
-import java.util.logging.Level;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 

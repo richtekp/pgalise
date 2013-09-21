@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 import org.graphstream.graph.Path;
 
@@ -36,7 +35,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas
  * @version 1.0
  */
-public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extends AbstractTrafficEventHandler<E> {
+public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> extends AbstractTrafficEventHandler<E> implements VehicleEventHandler<E> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(AbstractVehicleEventHandler.class);
 
 	/**
@@ -75,18 +74,18 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 	public Vehicle<? extends VehicleData> createVehicle(CreateRandomVehicleData data, TrafficTrip trip) {
 		switch (data.getVehicleInformation().getVehicleType()) {
 			case TRUCK:
-				return this.createTruck(trip, data.getVehicleInformation().getVehicleID(), data.getVehicleInformation()
+				return this.createTruck(trip, data.getVehicleInformation()
 						.getName(), 0.0, data.getSensorHelpers(), data.getVehicleInformation().isGpsActivated());
 			case BIKE:
-				return this.createBike(trip, data.getVehicleInformation().getVehicleID(), data.getVehicleInformation()
+				return this.createBike(trip,  data.getVehicleInformation()
 						.getName(), 0.0, data.getSensorHelpers(), data.getVehicleInformation().isGpsActivated());
 			case MOTORCYCLE:
-				return this.createMotorcycle(trip, data.getVehicleInformation().getVehicleID(), data
+				return this.createMotorcycle(trip,  data
 						.getVehicleInformation().getName(), 0.0, data.getSensorHelpers(), data.getVehicleInformation()
 						.isGpsActivated());
 			case CAR:
 			default:
-				return this.createCar(trip, data.getVehicleInformation().getVehicleID(), data.getVehicleInformation()
+				return this.createCar(trip,  data.getVehicleInformation()
 						.getName(), 0.0, data.getSensorHelpers(), data.getVehicleInformation().isGpsActivated());
 		}
 	}
@@ -109,7 +108,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 	public void scheduleVehicle(Vehicle<? extends VehicleData> vehicle, long startTime) {
 		if (vehicle != null) {
 			try {
-				Item item = new Item(vehicle, startTime, this.getResponsibleServer().getUpdateIntervall());
+				ScheduleItem item = new ScheduleItem(vehicle, startTime, this.getResponsibleServer().getUpdateIntervall());
 				// item.setLastUpdate(startTime - this.getServer().getUpdateIntervall());
 				this.getResponsibleServer().getScheduler().scheduleItem(item);
 				// server.getScheduler().scheduleItem(new Item(v, trip.getStartTimeWayBack(), true));
@@ -154,7 +153,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 	 *            True if the GPS sensor should be activated
 	 * @return bicycle
 	 */
-	protected Vehicle<BicycleData> createBike(TrafficTrip trip, UUID vehicleID, String name, double velocity,
+	protected Vehicle<BicycleData> createBike(TrafficTrip trip, String name, double velocity,
 			List<SensorHelper> sensorHelpers, boolean gpsActivated) {
 		Vehicle<BicycleData> bike = null;
 		TrafficTrip tmpTrip = trip;
@@ -165,7 +164,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle(vehicleID, gpsSensorHelper);
+			bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle( gpsSensorHelper);
 			if (name != null) {
 				bike.setName(name);
 			}
@@ -202,7 +201,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 	 *            True if the GPS sensor should be activated
 	 * @return Car
 	 */
-	protected Vehicle<CarData> createCar(final TrafficTrip trip, final UUID vehicleID, final String name,
+	protected Vehicle<CarData> createCar(final TrafficTrip trip, final String name,
 			final double velocity, final List<SensorHelper> sensorHelpers, final boolean gpsActivated) {
 		Vehicle<CarData> car = null;
 		TrafficTrip tmpTrip = trip;
@@ -214,7 +213,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			car = this.getResponsibleServer().getCarFactory().createRandomCar(vehicleID, gpsSensorHelper);
+			car = this.getResponsibleServer().getCarFactory().createRandomCar( gpsSensorHelper);
 
 			if (name != null) {
 				car.setName(name);
@@ -245,7 +244,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 	 *            True if the GPS sensor should be activated
 	 * @return Motorcycle
 	 */
-	protected Vehicle<MotorcycleData> createMotorcycle(TrafficTrip trip, UUID vehicleID, String name, double velocity,
+	protected Vehicle<MotorcycleData> createMotorcycle(TrafficTrip trip, String name, double velocity,
 			List<SensorHelper> sensorHelpers, boolean gpsActivated) {
 		Vehicle<MotorcycleData> motorcycle = null;
 		TrafficTrip tmpTrip = trip;
@@ -256,7 +255,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			motorcycle = this.getResponsibleServer().getMotorcycleFactory().createRandomMotorcycle(vehicleID, gpsSensorHelper);
+			motorcycle = this.getResponsibleServer().getMotorcycleFactory().createRandomMotorcycle( gpsSensorHelper);
 			if (name != null) {
 				motorcycle.setName(name);
 			}
@@ -286,7 +285,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 	 *            True if the GPS sensor should be activated
 	 * @return Truck
 	 */
-	protected Vehicle<TruckData> createTruck(TrafficTrip trip, UUID vehicleID, String name, double velocity,
+	protected Vehicle<TruckData> createTruck(TrafficTrip trip, String name, double velocity,
 			List<SensorHelper> sensorHelpers, boolean gpsActivated) {
 		Vehicle<TruckData> truck = null;
 		TrafficTrip tmpTrip = trip;
@@ -297,7 +296,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extend
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			truck = this.getResponsibleServer().getTruckFactory().createRandomTruck(vehicleID, gpsSensorHelper);
+			truck = this.getResponsibleServer().getTruckFactory().createRandomTruck( gpsSensorHelper);
 			if (name != null) {
 				truck.setName(name);
 			}

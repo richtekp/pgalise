@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventType;
 import java.util.EnumSet;
 
 import de.pgalise.simulation.shared.sensor.SensorType;

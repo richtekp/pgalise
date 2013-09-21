@@ -17,7 +17,6 @@
 package de.pgalise.simulation.shared.event.weather;
 
 import de.pgalise.simulation.shared.event.AbstractEvent;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Weather event super class.

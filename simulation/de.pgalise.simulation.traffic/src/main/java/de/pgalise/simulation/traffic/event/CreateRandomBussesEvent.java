@@ -22,9 +22,6 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
-import java.util.UUID;
-
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
@@ -59,8 +56,8 @@ public class CreateRandomBussesEvent extends AbstractTrafficEvent {
 	 * @param agencyName
 	 *            Agency name
 	 */
-	public CreateRandomBussesEvent(TrafficServerLocal responsibleServer, List<String> busLines, String agencyName) {
-		super(responsibleServer);
+	public CreateRandomBussesEvent(TrafficServerLocal responsibleServer, long timestamp, long elapsedTime, List<String> busLines, String agencyName) {
+		super(responsibleServer, timestamp, elapsedTime);
 		this.busLines = busLines;
 		this.agencyName = agencyName;
 	}

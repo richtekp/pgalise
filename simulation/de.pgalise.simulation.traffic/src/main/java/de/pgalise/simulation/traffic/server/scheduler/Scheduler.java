@@ -119,7 +119,7 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void scheduleItem(Item item) throws IllegalAccessException {
+	public void scheduleItem(ScheduleItem item) throws IllegalAccessException {
 		if (this.modus == Modus.WRITE) {
 			onScheduleItem(item);
 		} else {
@@ -127,7 +127,7 @@ public abstract class Scheduler {
 		}
 	}
 
-	protected abstract void onScheduleItem(Item item);
+	protected abstract void onScheduleItem(ScheduleItem item);
 
 	/**
 	 * Returns a shallow copy of vehicles should be driving already. Important: Does not remove vehicles that arrived at
@@ -136,13 +136,13 @@ public abstract class Scheduler {
 	 * @see #removeExpiredItems(List)
 	 * @return a shallow copy of vehicles should be driving already
 	 */
-	public abstract List<Item> getExpiredItems(long currentTime);
+	public abstract List<ScheduleItem> getExpiredItems(long currentTime);
 
 	/**
 	 * @see #removeScheduledItems(List)
 	 * @return a shallow copy of scheduled items
 	 */
-	public abstract List<Item> getScheduledItems();
+	public abstract List<ScheduleItem> getScheduledItems();
 
 	/**
 	 * Searches for the passed vehicles in the expired items list and removes them.

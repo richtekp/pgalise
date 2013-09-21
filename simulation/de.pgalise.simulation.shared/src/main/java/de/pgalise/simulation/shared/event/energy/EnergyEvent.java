@@ -16,10 +16,8 @@
  
 package de.pgalise.simulation.shared.event.energy;
 
-import java.util.UUID;
 
 import de.pgalise.simulation.shared.event.AbstractEvent;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Superclass for all energy events.

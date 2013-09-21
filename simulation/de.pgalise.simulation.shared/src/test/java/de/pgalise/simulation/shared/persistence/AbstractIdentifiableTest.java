@@ -11,14 +11,16 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author richter
  */
 public class AbstractIdentifiableTest {
+	private final static Logger LOGGER = LoggerFactory.getLogger(AbstractIdentifiableTest.class);
 	
 	public AbstractIdentifiableTest() {
 	}
@@ -41,6 +43,7 @@ public class AbstractIdentifiableTest {
 				public Void call() throws Exception {
 					for(int i=0; i<count; i++) {
 						Identifiable identifiable = new AbstractIdentifiableImpl();
+//						LOGGER.debug("created Identifiable with id "+identifiable.getId());
 						usedIds.add(identifiable.getId());
 					}
 					return null;
@@ -52,6 +55,8 @@ public class AbstractIdentifiableTest {
 		ExecutorService executorService = Executors.newCachedThreadPool();
 		executorService.invokeAll(threads);
 		executorService.shutdown();
+//		if(!executorService.awaitTermination(5,
+//			TimeUnit.SECONDS)) {
 //			throw new UnsupportedOperationException("adjust the timeout for this unit test because it shouldn't take longer than 5 seconds");
 //		}
 	}

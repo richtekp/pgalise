@@ -17,7 +17,6 @@
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import org.graphstream.graph.Node;
 import org.slf4j.Logger;
@@ -31,6 +30,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 /**
  * Represents a car in the simulation
  * 
+ * @param <T> 
  * @author Mustafa
  * @version 1.0 (Nov 7, 2012)
  */
@@ -60,8 +60,8 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	 * @param carData
 	 *            Information of the car
 	 */
-	public DefaultMotorizedVehicle(UUID id, String name, T carData, TrafficGraphExtensions trafficGraphExtensions) {
-		super(id, name, trafficGraphExtensions);
+	public DefaultMotorizedVehicle(String name, T carData, TrafficGraphExtensions trafficGraphExtensions) {
+		super( name, trafficGraphExtensions);
 		this.setData(carData);
 	}
 
@@ -73,8 +73,8 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	 * @param carData
 	 *            Information of the car
 	 */
-	public DefaultMotorizedVehicle(UUID id, T carData, TrafficGraphExtensions trafficGraphExtensions) {
-		super(id, trafficGraphExtensions);
+	public DefaultMotorizedVehicle(T carData, TrafficGraphExtensions trafficGraphExtensions) {
+		super( trafficGraphExtensions);
 		if (carData == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("carData"));
 		}

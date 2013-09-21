@@ -36,7 +36,7 @@ public interface TrafficEventHandler<E extends TrafficEvent> extends EventHandle
 	 * @param server
 	 *            Corresponding {@link TrafficServer}
 	 */
-	void init(TrafficServerLocal server);
+	void init(TrafficServerLocal<E>  server);
 	
-	TrafficServer getResponsibleServer();
+	TrafficServerLocal<E>  getResponsibleServer();
 }

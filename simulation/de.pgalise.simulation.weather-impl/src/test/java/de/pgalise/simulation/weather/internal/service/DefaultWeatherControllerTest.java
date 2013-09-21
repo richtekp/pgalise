@@ -114,7 +114,7 @@ public class DefaultWeatherControllerTest {
 		Context ctx = CONTAINER.getContext();
 
 		/* Create simulation controller and init/start the simulation: */
-		ServiceDictionary<?> serviceDictionary = (ServiceDictionary) ctx.lookup(
+		ServiceDictionary serviceDictionary = (ServiceDictionary) ctx.lookup(
 			"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
 //			"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
 		);

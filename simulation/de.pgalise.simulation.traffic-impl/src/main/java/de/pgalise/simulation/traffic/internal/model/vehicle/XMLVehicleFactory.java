@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import java.awt.Color;
 import java.io.InputStream;
-import java.util.UUID;
 
 import org.w3c.dom.Document;
 
@@ -111,53 +110,53 @@ public class XMLVehicleFactory implements CarFactory, BusFactory, TruckFactory, 
 	}
 
 	@Override
-	public Vehicle<BicycleData> createBicycle(UUID id, String typeId, SensorHelper gpsSensor) {
-		return this.bicycleFactory.createBicycle(id, typeId, gpsSensor);
+	public Vehicle<BicycleData> createBicycle( String typeId, SensorHelper gpsSensor) {
+		return this.bicycleFactory.createBicycle( typeId, gpsSensor);
 	}
 
 	@Override
-	public Vehicle<BusData> createBus(UUID id, String typeId, SensorHelper gpsSensor, SensorHelper infraredSensor) {
-		return this.busFactory.createBus(id, typeId, gpsSensor, infraredSensor);
+	public Vehicle<BusData> createBus( String typeId, SensorHelper gpsSensor, SensorHelper infraredSensor) {
+		return this.busFactory.createBus( typeId, gpsSensor, infraredSensor);
 	}
 
 	@Override
-	public Vehicle<CarData> createCar(UUID id, String typeId, Color color, SensorHelper gpsSensor) {
-		return this.carFactory.createCar(id, typeId, color, gpsSensor);
+	public Vehicle<CarData> createCar( String typeId, Color color, SensorHelper gpsSensor) {
+		return this.carFactory.createCar( typeId, color, gpsSensor);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createMotorcycle(UUID id, String typeId, Color color, SensorHelper gpsSensor) {
-		return this.motorcycleFactory.createMotorcycle(id, typeId, color, gpsSensor);
+	public Vehicle<MotorcycleData> createMotorcycle( String typeId, Color color, SensorHelper gpsSensor) {
+		return this.motorcycleFactory.createMotorcycle( typeId, color, gpsSensor);
 	}
 
 	@Override
-	public Vehicle<BicycleData> createRandomBicycle(UUID id, SensorHelper gpsSensor) {
-		return this.bicycleFactory.createRandomBicycle(id, gpsSensor);
+	public Vehicle<BicycleData> createRandomBicycle( SensorHelper gpsSensor) {
+		return this.bicycleFactory.createRandomBicycle( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<BusData> createRandomBus(UUID id, SensorHelper gpsSensor, SensorHelper infraredSensor) {
-		return this.busFactory.createRandomBus(id, gpsSensor, infraredSensor);
+	public Vehicle<BusData> createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor) {
+		return this.busFactory.createRandomBus( gpsSensor, infraredSensor);
 	}
 
 	@Override
-	public Vehicle<CarData> createRandomCar(UUID id, SensorHelper gpsSensor) {
-		return this.carFactory.createRandomCar(id, gpsSensor);
+	public Vehicle<CarData> createRandomCar( SensorHelper gpsSensor) {
+		return this.carFactory.createRandomCar( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createRandomMotorcycle(UUID id, SensorHelper gpsSensor) {
-		return this.motorcycleFactory.createRandomMotorcycle(id, gpsSensor);
+	public Vehicle<MotorcycleData> createRandomMotorcycle( SensorHelper gpsSensor) {
+		return this.motorcycleFactory.createRandomMotorcycle( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<TruckData> createRandomTruck(UUID id, SensorHelper gpsSensor) {
-		return this.truckFactory.createRandomTruck(id, gpsSensor);
+	public Vehicle<TruckData> createRandomTruck( SensorHelper gpsSensor) {
+		return this.truckFactory.createRandomTruck( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<TruckData> createTruck(UUID id, String typeId, Color color, int trailercount, SensorHelper gpsSensor) {
-		return this.truckFactory.createTruck(id, typeId, color, trailercount, gpsSensor);
+	public Vehicle<TruckData> createTruck( String typeId, Color color, int trailercount, SensorHelper gpsSensor) {
+		return this.truckFactory.createTruck( typeId, color, trailercount, gpsSensor);
 	}
 
 	public BicycleFactory getBicycleFactory() {

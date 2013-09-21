@@ -22,7 +22,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
-import java.util.UUID;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -68,10 +67,10 @@ public class XMLCarFactoryTest {
 		CarFactory factory = new XMLCarFactory(random, XMLCarFactoryTest.class.getResourceAsStream(FILEPATH),
 				new DefaultTrafficGraphExtensions(random));
 
-		Vehicle<CarData> vehicle1 = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<CarData> vehicle1 = factory.createRandomCar( null);
 		Assert.assertNotNull(vehicle1);
 
-		Vehicle<CarData> vehicle2 = factory.createCar(UUID.randomUUID(), "car001", Color.GRAY, null);
+		Vehicle<CarData> vehicle2 = factory.createCar( "car001", Color.GRAY, null);
 		Assert.assertNotNull(vehicle2);
 		Assert.assertEquals(Color.GRAY, ((CarData) vehicle2.getData()).getColor());
 

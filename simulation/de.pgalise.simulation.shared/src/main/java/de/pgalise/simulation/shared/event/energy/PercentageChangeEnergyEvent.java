@@ -19,7 +19,6 @@ package de.pgalise.simulation.shared.event.energy;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Implementation of change energy consumption event with percentage.

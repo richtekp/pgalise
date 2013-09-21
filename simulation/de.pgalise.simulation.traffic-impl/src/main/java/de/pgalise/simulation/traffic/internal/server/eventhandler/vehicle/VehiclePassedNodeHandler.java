@@ -27,7 +27,6 @@ import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicl
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
@@ -39,7 +38,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author Andreas Rehfeldt
  * @author Lena
  */
-public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleEvent> {
+public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleEvent<?>> {
 	
 	@Override
 	public EventType getTargetEventType() {
@@ -47,7 +46,7 @@ public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<Vehicl
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent event) {
+	public void handleEvent(VehicleEvent<?> event) {
 		for (final Sensor sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
 			if (sensor instanceof StaticTrafficSensor) {
 				((StaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());

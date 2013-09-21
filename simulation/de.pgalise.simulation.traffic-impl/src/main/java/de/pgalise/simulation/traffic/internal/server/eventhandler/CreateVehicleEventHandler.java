@@ -21,13 +21,10 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -38,10 +35,11 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * timestamp are used here. The second vehicle drives from the given target node to the give start node. For this trip,
  * the end timestamp are used.
  * 
+ * @param <D> 
  * @author Andreas
  * @version 1.0
  */
-public class CreateVehicleEventHandler extends AbstractVehicleEventHandler<CreateVehiclesEvent> {
+public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVehicleEventHandler<CreateVehiclesEvent<D>> {
 
 	/**
 	 * Logger
@@ -68,7 +66,7 @@ public class CreateVehicleEventHandler extends AbstractVehicleEventHandler<Creat
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
-	public void handleEvent(CreateVehiclesEvent event) {
+	public void handleEvent(CreateVehiclesEvent<D> event) {
 		if(!event.getResponsibleServer().equals(this.getResponsibleServer())) {
 			return;
 		}

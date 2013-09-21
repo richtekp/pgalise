@@ -19,7 +19,6 @@ package de.pgalise.simulation.event;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;

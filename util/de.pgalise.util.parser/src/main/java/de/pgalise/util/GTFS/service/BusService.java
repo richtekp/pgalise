@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import de.pgalise.simulation.shared.traffic.BusRoute;
-import de.pgalise.simulation.shared.traffic.BusTrip;
+import de.pgalise.simulation.traffic.BusTrip;
 
 /**
  * 

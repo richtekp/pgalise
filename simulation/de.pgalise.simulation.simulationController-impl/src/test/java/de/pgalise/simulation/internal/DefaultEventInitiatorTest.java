@@ -42,7 +42,6 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
 import de.pgalise.simulation.traffic.TrafficController;
@@ -66,7 +65,7 @@ public class DefaultEventInitiatorTest {
 	private static WeatherControllerMock weatherController;
 	private static StaticSensorControllerMock staticSensorController;
 	private static TrafficControllerMock trafficController;
-	private static ServiceDictionary<?> serviceDictionary;
+	private static ServiceDictionary serviceDictionary;
 	private static OperationCenterControllerMock operationCenterController;
 	private static long startTimestamp, endTimestamp;
 	private static InitParameter initParameter;
@@ -233,7 +232,7 @@ public class DefaultEventInitiatorTest {
 	 * 
 	 * @author Timo
 	 */
-	private static class TrafficControllerMock implements TrafficController {
+	private static class TrafficControllerMock implements TrafficController<TrafficEvent> {
 		private int updateCounter;
 
 		TrafficControllerMock() {
@@ -552,16 +551,16 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void _setOperationCenterController(OperationCenterController operationCenterController) {
+		public void setOperationCenterController(OperationCenterController operationCenterController) {
 		}
 
 		@Override
-		public EventInitiator _getEventInitiator() {
+		public EventInitiator getEventInitiator() {
 			return null;
 		}
 
 		@Override
-		public void _setControlCenterController(ControlCenterController controlCenterController) {
+		public void setControlCenterController(ControlCenterController controlCenterController) {
 		}
 
 		@Override

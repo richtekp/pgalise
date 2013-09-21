@@ -40,7 +40,6 @@ import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
-import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
@@ -48,6 +47,7 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
@@ -77,15 +77,15 @@ public class DefaultSimulationControllerTest {
 	private static InitParameter initParameter;
 	private static StartParameter startParameter;
 //	private static EventInitiatorMock eventInitiator;
-	private static ServiceDictionary<Controller<?,?>> serviceDictionary;
+	private static ServiceDictionary serviceDictionary;
 	private static OperationCenterController operationCenterController;
 	private static ControlCenterController controlCenterController;
 	private static TrafficController trafficController;
-	private static StaticSensorController<?,?> staticSensorController;
+	private static StaticSensorController staticSensorController;
 	private static EnergyController energyController;
 	private static WeatherController weatherController;
 	private static EntityManager sensorPersistenceService;
-	private static ServerConfigurationReader<Controller<?,?>> serverConfigurationReader;
+	private static ServerConfigurationReader<Controller<?>> serverConfigurationReader;
 	private static CityInfrastructureData cityInfrastructureData;
 	private static ServerConfiguration serverConfiguration;
 
@@ -109,7 +109,7 @@ public class DefaultSimulationControllerTest {
 
 		/* Prepare service dictionary: */
 		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
-		Collection<Controller<?,?>> controllerCollection = new LinkedList<>();
+		Collection<Service> controllerCollection = new LinkedList<>();
 		controllerCollection.add(energyController);
 		controllerCollection.add(trafficController);
 		controllerCollection.add(staticSensorController);
@@ -126,10 +126,10 @@ public class DefaultSimulationControllerTest {
 
 		testClass._setEventInitiator(eventInitiator);
 		testClass._setServiceDictionary(serviceDictionary);
-		testClass._setOperationCenterController(operationCenterController);
+		testClass.setOperationCenterController(operationCenterController);
 		testClass._setSensorPersistenceService(sensorPersistenceService);
 		testClass._setServerConfigurationReader(serverConfigurationReader);
-		testClass._setControlCenterController(controlCenterController);
+		testClass.setControlCenterController(controlCenterController);
 
 		serverConfiguration = new ServerConfiguration();
 

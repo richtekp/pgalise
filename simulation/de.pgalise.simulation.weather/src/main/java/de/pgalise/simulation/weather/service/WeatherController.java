@@ -20,8 +20,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import javax.ejb.Local;
-import javax.ejb.Remote;
 
 /**
  * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the

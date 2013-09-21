@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -25,7 +23,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;

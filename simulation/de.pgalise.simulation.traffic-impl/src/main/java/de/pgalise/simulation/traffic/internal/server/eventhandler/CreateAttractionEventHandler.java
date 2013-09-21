@@ -19,13 +19,10 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -36,7 +33,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas
  * @version 1.0
  */
-public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandler<AttractionTrafficEvent> {
+public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandler<AttractionTrafficEvent<?>> {
 	/**
 	 * Logger
 	 */
@@ -59,7 +56,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 	}
 
 	@Override
-	public void handleEvent(AttractionTrafficEvent event) {
+	public void handleEvent(AttractionTrafficEvent<?> event) {
 		log.info("Processing ATTRACTION_TRAFFIC_EVENT: Vehicles=" + event.getCreateRandomVehicleDataList().size()
 				+ " ; Target=" + event.getNodeID());
 

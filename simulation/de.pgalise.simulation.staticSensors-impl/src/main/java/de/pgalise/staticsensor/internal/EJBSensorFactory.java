@@ -67,7 +67,7 @@ public class EJBSensorFactory implements SensorFactory {
 	 * Service dictionary
 	 */
 	@EJB
-	private ServiceDictionary<?> dic;
+	private ServiceDictionary dic;
 
 	/**
 	 * Server config reader

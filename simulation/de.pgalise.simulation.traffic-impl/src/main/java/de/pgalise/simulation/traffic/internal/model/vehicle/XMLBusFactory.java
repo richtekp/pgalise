@@ -19,7 +19,6 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -77,19 +76,19 @@ public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFac
 	}
 
 	@Override
-	public Vehicle<BusData> createRandomBus(UUID id, SensorHelper helper, SensorHelper infraredSensor) {
+	public Vehicle<BusData> createRandomBus( SensorHelper helper, SensorHelper infraredSensor) {
 		BusData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
 		data.setInfraredSensorHelper(infraredSensor);
-		return new DefaultMotorizedVehicle<>(id, "bus" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>( "bus" + getNextCounter(), data, this.trafficGraphExtensions);
 	}
 
 	@Override
-	public Vehicle<BusData> createBus(UUID id, String typeId, SensorHelper helper, SensorHelper infraredSensor) {
+	public Vehicle<BusData> createBus( String typeId, SensorHelper helper, SensorHelper infraredSensor) {
 		BusData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
 		data.setInfraredSensorHelper(infraredSensor);
-		return new DefaultMotorizedVehicle<>(id, "bus" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>( "bus" + getNextCounter(), data, this.trafficGraphExtensions);
 	}
 
 	@Override

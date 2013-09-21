@@ -17,34 +17,31 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.traffic.BusTrip;
+import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.traffic.BusTrip;
+import de.pgalise.simulation.traffic.internal.model.vehicle.RandomBusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.GTFS.service.DefaultBusService;
+import java.util.Date;
 
 /**
  * Create busses
@@ -53,7 +50,7 @@ import de.pgalise.util.GTFS.service.DefaultBusService;
  * @author Andreas
  * @version 1.0
  */
-public class CreateBussesEventHandler extends AbstractTrafficEventHandler<TrafficEvent> {
+public class CreateBussesEventHandler extends AbstractTrafficEventHandler<CreateBussesEvent> {
 
 	/**
 	 * Log
@@ -100,7 +97,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Traffi
 			if (trip.getBusStops().size() > 0) {
 				Path path = this.server.getBusRoute(trip.getBusStops());
 				if (path.getNodeCount() > 1) {
-					Vehicle<BusData> b = this.server.getBusFactory().createRandomBus(trip.getId(), trip.getGpsSensor(),
+					Vehicle<BusData> b = this.server.getBusFactory().createRandomBus(trip.getGpsSensor(),
 							trip.getInfraredSensor());
 					b.getData().setBusStopOrder(trip.getBusStops());
 					b.setName(trip.getRouteShortName() + " " + trip.getRouteLongName());
@@ -122,7 +119,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Traffi
 					// it.remove(); // avoids a ConcurrentModificationException
 					// }
 
-					Time arrivalTime = trip.getBusStopStopTimes().get(trip.getBusStops().get(0)).getArrivalTime();
+					Date arrivalTime = trip.getBusStopStopTimes().get(trip.getBusStops().get(0)).getArrivalTime();
 
 					cal.setTimeInMillis(this.lastUpdate);
 
@@ -141,7 +138,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Traffi
 							+ cal.get(Calendar.YEAR));
 
 					try {
-						Item item = new Item(b, cal.getTimeInMillis(), this.server.getUpdateIntervall());
+						ScheduleItem item = new ScheduleItem(b, cal.getTimeInMillis(), this.server.getUpdateIntervall());
 						// item.setLastUpdate(cal.getTimeInMillis() - this.server.getUpdateIntervall());
 						this.server.getScheduler().scheduleItem(item);
 					} catch (IllegalAccessException e) {
@@ -165,18 +162,27 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Traffi
 	}
 
 	@Override
-	public void handleEvent(TrafficEvent event) {
+	public void handleEvent(CreateBussesEvent cbe) {
 		log.info("Processing CREATE_BUSSES_EVENT");
-		CreateBussesEvent cbe = (CreateBussesEvent) event;
-		this.lastUpdate = cbe.getTime();
+		this.lastUpdate = cbe.getSimulationTime();
 
-		List<UUID> busIDList = new ArrayList<>();
+		List<Vehicle<BusData>> buses = new ArrayList<>();
 		List<SensorHelper> gpsSensors = new ArrayList<>();
 		List<SensorHelper> infraredSensors = new ArrayList<>();
 
 		// Create busses
 		for (CreateRandomVehicleData vehicleData : cbe.getCreateRandomVehicleDataList()) {
-			busIDList.add(vehicleData.getVehicleInformation().getVehicleID());
+			SensorHelper infraredSensor = null, gpsSensor = null;
+			for(SensorHelper sensorHelper : vehicleData.getSensorHelpers()) {
+				if(sensorHelper.getSensorType().equals(SensorType.GPS_BUS)) {
+					gpsSensor= sensorHelper;
+				}else if(sensorHelper.getSensorType().equals(SensorType.INFRARED)) {
+					infraredSensor = sensorHelper;
+				}
+			}
+			Vehicle<BusData> bus = new RandomBusFactory().createRandomBus(gpsSensor,
+				infraredSensor);
+			buses.add(bus);
 
 			// Save all sensors
 			for (SensorHelper sensorHelper : vehicleData.getSensorHelpers()) {
@@ -200,7 +206,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Traffi
 		BusService bs = new DefaultBusService();
 		try {
 			for (String busRoute : cbe.getRouteIds()) {
-				allTrips.addAll(bs.getBusLineData(busRoute, cbe.getTime()));
+				allTrips.addAll(bs.getBusLineData(busRoute, cbe.getSimulationTime()));
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -210,19 +216,19 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Traffi
 		List<BusTrip> trips = new ArrayList<>();
 		for (int i = 0; i < allTrips.size(); i++) {
 			BusTrip t = allTrips.get(i);
-			t.setId(busIDList.get(i));
+			t.setBus(buses.get(i));
 			t.setGpsSensor(gpsSensors.get(i));
 			t.setInfraredSensor(infraredSensors.get(i));
 
 			tempCal.setTime(t.getBusStopStopTimes().get(t.getBusStops().get(0)).getArrivalTime());
 
-			cal.setTimeInMillis(cbe.getTime());
+			cal.setTimeInMillis(cbe.getSimulationTime());
 			cal.set(Calendar.HOUR_OF_DAY, tempCal.get(Calendar.HOUR_OF_DAY));
 			cal.set(Calendar.MINUTE, tempCal.get(Calendar.MINUTE));
 			cal.set(Calendar.SECOND, tempCal.get(Calendar.SECOND));
 			cal.set(Calendar.MILLISECOND, 0);
 
-			if (cal.getTimeInMillis() > cbe.getTime()) {
+			if (cal.getTimeInMillis() > cbe.getSimulationTime()) {
 				trips.add(t);
 			}
 		}

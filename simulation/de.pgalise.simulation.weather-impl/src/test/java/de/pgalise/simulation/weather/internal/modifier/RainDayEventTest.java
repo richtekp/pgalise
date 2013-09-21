@@ -16,22 +16,17 @@
  
 package de.pgalise.simulation.weather.internal.modifier;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataNormal;
@@ -43,23 +38,14 @@ import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import java.sql.Date;
-import java.sql.Time;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
-import javax.measure.Measure;
-import javax.measure.unit.SI;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.After;
 import org.junit.BeforeClass;
 
 /**

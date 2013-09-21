@@ -18,7 +18,6 @@ package de.pgalise.simulation.service;
 
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.event.EventType;
 
 /**
  * Interface for every updateable simulation component.

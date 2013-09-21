@@ -21,7 +21,6 @@ import java.util.Map;
 import org.graphstream.graph.Graph;
 
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -34,31 +33,26 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
  * This type of events is raised whenever something happens that concerns a single vehicle,
  * e.g. a vehicle has passed a node.
  * 
+ * @param <D> 
  * @author mustafa
  *
  */
-public abstract class AbstractVehicleEvent extends AbstractTrafficEvent implements VehicleEvent {
-	private final long simulationTime;
-	private final long elapsedTime;
+public abstract class AbstractVehicleEvent<D extends VehicleData> extends AbstractTrafficEvent implements VehicleEvent<D> {
+	private final Vehicle<D> vehicle;
 
-	public AbstractVehicleEvent(TrafficServerLocal server, long simulationTime, long elapsedTime) {
-		super(server);
-		this.simulationTime = simulationTime;
-		this.elapsedTime = elapsedTime;
+	public AbstractVehicleEvent(TrafficServerLocal<?>  server, long simulationTime, long elapsedTime, Vehicle<D> vehicles) {
+		super(server, simulationTime,
+			elapsedTime);
+		this.vehicle = vehicles;
 	}
 
 	@Override
-	public long getSimulationTime() {
-		return simulationTime;
+	public Vehicle<D> getVehicle() {
+		return vehicle;
 	}
 
 	@Override
-	public long getElapsedTime() {
-		return elapsedTime;
-	}
-
-	@Override
-	public ServiceDictionary<?> getServiceDictionary() {
+	public ServiceDictionary getServiceDictionary() {
 		return getResponsibleServer().getServiceDictionary();
 	}
 

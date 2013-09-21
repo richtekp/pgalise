@@ -41,12 +41,12 @@ import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
@@ -100,7 +100,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 	private ControlCenterController controlCenterController;
 	
 	@EJB
-	private ServiceDictionary<Controller<?>> serviceDictionary;
+	private ServiceDictionary serviceDictionary;
 
 	@EJB
 	private ServerConfigurationReader<Controller<?>> serverConfigReader;
@@ -137,7 +137,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
 
-		for (Controller<?> c : this.serviceDictionary.getControllers()) {
+		for (Service c : this.serviceDictionary.getControllers()) {
 			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
 				try {
 					((SensorManagerController) c).createSensor(sensor);
@@ -149,8 +149,10 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			}
 		}
 		
-		for(Controller<?> c : this.serviceDictionary.getControllers()) {
-			c.reset();
+		for(Service c : this.serviceDictionary.getControllers()) {
+			if(c instanceof Controller) {
+				((Controller)c).reset();
+			}
 		}
 		
 		throw new NoValidControllerForSensorException(String.format(
@@ -164,7 +166,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
 
-		for (Controller<?> c : this.serviceDictionary.getControllers()) {
+		for (Service c : this.serviceDictionary.getControllers()) {
 			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
 				try {
 					((SensorManagerController) c).deleteSensor(sensor);
@@ -199,7 +201,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
 
-		for (Controller<?> c : this.serviceDictionary.getControllers()) {
+		for (Service c : this.serviceDictionary.getControllers()) {
 			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
 				try {
 					return ((SensorManagerController) c).statusOfSensor(sensor);
@@ -260,12 +262,14 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			throw new InitializationException("An error occured during the initialization of the front controllers");
 		}
 
-		Collection<Controller<?>> controllers = this.serviceDictionary.getControllers();
+		Collection<Service> controllers = this.serviceDictionary.getControllers();
 		log.debug(controllers.size() +" Controller referenced by the ServiceDictionary");
 		// init controller
-		for (Controller<?> c : controllers) {
+		for (Service c : controllers) {
 			if (!(c instanceof SimulationController)) {
-				c.init(param);
+				if(c instanceof Controller)  {
+					((Controller)c).init(param);
+				}
 			}
 		}
 
@@ -279,9 +283,11 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 		this.frontControllerList.clear();
 		
 		// reset controller
-		for (Controller<?> c : this.serviceDictionary.getControllers()) {
+		for (Service c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
-				c.reset();
+				if(c instanceof Controller)  {
+					((Controller)c).reset();
+				}
 			}
 		}
 		
@@ -304,9 +310,11 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 		this.startParameter = param;
 
 		// start the controllers
-		for (Controller<?> c : this.serviceDictionary.getControllers()) {
+		for (Service c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
-				c.start(param);
+				if(c instanceof Controller)  {
+					((Controller)c).start(param);
+				}
 			}
 
 		}
@@ -340,9 +348,11 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 		this.controlCenterController.stop();
 
 		// stop all controllers (without this controller type)
-		for (Controller<?> c : this.serviceDictionary.getControllers()) {
+		for (Service c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
-				c.stop();
+				if(c instanceof Controller)  {
+					((Controller)c).stop();
+				}
 			}
 		}
 		
@@ -356,9 +366,11 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 	@Override
 	protected void onResume() {	
 		// start the controllers
-		for (Controller<?> c : this.serviceDictionary.getControllers()) {
+		for (Service c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
-				c.start(this.startParameter);
+				if(c instanceof Controller) {
+					((Controller)c).start(this.startParameter);
+				}
 			}
 		}
 		
@@ -392,12 +404,12 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 	}
 
 	@Override
-	public void _setOperationCenterController(OperationCenterController operationCenterController) {
+	public void setOperationCenterController(OperationCenterController operationCenterController) {
 		this.operationCenterController = operationCenterController;
 	}
 
 	@Override
-	public EventInitiator _getEventInitiator() {
+	public EventInitiator getEventInitiator() {
 		return this.eventInitiator;
 	}
 
@@ -420,7 +432,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 	 * 
 	 * @param serviceDictionary
 	 */
-	public void _setServiceDictionary(ServiceDictionary<Controller<?>> serviceDictionary) {
+	public void _setServiceDictionary(ServiceDictionary serviceDictionary) {
 		this.serviceDictionary = serviceDictionary;
 	}
 
@@ -452,7 +464,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 	}
 
 	@Override
-	public void _setControlCenterController(
+	public void setControlCenterController(
 			ControlCenterController controlCenterController) {
 		this.controlCenterController = controlCenterController;
 	}

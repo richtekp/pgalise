@@ -45,7 +45,7 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.service.ServiceDictionary")
-public class DefaultServiceDictionary implements ServiceDictionary<Service> {
+public class DefaultServiceDictionary implements ServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultServiceDictionary.class);
 
 	private Map<String, Service> services;

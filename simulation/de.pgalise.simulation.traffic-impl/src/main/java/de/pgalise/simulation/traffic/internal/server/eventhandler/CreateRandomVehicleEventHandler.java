@@ -21,13 +21,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
@@ -42,7 +39,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Mustafa
  * @version 1.0
  */
-public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent> extends AbstractVehicleEventHandler<E> {
+public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent<?>> extends AbstractVehicleEventHandler<E> {
 
 	/**
 	 * Logger
@@ -110,12 +107,12 @@ public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent
 	 */
 	private static class CreateThread extends Thread {
 
-		private final CreateRandomVehicleEventHandler eHandler;
+		private final CreateRandomVehicleEventHandler<?> eHandler;
 		private final List<CreateRandomVehicleData> vehicleList;
 		private final int startIndex;
 		private final int endIndex;
 
-		private CreateThread(final CreateRandomVehicleEventHandler eHandler,
+		private CreateThread(final CreateRandomVehicleEventHandler<?> eHandler,
 				List<CreateRandomVehicleData> vehicleList, int startIndex, int endIndex) {
 			this.eHandler = eHandler;
 			this.vehicleList = vehicleList;

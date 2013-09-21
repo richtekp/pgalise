@@ -34,7 +34,7 @@ import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.VehicleAmountManager;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
@@ -302,7 +302,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				Item item = new Item(v, startTime, ts.getUpdateIntervall());
+				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -310,8 +310,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of bicycles: -" + changingAmount);
-			List<Item> bicycles = new ArrayList<>();
-			for (Item item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> bicycles = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(BicycleData.class)) {
 					bicycles.add(item);
 				}
@@ -350,7 +350,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				Item item = new Item(v, startTime, ts.getUpdateIntervall());
+				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -358,8 +358,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of cars: -" + changingAmount);
-			List<Item> cars = new ArrayList<>();
-			for (Item item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> cars = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(CarData.class)) {
 					cars.add(item);
 				}
@@ -397,7 +397,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				Item item = new Item(v, startTime, ts.getUpdateIntervall());
+				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -405,8 +405,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of motorcycles: -" + changingAmount);
-			List<Item> motorcycles = new ArrayList<>();
-			for (Item item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> motorcycles = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(MotorcycleData.class)) {
 					motorcycles.add(item);
 				}
@@ -443,7 +443,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				Item item = new Item(v, startTime, ts.getUpdateIntervall());
+				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -451,8 +451,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of trucks: -" + changingAmount);
-			List<Item> trucks = new ArrayList<>();
-			for (Item item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> trucks = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(TruckData.class)) {
 					trucks.add(item);
 				}

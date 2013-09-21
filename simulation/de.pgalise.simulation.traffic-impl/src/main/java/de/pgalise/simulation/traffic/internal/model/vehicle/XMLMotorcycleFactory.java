@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -69,17 +68,17 @@ public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> imp
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createRandomMotorcycle(UUID id, SensorHelper helper) {
+	public Vehicle<MotorcycleData> createRandomMotorcycle( SensorHelper helper) {
 		MotorcycleData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>(id, updateMotorcycleData(data, Color.BLACK), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>( updateMotorcycleData(data, Color.BLACK), trafficGraphExtensions);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createMotorcycle(UUID id, String typeId, Color color, SensorHelper helper) {
+	public Vehicle<MotorcycleData> createMotorcycle( String typeId, Color color, SensorHelper helper) {
 		MotorcycleData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>(id, updateMotorcycleData(data, color), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>( updateMotorcycleData(data, color), trafficGraphExtensions);
 	}
 
 	/**

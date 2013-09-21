@@ -28,21 +28,17 @@ import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 
 /**
  * The event handler removes vehicles with the given List of UUIDs from the server. The class are used by the
@@ -220,8 +216,8 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 			this.removeEdgesFromGraph(edges);
 
 			// New Path for all vehicles with this edge
-			List<Item> vehicleItems = this.server.getScheduler().getExpiredItems(e.getRoadBarrierEndTimestamp());
-			for (Item item : vehicleItems) {
+			List<ScheduleItem> vehicleItems = this.server.getScheduler().getExpiredItems(e.getRoadBarrierEndTimestamp());
+			for (ScheduleItem item : vehicleItems) {
 				Vehicle<? extends VehicleData> vehicle = item.getVehicle();
 				this.calculateNewWay(vehicle, blockedNode);
 			}

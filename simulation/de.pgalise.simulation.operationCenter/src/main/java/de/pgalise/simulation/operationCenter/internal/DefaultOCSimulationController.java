@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +47,7 @@ import de.pgalise.simulation.operationCenter.internal.message.SimulationStoppedM
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationInitParameter;
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationStartParameter;
 import de.pgalise.simulation.operationCenter.internal.model.SensorHelperTypeWrapper;
+import de.pgalise.simulation.operationCenter.internal.model.VehicleData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
@@ -56,21 +56,18 @@ import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStr
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.exception.SensorException;
+import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
-import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
@@ -113,7 +110,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 	/**
 	 * Map<UUID = vehicle id, 
 	 */
-	private Map<UUID, VehicleData> vehicleDataMap;
+	private Map<Vehicle<?>, VehicleData> vehicleDataMap;
 
 	/**
 	 * Contructor
@@ -407,7 +404,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 		for(SensorHelper sensor : data.getSensorHelpers()) {
 			sensors.add(new SensorHelperTypeWrapper(sensor));
 		}
-		return new VehicleData(sensors, data.getVehicleInformation().getVehicleID(), 
+		return new VehicleData(sensors,  null,
 				data.getVehicleInformation().getVehicleType().getVehicleTypeId(), 
 				data.getVehicleInformation().getVehicleModel().getVehicleModelId());
 	}
@@ -417,28 +414,30 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 		/* Add new events here: */
 		for (Event event : simulationEventList.getEventList()) {
 			try {
-				if (event.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
+				if(event.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
 					log.warn("Create new vehicles");
-					for (CreateRandomVehicleData data : ((CreateVehiclesEvent) event)
+					for (CreateRandomVehicleData data : ((CreateVehiclesEvent<?>) event)
 							.getVehicles()) {
 						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-					break;
-				}else if(event.getType().equals( TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
+				}
+
+				else if(event.getType().equals(TrafficEventTypeEnum. CREATE_RANDOM_VEHICLES_EVENT)) {
 					log.warn("Create new random vehicles: " +((CreateRandomVehiclesEvent) event)
 							.getCreateRandomVehicleDataList().size());
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					for (CreateRandomVehicleData data : ((CreateRandomVehiclesEvent) event)
+					for (CreateRandomVehicleData data : ((CreateRandomVehiclesEvent<?>) event)
 							.getCreateRandomVehicleDataList()) {
 						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-					break;
-				}else if(event.getType().equals( TrafficEventTypeEnum.CREATE_BUSSES_EVENT)) {
+				}
+
+				else if(event.getType().equals(TrafficEventTypeEnum. CREATE_BUSSES_EVENT)) {
 					log.warn("Create new random vehicles: " +((CreateBussesEvent) event)
 							.getCreateRandomVehicleDataList().size());
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
@@ -448,27 +447,22 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-					break;
 				}
-				else if(event.getType().equals( TrafficEventTypeEnum. DELETE_VEHICLES_EVENT)) {
+				else if(event.getType().equals(TrafficEventTypeEnum. DELETE_VEHICLES_EVENT)) {
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					for(Vehicle<?> vehicleID : ((DeleteVehiclesEvent)event).getDeleteVehicles()) {
-						vehicleDataCollection.add(this.vehicleDataMap.get(vehicleID));
-					}
+					vehicleDataCollection.add(this.vehicleDataMap.get(((DeleteVehiclesEvent<?>)event).getVehicle()));
 					this.removeVehicleSensors(vehicleDataCollection);
-					break;	
 				}
-				else if(event.getType().equals( TrafficEventTypeEnum. ATTRACTION_TRAFFIC_EVENT)) {
+				else if(event.getType().equals(TrafficEventTypeEnum. ATTRACTION_TRAFFIC_EVENT)) {
 					log.warn("Create new random vehicles: " +((AttractionTrafficEvent) event)
 							.getCreateRandomVehicleDataList().size());
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					for (CreateRandomVehicleData data : ((AttractionTrafficEvent) event)
+					for (CreateRandomVehicleData data : ((AttractionTrafficEvent<?>) event)
 							.getCreateRandomVehicleDataList()) {
 						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-					break;
 				}
 				else {
 					log.warn(event.getType().toString());

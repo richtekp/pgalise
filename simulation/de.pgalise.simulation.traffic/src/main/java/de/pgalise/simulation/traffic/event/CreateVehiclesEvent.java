@@ -18,10 +18,6 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
-import java.util.UUID;
-
-import de.pgalise.simulation.shared.event.EventTypeEnum;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
@@ -29,10 +25,11 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 /**
  * Creates vehicles with given path.
  * 
+ * @param <D> 
  * @author Timo
  * @author Andreas Rehfeldt
  */
-public class CreateVehiclesEvent extends AbstractVehicleEvent {
+public class CreateVehiclesEvent<D extends VehicleData> extends AbstractVehicleEvent<D> {
 
 	/**
 	 * Serial
@@ -45,14 +42,13 @@ public class CreateVehiclesEvent extends AbstractVehicleEvent {
 	private List<CreateRandomVehicleData> vehicles;
 
 	public CreateVehiclesEvent(
-		List<CreateRandomVehicleData> vehicles,
 		TrafficServerLocal server,
 		long simulationTime,
-		long elapsedTime) {
+		long elapsedTime,
+		List<CreateRandomVehicleData> vehicles) {
 		super(
-			server,
-			simulationTime,
-			elapsedTime);
+			server, simulationTime,
+			elapsedTime,null);
 		this.vehicles = vehicles;
 	}
 

@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import java.util.UUID;
 
 import org.graphstream.graph.Node;
 import org.slf4j.Logger;
@@ -55,8 +54,8 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<
 	 * @param trafficGraphExtensions
 	 *            TrafficGraphExtensions
 	 */
-	public DefaultBicycle(UUID id, String name, BicycleData data, TrafficGraphExtensions trafficGraphExtensions) {
-		super(id, name, data, trafficGraphExtensions);
+	public DefaultBicycle( String name, BicycleData data, TrafficGraphExtensions trafficGraphExtensions) {
+		super( name, data, trafficGraphExtensions);
 		this.setVelocity(15d / 360); // 15km/h // (15*1000/3600)/100 // durch 100 da 1vu 100m sind
 	}
 

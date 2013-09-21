@@ -16,9 +16,9 @@
  
 package de.pgalise.simulation.operationCenter.internal.message;
 
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Collection;
 
+import de.pgalise.simulation.operationCenter.internal.model.VehicleData;
 /**
  * Message to remove vehicles.
  * @author Timo

@@ -24,7 +24,6 @@ import org.graphstream.graph.Path;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
@@ -32,9 +31,10 @@ import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
@@ -47,7 +47,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author marcus
  * @author Lena
  */
-public class VehicleReachedTargetHandler extends AbstractVehicleEventHandler<VehicleEvent> {
+public class VehicleReachedTargetHandler<D extends VehicleData> extends AbstractVehicleEventHandler<VehicleEvent<D>> {
 
 	@Override
 	public EventType getTargetEventType() {
@@ -55,7 +55,7 @@ public class VehicleReachedTargetHandler extends AbstractVehicleEventHandler<Veh
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent event) {
+	public void handleEvent(VehicleEvent<D> event) {
 		for (final Sensor sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
 			if (sensor instanceof StaticTrafficSensor) {
 				((StaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());
@@ -80,7 +80,7 @@ public class VehicleReachedTargetHandler extends AbstractVehicleEventHandler<Veh
 		}
 
 		if (event.getEventForVehicleMap().containsKey(event.getVehicle().getId())) {
-			AbstractTrafficEvent te = event.getEventForVehicleMap().get(event.getVehicle().getId());
+			TrafficEvent te = event.getEventForVehicleMap().get(event.getVehicle().getId());
 			if (te instanceof AttractionTrafficEvent) {
 				// logger.debug("Vehicle " + event.getVehicle().getName() + " reached attraction");
 				AttractionTrafficEvent e = ((AttractionTrafficEvent) te);
@@ -112,7 +112,7 @@ public class VehicleReachedTargetHandler extends AbstractVehicleEventHandler<Veh
 		}
 	}
 
-	private void modifyVehicleForWayBack(VehicleEvent event, TrafficTrip trip) {
+	private void modifyVehicleForWayBack(VehicleEvent<D> event, TrafficTrip trip) {
 		Path path = event.getResponsibleServer().getShortestPath(event.getResponsibleServer().getGraph().getNode(trip.getStartNode()),
 				event.getResponsibleServer().getGraph().getNode(trip.getTargetNode()));
 		if (path.getNodeCount() > 1) {
@@ -123,10 +123,10 @@ public class VehicleReachedTargetHandler extends AbstractVehicleEventHandler<Veh
 		}
 	}
 
-	private void scheduleVehicle(Vehicle vehicle, long startTime, VehicleEvent event) {
+	private void scheduleVehicle(Vehicle<D> vehicle, long startTime, VehicleEvent<D> event) {
 		if (vehicle != null) {
 			// try {
-			Item item = new Item(vehicle, startTime, event.getResponsibleServer().getUpdateIntervall());
+			ScheduleItem item = new ScheduleItem(vehicle, startTime, event.getResponsibleServer().getUpdateIntervall());
 			event.getResponsibleServer().getItemsToScheduleAfterAttractionReached().add(item);
 			// event.getResponsibleServer().getScheduler().scheduleItem(item);
 			// } catch (IllegalAccessException e1) {

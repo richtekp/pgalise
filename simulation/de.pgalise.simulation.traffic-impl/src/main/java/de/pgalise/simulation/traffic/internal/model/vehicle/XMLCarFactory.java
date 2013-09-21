@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -43,17 +42,17 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFactory {
 
 	@Override
-	public Vehicle<CarData> createCar(UUID id, String typeId, Color color, SensorHelper helper) {
+	public Vehicle<CarData> createCar( String typeId, Color color, SensorHelper helper) {
 		CarData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>(id, updateCarData(data, color), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>( updateCarData(data, color), trafficGraphExtensions);
 	}
 
 	@Override
-	public Vehicle<CarData> createRandomCar(UUID id, SensorHelper helper) {
+	public Vehicle<CarData> createRandomCar( SensorHelper helper) {
 		CarData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>(id, updateCarData(data, Color.BLACK), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>( updateCarData(data, Color.BLACK), trafficGraphExtensions);
 	}
 
 	/**

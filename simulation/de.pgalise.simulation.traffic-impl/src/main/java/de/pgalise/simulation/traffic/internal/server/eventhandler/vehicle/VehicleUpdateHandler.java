@@ -20,7 +20,6 @@ import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.jam.DefaultNaSchModel;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
 
 /**
@@ -28,7 +27,7 @@ import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
  * 
  * @author Mustafa
  */
-public class VehicleUpdateHandler extends AbstractVehicleEventHandler<VehicleEvent> {
+public class VehicleUpdateHandler extends AbstractVehicleEventHandler<VehicleEvent<?>> {
 
 	/**
 	 * Traffic jam model
@@ -47,7 +46,7 @@ public class VehicleUpdateHandler extends AbstractVehicleEventHandler<VehicleEve
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent event) {
+	public void handleEvent(VehicleEvent<?> event) {
 		// // ansonsten gibt es komische werte bei der berechnung der neuen position des autos
 		// if(event.getElapsedTime()<=0) {
 		// log.warn("No update processed on vehicle "+event.getVehicle().getName()+", elapsedTime=0");

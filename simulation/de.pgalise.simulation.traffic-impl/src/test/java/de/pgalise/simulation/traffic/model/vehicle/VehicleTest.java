@@ -29,7 +29,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import org.easymock.EasyMock;
 import org.graphstream.algorithm.Dijkstra;
@@ -220,7 +219,7 @@ public class VehicleTest {
 		 */
 
 		// Creating the cars
-		Vehicle<? extends VehicleData> carA = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carA = factory.createRandomCar( null);
 		carA.setTrafficGraphExtensions(ee);
 		carA.setName("carA");
 		carA.setPath(shortestPath);
@@ -230,7 +229,7 @@ public class VehicleTest {
 		Collections.reverse(revPath.getNodePath());
 		Collections.reverse(revPath.getEdgePath());
 
-		Vehicle<? extends VehicleData> carB = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carB = factory.createRandomCar( null);
 		carB.setTrafficGraphExtensions(ee);
 		carB.setName("carB");
 		carB.setPath(revPath);
@@ -323,7 +322,7 @@ public class VehicleTest {
 	 */
 	private Vehicle<CarData> createCar() {
 		CarData data = new CarData(Color.BLACK, 0, 0, 0, 0, 0, 0, 0, 0.0d, 0, 0, "description", new SensorHelper(), VehicleTypeEnum.CAR);
-		Vehicle<CarData> car = new DefaultMotorizedVehicle<>(UUID.randomUUID(), data, ee);
+		Vehicle<CarData> car = new DefaultMotorizedVehicle<>( data, ee);
 		return car;
 	}
 

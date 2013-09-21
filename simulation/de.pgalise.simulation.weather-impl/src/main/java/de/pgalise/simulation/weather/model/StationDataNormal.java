@@ -17,11 +17,8 @@
 package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.persistence.Identifiable;
-import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.HashSet;
-import java.util.Set;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.persistence.Entity;

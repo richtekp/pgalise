@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -92,7 +91,7 @@ public class TrafficCountInterfererTest {
 		// Test car
 		TruckFactory factory = new XMLTruckFactory(service, XMLTruckFactoryTest.class.getResourceAsStream(FILEPATH),
 				new DefaultTrafficGraphExtensions(service));
-		testVehicle = factory.createRandomTruck(UUID.randomUUID(), null);
+		testVehicle = factory.createRandomTruck( null);
 		testVehicle.setVelocity(3);
 	}
 

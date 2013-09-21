@@ -27,13 +27,10 @@ import org.easymock.EasyMock;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.internal.event.AbstractEventHandler;
-import de.pgalise.simulation.service.internal.event.AbstractEventHandler;
 import de.pgalise.simulation.service.internal.event.AbstractEventHandlerManager;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.event.EventTypeEnum;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * Tests the {@link DefaultSimulationEventHandlerManager}
@@ -45,12 +42,12 @@ public class AbstractEventHandlerManagerTest {
 	@Test
 	public void initializationTest() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
 			IOException {
-		AbstractEventHandlerManager manager = new AbstractEventHandlerManagerImpl();
+		AbstractEventHandlerManager<EventHandler<Event>,Event> manager = new AbstractEventHandlerManagerImpl();
 		String handlerName = DummyEventHandler.class.getName();
 		InputStream in = new ByteArrayInputStream(handlerName.getBytes());
 		manager.init(in, DummyEventHandler.class);
 
-		EventHandler handler = manager.getEventHandler(EventTypeEnum.CHANGE_WEATHER_EVENT);
+		EventHandler<Event> handler = manager.getEventHandler(EventTypeEnum.CHANGE_WEATHER_EVENT);
 		assertNotNull(handler);
 		assertTrue(handler instanceof DummyEventHandler);
 	}
@@ -63,12 +60,12 @@ public class AbstractEventHandlerManagerTest {
 		EasyMock.expect(event.getType()).andReturn(EventTypeEnum.CHANGE_WEATHER_EVENT);
 		EasyMock.replay(event);
 
-		AbstractEventHandler handler = EasyMock.createMock(AbstractEventHandler.class);
+		AbstractEventHandler<Event> handler = EasyMock.createMock(AbstractEventHandler.class);
 		EasyMock.expect(handler.getTargetEventType()).andStubReturn(EventTypeEnum.CHANGE_WEATHER_EVENT);
 		handler.handleEvent(event);
 		EasyMock.replay(handler);
 
-		AbstractEventHandlerManager manager = new AbstractEventHandlerManagerImpl();
+		AbstractEventHandlerManager<EventHandler<Event>,Event> manager = new AbstractEventHandlerManagerImpl();
 		manager.addHandler(handler);
 		manager.handleEvent(event);
 
@@ -81,10 +78,10 @@ public class AbstractEventHandlerManagerTest {
 	 * @author Andreas Rehfeldt
 	 * @version 1.0 (Mar 20, 2013)
 	 */
-	private static class DummyEventHandler extends AbstractEventHandler {
+	private static class DummyEventHandler extends AbstractEventHandler<Event> {
 
-		DummyEventHandler(EventTypeEnum targetEventType) {
-			super(targetEventType);
+		DummyEventHandler() {
+			super(EventTypeEnum.CHANGE_WEATHER_EVENT);
 		}
 
 
@@ -99,15 +96,12 @@ public class AbstractEventHandlerManagerTest {
 		}
 	}
 	
-	private class AbstractEventHandlerManagerImpl extends AbstractEventHandlerManager {
+	private class AbstractEventHandlerManagerImpl extends AbstractEventHandlerManager<EventHandler<Event>,Event> {
 
 		@Override
-		public boolean responsibleFor(EventHandler handler,
+		public boolean responsibleFor(EventHandler<Event> handler,
 			Event event) {
 			return true;
 		}
-
-		
-		
 	}
 }

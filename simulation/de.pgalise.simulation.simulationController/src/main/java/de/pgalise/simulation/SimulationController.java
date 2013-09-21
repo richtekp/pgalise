@@ -20,7 +20,6 @@ import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.service.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
@@ -51,17 +50,17 @@ public interface SimulationController extends SensorManagerController<Event> {
 	 * Use this only for testing.
 	 * @param operationCenterController
 	 */
-	public void _setOperationCenterController(OperationCenterController operationCenterController);
+	public void setOperationCenterController(OperationCenterController operationCenterController);
 	
 	/**
 	 * Use this only for testing.
 	 * @param controlCenterController
 	 */
-	public void _setControlCenterController(ControlCenterController controlCenterController);
+	public void setControlCenterController(ControlCenterController controlCenterController);
 	
 	/**
 	 * Use this only for testing.
 	 * @return
 	 */
-	public EventInitiator _getEventInitiator();
+	public EventInitiator getEventInitiator();
 }

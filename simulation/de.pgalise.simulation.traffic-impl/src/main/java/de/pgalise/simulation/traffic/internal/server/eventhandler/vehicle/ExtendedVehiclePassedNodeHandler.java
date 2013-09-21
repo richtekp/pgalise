@@ -25,7 +25,6 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 
 /**
@@ -33,7 +32,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * 
  * @author marcus
  */
-public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleEvent> {
+public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleEvent<?>> {
 	private VehiclePassedNodeHandler defaultHandler;
 
 	public ExtendedVehiclePassedNodeHandler() {
@@ -46,7 +45,7 @@ public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandle
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent event) {
+	public void handleEvent(VehicleEvent<?> event) {
 		defaultHandler.handleEvent(event);
 
 		final Vehicle<? extends VehicleData> vehicle = event.getVehicle();

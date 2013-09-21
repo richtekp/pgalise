@@ -14,14 +14,13 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.datamodel;
+package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 

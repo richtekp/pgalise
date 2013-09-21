@@ -72,7 +72,7 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	protected void onScheduleItem(Item item) {
+	protected void onScheduleItem(ScheduleItem item) {
 		try {
 			schedulerMap.get(item.getVehicle().getData().getType()).scheduleItem(item);
 		} catch (IllegalAccessException e) {
@@ -81,8 +81,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	public List<Item> getExpiredItems(long currentTime) {
-		List<Item> items = new ArrayList<>();
+	public List<ScheduleItem> getExpiredItems(long currentTime) {
+		List<ScheduleItem> items = new ArrayList<>();
 		for (Scheduler s : list) {
 			items.addAll(s.getExpiredItems(currentTime));
 		}
@@ -90,8 +90,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	public List<Item> getScheduledItems() {
-		List<Item> items = new ArrayList<>();
+	public List<ScheduleItem> getScheduledItems() {
+		List<ScheduleItem> items = new ArrayList<>();
 		for (Scheduler s : list) {
 			items.addAll(s.getScheduledItems());
 		}

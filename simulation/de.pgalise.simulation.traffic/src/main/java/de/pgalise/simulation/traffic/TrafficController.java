@@ -26,9 +26,10 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * incoming traffic events and generates traffic sensor data.
  * 
  * 
+ * @param <E> 
  * @author Mustafa
  * @version 1.0 (Oct 23, 2012)
  */
-public interface TrafficController extends SensorManagerController<TrafficEvent> {
+public interface TrafficController<E extends TrafficEvent> extends SensorManagerController<E> {
 
 }

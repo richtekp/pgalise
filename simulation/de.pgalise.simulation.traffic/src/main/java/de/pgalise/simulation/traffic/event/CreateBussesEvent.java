@@ -19,9 +19,6 @@ package de.pgalise.simulation.traffic.event;
 import de.pgalise.simulation.shared.event.EventType;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.shared.traffic.BusRoute;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -37,11 +34,6 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 	 * Serial
 	 */
 	private static final long serialVersionUID = 1693162235868339949L;
-
-	/**
-	 * Timestamp
-	 */
-	private long time;
 
 	/**
 	 * List with bus routes
@@ -65,10 +57,10 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 	 * @param busRoutes
 	 *            List with bus routes
 	 */
-	public CreateBussesEvent(TrafficServerLocal responsibleServer, List<CreateRandomVehicleData> createRandomVehicleDataList, long time,
+	public CreateBussesEvent(TrafficServerLocal responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
 			List<BusRoute> busRoutes) {
-		super(responsibleServer);
-		this.time = time;
+		super(responsibleServer, time,
+			elaspsedTime);
 		// this.busRoutes = busRoutes;
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
 		this.routeIds = new ArrayList<>();
@@ -93,21 +85,6 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 	}
 
 	/**
-	 * @return the time
-	 */
-	public long getTime() {
-		return time;
-	}
-
-	/**
-	 * @param time
-	 *            the time to set
-	 */
-	public void setTime(long time) {
-		this.time = time;
-	}
-
-	/**
 	 * @return the busLines
 	 */
 	public List<String> getRouteIds() {
@@ -128,7 +105,7 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 		int result = super.hashCode();
 		result = prime * result + ((routeIds == null) ? 0 : routeIds.hashCode());
 		result = prime * result + ((createRandomVehicleDataList == null) ? 0 : createRandomVehicleDataList.hashCode());
-		result = prime * result + (int) (time ^ (time >>> 32));
+		result = prime * result + (int) (getSimulationTime() ^ (getSimulationTime() >>> 32));
 		return result;
 	}
 
@@ -158,7 +135,7 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 		} else if (!createRandomVehicleDataList.equals(other.createRandomVehicleDataList)) {
 			return false;
 		}
-		if (time != other.time) {
+		if (getSimulationTime() != other.getSimulationTime()) {
 			return false;
 		}
 		return true;

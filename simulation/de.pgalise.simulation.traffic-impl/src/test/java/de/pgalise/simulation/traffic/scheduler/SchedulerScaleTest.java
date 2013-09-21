@@ -44,7 +44,7 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler.Modus;
 import javax.vecmath.Vector2d;
@@ -123,8 +123,8 @@ public class SchedulerScaleTest {
 	 *            Amount of cars
 	 */
 	public static void testScheduler(long startTime, List<Scheduler> schedulers, int numberOfCars) {
-		List<Item> vehicles = null;
-		List<Item> items = null;
+		List<ScheduleItem> vehicles = null;
+		List<ScheduleItem> items = null;
 
 		for (int i = 0; i < numberOfCars; i++) {
 			for (Scheduler scheduler : schedulers) {
@@ -221,7 +221,7 @@ public class SchedulerScaleTest {
 		// Schedule
 		scheduleDuration = System.currentTimeMillis();
 		for (int i = 0; i < vehicles.size(); i++) {
-			scheduler.scheduleItem(new Item(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
+			scheduler.scheduleItem(new ScheduleItem(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
 		}
 		log.info("Duration (in millis) of the SortedListScheduler: " + (System.currentTimeMillis() - scheduleDuration));
 
@@ -236,7 +236,7 @@ public class SchedulerScaleTest {
 		// Schedule
 		scheduleDuration = System.currentTimeMillis();
 		for (int i = 0; i < vehicles.size(); i++) {
-			scheduler.scheduleItem(new Item(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
+			scheduler.scheduleItem(new ScheduleItem(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
 		}
 		log.info("Duration (in millis) of the TreeSetScheduler: " + (System.currentTimeMillis() - scheduleDuration));
 

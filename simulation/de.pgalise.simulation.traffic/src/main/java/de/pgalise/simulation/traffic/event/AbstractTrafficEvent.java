@@ -18,8 +18,6 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.event.AbstractEvent;
-import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
 /**
@@ -33,6 +31,8 @@ public abstract class AbstractTrafficEvent extends AbstractEvent implements Traf
 	 */
 	private static final long serialVersionUID = -8313844787624266589L;
 	private TrafficServerLocal responsibleServer;
+	private final long simulationTime;
+	private final long elapsedTime;
 
 	/**
 	 * Constructor
@@ -41,8 +41,20 @@ public abstract class AbstractTrafficEvent extends AbstractEvent implements Traf
 	 *            Event type
 	 * @param responsibleServer  
 	 */
-	public AbstractTrafficEvent(TrafficServerLocal responsibleServer) {
+	public AbstractTrafficEvent(TrafficServerLocal responsibleServer, long simulationTime, long elapsedTime) {
 		this.responsibleServer = responsibleServer;
+		this.simulationTime = simulationTime;
+		this.elapsedTime = elapsedTime;
+	}
+
+	@Override
+	public long getSimulationTime() {
+		return simulationTime;
+	}
+
+	@Override
+	public long getElapsedTime() {
+		return elapsedTime;
 	}
 	
 	@Override

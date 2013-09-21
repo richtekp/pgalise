@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -68,18 +67,18 @@ public class ExtendedXMLTruckFactory extends XMLAbstractFactory<TruckData> imple
 	}
 
 	@Override
-	public Vehicle<TruckData> createRandomTruck(UUID id, SensorHelper helper) {
+	public Vehicle<TruckData> createRandomTruck( SensorHelper helper) {
 		TruckData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>(id, updateTruckData(data, Color.BLACK, random.nextInt(2)),
+		return new DefaultMotorizedVehicle<>( updateTruckData(data, Color.BLACK, random.nextInt(2)),
 				trafficGraphExtensions);
 	}
 
 	@Override
-	public Vehicle<TruckData> createTruck(UUID id, String typeId, Color color, int trailercount, SensorHelper helper) {
+	public Vehicle<TruckData> createTruck( String typeId, Color color, int trailercount, SensorHelper helper) {
 		TruckData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>(id, updateTruckData(data, color, trailercount), trafficGraphExtensions);
+		return new DefaultMotorizedVehicle<>( updateTruckData(data, color, trailercount), trafficGraphExtensions);
 	}
 
 	/**

@@ -16,12 +16,14 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+
 /**
  * Local view of the TrafficController.
  * 
  * @author mustafa
  *
  */
-public interface TrafficControllerLocal extends TrafficController {
+public interface TrafficControllerLocal<E extends TrafficEvent> extends TrafficController<E> {
 	
 }

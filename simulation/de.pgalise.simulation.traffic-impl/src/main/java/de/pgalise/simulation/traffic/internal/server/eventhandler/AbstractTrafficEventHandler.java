@@ -18,10 +18,10 @@ public class AbstractTrafficEventHandler<E extends TrafficEvent> implements Traf
 	/**
 	 * Traffic server
 	 */
-	private TrafficServerLocal responsibleServer;
+	private TrafficServerLocal<E> responsibleServer;
 
 	@Override
-	public void init(TrafficServerLocal server) {
+	public void init(TrafficServerLocal<E>  server) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
@@ -37,11 +37,11 @@ public class AbstractTrafficEventHandler<E extends TrafficEvent> implements Traf
 	}
 
 	@Override
-	public TrafficServerLocal getResponsibleServer() {
+	public TrafficServerLocal<E>  getResponsibleServer() {
 		return responsibleServer;
 	}
 
-	public void setResponsibleServer(TrafficServerLocal responsibleServer) {
+	public void setResponsibleServer(TrafficServerLocal<E>  responsibleServer) {
 		this.responsibleServer = responsibleServer;
 	}
 	

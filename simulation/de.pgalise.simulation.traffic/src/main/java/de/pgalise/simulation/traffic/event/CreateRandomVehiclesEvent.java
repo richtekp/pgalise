@@ -18,23 +18,19 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
-import java.util.UUID;
-
-import de.pgalise.simulation.shared.event.EventTypeEnum;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * The create random vehicles event creates the given {@link List} of
  * {@link CreateRandomVehicleData}. The created vehicles do not need to have
  * a start or target point.
+ * @param <D> 
  * @author Timo
  * @author Lena
  */
-public class CreateRandomVehiclesEvent extends AbstractVehicleEvent {
+public class CreateRandomVehiclesEvent<D extends VehicleData> extends AbstractVehicleEvent<D> {
 
 	/**
 	 * Serial
@@ -47,14 +43,9 @@ public class CreateRandomVehiclesEvent extends AbstractVehicleEvent {
 	private List<CreateRandomVehicleData> createRandomVehicleDataList;
 
 	public CreateRandomVehiclesEvent(
-		TrafficServerLocal responsibleServer,
-		List<CreateRandomVehicleData> createRandomVehicleDataList,
-		Vehicle<? extends VehicleData> currentVehicle,
-		long simulationTime,
-		long elapsedTime) {
-		super(responsibleServer,
-			simulationTime,
-			elapsedTime);
+		TrafficServerLocal responsibleServer, long timestamp, long elapsedTime,
+		List<CreateRandomVehicleData> createRandomVehicleDataList) {
+		super(responsibleServer, timestamp, elapsedTime, null);
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
 	}
 
@@ -85,7 +76,7 @@ public class CreateRandomVehiclesEvent extends AbstractVehicleEvent {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		CreateRandomVehiclesEvent other = (CreateRandomVehiclesEvent) obj;
+		CreateRandomVehiclesEvent<?> other = (CreateRandomVehiclesEvent) obj;
 		if (createRandomVehicleDataList == null) {
 			if (other.createRandomVehicleDataList != null) {
 				return false;

@@ -18,7 +18,6 @@ package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.AbstractTimeSensitive;
-import de.pgalise.simulation.weather.model.AbstractTimeSensitive;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
 import java.util.Set;

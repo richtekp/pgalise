@@ -23,7 +23,6 @@ import java.util.Map;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventType;
 
 /**
  * Interface to handle gate messages.

@@ -33,11 +33,11 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHan
 @Local(VehicleEventHandlerManager.class)
 @Stateless(name = "de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager")
 public class DefaultVehicleEventHandlerManager extends
-		AbstractEventHandlerManager<VehicleEventHandler<VehicleEvent>, VehicleEvent> implements
+		AbstractEventHandlerManager<VehicleEventHandler<VehicleEvent<?>>, VehicleEvent<?>> implements
 		VehicleEventHandlerManager {
 
 	@Override
-	public boolean responsibleFor(VehicleEventHandler handler, VehicleEvent event) {
+	public boolean responsibleFor(VehicleEventHandler<VehicleEvent<?>> handler, VehicleEvent<?> event) {
 		return handler.getTargetEventType().equals(event.getType());
 	}
 

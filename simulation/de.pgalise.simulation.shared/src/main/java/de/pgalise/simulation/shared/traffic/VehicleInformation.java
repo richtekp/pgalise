@@ -17,7 +17,6 @@
 package de.pgalise.simulation.shared.traffic;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 /**
  * Information about a vehicle.
@@ -31,11 +30,6 @@ public class VehicleInformation implements Serializable {
 	 * Serial
 	 */
 	private static final long serialVersionUID = 8560799482665484767L;
-
-	/**
-	 * ID of the vehicle
-	 */
-	private UUID vehicleID;
 
 	/**
 	 * Option to activate the GPS sensor
@@ -85,9 +79,8 @@ public class VehicleInformation implements Serializable {
 	 * @param name
 	 *            Name of the vehicle (optional)
 	 */
-	public VehicleInformation(UUID vehicleID, boolean gpsActivated, VehicleTypeEnum vehicleType,
+	public VehicleInformation( boolean gpsActivated, VehicleTypeEnum vehicleType,
 			VehicleModelEnum vehicleModel, TrafficTrip trip, String name) {
-		this.vehicleID = vehicleID;
 		this.gpsActivated = gpsActivated;
 		this.vehicleType = vehicleType;
 		this.vehicleModel = vehicleModel;
@@ -95,16 +88,8 @@ public class VehicleInformation implements Serializable {
 		this.trip = trip;
 	}
 
-	public UUID getVehicleID() {
-		return this.vehicleID;
-	}
-
 	public boolean isGpsActivated() {
 		return this.gpsActivated;
-	}
-
-	public void setVehicleID(UUID vehicleID) {
-		this.vehicleID = vehicleID;
 	}
 
 	public void setGpsActivated(boolean gpsActivated) {

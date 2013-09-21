@@ -18,10 +18,6 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
-import java.util.UUID;
-
-import de.pgalise.simulation.shared.event.EventTypeEnum;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
@@ -31,7 +27,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
  * 
  * @author Timo
  */
-public class AttractionTrafficEvent extends CreateRandomVehiclesEvent {
+public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomVehiclesEvent<D> {
 	/**
 	 * Serial
 	 */
@@ -52,19 +48,17 @@ public class AttractionTrafficEvent extends CreateRandomVehiclesEvent {
 	 */
 	private String nodeID;
 
-	public AttractionTrafficEvent(long attractionStartTimestamp,
+	public AttractionTrafficEvent(
+		TrafficServerLocal server,
+		long simulationTimestamp,
+		long elapsedTime,
+		long attractionStartTimestamp,
 		long attractionEndTimestamp,
 		String nodeID,
-		List<CreateRandomVehicleData> createRandomVehicleDataList,
-		TrafficServerLocal server,
-		Vehicle<? extends VehicleData> currentVehicle,
-		long simulationTime,
-		long elapsedTime) {
+		List<CreateRandomVehicleData> createRandomVehicleDataList) {
 		super(
-			server,createRandomVehicleDataList,
-			currentVehicle,
-			simulationTime,
-			elapsedTime);
+			server,simulationTimestamp, elapsedTime,
+			createRandomVehicleDataList);
 		this.attractionStartTimestamp = attractionStartTimestamp;
 		this.attractionEndTimestamp = attractionEndTimestamp;
 		this.nodeID = nodeID;

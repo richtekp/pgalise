@@ -4,7 +4,6 @@
  */
 package de.pgalise.simulation.shared.event.energy;
 
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.NewDayEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;

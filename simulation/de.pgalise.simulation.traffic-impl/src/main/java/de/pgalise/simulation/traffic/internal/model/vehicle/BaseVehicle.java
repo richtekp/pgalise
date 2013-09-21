@@ -136,12 +136,6 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 		this.trafficGraphExtensions = trafficGraphExtensions;
 		this.state = (State.NOT_STARTED);
 	}
-	
-	public BaseVehicle(UUID id, TrafficGraphExtensions trafficGraphExtensions) {
-		throw new UnsupportedOperationException("clearify the purpose of passing of id");
-//		this.trafficGraphExtensions = trafficGraphExtensions;
-//		this.state = (State.NOT_STARTED);
-	}
 
 	public BaseVehicle( String name, TrafficGraphExtensions trafficGraphExtensions) {
 		this.name = name;

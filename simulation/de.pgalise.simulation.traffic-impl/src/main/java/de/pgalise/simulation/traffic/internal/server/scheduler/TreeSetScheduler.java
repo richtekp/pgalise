@@ -27,7 +27,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
@@ -42,12 +42,12 @@ public class TreeSetScheduler extends Scheduler {
 	/**
 	 * Items of the scheduler
 	 */
-	private TreeSet<Item> scheduledItems;
+	private TreeSet<ScheduleItem> scheduledItems;
 
 	/**
 	 * List of vehicles
 	 */
-	private List<Item> vehicles;
+	private List<ScheduleItem> vehicles;
 
 	/**
 	 * List of handler
@@ -73,15 +73,15 @@ public class TreeSetScheduler extends Scheduler {
 	}
 
 	@Override
-	protected void onScheduleItem(Item item) {
+	protected void onScheduleItem(ScheduleItem item) {
 		this.scheduledItems.add(item);
 		onSchedule(item);
 	}
 
 	@Override
-	public List<Item> getExpiredItems(long currentTime) {
-		List<Item> list = new ArrayList<>();
-		for (Item item : this.scheduledItems) {
+	public List<ScheduleItem> getExpiredItems(long currentTime) {
+		List<ScheduleItem> list = new ArrayList<>();
+		for (ScheduleItem item : this.scheduledItems) {
 			// item has been expired
 			if (currentTime >= item.getDepartureTime()) {
 				if (item.getVehicle().getState() != State.DRIVING) {
@@ -109,14 +109,14 @@ public class TreeSetScheduler extends Scheduler {
 	}
 
 	@Override
-	public List<Item> getScheduledItems() {
+	public List<ScheduleItem> getScheduledItems() {
 		return new ArrayList<>(this.scheduledItems);
 	}
 
 	@Override
 	protected void onRemoveScheduledItems(List<Vehicle<? extends VehicleData>> vehicles) {
-		for (Iterator<Item> i = scheduledItems.iterator(); i.hasNext();) {
-			Item item = i.next();
+		for (Iterator<ScheduleItem> i = scheduledItems.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			Vehicle<? extends VehicleData> a = item.getVehicle();
 			for (Vehicle<? extends VehicleData> b : vehicles) {
 				if (a == b) {
@@ -129,8 +129,8 @@ public class TreeSetScheduler extends Scheduler {
 
 	@Override
 	protected void onRemoveExpiredItems(List<Vehicle<? extends VehicleData>> list) {
-		for (Iterator<Item> i = vehicles.iterator(); i.hasNext();) {
-			Item item = i.next();
+		for (Iterator<ScheduleItem> i = vehicles.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			Vehicle<? extends VehicleData> a = item.getVehicle();
 			for (Vehicle<? extends VehicleData> b : list) {
 				if (a == b) {
@@ -143,8 +143,8 @@ public class TreeSetScheduler extends Scheduler {
 
 	@Override
 	protected void onClearScheduledItems() {
-		for (Iterator<Item> i = this.scheduledItems.iterator(); i.hasNext();) {
-			Item item = i.next();
+		for (Iterator<ScheduleItem> i = this.scheduledItems.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			i.remove();
 			onRemove(item);
 		}
@@ -152,8 +152,8 @@ public class TreeSetScheduler extends Scheduler {
 
 	@Override
 	protected void onClearExpiredItems() {
-		for (Iterator<Item> i = this.vehicles.iterator(); i.hasNext();) {
-			Item item = i.next();
+		for (Iterator<ScheduleItem> i = this.vehicles.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			i.remove();
 			onRemove(item);
 		}
@@ -169,13 +169,13 @@ public class TreeSetScheduler extends Scheduler {
 		handlerList.remove(handler);
 	}
 
-	private void onRemove(Item v) {
+	private void onRemove(ScheduleItem v) {
 		for (ScheduleHandler s : handlerList) {
 			s.onRemove(v);
 		}
 	}
 
-	private void onSchedule(Item v) {
+	private void onSchedule(ScheduleItem v) {
 		for (ScheduleHandler s : handlerList) {
 			s.onSchedule(v);
 		}

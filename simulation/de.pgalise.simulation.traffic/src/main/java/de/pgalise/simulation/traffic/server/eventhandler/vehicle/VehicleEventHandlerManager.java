@@ -16,10 +16,9 @@
  
 package de.pgalise.simulation.traffic.server.eventhandler.vehicle;
 
-import de.pgalise.simulation.service.event.EventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 
-public interface VehicleEventHandlerManager extends TrafficEventHandlerManager<VehicleEventHandler<VehicleEvent>,
-	VehicleEvent>{
+public interface VehicleEventHandlerManager extends TrafficEventHandlerManager<VehicleEventHandler<VehicleEvent<?>>,
+	VehicleEvent<?>>{
 
 }

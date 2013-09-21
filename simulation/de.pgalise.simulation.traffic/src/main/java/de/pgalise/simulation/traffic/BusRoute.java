@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.datamodel;
+package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Column;

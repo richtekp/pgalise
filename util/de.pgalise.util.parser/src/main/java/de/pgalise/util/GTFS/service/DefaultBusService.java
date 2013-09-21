@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import de.pgalise.simulation.shared.traffic.BusRoute;
-import de.pgalise.simulation.shared.traffic.BusStopTimes;
-import de.pgalise.simulation.shared.traffic.BusTrip;
+import de.pgalise.simulation.traffic.BusStopTime;
+import de.pgalise.simulation.traffic.BusTrip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -161,7 +161,7 @@ public class DefaultBusService implements BusService {
 				rs = st.executeQuery(query3);
 
 				List<String> busStops = new ArrayList<>();
-				HashMap<String, BusStopTimes> busStopStopTimes = new HashMap<>();
+				HashMap<String, BusStopTime> busStopStopTimes = new HashMap<>();
 				String tripId = "";
 				String routeId = "";
 				String routeShortName = "";
@@ -176,7 +176,15 @@ public class DefaultBusService implements BusService {
 					String stopId = rs.getString("stop_id");
 
 					busStops.add(stopId);
-					busStopStopTimes.put(stopId, new BusStopTimes(arrivalTime, departureTime));
+					busStopStopTimes.put(stopId, new BusStopTime(null,
+						null,
+						arrivalTime,
+						departureTime,
+						weekdayInt,
+						stopId,
+						stopId,
+						stopId,
+						serviceId));
 
 					// System.out.println(tripId + "," + routeId
 					// + "," + routeShortName + "," + routeLongName + ","
@@ -187,7 +195,7 @@ public class DefaultBusService implements BusService {
 				if (!(tripId.isEmpty() && routeId.isEmpty() && routeShortName.isEmpty() && routeLongName.isEmpty() && busStopStopTimes
 						.size() > 0)) {
 					BusTrip busTrip = new BusTrip(tripId, routeId, routeShortName, routeLongName, busStops,
-							busStopStopTimes);
+							busStopStopTimes, null);
 					trips.add(busTrip);
 					// System.out.println("Trip " + tripId + " added with " +
 					// busStopStopTimes.size() + " stoptimes");

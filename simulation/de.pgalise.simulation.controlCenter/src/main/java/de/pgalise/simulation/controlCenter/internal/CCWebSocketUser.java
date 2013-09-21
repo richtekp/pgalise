@@ -97,7 +97,6 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -105,8 +104,6 @@ import de.pgalise.simulation.shared.traffic.BusRoute;
 import de.pgalise.simulation.shared.traffic.VehicleInformation;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.TrafficController;
-import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
@@ -185,7 +182,7 @@ public class CCWebSocketUser extends MessageInbound {
 	 */
 	private Gson gson;
 	
-	private ServiceDictionary<?> serviceDictionary;
+	private ServiceDictionary serviceDictionary;
 	/**
 	 * This service can query bus information.
 	 */
@@ -202,7 +199,7 @@ public class CCWebSocketUser extends MessageInbound {
 	 */
 	public CCWebSocketUser(CCWebSocketServlet ccWebSocketServlet, 
 			Gson gson, 
-			ServiceDictionary<?> serviceDictionary) {
+			ServiceDictionary serviceDictionary) {
 		this.ccWebSocketServlet = ccWebSocketServlet;
 		this.gson = gson;
 		this.cityInfrastructureDataLock = new Object();
@@ -433,7 +430,7 @@ public class CCWebSocketUser extends MessageInbound {
 				List<Event> simulationEventList = new LinkedList<>();
 				
 				/* Create random vehicles: */
-				CreateRandomVehiclesEvent createRandomVehiclesEvent = (CreateRandomVehiclesEvent)randomDynamicSensorService.createRandomDynamicSensors(ccSimulationStartParameter.getRandomDynamicSensorBundle(), 
+				CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent)randomDynamicSensorService.createRandomDynamicSensors(ccSimulationStartParameter.getRandomDynamicSensorBundle(), 
 						this.serviceDictionary.getRandomSeedService(), ccSimulationStartParameter.isWithSensorInterferes());
 				simulationEventList.add(createRandomVehiclesEvent);
 				
@@ -441,8 +438,6 @@ public class CCWebSocketUser extends MessageInbound {
 				usedUUIDs.addAll(ccSimulationStartParameter.getRandomDynamicSensorBundle().getUsedUUIDs());
 				usedIntegerIDs.addAll(ccSimulationStartParameter.getRandomDynamicSensorBundle().getUsedSensorIDs());
 				for(CreateRandomVehicleData data : createRandomVehiclesEvent.getCreateRandomVehicleDataList()) {
-					newUUIDs.add(data.getVehicleInformation().getVehicleID());
-					usedUUIDs.add(data.getVehicleInformation().getVehicleID());
 					for(SensorHelper sensor : data.getSensorHelpers()) {
 						newIntegerIDs.add(sensor.getSensorID());
 						usedIntegerIDs.add(sensor.getSensorID());
@@ -454,7 +449,7 @@ public class CCWebSocketUser extends MessageInbound {
 					/* Before creating them, update the used IDs: */
 					attractionData.getRandomVehicleBundle().getUsedSensorIDs().addAll(newIntegerIDs);
 					attractionData.getRandomVehicleBundle().getUsedUUIDs().addAll(newUUIDs);
-					AttractionTrafficEvent attractionTrafficEvent = createAttractionEventService.createAttractionTrafficEvent(
+					AttractionTrafficEvent<?> attractionTrafficEvent = createAttractionEventService.createAttractionTrafficEvent(
 							attractionData.getRandomVehicleBundle(), 
 							this.serviceDictionary.getRandomSeedService(), 
 							this.simulationStartParameter.isWithSensorInterferes(), 
@@ -466,8 +461,6 @@ public class CCWebSocketUser extends MessageInbound {
 					
 					/* Update the new used IDs: */
 					for(CreateRandomVehicleData data : attractionTrafficEvent.getCreateRandomVehicleDataList()) {
-						newUUIDs.add(data.getVehicleInformation().getVehicleID());
-						usedUUIDs.add(data.getVehicleInformation().getVehicleID());
 						for(SensorHelper sensor : data.getSensorHelpers()) {
 							newIntegerIDs.add(sensor.getSensorID());
 							usedIntegerIDs.add(sensor.getSensorID());
@@ -510,10 +503,10 @@ public class CCWebSocketUser extends MessageInbound {
 							SensorType.INFRARED, 
 							new ArrayList<SensorInterfererType>(),
 							""));
-					busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true,
-							VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
+					busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation( true,
+							VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString()) ));
 				}
-				simulationEventList.add(new CreateBussesEvent(serviceDictionary.getController(TrafficServerLocal.class), busDataList, ccSimulationStartParameter.getStartTimestamp(), busRouteList));
+				simulationEventList.add(new CreateBussesEvent(serviceDictionary.getController(TrafficServerLocal.class), ccSimulationStartParameter.getStartTimestamp(), 0, busDataList, busRouteList));
 				
 				/* Add events to simulation: */
 				this.simulationController.addSimulationEventList(new EventList<>(simulationEventList, 0, UUID.randomUUID()));
@@ -556,8 +549,7 @@ public class CCWebSocketUser extends MessageInbound {
 				List<Integer> newIntegerIDs = new LinkedList<>();
 				List<UUID> newUUIDs = new LinkedList<>();
 				for(AbstractEvent event : simulationEventList) {
-					for(CreateRandomVehicleData data : ((CreateRandomVehiclesEvent)event).getCreateRandomVehicleDataList()) {
-						newUUIDs.add(data.getVehicleInformation().getVehicleID());
+					for(CreateRandomVehicleData data : ((CreateRandomVehiclesEvent<?>)event).getCreateRandomVehicleDataList()) {
 						for(SensorHelper sensor : data.getSensorHelpers()) {
 							newIntegerIDs.add(sensor.getSensorID());
 						}
@@ -586,8 +578,7 @@ public class CCWebSocketUser extends MessageInbound {
 				List<Integer> newIntegerIDs = new LinkedList<>();
 				List<UUID> newUUIDs = new LinkedList<>();
 				for(AbstractEvent event : simulationEventList) {
-					for(CreateRandomVehicleData data : ((CreateRandomVehiclesEvent)event).getCreateRandomVehicleDataList()) {
-						newUUIDs.add(data.getVehicleInformation().getVehicleID());
+					for(CreateRandomVehicleData data : ((CreateRandomVehiclesEvent<?>)event).getCreateRandomVehicleDataList()) {
 						for(SensorHelper sensor : data.getSensorHelpers()) {
 							newIntegerIDs.add(sensor.getSensorID());
 						}

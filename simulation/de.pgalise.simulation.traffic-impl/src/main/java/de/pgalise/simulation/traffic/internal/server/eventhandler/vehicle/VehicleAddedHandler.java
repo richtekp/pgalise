@@ -19,12 +19,11 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 
 /**
  * @author marcus
  */
-public class VehicleAddedHandler extends AbstractVehicleEventHandler<VehicleEvent> {
+public class VehicleAddedHandler extends AbstractVehicleEventHandler<VehicleEvent<?>> {
 
 	@Override
 	public EventType getTargetEventType() {
@@ -32,7 +31,7 @@ public class VehicleAddedHandler extends AbstractVehicleEventHandler<VehicleEven
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent event) {
+	public void handleEvent(VehicleEvent<?> event) {
 
 	}
 }

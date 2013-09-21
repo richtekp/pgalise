@@ -5,11 +5,8 @@
 package de.pgalise.simulation.service.internal.event;
 
 import de.pgalise.simulation.service.event.EventHandler;
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
-import javax.ejb.EJB;
 
 /**
  *

@@ -17,7 +17,6 @@
 package de.pgalise.simulation.traffic;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import static org.easymock.EasyMock.anyInt;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
@@ -46,7 +45,9 @@ import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
-import de.pgalise.simulation.traffic.server.TrafficServer;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import java.util.LinkedList;
 
 /**
  * Tests the DefaultTrafficController
@@ -68,7 +69,7 @@ public class TrafficControllerTest {
 		InitParameter initParam = createNiceMock(InitParameter.class);
 		StartParameter startParam = createNiceMock(StartParameter.class);
 
-		TrafficServer s1 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
 		s1.init(initParam);
 		s1.setCityZone(anyObject(Geometry.class));
@@ -86,7 +87,7 @@ public class TrafficControllerTest {
 		s1.start(startParam);
 		replay(s1);
 
-		TrafficServer s2 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
 		s2.init(initParam);
 		s2.setCityZone(anyObject(Geometry.class));
 		expectLastCall().andAnswer(new IAnswer() {
@@ -102,7 +103,7 @@ public class TrafficControllerTest {
 		s2.start(startParam);
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}),Arrays.asList(s1, s2));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}),new LinkedList<>(Arrays.asList(s1, s2)));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -121,7 +122,7 @@ public class TrafficControllerTest {
 		InitParameter initParam = createNiceMock(InitParameter.class);
 		StartParameter startParam = createNiceMock(StartParameter.class);
 
-		TrafficServer s1 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
 		s1.init(initParam);
 		s1.setCityZone(anyObject(Geometry.class));
@@ -130,7 +131,7 @@ public class TrafficControllerTest {
 		s1.start(null);
 		replay(s1);
 
-		TrafficServer s2 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
 		s2.init(initParam);
 		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
@@ -154,7 +155,7 @@ public class TrafficControllerTest {
 		InitParameter initParam = createNiceMock(InitParameter.class);
 		StartParameter startParam = createNiceMock(StartParameter.class);
 
-		TrafficServer s1 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
 		s1.init(initParam);
 		s1.setCityZone(anyObject(Geometry.class));
@@ -163,7 +164,7 @@ public class TrafficControllerTest {
 		s1.reset();
 		replay(s1);
 
-		TrafficServer s2 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
 		s2.init(initParam);
 		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
@@ -187,7 +188,7 @@ public class TrafficControllerTest {
 		InitParameter initParam = createNiceMock(InitParameter.class);
 		StartParameter startParam = createNiceMock(StartParameter.class);
 
-		TrafficServer s1 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
 		s1.init(initParam);
 		s1.setCityZone(anyObject(Geometry.class));
@@ -196,7 +197,7 @@ public class TrafficControllerTest {
 		s1.processMovedVehicles();
 		replay(s1);
 
-		TrafficServer s2 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
 		s2.init(initParam);
 		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
@@ -204,7 +205,7 @@ public class TrafficControllerTest {
 		s2.processMovedVehicles();
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -231,7 +232,7 @@ public class TrafficControllerTest {
 		SensorHelper sensorHelper2 = new SensorHelper(1, new Coordinate(100, 600),
 				SensorType.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>(), "");
 
-		TrafficServer s1 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
 		s1.init(initParam);
 		s1.setCityZone(anyObject(Geometry.class));
@@ -241,7 +242,7 @@ public class TrafficControllerTest {
 		s1.deleteSensor(sensorHelper);
 		replay(s1);
 
-		TrafficServer s2 = createMock(TrafficServer.class);
+		TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
 		s2.init(initParam);
 		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
@@ -250,7 +251,7 @@ public class TrafficControllerTest {
 		s2.deleteSensor(sensorHelper);
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);

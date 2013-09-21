@@ -14,25 +14,52 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.traffic;
+package de.pgalise.simulation.traffic;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import javax.persistence.Column;
+import javax.persistence.ManyToOne;
 
 /**
  * Holds all needed information for a bus trip.
  * @author Lena
  */
 public class BusTrip {
+	
+	@ManyToOne
+	private BusCalendar busCalendar;
+	
+	@Column(name = "ROUTE_ID")
+	private String routeId;
+	
+	@Column(name = "TRIP_HEADSIGN")
+	private String tripHeadsign;
+	
+	@Column(name = "TRIP_SHORT_NAME")
+	private String tripShortName;
+	
+	@Column(name = "DIRECTION_ID")
+	private String directionId;
+	
+	@Column(name = "BLOCK_ID")
+	private String blockId;
+	
+	@Column(name = "SHAPE_ID")
+	private String shapeId;
+	
+	@Column(name = "WHEELCHAIR_ACCESSIBLE")
+	private String wheelchairAccessible;
 
 	/**
 	 * ID of the trip
 	 */
-	private UUID id;
+	private Vehicle<BusData> bus;
 
 	/**
 	 * SensorHelper of the GPS sensor
@@ -48,11 +75,6 @@ public class BusTrip {
 	 * ID of the trip
 	 */
 	private String tripId;
-
-	/**
-	 * ID of the route
-	 */
-	private String routeId;
 
 	/**
 	 * Short name
@@ -72,7 +94,7 @@ public class BusTrip {
 	/**
 	 * Map with bus stops and stop times
 	 */
-	private Map<String, BusStopTimes> busStopStopTimes;
+	private Map<String, BusStopTime> busStopStopTimes;
 
 	// /**
 	// * Start time
@@ -96,13 +118,14 @@ public class BusTrip {
 	 *            Map with bus stops and stop times
 	 */
 	public BusTrip(String tripId, String routeId, String shortName, String longName, List<String> busStops,
-			HashMap<String, BusStopTimes> stopTimes) {
+			HashMap<String, BusStopTime> stopTimes, Vehicle<BusData> bus) {
 		this.tripId = tripId;
 		this.routeId = routeId;
 		this.routeShortName = shortName;
 		this.routeLongName = longName;
 		this.busStops = busStops;
 		this.busStopStopTimes = stopTimes;
+		this.bus = bus;
 	}
 
 	public String getTripId() {
@@ -137,20 +160,21 @@ public class BusTrip {
 		this.routeLongName = routeLongName;
 	}
 
-	public Map<String, BusStopTimes> getBusStopStopTimes() {
+	public Map<String, BusStopTime> getBusStopStopTimes() {
 		return busStopStopTimes;
 	}
 
-	public void setBusStopStopTimes(Map<String, BusStopTimes> busStopStopTimes) {
+	public void setBusStopStopTimes(Map<String, BusStopTime> busStopStopTimes) {
 		this.busStopStopTimes = busStopStopTimes;
 	}
 
-	public UUID getId() {
-		return id;
+	public void setBus(
+		Vehicle<BusData> bus) {
+		this.bus = bus;
 	}
 
-	public void setId(UUID id) {
-		this.id = id;
+	public Vehicle<BusData> getBus() {
+		return bus;
 	}
 
 	public SensorHelper getGpsSensor() {
@@ -175,5 +199,61 @@ public class BusTrip {
 
 	public void setInfraredSensor(SensorHelper infraredSensor) {
 		this.infraredSensor = infraredSensor;
+	}
+
+	public BusCalendar getServiceId() {
+		return busCalendar;
+	}
+
+	public void setServiceId(BusCalendar serviceId) {
+		this.busCalendar = serviceId;
+	}
+
+	public String getTripHeadsign() {
+		return tripHeadsign;
+	}
+
+	public void setTripHeadsign(String tripHeadsign) {
+		this.tripHeadsign = tripHeadsign;
+	}
+
+	public String getTripShortName() {
+		return tripShortName;
+	}
+
+	public void setTripShortName(String tripShortName) {
+		this.tripShortName = tripShortName;
+	}
+
+	public String getDirectionId() {
+		return directionId;
+	}
+
+	public void setDirectionId(String directionId) {
+		this.directionId = directionId;
+	}
+
+	public String getBlockId() {
+		return blockId;
+	}
+
+	public void setBlockId(String blockId) {
+		this.blockId = blockId;
+	}
+
+	public String getShapeId() {
+		return shapeId;
+	}
+
+	public void setShapeId(String shapeId) {
+		this.shapeId = shapeId;
+	}
+
+	public String getWheelchairAccessible() {
+		return wheelchairAccessible;
+	}
+
+	public void setWheelchairAccessible(String wheelchairAccessible) {
+		this.wheelchairAccessible = wheelchairAccessible;
 	}
 }

@@ -43,13 +43,11 @@ import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.shared.event.energy.EnergyEventType;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -174,7 +172,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent> imp
 	private EnergyConsumptionManager energyConsumptionManager;
 
 	@EJB
-	private ServiceDictionary<?> serviceDictionary;
+	private ServiceDictionary serviceDictionary;
 
 	@EJB
 	private EnergyEventStrategy energyEventStrategy;
@@ -245,7 +243,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent> imp
 		return energyEventStrategy;
 	}
 
-	public ServiceDictionary<?> getServiceDictionary() {
+	public ServiceDictionary getServiceDictionary() {
 		return serviceDictionary;
 	}
 
@@ -313,7 +311,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent> imp
 		this.energyEventStrategy = energyEventStrategy;
 	}
 
-	public void setServiceDictionary(ServiceDictionary<?> serviceDictionary) {
+	public void setServiceDictionary(ServiceDictionary serviceDictionary) {
 		this.serviceDictionary = serviceDictionary;
 	}
 

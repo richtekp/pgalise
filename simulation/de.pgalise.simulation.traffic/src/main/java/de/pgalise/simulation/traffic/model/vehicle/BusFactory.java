@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import java.util.UUID;
 
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 
@@ -37,7 +36,7 @@ public interface BusFactory {
 	 *            ID of the {@link Bus} type
 	 * @return created {@link Bus}
 	 */
-	public Vehicle<BusData> createBus(UUID id, String typeId, SensorHelper gpsSensor, SensorHelper infraredSensor);
+	public Vehicle<BusData> createBus( String typeId, SensorHelper gpsSensor, SensorHelper infraredSensor);
 
 	/**
 	 * Method to create a random {@link Bus}.
@@ -46,5 +45,5 @@ public interface BusFactory {
 	 *            ID of the {@link Bus}
 	 * @return created {@link Bus}
 	 */
-	public Vehicle<BusData> createRandomBus(UUID id, SensorHelper gpsSensor, SensorHelper infraredSensor);
+	public Vehicle<BusData> createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor);
 }

@@ -125,7 +125,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent> i
 	private WeatherService weatherservice;
 
 	@EJB
-	private ServiceDictionary<?> serviceDictionary;
+	private ServiceDictionary serviceDictionary;
 
 	@EJB
 	private WeatherLoader<DefaultWeatherCondition> weatherLoader;

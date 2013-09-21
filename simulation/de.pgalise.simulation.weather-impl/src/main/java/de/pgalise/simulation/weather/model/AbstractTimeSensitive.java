@@ -5,7 +5,6 @@
 package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.sql.Date;
 import java.sql.Time;
 import javax.persistence.MappedSuperclass;

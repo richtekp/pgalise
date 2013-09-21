@@ -166,41 +166,41 @@ public class TrafficVisualizerTest {
 		// Creates the default car factory
 
 		// Creating the cars
-		Vehicle<? extends VehicleData> carA = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carA = factory.createRandomCar( null);
 		carA.setTrafficGraphExtensions(ee);
 		carA.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 		carA.setVelocity(27);
 		carA.setName("carA");
 
-		Vehicle<? extends VehicleData> carB = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carB = factory.createRandomCar( null);
 		carB.setTrafficGraphExtensions(ee);
 		carB.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carC = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carC = factory.createRandomCar( null);
 		carC.setTrafficGraphExtensions(ee);
 		carC.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carD = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carD = factory.createRandomCar( null);
 		carD.setTrafficGraphExtensions(ee);
 		carD.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carE = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carE = factory.createRandomCar( null);
 		carE.setTrafficGraphExtensions(ee);
 		carE.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carF = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carF = factory.createRandomCar( null);
 		carF.setTrafficGraphExtensions(ee);
 		carF.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carG = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carG = factory.createRandomCar( null);
 		carG.setTrafficGraphExtensions(ee);
 		carG.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carH = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carH = factory.createRandomCar( null);
 		carH.setTrafficGraphExtensions(ee);
 		carH.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carI = factory.createRandomCar(UUID.randomUUID(), null);
+		Vehicle<? extends VehicleData> carI = factory.createRandomCar( null);
 		carI.setTrafficGraphExtensions(ee);
 		carI.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 

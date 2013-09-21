@@ -14,8 +14,9 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.traffic;
+package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.traffic.BusTrip;
 import java.util.List;
 import java.util.UUID;
 

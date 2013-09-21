@@ -47,13 +47,11 @@ import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.TrafficController;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -232,7 +230,7 @@ public class DefaultEventInitiator extends AbstractController<Event> implements 
 	private final Map<Long, List<WeatherEvent>> weatherEventMap = new HashMap<>();
 
 	@EJB
-	private ServiceDictionary<?> serviceDictionary;
+	private ServiceDictionary serviceDictionary;
 	
 	@EJB
 	private OperationCenterControllerLoader operationCenterControllerLoader;
@@ -446,7 +444,7 @@ public class DefaultEventInitiator extends AbstractController<Event> implements 
 	 * 
 	 * @param serviceDictionary
 	 */
-	public void _setServiceDictionary(ServiceDictionary<?> serviceDictionary) {
+	public void _setServiceDictionary(ServiceDictionary serviceDictionary) {
 		this.serviceDictionary = serviceDictionary;
 	}
 

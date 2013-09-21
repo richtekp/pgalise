@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import java.util.UUID;
 
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 
@@ -37,7 +36,7 @@ public interface BicycleFactory {
 	 *            ID of the {@link Bike} type
 	 * @return created {@link Bike}
 	 */
-	public Vehicle<BicycleData> createBicycle(UUID id, String typeId, SensorHelper gpsSensor);
+	public Vehicle<BicycleData> createBicycle( String typeId, SensorHelper gpsSensor);
 
 	/**
 	 * Method to create a random {@link Bike}.
@@ -46,5 +45,5 @@ public interface BicycleFactory {
 	 *            ID of the {@link Bike}
 	 * @return created {@link Bike}
 	 */
-	public Vehicle<BicycleData> createRandomBicycle(UUID id, SensorHelper gpsSensor);
+	public Vehicle<BicycleData> createRandomBicycle( SensorHelper gpsSensor);
 }

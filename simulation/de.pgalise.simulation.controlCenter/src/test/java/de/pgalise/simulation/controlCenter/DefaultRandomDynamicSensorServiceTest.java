@@ -119,13 +119,11 @@ public class DefaultRandomDynamicSensorServiceTest {
 
 		/* Count vehicles and their gps ratio: */
 		if (result.getType() == TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT) {
-			for (CreateRandomVehicleData createRandomVehicleData : ((CreateRandomVehiclesEvent) result)
+			for (CreateRandomVehicleData createRandomVehicleData : ((CreateRandomVehiclesEvent<?>) result)
 					.getCreateRandomVehicleDataList()) {
 				switch (createRandomVehicleData.getVehicleInformation().getVehicleType()) {
 					case CAR:
 						DefaultRandomDynamicSensorServiceTest.carAmount++;
-						DefaultRandomDynamicSensorServiceTest.newUUIDs.add(createRandomVehicleData
-								.getVehicleInformation().getVehicleID());
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
 							if (sensorHelper.getSensorType() == SensorType.GPS_CAR) {
 								DefaultRandomDynamicSensorServiceTest.carsWithGPSAmount++;
@@ -136,8 +134,6 @@ public class DefaultRandomDynamicSensorServiceTest {
 						break;
 					case BIKE:
 						DefaultRandomDynamicSensorServiceTest.bikeAmount++;
-						DefaultRandomDynamicSensorServiceTest.newUUIDs.add(createRandomVehicleData
-								.getVehicleInformation().getVehicleID());
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
 							if (sensorHelper.getSensorType() == SensorType.GPS_BIKE) {
 								DefaultRandomDynamicSensorServiceTest.bikesWithGPSAmount++;
@@ -148,8 +144,6 @@ public class DefaultRandomDynamicSensorServiceTest {
 						break;
 					case MOTORCYCLE:
 						DefaultRandomDynamicSensorServiceTest.motorcycleAmount++;
-						DefaultRandomDynamicSensorServiceTest.newUUIDs.add(createRandomVehicleData
-								.getVehicleInformation().getVehicleID());
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
 							if (sensorHelper.getSensorType() == SensorType.GPS_MOTORCYCLE) {
 								DefaultRandomDynamicSensorServiceTest.motorcyclesWithGPSAmount++;
@@ -160,8 +154,6 @@ public class DefaultRandomDynamicSensorServiceTest {
 						break;
 					case TRUCK:
 						DefaultRandomDynamicSensorServiceTest.truckAmount++;
-						DefaultRandomDynamicSensorServiceTest.newUUIDs.add(createRandomVehicleData
-								.getVehicleInformation().getVehicleID());
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
 							if (sensorHelper.getSensorType() == SensorType.GPS_TRUCK) {
 								DefaultRandomDynamicSensorServiceTest.trucksWithGPSAmount++;

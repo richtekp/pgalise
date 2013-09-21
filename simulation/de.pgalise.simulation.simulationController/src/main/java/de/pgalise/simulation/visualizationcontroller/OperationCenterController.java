@@ -18,7 +18,6 @@ package de.pgalise.simulation.visualizationcontroller;
 
 import de.pgalise.simulation.service.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventType;
 
 /**
  * The interface for the operation center. It receives all information from the simulation

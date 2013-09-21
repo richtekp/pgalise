@@ -18,8 +18,6 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.traffic.event.AbstractVehicleEvent;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import java.util.Collections;
 import java.util.EnumSet;

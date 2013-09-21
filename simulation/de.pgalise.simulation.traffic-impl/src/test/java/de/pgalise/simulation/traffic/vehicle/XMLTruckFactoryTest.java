@@ -17,7 +17,6 @@
 package de.pgalise.simulation.traffic.vehicle;
 
 import java.awt.Color;
-import java.util.UUID;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -58,10 +57,10 @@ public class XMLTruckFactoryTest {
 		TruckFactory factory = new XMLTruckFactory(random, XMLTruckFactoryTest.class.getResourceAsStream(FILEPATH),
 				new DefaultTrafficGraphExtensions(random));
 
-		Vehicle<TruckData> vehicle1 = factory.createRandomTruck(UUID.randomUUID(), null);
+		Vehicle<TruckData> vehicle1 = factory.createRandomTruck( null);
 		Assert.assertNotNull(vehicle1);
 
-		Vehicle<TruckData> vehicle2 = factory.createTruck(UUID.randomUUID(), "truck001", Color.GRAY, 2, null);
+		Vehicle<TruckData> vehicle2 = factory.createTruck( "truck001", Color.GRAY, 2, null);
 		Assert.assertNotNull(vehicle2);
 		Assert.assertEquals(Color.GRAY, vehicle2.getData().getColor());
 		Assert.assertEquals(2, vehicle2.getData().getTrailerCount(), 0);

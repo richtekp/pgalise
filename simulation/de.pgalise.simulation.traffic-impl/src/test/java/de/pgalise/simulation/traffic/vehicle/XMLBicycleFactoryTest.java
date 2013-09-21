@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic.vehicle;
 
-import java.util.UUID;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -57,10 +56,10 @@ public class XMLBicycleFactoryTest {
 		BicycleFactory factory = new XMLBicycleFactory(random, XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH),
 				new DefaultTrafficGraphExtensions(random));
 
-		Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle(UUID.randomUUID(), null);
+		Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle( null);
 		Assert.assertNotNull(vehicle1);
 
-		Vehicle<BicycleData> vehicle2 = factory.createBicycle(UUID.randomUUID(), "bicycle001", null);
+		Vehicle<BicycleData> vehicle2 = factory.createBicycle( "bicycle001", null);
 		Assert.assertNotNull(vehicle2);
 	}
 

@@ -30,7 +30,6 @@ import org.graphstream.graph.Path;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.service.event.EventHandlerManager;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -43,16 +42,20 @@ import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.scheduler.Item;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
  * Local view of the TrafficServer. The provided methods are just available for the application on the local host.
  * 
+ * @param <E> 
  * @author mustafa
  * @author Lena
  */
-public interface TrafficServerLocal extends TrafficServer {
+public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServer<E> {
 	public static EnumSet<SensorType> RESPONSIBLE_FOR_SENSOR_TYPES = EnumSet.of(SensorType.TRAFFICLIGHT_SENSOR,
 			SensorType.INFRARED, SensorType.INDUCTIONLOOP, SensorType.TOPORADAR, SensorType.GPS_BIKE,
 			SensorType.GPS_BUS, SensorType.GPS_CAR, SensorType.GPS_TRUCK, SensorType.GPS_MOTORCYCLE);
@@ -187,7 +190,7 @@ public interface TrafficServerLocal extends TrafficServer {
 	 * 
 	 * @return {@link SimulationEventHandlerManager}
 	 */
-	public EventHandlerManager getEventHandlerManager();
+	public TrafficEventHandlerManager<TrafficEventHandler<E>,E> getTrafficEventHandlerManager();
 	
 	/**
 	 * 
@@ -213,7 +216,7 @@ public interface TrafficServerLocal extends TrafficServer {
 	 * @deprecated Should be used in the implementation only
 	 * @return
 	 */
-	public List<Item> getItemsToScheduleAfterAttractionReached();
+	public List<ScheduleItem> getItemsToScheduleAfterAttractionReached();
 
 	/**
 	 * Items to schedule after the VehicleAmountManager checks the actual amount of vehicles. 
@@ -221,7 +224,7 @@ public interface TrafficServerLocal extends TrafficServer {
 	 * @deprecated Should be used in the implementation only
 	 * @return
 	 */
-	public List<Item> getItemsToScheduleAfterFuzzy();
+	public List<ScheduleItem> getItemsToScheduleAfterFuzzy();
 
 	/**
 	 * Items to remove after the VehicleAmountManager checks the actual amount of vehicles. 

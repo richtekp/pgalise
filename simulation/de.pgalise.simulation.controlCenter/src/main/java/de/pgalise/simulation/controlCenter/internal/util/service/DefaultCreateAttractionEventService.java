@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.controlCenter.internal.util.service;
 
-import java.util.UUID;
 
 import com.google.inject.Inject;
 
@@ -62,9 +61,10 @@ public class DefaultCreateAttractionEventService implements CreateAttractionEven
 						withSensorInterferer);
 		
 		return new AttractionTrafficEvent(
+			trafficServerLocal,System.currentTimeMillis(), 0,
 				startTimestamp, 
 				endTimestamp, 
 				nodeID, 
-				createRandomVehiclesEvent.getCreateRandomVehicleDataList(), trafficServerLocal, null, System.currentTimeMillis(), 0);
+				createRandomVehiclesEvent.getCreateRandomVehicleDataList() );
 	}
 }

@@ -19,7 +19,6 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -67,17 +66,17 @@ public class ExtendedXMLBicycleFactory extends XMLAbstractFactory<BicycleData> i
 	}
 
 	@Override
-	public Vehicle<BicycleData> createRandomBicycle(UUID id, SensorHelper helper) {
+	public Vehicle<BicycleData> createRandomBicycle( SensorHelper helper) {
 		BicycleData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
-		return new DefaultBicycle(id, "bicycle" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new DefaultBicycle( "bicycle" + getNextCounter(), data, this.trafficGraphExtensions);
 	}
 
 	@Override
-	public Vehicle<BicycleData> createBicycle(UUID id, String typeId, SensorHelper helper) {
+	public Vehicle<BicycleData> createBicycle( String typeId, SensorHelper helper) {
 		BicycleData data = getVehicleData().get(typeId);
 		data.setGpsSensorHelper(helper);
-		return new DefaultBicycle(id, "bicycle" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new DefaultBicycle( "bicycle" + getNextCounter(), data, this.trafficGraphExtensions);
 	}
 
 	/**

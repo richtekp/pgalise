@@ -29,9 +29,9 @@ import java.util.List;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
-import de.pgalise.simulation.shared.traffic.BusLineInformation;
+import de.pgalise.simulation.traffic.BusLineInformation;
 import de.pgalise.simulation.shared.traffic.BusStopInformation;
-import de.pgalise.simulation.shared.traffic.BusTrip;
+import de.pgalise.simulation.traffic.BusTrip;
 
 /**
  * @author Lena

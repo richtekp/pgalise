@@ -18,9 +18,7 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.persistence.Identifiable;
-import java.io.Serializable;
 import java.util.EnumSet;
-import java.util.UUID;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;

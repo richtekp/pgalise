@@ -29,7 +29,7 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
  * @param <S> 
  * @author mustafa
  */
-public interface ServiceDictionary<S extends Service> {
+public interface ServiceDictionary {
 	public static final String FRONT_CONTROLLER = "de.pgalise.simulation.FrontController";
 	public static final String TRAFFIC_SERVER = "de.pgalise.simulation.traffic.server.TrafficServer";
 	public static final String TRAFFIC_CONTROLLER = "de.pgalise.simulation.traffic.TrafficController";
@@ -51,7 +51,7 @@ public interface ServiceDictionary<S extends Service> {
 	/**
 	 * @return list of all simulation controllers
 	 */
-	public Collection<S> getControllers();
+	public Collection<Service> getControllers();
 
 	/**
 	 * @param <C> 

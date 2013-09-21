@@ -28,7 +28,6 @@ import de.pgalise.simulation.shared.event.EventType;
  * @author mustafa
  *
  * @param <E> event to be processed by this handler
- * @param <T> type of event E (usually an enum class)  
  */
 public interface EventHandler<E extends Event> {
 	

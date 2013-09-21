@@ -5,33 +5,25 @@
 package de.pgalise.simulation.traffic.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.AbstractEvent;
-import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import java.util.Map;
 import org.graphstream.graph.Graph;
 
 /**
- *
- * @param <T> 
+ * An event concerning one vehicle (general traffic event are described using {@link TrafficEvent}
+ * @param <D> 
  * @author richter
  */
-public interface VehicleEvent extends TrafficEvent {
+public interface VehicleEvent<D extends VehicleData> extends TrafficEvent {
+	
+	Vehicle<D> getVehicle()  ;
 
-	Vehicle<? extends VehicleData> getVehicle()  ;
-
-	long getSimulationTime()  ;
-
-	long getElapsedTime()  ;
-
-	ServiceDictionary<?> getServiceDictionary() ;
+	ServiceDictionary getServiceDictionary() ;
 
 	/**
 	 * @return shallow copy of currently driving vehicles

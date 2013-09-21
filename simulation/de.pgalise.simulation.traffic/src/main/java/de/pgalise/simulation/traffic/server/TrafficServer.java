@@ -29,10 +29,11 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * A TrafficServer takes care of one of these areas.
  * The TrafficServers are usually managed by the TrafficController.
  *  
+ * @param <E> 
  * @see de.pgalise.simulation.traffic.TrafficController
  * @author mustafa
  */
-public interface TrafficServer extends SensorManagerController<TrafficEvent> {
+public interface TrafficServer<E extends TrafficEvent> extends SensorManagerController<E> {
 	/**
 	 * Sets the city zone this server is responsible for.
 	 * 

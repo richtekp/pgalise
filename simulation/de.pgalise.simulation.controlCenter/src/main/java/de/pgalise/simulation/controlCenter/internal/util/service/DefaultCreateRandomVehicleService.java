@@ -93,7 +93,7 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_CAR, withSensorInterferer), ""));
 			}
 
-			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation(vehicleID, gpsActivated, VehicleTypeEnum.CAR, 
+			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation( gpsActivated, VehicleTypeEnum.CAR, 
 					VehicleModelEnum.CAR_RANDOM, null, "" +vehicleID)));
 		}
 		
@@ -119,7 +119,7 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_BIKE, withSensorInterferer), ""));
 			}
 
-			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation(vehicleID, gpsActivated, VehicleTypeEnum.BIKE, 
+			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation( gpsActivated, VehicleTypeEnum.BIKE, 
 					VehicleModelEnum.BIKE_RANDOM, null, "" +vehicleID)));
 		}
 		
@@ -145,7 +145,7 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_TRUCK, withSensorInterferer), ""));
 			}
 
-			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation(vehicleID, gpsActivated, VehicleTypeEnum.TRUCK, 
+			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation( gpsActivated, VehicleTypeEnum.TRUCK, 
 					VehicleModelEnum.TRUCK_RANDOM, null, "" +vehicleID)));
 		}
 		
@@ -171,11 +171,11 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 						this.sensorInterfererService.getSensorInterferes(SensorType.GPS_MOTORCYCLE, withSensorInterferer), ""));
 			}
 
-			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation(vehicleID, gpsActivated, VehicleTypeEnum.MOTORCYCLE, 
+			createRandomVehicleDataList.add(new CreateRandomVehicleData(sensorHelperList, new VehicleInformation( gpsActivated, VehicleTypeEnum.MOTORCYCLE, 
 					VehicleModelEnum.MOTORCYCLE_RANDOM, null, "" +vehicleID)));
 		}
 
 
-		return new CreateRandomVehiclesEvent(trafficServerLocal, createRandomVehicleDataList, null, System.currentTimeMillis(), 0);
+		return new CreateRandomVehiclesEvent(trafficServerLocal, System.currentTimeMillis(), 0, createRandomVehicleDataList);
 	}
 }
