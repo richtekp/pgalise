@@ -17,10 +17,10 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.jam.DefaultNaSchModel;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
 
 /**
@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
  * 
  * @author Mustafa
  */
-public class VehicleUpdateHandler implements VehicleEventHandler {
+public class VehicleUpdateHandler extends AbstractVehicleEventHandler<VehicleEvent> {
 
 	/**
 	 * Traffic jam model
@@ -42,8 +42,8 @@ public class VehicleUpdateHandler implements VehicleEventHandler {
 	}
 
 	@Override
-	public VehicleEventType getTargetEventType() {
-		return VehicleEventType.VEHICLE_UPDATE;
+	public VehicleEventTypeEnum getTargetEventType() {
+		return VehicleEventTypeEnum.VEHICLE_UPDATE;
 	}
 
 	@Override

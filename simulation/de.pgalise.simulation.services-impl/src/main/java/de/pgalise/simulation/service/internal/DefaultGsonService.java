@@ -38,8 +38,8 @@ import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import org.slf4j.Logger;
@@ -59,7 +59,7 @@ public class DefaultGsonService extends AbstractController implements GsonServic
 	public Gson getGson() {
 		return new GsonBuilder().
 				registerTypeAdapter(SensorHelper.class, new SensorHelperTypeDeserializer()).
-				registerTypeAdapter(SimulationEvent.class, new SimulationEventAdapter()).
+				registerTypeAdapter(AbstractEvent.class, new SimulationEventAdapter()).
 				create();
 	}
 
@@ -89,7 +89,7 @@ public class DefaultGsonService extends AbstractController implements GsonServic
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList simulationEventList) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	
@@ -97,7 +97,7 @@ public class DefaultGsonService extends AbstractController implements GsonServic
 	 * Handles the deserialization of simulation events.
 	 * @author Timo
 	 */
-	private static class SimulationEventAdapter implements JsonDeserializer<SimulationEvent>, JsonSerializer<SimulationEvent> {
+	private static class SimulationEventAdapter implements JsonDeserializer<AbstractEvent>, JsonSerializer<AbstractEvent> {
 
 		private Gson gson;
 		
@@ -109,14 +109,14 @@ public class DefaultGsonService extends AbstractController implements GsonServic
 		}
 		
 		@Override
-		public SimulationEvent deserialize(JsonElement json, Type type,
+		public AbstractEvent deserialize(JsonElement json, Type type,
 				JsonDeserializationContext context) throws JsonParseException {
-			SimulationEvent simulationEvent = this.gson.fromJson(json, SimulationEvent.class);			
-			return (SimulationEvent) this.gson.fromJson(json, simulationEvent.getType().getImplementationClass());
+			AbstractEvent simulationEvent = this.gson.fromJson(json, AbstractEvent.class);			
+			return (AbstractEvent) this.gson.fromJson(json, simulationEvent.getType().getImplementationClass());
 		}
 
 		@Override
-		public JsonElement serialize(SimulationEvent src, Type typeOfSrc,
+		public JsonElement serialize(AbstractEvent src, Type typeOfSrc,
 				JsonSerializationContext context) {
 			return this.gson.toJsonTree(src, src.getType().getImplementationClass());
 		}

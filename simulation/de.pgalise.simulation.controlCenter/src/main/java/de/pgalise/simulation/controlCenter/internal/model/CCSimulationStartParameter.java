@@ -21,7 +21,7 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.traffic.BusRoute;
@@ -76,7 +76,7 @@ public class CCSimulationStartParameter {
 	/**
 	 * list of simulation event lists
 	 */
-	private List<SimulationEventList> simulationEventLists;
+	private List<EventList<?>> simulationEventLists;
 	
 	/**
 	 * WeatherEvents
@@ -135,6 +135,7 @@ public class CCSimulationStartParameter {
 	 * @param sensorHelperList
 	 * @param simulationEventLists
 	 * @param weatherEventList
+	 * @param osmAndBusstopFileData 
 	 * @param randomDynamicSensorBundle
 	 * 			contains all vehicles which will be created on start
 	 * @param withSensorInterferes
@@ -147,6 +148,7 @@ public class CCSimulationStartParameter {
 	 * @param operationCenterAddress
 	 * 			url of the operation center
 	 * @param attractionCollection
+	 * @param trafficFuzzyData 
 	 * @param controlCenterAddress
 	 * 			url of the control center
 	 */
@@ -156,7 +158,7 @@ public class CCSimulationStartParameter {
 			String ipEnergyController,
 			List<String> trafficServerIPList, City city,
 			List<SensorHelper> sensorHelperList,
-			List<SimulationEventList> simulationEventLists,
+			List<EventList<?>> simulationEventLists,
 			List<WeatherEventHelper> weatherEventList,
 			OSMAndBusstopFileData osmAndBusstopFileData,
 			RandomVehicleBundle randomDynamicSensorBundle, 
@@ -284,12 +286,12 @@ public class CCSimulationStartParameter {
 		this.sensorHelperList = sensorHelperList;
 	}
 
-	public List<SimulationEventList> getSimulationEventLists() {
+	public List<EventList<?>> getSimulationEventLists() {
 		return simulationEventLists;
 	}
 
 	public void setSimulationEventLists(
-			List<SimulationEventList> simulationEventLists) {
+			List<EventList<?>> simulationEventLists) {
 		this.simulationEventLists = simulationEventLists;
 	}
 

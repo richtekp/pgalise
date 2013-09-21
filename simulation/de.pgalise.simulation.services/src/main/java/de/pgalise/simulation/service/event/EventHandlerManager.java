@@ -35,11 +35,12 @@ import java.io.InputStream;
  * @author mustafa
  *
  */
-public interface EventHandlerManager<H extends EventHandler<E, T>, E extends Event<T>, T extends EventType> extends Iterable<H> {
+public interface EventHandlerManager<H extends EventHandler<E>, E extends Event> extends Iterable<H> {
 	/**
 	 * Registers all listed EventHandlers on this EventHandlerManager.
 	 * All previously registered handler will be deleted.
 	 * 
+	 * @param <J> 
 	 * @param config
 	 *            list of EventHandler (class names) to be registered
 	 * @param clazz
@@ -53,7 +54,7 @@ public interface EventHandlerManager<H extends EventHandler<E, T>, E extends Eve
 	 * @throws IOException
 	 *             if an error occurred processing the inputstream
 	 */
-	public <J extends H> void init(InputStream config, Class<J> clazz) throws ClassNotFoundException, InstantiationException,
+	public <J extends H> void init(InputStream config, Class<? extends J> clazz) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IOException;
 
 	/**
@@ -70,7 +71,7 @@ public interface EventHandlerManager<H extends EventHandler<E, T>, E extends Eve
 	 * @param type
 	 *            specifies the handler to be removed
 	 */
-	public void remoteHandler(T type);
+	public void remoteHandler(EventType type);
 
 	/**
 	 * Delegates the passed event to the appreciate handler.
@@ -85,7 +86,7 @@ public interface EventHandlerManager<H extends EventHandler<E, T>, E extends Eve
 	 *            the event type the handler is responsible for
 	 * @return EventHandler for the passed event type
 	 */
-	public H getEventHandler(T type);
+	public H getEventHandler(EventType type);
 
 	/**
 	 * Clear all event handlers

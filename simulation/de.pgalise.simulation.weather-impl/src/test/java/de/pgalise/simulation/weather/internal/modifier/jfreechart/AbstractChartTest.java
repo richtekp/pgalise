@@ -35,6 +35,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import org.junit.BeforeClass;
 
@@ -95,7 +96,7 @@ public abstract class AbstractChartTest {
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader<?> loader;
+	private WeatherLoader<DefaultWeatherCondition> loader;
 
 	/**
 	 * Constructor
@@ -141,7 +142,7 @@ public abstract class AbstractChartTest {
 		City city = new City("test_city", 200000, 100, true, true, referenceArea);
 
 		// Load EJB for Weather loader
-		this.loader = (WeatherLoader) ctx
+		this.loader = (WeatherLoader<DefaultWeatherCondition>) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
 
 		// Create service
@@ -157,7 +158,7 @@ public abstract class AbstractChartTest {
 		container = TestUtils.getContainer();
 	}
 
-	public WeatherLoader<?> getLoader() {
+	public WeatherLoader<DefaultWeatherCondition> getLoader() {
 		return this.loader;
 	}
 
@@ -223,7 +224,7 @@ public abstract class AbstractChartTest {
 	 * @param loader the loader to set
 	 */
 	public void setLoader(
-		WeatherLoader<?> loader) {
+		WeatherLoader<DefaultWeatherCondition> loader) {
 		this.loader = loader;
 	}
 

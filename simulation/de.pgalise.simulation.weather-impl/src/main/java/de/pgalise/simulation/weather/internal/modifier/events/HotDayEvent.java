@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
@@ -47,7 +48,7 @@ import javax.measure.unit.SI;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public class HotDayEvent extends WeatherDayEventModifier {
+public class HotDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition> {
 
 	/**
 	 * Event type
@@ -104,7 +105,7 @@ public class HotDayEvent extends WeatherDayEventModifier {
 	 *            Maximal duration of the event
 	 * @param weatherLoader  
 	 */
-	public HotDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader weatherLoader) {
+	public HotDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
 	}
 
@@ -117,7 +118,7 @@ public class HotDayEvent extends WeatherDayEventModifier {
 	 *            Properties
 	 * @param weatherLoader  
 	 */
-	public HotDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
+	public HotDayEvent(long seed, Properties props, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -128,7 +129,7 @@ public class HotDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public HotDayEvent(long seed, WeatherLoader weatherLoader) {
+	public HotDayEvent(long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -141,7 +142,7 @@ public class HotDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public HotDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
+	public HotDayEvent(WeatherMap map, long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
@@ -46,7 +47,7 @@ import java.util.List;
  * @author Andreas Rehfeldt
  * @version 1.0 (09.08.2012)
  */
-public class StormDayEvent extends WeatherDayEventModifier {
+public class StormDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition> {
 
 	/**
 	 * Event type
@@ -104,7 +105,7 @@ public class StormDayEvent extends WeatherDayEventModifier {
 	 * @param weatherLoader  
 	 */
 	public StormDayEvent(long seed, long time, Properties props, Float value, Float duration,
-			WeatherLoader weatherLoader) {
+			WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
 	}
 
@@ -117,7 +118,7 @@ public class StormDayEvent extends WeatherDayEventModifier {
 	 *            Properties
 	 * @param weatherLoader  
 	 */
-	public StormDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
+	public StormDayEvent(long seed, Properties props, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -128,7 +129,7 @@ public class StormDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public StormDayEvent(long seed, WeatherLoader weatherLoader) {
+	public StormDayEvent(long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -141,7 +142,7 @@ public class StormDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public StormDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
+	public StormDayEvent(WeatherMap map, long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 

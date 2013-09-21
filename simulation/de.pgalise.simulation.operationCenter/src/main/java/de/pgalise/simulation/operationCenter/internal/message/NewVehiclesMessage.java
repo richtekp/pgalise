@@ -18,7 +18,8 @@ package de.pgalise.simulation.operationCenter.internal.message;
 
 import java.util.Collection;
 
-import de.pgalise.simulation.operationCenter.internal.model.VehicleData;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 /**
  * This message will be send, if new vehicles are created.
  * Notice: Vehicles can not be instantiated with {@link NewSensorsMessage}.

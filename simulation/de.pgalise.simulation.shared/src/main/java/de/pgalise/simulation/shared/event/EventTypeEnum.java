@@ -21,13 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.pgalise.simulation.shared.event.energy.ChangeEnergyConsumptionEvent;
-import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.DeleteVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.RoadBarrierTrafficEvent;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.NewDayEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -39,31 +32,8 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
  * @author Timo
  */
 @SuppressWarnings("deprecation")
-public enum SimulationEventTypeEnum implements EventType {
-	/**
-	 * Creates new random vehicles
-	 */
-	CREATE_RANDOM_VEHICLES_EVENT(0, CreateRandomVehiclesEvent.class),
+public enum EventTypeEnum implements EventType {
 
-	/**
-	 * Creates new busses
-	 */
-	CREATE_BUSSES_EVENT(1, CreateBussesEvent.class),
-
-	/**
-	 * Creates random busses
-	 */
-	CREATE_RANDOM_BUSSES_EVENT(2, CreateRandomBussesEvent.class),
-
-	/**
-	 * Create new vehicles
-	 */
-	CREATE_VEHICLES_EVENT(3, CreateVehiclesEvent.class),
-
-	/**
-	 * Deletes vehicles
-	 */
-	DELETE_VEHICLES_EVENT(4, DeleteVehiclesEvent.class),
 
 	/**
 	 * Changes the current weahter conditions
@@ -78,17 +48,7 @@ public enum SimulationEventTypeEnum implements EventType {
 	/**
 	 * Influences the energy consumption
 	 */
-	PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT(12, ChangeEnergyConsumptionEvent.class),
-
-	/**
-	 * Creates an attraction
-	 */
-	ATTRACTION_TRAFFIC_EVENT(13, AttractionTrafficEvent.class),
-
-	/**
-	 * Creates a road barrier
-	 */
-	ROAD_BARRIER_TRAFFIC_EVENT(14, RoadBarrierTrafficEvent.class);
+	PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT(12, ChangeEnergyConsumptionEvent.class);
 
 	/**
 	 * ID of the event
@@ -103,22 +63,22 @@ public enum SimulationEventTypeEnum implements EventType {
 	/**
 	 * maps simulation event type ids integers to {@link SimulationEventTypeEnum}
 	 */
-	private static Map<Integer, SimulationEventTypeEnum> SIMULATION_EVENT_TYPE_IDS;
+	private static Map<Integer, EventTypeEnum> SIMULATION_EVENT_TYPE_IDS;
 
 	/**
 	 * Returns simulation event type ids.
 	 * 
 	 * @return simulation event type ids.
 	 */
-	private static Map<Integer, SimulationEventTypeEnum> getSimulationEventTypeIds() {
-		if (SimulationEventTypeEnum.SIMULATION_EVENT_TYPE_IDS == null) {
-			SimulationEventTypeEnum.SIMULATION_EVENT_TYPE_IDS = new HashMap<>();
+	private static Map<Integer, EventTypeEnum> getSimulationEventTypeIds() {
+		if (EventTypeEnum.SIMULATION_EVENT_TYPE_IDS == null) {
+			EventTypeEnum.SIMULATION_EVENT_TYPE_IDS = new HashMap<>();
 		}
-		return SimulationEventTypeEnum.SIMULATION_EVENT_TYPE_IDS;
+		return EventTypeEnum.SIMULATION_EVENT_TYPE_IDS;
 	}
 
-	public static Map<Integer, SimulationEventTypeEnum> getSimulationEventTypeMapAsUnmodifiable() {
-		return Collections.unmodifiableMap(SimulationEventTypeEnum.SIMULATION_EVENT_TYPE_IDS);
+	public static Map<Integer, EventTypeEnum> getSimulationEventTypeMapAsUnmodifiable() {
+		return Collections.unmodifiableMap(EventTypeEnum.SIMULATION_EVENT_TYPE_IDS);
 	}
 
 	/**
@@ -131,16 +91,16 @@ public enum SimulationEventTypeEnum implements EventType {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 */
-	private SimulationEventTypeEnum(final int simulationEventID, final Class<?> implementationClass)
+	private EventTypeEnum(final int simulationEventID, final Class<?> implementationClass)
 			throws IllegalArgumentException, IllegalStateException {
 		if (simulationEventID < 0) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("simulationEventID", true));
 		}
-		if (SimulationEventTypeEnum.getSimulationEventTypeIds().containsKey(simulationEventID)) {
+		if (EventTypeEnum.getSimulationEventTypeIds().containsKey(simulationEventID)) {
 			throw new IllegalStateException("Argument 'simulationEventID' = " + simulationEventID
 					+ " is already registered");
 		}
-		SimulationEventTypeEnum.getSimulationEventTypeIds().put(this.simulationEventID = simulationEventID, this);
+		EventTypeEnum.getSimulationEventTypeIds().put(this.simulationEventID = simulationEventID, this);
 		this.implementationClass = implementationClass;
 	}
 

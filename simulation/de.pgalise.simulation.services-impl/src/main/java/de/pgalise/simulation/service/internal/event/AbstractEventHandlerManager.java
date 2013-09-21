@@ -41,12 +41,12 @@ import java.util.Properties;
  * @param <E>
  * @param <T>
  */
-public abstract class AbstractEventHandlerManager<H extends EventHandler<E,T>, E extends Event<T>, T extends EventType> implements
-		EventHandlerManager<H, E, T> {
+public abstract class AbstractEventHandlerManager<H extends EventHandler<E>, E extends Event> implements
+		EventHandlerManager<H, E> {
 	private List<H> handlers = new ArrayList<>();
 
 	@Override
-	public <J extends H> void  init(InputStream config, Class<J> clazz) throws ClassNotFoundException, InstantiationException,
+	public <J extends H> void  init(InputStream config, Class<? extends J> clazz) throws ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IOException {
 		Properties prop = new Properties();
 		prop.load(config);
@@ -81,7 +81,7 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E,T>, E
 	}
 
 	@Override
-	public H getEventHandler(T type) {
+	public H getEventHandler(EventType type) {
 		for (H handler : getHandlers()) {
 			if (handler.getTargetEventType().equals(type)) {
 				return handler;
@@ -107,7 +107,7 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E,T>, E
 	}
 
 	@Override
-	public void remoteHandler(T type) {
+	public void remoteHandler(EventType type) {
 		for (H handler : getHandlers()) {
 			if (handler.getTargetEventType().equals(type)) {
 				getHandlers().remove(handler);

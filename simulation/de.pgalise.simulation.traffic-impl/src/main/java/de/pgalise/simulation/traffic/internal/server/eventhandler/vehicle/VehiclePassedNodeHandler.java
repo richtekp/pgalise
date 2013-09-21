@@ -21,12 +21,13 @@ import java.util.Random;
 import org.graphstream.graph.Node;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
@@ -38,10 +39,11 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author Andreas Rehfeldt
  * @author Lena
  */
-public class VehiclePassedNodeHandler implements VehicleEventHandler {
+public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleEvent> {
+	
 	@Override
-	public VehicleEventType getTargetEventType() {
-		return VehicleEventType.VEHICLE_PASSED_NODE;
+	public EventType getTargetEventType() {
+		return VehicleEventTypeEnum.VEHICLE_PASSED_NODE;
 	}
 
 	@Override

@@ -44,13 +44,16 @@ import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -69,9 +72,14 @@ import de.pgalise.simulation.weather.service.WeatherController;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.simulationController.event.EventInitiator")
 @Local
-public class DefaultEventInitiator extends AbstractController implements EventInitiator {
+public class DefaultEventInitiator extends AbstractController<Event> implements EventInitiator {
 	private static final String NAME = "EventInitiator";
 	private static SimpleDateFormat sdf;
+
+	@Override
+	public EventList<?> getEventList() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 
 	/**
 	 * Event thread
@@ -118,7 +126,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 						}
 
 						DefaultEventInitiator.this.serviceDictionary.getController(WeatherController.class).update(
-								new SimulationEventList(weatherEventList, DefaultEventInitiator.this.currentTimestamp,
+								new EventList<>(weatherEventList, DefaultEventInitiator.this.currentTimestamp,
 										UUID.randomUUID()));
 
 						/* Update EnergyController: */
@@ -134,19 +142,19 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 						}
 
 						DefaultEventInitiator.this.serviceDictionary.getController(EnergyController.class).update(
-								new SimulationEventList(energyEventList, DefaultEventInitiator.this
+								new EventList(energyEventList, DefaultEventInitiator.this
 										.getCurrentTimestamp(), UUID.randomUUID()));
 
 						/*
 						 * FrontController...
 						 */
-						for(Controller c : DefaultEventInitiator.this.frontControllerList) {
-							c.update(new SimulationEventList(new ArrayList<SimulationEvent>(),
+						for(Controller<?> c : DefaultEventInitiator.this.frontControllerList) {
+							c.update(new EventList(new ArrayList<>(),
 									DefaultEventInitiator.this.currentTimestamp, UUID.randomUUID()));
 						}
 
 						/* Traffic */
-						List<TrafficEvent> trafficEventList;
+						List<Event> trafficEventList;
 						synchronized (trafficEventMap) {
 							trafficEventList = DefaultEventInitiator.this.trafficEventMap
 									.get(DefaultEventInitiator.this.currentTimestamp);
@@ -157,16 +165,16 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 							trafficEventList = new ArrayList<>();
 						}
 						/* Update the operation center. It needs only the traffic events. */
-						DefaultEventInitiator.this.operationCenterController.update(new SimulationEventList(
+						DefaultEventInitiator.this.operationCenterController.update(new EventList<>(
 								new ArrayList<>(trafficEventList), DefaultEventInitiator.this.currentTimestamp, UUID
 										.randomUUID()));
 						
 						/* Update the control center. It needs only the time: */
-						DefaultEventInitiator.this.controlCenterController.update(new SimulationEventList(new ArrayList<SimulationEvent>(), 
+						DefaultEventInitiator.this.controlCenterController.update(new EventList(new ArrayList<AbstractEvent>(), 
 								DefaultEventInitiator.this.currentTimestamp, UUID.randomUUID()));
 
 						DefaultEventInitiator.this.serviceDictionary.getController(TrafficController.class).update(
-								new SimulationEventList(new ArrayList<>(trafficEventList),
+								new EventList(new ArrayList<>(trafficEventList),
 										DefaultEventInitiator.this.currentTimestamp, UUID.randomUUID()));
 
 						/* update time */
@@ -216,7 +224,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	/**
 	 * Map with timestamp and traffic events
 	 */
-	private final Map<Long, List<TrafficEvent>> trafficEventMap = new HashMap<>();
+	private final Map<Long, List<Event>> trafficEventMap = new HashMap<>();
 
 	/**
 	 * Map with timestamp and weather events
@@ -224,7 +232,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	private final Map<Long, List<WeatherEvent>> weatherEventMap = new HashMap<>();
 
 	@EJB
-	private ServiceDictionary serviceDictionary;
+	private ServiceDictionary<?> serviceDictionary;
 	
 	@EJB
 	private OperationCenterControllerLoader operationCenterControllerLoader;
@@ -236,7 +244,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	
 	private ControlCenterController controlCenterController;
 	
-	private List<Controller> frontControllerList;
+	private List<Controller<?>> frontControllerList;
 
 	/**
 	 * Default constructor
@@ -292,10 +300,10 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	 * @param timestamp
 	 *            timestamp
 	 */
-	private void addTrafficEvent(TrafficEvent trafficEvent, long timestamp) {
+	private void addTrafficEvent(Event trafficEvent, long timestamp) {
 		synchronized (this.trafficEventMap) {
 			long bestTimestamp = this.findBestTimestamp(timestamp);
-			List<TrafficEvent> trafficEventList = this.trafficEventMap.get(bestTimestamp);
+			List<Event> trafficEventList = this.trafficEventMap.get(bestTimestamp);
 
 			if (trafficEventList == null) {
 				trafficEventList = new ArrayList<>();
@@ -376,16 +384,16 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	}
 
 	@Override
-	public void addSimulationEventList(SimulationEventList simulationEventList) {
+	public void addSimulationEventList(EventList<?> simulationEventList) {
 		if ((simulationEventList.getEventList() != null) && !simulationEventList.getEventList().isEmpty()) {
-			for (SimulationEvent event : simulationEventList.getEventList()) {
+			for (Event event : simulationEventList.getEventList()) {
 
 				/*
 				 * Add new events here!
 				 */
 
-				if (event instanceof TrafficEvent) {
-					this.addTrafficEvent((TrafficEvent) event, simulationEventList.getTimestamp());
+				if (event instanceof AbstractTrafficEvent) {
+					this.addTrafficEvent((AbstractTrafficEvent) event, simulationEventList.getTimestamp());
 				} else if (event instanceof WeatherEvent) {
 					this.addWeatherEvent((WeatherEvent) event, simulationEventList.getTimestamp());
 				} else if (event instanceof EnergyEvent) {
@@ -406,7 +414,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<Event> simulationEventList) {
 		this.addSimulationEventList(simulationEventList);
 	}
 
@@ -438,7 +446,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	 * 
 	 * @param serviceDictionary
 	 */
-	public void _setServiceDictionary(ServiceDictionary serviceDictionary) {
+	public void _setServiceDictionary(ServiceDictionary<?> serviceDictionary) {
 		this.serviceDictionary = serviceDictionary;
 	}
 
@@ -460,7 +468,7 @@ public class DefaultEventInitiator extends AbstractController implements EventIn
 	}
 
 	@Override
-	public void setFrontController(List<Controller> controller) {
+	public void setFrontController(List<Controller<?>> controller) {
 		this.frontControllerList = controller;
 	}
 }

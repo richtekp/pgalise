@@ -19,7 +19,7 @@ package de.pgalise.simulation.sensorFramework;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.SimulationComponent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import javax.persistence.Embedded;
@@ -187,7 +187,7 @@ public abstract class Sensor extends AbstractIdentifiable implements SimulationC
 	 *            List with SimulationEvents
 	 */
 	@Override
-	public void update(final SimulationEventList eventList) {
+	public void update(final EventList eventList) {
 		if (eventList == null) {
 			throw new IllegalArgumentException("\"eventList\" must not be null");
 		}
@@ -202,7 +202,7 @@ public abstract class Sensor extends AbstractIdentifiable implements SimulationC
 	 * @param eventList
 	 *            List with SimulationEvents
 	 */
-	public abstract void transmitUsageData(SimulationEventList eventList);
+	public abstract void transmitUsageData(EventList eventList);
 
 	/**
 	 * performs the whole transmission sequence
@@ -210,7 +210,7 @@ public abstract class Sensor extends AbstractIdentifiable implements SimulationC
 	 * @param eventList
 	 *            List with SimulationEvents
 	 */
-	protected void transmitData(final SimulationEventList eventList) {
+	protected void transmitData(final EventList eventList) {
 		if (++this.currentUpdateStep >= this.updateLimit) {
 
 			this.beginTransmit();
@@ -226,7 +226,7 @@ public abstract class Sensor extends AbstractIdentifiable implements SimulationC
 		// logValueToSend(eventList); // for test purpose (damit nichts an infosphere gesendet wird)
 	}
 
-	protected void logValueToSend(SimulationEventList eventList) {
+	protected void logValueToSend(EventList eventList) {
 
 	}
 
@@ -250,7 +250,7 @@ public abstract class Sensor extends AbstractIdentifiable implements SimulationC
 	 * @param eventList
 	 *            List with SimulationEvents
 	 */
-	private void transmitMetaData(final SimulationEventList eventList) {
+	private void transmitMetaData(final EventList eventList) {
 		// Timestamp
 		this.getOutput().transmitLong(eventList.getTimestamp());
 		// SensorId

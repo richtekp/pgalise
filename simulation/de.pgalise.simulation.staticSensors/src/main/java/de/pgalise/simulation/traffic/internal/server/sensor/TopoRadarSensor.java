@@ -21,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -109,7 +109,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		if (!this.registeredVehicles.isEmpty()) {
 			// Get the first vehicle in list
 			VehicleData data = this.registeredVehicles.get(0).getData();
@@ -147,7 +147,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 *                if the getVehicle returns null
 	 */
 	@Override
-	protected void transmitData(SimulationEventList eventList) {
+	protected void transmitData(EventList eventList) {
 		while (!this.registeredVehicles.isEmpty()) {
 			super.transmitData(eventList);
 		}

@@ -36,7 +36,9 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
@@ -47,7 +49,7 @@ import de.pgalise.simulation.shared.sensor.SensorType;
  * The InfoSphere IP and it's ports can be changed in 'properties.props'.
  * @author Timo
  */
-public class DefaultGPSGateStrategy extends AbstractController implements GPSGateStrategy {
+public class DefaultGPSGateStrategy extends AbstractController<Event> implements GPSGateStrategy {
 
 	private static final Logger log = LoggerFactory.getLogger(DefaultGPSGateStrategy.class);
 	private String socketIP;
@@ -123,7 +125,7 @@ public class DefaultGPSGateStrategy extends AbstractController implements GPSGat
 	protected void onResume() {}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {}
+	protected void onUpdate(EventList simulationEventList) {}
 
 	@Override
 	public void createSensor(SensorHelper sensor) throws SensorException {

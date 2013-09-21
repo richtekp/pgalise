@@ -16,7 +16,8 @@
  
 package de.pgalise.simulation.shared.event.weather;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Event for modifying the current weather
@@ -63,7 +64,6 @@ public class ChangeWeatherEvent extends WeatherEvent {
 	 *            Specified duration
 	 */
 	public ChangeWeatherEvent(WeatherEventEnum strategy, Float value, long eventTime, Float duration) {
-		super(SimulationEventTypeEnum.CHANGE_WEATHER_EVENT);
 		this.event = strategy;
 		this.value = value;
 		this.timestamp = eventTime;
@@ -96,6 +96,11 @@ public class ChangeWeatherEvent extends WeatherEvent {
 
 	public WeatherEventEnum getEvent() {
 		return event;
+	}
+
+	@Override
+	public EventType getType() {
+		return EventTypeEnum.CHANGE_WEATHER_EVENT;
 	}
 
 }

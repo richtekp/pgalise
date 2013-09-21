@@ -19,10 +19,13 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -33,7 +36,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas
  * @version 1.0
  */
-public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandler {
+public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandler<AttractionTrafficEvent> {
 	/**
 	 * Logger
 	 */
@@ -42,7 +45,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 	/**
 	 * Simulation event type
 	 */
-	private static final SimulationEventTypeEnum type = SimulationEventTypeEnum.ATTRACTION_TRAFFIC_EVENT;
+	private static final EventType type = TrafficEventTypeEnum.ATTRACTION_TRAFFIC_EVENT;
 
 	/**
 	 * Constructor
@@ -51,28 +54,27 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 	}
 
 	@Override
-	public SimulationEventTypeEnum getTargetEventType() {
+	public EventType getTargetEventType() {
 		return CreateAttractionEventHandler.type;
 	}
 
 	@Override
-	public void handleEvent(SimulationEvent event) {
-		AttractionTrafficEvent e = (AttractionTrafficEvent) event;
-		log.info("Processing ATTRACTION_TRAFFIC_EVENT: Vehicles=" + e.getCreateRandomVehicleDataList().size()
-				+ " ; Target=" + e.getNodeID());
+	public void handleEvent(AttractionTrafficEvent event) {
+		log.info("Processing ATTRACTION_TRAFFIC_EVENT: Vehicles=" + event.getCreateRandomVehicleDataList().size()
+				+ " ; Target=" + event.getNodeID());
 
 		// Create two vehicles with the same ID and properties
-		for (CreateRandomVehicleData data : e.getCreateRandomVehicleDataList()) {
+		for (CreateRandomVehicleData data : event.getCreateRandomVehicleDataList()) {
 
 			/*
 			 * Way there: Create way from a random node to the target node ID
 			 */
 
 			// Calculate start time
-			long startTime = e.getAttractionStartTimestamp();
+			long startTime = event.getAttractionStartTimestamp();
 
 			// use node as target node
-			TrafficTrip trip = this.getServer().createTrip(this.getServer().getCityZone(), e.getNodeID(), startTime,
+			TrafficTrip trip = this.getResponsibleServer().createTrip(this.getResponsibleServer().getCityZone(), event.getNodeID(), startTime,
 					false);
 
 			// Create vehicle
@@ -85,7 +87,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 			// Schedule vehicle
 			this.scheduleVehicle(v, trip.getStartTime());
 
-			this.getServer().getEventForVehicle().put(v.getId(), e);
+			this.getResponsibleServer().getEventForVehicle().put(v.getId(), event);
 		}
 	}
 }

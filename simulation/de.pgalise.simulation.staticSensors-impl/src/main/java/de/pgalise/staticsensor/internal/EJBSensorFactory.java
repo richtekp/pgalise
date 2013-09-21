@@ -41,6 +41,7 @@ import de.pgalise.simulation.service.configReader.Identifier;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.weather.service.WeatherController;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * EJB-Wrapper around the DefaultSensorFactory.
@@ -66,7 +67,7 @@ public class EJBSensorFactory implements SensorFactory {
 	 * Service dictionary
 	 */
 	@EJB
-	private ServiceDictionary dic;
+	private ServiceDictionary<?> dic;
 
 	/**
 	 * Server config reader
@@ -91,7 +92,7 @@ public class EJBSensorFactory implements SensorFactory {
 				sensorOutput = (Output) Class.forName(outputDecorator).getConstructor(Output.class)
 						.newInstance(sensorOutput);
 				log.info("Using output decorator: "+outputDecorator);
-			} catch (Exception e) {
+			} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}
 		}

@@ -26,7 +26,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -177,7 +177,7 @@ public class PriorityRoad extends TrafficRule {
 	 * Updates this PrioritzyRoad.
 	 */
 	@Override
-	public void update(final SimulationEventList simulationEventList) {
+	public void update(final EventList simulationEventList) {
 		// Try to wipe out
 		for (final Edge edge : this.inNode.keySet()) {
 			final TrafficRuleData trafficRuleData = this.inNode.get(edge);

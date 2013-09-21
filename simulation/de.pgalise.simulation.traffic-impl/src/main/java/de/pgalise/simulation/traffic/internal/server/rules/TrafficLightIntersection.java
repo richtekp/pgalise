@@ -26,7 +26,7 @@ import java.util.Queue;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -360,7 +360,7 @@ public class TrafficLightIntersection extends TrafficRule {
 	 */
 	// @Override
 	@Override
-	public void update(SimulationEventList eventList) {
+	public void update(EventList eventList) {
 		if (eventList == null) {
 			throw new IllegalArgumentException("\"eventList\" must not be \"null\"");
 		}

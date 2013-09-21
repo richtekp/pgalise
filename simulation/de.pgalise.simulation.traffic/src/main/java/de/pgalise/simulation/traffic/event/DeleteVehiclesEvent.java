@@ -14,18 +14,22 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import java.util.List;
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * Removes the vehicles with the given {@link UUID}.
  * @author Timo
  */
-public class DeleteVehiclesEvent extends TrafficEvent {
+public class DeleteVehiclesEvent extends AbstractVehicleEvent {
 
 	/**
 	 * Serial
@@ -35,34 +39,32 @@ public class DeleteVehiclesEvent extends TrafficEvent {
 	/**
 	 * List with IDs of vehicles to delete
 	 */
-	private List<UUID> deleteVehicleIDList;
+	private List<Vehicle<?>> deleteVehicles;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 *            ID of the event
-	 * @param vehicleIDList
-	 *            List with IDs of vehicles to delete
-	 */
-	public DeleteVehiclesEvent(List<UUID> vehicleIDList) {
-		super(SimulationEventTypeEnum.DELETE_VEHICLES_EVENT);
-		this.deleteVehicleIDList = vehicleIDList;
+	public DeleteVehiclesEvent(TrafficServerLocal server,
+		long simulationTime,
+		long elapsedTime,
+		List<Vehicle<?>> deleteVehicles) {
+		super(server,
+			simulationTime,
+			elapsedTime);
+		this.deleteVehicles = deleteVehicles;
 	}
 
-	public List<UUID> getDeleteVehicleIDList() {
-		return this.deleteVehicleIDList;
+	public void setDeleteVehicles(
+		List<Vehicle<?>> deleteVehicles) {
+		this.deleteVehicles = deleteVehicles;
 	}
 
-	public void setDeleteVehicleIDList(List<UUID> deleteVehilceIDList) {
-		this.deleteVehicleIDList = deleteVehilceIDList;
+	public List<Vehicle<?>> getDeleteVehicles() {
+		return deleteVehicles;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((deleteVehicleIDList == null) ? 0 : deleteVehicleIDList.hashCode());
+		result = prime * result + ((deleteVehicles == null) ? 0 : deleteVehicles.hashCode());
 		return result;
 	}
 
@@ -78,13 +80,18 @@ public class DeleteVehiclesEvent extends TrafficEvent {
 			return false;
 		}
 		DeleteVehiclesEvent other = (DeleteVehiclesEvent) obj;
-		if (deleteVehicleIDList == null) {
-			if (other.deleteVehicleIDList != null) {
+		if (deleteVehicles == null) {
+			if (other.deleteVehicles != null) {
 				return false;
 			}
-		} else if (!deleteVehicleIDList.equals(other.deleteVehicleIDList)) {
+		} else if (!deleteVehicles.equals(other.deleteVehicles)) {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public EventType getType() {
+		return TrafficEventTypeEnum.DELETE_VEHICLES_EVENT;
 	}
 }

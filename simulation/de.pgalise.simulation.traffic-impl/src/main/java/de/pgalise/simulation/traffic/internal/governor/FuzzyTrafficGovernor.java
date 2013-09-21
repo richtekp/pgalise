@@ -225,7 +225,7 @@ public class FuzzyTrafficGovernor implements TrafficGovernor {
 	 * ServiceDictionary for resolving remote Services
 	 */
 	@EJB
-	private ServiceDictionary serviceDictionary;
+	private ServiceDictionary<?> serviceDictionary;
 
 	/**
 	 * Creates a FuzzyTrafficGovernor with definition from the FCL-file of the passed "filePath" argument.

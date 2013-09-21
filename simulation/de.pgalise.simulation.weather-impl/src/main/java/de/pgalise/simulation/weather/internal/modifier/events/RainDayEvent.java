@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
@@ -46,7 +47,7 @@ import java.util.List;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public class RainDayEvent extends WeatherDayEventModifier {
+public class RainDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition> {
 
 	/**
 	 * Event type
@@ -98,7 +99,7 @@ public class RainDayEvent extends WeatherDayEventModifier {
 	 *            Maximal duration of the event
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader weatherLoader) {
+	public RainDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
 	}
 
@@ -111,7 +112,7 @@ public class RainDayEvent extends WeatherDayEventModifier {
 	 *            Properties
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
+	public RainDayEvent(long seed, Properties props, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -122,7 +123,7 @@ public class RainDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(long seed, WeatherLoader weatherLoader) {
+	public RainDayEvent(long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -135,7 +136,7 @@ public class RainDayEvent extends WeatherDayEventModifier {
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
+	public RainDayEvent(WeatherMap map, long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 

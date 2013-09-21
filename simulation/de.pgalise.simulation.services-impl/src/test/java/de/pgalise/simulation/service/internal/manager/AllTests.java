@@ -14,21 +14,21 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.service.event;
+package de.pgalise.simulation.service.internal.manager;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * Manages SimulationEventHandler.
+ * Tests all active JUnit tests of the package
  * 
- * @see SimulationEventHandler
- * @see EventHandlerManager
- * 
- * @author mustafa
- *
+ * @author Andreas Rehfeldt
+ * @version 1.0 (Nov 22, 2012)
  */
-public interface SimulationEventHandlerManager extends EventHandlerManager<SimulationEventHandler,
-	SimulationEvent, SimulationEventTypeEnum>{
+@RunWith(Suite.class)
+@SuiteClasses({ AbstractEventHandlerManagerTest.class,
+	DefaultServerConfigurationReaderTest.class})
+public class AllTests {
 
 }

@@ -37,7 +37,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
@@ -71,7 +71,7 @@ public class TrafficControllerTest {
 		TrafficServer s1 = createMock(TrafficServer.class);
 
 		s1.init(initParam);
-		s1.setCityZone(anyObject(Geometry.class), anyInt());
+		s1.setCityZone(anyObject(Geometry.class));
 		expectLastCall().andAnswer(new IAnswer() {
 
 			@Override
@@ -88,7 +88,7 @@ public class TrafficControllerTest {
 
 		TrafficServer s2 = createMock(TrafficServer.class);
 		s2.init(initParam);
-		s2.setCityZone(anyObject(Geometry.class), anyInt());
+		s2.setCityZone(anyObject(Geometry.class));
 		expectLastCall().andAnswer(new IAnswer() {
 
 			@Override
@@ -124,7 +124,7 @@ public class TrafficControllerTest {
 		TrafficServer s1 = createMock(TrafficServer.class);
 
 		s1.init(initParam);
-		s1.setCityZone(anyObject(Geometry.class), anyInt());
+		s1.setCityZone(anyObject(Geometry.class));
 		s1.start(startParam);
 		s1.stop();
 		s1.start(null);
@@ -132,7 +132,7 @@ public class TrafficControllerTest {
 
 		TrafficServer s2 = createMock(TrafficServer.class);
 		s2.init(initParam);
-		s2.setCityZone(anyObject(Geometry.class), anyInt());
+		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
 		s2.stop();
 		s2.start(null);
@@ -157,7 +157,7 @@ public class TrafficControllerTest {
 		TrafficServer s1 = createMock(TrafficServer.class);
 
 		s1.init(initParam);
-		s1.setCityZone(anyObject(Geometry.class), anyInt());
+		s1.setCityZone(anyObject(Geometry.class));
 		s1.start(startParam);
 		s1.stop();
 		s1.reset();
@@ -165,7 +165,7 @@ public class TrafficControllerTest {
 
 		TrafficServer s2 = createMock(TrafficServer.class);
 		s2.init(initParam);
-		s2.setCityZone(anyObject(Geometry.class), anyInt());
+		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
 		s2.stop();
 		s2.reset();
@@ -190,17 +190,17 @@ public class TrafficControllerTest {
 		TrafficServer s1 = createMock(TrafficServer.class);
 
 		s1.init(initParam);
-		s1.setCityZone(anyObject(Geometry.class), anyInt());
+		s1.setCityZone(anyObject(Geometry.class));
 		s1.start(startParam);
-		s1.update(anyObject(SimulationEventList.class));
+		s1.update(anyObject(EventList.class));
 		s1.processMovedVehicles();
 		replay(s1);
 
 		TrafficServer s2 = createMock(TrafficServer.class);
 		s2.init(initParam);
-		s2.setCityZone(anyObject(Geometry.class), anyInt());
+		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
-		s2.update(anyObject(SimulationEventList.class));
+		s2.update(anyObject(EventList.class));
 		s2.processMovedVehicles();
 		replay(s2);
 
@@ -208,7 +208,7 @@ public class TrafficControllerTest {
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
-		ctrl.update(createNiceMock(SimulationEventList.class));
+		ctrl.update(createNiceMock(EventList.class));
 
 		verify(s1);
 		verify(s2);
@@ -234,7 +234,7 @@ public class TrafficControllerTest {
 		TrafficServer s1 = createMock(TrafficServer.class);
 
 		s1.init(initParam);
-		s1.setCityZone(anyObject(Geometry.class), anyInt());
+		s1.setCityZone(anyObject(Geometry.class));
 		s1.start(startParam);
 		s1.createSensor(sensorHelper);
 		expect(s1.statusOfSensor(sensorHelper)).andReturn(true);
@@ -243,7 +243,7 @@ public class TrafficControllerTest {
 
 		TrafficServer s2 = createMock(TrafficServer.class);
 		s2.init(initParam);
-		s2.setCityZone(anyObject(Geometry.class), anyInt());
+		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
 		s2.createSensor(sensorHelper);
 		expect(s2.statusOfSensor(sensorHelper2)).andReturn(false);

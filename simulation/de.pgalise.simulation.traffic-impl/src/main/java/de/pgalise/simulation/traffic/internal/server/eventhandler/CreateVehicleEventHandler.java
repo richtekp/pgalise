@@ -21,10 +21,13 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -38,7 +41,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas
  * @version 1.0
  */
-public class CreateVehicleEventHandler extends AbstractVehicleEventHandler {
+public class CreateVehicleEventHandler extends AbstractVehicleEventHandler<CreateVehiclesEvent> {
 
 	/**
 	 * Logger
@@ -48,7 +51,7 @@ public class CreateVehicleEventHandler extends AbstractVehicleEventHandler {
 	/**
 	 * Simulation event type
 	 */
-	private static final SimulationEventTypeEnum type = SimulationEventTypeEnum.CREATE_VEHICLES_EVENT;
+	private static final EventType type = TrafficEventTypeEnum.CREATE_VEHICLES_EVENT;
 
 	/**
 	 * Constructor
@@ -58,55 +61,54 @@ public class CreateVehicleEventHandler extends AbstractVehicleEventHandler {
 	}
 
 	@Override
-	public SimulationEventTypeEnum getTargetEventType() {
+	public EventType getTargetEventType() {
 		return CreateVehicleEventHandler.type;
 	}
 	
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
-	public void handleEvent(SimulationEvent event) {
-		CreateVehiclesEvent e = (CreateVehiclesEvent) event;
-		if(e.getResponsibleServer()!=this.getServer().getServerId()) {
+	public void handleEvent(CreateVehiclesEvent event) {
+		if(!event.getResponsibleServer().equals(this.getResponsibleServer())) {
 			return;
 		}
 		else {
-			log.info("Processing CREATE_VEHICLES_EVENT: Vehicles=" + e.getVehicles().size());
+			log.info("Processing CREATE_VEHICLES_EVENT: Vehicles=" + event.getVehicles().size());
 		}
 					
 
 		int i=0;
-		for (CreateRandomVehicleData data : e.getVehicles()) {
+		for (CreateRandomVehicleData data : event.getVehicles()) {
 			TrafficTrip trip = data.getVehicleInformation().getTrip();
 			
 			if((trip.getStartNode()==null || trip.getStartNode().isEmpty()) &&
 					(trip.getTargetNode()==null || trip.getTargetNode().equals(""))) {
 //				log.debug("No trip was specified. Creating random route...");
-				trip = getServer().createTrip(getServer().getCityZone(), 
+				trip = getResponsibleServer().createTrip(getResponsibleServer().getCityZone(), 
 						data.getVehicleInformation().getVehicleType());
 				trip.setStartTime(
 						data.getVehicleInformation()
 						.getTrip().getStartTime());
 			}
 			else if((trip.getStartNode()==null || trip.getStartNode().equals("")) &&
-					!(trip.getTargetNode()==null || trip.getTargetNode().equals(""))) {
+					!(trip.getTargetNode()==null || trip.getTargetNode().isEmpty())) {
 //				log.debug("Just the target node was specified. Generating random start node...");
-				trip = getServer().createTrip(getServer().getCityZone(), 
+				trip = getResponsibleServer().createTrip(getResponsibleServer().getCityZone(), 
 						trip.getTargetNode(),
 						trip.getStartTime(), false);
 			}
 			else if(!(trip.getStartNode()==null || trip.getStartNode().equals("")) &&
 					(trip.getTargetNode()==null || trip.getTargetNode().equals(""))){
 //				log.debug("Just the start node was specified. Generating random target node...");
-				trip = getServer().createTrip(getServer().getCityZone(), 
+				trip = getResponsibleServer().createTrip(getResponsibleServer().getCityZone(), 
 						trip.getStartNode(),
 						trip.getStartTime(), true);
 			}
 			data.getVehicleInformation().setTrip(trip);			
 			
-			if (this.getServer().getCityZone().covers(
+			if (this.getResponsibleServer().getCityZone().covers(
 					GEOMETRY_FACTORY.createPoint(
-						(Coordinate) this.getServer().getGraph().getNode(trip.getStartNode()).getAttribute("position")))) {
+						(Coordinate) this.getResponsibleServer().getGraph().getNode(trip.getStartNode()).getAttribute("position")))) {
 				// Create vehicle
 				Vehicle<? extends VehicleData> v = this.createVehicle(data, trip);
 	

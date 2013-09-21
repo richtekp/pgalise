@@ -24,7 +24,9 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.util.comparator.RelativHumidityComparator;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
 import de.pgalise.simulation.weather.internal.util.comparator.WindComparator;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherSimulationEventModifier;
@@ -41,7 +43,7 @@ import javax.measure.unit.SI;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public class ReferenceCityModifier extends WeatherSimulationEventModifier {
+public class ReferenceCityModifier extends WeatherSimulationEventModifier<DefaultWeatherCondition> {
 
 	/**
 	 * Event type
@@ -65,8 +67,9 @@ public class ReferenceCityModifier extends WeatherSimulationEventModifier {
 	 *            Properties
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
-	public ReferenceCityModifier(long seed, Properties props, WeatherLoader weatherLoader) {
+	public ReferenceCityModifier(long seed, Properties props, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -75,8 +78,9 @@ public class ReferenceCityModifier extends WeatherSimulationEventModifier {
 	 * 
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
-	public ReferenceCityModifier(long seed, WeatherLoader weatherLoader) {
+	public ReferenceCityModifier(long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -87,8 +91,9 @@ public class ReferenceCityModifier extends WeatherSimulationEventModifier {
 	 *            WeatherMap
 	 * @param seed
 	 *            Seed for random generators
+	 * @param weatherLoader  
 	 */
-	public ReferenceCityModifier(WeatherMap map, long seed, WeatherLoader weatherLoader) {
+	public ReferenceCityModifier(WeatherMap map, long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 
@@ -101,9 +106,9 @@ public class ReferenceCityModifier extends WeatherSimulationEventModifier {
 		if (this.getCity() != null) {
 			
 			// Get values from weather services
-			ServiceDataForecast serviceForecast = this.getWeatherLoader().loadForecastServiceWeatherData(
+			ServiceDataForecast<DefaultWeatherCondition> serviceForecast = this.getWeatherLoader().loadForecastServiceWeatherData(
 					this.getSimulationTimestamp(), this.getCity());
-			ServiceDataForecast serviceCurrent = this.getWeatherLoader().loadCurrentServiceWeatherData(
+			ServiceDataCurrent<DefaultWeatherCondition> serviceCurrent = this.getWeatherLoader().loadCurrentServiceWeatherData(
 					this.getSimulationTimestamp(), this.getCity());
 
 			// Temperature

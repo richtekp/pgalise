@@ -41,8 +41,8 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -76,16 +76,16 @@ public class DefaultSimulationControllerTest {
 	private static DefaultSimulationController testClass;
 	private static InitParameter initParameter;
 	private static StartParameter startParameter;
-	private static EventInitiatorMock eventInitiator;
-	private static ServiceDictionary serviceDictionary;
+//	private static EventInitiatorMock eventInitiator;
+	private static ServiceDictionary<Controller<?,?>> serviceDictionary;
 	private static OperationCenterController operationCenterController;
 	private static ControlCenterController controlCenterController;
 	private static TrafficController trafficController;
-	private static StaticSensorController staticSensorController;
+	private static StaticSensorController<?,?> staticSensorController;
 	private static EnergyController energyController;
 	private static WeatherController weatherController;
 	private static EntityManager sensorPersistenceService;
-	private static ServerConfigurationReader<?> serverConfigurationReader;
+	private static ServerConfigurationReader<Controller<?,?>> serverConfigurationReader;
 	private static CityInfrastructureData cityInfrastructureData;
 	private static ServerConfiguration serverConfiguration;
 
@@ -104,12 +104,12 @@ public class DefaultSimulationControllerTest {
 		/* Mock all other services: */
 		sensorPersistenceService = EasyMock.createNiceMock(EntityManager.class);
 		serverConfigurationReader = EasyMock.createNiceMock(ServerConfigurationReader.class);
-		eventInitiator = new EventInitiatorMock();
+		EventInitiator eventInitiator = EasyMock.createNiceMock(EventInitiator.class);
 		cityInfrastructureData = EasyMock.createNiceMock(CityInfrastructureData.class);
 
 		/* Prepare service dictionary: */
 		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
-		Collection<Controller> controllerCollection = new LinkedList<>();
+		Collection<Controller<?,?>> controllerCollection = new LinkedList<>();
 		controllerCollection.add(energyController);
 		controllerCollection.add(trafficController);
 		controllerCollection.add(staticSensorController);
@@ -438,87 +438,88 @@ public class DefaultSimulationControllerTest {
 		testClass.init(initParameter);
 		testClass.start(startParameter);
 
-		SimulationEventList testSimulationEventList = new SimulationEventList(new LinkedList<SimulationEvent>(), 0,
+		EventInitiator eventInitiatorMock = EasyMock.createNiceMock(EventInitiator.class);
+		EventList testSimulationEventList = new EventList(new LinkedList<AbstractEvent>(), 0,
 				UUID.randomUUID());
 
 		testClass.update(testSimulationEventList);
 
-		assertEquals(testSimulationEventList, eventInitiator.getSimulationEventList());
+		assertEquals(testSimulationEventList, eventInitiatorMock.getEventList());
 
 		testClass.stop();
 		testClass.reset();
 	}
 
-	/**
-	 * Event initiator mock for this test. It will save the last received simulationeventlist in simulationEventList.
-	 * 
-	 * @author Timo
-	 */
-	private static class EventInitiatorMock extends AbstractController implements EventInitiator {
-
-		private SimulationEventList simulationEventList;
-
-		@Override
-		public Thread getEventThread() {
-			return null;
-		}
-
-		@Override
-		public void addSimulationEventList(SimulationEventList simulationEventList) {
-			this.simulationEventList = simulationEventList;
-		}
-
-		@Override
-		public long getCurrentTimestamp() {
-			return 0;
-		}
-
-		@Override
-		public void setOperationCenterController(OperationCenterController operationCenterController) {
-		}
-
-		@Override
-		protected void onInit(InitParameter param) throws InitializationException {
-		}
-
-		@Override
-		protected void onReset() {
-		}
-
-		@Override
-		protected void onStart(StartParameter param) {
-		}
-
-		@Override
-		protected void onStop() {
-		}
-
-		@Override
-		protected void onResume() {
-		}
-
-		@Override
-		protected void onUpdate(SimulationEventList simulationEventList) {
-			this.simulationEventList = simulationEventList;
-		}
-
-		public SimulationEventList getSimulationEventList() {
-			return simulationEventList;
-		}
-
-		@Override
-		public void setControlCenterController(ControlCenterController controlCenterController) {
-		}
-
-		@Override
-		public String getName() {
-			return "EventInitiator";
-		}
-
-		@Override
-		public void setFrontController(List<Controller> controller) {
-
-		}
-
-	}
+//	/**
+//	 * Event initiator mock for this test. It will save the last received simulationeventlist in simulationEventList.
+//	 * 
+//	 * @author Timo
+//	 */
+//	private static class EventInitiatorMock extends AbstractController implements EventInitiator {
+//
+//		private EventList simulationEventList;
+//
+//		@Override
+//		public Thread getEventThread() {
+//			return null;
+//		}
+//
+//		@Override
+//		public void addSimulationEventList(EventList simulationEventList) {
+//			this.simulationEventList = simulationEventList;
+//		}
+//
+//		@Override
+//		public long getCurrentTimestamp() {
+//			return 0;
+//		}
+//
+//		@Override
+//		public void setOperationCenterController(OperationCenterController operationCenterController) {
+//		}
+//
+//		@Override
+//		protected void onInit(InitParameter param) throws InitializationException {
+//		}
+//
+//		@Override
+//		protected void onReset() {
+//		}
+//
+//		@Override
+//		protected void onStart(StartParameter param) {
+//		}
+//
+//		@Override
+//		protected void onStop() {
+//		}
+//
+//		@Override
+//		protected void onResume() {
+//		}
+//
+//		@Override
+//		protected void onUpdate(EventList simulationEventList) {
+//			this.simulationEventList = simulationEventList;
+//		}
+//
+//		public EventList getSimulationEventList() {
+//			return simulationEventList;
+//		}
+//
+//		@Override
+//		public void setControlCenterController(ControlCenterController controlCenterController) {
+//		}
+//
+//		@Override
+//		public String getName() {
+//			return "EventInitiator";
+//		}
+//
+//		@Override
+//		public void setFrontController(List<Controller> controller) {
+//
+//		}
+//
+//	}
 }

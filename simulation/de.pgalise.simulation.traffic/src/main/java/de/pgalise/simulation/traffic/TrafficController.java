@@ -17,6 +17,7 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * Remote view of the TrafficController.<br/><br/>
@@ -28,6 +29,6 @@ import de.pgalise.simulation.service.SensorManagerController;
  * @author Mustafa
  * @version 1.0 (Oct 23, 2012)
  */
-public interface TrafficController extends SensorManagerController {
+public interface TrafficController extends SensorManagerController<TrafficEvent> {
 
 }

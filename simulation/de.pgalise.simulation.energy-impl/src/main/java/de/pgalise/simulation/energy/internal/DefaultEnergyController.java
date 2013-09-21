@@ -43,12 +43,13 @@ import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.StatusEnum;
+import de.pgalise.simulation.shared.event.energy.EnergyEventType;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -63,7 +64,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
 @Singleton(name = "de.pgalise.simulation.energy.EnergyController")
 @Remote(EnergyController.class)
 @Local(EnergyControllerLocal.class)
-public class DefaultEnergyController extends AbstractController implements
+public class DefaultEnergyController extends AbstractController<EnergyEvent> implements
 		EnergyControllerLocal {
 
 	/**
@@ -173,7 +174,7 @@ public class DefaultEnergyController extends AbstractController implements
 	private EnergyConsumptionManager energyConsumptionManager;
 
 	@EJB
-	private ServiceDictionary serviceDictionary;
+	private ServiceDictionary<?> serviceDictionary;
 
 	@EJB
 	private EnergyEventStrategy energyEventStrategy;
@@ -244,7 +245,7 @@ public class DefaultEnergyController extends AbstractController implements
 		return energyEventStrategy;
 	}
 
-	public ServiceDictionary getServiceDictionary() {
+	public ServiceDictionary<?> getServiceDictionary() {
 		return serviceDictionary;
 	}
 
@@ -280,15 +281,13 @@ public class DefaultEnergyController extends AbstractController implements
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<EnergyEvent> simulationEventList) {
 		// Save timestamp
 		this.setCurrentTimestamp(simulationEventList.getTimestamp());
 
 		List<EnergyEvent> energyEventList = new ArrayList<>();
-		for (SimulationEvent event : simulationEventList.getEventList()) {
-			if (event instanceof EnergyEvent) {
-				energyEventList.add((EnergyEvent) event);
-			}
+		for (EnergyEvent event : simulationEventList.getEventList()) {
+			energyEventList.add(event);
 		}
 		this.energyEventStrategy.update(this.currentTimestamp, energyEventList);
 	}
@@ -314,7 +313,7 @@ public class DefaultEnergyController extends AbstractController implements
 		this.energyEventStrategy = energyEventStrategy;
 	}
 
-	public void setServiceDictionary(ServiceDictionary serviceDictionary) {
+	public void setServiceDictionary(ServiceDictionary<?> serviceDictionary) {
 		this.serviceDictionary = serviceDictionary;
 	}
 

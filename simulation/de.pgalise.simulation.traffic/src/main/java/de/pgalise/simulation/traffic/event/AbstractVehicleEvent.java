@@ -14,20 +14,20 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
+package de.pgalise.simulation.traffic.event;
 
 import java.util.Map;
 
 import org.graphstream.graph.Graph;
 
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
@@ -37,25 +37,14 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
  * @author mustafa
  *
  */
-public class DefaultVehicleEvent implements VehicleEvent {
-	private final TrafficServerLocal server;
-	private final Vehicle<? extends VehicleData> currentVehicle;
+public abstract class AbstractVehicleEvent extends AbstractTrafficEvent implements VehicleEvent {
 	private final long simulationTime;
 	private final long elapsedTime;
-	private final VehicleEventType type;
 
-	public DefaultVehicleEvent(VehicleEventType type, TrafficServerLocal server,
-			Vehicle<? extends VehicleData> currentVehicle, long simulationTime, long elapsedTime) {
-		this.server = server;
-		this.currentVehicle = currentVehicle;
+	public AbstractVehicleEvent(TrafficServerLocal server, long simulationTime, long elapsedTime) {
+		super(server);
 		this.simulationTime = simulationTime;
 		this.elapsedTime = elapsedTime;
-		this.type = type;
-	}
-
-	@Override
-	public Vehicle<? extends VehicleData> getVehicle() {
-		return currentVehicle;
 	}
 
 	@Override
@@ -69,8 +58,8 @@ public class DefaultVehicleEvent implements VehicleEvent {
 	}
 
 	@Override
-	public ServiceDictionary getServiceDictionary() {
-		return server.getServiceDictionary();
+	public ServiceDictionary<?> getServiceDictionary() {
+		return getResponsibleServer().getServiceDictionary();
 	}
 
 	/**
@@ -78,36 +67,26 @@ public class DefaultVehicleEvent implements VehicleEvent {
 	 */
 	@Override
 	public Scheduler getDrivingVehicles() {
-		return server.getScheduler();
-	}
-
-	@Override
-	public VehicleEventType getTargetEventType() {
-		return type;
+		return getResponsibleServer().getScheduler();
 	}
 
 	@Override
 	public Graph getGraph() {
-		return server.getGraph();
+		return getResponsibleServer().getGraph();
 	}
 
 	@Override
 	public TrafficGraphExtensions getTrafficGraphExtensions() {
-		return server.getTrafficGraphExtesions();
+		return getResponsibleServer().getTrafficGraphExtesions();
 	}
 	
 	@Override
-	public Map<Long, TrafficEvent> getEventForVehicleMap() {
-		return server.getEventForVehicle();
+	public Map<Long, AbstractTrafficEvent> getEventForVehicleMap() {
+		return getResponsibleServer().getEventForVehicle();
 	}
 	
 	@Override
-	public TrafficServerLocal getServer() {
-		return server;
-	}
-
-	@Override
-	public VehicleEventType getType() {
-		return type;
+	public TrafficServerLocal getResponsibleServer() {
+		return getResponsibleServer();
 	}
 }

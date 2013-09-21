@@ -23,11 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
-import javax.ejb.Local;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
-import javax.naming.NamingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +36,7 @@ import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
-import javax.ejb.Remote;
 
 /**
  * Default implementation of the ServiceDictionary.
@@ -48,43 +44,44 @@ import javax.ejb.Remote;
  *
  */
 @Lock(LockType.READ)
-@Local
-@Remote
 @Singleton(name = "de.pgalise.simulation.service.ServiceDictionary")
-public class DefaultServiceDictionary implements ServiceDictionary {
+public class DefaultServiceDictionary implements ServiceDictionary<Service> {
 	private static final Logger log = LoggerFactory.getLogger(DefaultServiceDictionary.class);
 
-	private Map<String, Controller> controllers;
 	private Map<String, Service> services;
 
 	@EJB
-	private ServerConfigurationReader<Controller> serverConfigReader;
+	private ServerConfigurationReader<Service> serverConfigReader;
 
-	public DefaultServiceDictionary() throws NamingException {
-		controllers = new HashMap<>(7);
+	public DefaultServiceDictionary() {
 		services = new HashMap<>(7);
+	}
+
+	public DefaultServiceDictionary(
+		ServerConfigurationReader<Service> serverConfigReader) {
+		this();
+		this.serverConfigReader = serverConfigReader;
 	}
 
 	@Override
 	public void init(ServerConfiguration serverConfig) {
-		List<ServiceHandler<Controller>> list = new ArrayList<>(7);
-		controllers.clear();
+		List<ServiceHandler<Service>> list = new ArrayList<>(7);
 		services.clear();
-		list.add(new ServiceHandler<Controller>() {
+		list.add(new ServiceHandler<Service>() {
 
 			@Override
 			public String getName() {
-				return ServiceDictionary.FRONT_CONTROLLER;
+				return ServiceDictionary.WEATHER_CONTROLLER;
 			}
 
 			@Override
 			public void handle(String server,
-				Controller service) {
+				Service service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(getName(), service);
+				services.put(getName(), service);
 			}
 		});
-		 list.add(new ServiceHandler<Controller>() {
+		 list.add(new ServiceHandler<Service>() {
 
 			@Override
 			public String getName() {
@@ -93,12 +90,12 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 
 			@Override
 			public void handle(String server,
-				Controller service) {
+				Service service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(getName(), service);
+				services.put(getName(), service);
 			}
 		});
-		list.add(new ServiceHandler<Controller>() {
+		list.add(new ServiceHandler<Service>() {
 
 			@Override
 			public String getName() {
@@ -106,12 +103,12 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			}
 
 			@Override
-			public void handle(String server, Controller service) {
+			public void handle(String server, Service service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(getName(), service);
+				services.put(getName(), service);
 			}
 		});
-		list.add(new ServiceHandler<Controller>() {
+		list.add(new ServiceHandler<Service>() {
 
 			@Override
 			public String getName() {
@@ -119,12 +116,12 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			}
 
 			@Override
-			public void handle(String server, Controller service) {
+			public void handle(String server, Service service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(getName(), service);
+				services.put(getName(), service);
 			}
 		});
-		list.add(new ServiceHandler<Controller>() {
+		list.add(new ServiceHandler<Service>() {
 
 			@Override
 			public String getName() {
@@ -132,12 +129,12 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			}
 
 			@Override
-			public void handle(String server, Controller service) {
+			public void handle(String server, Service service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
 				services.put(getName(), service);
 			}
 		});
-		list.add(new ServiceHandler<Controller>() {
+		list.add(new ServiceHandler<Service>() {
 
 			@Override
 			public String getName() {
@@ -145,12 +142,12 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			}
 
 			@Override
-			public void handle(String server, Controller service) {
+			public void handle(String server, Service service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
 				services.put(getName(), service);
 			}
 		});
-		list.add(new ServiceHandler<Controller>() {
+		list.add(new ServiceHandler<Service>() {
 
 			@Override
 			public String getName() {
@@ -158,9 +155,9 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			}
 
 			@Override
-			public void handle(String server, Controller service) {
+			public void handle(String server, Service service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
-				controllers.put(getName(), service);
+				services.put(getName(), service);
 			}
 		});
 
@@ -168,14 +165,17 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 	}
 
 	@Override
-	public Collection<Controller> getControllers() {
-		return controllers.values();
+	public Collection<Service> getControllers() {
+		return services.values();
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <C extends Controller> C getController(Class<C> clazz) {
-		Controller retValue = controllers.get(clazz.getName());
+	public <C extends Service> C getController(Class<? extends C> clazz) {
+		Service retValue = services.get(clazz.getName());
+		if(retValue == null) {
+			throw new IllegalStateException("");
+		}
 		if(!clazz.isAssignableFrom(retValue.getClass())) {
 			throw new IllegalStateException(String.format("%s has been mapped to wrong type", clazz));
 		}
@@ -185,6 +185,9 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 	@Override
 	public RandomSeedService getRandomSeedService() {
 		Service retValue = services.get(RandomSeedService.class.getName());
+		if(retValue == null) {
+			throw new IllegalStateException(String.format("%s is not managed", RandomSeedService.class));
+		}
 		if(!(retValue instanceof RandomSeedService)) {
 			throw new IllegalStateException(String.format("%s has been mapped to wrong type", RandomSeedService.class));
 		}

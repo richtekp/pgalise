@@ -16,14 +16,18 @@
  
 package de.pgalise.simulation.service;
 
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 
 /**
  * Interface for every updateable simulation component.
+ * @param <E> 
+ * @param <T> 
  * @author Marcus
  * @author Timo
  */
-public interface SimulationComponent {
+public interface SimulationComponent<E extends Event> {
 
 	/**
 	 * Updates the SimulationComponent
@@ -31,5 +35,5 @@ public interface SimulationComponent {
 	 * @param simulationEventList
 	 *            list with the current timestamp and possible events.
 	 */
-	public void update(SimulationEventList simulationEventList);
+	public void update(EventList<E> simulationEventList);
 }

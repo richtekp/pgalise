@@ -17,7 +17,6 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,16 +42,16 @@ import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import java.util.Collection;
+import java.sql.Date;
+import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.persistence.EntityManagerFactory;
@@ -115,30 +114,14 @@ public class DefaultWeatherControllerTest {
 		Context ctx = CONTAINER.getContext();
 
 		/* Create simulation controller and init/start the simulation: */
-		ServiceDictionary serviceDictionary = (ServiceDictionary) ctx.lookup(
-			//"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
+		ServiceDictionary<?> serviceDictionary = (ServiceDictionary) ctx.lookup(
 			"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
+//			"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
 		);
 		serviceDictionary.init(DefaultWeatherControllerTest.produceServerConfiguration());
 
 		// Create city
-		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1),
-				new Coordinate(referencePoint.x-1, referencePoint.y-1)
-			}
-		);
-		city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
-
+		city = TestUtils.createDefaultTestCityInstance();
 
 		// Start
 		Calendar cal = new GregorianCalendar();
@@ -184,10 +167,10 @@ public class DefaultWeatherControllerTest {
 		long valueTime = startTimestamp + 360000;
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
 		Coordinate testPosition = new Coordinate(2, 3);
-		List<SimulationEvent> testEventList = new ArrayList<>(1);
+		List<AbstractEvent> testEventList = new ArrayList<>(1);
 		testEventList.add(new ChangeWeatherEvent( WeatherEventEnum.HOTDAY, 30.0f,
 				eventTimestamp, 6.0f));
-		SimulationEventList testEvent = new SimulationEventList(testEventList, valueTime, UUID.randomUUID());
+		EventList testEvent = new EventList(testEventList, valueTime, UUID.randomUUID());
 
 		InitParameter initParameter = new InitParameter();
 		initParameter.setStartTimestamp(startTimestamp);
@@ -218,7 +201,7 @@ public class DefaultWeatherControllerTest {
 		log.debug("Testmethod: start()");
 
 		// Test (normal) -> call onSuccess
-		Collection<StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);

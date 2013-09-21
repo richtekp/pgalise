@@ -29,7 +29,8 @@ import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
@@ -40,6 +41,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
@@ -48,7 +50,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author Lena
  * @version 1.0
  */
-public class DefaultSensorController extends AbstractController implements TrafficSensorController {
+public class DefaultSensorController extends AbstractController<TrafficEvent> implements TrafficSensorController {
 	/**
 	 * Logger
 	 */
@@ -118,7 +120,7 @@ public class DefaultSensorController extends AbstractController implements Traff
 					log.info("Sensor " + sensor.getSensorID() + " added to node " + sensor.getNodeId());
 				}
 			}
-		} catch (Exception ex) {
+		} catch (InterruptedException | ExecutionException ex) {
 			log.error("Failed to create sensor " + sensor.getSensorID(), ex);
 			throw new SensorException("Not responsible for creating sensor: " + sensor.getSensorID());
 		}
@@ -182,15 +184,14 @@ public class DefaultSensorController extends AbstractController implements Traff
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<TrafficEvent> simulationEventList) {
 		/* Nothing to do here: */
 	}
 
 	@Override
-	public void onUpdate(Vehicle<? extends VehicleData> vehicle, SimulationEventList eventList) {
+	public void onUpdate(Vehicle<? extends VehicleData> vehicle, EventList<TrafficEvent> eventList) {
 	}
 
-	@SuppressWarnings("unchecked")
 	public void prepareUpdate(Vehicle<? extends VehicleData> vehicle) {
 		VehicleData data = vehicle.getData();
 
@@ -205,8 +206,6 @@ public class DefaultSensorController extends AbstractController implements Traff
 				newSensor.setVehicle(vehicle);
 				vehicle.getData().setGpsSensor(newSensor);
 				sensorRegistry.addSensor(newSensor);
-
-				sensor = sensorRegistry.getSensor(sensorId);
 			} catch (InterruptedException | ExecutionException e) {
 				e.printStackTrace();
 			}
@@ -230,8 +229,6 @@ public class DefaultSensorController extends AbstractController implements Traff
 						log.debug("InfraredSensor " + newSensor.getId()+ " registered for vehicle "
 								+ vehicle.getName());
 						sensorRegistry.addSensor(newSensor);
-
-						sensor = sensorRegistry.getSensor(sensorId);
 					} catch (InterruptedException | ExecutionException e) {
 						e.printStackTrace();
 					}

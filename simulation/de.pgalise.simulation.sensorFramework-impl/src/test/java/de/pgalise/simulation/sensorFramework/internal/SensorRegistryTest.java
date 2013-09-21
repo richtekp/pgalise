@@ -35,8 +35,8 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import javax.persistence.EntityManager;
 import org.easymock.EasyMock;
@@ -170,7 +170,7 @@ public class SensorRegistryTest {
 		}
 		this.sensorRegistry.setSensorsActivated(false);
 		for (int i = 0; i < 100; i++) {
-			this.sensorRegistry.update(new SimulationEventList(new ArrayList<SimulationEvent>(), 1, UUID.randomUUID()));
+			this.sensorRegistry.update(new EventList(new ArrayList<AbstractEvent>(), 1, UUID.randomUUID()));
 		}
 
 		for (final Sensor sensor : this.sensorRegistry) {
@@ -179,7 +179,7 @@ public class SensorRegistryTest {
 
 		this.sensorRegistry.setSensorsActivated(true);
 		for (int i = 0; i < 100; i++) {
-			this.sensorRegistry.update(new SimulationEventList(new ArrayList<SimulationEvent>(), 1, UUID.randomUUID()));
+			this.sensorRegistry.update(new EventList(new ArrayList<AbstractEvent>(), 1, UUID.randomUUID()));
 		}
 
 		for (final Sensor sensor : this.sensorRegistry) {
@@ -220,7 +220,7 @@ class TestSensor extends Sensor {
 	}
 
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 	}
 
 }

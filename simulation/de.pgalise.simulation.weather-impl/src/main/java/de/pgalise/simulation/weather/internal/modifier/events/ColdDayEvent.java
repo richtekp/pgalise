@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.model.WeatherCondition;
@@ -45,11 +46,10 @@ import javax.measure.unit.SI;
  * the implemented modifier. If no parameters are given in the constructor of 
  * an implemented modifier, the standard properties of the file will be used.
  * 
- * @param <C> 
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public class ColdDayEvent<C extends WeatherCondition> extends WeatherDayEventModifier<C> {
+public class ColdDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition> {
 
 	/**
 	 * Parameter which will be changed
@@ -106,7 +106,7 @@ public class ColdDayEvent<C extends WeatherCondition> extends WeatherDayEventMod
 	 *            Maximal duration of the event
 	 * @param weatherLoader  
 	 */
-	public ColdDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader weatherLoader) {
+	public ColdDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
 	}
 
@@ -119,7 +119,7 @@ public class ColdDayEvent<C extends WeatherCondition> extends WeatherDayEventMod
 	 *            Properties
 	 * @param weatherLoader  
 	 */
-	public ColdDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
+	public ColdDayEvent(long seed, Properties props, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -130,7 +130,7 @@ public class ColdDayEvent<C extends WeatherCondition> extends WeatherDayEventMod
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public ColdDayEvent(long seed, WeatherLoader weatherLoader) {
+	public ColdDayEvent(long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -143,7 +143,7 @@ public class ColdDayEvent<C extends WeatherCondition> extends WeatherDayEventMod
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public ColdDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
+	public ColdDayEvent(WeatherMap map, long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 

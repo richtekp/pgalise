@@ -26,9 +26,10 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
  * listed here are supposed to be referenced directly! Instead a component that depends on one of these services has to
  * use this dictionary to get a reference.
  * 
+ * @param <S> 
  * @author mustafa
  */
-public interface ServiceDictionary {
+public interface ServiceDictionary<S extends Service> {
 	public static final String FRONT_CONTROLLER = "de.pgalise.simulation.FrontController";
 	public static final String TRAFFIC_SERVER = "de.pgalise.simulation.traffic.server.TrafficServer";
 	public static final String TRAFFIC_CONTROLLER = "de.pgalise.simulation.traffic.TrafficController";
@@ -50,7 +51,7 @@ public interface ServiceDictionary {
 	/**
 	 * @return list of all simulation controllers
 	 */
-	public Collection<Controller> getControllers();
+	public Collection<S> getControllers();
 
 	/**
 	 * @param <C> 
@@ -58,7 +59,7 @@ public interface ServiceDictionary {
 	 *            class name of the desired controller
 	 * @return a specific controller identified by its class name if available otherwise null.
 	 */
-	public <C extends Controller> C getController(Class<C> clazz);
+	public <C extends Service> C getController(Class<? extends C> clazz);
 
 	/**
 	 * @return the RandomSeedService

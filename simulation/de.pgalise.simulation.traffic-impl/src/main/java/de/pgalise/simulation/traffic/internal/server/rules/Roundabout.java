@@ -29,7 +29,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -297,7 +297,7 @@ public class Roundabout extends TrafficRule {
 	 *             not thrown in here
 	 */
 	@Override
-	public void update(final SimulationEventList simulationEventList) {
+	public void update(final EventList simulationEventList) {
 		final int timeDif = (int) (simulationEventList.getTimestamp() - this.previousTime);
 		this.previousTime = simulationEventList.getTimestamp();
 

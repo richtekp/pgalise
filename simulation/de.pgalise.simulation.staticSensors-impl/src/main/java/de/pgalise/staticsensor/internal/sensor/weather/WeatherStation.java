@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
@@ -96,7 +96,7 @@ public class WeatherStation extends WeatherSensor {
 	}
 
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		// Call all children
 		for(WeatherSensor sensor : this.children) {
 			sensor.transmitUsageData(eventList);

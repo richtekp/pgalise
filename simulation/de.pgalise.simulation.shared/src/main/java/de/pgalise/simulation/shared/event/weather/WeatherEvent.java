@@ -16,8 +16,8 @@
  
 package de.pgalise.simulation.shared.event.weather;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Weather event super class.
@@ -25,7 +25,7 @@ import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
  * @author Timo
  * @version 1.0
  */
-public abstract class WeatherEvent extends SimulationEvent {
+public abstract class WeatherEvent extends AbstractEvent {
 	/**
 	 * Serial
 	 */
@@ -34,10 +34,7 @@ public abstract class WeatherEvent extends SimulationEvent {
 	/**
 	 * Constructor
 	 * 
-	 * @param eventType
-	 *            Event type
 	 */
-	public WeatherEvent(SimulationEventTypeEnum eventType) {
-		super(eventType);
+	public WeatherEvent() {
 	}
 }

@@ -18,7 +18,9 @@ package de.pgalise.simulation;
 
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.service.SensorManagerController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
@@ -29,14 +31,14 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
  * @auther Jens
  * @auther Timo
  */
-public interface SimulationController extends SensorManagerController {
+public interface SimulationController extends SensorManagerController<Event> {
 
 	/**
 	 * Adds an event list. The other controllers will be updated with the given events.
 	 * @param simulationEventList
 	 * 			an event list with a timestamp and events
 	 */
-	public void addSimulationEventList(SimulationEventList simulationEventList);
+	public void addSimulationEventList(EventList<?> simulationEventList);
 
 	/**
 	 * Returns the current simulation timestamp.

@@ -52,18 +52,18 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.service.internal.event.DefaultSimulationEventHandlerManager;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
-import de.pgalise.simulation.shared.event.SimulationEventList;
-import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.RoadBarrierTrafficEvent;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.service.event.EventHandlerManager;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -80,6 +80,7 @@ import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.scheduler.Item;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.DefaultSensorFactory;
@@ -128,7 +129,7 @@ public class RoadBarrierTest {
 	/**
 	 * Service dictionary
 	 */
-	private static ServiceDictionary sd;
+	private static ServiceDictionary<?> sd;
 
 	/**
 	 * Implementation of SensorRegistry.
@@ -244,7 +245,7 @@ public class RoadBarrierTest {
 		server0.getScheduler().scheduleItem(new Item(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
-		SimulationEventList eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
+		EventList eventList = new EventList(null, currentTime, UUID.randomUUID());
 
 		/*
 		 * Test: One car should be scheduled
@@ -274,8 +275,8 @@ public class RoadBarrierTest {
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(currentTime, currentTime + 1000,
-				new Coordinate(), closedNode.getId());
-		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
+				new Coordinate(), closedNode.getId(), server0);
+		eventList = new EventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
@@ -298,7 +299,7 @@ public class RoadBarrierTest {
 		log.debug("#### STEP +2000 ##########################################################################");
 
 		currentTime += 1000;
-		eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
+		eventList = new EventList(null, currentTime, UUID.randomUUID());
 		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
@@ -356,7 +357,7 @@ public class RoadBarrierTest {
 		server0.getScheduler().scheduleItem(new Item(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
-		SimulationEventList eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
+		EventList eventList = new EventList(null, currentTime, UUID.randomUUID());
 
 		/*
 		 * Test: One car should be scheduled
@@ -386,8 +387,8 @@ public class RoadBarrierTest {
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(currentTime, currentTime + 1000,
-				new Coordinate(), closedNode.getId());
-		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
+				new Coordinate(), closedNode.getId(), server0);
+		eventList = new EventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
@@ -410,7 +411,7 @@ public class RoadBarrierTest {
 		log.debug("#### STEP +2000 ##########################################################################");
 
 		currentTime += 1000;
-		eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
+		eventList = new EventList(null, currentTime, UUID.randomUUID());
 		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
@@ -438,7 +439,7 @@ public class RoadBarrierTest {
 		log.debug("TEST: Set road barrier with new path for bus");
 		log.debug("###########");
 
-		List<TrafficEvent> trafficEventList = new ArrayList<>();
+		List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
 		List<BusRoute> busRoutes = new ArrayList<>();
 		BusRoute b301a = new BusRoute("301a", "301", "Eversten", 3);
 		busRoutes.add(b301a);
@@ -454,8 +455,9 @@ public class RoadBarrierTest {
 			busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(id, true,
 					VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
 		}
-		trafficEventList.add(new CreateBussesEvent(busDataList, SIMULATION_START, busRoutes));
-		SimulationEventList eventList = new SimulationEventList(trafficEventList, SIMULATION_START, UUID.randomUUID());
+		TrafficServerLocal trafficServerLocal = EasyMock.createNiceMock(TrafficServerLocal.class);
+		trafficEventList.add(new CreateBussesEvent(trafficServerLocal, busDataList, SIMULATION_START, busRoutes));
+		EventList eventList = new EventList(trafficEventList, SIMULATION_START, UUID.randomUUID());
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
@@ -507,7 +509,7 @@ public class RoadBarrierTest {
 				((BusData) bus.getData()).getBusStopOrder().get(1));
 
 		long currentTime = SIMULATION_START + 1000;
-		eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
+		eventList = new EventList(null, currentTime, UUID.randomUUID());
 
 		/*
 		 * UPDATE
@@ -532,8 +534,8 @@ public class RoadBarrierTest {
 
 		// Create RoadBarrier
 		RoadBarrierTrafficEvent event = new RoadBarrierTrafficEvent(currentTime, currentTime + 1000,
-				new Coordinate(), closedNode.getId());
-		eventList = new SimulationEventList(Arrays.asList(event), currentTime, UUID.randomUUID());
+				new Coordinate(), closedNode.getId(), server0);
+		eventList = new EventList(Arrays.asList(event), currentTime, UUID.randomUUID());
 		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
@@ -556,7 +558,7 @@ public class RoadBarrierTest {
 		log.debug("#### STEP +2000 ##########################################################################");
 
 		currentTime += 1000;
-		eventList = new SimulationEventList(null, currentTime, UUID.randomUUID());
+		eventList = new EventList(null, currentTime, UUID.randomUUID());
 		server0.update(eventList);
 		SENSOR_REGISTRY.update(eventList);
 
@@ -596,8 +598,9 @@ public class RoadBarrierTest {
 		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
 
 		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
+		TrafficEventHandlerManager<?,?> eventHandlerManager = EasyMock.createNiceMock(TrafficEventHandlerManager.class);
 		TrafficServerLocal server0 = new DefaultTrafficServer(referencePoint, sd, SENSOR_REGISTRY,
-				new DefaultSimulationEventHandlerManager(), serverList, sensorFactory, null);
+				eventHandlerManager, serverList, sensorFactory, null);
 
 		InitParameter initParam = new InitParameter();
 		initParam.setCityInfrastructureData(city);

@@ -1,37 +1,23 @@
-/* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
- 
 package de.pgalise.simulation.weather.model;
 
 import java.sql.Date;
 import java.sql.Time;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 /**
- * Abstract super class for weather data of weather stations. This class uses EclipseLink.
- * 
- * @author Andreas Rehfeldt
- * @version 1.0 (01.07.2012)
+ *
+ * @author richter
  */
 @MappedSuperclass
-public abstract class AbstractStationData extends AbstractMutableTimeSensitive implements MutableStationData, Comparable<AbstractStationData> {
+public abstract class AbstractStationData extends AbstractTimeSensitive implements MutableStationData, Comparable<AbstractStationData>  {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * air pressure
@@ -241,5 +227,4 @@ public abstract class AbstractStationData extends AbstractMutableTimeSensitive i
 	public void setWindVelocity(Float windVelocity) {
 		this.windVelocity = windVelocity;
 	}
-
 }

@@ -40,16 +40,18 @@ import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
@@ -70,7 +72,7 @@ import de.pgalise.util.graph.internal.QuadrantDisassembler;
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficController")
 @Local(TrafficControllerLocal.class)
 @Remote(TrafficController.class)
-public class DefaultTrafficController extends AbstractController implements TrafficControllerLocal {
+public class DefaultTrafficController extends AbstractController<TrafficEvent> implements TrafficControllerLocal {
 	/**
 	 * Logger
 	 */
@@ -81,7 +83,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	 * Server configuration
 	 */
 	@EJB
-	private ServerConfigurationReader serverConfigReader;
+	private ServerConfigurationReader<TrafficServer> serverConfigReader;
 
 	/**
 	 * List with all traffic servers
@@ -149,7 +151,6 @@ public class DefaultTrafficController extends AbstractController implements Traf
 				public void delegate() {
 					try {
 						TrafficServer server = serverList.get(serverId);
-						server.setServerId(serverId);
 						server.init(param);
 						server.setCityZone(cityZones.get(serverId));
 						log.debug("TrafficServer " + serverId + " initalized");
@@ -206,7 +207,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<TrafficEvent> simulationEventList) {
 		if(serverList.size()>1) {
 			updateAsynchronous(simulationEventList);
 		}
@@ -214,10 +215,10 @@ public class DefaultTrafficController extends AbstractController implements Traf
 		serverList.get(0).update(simulationEventList);
 	}
 	
-	private void updateAsynchronous(SimulationEventList simulationEventList) {
-		List<SimulationEvent> eventList = new ArrayList<>(16);
-		for (SimulationEvent e : simulationEventList.getEventList()) {
-			if (!e.getType().equals(SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT)) {
+	private void updateAsynchronous(EventList<TrafficEvent> simulationEventList) {
+		List<TrafficEvent> eventList = new ArrayList<>(16);
+		for (TrafficEvent e : simulationEventList.getEventList()) {
+			if (!e.getType().equals(TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT)) {
 				log.info(String.format(
 						"Received event (%s) will be splitted into multiple events to distribute the load equally",
 						e.getId()));
@@ -227,7 +228,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 			}
 		}
 
-		final SimulationEventList newList = new SimulationEventList(eventList, simulationEventList.getTimestamp(),
+		final EventList<TrafficEvent> newList = new EventList<>(eventList, simulationEventList.getTimestamp(),
 				simulationEventList.getId());
 
 		for (final TrafficServer server : serverList) {
@@ -259,10 +260,9 @@ public class DefaultTrafficController extends AbstractController implements Traf
 	 * @param e
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private List<SimulationEvent> divideEvent(SimulationEvent e) {
-		List<SimulationEvent> eventList = new ArrayList<>(16);
-		if (e.getType().equals(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT)) {
+	private List<TrafficEvent> divideEvent(TrafficEvent e) {
+		List<TrafficEvent> eventList = new ArrayList<>(16);
+		if (e.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
 			CreateVehiclesEvent originalEvent = (CreateVehiclesEvent) e;
 
 			// creat an event for each server
@@ -270,7 +270,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 			for (int i = 0; i < eventForEachServer.length; i++) {
 				eventForEachServer[i] = new CreateVehiclesEvent(
 						new ArrayList<CreateRandomVehicleData>(16));
-				eventForEachServer[i].setResponsibleServer(i);
+				eventForEachServer[i].setResponsibleServer(this.serverList.get(i));
 			}
 
 			int responsibleServer = 0;
@@ -293,7 +293,7 @@ public class DefaultTrafficController extends AbstractController implements Traf
 				}
 			}
 			eventList.addAll(Arrays.asList(eventForEachServer));
-		} else if (e.getType().equals(SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
+		} else if (e.getType().equals(TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
 			CreateRandomVehiclesEvent originalEvent = (CreateRandomVehiclesEvent) e;
 
 			int sizeForEachServer = originalEvent.getCreateRandomVehicleDataList().size() / serverList.size();
@@ -314,9 +314,9 @@ public class DefaultTrafficController extends AbstractController implements Traf
 
 				log.info(String.format("Creating new event from original [%s - %s)", a, b));
 
-				CreateRandomVehiclesEvent newEvent = new CreateRandomVehiclesEvent(
-						new ArrayList(originalEvent.getCreateRandomVehicleDataList().subList(a, b)));
-				newEvent.setResponsibleServer(i);
+				TrafficEvent newEvent = new CreateRandomVehiclesEvent(
+						new ArrayList<>(originalEvent.getCreateRandomVehicleDataList().subList(a, b)));
+				newEvent.setResponsibleServer(this.serverList.get(i));
 				eventList.add(newEvent);
 			}
 		}

@@ -23,7 +23,7 @@ import javax.persistence.OneToOne;
  * the MappedSuperclass (if usage of @Type annotation should be avoided)
  */
 @MappedSuperclass
-public abstract class AbstractServiceData<C extends WeatherCondition> extends AbstractMutableTimeSensitive implements ServiceData<C>, MutableServiceData<C> {
+public abstract class AbstractServiceData<C extends WeatherCondition> extends AbstractTimeSensitive implements ServiceData<C>, MutableServiceData<C> {
 	
 	/**
 	 * City

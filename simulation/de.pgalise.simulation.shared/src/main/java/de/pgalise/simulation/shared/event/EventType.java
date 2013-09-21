@@ -9,4 +9,6 @@ package de.pgalise.simulation.shared.event;
  * @author richter
  */
 public interface EventType {
+	
+	Class<?> getImplementationClass();
 }

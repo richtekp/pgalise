@@ -20,6 +20,7 @@ import de.pgalise.simulation.service.SensorManagerController;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * Remote view of the traffic server.<br/><br/>
@@ -31,7 +32,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @see de.pgalise.simulation.traffic.TrafficController
  * @author mustafa
  */
-public interface TrafficServer extends SensorManagerController {
+public interface TrafficServer extends SensorManagerController<TrafficEvent> {
 	/**
 	 * Sets the city zone this server is responsible for.
 	 * 
@@ -39,8 +40,6 @@ public interface TrafficServer extends SensorManagerController {
 	 *            city zone to be set
 	 */
 	public void setCityZone(Geometry cityZone);
-	
-	public void setCityZone(Geometry cityZone, int serverId);
 
 	/**
 	 * @return the city zone this server is responsible for
@@ -63,11 +62,11 @@ public interface TrafficServer extends SensorManagerController {
 	 */
 	public void processMovedVehicles();
 	
-	public void setServerId(int serverId);
-	
-	/**
-	 * The id of this server given by the TrafficController.
-	 * @return serverId
-	 */
-	public int getServerId();
+//	public void setServerId(int serverId);
+//	
+//	/**
+//	 * The id of this server given by the TrafficController.
+//	 * @return serverId
+//	 */
+//	public int getServerId();
 }

@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergySensor;
@@ -252,7 +252,7 @@ public class WindPowerSensor extends EnergySensor {
 	}
 
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		// Get weather values
 		double airPressure = (this.getWeatherController().getValue(WeatherParameterEnum.AIR_PRESSURE,
 				eventList.getTimestamp(), this.getPosition())).doubleValue();

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -185,7 +185,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	 *            the simulation event used by the sensors
 	 */
 	@Override
-	public synchronized void update(final SimulationEventList eventList) {
+	public synchronized void update(final EventList eventList) {
 		for (final Sensor sensor : this) {
 			sensor.update(eventList);
 		}

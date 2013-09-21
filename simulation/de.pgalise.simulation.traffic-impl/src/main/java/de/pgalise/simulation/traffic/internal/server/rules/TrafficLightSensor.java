@@ -18,7 +18,7 @@ package de.pgalise.simulation.traffic.internal.server.rules;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -66,7 +66,7 @@ public class TrafficLightSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		// // Send data
 		this.getOutput().transmitDouble(this.trafficLight.getAngle1());
 		this.getOutput().transmitDouble(this.trafficLight.getAngle2());

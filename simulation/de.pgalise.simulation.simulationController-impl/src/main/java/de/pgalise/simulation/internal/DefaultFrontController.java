@@ -32,7 +32,7 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import javax.persistence.EntityManager;
 
@@ -85,7 +85,7 @@ public class DefaultFrontController extends AbstractController implements Contro
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList simulationEventList) {
 		sensorRegistry.update(simulationEventList);
 	}
 

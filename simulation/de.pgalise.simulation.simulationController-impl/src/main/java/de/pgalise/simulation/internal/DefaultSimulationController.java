@@ -44,7 +44,9 @@ import de.pgalise.simulation.service.SensorManagerController;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
@@ -71,7 +73,7 @@ import javax.persistence.EntityManager;
 @Singleton(name = "de.pgalise.simulation.SimulationController")
 @Remote(SimulationController.class)
 @Local(SimulationControllerLocal.class)
-public class DefaultSimulationController extends AbstractController implements SimulationControllerLocal {
+public class DefaultSimulationController extends AbstractController<Event> implements SimulationControllerLocal {
 
 	/**
 	 * Logger
@@ -98,10 +100,10 @@ public class DefaultSimulationController extends AbstractController implements S
 	private ControlCenterController controlCenterController;
 	
 	@EJB
-	private ServiceDictionary serviceDictionary;
+	private ServiceDictionary<Controller<?>> serviceDictionary;
 
 	@EJB
-	private ServerConfigurationReader<Controller> serverConfigReader;
+	private ServerConfigurationReader<Controller<?>> serverConfigReader;
 	
 	@EJB
 	private ConfigReader configReader;
@@ -111,7 +113,7 @@ public class DefaultSimulationController extends AbstractController implements S
 	 */
 	private StartParameter startParameter;
 	
-	private List<Controller> frontControllerList;
+	private List<Controller<?>> frontControllerList;
 
 	/**
 	 * Default constructor
@@ -135,7 +137,7 @@ public class DefaultSimulationController extends AbstractController implements S
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
 
-		for (Controller c : this.serviceDictionary.getControllers()) {
+		for (Controller<?> c : this.serviceDictionary.getControllers()) {
 			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
 				try {
 					((SensorManagerController) c).createSensor(sensor);
@@ -147,7 +149,7 @@ public class DefaultSimulationController extends AbstractController implements S
 			}
 		}
 		
-		for(Controller c : this.serviceDictionary.getControllers()) {
+		for(Controller<?> c : this.serviceDictionary.getControllers()) {
 			c.reset();
 		}
 		
@@ -162,7 +164,7 @@ public class DefaultSimulationController extends AbstractController implements S
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
 
-		for (Controller c : this.serviceDictionary.getControllers()) {
+		for (Controller<?> c : this.serviceDictionary.getControllers()) {
 			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
 				try {
 					((SensorManagerController) c).deleteSensor(sensor);
@@ -197,7 +199,7 @@ public class DefaultSimulationController extends AbstractController implements S
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
 
-		for (Controller c : this.serviceDictionary.getControllers()) {
+		for (Controller<?> c : this.serviceDictionary.getControllers()) {
 			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
 				try {
 					return ((SensorManagerController) c).statusOfSensor(sensor);
@@ -229,7 +231,7 @@ public class DefaultSimulationController extends AbstractController implements S
 		
 		serverConfigReader.read(
 			param.getServerConfiguration(), 
-				new ServiceHandler<Controller>() {
+				new ServiceHandler<Controller<?>>() {
 					@Override
 					public String getName() {
 						return ServiceDictionary.FRONT_CONTROLLER;
@@ -258,10 +260,10 @@ public class DefaultSimulationController extends AbstractController implements S
 			throw new InitializationException("An error occured during the initialization of the front controllers");
 		}
 
-		Collection<Controller> controllers = this.serviceDictionary.getControllers();
+		Collection<Controller<?>> controllers = this.serviceDictionary.getControllers();
 		log.debug(controllers.size() +" Controller referenced by the ServiceDictionary");
 		// init controller
-		for (Controller c : controllers) {
+		for (Controller<?> c : controllers) {
 			if (!(c instanceof SimulationController)) {
 				c.init(param);
 			}
@@ -277,13 +279,13 @@ public class DefaultSimulationController extends AbstractController implements S
 		this.frontControllerList.clear();
 		
 		// reset controller
-		for (Controller c : this.serviceDictionary.getControllers()) {
+		for (Controller<?> c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
 				c.reset();
 			}
 		}
 		
-		for(Controller c: frontControllerList) {
+		for(Controller<?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
 				c.reset();
 			}
@@ -302,14 +304,14 @@ public class DefaultSimulationController extends AbstractController implements S
 		this.startParameter = param;
 
 		// start the controllers
-		for (Controller c : this.serviceDictionary.getControllers()) {
+		for (Controller<?> c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
 				c.start(param);
 			}
 
 		}
 
-		for(Controller c: frontControllerList) {
+		for(Controller<?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
 				c.start(param);
 			}
@@ -338,13 +340,13 @@ public class DefaultSimulationController extends AbstractController implements S
 		this.controlCenterController.stop();
 
 		// stop all controllers (without this controller type)
-		for (Controller c : this.serviceDictionary.getControllers()) {
+		for (Controller<?> c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
 				c.stop();
 			}
 		}
 		
-		for(Controller c: frontControllerList) {
+		for(Controller<?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
 				c.stop();
 			}
@@ -354,13 +356,13 @@ public class DefaultSimulationController extends AbstractController implements S
 	@Override
 	protected void onResume() {	
 		// start the controllers
-		for (Controller c : this.serviceDictionary.getControllers()) {
+		for (Controller<?> c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
 				c.start(this.startParameter);
 			}
 		}
 		
-		for(Controller c: frontControllerList) {
+		for(Controller<?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
 				c.start(this.startParameter);
 			}
@@ -375,12 +377,12 @@ public class DefaultSimulationController extends AbstractController implements S
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<Event> simulationEventList) {
 		this.eventInitiator.addSimulationEventList(simulationEventList);
 	}
 
 	@Override
-	public void addSimulationEventList(SimulationEventList simulationEventList) {
+	public void addSimulationEventList(EventList<?> simulationEventList) {
 		this.eventInitiator.addSimulationEventList(simulationEventList);
 	}
 
@@ -418,7 +420,7 @@ public class DefaultSimulationController extends AbstractController implements S
 	 * 
 	 * @param serviceDictionary
 	 */
-	public void _setServiceDictionary(ServiceDictionary serviceDictionary) {
+	public void _setServiceDictionary(ServiceDictionary<Controller<?>> serviceDictionary) {
 		this.serviceDictionary = serviceDictionary;
 	}
 
@@ -445,7 +447,7 @@ public class DefaultSimulationController extends AbstractController implements S
 	 * 
 	 * @param serverConfigurationReader
 	 */
-	public void _setServerConfigurationReader(ServerConfigurationReader serverConfigurationReader) {
+	public void _setServerConfigurationReader(ServerConfigurationReader<Controller<?>> serverConfigurationReader) {
 		this.serverConfigReader = serverConfigurationReader;
 	}
 

@@ -23,6 +23,8 @@ import de.pgalise.simulation.operationCenter.internal.OCWebSocketService.NewUser
 import de.pgalise.simulation.operationCenter.internal.message.GateMessage;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.visualizationcontroller.VisualizationController;
 
 /**
@@ -32,7 +34,7 @@ import de.pgalise.simulation.visualizationcontroller.VisualizationController;
  * 
  * @author Timo
  */
-public interface OCSimulationController extends SensorManagerController, NewUserEventListener, VisualizationController {
+public interface OCSimulationController extends SensorManagerController<Event>, NewUserEventListener, VisualizationController {
 
 	/**
 	 * Updates the clients.

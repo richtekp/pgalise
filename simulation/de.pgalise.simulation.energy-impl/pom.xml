@@ -38,7 +38,6 @@
 	 <dependency>
 	  <groupId>com.javadocmd</groupId>
 	  <artifactId>simplelatlng</artifactId>
-	  <version>1.2.0</version>
 	  <type>jar</type>
 	 </dependency>
 	</dependencies>

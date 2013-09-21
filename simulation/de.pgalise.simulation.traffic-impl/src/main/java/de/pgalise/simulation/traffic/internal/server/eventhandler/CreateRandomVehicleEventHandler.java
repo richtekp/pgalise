@@ -21,10 +21,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
@@ -39,7 +42,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Mustafa
  * @version 1.0
  */
-public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler {
+public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent> extends AbstractVehicleEventHandler<E> {
 
 	/**
 	 * Logger
@@ -49,7 +52,7 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 	/**
 	 * Simulation event type
 	 */
-	private static final SimulationEventTypeEnum type = SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT;
+	private static final EventType type = TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT;
 
 	/**
 	 * Constructor
@@ -58,20 +61,19 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 	}
 
 	@Override
-	public SimulationEventTypeEnum getTargetEventType() {
+	public EventType getTargetEventType() {
 		return CreateRandomVehicleEventHandler.type;
 	}
 
 	@Override
-	public void handleEvent(SimulationEvent event) {
-		CreateRandomVehiclesEvent e = (CreateRandomVehiclesEvent) event;
-		if (e.getResponsibleServer() != this.getServer().getServerId()) {
+	public void handleEvent(E event) {
+		if (!event.getResponsibleServer().equals(this.getResponsibleServer())) {
 			return;
 		}
 
-		log.info("Processing CREATE_RANDOM_VEHICLES_EVENT: Vehicles=" + e.getCreateRandomVehicleDataList().size());
+		log.info("Processing CREATE_RANDOM_VEHICLES_EVENT: Vehicles=" + event.getCreateRandomVehicleDataList().size());
 
-		final List<CreateRandomVehicleData> vehicleList = e.getCreateRandomVehicleDataList();
+		final List<CreateRandomVehicleData> vehicleList = event.getCreateRandomVehicleDataList();
 
 		final int cores = 1;// Runtime.getRuntime().availableProcessors() / 1;
 
@@ -125,7 +127,7 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 		@Override
 		public void run() {
 
-			long currentTime = this.eHandler.getServer().getCurrentTime();
+			long currentTime = this.eHandler.getResponsibleServer().getCurrentTime();
 			// int amountOfServer = CreateRandomVehicleEventHandler.this.getServer().getServerListSize();
 			// int myServer = this.getServer().;
 
@@ -134,12 +136,12 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 			int amountMotorcycles = 0;
 			int amountTrucks = 0;
 
-			double limitBikes = this.eHandler.getServer().getVehicleFuzzyManager().getPercentageValueBicycles();
-			double limitCars = this.eHandler.getServer().getVehicleFuzzyManager().getPercentageValueCars();
+			double limitBikes = this.eHandler.getResponsibleServer().getVehicleFuzzyManager().getPercentageValueBicycles();
+			double limitCars = this.eHandler.getResponsibleServer().getVehicleFuzzyManager().getPercentageValueCars();
 			// log.debug("CAR PERCENTAGE:"+limitCars);
-			double limitMotorcycles = this.eHandler.getServer().getVehicleFuzzyManager()
+			double limitMotorcycles = this.eHandler.getResponsibleServer().getVehicleFuzzyManager()
 					.getPercentageValueMotorcycles();
-			double limitTrucks = this.eHandler.getServer().getVehicleFuzzyManager().getPercentageValueTrucks();
+			double limitTrucks = this.eHandler.getResponsibleServer().getVehicleFuzzyManager().getPercentageValueTrucks();
 
 			// temporär, solange der governor noch nicht richtig funktioniert und immer 0% liefert
 			// limitBikes = 0.5;
@@ -201,7 +203,7 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 
 			for (int i = this.startIndex; i < this.endIndex; i++) {
 				final CreateRandomVehicleData data = this.vehicleList.get(i);
-				TrafficTrip trip = this.eHandler.getServer().createTrip(this.eHandler.getServer().getCityZone(),
+				TrafficTrip trip = this.eHandler.getResponsibleServer().createTrip(this.eHandler.getResponsibleServer().getCityZone(),
 						data.getVehicleInformation().getVehicleType());
 
 				// Create vehicle
@@ -230,13 +232,13 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 
 				// check if a vehicle should be scheduled immediately or will be stored in the fuzzy manager
 				if (v.getData().getClass().equals(BicycleData.class)) {
-					this.eHandler.getServer().getVehicleFuzzyManager().increaseMaxBikes();
+					this.eHandler.getResponsibleServer().getVehicleFuzzyManager().increaseMaxBikes();
 					counterBikes++;
 					if (counterBikes <= limitBikes && trip.getStartTime() >= currentTime) {
 						this.eHandler.scheduleVehicle(v, trip.getStartTime());
 						countScheduledBike++;
 					} else {
-						this.eHandler.getServer().getVehicleFuzzyManager().addSpareBicycle(v);
+						this.eHandler.getResponsibleServer().getVehicleFuzzyManager().addSpareBicycle(v);
 						if (counterBikes > limitBikes) {
 							countSpareBike++;
 						}
@@ -246,13 +248,13 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 					}
 				} else if (v.getData().getClass().equals(TruckData.class)) { // must be proved before CarDate (because
 																				// of inheritance)
-					this.eHandler.getServer().getVehicleFuzzyManager().increaseMaxTrucks();
+					this.eHandler.getResponsibleServer().getVehicleFuzzyManager().increaseMaxTrucks();
 					counterTrucks++;
 					if (counterTrucks <= limitTrucks && trip.getStartTime() >= currentTime) {
 						this.eHandler.scheduleVehicle(v, trip.getStartTime());
 						countScheduledTruck++;
 					} else {
-						this.eHandler.getServer().getVehicleFuzzyManager().addSpareTruck(v);
+						this.eHandler.getResponsibleServer().getVehicleFuzzyManager().addSpareTruck(v);
 						if (counterTrucks > limitTrucks) {
 							countSpareTruck++;
 						}
@@ -261,13 +263,13 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 						}
 					}
 				} else if (v.getData().getClass().equals(CarData.class)) {
-					this.eHandler.getServer().getVehicleFuzzyManager().increaseMaxCars();
+					this.eHandler.getResponsibleServer().getVehicleFuzzyManager().increaseMaxCars();
 					counterCars++;
 					if (counterCars <= limitCars && trip.getStartTime() >= currentTime) {
 						this.eHandler.scheduleVehicle(v, trip.getStartTime());
 						countScheduledCar++;
 					} else {
-						this.eHandler.getServer().getVehicleFuzzyManager().addSpareCar(v);
+						this.eHandler.getResponsibleServer().getVehicleFuzzyManager().addSpareCar(v);
 						if (counterCars > limitCars) {
 							countSpareCar++;
 						}
@@ -276,13 +278,13 @@ public class CreateRandomVehicleEventHandler extends AbstractVehicleEventHandler
 						}
 					}
 				} else if (v.getData().getClass().equals(MotorcycleData.class)) {
-					this.eHandler.getServer().getVehicleFuzzyManager().increaseMaxMotorcycles();
+					this.eHandler.getResponsibleServer().getVehicleFuzzyManager().increaseMaxMotorcycles();
 					counterMotorcycles++;
 					if (counterMotorcycles <= limitMotorcycles && trip.getStartTime() >= currentTime) {
 						this.eHandler.scheduleVehicle(v, trip.getStartTime());
 						countScheduledMoto++;
 					} else {
-						this.eHandler.getServer().getVehicleFuzzyManager().addSpareMotorcycle(v);
+						this.eHandler.getResponsibleServer().getVehicleFuzzyManager().addSpareMotorcycle(v);
 						if (counterMotorcycles > limitMotorcycles) {
 							countSpareMoto++;
 						}

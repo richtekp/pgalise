@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 
 /**
  * Message if a new simulation event list should be added.
@@ -24,7 +24,7 @@ import de.pgalise.simulation.shared.event.SimulationEventList;
  * @author dhoeting
  * @author Timo
  */
-public class SimulationEventListMessage extends CCWebSocketMessage<SimulationEventList> {
+public class SimulationEventListMessage extends CCWebSocketMessage<EventList> {
 	/**
 	 * Constructor
 	 * 
@@ -33,7 +33,7 @@ public class SimulationEventListMessage extends CCWebSocketMessage<SimulationEve
 	 * @param content
 	 *            Simulation events that will be created.
 	 */
-	public SimulationEventListMessage(int messageID, SimulationEventList content) {
+	public SimulationEventListMessage(int messageID, EventList content) {
 		super(messageID, MessageType.SIMULATION_EVENT_LIST, content);
 	}
 }

@@ -14,12 +14,17 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The attraction traffic event will lead to more traffic on the given point in the given time window.
@@ -47,25 +52,22 @@ public class AttractionTrafficEvent extends CreateRandomVehiclesEvent {
 	 */
 	private String nodeID;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 *            ID of the event
-	 * @param attractionStartTimestamp
-	 *            when will the attraction start.
-	 * @param attractionEndTimestamp
-	 *            when will the attraction end.
-	 * @param nodeID
-	 * 			node id in graph.
-	 */
-	public AttractionTrafficEvent(long attractionStartTimestamp, long attractionEndTimestamp,
-			String nodeID, List<CreateRandomVehicleData> createRandomVehicleDataList) {
-		super(createRandomVehicleDataList);
+	public AttractionTrafficEvent(long attractionStartTimestamp,
+		long attractionEndTimestamp,
+		String nodeID,
+		List<CreateRandomVehicleData> createRandomVehicleDataList,
+		TrafficServerLocal server,
+		Vehicle<? extends VehicleData> currentVehicle,
+		long simulationTime,
+		long elapsedTime) {
+		super(
+			server,createRandomVehicleDataList,
+			currentVehicle,
+			simulationTime,
+			elapsedTime);
 		this.attractionStartTimestamp = attractionStartTimestamp;
 		this.attractionEndTimestamp = attractionEndTimestamp;
 		this.nodeID = nodeID;
-		super.setType(SimulationEventTypeEnum.ATTRACTION_TRAFFIC_EVENT);
 	}
 
 	public long getAttractionStartTimestamp() {
@@ -90,5 +92,10 @@ public class AttractionTrafficEvent extends CreateRandomVehiclesEvent {
 
 	public void setNodeID(String nodeID) {
 		this.nodeID = nodeID;
+	}
+
+	@Override
+	public EventType getType() {
+		return TrafficEventTypeEnum.ATTRACTION_TRAFFIC_EVENT;
 	}
 }

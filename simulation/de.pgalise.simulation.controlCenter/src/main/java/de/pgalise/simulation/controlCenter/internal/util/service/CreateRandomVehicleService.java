@@ -18,7 +18,7 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 
 /**
  * Service to create a {@link TrafficEvent} from {@link RandomDynamicSensorBundle}.
@@ -35,6 +35,6 @@ public interface CreateRandomVehicleService {
 	 * 			sensors with interferer or not
 	 * @return
 	 */
-	public TrafficEvent createRandomDynamicSensors(RandomVehicleBundle randomDynamicSensorBundle, 
+	public AbstractTrafficEvent createRandomDynamicSensors(RandomVehicleBundle randomDynamicSensorBundle, 
 			RandomSeedService randomSeedService, boolean withSensorInterferer);
 }

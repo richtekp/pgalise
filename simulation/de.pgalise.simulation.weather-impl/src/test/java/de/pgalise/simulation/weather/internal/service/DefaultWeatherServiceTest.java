@@ -31,7 +31,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
@@ -41,12 +40,13 @@ import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
 import java.sql.Date;
-import java.util.Collection;
+import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.measure.Measure;
@@ -90,7 +90,7 @@ public class DefaultWeatherServiceTest  {
 	/**
 	 * Weather loader
 	 */
-	private WeatherLoader<?> loader;
+	private WeatherLoader<DefaultWeatherCondition> loader;
 
 	private City city;
 	
@@ -156,7 +156,7 @@ public class DefaultWeatherServiceTest  {
 		} catch (IllegalStateException expected) {
 		}
 		
-		Collection<StationDataNormal> entities = TestUtils.setUpWeatherStationData(
+		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(
 			startTimestamp,
 			endTimestamp,
 			utx,
@@ -188,17 +188,17 @@ public class DefaultWeatherServiceTest  {
 		}
 
 		// Test (normal)
-		Collection<DefaultServiceDataCurrent> prequisites = TestUtils.setUpWeatherServiceDataCurrent(
+		Map<Date, DefaultServiceDataCurrent> prequisites = TestUtils.setUpWeatherServiceDataCurrent(
 			startTimestamp,
 			endTimestamp,
 			city,
 			utx,
 			ENTITY_MANAGER_FACTORY);
-		Collection<StationDataNormal> prequisites0 = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> prequisites0 = TestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			utx,
 			ENTITY_MANAGER_FACTORY);
-		Collection<DefaultServiceDataForecast> prequisites1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> prequisites1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			utx,
@@ -286,7 +286,7 @@ public class DefaultWeatherServiceTest  {
 		try {
 			service.checkDate(0);
 			fail();
-		} catch (NoWeatherDataFoundException expected) {
+		} catch (IllegalArgumentException expected) {
 		}
 
 		// Test false Date (future)
@@ -304,7 +304,7 @@ public class DefaultWeatherServiceTest  {
 		/*
 		 * Test preparations
 		 */
-		Collection<StationDataNormal> prequisites = TestUtils.setUpWeatherStationData(
+		Map<Date, StationDataNormal> prequisites = TestUtils.setUpWeatherStationData(
 			startTimestamp,
 			endTimestamp,
 			utx,
@@ -368,7 +368,7 @@ public class DefaultWeatherServiceTest  {
 		/*
 		 * Test preparations
 		 */
-		Collection<StationDataNormal> entities = TestUtils.setUpWeatherStationData(
+		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(
 			startTimestamp,
 			endTimestamp,
 			utx,

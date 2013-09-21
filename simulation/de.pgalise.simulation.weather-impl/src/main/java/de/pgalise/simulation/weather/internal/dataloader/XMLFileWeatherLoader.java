@@ -30,6 +30,7 @@ import java.util.Properties;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 
@@ -102,7 +103,7 @@ public class XMLFileWeatherLoader implements WeatherLoader<DefaultWeatherConditi
 	}
 
 	@Override
-	public DefaultServiceDataForecast loadCurrentServiceWeatherData(long timestamp, City city)  {
+	public DefaultServiceDataCurrent loadCurrentServiceWeatherData(long timestamp, City city)  {
 		throw new RuntimeException("Not implemented!");
 	}
 

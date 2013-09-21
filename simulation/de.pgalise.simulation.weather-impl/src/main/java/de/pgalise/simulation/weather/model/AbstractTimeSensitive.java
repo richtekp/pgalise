@@ -5,6 +5,7 @@
 package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.sql.Date;
 import java.sql.Time;
 import javax.persistence.MappedSuperclass;
@@ -14,8 +15,7 @@ import javax.persistence.MappedSuperclass;
  * @author richter
  */
 @MappedSuperclass
-public class AbstractMutableTimeSensitive extends AbstractIdentifiable implements TimeSensitive, MutableTimeSensitive {
-	private static final long serialVersionUID = 1L;
+public abstract class AbstractTimeSensitive extends AbstractIdentifiable implements MutableTimeSensitive {
 	
 	/**
 	 * Timestamp
@@ -27,14 +27,10 @@ public class AbstractMutableTimeSensitive extends AbstractIdentifiable implement
 //	@Temporal(TemporalType.TIME)
 	private Time measureTime;
 
-	protected AbstractMutableTimeSensitive() {
+	protected AbstractTimeSensitive() {
 	}
-
-	public AbstractMutableTimeSensitive(Date measureDate,
-		Time measureTime
-	) {
-		super(generateId(measureDate,
-			measureTime));
+	
+	public AbstractTimeSensitive(Date measureDate, Time measureTime) {
 		this.measureDate = measureDate;
 		this.measureTime = measureTime;
 	}

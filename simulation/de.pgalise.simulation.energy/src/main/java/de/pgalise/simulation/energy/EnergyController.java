@@ -19,6 +19,8 @@ package de.pgalise.simulation.energy;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.shared.event.energy.EnergyEvent;
+import de.pgalise.simulation.shared.event.energy.EnergyEventType;
 import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
 
 /**
@@ -27,7 +29,7 @@ import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
  * 
  * @author Timo
  */
-public interface EnergyController extends Controller {
+public interface EnergyController extends Controller<EnergyEvent> {
 
 	/**
 	 * Returns the current energy consumption on the given point.

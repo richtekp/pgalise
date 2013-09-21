@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.controlCenter.internal.model.OnConnectParameter;
 import de.pgalise.simulation.controlCenter.internal.model.SavedStartParameterData;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.BusRoute;
@@ -185,9 +185,9 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 */
 	private static Map<Integer, String> getSimulationEventEnumTypeMap() {
 		Map<Integer, String> simulationEventTypeMap = new HashMap<>();
-		Map<Integer, SimulationEventTypeEnum> simulationEventEnumMap = SimulationEventTypeEnum
+		Map<Integer, EventTypeEnum> simulationEventEnumMap = EventTypeEnum
 				.getSimulationEventTypeMapAsUnmodifiable();
-		for (Entry<Integer, SimulationEventTypeEnum> entry : simulationEventEnumMap.entrySet()) {
+		for (Entry<Integer, EventTypeEnum> entry : simulationEventEnumMap.entrySet()) {
 			simulationEventTypeMap.put(entry.getKey(), entry.getValue().toString());
 		}
 		return simulationEventTypeMap;

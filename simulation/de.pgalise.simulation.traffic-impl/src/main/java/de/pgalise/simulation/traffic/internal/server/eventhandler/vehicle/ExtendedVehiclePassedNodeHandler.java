@@ -16,15 +16,16 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.shared.event.EventType;
 import org.graphstream.graph.Node;
 
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorizedVehicle;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 
 /**
@@ -32,7 +33,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * 
  * @author marcus
  */
-public class ExtendedVehiclePassedNodeHandler implements VehicleEventHandler {
+public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleEvent> {
 	private VehiclePassedNodeHandler defaultHandler;
 
 	public ExtendedVehiclePassedNodeHandler() {
@@ -40,8 +41,8 @@ public class ExtendedVehiclePassedNodeHandler implements VehicleEventHandler {
 	}
 
 	@Override
-	public VehicleEventType getTargetEventType() {
-		return VehicleEventType.VEHICLE_PASSED_NODE;
+	public EventType getTargetEventType() {
+		return VehicleEventTypeEnum.VEHICLE_PASSED_NODE;
 	}
 
 	@Override

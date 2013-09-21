@@ -46,11 +46,11 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
-import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
@@ -122,7 +122,7 @@ public class DeterminismHelper {
 		}
 
 		@Override
-		protected void onUpdate(SimulationEventList simulationEventList) {
+		protected void onUpdate(EventList simulationEventList) {
 		}
 
 		@Override
@@ -236,17 +236,17 @@ public class DeterminismHelper {
 	 *            List with CreateRandomVehicleData
 	 * @return List with events
 	 */
-	public List<SimulationEventList> produceSimulationEventLists(long timestamp,
+	public List<EventList> produceSimulationEventLists(long timestamp,
 			List<CreateRandomVehicleData> vehicleDataList) {
-		List<SimulationEventList> simulationEventLists = new ArrayList<>();
+		List<EventList> simulationEventLists = new ArrayList<>();
 
 		/*
 		 * Add other simulation event lists here:
 		 */
 		if (!vehicleDataList.isEmpty()) {
-			List<TrafficEvent> trafficEventList = new ArrayList<>();
+			List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
 			trafficEventList.add(new CreateRandomVehiclesEvent(UUID.randomUUID(), vehicleDataList));
-			simulationEventLists.add(new SimulationEventList(trafficEventList, timestamp, UUID.randomUUID()));
+			simulationEventLists.add(new EventList(trafficEventList, timestamp, UUID.randomUUID()));
 		}
 
 		// Return list
@@ -266,10 +266,10 @@ public class DeterminismHelper {
 	 *            Timestamp of the simulation start
 	 * @return List with events
 	 */
-	public List<SimulationEventList> produceVehicleDataLists(int numberOfVehicles,
+	public List<EventList> produceVehicleDataLists(int numberOfVehicles,
 			CityInfrastructureData cityInfrastructureData, Random random, long startTimestamp) {
-		List<SimulationEventList> simulationEventLists = new ArrayList<>();
-		List<TrafficEvent> trafficEventList = new ArrayList<>();
+		List<EventList> simulationEventLists = new ArrayList<>();
+		List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
 
 		/* create random cars */
 		List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
@@ -343,7 +343,7 @@ public class DeterminismHelper {
 		}
 
 		trafficEventList.add(new CreateRandomVehiclesEvent(UUID.randomUUID(), vehicleDataList));
-		simulationEventLists.add(new SimulationEventList(trafficEventList, startTimestamp, UUID.randomUUID()));
+		simulationEventLists.add(new EventList(trafficEventList, startTimestamp, UUID.randomUUID()));
 
 		// Return list
 		return simulationEventLists;
@@ -415,7 +415,7 @@ public class DeterminismHelper {
 	 * @throws Exception
 	 */
 	public void startSimulation(InitParameter initParameter, StartParameter startParameter,
-			List<SimulationEventList> simulationEvents, List<SensorHelper> staticSensors) throws Exception {
+			List<EventList> simulationEvents, List<SensorHelper> staticSensors) throws Exception {
 
 		/* Create simulation controller and init/start the simulation: */
 		SimulationController simulationController = (SimulationController) CONTEXT
@@ -436,7 +436,7 @@ public class DeterminismHelper {
 
 		log.debug("-------- ! ADD SIMULATION EVENTS! ---------");
 
-		for (SimulationEventList list : simulationEvents) {
+		for (EventList list : simulationEvents) {
 			simulationController.addSimulationEventList(list);
 		}
 

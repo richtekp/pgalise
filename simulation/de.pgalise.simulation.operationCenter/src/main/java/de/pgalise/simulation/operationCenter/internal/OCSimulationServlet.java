@@ -40,7 +40,7 @@ import de.pgalise.simulation.operationCenter.internal.strategy.OCModule;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -134,11 +134,11 @@ public class OCSimulationServlet extends HttpServlet {
 				/* simulation update: */	
 			} else if(req.getParameter("update") != null && req.getParameter("update").equalsIgnoreCase("true")) {
 
-				SimulationEventList simulationEventList = gson.fromJson(req.getParameter("json"), SimulationEventList.class);
+				EventList simulationEventList = gson.fromJson(req.getParameter("json"), EventList.class);
 				if(!simulationEventList.getEventList().isEmpty()) {
 					log.debug(req.getParameter("json"));
 				}
-				ocSimulationController.update(gson.fromJson(req.getParameter("json"), SimulationEventList.class));
+				ocSimulationController.update(gson.fromJson(req.getParameter("json"), EventList.class));
 
 				/* simulation paused: */	
 			} else if(req.getParameter("stop") != null && req.getParameter("stop").equalsIgnoreCase("true")) {

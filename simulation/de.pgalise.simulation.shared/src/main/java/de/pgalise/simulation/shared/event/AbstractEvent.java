@@ -26,46 +26,17 @@ import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
  * 
  * @author Timo
  */
-public class SimulationEvent extends AbstractIdentifiable implements Event<SimulationEventTypeEnum> {
+public abstract class AbstractEvent extends AbstractIdentifiable implements Event {
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -7362721454716905390L;
 
-	/**
-	 * Event type
-	 */
-	private SimulationEventTypeEnum eventType;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param eventType
-	 *            Event type
-	 */
-	public SimulationEvent(SimulationEventTypeEnum eventType) {
-		this.eventType = eventType;
-	}
-
-	public SimulationEvent(Long id, SimulationEventTypeEnum eventType) {
-		super(id);
-		this.eventType = eventType;
-	}
-
-	@Override
-	public SimulationEventTypeEnum getType() {
-		return eventType;
-	}
-
-	public void setType(SimulationEventTypeEnum eventType) {
-		this.eventType = eventType;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((eventType == null) ? 0 : eventType.hashCode());
+		result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
 		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
 		return result;
 	}
@@ -81,8 +52,8 @@ public class SimulationEvent extends AbstractIdentifiable implements Event<Simul
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		SimulationEvent other = (SimulationEvent) obj;
-		if (eventType != other.eventType) {
+		AbstractEvent other = (AbstractEvent) obj;
+		if (getType() != other.getType()) {
 			return false;
 		}
 		if (getId() == null) {

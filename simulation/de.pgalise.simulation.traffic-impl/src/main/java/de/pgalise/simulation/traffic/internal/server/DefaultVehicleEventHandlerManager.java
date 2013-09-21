@@ -20,11 +20,9 @@ import de.pgalise.simulation.service.internal.event.AbstractEventHandlerManager;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
-import de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle.DefaultVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 
 /**
  * ...
@@ -35,12 +33,12 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventTyp
 @Local(VehicleEventHandlerManager.class)
 @Stateless(name = "de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager")
 public class DefaultVehicleEventHandlerManager extends
-		AbstractEventHandlerManager<VehicleEventHandler, VehicleEvent, VehicleEventType> implements
+		AbstractEventHandlerManager<VehicleEventHandler<VehicleEvent>, VehicleEvent> implements
 		VehicleEventHandlerManager {
 
 	@Override
 	public boolean responsibleFor(VehicleEventHandler handler, VehicleEvent event) {
-		return handler.getTargetEventType().equals(event.getTargetEventType());
+		return handler.getTargetEventType().equals(event.getType());
 	}
 
 }

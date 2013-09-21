@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.graphextension.DefaultGraphExtensions;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -366,7 +366,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *            the {@link SimulationEventList}
 	 */
 	@Override
-	public void updateTrafficRules(SimulationEventList simulationEventList) {
+	public void updateTrafficRules(EventList simulationEventList) {
 		this.currentSimTime = simulationEventList.getTimestamp();
 		for (final TrafficRule trafficRule : this.trafficRules) {
 			trafficRule.update(simulationEventList);

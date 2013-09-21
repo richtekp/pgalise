@@ -55,12 +55,12 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
-import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
@@ -229,12 +229,12 @@ public class VisualizationTest {
 
 			long startTime = System.currentTimeMillis();
 			log.debug("Creating EventLists...");
-			List<SimulationEventList> eventList = produceSimulationEventLists(cityInfrastructure, startParameter);
+			List<EventList> eventList = produceSimulationEventLists(cityInfrastructure, startParameter);
 			log.debug("Finished creating EventList, elapsed time: " + (System.currentTimeMillis() - startTime) / 1000
 					/ 60);
 
 			simulationController.createSensors(produceSensorHelperList(cityInfrastructure));
-			for (SimulationEventList list : eventList) {
+			for (EventList list : eventList) {
 				simulationController.addSimulationEventList(list);
 			}
 
@@ -362,15 +362,15 @@ public class VisualizationTest {
 	 * @param cityInfrastructureData
 	 * @return
 	 */
-	private static List<SimulationEventList> produceSimulationEventLists(CityInfrastructureData cityInfrastructureData,
+	private static List<EventList> produceSimulationEventLists(CityInfrastructureData cityInfrastructureData,
 			StartParameter startParameter) {
-		List<SimulationEventList> simulationEventLists = new ArrayList<>();
+		List<EventList> simulationEventLists = new ArrayList<>();
 
 		/*
 		 * add other simulation event lists here:
 		 */
 
-		List<TrafficEvent> trafficEventList = new ArrayList<>();
+		List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
 
 		/* create random cars */
 		List<CreateRandomVehicleData> vehicleDataList = new LinkedList<>();
@@ -384,7 +384,7 @@ public class VisualizationTest {
 					VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1, null, id.toString())));
 		}
 		trafficEventList.add(new CreateRandomVehiclesEvent(UUID.randomUUID(), vehicleDataList));
-		simulationEventLists.add(new SimulationEventList(trafficEventList, SIMULATION_START.getTimeInMillis(), UUID
+		simulationEventLists.add(new EventList(trafficEventList, SIMULATION_START.getTimeInMillis(), UUID
 				.randomUUID()));
 
 		/* Attraction Ewe Arena: */
@@ -530,7 +530,7 @@ public class VisualizationTest {
 		}
 
 		@Override
-		protected void onUpdate(SimulationEventList simulationEventList) {
+		protected void onUpdate(EventList simulationEventList) {
 		}
 
 		@Override
@@ -571,7 +571,7 @@ public class VisualizationTest {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList simulationEventList) throws IllegalStateException {
 		}
 
 		@Override

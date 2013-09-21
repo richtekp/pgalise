@@ -19,9 +19,12 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.DeleteVehiclesEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 
@@ -32,7 +35,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
  * @author Andreas
  * @version 1.0
  */
-public class DeleteVehicleEventHandler implements TrafficEventHandler {
+public class DeleteVehicleEventHandler extends AbstractTrafficEventHandler<DeleteVehiclesEvent> {
 
 	/**
 	 * Logger
@@ -42,7 +45,7 @@ public class DeleteVehicleEventHandler implements TrafficEventHandler {
 	/**
 	 * Simulation event type
 	 */
-	private static final SimulationEventTypeEnum type = SimulationEventTypeEnum.DELETE_VEHICLES_EVENT;
+	private static final EventType type = TrafficEventTypeEnum.DELETE_VEHICLES_EVENT;
 
 	/**
 	 * Constructor
@@ -66,14 +69,13 @@ public class DeleteVehicleEventHandler implements TrafficEventHandler {
 	private TrafficServerLocal server;
 
 	@Override
-	public SimulationEventTypeEnum getTargetEventType() {
+	public EventType getTargetEventType() {
 		return DeleteVehicleEventHandler.type;
 	}
 
 	@Override
-	public void handleEvent(SimulationEvent event) {
-		DeleteVehiclesEvent e = (DeleteVehiclesEvent) event;
-		log.debug("Processing DELETE_VEHICLES_EVENT handleEvent: VehiclesToDelete=" + e.getDeleteVehicleIDList().size());
+	public void handleEvent(DeleteVehiclesEvent event) {
+		log.debug("Processing DELETE_VEHICLES_EVENT handleEvent: VehiclesToDelete=" + event.getDeleteVehicles().size());
 
 		throw new RuntimeException("Not implemented!");
 	}

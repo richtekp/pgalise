@@ -27,15 +27,16 @@ import com.google.inject.Inject;
 
 import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.VehicleInformation;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 /**
  * Default implementation of random dynamic sensor service.
  * Creates random car and random bike events to produces
@@ -46,18 +47,20 @@ import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 public class DefaultCreateRandomVehicleService implements CreateRandomVehicleService {
 
 	private SensorInterfererService sensorInterfererService;
+	private TrafficServerLocal trafficServerLocal;
 
 	/**
 	 * Contructor
 	 * @param sensorInterfererService
 	 */
 	@Inject
-	public DefaultCreateRandomVehicleService(SensorInterfererService sensorInterfererService) {
+	public DefaultCreateRandomVehicleService(SensorInterfererService sensorInterfererService, TrafficServerLocal trafficServerLocal) {
 		this.sensorInterfererService = sensorInterfererService;
+		this.trafficServerLocal = trafficServerLocal;
 	}
 
 	@Override
-	public TrafficEvent createRandomDynamicSensors(
+	public AbstractTrafficEvent createRandomDynamicSensors(
 			RandomVehicleBundle randomDynamicSensorBundle, RandomSeedService randomSeedService,
 			boolean withSensorInterferer) {
 
@@ -173,6 +176,6 @@ public class DefaultCreateRandomVehicleService implements CreateRandomVehicleSer
 		}
 
 
-		return new CreateRandomVehiclesEvent( createRandomVehicleDataList);
+		return new CreateRandomVehiclesEvent(trafficServerLocal, createRandomVehicleDataList, null, System.currentTimeMillis(), 0);
 	}
 }

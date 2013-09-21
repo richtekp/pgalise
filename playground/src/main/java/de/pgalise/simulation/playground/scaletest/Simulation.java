@@ -53,10 +53,10 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
@@ -234,12 +234,12 @@ public class Simulation {
 
 			long startTime = System.currentTimeMillis();
 			log.debug("Creating EventLists...");
-			List<SimulationEventList> eventList = produceSimulationEventLists(cityInfrastructure, startParameter);
+			List<EventList> eventList = produceSimulationEventLists(cityInfrastructure, startParameter);
 			log.debug("Finished creating EventList, elapsed time: " + (System.currentTimeMillis() - startTime) / 1000
 					/ 60);
 
 			simulationController.createSensors(produceSensorHelperList(cityInfrastructure));
-			for (SimulationEventList list : eventList) {
+			for (EventList list : eventList) {
 				simulationController.addSimulationEventList(list);
 			}
 
@@ -374,15 +374,15 @@ public class Simulation {
 	 * @param cityInfrastructureData
 	 * @return
 	 */
-	private List<SimulationEventList> produceSimulationEventLists(CityInfrastructureData cityInfrastructureData,
+	private List<EventList> produceSimulationEventLists(CityInfrastructureData cityInfrastructureData,
 			StartParameter startParameter) {
-		List<SimulationEventList> simulationEventLists = new ArrayList<>();
+		List<EventList> simulationEventLists = new ArrayList<>();
 
 		/*
 		 * add other simulation event lists here:
 		 */
 
-		List<TrafficEvent> trafficEventList = new ArrayList<>();
+		List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
 
 		/* create random cars */
 		List<CreateRandomVehicleData> vehicleDataList = new LinkedList<>();
@@ -403,7 +403,7 @@ public class Simulation {
 		}
 
 		trafficEventList.add(new CreateVehiclesEvent(UUID.randomUUID(), vehicleDataList));
-		simulationEventLists.add(new SimulationEventList(trafficEventList, SIMULATION_START.getTimeInMillis(), UUID
+		simulationEventLists.add(new EventList(trafficEventList, SIMULATION_START.getTimeInMillis(), UUID
 				.randomUUID()));
 
 		return simulationEventLists;
@@ -486,7 +486,7 @@ public class Simulation {
 		}
 
 		@Override
-		protected void onUpdate(SimulationEventList simulationEventList) {
+		protected void onUpdate(EventList simulationEventList) {
 		}
 
 		@Override
@@ -527,7 +527,7 @@ public class Simulation {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList simulationEventList) throws IllegalStateException {
 		}
 
 		@Override

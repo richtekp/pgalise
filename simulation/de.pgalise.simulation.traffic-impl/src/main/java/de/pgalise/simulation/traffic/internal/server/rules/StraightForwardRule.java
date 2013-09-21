@@ -24,7 +24,7 @@ import java.util.Queue;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
@@ -125,7 +125,7 @@ public class StraightForwardRule extends TrafficRule {
 	 *            the {@link SimulationEventList}
 	 */
 	@Override
-	public void update(final SimulationEventList simulationEventList) {
+	public void update(final EventList simulationEventList) {
 		/*
 		 * Let vehicles out
 		 */

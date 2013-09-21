@@ -18,7 +18,7 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import com.vividsolutions.jts.geom.Coordinate;
 
 /**

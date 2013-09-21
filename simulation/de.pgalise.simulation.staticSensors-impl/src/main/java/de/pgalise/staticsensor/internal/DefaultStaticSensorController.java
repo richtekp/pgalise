@@ -37,7 +37,9 @@ import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
@@ -57,7 +59,7 @@ import de.pgalise.simulation.staticsensor.StaticSensorControllerLocal;
 @Singleton(name = "de.pgalise.simulation.staticsensor.StaticSensorController")
 @Remote(StaticSensorController.class)
 @Local(StaticSensorControllerLocal.class)
-public class DefaultStaticSensorController extends AbstractController implements StaticSensorControllerLocal {
+public class DefaultStaticSensorController extends AbstractController<Event<EventType>, EventType> implements StaticSensorControllerLocal {
 	/**
 	 * Logger
 	 */
@@ -179,7 +181,7 @@ public class DefaultStaticSensorController extends AbstractController implements
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<Event<EventType>> simulationEventList) {
 		/* Nothing to do here: */
 	}
 

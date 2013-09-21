@@ -18,7 +18,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
@@ -114,7 +114,7 @@ public class Luxmeter extends WeatherSensor {
 	 *            List of SimulationEvents
 	 */
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		// Get value
 		this.lightIntensity = (this.getWeatherController().getValue(WeatherParameterEnum.LIGHT_INTENSITY,
 				eventList.getTimestamp(), this.getPosition())).doubleValue();

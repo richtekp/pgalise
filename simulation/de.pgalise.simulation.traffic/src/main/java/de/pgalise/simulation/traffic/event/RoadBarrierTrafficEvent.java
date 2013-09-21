@@ -14,19 +14,22 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The road barrier traffic event will block a route during the given time window.
  * 
  * @author Timo
  */
-public class RoadBarrierTrafficEvent extends TrafficEvent {
+public class RoadBarrierTrafficEvent extends AbstractTrafficEvent {
 
 	/**
 	 * Serial
@@ -53,23 +56,12 @@ public class RoadBarrierTrafficEvent extends TrafficEvent {
 	 */
 	private String nodeID;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 *            ID of the event
-	 * @param roadBarrierStartTimestamp
-	 *            Start time of the event
-	 * @param roadBarrierEndTimestamp
-	 *            End time of the event
-	 * @param roadBarrierPoint
-	 *            Position to block
-	 * @param nodeID
-	 *            node id in graph
-	 */
-	public RoadBarrierTrafficEvent(long roadBarrierStartTimestamp, long roadBarrierEndTimestamp,
-			Coordinate roadBarrierPoint, String nodeID) {
-		super(SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT);
+	public RoadBarrierTrafficEvent(long roadBarrierStartTimestamp,
+		long roadBarrierEndTimestamp,
+		Coordinate roadBarrierPoint,
+		String nodeID,
+		TrafficServerLocal responsibleServer) {
+		super(responsibleServer);
 		this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
 		this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
 		this.roadBarrierPoint = roadBarrierPoint;
@@ -106,6 +98,11 @@ public class RoadBarrierTrafficEvent extends TrafficEvent {
 
 	public void setNodeID(String nodeID) {
 		this.nodeID = nodeID;
+	}
+
+	@Override
+	public EventType getType() {
+		return TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT;
 	}
 
 }

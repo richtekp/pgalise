@@ -22,9 +22,10 @@ import com.google.inject.Inject;
 
 import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 /**
  * The default implementation of {@link CreateAttractionEventService}.
  * It uses the {@link CreateRandomVehicleService} to achieve its work.
@@ -33,14 +34,16 @@ import com.vividsolutions.jts.geom.Coordinate;
 public class DefaultCreateAttractionEventService implements CreateAttractionEventService {
 
 	private CreateRandomVehicleService createRandomVehiclesService;
+	private TrafficServerLocal trafficServerLocal;
 	
 	/**
 	 * Constructor
 	 * @param sensorInterfererService
 	 */
 	@Inject
-	public DefaultCreateAttractionEventService(CreateRandomVehicleService createRandomVehiclesService) {
+	public DefaultCreateAttractionEventService(CreateRandomVehicleService createRandomVehiclesService, TrafficServerLocal trafficServerLocal) {
 		this.createRandomVehiclesService = createRandomVehiclesService;
+		this.trafficServerLocal = trafficServerLocal;
 	}
 	
 	@Override
@@ -62,6 +65,6 @@ public class DefaultCreateAttractionEventService implements CreateAttractionEven
 				startTimestamp, 
 				endTimestamp, 
 				nodeID, 
-				createRandomVehiclesEvent.getCreateRandomVehicleDataList());
+				createRandomVehiclesEvent.getCreateRandomVehicleDataList(), trafficServerLocal, null, System.currentTimeMillis(), 0);
 	}
 }

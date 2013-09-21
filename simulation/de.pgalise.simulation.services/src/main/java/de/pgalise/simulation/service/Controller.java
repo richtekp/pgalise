@@ -18,7 +18,9 @@ package de.pgalise.simulation.service;
 
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.InitializationException;
 
 /**
@@ -27,10 +29,12 @@ import de.pgalise.simulation.shared.exception.InitializationException;
  * On each simulation step a Controller will be asked to update its part of the simulation.
  * The next simulation step will be processed when all Controller have been updated.
  *   
+ * @param <E> 
+ * @param <T> 
  * @author mustafa
  *
  */
-public interface Controller extends SimulationComponent, Service {
+public interface Controller<E extends Event> extends SimulationComponent<E>, Service {
 	/**
 	 * Initializes this controller.
 	 * Implementations can use this method to initialize default values
@@ -83,7 +87,7 @@ public interface Controller extends SimulationComponent, Service {
 	 * @throws IllegalStateException when the state of this controller is not STARTED
 	 */
 	@Override
-	public void update(SimulationEventList simulationEventList) throws IllegalStateException;
+	public void update(EventList<E> simulationEventList) throws IllegalStateException;
 	
 	/**
 	 * Returns this controller's current state.

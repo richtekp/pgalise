@@ -20,7 +20,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergySensor;
@@ -99,7 +99,7 @@ public class SmartMeterSensor extends EnergySensor {
 	}
 
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		// Get value
 		double value = this.getEnergyController().getEnergyConsumptionInKWh(eventList.getTimestamp(),
 				this.getPosition(), this.measureRadiusInMeter);

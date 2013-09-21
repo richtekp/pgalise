@@ -23,17 +23,20 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.InitializationException;
 
 /**
  * Skeleton class for the implementation of a Controller. When using this class it's not necessary anymore to handle the
  * different states of a controller.
  * 
+ * @param <E> 
  * @author Mustafa
  * @version 1.0
  */
-public abstract class AbstractController implements Controller {
+public abstract class AbstractController<E extends Event> implements Controller<E> {
 
 	/**
 	 * Logger
@@ -141,7 +144,7 @@ public abstract class AbstractController implements Controller {
 	}
 
 	@Override
-	public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+	public void update(EventList<E> simulationEventList) throws IllegalStateException {
 		switch (status) {
 			case STARTED:
 //				log.debug("Updating "+getName() +" on simulation time "+simulationEventList.getTimestamp());
@@ -194,7 +197,7 @@ public abstract class AbstractController implements Controller {
 	 * @param simulationEventList
 	 * @see Controller#update(SimulationEventList)
 	 */
-	protected abstract void onUpdate(SimulationEventList simulationEventList);
+	protected abstract void onUpdate(EventList<E> simulationEventList);
 
 	@Override
 	public String getName() {

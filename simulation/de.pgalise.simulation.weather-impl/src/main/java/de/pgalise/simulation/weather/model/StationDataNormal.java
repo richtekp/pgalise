@@ -16,9 +16,12 @@
  
 package de.pgalise.simulation.weather.model;
 
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.HashSet;
+import java.util.Set;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.persistence.Entity;
@@ -37,7 +40,7 @@ import javax.persistence.NamedQuery;
 		@NamedQuery(name = "StationDataNormal.findByDate", query = "SELECT x FROM StationDataNormal x WHERE x.measureDate = :date"),
 		@NamedQuery(name = "StationDataNormal.findFirstEntryByDate", query = "SELECT i FROM StationDataNormal i WHERE i.measureDate = :date ORDER BY i.measureTime ASC"),
 		@NamedQuery(name = "StationDataNormal.findLastEntryByDate", query = "SELECT i FROM StationDataNormal i WHERE i.measureDate = :date ORDER BY i.measureTime DESC") })
-public class StationDataNormal extends AbstractStationData implements Serializable {
+public class StationDataNormal extends AbstractStationData implements Identifiable {
 	private static final long serialVersionUID = 1L;
 
 	protected StationDataNormal() {

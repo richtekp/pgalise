@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
 import java.io.Serializable;
 import java.util.List;

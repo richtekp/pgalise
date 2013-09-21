@@ -16,46 +16,40 @@
  
 package de.pgalise.simulation.weather.internal.modifier;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 
 import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
+import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
+import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
 import java.sql.Date;
-import java.sql.Time;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Map;
 import javax.annotation.ManagedBean;
-import javax.measure.Measure;
+import javax.annotation.Resource;
 import javax.measure.unit.SI;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.After;
 import org.junit.BeforeClass;
 
 /**
@@ -68,7 +62,7 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class ReferenceCityTest {
 	@PersistenceUnit(unitName = "weather_test")
-	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
+	private EntityManagerFactory entityManagerFactory;
 	private static EJBContainer CONTAINER;
 
 
@@ -88,34 +82,24 @@ public class ReferenceCityTest {
 	private static DefaultWeatherService service;
 	
 	private	City city;
+	
+	@Resource
+	private UserTransaction userTransaction;
 
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader<?> loader;
+	private WeatherLoader<DefaultWeatherCondition> loader;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 	public ReferenceCityTest() throws NamingException {
 		CONTAINER.getContext().bind("inject",
 			this);
 		
-		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1),
-				new Coordinate(referencePoint.x-1, referencePoint.y-1)
-			}
-		);
-		city = new City("test_city", 200000, 100, true, true, referenceArea);
+		city = TestUtils.createDefaultTestCityInstance();
 		
-		Context ctx = CONTAINER.getContext();
-
 		// Load EJB for Weather loader
-		loader = (WeatherLoader<?>) ctx
-				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
+		loader = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
 
 		// Start
 		Calendar cal = new GregorianCalendar();
@@ -134,83 +118,30 @@ public class ReferenceCityTest {
 	public static void setUpClass() {
 		CONTAINER = TestUtils.getContainer();
 	}
-	
-	private Queue<Object> deletes = new LinkedList<>();
 
-	@Before
-	public void setUp() throws Exception {
+	@Test
+	public void testDeployChanges() throws Exception {
 		service = new DefaultWeatherService(city, loader);
 		Calendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(startTimestamp);
 		cal.add(Calendar.DATE, -1);
-		long previousDayTimestamp = cal.getTimeInMillis();
-		StationDataNormal stationDataNormal0 = new StationDataNormal(new Date(previousDayTimestamp),
-			new Time(previousDayTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f),
-			stationDataNormal = new StationDataNormal(new Date(startTimestamp),
-			new Time(startTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f),
-			stationDataNormal2 = new StationDataNormal(new Date(endTimestamp),
-			new Time(endTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-		UserTransaction transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
-		transaction.begin();
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-		em.joinTransaction();
-		em.persist(stationDataNormal0);
-		em.persist(stationDataNormal);
-//		em.persist(stationDataNormal1);
-		em.persist(stationDataNormal2);
-		transaction.commit();
-		deletes.add(stationDataNormal0);
-		deletes.add(stationDataNormal);
-//		deletes.add(stationDataNormal1);
-		deletes.add(stationDataNormal2);
-		ReferenceCityTest.service.addNewWeather(ReferenceCityTest.startTimestamp, ReferenceCityTest.endTimestamp, true,
+		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+			endTimestamp,
+			userTransaction,
+			entityManagerFactory);
+		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+			endTimestamp,
+			city,
+			userTransaction,
+			entityManagerFactory);
+		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+			endTimestamp,
+			city,
+			userTransaction,
+			entityManagerFactory);
+		service.addNewWeather(startTimestamp, endTimestamp, true,
 				null);
-		em.close();
-	}
-	
-	@After 
-	public void tearDown() throws Exception {
-		EntityManager em = ENTITY_MANAGER_FACTORY.createEntityManager();
-		UserTransaction transaction = (UserTransaction)new InitialContext().lookup("java:comp/UserTransaction");
-		transaction.begin();
-		em.joinTransaction();
-		while(!deletes.isEmpty()) {
-			Object delete = deletes.poll();
-			em.remove(delete);
-		}
-		transaction.commit();
-		em.close();
-	}
-
-	@Test
-	public void testDeployChanges() throws Exception {
+		
 		// Get reference values
 		WeatherMap referenceValues = ReferenceCityTest.service.getReferenceValues();
 
@@ -260,5 +191,17 @@ public class ReferenceCityTest {
 
 		// Test 1: Max are not equals
 		Assert.assertTrue(refvalue4 != decmax.getWindVelocity());
+		
+		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+			userTransaction,
+			entityManagerFactory);
+		TestUtils.tearDownWeatherData(entities0,
+			DefaultServiceDataCurrent.class,
+			userTransaction,
+			entityManagerFactory);
+		TestUtils.tearDownWeatherData(entities1,
+			DefaultServiceDataForecast.class,
+			userTransaction,
+			entityManagerFactory);
 	}
 }

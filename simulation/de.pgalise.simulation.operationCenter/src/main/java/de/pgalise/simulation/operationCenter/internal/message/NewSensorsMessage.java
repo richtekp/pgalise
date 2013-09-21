@@ -19,20 +19,21 @@ package de.pgalise.simulation.operationCenter.internal.message;
 import java.util.Collection;
 
 import de.pgalise.simulation.operationCenter.internal.model.SensorHelperTypeWrapper;
+import de.pgalise.simulation.sensorFramework.Sensor;
 /**
  * New Sensor message with a list of sensors.
  * Notice: Vehicles can not be instantiated with this. For those purposes
  * we provide the {@link NewVehiclesMessage}.
  * @author Timo
  */
-public class NewSensorsMessage extends OCWebSocketMessage<Collection<SensorHelperTypeWrapper>>{
+public class NewSensorsMessage extends OCWebSocketMessage<Collection<Sensor>>{
 
 	/**
 	 * Constructor
 	 * @param content
 	 * 			the sensors, which shall be created
 	 */
-	public NewSensorsMessage(Collection<SensorHelperTypeWrapper> content) {
+	public NewSensorsMessage(Collection<Sensor> content) {
 		super(OCWebSocketMessage.MessageType.NEW_SENSORS, content);
 	}
 }

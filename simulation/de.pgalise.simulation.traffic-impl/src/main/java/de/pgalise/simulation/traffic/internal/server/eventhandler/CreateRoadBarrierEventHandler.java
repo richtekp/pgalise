@@ -28,10 +28,13 @@ import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.DeleteVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.RoadBarrierTrafficEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
+import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
@@ -48,7 +51,7 @@ import de.pgalise.simulation.traffic.server.scheduler.Item;
  * @author Andreas
  * @version 1.0
  */
-public class CreateRoadBarrierEventHandler implements TrafficEventHandler {
+public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<RoadBarrierTrafficEvent> {
 
 	/**
 	 * Logger
@@ -58,7 +61,7 @@ public class CreateRoadBarrierEventHandler implements TrafficEventHandler {
 	/**
 	 * Simulation event type
 	 */
-	private static final SimulationEventTypeEnum type = SimulationEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT;
+	private static final EventType type = TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT;
 
 	/**
 	 * Constructor
@@ -81,7 +84,7 @@ public class CreateRoadBarrierEventHandler implements TrafficEventHandler {
 	private TrafficServerLocal server;
 
 	@Override
-	public SimulationEventTypeEnum getTargetEventType() {
+	public EventType getTargetEventType() {
 		return CreateRoadBarrierEventHandler.type;
 	}
 
@@ -195,8 +198,7 @@ public class CreateRoadBarrierEventHandler implements TrafficEventHandler {
 	private Graph graph;
 
 	@Override
-	public void handleEvent(SimulationEvent event) {
-		RoadBarrierTrafficEvent e = (RoadBarrierTrafficEvent) event;
+	public void handleEvent(RoadBarrierTrafficEvent e) {
 		log.info("Processing ROAD_BARRIER_TRAFFIC_EVENT: startID=" + e.getNodeID()
 				+ " ; startTime=" + e.getRoadBarrierStartTimestamp() + " ; endTime=" + e.getRoadBarrierEndTimestamp());
 

@@ -36,7 +36,7 @@ import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 
@@ -97,7 +97,7 @@ public class DefaultControlCenterController implements ControlCenterController {
 	}
 
 	@Override
-	public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+	public void update(EventList simulationEventList) throws IllegalStateException {
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("update", "true");
 		requestParameterMap.put("json", this.gson.toJson(simulationEventList));

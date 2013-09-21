@@ -24,7 +24,9 @@ import java.util.Map;
 
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
@@ -51,7 +53,7 @@ public class NoGPSGateStrategy implements GPSGateStrategy {
 	public void stop() throws IllegalStateException {}
 
 	@Override
-	public void update(SimulationEventList simulationEventList)
+	public void update(EventList<Event> simulationEventList)
 			throws IllegalStateException {}
 
 	@Override

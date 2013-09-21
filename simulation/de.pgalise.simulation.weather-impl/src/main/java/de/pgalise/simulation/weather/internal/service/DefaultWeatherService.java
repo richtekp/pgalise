@@ -35,6 +35,7 @@ import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.internal.modifier.WeatherStrategyContext;
 import de.pgalise.simulation.weather.internal.positionconverter.LinearWeatherPositionConverter;
 import de.pgalise.simulation.weather.internal.util.comparator.WeatherStrategyComparator;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
@@ -46,6 +47,7 @@ import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
 import java.sql.Time;
 import javax.measure.quantity.Temperature;
@@ -109,7 +111,7 @@ public class DefaultWeatherService implements WeatherService {
 	/**
 	 * Loader for weather data
 	 */
-	private WeatherLoader loader;
+	private WeatherLoader<DefaultWeatherCondition> loader;
 
 	/**
 	 * Map with all weather parameters
@@ -148,7 +150,7 @@ public class DefaultWeatherService implements WeatherService {
 	 *            City
 	 * @param loader  
 	 */
-	public DefaultWeatherService(City city, WeatherLoader loader) {
+	public DefaultWeatherService(City city, WeatherLoader<DefaultWeatherCondition> loader) {
 		if (city == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("city"));
 		}
@@ -166,8 +168,8 @@ public class DefaultWeatherService implements WeatherService {
 		// Add parameters
 		try {
 			this.initParameters();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -223,7 +225,7 @@ public class DefaultWeatherService implements WeatherService {
 	@Override
 	public boolean checkDate(long timestamp) {
 		if (timestamp < 1) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotPositive("timestamp", false));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("timestamp", false));
 		}
 
 		// Check date
@@ -248,7 +250,7 @@ public class DefaultWeatherService implements WeatherService {
 				this.plannedEventModifiers.add(new WeatherStrategyHelper(strategy, this.loadedTimestamp));
 			}
 		} else {
-			WeatherDayEventModifier dayEvent = (WeatherDayEventModifier) strategy;
+			WeatherDayEventModifier<DefaultWeatherCondition> dayEvent = (WeatherDayEventModifier<DefaultWeatherCondition>) strategy;
 
 			// Execute event?
 			if (DateConverter.isTheSameDay(dayEvent.getEventTimestamp(), this.loadedTimestamp)) {
@@ -419,7 +421,7 @@ public class DefaultWeatherService implements WeatherService {
 	 * @throws Exception
 	 *             There is a parameter that can not be initiated.
 	 */
-	private void initParameters() throws Exception {
+	private void initParameters() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		for (WeatherParameterEnum enumElement : WeatherParameterEnum.values()) {
 			// Add parameter
 			WeatherParameterBase type = enumElement.getValueType().getConstructor(WeatherService.class)

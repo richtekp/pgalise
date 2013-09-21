@@ -6,7 +6,10 @@ package de.pgalise.simulation.traffic.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -17,9 +20,10 @@ import org.graphstream.graph.Graph;
 
 /**
  *
+ * @param <T> 
  * @author richter
  */
-public interface VehicleEvent extends Event<VehicleEventType> {
+public interface VehicleEvent extends TrafficEvent {
 
 	Vehicle<? extends VehicleData> getVehicle()  ;
 
@@ -27,21 +31,17 @@ public interface VehicleEvent extends Event<VehicleEventType> {
 
 	long getElapsedTime()  ;
 
-	ServiceDictionary getServiceDictionary() ;
+	ServiceDictionary<?> getServiceDictionary() ;
 
 	/**
 	 * @return shallow copy of currently driving vehicles
 	 */
 	Scheduler getDrivingVehicles() ;
 
-	VehicleEventType getTargetEventType() ;
-
 	Graph getGraph()  ;
 
 	TrafficGraphExtensions getTrafficGraphExtensions()  ;
 	
-	Map<Long, TrafficEvent> getEventForVehicleMap()  ;
-	
-	TrafficServerLocal getServer() ;
+	Map<Long, AbstractTrafficEvent> getEventForVehicleMap()  ;
 	
 }

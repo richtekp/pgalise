@@ -14,8 +14,12 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.service;
+package de.pgalise.simulation.service.internal.manager;
 
+import de.pgalise.it.TestUtils;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.Service;
+import de.pgalise.simulation.service.ServiceDictionary;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -33,6 +37,9 @@ import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
 import de.pgalise.util.generic.MutableBoolean;
+import javax.ejb.embeddable.EJBContainer;
+import javax.naming.NamingException;
+import org.junit.BeforeClass;
 
 /**
  * Tests the ServerConfigReader
@@ -40,10 +47,16 @@ import de.pgalise.util.generic.MutableBoolean;
  * @author Mustafa
  * @version 1.0 (Feb 6, 2013)
  */
-public class DefaultServerConfigReaderTest {
+public class DefaultServerConfigurationReaderTest {
+	private static EJBContainer CONTAINER;
+	
+	@BeforeClass
+	public static void setUpClass() {
+		CONTAINER = TestUtils.getContainer();
+	}
 
 	@Test
-	public void readLocalTest() {
+	public void readLocalTest() throws NamingException {
 		ConfigReader configReader = EasyMock.createNiceMock(ConfigReader.class);
 		// services unter dieser adresse werden lokal aufgelöst, alle anderen ferngesteuert
 		EasyMock.expect(configReader.getProperty(Identifier.SERVER_HOST)).andReturn("127.0.0.1:8081");

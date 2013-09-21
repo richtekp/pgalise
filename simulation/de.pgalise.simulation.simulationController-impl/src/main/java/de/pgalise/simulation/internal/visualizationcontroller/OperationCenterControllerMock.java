@@ -26,7 +26,9 @@ import javax.ejb.Stateless;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
@@ -38,7 +40,7 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 @Lock(LockType.READ)
 @Local
 @Stateless(name = "de.pgalise.simulation.internal.visualizationcontroller.OperationCenterControllerMock")
-public class OperationCenterControllerMock extends AbstractController implements OperationCenterController {
+public class OperationCenterControllerMock extends AbstractController<Event> implements OperationCenterController {
 
 	/**
 	 * Default
@@ -89,5 +91,5 @@ public class OperationCenterControllerMock extends AbstractController implements
 	protected void onResume() {}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {}
+	protected void onUpdate(EventList<Event> simulationEventList) {}
 }

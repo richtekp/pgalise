@@ -47,7 +47,7 @@ import de.pgalise.simulation.service.Service;
  */
 @Lock(LockType.READ)
 @Local
-@Singleton
+@Singleton(name = "de.pgalise.simulation.service.manager.ServerConfigurationReader")
 public class DefaultServerConfigurationReader implements ServerConfigurationReader<Service> {
 
 	/**
@@ -58,7 +58,7 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 	/**
 	 * Suffix for locale
 	 */
-	private static final String LOCAL_SUFFIX = "Local";
+	private static final String LOCAL_SUFFIX = "";
 
 	@EJB
 	private ConfigReader localConfigReader;

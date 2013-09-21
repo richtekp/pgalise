@@ -14,44 +14,44 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.server.TrafficServer;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
 /**
  * Superclass for all traffic events.
  * 
  * @author Timo
  */
-public abstract class TrafficEvent extends SimulationEvent {
+public abstract class AbstractTrafficEvent extends AbstractEvent implements TrafficEvent {
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -8313844787624266589L;
-	private int responsibleServer;
+	private TrafficServerLocal responsibleServer;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param id
-	 *            ID of the event
 	 * @param eventType
 	 *            Event type
+	 * @param responsibleServer  
 	 */
-	public TrafficEvent(Long id, SimulationEventTypeEnum eventType) {
-		super(id, eventType);
-	}
-
-	public TrafficEvent(SimulationEventTypeEnum eventType) {
-		super(eventType);
+	public AbstractTrafficEvent(TrafficServerLocal responsibleServer) {
+		this.responsibleServer = responsibleServer;
 	}
 	
-	public void setResponsibleServer(int serverId) {
+	@Override
+	public void setResponsibleServer(TrafficServerLocal serverId) {
 		this.responsibleServer = serverId;
 	}
 	
-	public int getResponsibleServer() {
+	@Override
+	public TrafficServerLocal getResponsibleServer() {
 		return this.responsibleServer;
 	}
 }

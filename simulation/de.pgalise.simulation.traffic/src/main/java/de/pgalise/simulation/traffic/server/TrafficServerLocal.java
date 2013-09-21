@@ -28,9 +28,9 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.event.SimulationEventHandlerManager;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import com.vividsolutions.jts.geom.Geometry;
+import de.pgalise.simulation.service.event.EventHandlerManager;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -187,7 +187,7 @@ public interface TrafficServerLocal extends TrafficServer {
 	 * 
 	 * @return {@link SimulationEventHandlerManager}
 	 */
-	public SimulationEventHandlerManager getEventHandlerManager();
+	public EventHandlerManager getEventHandlerManager();
 	
 	/**
 	 * 
@@ -206,7 +206,7 @@ public interface TrafficServerLocal extends TrafficServer {
 	 * by an attraction event this function will return this event.
 	 * @return
 	 */
-	public Map<Long, TrafficEvent> getEventForVehicle();
+	public Map<Long, AbstractTrafficEvent> getEventForVehicle();
 
 	/**
 	 * Items to schedule after the corresponding vehicle reached the attraction.

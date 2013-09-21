@@ -18,7 +18,8 @@ package de.pgalise.simulation.shared.event.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Implementation of change energy consumption event with percentage.
@@ -50,7 +51,7 @@ public class PercentageChangeEnergyEvent extends ChangeEnergyConsumptionEvent {
 	 */
 	public PercentageChangeEnergyEvent(Coordinate position, int measureRadiusInMeter,
 			long startTimestamp, long endTimestamp, double percentage) {
-		super(SimulationEventTypeEnum.PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT, position,
+		super( position,
 				measureRadiusInMeter, startTimestamp, endTimestamp);
 		if (this.percentage < 0.0) {
 			throw new IllegalArgumentException("percentage is < 0.0 !");
@@ -102,5 +103,10 @@ public class PercentageChangeEnergyEvent extends ChangeEnergyConsumptionEvent {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public EventType getType() {
+		return EnergyEventTypeEnum.PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT;
 	}
 }

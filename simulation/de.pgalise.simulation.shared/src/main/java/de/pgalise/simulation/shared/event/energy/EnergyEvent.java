@@ -18,13 +18,13 @@ package de.pgalise.simulation.shared.event.energy;
 
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Superclass for all energy events.
  */
-public abstract class EnergyEvent extends SimulationEvent {
+public abstract class EnergyEvent extends AbstractEvent {
 	/**
 	 * Constructor
 	 * 
@@ -34,8 +34,7 @@ public abstract class EnergyEvent extends SimulationEvent {
 	 * Event type
 	 */
 	
-	public EnergyEvent(SimulationEventTypeEnum eventType) {
-		super(eventType);
+	public EnergyEvent() {
 	}
 
 	/**

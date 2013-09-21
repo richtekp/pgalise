@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.service;
 
+import javax.ejb.Local;
+
 
 /**
  * The random seed services gives different seeds for every class.
@@ -24,6 +26,7 @@ package de.pgalise.simulation.service;
  * 
  * @author Timo
  */
+@Local
 public interface RandomSeedService extends Service {
 
 	/**
@@ -40,4 +43,6 @@ public interface RandomSeedService extends Service {
 	 * @param startTimestamp
 	 */
 	public void init(long startTimestamp);
+	
+	public long getStartTimestamp();
 }

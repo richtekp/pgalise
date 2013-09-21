@@ -37,13 +37,16 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -63,7 +66,7 @@ public class DefaultEventInitiatorTest {
 	private static WeatherControllerMock weatherController;
 	private static StaticSensorControllerMock staticSensorController;
 	private static TrafficControllerMock trafficController;
-	private static ServiceDictionary serviceDictionary;
+	private static ServiceDictionary<?> serviceDictionary;
 	private static OperationCenterControllerMock operationCenterController;
 	private static long startTimestamp, endTimestamp;
 	private static InitParameter initParameter;
@@ -107,7 +110,7 @@ public class DefaultEventInitiatorTest {
 		testClass = new DefaultEventInitiator();
 		testClass._setServiceDictionary(serviceDictionary);
 		testClass.setOperationCenterController(operationCenterController);
-		List<Controller> controllerCollection = new LinkedList<>();
+		List<Controller<?>> controllerCollection = new LinkedList<>();
 		controllerCollection.add(staticSensorController);
 		testClass.setFrontController(controllerCollection);
 		testClass.setControlCenterController(controlCenterController);
@@ -160,7 +163,7 @@ public class DefaultEventInitiatorTest {
 
 		private int updateCounter;
 
-		public OperationCenterControllerMock() {
+		OperationCenterControllerMock() {
 			this.updateCounter = 0;
 		}
 
@@ -202,7 +205,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<Event> simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -233,7 +236,7 @@ public class DefaultEventInitiatorTest {
 	private static class TrafficControllerMock implements TrafficController {
 		private int updateCounter;
 
-		public TrafficControllerMock() {
+		TrafficControllerMock() {
 			this.updateCounter = 0;
 		}
 
@@ -275,7 +278,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<TrafficEvent> simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -303,7 +306,7 @@ public class DefaultEventInitiatorTest {
 
 		private int updateCounter;
 
-		public StaticSensorControllerMock() {
+		StaticSensorControllerMock() {
 			this.updateCounter = 0;
 		}
 
@@ -345,7 +348,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<Event> simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -394,7 +397,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -457,7 +460,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -488,7 +491,7 @@ public class DefaultEventInitiatorTest {
 	 */
 	private static class SimulationControllerMock implements SimulationController {
 
-		public SimulationControllerMock() {
+		SimulationControllerMock() {
 
 		}
 
@@ -531,7 +534,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(SimulationEventList simulationEventList) throws IllegalStateException {
+		public void update(EventList simulationEventList) throws IllegalStateException {
 		}
 
 		@Override
@@ -540,7 +543,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void addSimulationEventList(SimulationEventList simulationEventList) {
+		public void addSimulationEventList(EventList simulationEventList) {
 		}
 
 		@Override
@@ -596,7 +599,7 @@ public class DefaultEventInitiatorTest {
 		public void stop() throws IllegalStateException {}
 
 		@Override
-		public void update(SimulationEventList simulationEventList)
+		public void update(EventList simulationEventList)
 				throws IllegalStateException {
 			this.updateCount++;
 		}

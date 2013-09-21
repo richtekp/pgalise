@@ -14,12 +14,17 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * Creates vehicles with given path.
@@ -27,7 +32,7 @@ import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
  * @author Timo
  * @author Andreas Rehfeldt
  */
-public class CreateVehiclesEvent extends TrafficEvent {
+public class CreateVehiclesEvent extends AbstractVehicleEvent {
 
 	/**
 	 * Serial
@@ -39,25 +44,16 @@ public class CreateVehiclesEvent extends TrafficEvent {
 	 */
 	private List<CreateRandomVehicleData> vehicles;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 *            ID of the event
-	 * @param vehicleList
-	 *            List with vehicle informations
-	 * @param startTimestamp
-	 *            Start timestamp to start the trip
-	 * @param endTimestamp
-	 *            Start timestamp to drive back
-	 * @param startNodeID
-	 *            Start node id in graph
-	 * @param targetNodeID
-	 *            Target node id in graph
-	 */
-	public CreateVehiclesEvent(List<CreateRandomVehicleData> vehicleList) {
-		super(SimulationEventTypeEnum.CREATE_VEHICLES_EVENT);
-		this.vehicles = vehicleList;
+	public CreateVehiclesEvent(
+		List<CreateRandomVehicleData> vehicles,
+		TrafficServerLocal server,
+		long simulationTime,
+		long elapsedTime) {
+		super(
+			server,
+			simulationTime,
+			elapsedTime);
+		this.vehicles = vehicles;
 	}
 
 	@Override
@@ -96,5 +92,10 @@ public class CreateVehiclesEvent extends TrafficEvent {
 
 	public void setVehicles(List<CreateRandomVehicleData> vehicles) {
 		this.vehicles = vehicles;
+	}
+
+	@Override
+	public EventType getType() {
+		return TrafficEventTypeEnum.CREATE_VEHICLES_EVENT;
 	}
 }

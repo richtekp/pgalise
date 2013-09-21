@@ -16,18 +16,18 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 
 /**
  * @author marcus
  */
-public class PrepareUpdatingVehiclesHandler implements VehicleEventHandler {
+public class PrepareUpdatingVehiclesHandler extends AbstractVehicleEventHandler<VehicleEvent> {
 
 	@Override
-	public VehicleEventType getTargetEventType() {
-		return VehicleEventType.PREPARE_UPDATING_VEHICLES;
+	public VehicleEventTypeEnum getTargetEventType() {
+		return VehicleEventTypeEnum.PREPARE_UPDATING_VEHICLES;
 	}
 
 	@Override

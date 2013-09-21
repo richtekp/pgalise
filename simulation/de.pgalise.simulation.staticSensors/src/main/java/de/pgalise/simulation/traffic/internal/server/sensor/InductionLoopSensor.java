@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -120,7 +120,7 @@ public class InductionLoopSensor extends StaticTrafficSensor {
 	 *            List of SimulationEvents
 	 */
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		if(this.vehicleCount>0) {
 			log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getId());
 		}
@@ -139,7 +139,7 @@ public class InductionLoopSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public void logValueToSend(SimulationEventList eventList) {
+	public void logValueToSend(EventList eventList) {
 		log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getId());
 	}
 

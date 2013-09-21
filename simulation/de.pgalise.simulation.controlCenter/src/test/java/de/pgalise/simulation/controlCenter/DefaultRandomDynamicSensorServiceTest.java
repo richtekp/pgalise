@@ -32,13 +32,14 @@ import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.controlCenter.internal.util.service.DefaultCreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.TrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * J-Unit tests for {@link DefaultCreateRandomVehicleService}.<br />
@@ -84,8 +85,10 @@ public class DefaultRandomDynamicSensorServiceTest {
 
 	@BeforeClass
 	public static void setUp() {
+		TrafficServerLocal trafficServerLocal = EasyMock.createNiceMock(
+			TrafficServerLocal.class);
 		DefaultCreateRandomVehicleService testClass = new DefaultCreateRandomVehicleService(
-				new SensorInterfererServiceMock());
+				new SensorInterfererServiceMock(), trafficServerLocal);
 
 		/* Create random used sensor ids: */
 		DefaultRandomDynamicSensorServiceTest.usedSensorIDs = new HashSet<>();
@@ -115,7 +118,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 		TrafficEvent result = testClass.createRandomDynamicSensors(testData, randomSeedService, true);
 
 		/* Count vehicles and their gps ratio: */
-		if (result.getType() == SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT) {
+		if (result.getType() == TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT) {
 			for (CreateRandomVehicleData createRandomVehicleData : ((CreateRandomVehiclesEvent) result)
 					.getCreateRandomVehicleDataList()) {
 				switch (createRandomVehicleData.getVehicleInformation().getVehicleType()) {

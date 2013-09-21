@@ -18,19 +18,22 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The create random busses event will create random busses
  * for the given bus linves.
  * @author Lena
  */
-public class CreateRandomBussesEvent extends TrafficEvent {
+public class CreateRandomBussesEvent extends AbstractTrafficEvent {
 	/**
 	 * Serial
 	 */
@@ -56,8 +59,8 @@ public class CreateRandomBussesEvent extends TrafficEvent {
 	 * @param agencyName
 	 *            Agency name
 	 */
-	public CreateRandomBussesEvent(List<String> busLines, String agencyName) {
-		super(SimulationEventTypeEnum.CREATE_RANDOM_BUSSES_EVENT);
+	public CreateRandomBussesEvent(TrafficServerLocal responsibleServer, List<String> busLines, String agencyName) {
+		super(responsibleServer);
 		this.busLines = busLines;
 		this.agencyName = agencyName;
 	}
@@ -121,5 +124,10 @@ public class CreateRandomBussesEvent extends TrafficEvent {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public EventType getType() {
+		return TrafficEventTypeEnum.CREATE_RANDOM_BUSSES_EVENT;
 	}
 }

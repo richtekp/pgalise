@@ -27,9 +27,10 @@ import java.util.UUID;
  * that there is no {@link SimulationEvent} in this list. In this case, the instance
  * indicates only the simulation time progress.
  * 
+ * @param <T> 
  * @author Timo
  */
-public class SimulationEventList implements Serializable {
+public class EventList<T extends Event> implements Serializable {
 
 	/**
 	 * Serial
@@ -39,7 +40,7 @@ public class SimulationEventList implements Serializable {
 	/**
 	 * List with events
 	 */
-	private List<? extends SimulationEvent> eventList;
+	private List<T> eventList;
 
 	/**
 	 * ID of the event
@@ -61,7 +62,7 @@ public class SimulationEventList implements Serializable {
 	 * @param id
 	 *            ID of the event
 	 */
-	public SimulationEventList(List<? extends SimulationEvent> eventList, long timestamp, UUID id) {
+	public EventList(List<T> eventList, long timestamp, UUID id) {
 		super();
 		if (eventList != null) {
 			this.eventList = eventList;
@@ -72,7 +73,7 @@ public class SimulationEventList implements Serializable {
 		this.id = id;
 	}
 
-	public List<? extends SimulationEvent> getEventList() {
+	public List<T> getEventList() {
 		return this.eventList;
 	}
 
@@ -84,7 +85,7 @@ public class SimulationEventList implements Serializable {
 		return this.timestamp;
 	}
 
-	public void setEventList(List<? extends SimulationEvent> eventList) {
+	public void setEventList(List<T> eventList) {
 		this.eventList = eventList;
 	}
 
@@ -117,7 +118,7 @@ public class SimulationEventList implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		SimulationEventList other = (SimulationEventList) obj;
+		EventList<?> other = (EventList) obj;
 		if (eventList == null) {
 			if (other.eventList != null) {
 				return false;

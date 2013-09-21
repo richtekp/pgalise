@@ -29,10 +29,13 @@ import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
-import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.traffic.BusTrip;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
@@ -50,7 +53,7 @@ import de.pgalise.util.GTFS.service.DefaultBusService;
  * @author Andreas
  * @version 1.0
  */
-public class CreateBussesEventHandler implements TrafficEventHandler {
+public class CreateBussesEventHandler extends AbstractTrafficEventHandler<TrafficEvent> {
 
 	/**
 	 * Log
@@ -60,7 +63,7 @@ public class CreateBussesEventHandler implements TrafficEventHandler {
 	/**
 	 * Simulation event type
 	 */
-	private static final SimulationEventTypeEnum type = SimulationEventTypeEnum.CREATE_BUSSES_EVENT;
+	private static final EventType type = TrafficEventTypeEnum.CREATE_BUSSES_EVENT;
 
 	/**
 	 * Traffic server
@@ -157,12 +160,12 @@ public class CreateBussesEventHandler implements TrafficEventHandler {
 	}
 
 	@Override
-	public SimulationEventTypeEnum getTargetEventType() {
+	public EventType getTargetEventType() {
 		return CreateBussesEventHandler.type;
 	}
 
 	@Override
-	public void handleEvent(SimulationEvent event) {
+	public void handleEvent(TrafficEvent event) {
 		log.info("Processing CREATE_BUSSES_EVENT");
 		CreateBussesEvent cbe = (CreateBussesEvent) event;
 		this.lastUpdate = cbe.getTime();

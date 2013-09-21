@@ -18,7 +18,10 @@ package de.pgalise.simulation.weather.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import javax.ejb.Local;
+import javax.ejb.Remote;
 
 /**
  * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the
@@ -31,7 +34,7 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 24, 2012)
  */
-public interface WeatherController extends Controller {
+public interface WeatherController extends Controller<WeatherEvent> {
 
 	/**
 	 * Checks if the weather data can be loaded for the given date.

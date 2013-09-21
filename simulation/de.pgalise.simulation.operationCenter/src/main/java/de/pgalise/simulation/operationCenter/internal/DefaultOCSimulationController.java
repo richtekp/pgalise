@@ -48,7 +48,6 @@ import de.pgalise.simulation.operationCenter.internal.message.SimulationStoppedM
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationInitParameter;
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationStartParameter;
 import de.pgalise.simulation.operationCenter.internal.model.SensorHelperTypeWrapper;
-import de.pgalise.simulation.operationCenter.internal.model.VehicleData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
@@ -57,17 +56,22 @@ import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStr
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
-import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateVehiclesEvent;
-import de.pgalise.simulation.shared.event.traffic.DeleteVehiclesEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
+import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The default implementation of {@link OCSimulationController}.
@@ -81,7 +85,7 @@ import de.pgalise.simulation.shared.sensor.SensorHelper;
  * 
  * @author Timo
  */
-public class DefaultOCSimulationController extends AbstractController implements
+public class DefaultOCSimulationController extends AbstractController<Event> implements
 		OCSimulationController {
 	private static final Logger log = LoggerFactory
 			.getLogger(DefaultOCSimulationController.class);
@@ -409,12 +413,11 @@ public class DefaultOCSimulationController extends AbstractController implements
 	}
 	
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<Event> simulationEventList) {
 		/* Add new events here: */
-		for (SimulationEvent event : simulationEventList.getEventList()) {
+		for (Event event : simulationEventList.getEventList()) {
 			try {
-				switch (event.getType()) {
-				case CREATE_VEHICLES_EVENT: {
+				if (event.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
 					log.warn("Create new vehicles");
 					for (CreateRandomVehicleData data : ((CreateVehiclesEvent) event)
@@ -424,9 +427,7 @@ public class DefaultOCSimulationController extends AbstractController implements
 					this.createsVehicleSensors(vehicleDataCollection);
 
 					break;
-				}
-
-				case CREATE_RANDOM_VEHICLES_EVENT: {
+				}else if(event.getType().equals( TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
 					log.warn("Create new random vehicles: " +((CreateRandomVehiclesEvent) event)
 							.getCreateRandomVehicleDataList().size());
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
@@ -437,9 +438,7 @@ public class DefaultOCSimulationController extends AbstractController implements
 					this.createsVehicleSensors(vehicleDataCollection);
 
 					break;
-				}
-
-				case CREATE_BUSSES_EVENT: {
+				}else if(event.getType().equals( TrafficEventTypeEnum.CREATE_BUSSES_EVENT)) {
 					log.warn("Create new random vehicles: " +((CreateBussesEvent) event)
 							.getCreateRandomVehicleDataList().size());
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
@@ -451,15 +450,15 @@ public class DefaultOCSimulationController extends AbstractController implements
 
 					break;
 				}
-				case DELETE_VEHICLES_EVENT: {
+				else if(event.getType().equals( TrafficEventTypeEnum. DELETE_VEHICLES_EVENT)) {
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					for(UUID vehicleID : ((DeleteVehiclesEvent)event).getDeleteVehicleIDList()) {
+					for(Vehicle<?> vehicleID : ((DeleteVehiclesEvent)event).getDeleteVehicles()) {
 						vehicleDataCollection.add(this.vehicleDataMap.get(vehicleID));
 					}
 					this.removeVehicleSensors(vehicleDataCollection);
 					break;	
 				}
-				case ATTRACTION_TRAFFIC_EVENT: {
+				else if(event.getType().equals( TrafficEventTypeEnum. ATTRACTION_TRAFFIC_EVENT)) {
 					log.warn("Create new random vehicles: " +((AttractionTrafficEvent) event)
 							.getCreateRandomVehicleDataList().size());
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
@@ -471,7 +470,7 @@ public class DefaultOCSimulationController extends AbstractController implements
 
 					break;
 				}
-				default:
+				else {
 					log.warn(event.getType().toString());
 				}
 			} catch (Exception e) {

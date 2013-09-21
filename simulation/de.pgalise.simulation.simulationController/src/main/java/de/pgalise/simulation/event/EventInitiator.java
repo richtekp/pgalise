@@ -17,10 +17,11 @@
 package de.pgalise.simulation.event;
 
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
@@ -35,7 +36,7 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
  * 
  * @author Timo
  */
-public interface EventInitiator extends Controller {
+public interface EventInitiator extends Controller<Event> {
 
 	/**
 	 * Returns the event thread. Use this only for testing.
@@ -48,7 +49,9 @@ public interface EventInitiator extends Controller {
 	 * Adds an event list.
 	 * @param simulationEventList
 	 */
-	public void addSimulationEventList(SimulationEventList simulationEventList);
+	public void addSimulationEventList(EventList<?> simulationEventList);
+	
+	public EventList<?> getEventList();
 	
 	/**
 	 * Returns the current timestamp of the simulation.
@@ -68,6 +71,6 @@ public interface EventInitiator extends Controller {
 	 */
 	public void setControlCenterController(ControlCenterController controlCenterController);
 	
-	public void setFrontController(List<Controller> frontController);
+	public void setFrontController(List<Controller<?>> frontController);
 
 }

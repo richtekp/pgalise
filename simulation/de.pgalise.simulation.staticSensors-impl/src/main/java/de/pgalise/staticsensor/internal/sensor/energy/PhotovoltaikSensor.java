@@ -22,7 +22,7 @@ import java.util.concurrent.ExecutionException;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergySensor;
@@ -37,6 +37,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @version 1.0
  */
 public class PhotovoltaikSensor extends EnergySensor {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Roof area (qm)
@@ -170,7 +171,7 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 *            List of SimulationEvents
 	 */
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		// Get value
 		this.lightIntensity = (this.getWeatherController().getValue(WeatherParameterEnum.LIGHT_INTENSITY,
 				eventList.getTimestamp(), this.getPosition())).doubleValue();

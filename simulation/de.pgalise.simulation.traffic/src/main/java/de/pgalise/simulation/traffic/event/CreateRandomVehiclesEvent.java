@@ -14,12 +14,18 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * The create random vehicles event creates the given {@link List} of
@@ -28,7 +34,7 @@ import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
  * @author Timo
  * @author Lena
  */
-public class CreateRandomVehiclesEvent extends TrafficEvent {
+public class CreateRandomVehiclesEvent extends AbstractVehicleEvent {
 
 	/**
 	 * Serial
@@ -40,23 +46,15 @@ public class CreateRandomVehiclesEvent extends TrafficEvent {
 	 */
 	private List<CreateRandomVehicleData> createRandomVehicleDataList;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 *            ID of the event
-	 * @param createRandomVehicleDataList
-	 *            List with CreateRandomVehicleData
-	 */
-	public CreateRandomVehiclesEvent(List<CreateRandomVehicleData> createRandomVehicleDataList) {
-		super(SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
-		this.createRandomVehicleDataList = createRandomVehicleDataList;
-	}
-
-	public CreateRandomVehiclesEvent(Long id,
-		List<CreateRandomVehicleData> createRandomVehicleDataList	) {
-		super(id,
-			SimulationEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
+	public CreateRandomVehiclesEvent(
+		TrafficServerLocal responsibleServer,
+		List<CreateRandomVehicleData> createRandomVehicleDataList,
+		Vehicle<? extends VehicleData> currentVehicle,
+		long simulationTime,
+		long elapsedTime) {
+		super(responsibleServer,
+			simulationTime,
+			elapsedTime);
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
 	}
 
@@ -96,5 +94,10 @@ public class CreateRandomVehiclesEvent extends TrafficEvent {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public EventType getType() {
+		return TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT;
 	}
 }

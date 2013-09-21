@@ -54,6 +54,7 @@ import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Time;
@@ -184,7 +185,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 	}
 
 	@Override
-	public ServiceDataForecast<DefaultWeatherCondition> loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public ServiceDataCurrent<DefaultWeatherCondition> loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 
 		// Get the data
 		DefaultServiceDataCurrent data;
@@ -192,17 +193,19 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 					DefaultServiceDataCurrent.class);
 		query.setParameter("date", new Date(timestamp));
 		query.setParameter("city", city);
-		data = query.getSingleResult();
-		
+		try {
+			data = query.getSingleResult();
+		}catch(NoResultException ex) {
+			throw new NoWeatherServiceDataFoundException(timestamp);
+		}		
 
 		// Copy informations to the weather object
-		ServiceDataForecast<DefaultWeatherCondition> weather = new DefaultServiceDataForecast(
+		ServiceDataCurrent<DefaultWeatherCondition> weather = new DefaultServiceDataCurrent(
 			data.getMeasureDate(),
 			data.getMeasureTime(),
 			data.getCity(), 
-			data.getTemperature(),
-			data.getTemperature(),
 			data.getRelativHumidity(), 
+			data.getTemperature(),
 			data.getWindDirection(),
 			data.getWindVelocity(),
 			DefaultWeatherCondition.retrieveCondition(DefaultWeatherCondition.UNKNOWN_CONDITION_CODE)

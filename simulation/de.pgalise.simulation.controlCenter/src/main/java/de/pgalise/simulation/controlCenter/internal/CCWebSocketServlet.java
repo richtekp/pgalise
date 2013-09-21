@@ -41,7 +41,7 @@ import de.pgalise.simulation.controlCenter.internal.message.SimulationStoppedMes
 import de.pgalise.simulation.controlCenter.internal.message.SimulationUpdateMessage;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 
 /**
  * Servlet for Control Center. It creates one user, which can create and control the simulation. It's not possible to
@@ -152,7 +152,7 @@ public class CCWebSocketServlet extends WebSocketServlet {
 		if (user != null) {
 			if (req.getParameter("update") != null) {
 				user.sendMessage(new SimulationUpdateMessage(this.gson.fromJson(req.getParameter("json"),
-						SimulationEventList.class).getTimestamp()));
+						EventList.class).getTimestamp()));
 			} else if (req.getParameter("stopped") != null && req.getParameter("stopped").equalsIgnoreCase("true")) {
 				log.debug("Simulation stopped");
 				user.sendMessage(new SimulationStoppedMessage());

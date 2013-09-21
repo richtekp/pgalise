@@ -21,9 +21,10 @@
 package de.pgalise.simulation.traffic.server;
 
 import de.pgalise.simulation.service.SensorManagerController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * Interface of the TrafficSensorController
@@ -32,10 +33,11 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Lena
  * @version 1.0 (Oct 23, 2012)
  */
-public interface TrafficSensorController extends SensorManagerController {
+public interface TrafficSensorController extends SensorManagerController<TrafficEvent> {
+	
 	public void onSchedule(Vehicle<? extends VehicleData> v);
 
-	public void onUpdate(Vehicle<? extends VehicleData> vehicle, SimulationEventList eventList);
+	public void onUpdate(Vehicle<? extends VehicleData> vehicle, EventList<TrafficEvent> eventList);
 
 	public void onRemove(Vehicle<? extends VehicleData> vehicle);
 }

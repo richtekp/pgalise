@@ -17,7 +17,8 @@
 package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.AbstractMutableTimeSensitive;
+import de.pgalise.simulation.weather.model.AbstractTimeSensitive;
+import de.pgalise.simulation.weather.model.AbstractTimeSensitive;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
 import java.util.Set;
@@ -34,7 +35,7 @@ import javax.persistence.OneToOne;
  * @version 1.0 (Mar 16, 2012)
  */
 @Entity
-public class DefaultServiceDataHelper extends AbstractMutableTimeSensitive implements MutableServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> {
+public class DefaultServiceDataHelper extends AbstractTimeSensitive implements MutableServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> {
 	private static final long serialVersionUID = 1L;
 
 	/**

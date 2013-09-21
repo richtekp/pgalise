@@ -40,7 +40,6 @@ import de.pgalise.simulation.service.configReader.Identifier;
  *
  */
 @Lock(LockType.READ)
-@Remote
 @Singleton(name="de.pgalise.simulation.service.configReader.ConfigReader")
 public class DefaultConfigReader implements ConfigReader {
 	private static final Logger log = LoggerFactory.getLogger(DefaultConfigReader.class);

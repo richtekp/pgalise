@@ -17,8 +17,9 @@
 package de.pgalise.simulation.shared.event.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.event.EventType;
 
 /**
  * Changes the energy consumption in the measure radius by the given percentage.
@@ -66,23 +67,10 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	 * End timestamp of the event
 	 */
 	
-	public ChangeEnergyConsumptionEvent(SimulationEventTypeEnum simulationEventType, Coordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
-		super(simulationEventType);
+	public ChangeEnergyConsumptionEvent(Coordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
 		if (measureRadiusInMeter <= 0.0) {
 			throw new IllegalArgumentException("measureRadiusInMeter is negative");
 		}
-		this.position = position;
-		this.measureRadiusInMeter = measureRadiusInMeter;
-		this.startTimestamp = startTimestamp;
-		this.endTimestamp = endTimestamp;
-	}
-
-	public ChangeEnergyConsumptionEvent(Coordinate position,
-		int measureRadiusInMeter,
-		long startTimestamp,
-		long endTimestamp,
-		SimulationEventTypeEnum eventType) {
-		super(eventType);
 		this.position = position;
 		this.measureRadiusInMeter = measureRadiusInMeter;
 		this.startTimestamp = startTimestamp;
@@ -174,5 +162,10 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public EventType getType() {
+		return EventTypeEnum.CHANGE_WEATHER_EVENT;
 	}
 }

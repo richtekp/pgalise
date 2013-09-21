@@ -16,10 +16,13 @@
  
 package de.pgalise.simulation.weather.service;
 
+import javax.ejb.Local;
+
 /**
  * The interface {@link WeatherControllerLocal} can be used for local communication.
  * 
  * @author Timo
  */
+@Local
 public interface WeatherControllerLocal extends WeatherController {
 }

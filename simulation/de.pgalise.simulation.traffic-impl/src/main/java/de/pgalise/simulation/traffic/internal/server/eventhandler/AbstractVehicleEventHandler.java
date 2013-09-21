@@ -22,8 +22,8 @@ import java.util.UUID;
 
 import org.graphstream.graph.Path;
 
-import de.pgalise.simulation.shared.event.traffic.AttractionTrafficEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.shared.traffic.TrafficTrip;
@@ -34,22 +34,23 @@ import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.scheduler.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This vehicle event handler creates a number of vehicle with random start nodes and one given target node. After a
  * certain time a new vehicle with the same ID and properties are generated that has the the given target node as start
  * node and a random target node for the {@link TrafficTrip}. The class are used by the {@link AttractionTrafficEvent}.
  * 
+ * @param <E> 
  * @author Andreas
  * @version 1.0
  */
-public abstract class AbstractVehicleEventHandler implements TrafficEventHandler {
-	/**
-	 * Traffic server
-	 */
-	private TrafficServerLocal server;
+public abstract class AbstractVehicleEventHandler<E extends VehicleEvent> extends AbstractTrafficEventHandler<E> {
+	private final static Logger LOGGER = LoggerFactory.getLogger(AbstractVehicleEventHandler.class);
 
 	/**
 	 * Random generator
@@ -60,7 +61,6 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 	 * Constructor
 	 */
 	public AbstractVehicleEventHandler() {
-
 	}
 
 	/**
@@ -91,13 +91,9 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 		}
 	}
 
-	public TrafficServerLocal getServer() {
-		return this.server;
-	}
-
 	@Override
 	public void init(TrafficServerLocal server) {
-		this.server = server;
+		setResponsibleServer(server);
 		random = new Random(server.getServiceDictionary().getRandomSeedService()
 				.getSeed(AbstractVehicleEventHandler.class.getName()));
 	}
@@ -113,12 +109,12 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 	public void scheduleVehicle(Vehicle<? extends VehicleData> vehicle, long startTime) {
 		if (vehicle != null) {
 			try {
-				Item item = new Item(vehicle, startTime, this.getServer().getUpdateIntervall());
+				Item item = new Item(vehicle, startTime, this.getResponsibleServer().getUpdateIntervall());
 				// item.setLastUpdate(startTime - this.getServer().getUpdateIntervall());
-				this.getServer().getScheduler().scheduleItem(item);
+				this.getResponsibleServer().getScheduler().scheduleItem(item);
 				// server.getScheduler().scheduleItem(new Item(v, trip.getStartTimeWayBack(), true));
 			} catch (IllegalAccessException e1) {
-				e1.printStackTrace();
+				LOGGER.warn("see nested exception", e1);
 			}
 		}
 	}
@@ -163,13 +159,13 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 		Vehicle<BicycleData> bike = null;
 		TrafficTrip tmpTrip = trip;
 
-		Path path = this.server.getShortestPath(this.server.getGraph().getNode(tmpTrip.getStartNode()), this.server
+		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
 				.getGraph().getNode(tmpTrip.getTargetNode()));
 
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			bike = this.server.getBikeFactory().createRandomBicycle(vehicleID, gpsSensorHelper);
+			bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle(vehicleID, gpsSensorHelper);
 			if (name != null) {
 				bike.setName(name);
 			}
@@ -212,13 +208,13 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 		TrafficTrip tmpTrip = trip;
 
 		// log.debug("Calculating route "+trip);
-		Path path = this.server.getShortestPath(this.server.getGraph().getNode(tmpTrip.getStartNode()), this.server
+		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
 				.getGraph().getNode(tmpTrip.getTargetNode()));
 
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			car = this.server.getCarFactory().createRandomCar(vehicleID, gpsSensorHelper);
+			car = this.getResponsibleServer().getCarFactory().createRandomCar(vehicleID, gpsSensorHelper);
 
 			if (name != null) {
 				car.setName(name);
@@ -254,13 +250,13 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 		Vehicle<MotorcycleData> motorcycle = null;
 		TrafficTrip tmpTrip = trip;
 
-		Path path = this.server.getShortestPath(this.server.getGraph().getNode(tmpTrip.getStartNode()), this.server
+		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
 				.getGraph().getNode(tmpTrip.getTargetNode()));
 
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			motorcycle = this.server.getMotorcycleFactory().createRandomMotorcycle(vehicleID, gpsSensorHelper);
+			motorcycle = this.getResponsibleServer().getMotorcycleFactory().createRandomMotorcycle(vehicleID, gpsSensorHelper);
 			if (name != null) {
 				motorcycle.setName(name);
 			}
@@ -295,13 +291,13 @@ public abstract class AbstractVehicleEventHandler implements TrafficEventHandler
 		Vehicle<TruckData> truck = null;
 		TrafficTrip tmpTrip = trip;
 
-		Path path = this.server.getShortestPath(this.server.getGraph().getNode(tmpTrip.getStartNode()), this.server
+		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
 				.getGraph().getNode(tmpTrip.getTargetNode()));
 
 		// check if path could not be computed between the nodes
 		if (path.getNodeCount() > 1) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-			truck = this.server.getTruckFactory().createRandomTruck(vehicleID, gpsSensorHelper);
+			truck = this.getResponsibleServer().getTruckFactory().createRandomTruck(vehicleID, gpsSensorHelper);
 			if (name != null) {
 				truck.setName(name);
 			}

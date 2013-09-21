@@ -17,6 +17,7 @@
 package de.pgalise.simulation.traffic;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.service.RandomSeedService;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,9 +34,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficVisualizer;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
@@ -120,7 +120,7 @@ public class TrafficVisualizerTest {
 						for (final Node node : graph) {
 							try {
 								ee.getTrafficRule(node).update(
-										new SimulationEventList(null, allTime, UUID.randomUUID()));
+										new EventList(null, allTime, UUID.randomUUID()));
 							} catch (Exception e) {
 								e.printStackTrace();
 							}

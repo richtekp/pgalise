@@ -35,10 +35,26 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
+import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
+import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
+import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
+import java.sql.Date;
+import java.util.Map;
 import javax.annotation.ManagedBean;
+import javax.annotation.Resource;
 import javax.naming.NamingException;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.BeforeClass;
 
@@ -52,11 +68,13 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherServiceSyncTest {
 	private static EJBContainer CONTAINER;
+	@PersistenceUnit(unitName = "weather_test")
+	private EntityManagerFactory entityManagerFactory;
 	
 	/**
 	 * End timestamp
 	 */
-	private long endTime = 0;
+	private long endTimestamp;
 
 	/**
 	 * Logger
@@ -66,7 +84,7 @@ public class DefaultWeatherServiceSyncTest {
 	/**
 	 * Start timestamp
 	 */
-	private long startTime = 0;
+	private long startTimestamp;
 
 	/**
 	 * Test class
@@ -81,52 +99,33 @@ public class DefaultWeatherServiceSyncTest {
 	/**
 	 * Weather loader
 	 */
-	private WeatherLoader<?> loader;
+	private WeatherLoader<DefaultWeatherCondition> loader;
 		
 	private City city;
+	
+	@Resource
+	private UserTransaction userTransaction;
 
 	@SuppressWarnings("LeakingThisInConstructor")
-	public DefaultWeatherServiceSyncTest() throws NamingException {
+	public DefaultWeatherServiceSyncTest() throws NamingException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
 		CONTAINER.getContext().bind("inject",
 			this);
+	
+		city = TestUtils.createDefaultTestCityInstance();
 		
-		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1),
-				new Coordinate(referencePoint.x-1, referencePoint.y-1)
-			}
-		);
-		city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
-		
-		Context ctx = CONTAINER.getContext();
-
 		// Load EJB for Weather loader
-		loader = (WeatherLoader) ctx
-				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
+		loader = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
 
 		testclass = new DefaultWeatherService(city, loader);
 
 		// Start
 		Calendar cal = new GregorianCalendar();
 		cal.set(2011, 1, 1, 0, 0, 0);
-		startTime = cal.getTimeInMillis();
+		startTimestamp = cal.getTimeInMillis();
 
 		// End
 		cal.set(2011, 1, 2, 0, 0, 0);
-		endTime = cal.getTimeInMillis();
-
-		// Add weather
-		testclass.addNewWeather(startTime,
-				endTime, true, null);
+		endTimestamp = cal.getTimeInMillis();
 	}
 	
 	@BeforeClass
@@ -135,11 +134,28 @@ public class DefaultWeatherServiceSyncTest {
 	}
 
 	@Test
-	public void testGetValue() throws InterruptedException {
+	public void testGetValue() throws Exception {
 		// Test time
-		final long testTime = startTime + (1000 * 60 * 60 * 5);
+		final long testTime = startTimestamp + (1000 * 60 * 60 * 5);
 		// All threads
 		final List<Thread> threads = new ArrayList<>();
+		
+		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+			endTimestamp,
+			userTransaction,
+			entityManagerFactory);
+		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+			endTimestamp,
+			city,
+			userTransaction,
+			entityManagerFactory);
+		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+			endTimestamp,
+			city,
+			userTransaction,
+			entityManagerFactory);
+		testclass.addNewWeather(startTimestamp, endTimestamp, true,
+				null);
 
 		// Creates 50 Threads
 		for (int i = 0; i < testNumberOfThreads; i++) {
@@ -158,8 +174,8 @@ public class DefaultWeatherServiceSyncTest {
 
 					if ((y % 20) == 0) {
 						// Every 20 thread add new weather
-						testclass.addNewWeather(startTime,
-								endTime, true, null);
+						testclass.addNewWeather(startTimestamp,
+								endTimestamp, true, null);
 						log.debug("New weather added!");
 
 					} else {
@@ -183,6 +199,18 @@ public class DefaultWeatherServiceSyncTest {
 		for (Thread thread : threads) {
 			thread.join();
 		}
+		
+		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+			userTransaction,
+			entityManagerFactory);
+		TestUtils.tearDownWeatherData(entities0,
+			DefaultServiceDataCurrent.class,
+			userTransaction,
+			entityManagerFactory);
+		TestUtils.tearDownWeatherData(entities1,
+			DefaultServiceDataForecast.class,
+			userTransaction,
+			entityManagerFactory);
 	}
 
 }

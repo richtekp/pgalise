@@ -24,7 +24,7 @@ import org.graphstream.graph.Node;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.graphextension.GraphExtensions;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -151,7 +151,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @param simulationEventList
 	 *            the {@link SimulationEventList}
 	 */
-	public void updateTrafficRules(SimulationEventList simulationEventList);
+	public void updateTrafficRules(EventList simulationEventList);
 
 	/**
 	 * @param edge

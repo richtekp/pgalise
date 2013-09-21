@@ -43,10 +43,10 @@ import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
-import de.pgalise.simulation.shared.event.traffic.CreateBussesEvent;
-import de.pgalise.simulation.shared.event.traffic.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
@@ -152,12 +152,12 @@ public class SimulationDeterminismTest {
 	/**
 	 * Simulation events
 	 */
-	private static List<SimulationEventList> SIMULATION_EVENTS_1;
+	private static List<EventList> SIMULATION_EVENTS_1;
 
 	/**
 	 * Simulation events
 	 */
-	private static List<SimulationEventList> SIMULATION_EVENTS_2;
+	private static List<EventList> SIMULATION_EVENTS_2;
 
 	/**
 	 * Determinism helper for the simulation
@@ -205,7 +205,7 @@ public class SimulationDeterminismTest {
 
 		List<WeatherEventHelper> weatherEvents = DETERMINISMHELPER.produceWeatherEventHelperList();
 		STATIC_SENSORS = DETERMINISMHELPER.produceStaticSensorHelperList(cityInfrastructure, random);
-		List<SimulationEventList> vehicleData = DETERMINISMHELPER.produceVehicleDataLists(RANDOM_VEHICLE_TYPE_NUMBER,
+		List<EventList> vehicleData = DETERMINISMHELPER.produceVehicleDataLists(RANDOM_VEHICLE_TYPE_NUMBER,
 				cityInfrastructure, random, SIMULATION_START);
 
 		SIMULATION_EVENTS_1 = vehicleData;
@@ -311,11 +311,11 @@ public class SimulationDeterminismTest {
 	 *            Simulations Event
 	 * @return Number of traffic events
 	 */
-	private int calculateTrafficEvents(List<SimulationEventList> simulationEvents) {
+	private int calculateTrafficEvents(List<EventList> simulationEvents) {
 		int size = 0;
 
-		for (SimulationEventList simulationEventList : simulationEvents) {
-			for (SimulationEvent simevent : simulationEventList.getEventList()) {
+		for (EventList simulationEventList : simulationEvents) {
+			for (AbstractEvent simevent : simulationEventList.getEventList()) {
 				if (simevent instanceof CreateBussesEvent) {
 					CreateBussesEvent busEvent = (CreateBussesEvent) simevent;
 					size += busEvent.getCreateRandomVehicleDataList().size();

@@ -24,7 +24,7 @@ import javax.ejb.Stateless;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 /**
@@ -66,5 +66,5 @@ public class ControlCenterControllerMock extends AbstractController implements C
 	protected void onResume() {}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {}
+	protected void onUpdate(EventList simulationEventList) {}
 }

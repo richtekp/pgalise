@@ -14,21 +14,24 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.event.traffic;
+package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.shared.traffic.BusRoute;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
 /**
  * The create busses event will create the given vehicles as busses
  * for the given routes.
  * @author Lena
  */
-public class CreateBussesEvent extends TrafficEvent {
+public class CreateBussesEvent extends AbstractTrafficEvent {
 
 	/**
 	 * Serial
@@ -62,9 +65,9 @@ public class CreateBussesEvent extends TrafficEvent {
 	 * @param busRoutes
 	 *            List with bus routes
 	 */
-	public CreateBussesEvent(List<CreateRandomVehicleData> createRandomVehicleDataList, long time,
+	public CreateBussesEvent(TrafficServerLocal responsibleServer, List<CreateRandomVehicleData> createRandomVehicleDataList, long time,
 			List<BusRoute> busRoutes) {
-		super(SimulationEventTypeEnum.CREATE_BUSSES_EVENT);
+		super(responsibleServer);
 		this.time = time;
 		// this.busRoutes = busRoutes;
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
@@ -159,5 +162,10 @@ public class CreateBussesEvent extends TrafficEvent {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public EventType getType() {
+		return TrafficEventTypeEnum.CREATE_BUSSES_EVENT;
 	}
 }

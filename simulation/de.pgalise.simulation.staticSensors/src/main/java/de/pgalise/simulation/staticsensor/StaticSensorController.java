@@ -17,6 +17,8 @@
 package de.pgalise.simulation.staticsensor;
 
 import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventType;
 
 /**
  * Interface for controlling static sensors in the environment.
@@ -26,4 +28,4 @@ import de.pgalise.simulation.service.SensorManagerController;
  * @author Marcus
  * @author Timo
  */
-public interface StaticSensorController extends SensorManagerController {}
+public interface StaticSensorController extends SensorManagerController<Event> {}

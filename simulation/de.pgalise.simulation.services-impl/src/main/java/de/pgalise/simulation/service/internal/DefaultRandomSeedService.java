@@ -16,19 +16,18 @@
  
 package de.pgalise.simulation.service.internal;
 
-import javax.ejb.Local;
+import de.pgalise.simulation.service.RandomSeedService;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
-import javax.ejb.Remote;
 import javax.ejb.Singleton;
 
-import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.RandomSeedServiceLocal;
 import de.pgalise.simulation.shared.controller.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import javax.ejb.Local;
+import javax.ejb.Remote;
 
 /**
  * The default implementation of random seed service.
@@ -38,10 +37,10 @@ import de.pgalise.simulation.shared.exception.InitializationException;
  * @author Timo
  */
 @Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.service.RandomSeedService")
+@Singleton(name = "de.pgalise.simulation.service.RandomSeedService", mappedName = "de.pgalise.simulation.service.RandomSeedService")
+@Local(RandomSeedService.class)
 @Remote(RandomSeedService.class)
-@Local(RandomSeedServiceLocal.class)
-public class DefaultRandomSeedService extends AbstractController implements RandomSeedServiceLocal {
+public class DefaultRandomSeedService extends AbstractController implements RandomSeedService {
 
 	/**
 	 * simulation start timestamp
@@ -59,6 +58,7 @@ public class DefaultRandomSeedService extends AbstractController implements Rand
 		return (this.startTimestamp + className.hashCode());
 	}
 
+	@Override
 	public long getStartTimestamp() {
 		return this.startTimestamp;
 	}
@@ -70,31 +70,25 @@ public class DefaultRandomSeedService extends AbstractController implements Rand
 
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
 	protected void onReset() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
 	protected void onStart(StartParameter param) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
 	protected void onStop() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
 	protected void onResume() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	protected void onUpdate(EventList simulationEventList) {
 	}
 }

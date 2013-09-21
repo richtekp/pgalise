@@ -17,6 +17,7 @@
 package de.pgalise.simulation.weather.dataloader;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.WeatherCondition;
 
@@ -49,7 +50,7 @@ public interface WeatherLoader<C extends WeatherCondition> {
 	 *            ID to the city
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataForecast<C> loadCurrentServiceWeatherData(long timestamp, City city) ;
+	public ServiceDataCurrent<C> loadCurrentServiceWeatherData(long timestamp, City city) ;
 
 	/**
 	 * Returns the forecast weather informations form the weather services for the given city and timestamp

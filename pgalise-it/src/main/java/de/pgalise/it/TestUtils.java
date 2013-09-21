@@ -4,7 +4,10 @@
  */
 package de.pgalise.it;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
@@ -13,10 +16,9 @@ import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.ejb.embeddable.EJBContainer;
 import javax.measure.Measure;
@@ -95,125 +97,97 @@ public class TestUtils {
 		return retValue;
 	}
 	
-	public static Collection<DefaultServiceDataForecast> setUpWeatherServiceDataForecast(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
-		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
-			startTimestamp);
+	/**
+	 * sets up entities of type <tt>DefaultServiceDataForecast</tt> for startTimestamp at midnight, the day before startTimestamp at midnight and endTimestamp at midnight
+	 * @param startTimestamp
+	 * @param endTimestamp
+	 * @param city
+	 * @param utx
+	 * @param entityManagerFactory
+	 * @return
+	 * @throws NotSupportedException
+	 * @throws SystemException
+	 * @throws HeuristicMixedException
+	 * @throws HeuristicRollbackException
+	 * @throws IllegalStateException
+	 * @throws RollbackException 
+	 */
+	public static Map<Date, DefaultServiceDataForecast> setUpWeatherServiceDataForecast(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		long preceedingDayTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			startTimestamp)-DateConverter.ONE_DAY_IN_MILLIS;
 		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
 			endTimestamp);
 		utx.begin();
 		EntityManager em = entityManagerFactory.createEntityManager();
-		DefaultServiceDataForecast serviceWeather = new DefaultServiceDataForecast(new Date(startTimestampMidnight),
-			new Time(startTimestampMidnight),
-			city,
-			Measure.valueOf(10.0f,
-			SI.CELSIUS),
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
-		
-		long preceedingDayTimestamp = startTimestampMidnight-DateConverter.ONE_DAY_IN_MILLIS;
-		DefaultServiceDataForecast serviceWeatherPreviousDay = new DefaultServiceDataForecast(new Date(preceedingDayTimestamp),
-			new Time(preceedingDayTimestamp),
-			city,
-			Measure.valueOf(10.0f,
-			SI.CELSIUS),
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
-		DefaultServiceDataForecast serviceWeatherForecast = new DefaultServiceDataForecast(new Date(startTimestampMidnight),
-			new Time(startTimestampMidnight),
-			city,
-			Measure.valueOf(10.0f,
-			SI.CELSIUS),
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
-		DefaultServiceDataForecast weather = new DefaultServiceDataForecast(new Date(startTimestampMidnight),
-			new Time(startTimestampMidnight),
-			city,
-			Measure.valueOf(10.0f,
-			SI.CELSIUS),
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
 		em.joinTransaction();
-		em.merge(serviceWeather);
-		em.merge(serviceWeatherPreviousDay);
-		em.merge(serviceWeatherForecast);
-		em.merge(weather);
+		em.merge(city);
+		long start = preceedingDayTimestampMidnight;
+		Map<Date, DefaultServiceDataForecast> retValue = new HashMap<>();
+		while(start < endTimestampMidnight+DateConverter.ONE_DAY_IN_MILLIS) {
+			DefaultServiceDataForecast serviceDataForecast = new DefaultServiceDataForecast(new Date(start),
+				new Time(start),
+				city,
+				Measure.valueOf(10.0f,
+				SI.CELSIUS),
+				Measure.valueOf(1.0f, SI.CELSIUS),
+				1.0f,
+				1.0f,
+				1.0f,
+				DefaultWeatherCondition.UNKNOWN_CONDITION
+			);
+			em.merge(serviceDataForecast);
+			retValue.put(new Date(start), serviceDataForecast);
+			start += DateConverter.ONE_DAY_IN_MILLIS;
+		}
 		em.close();
 		utx.commit();
-		Collection<DefaultServiceDataForecast> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
-		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", DefaultServiceDataForecast.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
+//		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), endMidnight=%d (%s)", DefaultServiceDataForecast.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
 		return retValue;
 	}
 	
-	public static Collection<DefaultServiceDataCurrent> setUpWeatherServiceDataCurrent(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
-		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
-			startTimestamp);
+	/**
+	 * sets up entities of type <tt>DefaultServiceDataCurrent</tt> for startTimestamp at midnight, the day before startTimestamp at midnight and endTimestamp at midnight
+	 * @param startTimestamp
+	 * @param endTimestamp
+	 * @param city
+	 * @param utx
+	 * @param entityManagerFactory
+	 * @return
+	 * @throws NotSupportedException
+	 * @throws SystemException
+	 * @throws HeuristicMixedException
+	 * @throws HeuristicRollbackException
+	 * @throws IllegalStateException
+	 * @throws RollbackException 
+	 */
+	public static Map<Date, DefaultServiceDataCurrent> setUpWeatherServiceDataCurrent(long startTimestamp, long endTimestamp, City city, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		long preceedingDayTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			startTimestamp)-DateConverter.ONE_DAY_IN_MILLIS;
 		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
 			endTimestamp);
 		utx.begin();
 		EntityManager em = entityManagerFactory.createEntityManager();
-		DefaultServiceDataCurrent serviceWeather = new DefaultServiceDataCurrent(new Date(startTimestampMidnight),
-			new Time(startTimestampMidnight),
-			city,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
-		
-		long preceedingDayTimestamp = startTimestampMidnight-DateConverter.ONE_DAY_IN_MILLIS;
-		DefaultServiceDataCurrent serviceWeatherPreviousDay = new DefaultServiceDataCurrent(new Date(preceedingDayTimestamp),
-			new Time(preceedingDayTimestamp),
-			city,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
-		DefaultServiceDataCurrent serviceWeatherForecast = new DefaultServiceDataCurrent(new Date(endTimestampMidnight),
-			new Time(endTimestampMidnight),
-			city,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
-		DefaultServiceDataCurrent weather = new DefaultServiceDataCurrent(new Date(startTimestamp),
-			new Time(startTimestamp),
-			city,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1.0f,
-			DefaultWeatherCondition.UNKNOWN_CONDITION
-		);
 		em.joinTransaction();
-		em.merge(serviceWeather);
-		em.merge(serviceWeatherPreviousDay);
-		em.merge(serviceWeatherForecast);
-		em.merge(weather);
+		em.merge(city);
+		long start = preceedingDayTimestampMidnight;
+		Map<Date, DefaultServiceDataCurrent> retValue = new HashMap<>();
+		while(start < endTimestampMidnight+DateConverter.ONE_DAY_IN_MILLIS) {
+			DefaultServiceDataCurrent serviceDataCurrent = new DefaultServiceDataCurrent(new Date(start),
+				new Time(start),
+				city,
+				1.0f,
+				Measure.valueOf(1.0f, SI.CELSIUS),
+				1.0f,
+				1.0f,
+				DefaultWeatherCondition.UNKNOWN_CONDITION
+			);
+			em.merge(serviceDataCurrent);
+			retValue.put(new Date(start), serviceDataCurrent);
+			start += DateConverter.ONE_DAY_IN_MILLIS;
+		}
 		em.close();
 		utx.commit();
-		Collection<DefaultServiceDataCurrent> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
-		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", DefaultServiceDataCurrent.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
+//		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), endMidnight=%d (%s)", DefaultServiceDataCurrent.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
 		return retValue;
 	}
 	
@@ -235,49 +209,33 @@ public class TestUtils {
 	 * @throws IllegalStateException 
 	 * @see #tearDownWeatherData(java.util.Collection, javax.transaction.UserTransaction, javax.persistence.EntityManagerFactory) 
 	 */
-	public static Collection<StationDataNormal> setUpWeatherStationData(long startTimestamp, long endTimestamp, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
-		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
-			startTimestamp);
+	public static Map<Date, StationDataNormal> setUpWeatherStationData(long startTimestamp, long endTimestamp, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+		long preceedingDayTimestampMidnight = DateConverter.convertTimestampToMidnight(
+			startTimestamp)-DateConverter.ONE_DAY_IN_MILLIS;
 		long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
 			endTimestamp);
 		utx.begin();
 		EntityManager em = entityManagerFactory.createEntityManager();
-		StationDataNormal serviceWeather = new StationDataNormal(new Date(startTimestampMidnight),
-			new Time(startTimestampMidnight),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-		
-		long preceedingDayTimestamp = startTimestampMidnight-DateConverter.ONE_DAY_IN_MILLIS;
-		StationDataNormal serviceWeatherPreviousDay = new StationDataNormal(new Date(preceedingDayTimestamp),
-			new Time(preceedingDayTimestamp),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f); //for the DatabaseWeatherLoader (loads current, previous and following day)
-		StationDataNormal serviceWeatherForecast = new StationDataNormal(new Date(endTimestampMidnight),
-			new Time(endTimestampMidnight),
-			1,
-			1,
-			1.0f,
-			Measure.valueOf(1.0f, SI.CELSIUS),
-			1.0f,
-			1,
-			1.0f,
-			1.0f,
-			1.0f);
-		StationDataNormal weather = new StationDataNormal(new Date(startTimestamp),
+		em.joinTransaction();
+		long start = preceedingDayTimestampMidnight;
+		Map<Date, StationDataNormal> retValue = new HashMap<>();
+		while(start < endTimestampMidnight+DateConverter.ONE_DAY_IN_MILLIS) {
+			StationDataNormal stationDataNormal = new StationDataNormal(new Date(start),
+			new Time(start),
+				1,
+				1,
+				1.0f,
+				Measure.valueOf(1.0f, SI.CELSIUS),
+				1.0f,
+				1,
+				1.0f,
+				1.0f,
+				1.0f);
+			em.merge(stationDataNormal);
+			retValue.put(new Date(start), stationDataNormal);
+			start += DateConverter.ONE_DAY_IN_MILLIS;
+		}
+		StationDataNormal stationDataNormal = new StationDataNormal(new Date(startTimestamp),
 			new Time(startTimestamp),
 			1,
 			1,
@@ -288,23 +246,19 @@ public class TestUtils {
 			1.0f,
 			1.0f,
 			1.0f);
-		em.joinTransaction();
-		em.merge(serviceWeather);
-		em.merge(serviceWeatherPreviousDay);
-		em.merge(serviceWeatherForecast);
-		em.merge(weather);
-		utx.commit();
+		em.merge(stationDataNormal);
+		retValue.put(new Date(startTimestamp), stationDataNormal);
 		em.close();
-		Collection<StationDataNormal> retValue = new LinkedList<>(Arrays.asList(serviceWeather, serviceWeatherPreviousDay, serviceWeatherForecast, weather));
-		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", StationDataNormal.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
+		utx.commit();
+//		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", StationDataNormal.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));
 		return retValue;
 	}
 	
-	public static <T extends Identifiable> void tearDownWeatherData(Collection<T> mutableStationDatas, Class<T> clazz, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+	public static <T extends Identifiable> void tearDownWeatherData(Map<?, T> mutableStationDatas, Class<T> clazz, UserTransaction utx, EntityManagerFactory entityManagerFactory) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
 		utx.begin();
 		EntityManager em = entityManagerFactory.createEntityManager();
 		em.joinTransaction();
-		for(T mutableStationData : mutableStationDatas) {
+		for(T mutableStationData : mutableStationDatas.values()) {
 //			em.refresh(mutableStationData);
 			T attached = em.find(clazz,
 				mutableStationData.getId());
@@ -312,6 +266,27 @@ public class TestUtils {
 		}
 		utx.commit();
 		em.close();
+	}
+	
+	public static City createDefaultTestCityInstance() {
+		
+		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
+		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+			new Coordinate[] {
+				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
+				new Coordinate(referencePoint.x-1, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y), 
+				new Coordinate(referencePoint.x, referencePoint.y-1),
+				new Coordinate(referencePoint.x-1, referencePoint.y-1)
+			}
+		);
+		City city = new City("Berlin",
+			3375222,
+			80,
+			true,
+			true,
+			referenceArea);
+		return city;
 	}
 
 	private TestUtils() {

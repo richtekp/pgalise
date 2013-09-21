@@ -16,9 +16,10 @@
  
 package de.pgalise.simulation.shared.event.weather;
 
+import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 
-import de.pgalise.simulation.shared.event.SimulationEventTypeEnum;
+import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Event for generating new weather data. Should be thrown by 23:59 of the day.
@@ -47,11 +48,16 @@ public class NewDayEvent extends WeatherEvent {
 	 *            List with Strategies to modify weather data
 	 */
 	public NewDayEvent(List<WeatherEventEnum> list) {
-		super(SimulationEventTypeEnum.NEW_DAY_EVENT);
+		super();
 		this.strategyList = list;
 	}
 
 	public List<WeatherEventEnum> getStrategyList() {
 		return this.strategyList;
+	}
+
+	@Override
+	public EventType getType() {
+		return EventTypeEnum.NEW_DAY_EVENT;
 	}
 }

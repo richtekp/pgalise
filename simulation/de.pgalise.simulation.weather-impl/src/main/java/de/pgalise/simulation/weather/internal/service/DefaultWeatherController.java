@@ -29,7 +29,6 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
-import javax.ejb.Remote;
 import javax.ejb.Singleton;
 
 import org.slf4j.Logger;
@@ -40,11 +39,13 @@ import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.shared.controller.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.SimulationEvent;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -56,6 +57,7 @@ import de.pgalise.simulation.weather.internal.modifier.events.RainDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
+import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -83,9 +85,8 @@ import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
-@Local(WeatherControllerLocal.class)
-@Remote(WeatherController.class)
-public class DefaultWeatherController extends AbstractController implements WeatherControllerLocal {
+@Local
+public class DefaultWeatherController extends AbstractController<WeatherEvent> implements WeatherController {
 
 	/**
 	 * Logger
@@ -124,10 +125,10 @@ public class DefaultWeatherController extends AbstractController implements Weat
 	private WeatherService weatherservice;
 
 	@EJB
-	private ServiceDictionary serviceDictionary;
+	private ServiceDictionary<?> serviceDictionary;
 
 	@EJB
-	private WeatherLoader weatherLoader;
+	private WeatherLoader<DefaultWeatherCondition> weatherLoader;
 
 	/**
 	 * Random Seed Service
@@ -328,6 +329,7 @@ public class DefaultWeatherController extends AbstractController implements Weat
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {
 		// Set random seed service
+		serviceDictionary.init(new ServerConfiguration());
 		this.randomSeedService = this.serviceDictionary.getRandomSeedService();
 		this.initParameter = param;
 	}
@@ -366,9 +368,9 @@ public class DefaultWeatherController extends AbstractController implements Weat
 	}
 
 	@Override
-	protected void onUpdate(SimulationEventList simulationEventList) {
+	protected void onUpdate(EventList<WeatherEvent> simulationEventList) {
 		// Handle events
-		for (SimulationEvent event : simulationEventList.getEventList()) {
+		for (AbstractEvent event : simulationEventList.getEventList()) {
 			// DefaultWeatherController.log.debug("Event: " + event.getEventType());
 			if (event instanceof ChangeWeatherEvent) {
 				// Change the current weather data
@@ -383,8 +385,8 @@ public class DefaultWeatherController extends AbstractController implements Weat
 						DefaultWeatherController.this.weatherservice.deployStrategy(strategy);
 					}
 				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-					throw new RuntimeException(e.getMessage());
+					log.warn("see nested exception", e);
+					throw new RuntimeException(e);
 				}
 			}
 		}

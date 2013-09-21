@@ -30,9 +30,9 @@ import de.pgalise.simulation.shared.event.EventType;
  * @param <E> event to be processed by this handler
  * @param <T> type of event E (usually an enum class)  
  */
-public interface EventHandler<E extends Event<T>, T extends EventType> {
+public interface EventHandler<E extends Event> {
 	
-	public T getTargetEventType();
+	public EventType getTargetEventType();
 	
 	/**
 	 * Handles the incoming event.

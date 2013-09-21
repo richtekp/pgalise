@@ -16,22 +16,22 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventType;
 
 /**
  * @author marcus
  */
-public class VehicleRemovedHandler implements VehicleEventHandler {
+public class VehicleRemovedHandler extends AbstractVehicleEventHandler<VehicleEvent> {
 
 	@Override
-	public VehicleEventType getTargetEventType() {
-		return VehicleEventType.VEHICLE_REMOVED;
+	public VehicleEventTypeEnum getTargetEventType() {
+		return VehicleEventTypeEnum.VEHICLE_REMOVED;
 	}
 
 	@Override
 	public void handleEvent(VehicleEvent event) {
-
+		throw new UnsupportedOperationException();
 	}
 }

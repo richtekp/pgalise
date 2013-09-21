@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.event.SimulationEventList;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorType;
@@ -205,7 +205,7 @@ public class GpsSensor extends Sensor {
 	 *            List of SimulationEvents
 	 */
 	@Override
-	public void transmitUsageData(SimulationEventList eventList) {
+	public void transmitUsageData(EventList eventList) {
 		// log.debug("Transmitting sensor data for sensor "+this.getSensorId());
 		if (++this.searchSignalCounter >= GpsSensor.SEARCH_SIGNAL_TIME) {
 			this.hasSignal = true;
@@ -241,7 +241,7 @@ public class GpsSensor extends Sensor {
 	 *                if the getVehicle returns null
 	 */
 	@Override
-	protected void transmitData(SimulationEventList eventList) {
+	protected void transmitData(EventList eventList) {
 		if (this.vehicle == null) {
 			throw new IllegalStateException(ExceptionMessages.getMessageForNotNull("vehicle"));
 		}
@@ -257,7 +257,7 @@ public class GpsSensor extends Sensor {
 	}
 
 	@Override
-	public void logValueToSend(SimulationEventList eventList) {
+	public void logValueToSend(EventList eventList) {
 		if (this.vehicle.getState() == State.DRIVING) {
 
 			// log

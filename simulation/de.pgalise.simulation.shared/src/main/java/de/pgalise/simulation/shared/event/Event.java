@@ -4,15 +4,16 @@
  */
 package de.pgalise.simulation.shared.event;
 
+import de.pgalise.simulation.shared.persistence.Identifiable;
+
 /**
  *
- * @param <T> 
  * @author richter
  */
-public interface Event<T extends EventType>  {
+public interface Event extends Identifiable {
 	/**
 	 * @return type of the events this EventHandler is able to process 
 	 */
-	public T getType();
+	public EventType getType();
 	
 }
