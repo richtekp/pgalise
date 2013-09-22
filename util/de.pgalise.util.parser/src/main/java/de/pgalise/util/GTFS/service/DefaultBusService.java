@@ -34,6 +34,7 @@ import de.pgalise.simulation.traffic.BusTrip;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class DefaultBusService implements BusService {
 	@Override
 	public List<BusTrip> getBusLineData(String busRoute, long timeInMs) throws ClassNotFoundException, SQLException {
 		List<BusTrip> trips = new ArrayList<>();
-		TypedQuery<BusTrip> query = entityManager.createNamedQuery("SELECT x FROM BusTrip x",
+		TypedQuery<BusTrip> query = entityManager.createQuery("SELECT x FROM BusTrip x",
 			BusTrip.class);
 		List<BusTrip> retValue = query.getResultList();
 		return retValue;
@@ -67,99 +68,9 @@ public class DefaultBusService implements BusService {
 
 	@Override
 	public int getTotalNumberOfBusTrips(List<BusRoute> busRoutes, long timeInMs) {
-		List<String> routeIds = new ArrayList<>();
-		for (BusRoute r : busRoutes) {
-			routeIds.add(r.getRouteId());
-		}
-		try {
-			Class.forName("org.apache.derby.jdbc.ClientDriver");
-			con = DriverManager
-					.getConnection("jdbc:derby://127.0.0.1:5201/database", "pgalise", "somepw");
-
-			String weekday = "monday";
-
-			Calendar cal = new GregorianCalendar();
-			cal.setTimeInMillis(timeInMs);
-			int weekdayInt = cal.get(Calendar.DAY_OF_WEEK);
-
-			switch (weekdayInt) {
-				case 1:
-					weekday = "sunday";
-					break;
-				case 2:
-					weekday = "monday";
-					break;
-				case 3:
-					weekday = "tuesday";
-					break;
-				case 4:
-					weekday = "wednesday";
-					break;
-				case 5:
-					weekday = "thursday";
-					break;
-				case 6:
-					weekday = "friday";
-					break;
-				case 7:
-					weekday = "saturday";
-					break;
-			}
-
-			String date;
-			int m = cal.get(Calendar.MONTH) + 1;
-			String month = String.valueOf(m);
-			if (m < 9) {
-				month = "0" + m;
-			}
-			int d = cal.get(Calendar.DAY_OF_MONTH);
-			String day = String.valueOf(d);
-			if (d < 9) {
-				day = "0" + d;
-			}
-			date = cal.get(Calendar.YEAR) + "-" + month + "-" + day;
-
-			String query1 = "select distinct c.service_id from pgalise.bus_calendar c join pgalise.bus_trips t on c.service_id=t.service_id where "
-					+ weekday + "='1' and date('" + date + "')>=c.start_date and date('" + date + "')<=c.end_date";
-
-			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery(query1);
-
-			String serviceId = "";
-
-			// just get the first row in the unlikely case of getting more than
-			// one service_id
-			if (rs.next()) {
-				serviceId = rs.getString(1);
-			}
-
-			int count = 0;
-			if (!serviceId.isEmpty()) {
-				for (String busRoute : routeIds) {
-					String query2 = "select distinct a.trip_id from (select r.route_id, r.route_short_name, r.route_long_name, t.trip_id from pgalise.bus_routes r join pgalise.bus_trips t on r.route_id=t.route_id where r.route_id = '"
-							+ busRoute
-							+ "' and t.service_id='"
-							+ serviceId
-							+ "') a join pgalise.bus_stop_times st on a.trip_id=st.trip_id order by a.trip_id";
-
-					st = con.createStatement();
-					rs = st.executeQuery(query2);
-
-					while (rs.next()) {
-						count++;
-					}
-					rs.close();
-					st.close();
-				}
-			}
-			con.close();
-
-			return count;
-		} catch (ClassNotFoundException | SQLException e) {
-			LOGGER.warn("see nested exception",
-				e);
-			return -1;
-		}
+		Query query = entityManager.createQuery("SELECT COUNT(x) FROM BusTrip x");
+		int retValue = (int) query.getSingleResult();
+		return retValue;
 	}
 
 	// @Override
