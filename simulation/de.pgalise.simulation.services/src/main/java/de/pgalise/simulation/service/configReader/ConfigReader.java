@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.service.configReader;
 
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.service.Service;
 
 /**
@@ -36,5 +37,5 @@ public interface ConfigReader extends Service {
 	 * @param propName identifies a property
 	 * @return value of the property 'propName'
 	 */
-	public String getProperty(Identifier propName);
+	public String getProperty(ServerConfigurationIdentifier propName);
 }

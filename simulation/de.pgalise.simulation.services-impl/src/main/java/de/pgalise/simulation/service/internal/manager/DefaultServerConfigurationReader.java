@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.service.internal.manager;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -32,12 +31,13 @@ import javax.naming.NamingException;
 
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.configReader.Identifier;
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
+import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.service.ServerConfigurationEntity;
 import de.pgalise.simulation.service.Service;
+import java.util.ArrayList;
 
 /**
  * Default implementation of the SeverConfigurationReader.
@@ -58,7 +58,7 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 	/**
 	 * Suffix for locale
 	 */
-	private static final String LOCAL_SUFFIX = "";
+	private static final String LOCAL_SUFFIX = "Local";
 
 	@EJB
 	private ConfigReader localConfigReader;
@@ -83,16 +83,16 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 	public void read(ServerConfiguration serverConfig, List<ServiceHandler<Service>> handlerList) {
 		// remote referenzen beziehen
 		try {
-			String host = localConfigReader.getProperty(Identifier.SERVER_HOST);
+			String host = localConfigReader.getProperty(ServerConfigurationIdentifier.SERVER_HOST);
 
-			String ejbdProtocolEnabled = localConfigReader.getProperty(Identifier.EJBD_PROTOCOL_ENABLED);
+			String ejbdProtocolEnabled = localConfigReader.getProperty(ServerConfigurationIdentifier.EJBD_PROTOCOL_ENABLED);
 			boolean useEjbdProtocol = (ejbdProtocolEnabled != null && ejbdProtocolEnabled.equals("true")) ? true
 					: false;
 
 			String lip = host.split(":")[0];
 			String lport = host.split(":")[1];
 
-			Map<String, List<Entity>> config = serverConfig.getConfiguration();
+			Map<String, List<ServerConfigurationEntity>> config = serverConfig.getConfiguration();
 			for (String server : config.keySet()) {
 				String ip = server.split(":")[0];
 				String port = server.split(":")[1];
@@ -110,8 +110,8 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 					// props.put("java.naming.security.credentials", "tomee");
 					Context remoteContext = new InitialContext(props);
 
-					List<Entity> entities = config.get(server);
-					for (Entity entity : entities) {
+					List<ServerConfigurationEntity> entities = config.get(server);
+					for (ServerConfigurationEntity entity : entities) {
 						for (ServiceHandler<Service> handler : handlerList) {
 							if (handler.getName().equals(entity.getName())) {
 								Service o = (Service) remoteContext.lookup(entity.getName() + REMOTE_SUFFIX);
@@ -125,8 +125,8 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 					props.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.openejb.client.LocalInitialContextFactory");
 					Context localContext = new InitialContext(props);
 
-					List<Entity> entities = config.get(server);
-					for (Entity entity : entities) {
+					List<ServerConfigurationEntity> entities = config.get(server);
+					for (ServerConfigurationEntity entity : entities) {
 						for (ServiceHandler<Service> handler : handlerList) {
 							if (handler.getName().equals(entity.getName())) {
 								if (handler.getName().equals(ServiceDictionary.FRONT_CONTROLLER)) {
@@ -156,7 +156,7 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 
 	@Override
 	public void read(ServerConfiguration serverConfig, ServiceHandler<Service> handler) {
-		List<ServiceHandler<Service>> list = new LinkedList<>();
+		List<ServiceHandler<Service>> list = new ArrayList<>(1);
 		list.add(handler);
 		this.read(serverConfig, list);
 	}

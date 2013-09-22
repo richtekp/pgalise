@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.configReader.Identifier;
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 
 /**
  *  Default implementation of the ConfigReader.
@@ -78,56 +78,56 @@ public class DefaultConfigReader implements ConfigReader {
 			System.setProperty("catalina.base", System.getProperty("user.dir"));
 		}
 		// scaletest config	
-		prop.put(Identifier.SCALE_TEST.getName(), "false");
+		prop.put(ServerConfigurationIdentifier.SCALE_TEST.getName(), "false");
 	
-		if(System.getProperty(Identifier.SCALE_PATH.getName())!=null) {
-			prop.put(Identifier.SCALE_PATH.getName(),
-					System.getProperties().getProperty(Identifier.SCALE_PATH.getName()));
+		if(System.getProperty(ServerConfigurationIdentifier.SCALE_PATH.getName())!=null) {
+			prop.put(ServerConfigurationIdentifier.SCALE_PATH.getName(),
+					System.getProperties().getProperty(ServerConfigurationIdentifier.SCALE_PATH.getName()));
 		}
 
-		if(prop.get(Identifier.SCALE_PATH.getName())==null) {
-			prop.put(Identifier.SCALE_PATH.getName(), System.getProperty("catalina.base"));
+		if(prop.get(ServerConfigurationIdentifier.SCALE_PATH.getName())==null) {
+			prop.put(ServerConfigurationIdentifier.SCALE_PATH.getName(), System.getProperty("catalina.base"));
 		}
 		
 		// server config
-		prop.put(Identifier.SENSOR_OUTPUT_SERVER.getName(), "127.0.0.1:6666");	
+		prop.put(ServerConfigurationIdentifier.SENSOR_OUTPUT_SERVER.getName(), "127.0.0.1:6666");	
 		
-		prop.put(Identifier.MOCK_PERSISTENCE_SERVICE.getName(), "true");		
+		prop.put(ServerConfigurationIdentifier.MOCK_PERSISTENCE_SERVICE.getName(), "true");		
 		
-		prop.put(Identifier.SERVER_IP.getName(), "127.0.0.1");
+		prop.put(ServerConfigurationIdentifier.SERVER_IP.getName(), "127.0.0.1");
 		
-		prop.put(Identifier.SERVER_HTTP_PORT.getName(), "8080");
+		prop.put(ServerConfigurationIdentifier.SERVER_HTTP_PORT.getName(), "8080");
 		
-		prop.put(Identifier.SERVER_EJBD_PORT.getName(), "4201");
+		prop.put(ServerConfigurationIdentifier.SERVER_EJBD_PORT.getName(), "4201");
 		
-		prop.put(Identifier.MOCK_CONTROL_CENTER_CONTROLLER.getName(), "false");
-		prop.put(Identifier.MOCK_OPERATION_CENTER_CONTROLLER.getName(), "false");
+		prop.put(ServerConfigurationIdentifier.MOCK_CONTROL_CENTER_CONTROLLER.getName(), "false");
+		prop.put(ServerConfigurationIdentifier.MOCK_OPERATION_CENTER_CONTROLLER.getName(), "false");
 		
-		prop.put(Identifier.OUTPUT_DECORATOR.getName(), "");
+		prop.put(ServerConfigurationIdentifier.OUTPUT_DECORATOR.getName(), "");
 	}
 	
 	
 	private void validateProperties(Properties prop) {
 		if(System.getProperty("openejb.service.manager.class")!=null && 
 				System.getProperty("openejb.service.manager.class").equals("org.apache.openejb.server.SimpleServiceManager")) {
-			prop.put(Identifier.EJBD_PROTOCOL_ENABLED.getName(), "true");	
+			prop.put(ServerConfigurationIdentifier.EJBD_PROTOCOL_ENABLED.getName(), "true");	
 		}
 		else {
-			prop.put(Identifier.EJBD_PROTOCOL_ENABLED.getName(), "false");	
+			prop.put(ServerConfigurationIdentifier.EJBD_PROTOCOL_ENABLED.getName(), "false");	
 		}
 		
-		if(prop.get(Identifier.SCALE_TEST.getName()).equals("true") && 
-				prop.get(Identifier.SCALE_PATH.getName())==null) {
+		if(prop.get(ServerConfigurationIdentifier.SCALE_TEST.getName()).equals("true") && 
+				prop.get(ServerConfigurationIdentifier.SCALE_PATH.getName())==null) {
 			log.error("Tried to enable logging for scale test but no output path is specified");
 		}
 		
-		if(prop.get(Identifier.EJBD_PROTOCOL_ENABLED.getName()).equals("true")) {
-			prop.put(Identifier.SERVER_HOST.getName(),
-					prop.get(Identifier.SERVER_IP.getName())+":"+prop.get(Identifier.SERVER_EJBD_PORT.getName()));
+		if(prop.get(ServerConfigurationIdentifier.EJBD_PROTOCOL_ENABLED.getName()).equals("true")) {
+			prop.put(ServerConfigurationIdentifier.SERVER_HOST.getName(),
+					prop.get(ServerConfigurationIdentifier.SERVER_IP.getName())+":"+prop.get(ServerConfigurationIdentifier.SERVER_EJBD_PORT.getName()));
 		}
 		else {
-			prop.put(Identifier.SERVER_HOST.getName(),
-					prop.get(Identifier.SERVER_IP.getName())+":"+prop.getProperty(Identifier.SERVER_HTTP_PORT.getName()));
+			prop.put(ServerConfigurationIdentifier.SERVER_HOST.getName(),
+					prop.get(ServerConfigurationIdentifier.SERVER_IP.getName())+":"+prop.getProperty(ServerConfigurationIdentifier.SERVER_HTTP_PORT.getName()));
 		}
 	}
 	
@@ -149,7 +149,7 @@ public class DefaultConfigReader implements ConfigReader {
 	}
 	
 	private void printProperties() {	
-		for(Identifier id : Identifier.ALL) {
+		for(ServerConfigurationIdentifier id : ServerConfigurationIdentifier.ALL) {
 			log.info(String.format("Set %s to %s", id.getName(),
 					prop.getProperty(id.getName())));	
 		}
@@ -167,7 +167,7 @@ public class DefaultConfigReader implements ConfigReader {
 	}
 	
 	@Override
-	public String getProperty(Identifier propName) {
+	public String getProperty(ServerConfigurationIdentifier propName) {
 		return prop.getProperty(propName.getName());
 	}
 }

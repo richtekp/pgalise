@@ -22,9 +22,17 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>traffic</artifactId>
 			<exclusions>
-				<exclusion>
+<!--				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-jdk14</artifactId>
+				</exclusion>-->
+				<exclusion>
+					<groupId>org.jboss.logging</groupId>
+					<artifactId>jboss-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
 				</exclusion>
 			</exclusions>
 		 <type>jar</type>
@@ -34,10 +42,22 @@
 			<artifactId>sensorFramework-impl</artifactId>
 			<type>ejb</type>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.jboss.logging</groupId>
+					<artifactId>jboss-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>	
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>staticSensors</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<!-- 
 		<dependency>
@@ -59,28 +79,37 @@
 			<artifactId>weather-impl</artifactId>
 			<scope>test</scope>
 			<type>ejb</type>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>staticSensors-impl</artifactId>
 			<scope>test</scope>
 			<type>ejb</type>
+<!--			<exclusions>
+				<exclusion>
+					<groupId>
+				</exclusion>
+			</exclusions>-->
 		</dependency>		
 	 <dependency>
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt-api</artifactId>
-	  <version>9.2</version>
-	  <type>jar</type>
 	 </dependency>
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>services-impl</artifactId>
-	  <type>jar</type>
+	  <type>ejb</type>
 	 </dependency>
-	 <dependency>
+<!--	 <dependency>
 		 <groupId>ch.qos.logback</groupId>
 		 <artifactId>logback-classic</artifactId>
-	 </dependency>
+	 </dependency>-->
 	</dependencies>
 
 	<build>

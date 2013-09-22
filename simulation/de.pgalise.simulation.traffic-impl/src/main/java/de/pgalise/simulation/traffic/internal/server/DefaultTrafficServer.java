@@ -50,11 +50,11 @@ import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.configReader.Identifier;
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.shared.controller.InitParameter;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
@@ -622,8 +622,8 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 			}
 
 			@Override
-			public void handle(String server, TrafficServerLocal service) {
-				if (!server.equals(DefaultTrafficServer.this.configReader.getProperty(Identifier.SERVER_HOST))) {
+			public void handle(String server, TrafficServerLocal<VehicleEvent<?>> service) {
+				if (!server.equals(DefaultTrafficServer.this.configReader.getProperty(ServerConfigurationIdentifier.SERVER_HOST))) {
 					log.debug("Found another traffic server on host: " + server);
 					DefaultTrafficServer.this.serverList.add(service);
 				}

@@ -20,23 +20,26 @@ import de.pgalise.it.TestUtils;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.configReader.Identifier;
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
+import de.pgalise.simulation.service.internal.DefaultServiceDictionary;
 import de.pgalise.simulation.service.internal.manager.DefaultServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
+import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.service.ServerConfigurationEntity;
 import de.pgalise.util.generic.MutableBoolean;
+import java.util.HashMap;
+import java.util.Map;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
 import org.junit.BeforeClass;
@@ -57,10 +60,10 @@ public class DefaultServerConfigurationReaderTest {
 
 	@Test
 	public void readLocalTest() throws NamingException {
-		ConfigReader configReader = EasyMock.createNiceMock(ConfigReader.class);
+		ConfigReader configReader = createNiceMock(ConfigReader.class);
 		// services unter dieser adresse werden lokal aufgelöst, alle anderen ferngesteuert
-		EasyMock.expect(configReader.getProperty(Identifier.SERVER_HOST)).andReturn("127.0.0.1:8081");
-		EasyMock.replay(configReader);
+		expect(configReader.getProperty(ServerConfigurationIdentifier.SERVER_HOST)).andReturn("127.0.0.1:8081");
+		replay(configReader);
 
 		ServerConfigurationReader<Service> reader = new DefaultServerConfigurationReader(configReader);
 		List<ServiceHandler<Service>> handlers = new ArrayList<>();
@@ -78,9 +81,38 @@ public class DefaultServerConfigurationReaderTest {
 			}
 
 		});
-		reader.read(getServerConfiguration(), handlers);
-
+		reader.read(getServerConfigurationLocal(), handlers);
 		assertTrue(b.getValue());
+		
+		reset(configReader);
+		expect(configReader.getProperty(ServerConfigurationIdentifier.SERVER_HOST)).andReturn("127.0.0.1:8081");
+		replay(configReader);
+		ServiceDictionary serviceDictionary = new DefaultServiceDictionary();
+		List<ServiceHandler<Service>> serviceHandlers = new ArrayList<>(7);
+		final Map<Service, Boolean> checkMap = new HashMap<>(7);
+		for(final Service service : serviceDictionary.getControllers()) {
+			serviceHandlers.add(new ServiceHandler<Service>() {
+
+				@Override
+				public String getName() {
+					return service.getClass().getName();
+				}
+
+				@Override
+				public void handle(String server,
+					Service service) {
+					checkMap.put(service,
+						Boolean.TRUE);
+				}
+			});
+		}
+		reader.read(getServerConfigurationLocal(),
+			handlers);
+		for(Service service : serviceDictionary.getControllers()) {
+			Boolean checkValue = checkMap.get(service);
+			assertNotNull(checkValue);
+			assertTrue(checkValue);
+		}
 	}
 
 	/**
@@ -88,15 +120,15 @@ public class DefaultServerConfigurationReaderTest {
 	 * 
 	 * @return ServerConfiguration
 	 */
-	public ServerConfiguration getServerConfiguration() {
+	private ServerConfiguration getServerConfigurationLocal() {
 		ServerConfiguration conf = new ServerConfiguration();
 		// local services
-		List<Entity> entities = new ArrayList<>();
-		entities.add(new Entity(RandomSeedService.class.getName()));
+		List<ServerConfigurationEntity> entities = new ArrayList<>();
+		entities.add(new ServerConfigurationEntity(RandomSeedService.class.getName()));
 		// adresse stimmt nicht mit der lokalen überein (sagt der configReader oben),
 		// d.h. services werden über ferngesteuert aufgelöst
 		conf.getConfiguration().put("127.0.0.1:8081", entities);
-
+		
 		return conf;
 	}
 

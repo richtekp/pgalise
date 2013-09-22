@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.configReader.Identifier;
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
 
@@ -60,7 +60,7 @@ public class DefaultControlCenterControllerLoader implements ControlCenterContro
 
 	@Override
 	public ControlCenterController loadControlCenterController() {
-		String loadMock = this.configReader.getProperty(Identifier.MOCK_CONTROL_CENTER_CONTROLLER);
+		String loadMock = this.configReader.getProperty(ServerConfigurationIdentifier.MOCK_CONTROL_CENTER_CONTROLLER);
 		if(loadMock != null && loadMock.equalsIgnoreCase("true")) {
 			LOGGER.debug("Load mocked control center controller.");
 			return cccMock;

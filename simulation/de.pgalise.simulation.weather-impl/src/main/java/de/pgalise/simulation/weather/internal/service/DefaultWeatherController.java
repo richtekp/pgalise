@@ -38,8 +38,8 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.shared.controller.InitParameter;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
@@ -64,6 +64,8 @@ import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the
@@ -103,6 +105,8 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent> i
 	 * File path for property file
 	 */
 	private static final String PROPERTIES_FILE_PATH = "/weather_decorators.properties";
+	
+	private final static String JNDI_PROPERTIES_FILE_PATH = "/META-INF/jndi.properties";
 
 	/**
 	 * Properties for decorators
@@ -329,7 +333,8 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent> i
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {
 		// Set random seed service
-		serviceDictionary.init(new ServerConfiguration());
+		ServerConfiguration serverConfiguration = new ServerConfiguration(new HashSet<>(Arrays.asList(ServiceDictionary.RANDOM_SEED_SERVICE)));
+		serviceDictionary.init(serverConfiguration);
 		this.randomSeedService = this.serviceDictionary.getRandomSeedService();
 		this.initParameter = param;
 	}

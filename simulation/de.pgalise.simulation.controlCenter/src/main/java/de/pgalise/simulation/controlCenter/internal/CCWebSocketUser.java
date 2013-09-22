@@ -85,9 +85,9 @@ import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterS
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.Node;
-import de.pgalise.simulation.shared.controller.InitParameter;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.service.ServerConfigurationEntity;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
@@ -305,27 +305,27 @@ public class CCWebSocketUser extends MessageInbound {
 				
 				/* Create server configuration: */
 				ServerConfiguration serverConfiguration = new ServerConfiguration();
-				Map<String, List<Entity>> serverConfiguationMap = new HashMap<>();
+				Map<String, List<ServerConfigurationEntity>> serverConfiguationMap = new HashMap<>();
 				
 				log.debug("Create server configuration");
 				
 				/* Add traffic servers: */
 				for(String address : ccSimulationStartParameter.getTrafficServerIPList()) {
-					List<Entity> tmpEntityList = serverConfiguationMap.get(address);
+					List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.get(address);
 					if(tmpEntityList == null) {
 						tmpEntityList = new LinkedList<>();
 						serverConfiguationMap.put(address, tmpEntityList);
 					}
-					tmpEntityList.add(new Entity(ServiceDictionary.TRAFFIC_SERVER));
+					tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.TRAFFIC_SERVER));
 				}
 				
 				/* Add traffic controller: */
-				List<Entity> tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.getIpTrafficController());
+				List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.getIpTrafficController());
 				if(tmpEntityList == null) {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpTrafficController(), tmpEntityList);
 				}
-				tmpEntityList.add(new Entity(ServiceDictionary.TRAFFIC_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.TRAFFIC_CONTROLLER));
 				
 				/* Add static sensor controller: */
 				tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.getIpStaticSensorController());
@@ -333,7 +333,7 @@ public class CCWebSocketUser extends MessageInbound {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpStaticSensorController(), tmpEntityList);
 				}
-				tmpEntityList.add(new Entity(ServiceDictionary.STATIC_SENSOR_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.STATIC_SENSOR_CONTROLLER));
 				
 				/* Weather controller: */
 				tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.getIpWeatherController());
@@ -341,7 +341,7 @@ public class CCWebSocketUser extends MessageInbound {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpWeatherController(), tmpEntityList);
 				}
-				tmpEntityList.add(new Entity(ServiceDictionary.WEATHER_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.WEATHER_CONTROLLER));
 				
 				/* Energy controller: */
 				tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.getIpEnergyController());
@@ -349,35 +349,35 @@ public class CCWebSocketUser extends MessageInbound {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpEnergyController(), tmpEntityList);
 				}
-				tmpEntityList.add(new Entity(ServiceDictionary.ENERGY_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.ENERGY_CONTROLLER));
 				
 				/* Front controller (on every used ip): */
 				Set<String> frontControllerAddressSet = new HashSet<>();
 				for(String address : ccSimulationStartParameter.getTrafficServerIPList()) {
 					if(!frontControllerAddressSet.contains(address)) {
-						serverConfiguationMap.get(address).add(new Entity(ServiceDictionary.FRONT_CONTROLLER));
+						serverConfiguationMap.get(address).add(new ServerConfigurationEntity(ServiceDictionary.FRONT_CONTROLLER));
 						frontControllerAddressSet.add(address);
 					}
 				}
 				if(!frontControllerAddressSet.contains(ccSimulationStartParameter.getIpEnergyController())) {
-					serverConfiguationMap.get(ccSimulationStartParameter.getIpEnergyController()).add(new Entity(ServiceDictionary.FRONT_CONTROLLER));
+					serverConfiguationMap.get(ccSimulationStartParameter.getIpEnergyController()).add(new ServerConfigurationEntity(ServiceDictionary.FRONT_CONTROLLER));
 					frontControllerAddressSet.add(ccSimulationStartParameter.getIpEnergyController());
 				}
 				if(!frontControllerAddressSet.contains(ccSimulationStartParameter.getIpWeatherController())) {
-					serverConfiguationMap.get(ccSimulationStartParameter.getIpWeatherController()).add(new Entity(ServiceDictionary.FRONT_CONTROLLER));
+					serverConfiguationMap.get(ccSimulationStartParameter.getIpWeatherController()).add(new ServerConfigurationEntity(ServiceDictionary.FRONT_CONTROLLER));
 					frontControllerAddressSet.add(ccSimulationStartParameter.getIpWeatherController());
 				}
 				if(!frontControllerAddressSet.contains(ccSimulationStartParameter.getIpStaticSensorController())) {
-					serverConfiguationMap.get(ccSimulationStartParameter.getIpStaticSensorController()).add(new Entity(ServiceDictionary.FRONT_CONTROLLER));
+					serverConfiguationMap.get(ccSimulationStartParameter.getIpStaticSensorController()).add(new ServerConfigurationEntity(ServiceDictionary.FRONT_CONTROLLER));
 					frontControllerAddressSet.add(ccSimulationStartParameter.getIpSimulationController());
 				}
 				if(!frontControllerAddressSet.contains(ccSimulationStartParameter.getIpTrafficController())) {
-					serverConfiguationMap.get(ccSimulationStartParameter.getIpTrafficController()).add(new Entity(ServiceDictionary.FRONT_CONTROLLER));
+					serverConfiguationMap.get(ccSimulationStartParameter.getIpTrafficController()).add(new ServerConfigurationEntity(ServiceDictionary.FRONT_CONTROLLER));
 					frontControllerAddressSet.add(ccSimulationStartParameter.getIpTrafficController());
 				}
 				
 				/* Random seed service */
-				tmpEntityList.add(new Entity(ServiceDictionary.RANDOM_SEED_SERVICE));
+				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.RANDOM_SEED_SERVICE));
 				
 				/* get simulation controller */
 				log.debug("Look up simulationcontroller at: " +ccSimulationStartParameter.getIpSimulationController());

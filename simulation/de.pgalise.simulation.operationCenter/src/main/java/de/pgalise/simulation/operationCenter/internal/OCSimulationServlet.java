@@ -38,7 +38,7 @@ import com.google.inject.Guice;
 
 import de.pgalise.simulation.operationCenter.internal.strategy.OCModule;
 import de.pgalise.simulation.service.GsonService;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;

@@ -26,7 +26,6 @@ import javax.ejb.Local;
  * 
  * @author Timo
  */
-@Local
 public interface RandomSeedService extends Service {
 
 	/**

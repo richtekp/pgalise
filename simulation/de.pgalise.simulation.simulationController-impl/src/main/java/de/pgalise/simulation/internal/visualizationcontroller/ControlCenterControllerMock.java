@@ -21,7 +21,7 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Stateless;
 
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;

@@ -39,7 +39,7 @@ import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.SensorManagerController;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.StatusEnum;

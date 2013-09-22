@@ -5,9 +5,10 @@
 package de.pgalise.simulation.service.internal;
 
 import de.pgalise.simulation.service.FrontController;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 
@@ -15,7 +16,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
  *
  * @author richter
  */
-public class DefaultFrontController extends AbstractController implements FrontController {
+public class DefaultFrontController extends AbstractController<Event> implements FrontController {
 
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {

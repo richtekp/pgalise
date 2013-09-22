@@ -34,7 +34,7 @@ import com.google.gson.Gson;
 
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;

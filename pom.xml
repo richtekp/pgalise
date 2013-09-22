@@ -14,7 +14,8 @@
 	  <applicationVersion>2.0-SNAPSHOT</applicationVersion>
 	  <java.compiler.source>1.7</java.compiler.source>
 	  <java.compiler.target>1.7</java.compiler.target>
-		<de.pgalise.openejb.version>4.6.0-SNAPSHOT</de.pgalise.openejb.version>
+		<de.pgalise.openejb.version>4.5.2</de.pgalise.openejb.version>
+		<de.pgalise.geotools.version>9.2</de.pgalise.geotools.version>
 	</properties>
 		
 	<modules>
@@ -462,6 +463,11 @@
 				<groupId>de.pgalise</groupId>
 				<artifactId>pgalise-it</artifactId>
 				<version>1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+			 <groupId>org.geotools</groupId>
+			 <artifactId>gt-api</artifactId>
+			 <version>${de.pgalise.geotools.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

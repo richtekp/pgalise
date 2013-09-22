@@ -34,7 +34,7 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;

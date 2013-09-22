@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.service.configReader;
+package de.pgalise.simulation.service;
 
 import java.io.Serializable;
 import java.util.EnumSet;
@@ -24,7 +24,7 @@ import java.util.EnumSet;
  * @author mustafa
  *
  */
-public enum Identifier implements Serializable {
+public enum ServerConfigurationIdentifier implements Serializable {
 	/**
 	 * @return IP of this server (default 127.0.0.1)
 	 */
@@ -102,7 +102,7 @@ public enum Identifier implements Serializable {
 	/**
 	 * Set of all Identifier to iterate over them easily.
 	 */
-	public final static EnumSet<Identifier> ALL = EnumSet.of(
+	public final static EnumSet<ServerConfigurationIdentifier> ALL = EnumSet.of(
 			SERVER_IP,
 			SERVER_EJBD_PORT,
 			SERVER_HTTP_PORT,
@@ -118,7 +118,7 @@ public enum Identifier implements Serializable {
 	
 	private String name;
 	
-	Identifier(String propName) {
+	ServerConfigurationIdentifier(String propName) {
 		this.name = propName;
 	}
 	

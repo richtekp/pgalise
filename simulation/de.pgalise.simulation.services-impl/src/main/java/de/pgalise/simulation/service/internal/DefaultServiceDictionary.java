@@ -36,7 +36,9 @@ import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import de.pgalise.simulation.service.ServerConfiguration;
+import java.util.Set;
+import javax.ejb.Remote;
 
 /**
  * Default implementation of the ServiceDictionary.
@@ -45,6 +47,7 @@ import de.pgalise.simulation.shared.controller.ServerConfiguration;
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.service.ServiceDictionary")
+@Remote
 public class DefaultServiceDictionary implements ServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultServiceDictionary.class);
 

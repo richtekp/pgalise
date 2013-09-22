@@ -37,7 +37,7 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.configReader.Identifier;
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.shared.sensor.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorType;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -78,7 +78,7 @@ public class EJBSensorFactory implements SensorFactory {
 	@PostConstruct
 	public void postConstruct() {
 		// output server auslesen
-		String output = configReader.getProperty(Identifier.SENSOR_OUTPUT_SERVER);
+		String output = configReader.getProperty(ServerConfigurationIdentifier.SENSOR_OUTPUT_SERVER);
 
 		String[] serverAddress = output.split(":");
 
@@ -86,7 +86,7 @@ public class EJBSensorFactory implements SensorFactory {
 
 		sensorOutput = new TcpIpOutput(serverAddress[0], Integer.valueOf(serverAddress[1]), new TcpIpKeepOpenStrategy());
 
-		final String outputDecorator = configReader.getProperty(Identifier.OUTPUT_DECORATOR);
+		final String outputDecorator = configReader.getProperty(ServerConfigurationIdentifier.OUTPUT_DECORATOR);
 		if (outputDecorator != null && output.length() > 0 && outputDecorator.length() != 0) {
 			try {
 				sensorOutput = (Output) Class.forName(outputDecorator).getConstructor(Output.class)

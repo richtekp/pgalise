@@ -49,17 +49,17 @@ public class TestUtils {
 			p = new Properties();
 			p.setProperty("pgalise", "new://Resource?type=DataSource");
 			p.setProperty("pgalise.JdbcDriver", "org.postgresql.Driver");
-			p.setProperty("pgalise.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise");
+			p.setProperty("pgalise.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
 			p.setProperty("pgalise.UserName", "postgis");
 			p.setProperty("pgalise.Password", "postgis");
 			p.setProperty("pgalise.JtaManaged",	"true");
 			
-			p.setProperty("pgaliseTest", "new://Resource?type=DataSource");
-			p.setProperty("pgaliseTest.JdbcDriver", "org.postgresql.Driver");
-			p.setProperty("pgaliseTest.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
-			p.setProperty("pgaliseTest.UserName", "postgis");
-			p.setProperty("pgaliseTest.Password", "postgis");
-			p.setProperty("pgaliseTest.JtaManaged",	"true");
+//			p.setProperty("pgaliseTest", "new://Resource?type=DataSource");
+//			p.setProperty("pgaliseTest.JdbcDriver", "org.postgresql.Driver");
+//			p.setProperty("pgaliseTest.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
+//			p.setProperty("pgaliseTest.UserName", "postgis");
+//			p.setProperty("pgaliseTest.Password", "postgis");
+//			p.setProperty("pgaliseTest.JtaManaged",	"true");
 
 			p.setProperty(
 				"hibernate.dialect",

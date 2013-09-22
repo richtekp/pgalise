@@ -14,12 +14,14 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.controller;
+package de.pgalise.simulation.service;
 
+import de.pgalise.simulation.service.ServerConfiguration;
 import java.io.Serializable;
 
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 
 /**
  * The init parameters will be send to every controller on init.

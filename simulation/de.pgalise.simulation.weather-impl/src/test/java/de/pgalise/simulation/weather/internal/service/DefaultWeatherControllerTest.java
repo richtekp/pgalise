@@ -38,13 +38,14 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.shared.controller.InitParameter;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.ServerConfiguration.Entity;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.service.ServerConfigurationEntity;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.weather.model.StationDataNormal;
@@ -149,9 +150,9 @@ public class DefaultWeatherControllerTest {
 	 */
 	private static ServerConfiguration produceServerConfiguration() {
 		ServerConfiguration conf = new ServerConfiguration();
-		List<Entity> entities = new ArrayList<>(2);
-		entities.add(new Entity(ServiceDictionary.RANDOM_SEED_SERVICE));
-		entities.add(new Entity(ServiceDictionary.WEATHER_CONTROLLER));
+		List<ServerConfigurationEntity> entities = new ArrayList<>(2);
+		entities.add(new ServerConfigurationEntity(ServiceDictionary.RANDOM_SEED_SERVICE));
+		entities.add(new ServerConfigurationEntity(ServiceDictionary.WEATHER_CONTROLLER));
 		conf.getConfiguration().put("127.0.0.1:8081", entities);
 
 		return conf;
@@ -167,10 +168,10 @@ public class DefaultWeatherControllerTest {
 		long valueTime = startTimestamp + 360000;
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
 		Coordinate testPosition = new Coordinate(2, 3);
-		List<AbstractEvent> testEventList = new ArrayList<>(1);
+		List<WeatherEvent> testEventList = new ArrayList<>(1);
 		testEventList.add(new ChangeWeatherEvent( WeatherEventEnum.HOTDAY, 30.0f,
 				eventTimestamp, 6.0f));
-		EventList testEvent = new EventList(testEventList, valueTime, UUID.randomUUID());
+		EventList<WeatherEvent> testEvent = new EventList<>(testEventList, valueTime, UUID.randomUUID());
 
 		InitParameter initParameter = new InitParameter();
 		initParameter.setStartTimestamp(startTimestamp);
@@ -186,85 +187,61 @@ public class DefaultWeatherControllerTest {
 		ctrl = (WeatherController) ctx
 				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.service.WeatherController");
 
-		/*
-		 * Log
-		 */
 		log.debug("Testmethod: init()");
-
 		ctrl.init(initParameter);
-
 		Assert.assertEquals(StatusEnum.INITIALIZED, ctrl.getStatus());
 
-		/*
-		 * Log
-		 */
-		log.debug("Testmethod: start()");
-
 		// Test (normal) -> call onSuccess
+		log.debug("Testmethod: start()");
 		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
 		ctrl.start(parameter);
-
 		Assert.assertEquals(StatusEnum.STARTED, ctrl.getStatus());
 
 		// Test second start: can not started twice -> call onFailure
 		try {
 			ctrl.start(parameter);
-			Assert.assertFalse(true);
-		} catch (Exception e) {
-			Assert.assertTrue(true);
+			Assert.fail();
+		} catch (Exception expected) {
 		}
 		Assert.assertEquals(StatusEnum.STARTED, ctrl.getStatus());
-
-		/*
-		 * Log
-		 */
-		log.debug("Testmethod: getValue()");
-
+		
 		// Test (normal) -> call onSuccess
+		log.debug("Testmethod: getValue()");
 		try {
 			testNumber = ctrl.getValue(testParameter, valueTime, testPosition);
 			Assert.assertEquals(3.457, testNumber.doubleValue(), 0.5);
-		} catch (Exception e1) {
-			Assert.assertTrue(false);
+		} catch (Exception expected) {
 		}
 
 		// Test false parameters: null as key -> call onFailure
 		try {
 			testNumber = ctrl.getValue(null, valueTime, testPosition);
 			Assert.assertNull(testNumber);
-		} catch (Exception e1) {
-			Assert.assertTrue(true);
+		} catch (Exception expected) {
 		}
 
 		// Test false parameters: wrong timestamp -> call onFailure
 		try {
 			testNumber = ctrl.getValue(testParameter, 0, testPosition);
 			Assert.assertNull(testNumber);
-		} catch (Exception e1) {
-			Assert.assertTrue(true);
+		} catch (Exception expected) {
 		}
 
 		// Test false parameters: wrong position -> call onFailure
 		try {
 			testNumber = ctrl.getValue(testParameter, 0, new Coordinate(-1, -2));
 			Assert.assertNull(testNumber);
-		} catch (Exception e1) {
-			Assert.assertTrue(true);
+		} catch (Exception expected) {
 		}
 
-		/*
-		 * Log
-		 */
-		log.debug("Testmethod: update()");
-
 		// Test (normal) -> call onSuccess
+		log.debug("Testmethod: update()");
 		try {
 			ctrl.update(testEvent);
-		} catch (Exception e) {
-			Assert.assertTrue(true);
+		} catch (Exception expected) {
 		}
 		Assert.assertEquals(StatusEnum.STARTED, ctrl.getStatus());
 

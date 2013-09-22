@@ -53,7 +53,7 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;

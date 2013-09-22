@@ -14,12 +14,18 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.controller;
+package de.pgalise.simulation.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * The ServerConfiguration is used to distribute services in the simulation 
@@ -28,7 +34,7 @@ import java.util.Map;
  * @see Entity
  * @author Mustafa
  */
-public class ServerConfiguration implements Serializable {
+public class ServerConfiguration implements Serializable {	
 	/**
 	 * Serial
 	 */
@@ -36,7 +42,9 @@ public class ServerConfiguration implements Serializable {
 	/**
 	 * Map with keys = ip:port and entities
 	 */
-	private Map<String, List<Entity>> configuration;
+	private Map<String, List<ServerConfigurationEntity>> configuration;
+	
+	public final static ServerConfiguration DEFAULT_SERVER_CONFIGURATION = new ServerConfiguration(ServiceDictionary.SERVICES);
 
 	/**
 	 * Default constructor
@@ -45,55 +53,26 @@ public class ServerConfiguration implements Serializable {
 		configuration = new HashMap<>();
 	}
 
-	public void setConfiguration(Map<String, List<Entity>> configuration) {
+	public ServerConfiguration(
+		Set<String> serviceNames) {
+		this();
+		List<ServerConfigurationEntity> entities = new ArrayList<>(ServiceDictionary.SERVICES.size());
+		for(String serviceName : serviceNames) {
+			entities.add(new ServerConfigurationEntity(serviceName));
+		} 
+		configuration.put("127.0.0.1:8081",
+			entities);
+	}
+
+	public void setConfiguration(Map<String, List<ServerConfigurationEntity>> configuration) {
 		this.configuration = configuration;
 	}
 
-	public Map<String, List<Entity>> getConfiguration() {
-		return configuration;
-	}
-
 	/**
-	 * An Entity describes a service that is located on a specific server.
-	 * @author Mustafa
+	 * a {@link Map} mapping path specifications in the form of <tt><IP>:<PORT></tt> to a list of {@link ServerConfigurationEntity}s
+	 * @return 
 	 */
-	public static class Entity implements Serializable {
-
-		/**
-		 * Serial
-		 */
-		private static final long serialVersionUID = 5194129593797800215L;
-
-		/**
-		 * Name
-		 */
-		private String name;
-
-		/**
-		 * Constructor
-		 */
-		public Entity() {
-
-		}
-
-		public Entity(String name) {
-			this.name = name;
-		}
-
-		/**
-		 * 
-		 * @return name of this service/entity
-		 */
-		public String getName() {
-			return name;
-		}
-
-		/**
-		 * Sets the name of this service/entity
-		 * @param name
-		 */
-		public void setName(String name) {
-			this.name = name;
-		}
+	public Map<String, List<ServerConfigurationEntity>> getConfiguration() {
+		return configuration;
 	}
 }

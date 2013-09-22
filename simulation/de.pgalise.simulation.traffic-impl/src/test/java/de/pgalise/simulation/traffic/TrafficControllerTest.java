@@ -34,7 +34,7 @@ import java.util.Arrays;
 import org.easymock.IAnswer;
 import org.junit.Test;
 
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;

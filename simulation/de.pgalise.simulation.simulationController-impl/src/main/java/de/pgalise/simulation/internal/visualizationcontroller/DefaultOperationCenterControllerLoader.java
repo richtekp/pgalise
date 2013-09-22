@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.configReader.Identifier;
+import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterControllerLoader;
 /**
@@ -59,7 +59,7 @@ public class DefaultOperationCenterControllerLoader implements OperationCenterCo
 	
 	@Override
 	public OperationCenterController loadOperationCenterController() {
-		String loadMock = this.configReader.getProperty(Identifier.MOCK_OPERATION_CENTER_CONTROLLER);
+		String loadMock = this.configReader.getProperty(ServerConfigurationIdentifier.MOCK_OPERATION_CENTER_CONTROLLER);
 		if(loadMock != null && loadMock.equalsIgnoreCase("true")) {
 			LOGGER.debug("Load mocked operation center controller.");
 			return occMock;

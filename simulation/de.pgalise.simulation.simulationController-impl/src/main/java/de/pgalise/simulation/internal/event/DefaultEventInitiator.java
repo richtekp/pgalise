@@ -39,7 +39,7 @@ import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.DefaultFrontController;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;

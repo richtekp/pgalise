@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;

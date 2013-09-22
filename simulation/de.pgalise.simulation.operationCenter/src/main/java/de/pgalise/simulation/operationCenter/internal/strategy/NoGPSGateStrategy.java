@@ -22,7 +22,7 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Map;
 
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;

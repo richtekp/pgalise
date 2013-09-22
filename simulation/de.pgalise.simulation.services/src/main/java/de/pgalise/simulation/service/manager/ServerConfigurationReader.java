@@ -18,7 +18,7 @@ package de.pgalise.simulation.service.manager;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.service.Service;
 
 /**

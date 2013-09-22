@@ -4,10 +4,12 @@
  */
 package de.pgalise.simulation.service;
 
+import de.pgalise.simulation.shared.event.Event;
+
 /**
  *
  * @author richter
  */
-public interface FrontController extends Controller {
+public interface FrontController extends Controller<Event> {
 	
 }

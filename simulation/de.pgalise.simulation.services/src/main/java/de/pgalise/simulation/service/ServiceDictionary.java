@@ -19,14 +19,17 @@ package de.pgalise.simulation.service;
 import java.util.Collection;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.shared.controller.ServerConfiguration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A dictionary to retrieve as singleton implemented services may reside on different servers. None of the services
  * listed here are supposed to be referenced directly! Instead a component that depends on one of these services has to
  * use this dictionary to get a reference.
  * 
- * @param <S> 
  * @author mustafa
  */
 public interface ServiceDictionary {
@@ -40,6 +43,8 @@ public interface ServiceDictionary {
 
 	public static final String RANDOM_SEED_SERVICE = RandomSeedService.class.getName();
 	public static final String CONFIG_READER_SERVICE = ConfigReader.class.getName();
+	
+	public static final Set<String> SERVICES = new HashSet<>(Arrays.asList(FRONT_CONTROLLER, TRAFFIC_SERVER, TRAFFIC_CONTROLLER, WEATHER_CONTROLLER, ENERGY_CONTROLLER, STATIC_SENSOR_CONTROLLER, SIMULATION_CONTROLLER, RANDOM_SEED_SERVICE, CONFIG_READER_SERVICE));
 
 	/**
 	 * Initializes this ServiceFactory. Used to determine which service lies on which server.

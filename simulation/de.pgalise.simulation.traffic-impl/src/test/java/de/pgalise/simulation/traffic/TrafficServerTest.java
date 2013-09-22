@@ -62,7 +62,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;

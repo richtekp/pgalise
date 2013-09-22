@@ -21,9 +21,10 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
-import de.pgalise.simulation.shared.controller.InitParameter;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import javax.ejb.Local;
@@ -40,7 +41,7 @@ import javax.ejb.Remote;
 @Singleton(name = "de.pgalise.simulation.service.RandomSeedService", mappedName = "de.pgalise.simulation.service.RandomSeedService")
 @Local(RandomSeedService.class)
 @Remote(RandomSeedService.class)
-public class DefaultRandomSeedService extends AbstractController implements RandomSeedService {
+public class DefaultRandomSeedService extends AbstractController<Event> implements RandomSeedService {
 
 	/**
 	 * simulation start timestamp
@@ -89,6 +90,6 @@ public class DefaultRandomSeedService extends AbstractController implements Rand
 	}
 
 	@Override
-	protected void onUpdate(EventList simulationEventList) {
+	protected void onUpdate(EventList<Event> simulationEventList) {
 	}
 }
