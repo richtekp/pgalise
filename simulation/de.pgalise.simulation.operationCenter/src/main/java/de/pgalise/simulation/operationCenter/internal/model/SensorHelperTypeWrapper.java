@@ -16,7 +16,8 @@
  
 package de.pgalise.simulation.operationCenter.internal.model;
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Wrapps a SensorHelper with its SensorType ordinal to

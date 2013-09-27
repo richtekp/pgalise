@@ -40,17 +40,19 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 /**
  * Default implementation of a gate message strategy.
  * It will transmit the needed sensor ids to InfoSphere via TCP/IP.
  * The InfoSphere IP and it's ports can be changed in 'properties.props'.
  * @author Timo
  */
-public class DefaultGPSGateStrategy extends AbstractController<Event> implements GPSGateStrategy {
+public class DefaultGPSGateStrategy extends AbstractController<Event,InfrastructureStartParameter> implements GPSGateStrategy {
 
 	private static final Logger log = LoggerFactory.getLogger(DefaultGPSGateStrategy.class);
+	private static final long serialVersionUID = 1L;
 	private String socketIP;
 	private int socketPortRemoveKeys, socketPortAddKeys;
 	/**
@@ -83,7 +85,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event> implements
 	public void handleGateMessage(Map<Integer, Double> gateInformationMap) throws UnknownHostException, IOException {
 		log.debug("Handle gate message");
 		for(Entry<Integer, Double> entry : gateInformationMap.entrySet()) {
-			if(SensorType.GPS.contains(SensorType.getForSensorTypeId(entry.getKey()))) {
+			if(SensorTypeEnum.GPS.contains(SensorTypeEnum.getForSensorTypeId(entry.getKey()))) {
 				int activeSensorsForType = this.activeSensorTypeSensorIDMap.get(entry.getKey()).size();
 				int notActiveSensorsForType = this.notActiveSensorTypeSensorIDMap.get(entry.getKey()).size();
 				int allSensors = activeSensorsForType + notActiveSensorsForType;
@@ -115,7 +117,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event> implements
 	}
 
 	@Override
-	protected void onStart(StartParameter param) {}
+	protected void onStart(InfrastructureStartParameter param) {}
 
 	@Override
 	protected void onStop() {}
@@ -128,7 +130,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event> implements
 
 	@Override
 	public void createSensor(SensorHelper sensor) throws SensorException {
-		if(SensorType.GPS.contains(sensor.getSensorType())) {
+		if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
 			log.debug("create gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
 			Set<Integer> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
 			if(sensorCollection == null) {
@@ -156,7 +158,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event> implements
 
 		/* Add sensors to map and find out, if we have to send them: */
 		for(SensorHelper sensor : sensors) {
-			if(SensorType.GPS.contains(sensor.getSensorType())) {
+			if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
 				log.debug("create gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
 				Set<Integer> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
 				if(sensorCollection == null) {
@@ -185,7 +187,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event> implements
 		/*
 		 * Remove from all maps and find out, if we have to add a new sensor to InfoSphere:
 		 */
-		if(SensorType.GPS.contains(sensor.getSensorType())) {
+		if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
 			log.debug("delete gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
 			this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID());
 			if(this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID())) {
@@ -206,7 +208,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event> implements
 		 */
 		Map<Integer, Integer> sensorTypeAddNewMap = new HashMap<>();
 		for(SensorHelper sensor : sensors) {
-			if(SensorType.GPS.contains(sensor.getSensorType())) {
+			if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
 				log.debug("delete gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
 				this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID());
 				if(this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID())) {
@@ -257,7 +259,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event> implements
 		this.activeSensorTypeSensorIDMap = new HashMap<>();
 		this.notActiveSensorTypeSensorIDMap = new HashMap<>();
 		this.sensorTypePercentageMap = new HashMap<>();
-		for(SensorType gpsSensor : SensorType.GPS) {
+		for(SensorTypeEnum gpsSensor : SensorTypeEnum.GPS) {
 			this.allSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Integer>());
 			this.activeSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Integer>());
 			this.notActiveSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Integer>());

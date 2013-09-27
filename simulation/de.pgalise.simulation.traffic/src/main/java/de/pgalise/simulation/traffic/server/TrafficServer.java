@@ -16,8 +16,11 @@
  
 package de.pgalise.simulation.traffic.server;
 
-import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import com.vividsolutions.jts.geom.Geometry;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -33,7 +36,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * @see de.pgalise.simulation.traffic.TrafficController
  * @author mustafa
  */
-public interface TrafficServer<E extends TrafficEvent> extends SensorManagerController<E> {
+public interface TrafficServer<E extends TrafficEvent> extends SensorManagerController<E, StartParameter, InitParameter> {
 	/**
 	 * Sets the city zone this server is responsible for.
 	 * 
@@ -55,8 +58,8 @@ public interface TrafficServer<E extends TrafficEvent> extends SensorManagerCont
 	 * @param serverId 
 	 * @param targetNodeId
 	 */
-	public void takeVehicle(Vehicle<? extends VehicleData> vehicle, String startNodeId, String targetNodeId,
-			int serverId);
+	public void takeVehicle(Vehicle<?> vehicle, NavigationNode startNodeId, NavigationNode targetNodeId,
+			TrafficServer<?> serverId);
 
 	/**
 	 * Let this server process the previously received vehicles from other servers.

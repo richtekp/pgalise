@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;

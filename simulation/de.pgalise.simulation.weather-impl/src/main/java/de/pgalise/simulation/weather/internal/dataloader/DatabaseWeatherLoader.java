@@ -38,11 +38,11 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.shared.exception.NoWeatherServiceDataFoundException;
 import de.pgalise.simulation.shared.exception.NoWeatherStationDataFoundException;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.AbstractStationData;

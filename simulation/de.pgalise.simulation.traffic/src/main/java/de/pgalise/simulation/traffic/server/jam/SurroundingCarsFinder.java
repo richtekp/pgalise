@@ -20,6 +20,7 @@ import java.util.List;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import java.util.Set;
 
 /**
  * Strategy pattern to find vehicles surrounding a specific one.
@@ -34,7 +35,7 @@ public interface SurroundingCarsFinder {
 	 * @param car
 	 * @return list of vehicles
 	 */
-	public List<Vehicle<? extends VehicleData>> findCars(Vehicle<? extends VehicleData> car, long time);
+	public Set<Vehicle<? extends VehicleData>> findCars(Vehicle<? extends VehicleData> car, long time);
 
 	/**
 	 * Returns the closest car to the given car.

@@ -16,7 +16,7 @@
  
 package de.pgalise.util.graph;
 
-import org.graphstream.graph.Graph;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  * Interface for the graph serializer
@@ -24,9 +24,9 @@ import org.graphstream.graph.Graph;
  * @author Mustafa
  * @version 1.0 (Oct 1, 2012)
  */
-public interface GraphSerializer {
+public interface GraphSerializer<G extends DefaultDirectedGraph> {
 
-	public Graph Deserialize(String filename);
+	public G Deserialize(String filename);
 
-	public void Serialize(Graph graph, String filename);
+	public void Serialize(G graph, String filename);
 }

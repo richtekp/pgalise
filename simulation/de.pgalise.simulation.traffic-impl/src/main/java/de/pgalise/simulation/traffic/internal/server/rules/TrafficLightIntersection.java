@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.rules;
 
+import de.pgalise.simulation.shared.event.Event;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -23,15 +24,16 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
+import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 
 /**
  * A TrafficlightSetof is a gadjet that controlls a crossing street. It is also a sensor, because it measure its state
@@ -40,13 +42,9 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * @author Marcus
  */
 public class TrafficLightIntersection extends TrafficRule {
+	private static final long serialVersionUID = 1L;
 
 	private final TrafficGraphExtensions trafficGraphExtensions;
-
-	/**
-	 * the id of this TrafficLightExtension
-	 */
-	private final int id;
 
 	/**
 	 * determines whether this {@link TrafficLightIntersection} is activated
@@ -61,7 +59,7 @@ public class TrafficLightIntersection extends TrafficRule {
 	/**
 	 * a hash map that holds to each edge the traffic light that is responsible for the edge
 	 */
-	private final HashMap<Edge, TrafficLight> edgesToTrafficLights = new HashMap<>();
+	private final HashMap<NavigationEdge<?,?>, TrafficLight> edgesToTrafficLights = new HashMap<>();
 
 	/**
 	 * flag whether this TrafficLightSetofs needs recalibration due to activating after it was inactive
@@ -86,15 +84,13 @@ public class TrafficLightIntersection extends TrafficRule {
 	/**
 	 * Waiting queue
 	 */
-	private final Map<Edge, Queue<TrafficRuleData>> waiting = new HashMap<>();
+	private final Map<NavigationEdge<?,?>, Queue<TrafficRuleData>> waiting = new HashMap<>();
 
 	/**
 	 * Constructor to create an instance of an {@link TrafficLightIntersection}
 	 * 
-	 * @param output
-	 *            the SensorOutput used by the {@link TrafficLightIntersection} to transmit data
-	 * @param sensorId
-	 *            the unique integer id of the sensor
+	 * @param trafficGraphExtensions 
+	 * @param graph 
 	 * @param node
 	 *            the considered node this TrafficLightSetof is responsible for
 	 * @throws IllegalArgumentException
@@ -102,28 +98,27 @@ public class TrafficLightIntersection extends TrafficRule {
 	 * @throws RuntimeException
 	 *             if argument 'node' doesn't have 3 or 4 edges or if at least one the other nodes' position is 'null'
 	 */
-	public TrafficLightIntersection(final int id, final Node node, final TrafficGraphExtensions trafficGraphExtensions)
+	public TrafficLightIntersection(final NavigationNode node, TrafficGraph<?> graph, final TrafficGraphExtensions trafficGraphExtensions)
 			throws IllegalArgumentException, RuntimeException {
-		this(id, node, trafficGraphExtensions, 1);
+		this(node, graph, trafficGraphExtensions, 1);
 	}
 
 	/**
 	 * Constructor to create an instance of an TrafficLightSetof
 	 * 
-	 * @param output
-	 *            the SensorOutput used by the TrafficLightSetof to transmit data
-	 * @param sensorId
-	 *            the unique integer id of the sensor
+	 * @param graph 
 	 * @param node
 	 *            the considered node this TrafficLightSetof is responsible for
+	 * @param trafficGraphExtensions 
+	 * @param updateLimit 
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 * @throws RuntimeException
 	 *             if argument 'node' doesn't have 3 or 4 edges or if at least one the other nodes' position is 'null'
 	 */
-	public TrafficLightIntersection(final int id, final Node node, final TrafficGraphExtensions trafficGraphExtensions,
+	public TrafficLightIntersection(final NavigationNode node, TrafficGraph<?> graph, final TrafficGraphExtensions trafficGraphExtensions,
 			int updateLimit) throws IllegalArgumentException, RuntimeException {
-		super(node);
+		super(node, graph);
 
 		if (trafficGraphExtensions == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("trafficGraphExtensions"));
@@ -138,21 +133,21 @@ public class TrafficLightIntersection extends TrafficRule {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("updateLimit", false));
 		}
 
-		this.id = id;
-
 		// Check how many Edges the node has
-		if (node.getEdgeSet().size() == 3) {
+		if (getGraph().edgesOf(node).size() == 3) {
 			// largest angle wins
 			int index0 = -1;
 			int index1 = -1;
 			double maxAngle = Double.MIN_VALUE;
-			for (int i = 0; i < (node.getEdgeSet().size() - 1); i++) {
-				final Edge edge0 = node.getEdge(i);
-				for (int j = i + 1; j < node.getEdgeSet().size(); j++) {
-					final Edge edge1 = node.getEdge(j);
+			for (int i = 0; i < (getGraph().edgesOf(node).size() - 1); i++) {
+				final NavigationEdge<?,?> edge0 = new ArrayList<>(getGraph().edgesOf(
+					node)).get(i);
+				for (int j = i + 1; j < getGraph().edgesOf(node).size(); j++) {
+					final NavigationEdge<?,?> edge1 = new ArrayList<>(getGraph().edgesOf(
+					node)).get(j);
 
-					final Node otherNode0 = edge0.getOpposite(node);
-					final Node otherNode1 = edge1.getOpposite(node);
+					final NavigationNode otherNode0 = edge0.getOpposite(node);
+					final NavigationNode otherNode1 = edge1.getOpposite(node);
 
 					final double a = this.trafficGraphExtensions.getLength(edge0);
 					final double b = Math.sqrt(Math.pow(this.trafficGraphExtensions.getPosition(otherNode0).x
@@ -172,7 +167,7 @@ public class TrafficLightIntersection extends TrafficRule {
 				}
 			}
 
-			int index2 = -1;
+			int index2 ;
 			if (((index0 == 0) && (index1 == 1)) || ((index0 == 1) && (index1 == 0))) {
 				index2 = 2;
 			} else if (((index0 == 1) && (index1 == 2)) || ((index0 == 2) && (index1 == 1))) {
@@ -181,22 +176,29 @@ public class TrafficLightIntersection extends TrafficRule {
 				index2 = 1;
 			}
 
-			this.trafficLight0 = new TrafficLight(node.getEdge(index0), node.getEdge(index1), 0, 0,
-					trafficGraphExtensions, (short) id);
-			this.trafficLight1 = new TrafficLight(node.getEdge(index2), null, 0, -1, trafficGraphExtensions, (short) id);
+			this.trafficLight0 = new TrafficLight(
+				new ArrayList<>(getGraph().edgesOf(node)).get(index0), 
+				new ArrayList<>(getGraph().edgesOf(node)).get(index1), 
+				0, 
+				0,
+				trafficGraphExtensions, 
+				this);
+			this.trafficLight1 = new TrafficLight(
+				new ArrayList<>(getGraph().edgesOf(node)).get(index2), 
+				null, 0, -1, trafficGraphExtensions, this);
 
-			this.edgesToTrafficLights.put(node.getEdge(index0), this.trafficLight0);
-			this.edgesToTrafficLights.put(node.getEdge(index1), this.trafficLight0);
-			this.edgesToTrafficLights.put(node.getEdge(index2), this.trafficLight1);
+			this.edgesToTrafficLights.put(new ArrayList<>(getGraph().edgesOf(node)).get(index0), this.trafficLight0);
+			this.edgesToTrafficLights.put(new ArrayList<>(getGraph().edgesOf(node)).get(index1), this.trafficLight0);
+			this.edgesToTrafficLights.put(new ArrayList<>(getGraph().edgesOf(node)).get(index2), this.trafficLight1);
 
 		} else {
-			final HashMap<Double, Edge> anglesToEdges = new HashMap<>();
-			final HashMap<Edge, Double> edgesToAngles = new HashMap<>();
+			final HashMap<Double, NavigationEdge<?,?>> anglesToEdges = new HashMap<>();
+			final HashMap<NavigationEdge<?,?>, Double> edgesToAngles = new HashMap<>();
 
 			// compute entrance angle for each edge
-			for (final Edge edge : node.getEachEdge()) {
+			for (final NavigationEdge<?,?> edge : node) {
 				// calculate angle
-				final Node otherNode = edge.getOpposite(node);
+				final NavigationNode otherNode = edge.getOpposite(node);
 
 				final double a = 1;
 				final double b = Math.sqrt(Math.pow(this.trafficGraphExtensions.getPosition(otherNode).x
@@ -222,10 +224,10 @@ public class TrafficLightIntersection extends TrafficRule {
 
 			this.trafficLight0 = new TrafficLight(anglesToEdges.get(sortedAngles.get(0)),
 					anglesToEdges.get(sortedAngles.get(2)), edgesToAngles.get(anglesToEdges.get(sortedAngles.get(0))),
-					edgesToAngles.get(anglesToEdges.get(sortedAngles.get(2))), trafficGraphExtensions, (short) id);
+					edgesToAngles.get(anglesToEdges.get(sortedAngles.get(2))), trafficGraphExtensions, this);
 			this.trafficLight1 = new TrafficLight(anglesToEdges.get(sortedAngles.get(1)),
 					anglesToEdges.get(sortedAngles.get(3)), edgesToAngles.get(anglesToEdges.get(sortedAngles.get(1))),
-					edgesToAngles.get(anglesToEdges.get(sortedAngles.get(3))), trafficGraphExtensions, (short) id);
+					edgesToAngles.get(anglesToEdges.get(sortedAngles.get(3))), trafficGraphExtensions, this);
 
 			// Save to hash map
 			this.edgesToTrafficLights.put(anglesToEdges.get(sortedAngles.get(0)), this.trafficLight0);
@@ -233,7 +235,7 @@ public class TrafficLightIntersection extends TrafficRule {
 			this.edgesToTrafficLights.put(anglesToEdges.get(sortedAngles.get(1)), this.trafficLight1);
 			this.edgesToTrafficLights.put(anglesToEdges.get(sortedAngles.get(3)), this.trafficLight1);
 		}
-		for (final Edge edge : this.getNode()) {
+		for (final NavigationEdge<?,?> edge : this.getNode()) {
 			this.waiting.put(edge, new LinkedList<TrafficRuleData>());
 		}
 
@@ -250,11 +252,11 @@ public class TrafficLightIntersection extends TrafficRule {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	protected void checkNode(final Node node) throws IllegalArgumentException {
+	protected void checkNode(final NavigationNode node) throws IllegalArgumentException {
 		if (node == null) {
 			throw new IllegalArgumentException("Argument \"node\" must not be \"null\"");
 		}
-		final int edgeSetSize = node.getEdgeSet().size();
+		final int edgeSetSize = getGraph().edgesOf(node).size();
 		if (!((edgeSetSize == 3) || (edgeSetSize == 4))) {
 			throw new IllegalStateException("Only crossroads with 3 or 4 edges are supported.");
 		}
@@ -281,7 +283,7 @@ public class TrafficLightIntersection extends TrafficRule {
 	 * @return the number of streets that crosses the considered node.
 	 */
 	public int getNumberOfStreets() {
-		return this.getNode().getEdgeSet().size();
+		return getGraph().edgesOf(getNode()).size();
 	}
 
 	/**
@@ -309,7 +311,7 @@ public class TrafficLightIntersection extends TrafficRule {
 	 *            the edge to which the responsible TrafficLight shall be found
 	 * @return the responsible TrafficLight for the passed edge
 	 */
-	public TrafficLight getTrafficLightForEdge(final Edge edge) {
+	public TrafficLight getTrafficLightForEdge(final NavigationEdge<?,?> edge) {
 		return this.edgesToTrafficLights.get(edge);
 	}
 
@@ -357,15 +359,17 @@ public class TrafficLightIntersection extends TrafficRule {
 	/**
 	 * This method overrides its superclass method. Besides transmitting data by its output it first changes its state
 	 * by switching the traffic lights.
+	 * 
+	 * @param eventList 
 	 */
 	// @Override
 	@Override
-	public void update(EventList eventList) {
+	public void update(EventList<Event> eventList) {
 		if (eventList == null) {
 			throw new IllegalArgumentException("\"eventList\" must not be \"null\"");
 		}
 		this.switchLights(eventList.getTimestamp());
-		for (final Edge edge : this.waiting.keySet()) {
+		for (final NavigationEdge<?,?> edge : this.waiting.keySet()) {
 			final Queue<TrafficRuleData> queue = this.waiting.get(edge);
 			final TrafficRuleData trafficRuleData = queue.peek();
 			if (trafficRuleData != null) {
@@ -380,7 +384,7 @@ public class TrafficLightIntersection extends TrafficRule {
 	}
 
 	@Override
-	public void register(final Vehicle vehicle, final Edge from, final Edge to, final TrafficRuleCallback callback)
+	public void register(final Vehicle<?> vehicle, final NavigationEdge<?,?> from, final NavigationEdge<?,?> to, final TrafficRuleCallback callback)
 			throws UnsupportedOperationException {
 		final TrafficRuleData trafficRuleData = new TrafficRuleData(vehicle, from, to, callback);
 		if (this.edgesToTrafficLights.get(trafficRuleData.getFrom()).getState() == TrafficLightStateEnum.GREEN) {
@@ -453,13 +457,5 @@ public class TrafficLightIntersection extends TrafficRule {
 			this.trafficLight1.setCurrentState(this.trafficLight1.getTrafficLightRedYellowState());
 			this.trafficLight0.setCurrentState(this.trafficLight0.getTrafficLightRedState());
 		}
-	}
-	
-	/**
-	 * Returns the id of this TrafficLightIntersection
-	 * @return
-	 */
-	public int getId() {
-		return id;
 	}
 }

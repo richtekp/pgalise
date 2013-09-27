@@ -49,7 +49,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.server.TrafficServer;
@@ -70,7 +71,7 @@ import de.pgalise.util.graph.internal.QuadrantDisassembler;
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficController")
 @Local(TrafficControllerLocal.class)
 @Remote(TrafficController.class)
-public class DefaultTrafficController extends AbstractController<TrafficEvent> implements TrafficControllerLocal<TrafficEvent> {
+public class DefaultTrafficController extends AbstractController<TrafficEvent, StartParameter, InitParameter> implements TrafficControllerLocal<TrafficEvent> {
 	/**
 	 * Logger
 	 */
@@ -148,7 +149,7 @@ public class DefaultTrafficController extends AbstractController<TrafficEvent> i
 				@Override
 				public void delegate() {
 					try {
-						TrafficServer server = serverList.get(serverId);
+						TrafficServerLocal<?> server = serverList.get(serverId);
 						server.init(param);
 						server.setCityZone(cityZones.get(serverId));
 						log.debug("TrafficServer " + serverId + " initalized");
@@ -185,7 +186,7 @@ public class DefaultTrafficController extends AbstractController<TrafficEvent> i
 
 	@Override
 	protected void onStart(StartParameter param) {
-		for (TrafficServer<?> server : serverList) {
+		for (TrafficServerLocal<?> server : serverList) {
 			server.start(param);
 		}
 	}
@@ -239,7 +240,7 @@ public class DefaultTrafficController extends AbstractController<TrafficEvent> i
 		asyncHandler.start();
 		asyncHandler.waitToFinish();
 
-		for (final TrafficServer server : serverList) {
+		for (final TrafficServer<?> server : serverList) {
 			asyncHandler.addDelegateFunction(new Function() {
 				@Override
 				public void delegate() {
@@ -273,11 +274,11 @@ public class DefaultTrafficController extends AbstractController<TrafficEvent> i
 			int responsibleServer = 0;
 
 			for (CreateRandomVehicleData data : originalEvent.getVehicles()) {
-				String startNode = data.getVehicleInformation().getTrip().getStartNode();
-				String targetNode = data.getVehicleInformation().getTrip().getTargetNode();
+				NavigationNode startNode = data.getVehicleInformation().getTrip().getStartNode();
+				NavigationNode targetNode = data.getVehicleInformation().getTrip().getTargetNode();
 
 				// distribute the load equally for random routes
-				if ((startNode == null || startNode.isEmpty()) && (targetNode == null || targetNode.isEmpty())) {
+				if ((startNode == null ) && (targetNode == null)) {
 					eventForEachServer[responsibleServer].getVehicles().add(data);
 					responsibleServer = (responsibleServer + 1) % this.serverList.size();
 				}
@@ -383,15 +384,15 @@ public class DefaultTrafficController extends AbstractController<TrafficEvent> i
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}

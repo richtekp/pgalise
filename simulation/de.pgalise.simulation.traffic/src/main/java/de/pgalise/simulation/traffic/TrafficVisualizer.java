@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.shared.city.TrafficGraph;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -29,7 +30,7 @@ import de.pgalise.util.graph.GraphVisualizer;
  *  
  * @author Marina, Mustafa
  */
-public interface TrafficVisualizer extends GraphVisualizer {
+public interface TrafficVisualizer extends GraphVisualizer<TrafficGraph<?>> {
 
 	public void setVehicles(List<Vehicle<? extends VehicleData>> vehicles);
 

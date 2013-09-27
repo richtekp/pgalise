@@ -16,17 +16,20 @@
  
 package de.pgalise.simulation.traffic.server.route;
 
+import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
+import de.pgalise.simulation.shared.city.LanduseTagEnum;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.graphstream.graph.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.Node;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.TrafficGraph;
 import de.pgalise.simulation.shared.city.Way;
+import java.util.Set;
 
 /**
  * @author Lena
@@ -46,71 +49,66 @@ public class RegionParser {
 		}
 	}
 
-	private List<org.graphstream.graph.Node> homeNodes = new ArrayList<>();
+	private List<NavigationNode> homeNodes = new ArrayList<>();
 
 	private CityInfrastructureData trafficInformation;
 
-	private List<org.graphstream.graph.Node> workNodes = new ArrayList<>();
+	private List<NavigationNode> workNodes = new ArrayList<>();
 
 	/**
 	 * Constructor
 	 * 
-	 * @param gpsMapper
 	 * @param trafficInformation
 	 */
 	public RegionParser(CityInfrastructureData trafficInformation) {
 		this.trafficInformation = trafficInformation;
 	}
 
-	public List<org.graphstream.graph.Node> getHomeNodes() {
+	public List<NavigationNode> getHomeNodes() {
 		return this.homeNodes;
 	}
 
-	public List<org.graphstream.graph.Node> getWorkNodes() {
+	public List<NavigationNode> getWorkNodes() {
 		return this.workNodes;
 	}
 
-	public void parseLanduse(Graph graph) {
+	public void parseLanduse(TrafficGraph graph) {
 		List<EnrichedPolygon> polygons = new ArrayList<>();
-		List<Way> ways = this.trafficInformation.getMotorWays();
-		List<Way> landuses = this.trafficInformation.getLandUseWays();
+		List<Way<?, ?>> ways = this.trafficInformation.getMotorWays();
+		List<Way<?,?>> landuses = this.trafficInformation.getLandUseWays();
 
-		for (Way landuse : landuses) {
+		for (Way<?,?> landuse : landuses) {
 			int npoints = landuse.getNodeList().size();
 			int[] xpoints = new int[npoints];
 			int[] ypoints = new int[npoints];
 
-			for (int i = 0; i < landuse.getNodeList().size(); i++) {
-				Node landuseNode = landuse.getNodeList().get(i);
-				int xpoint = (int) (landuseNode.getLatitude() * 10000000);
+			for (int i = 0; i < landuse.getEdgeList().size(); i++) {
+				NavigationNode landuseNode = landuse.getNodeList().get(i);
+				int xpoint = (int) (landuseNode.getGeoLocation().x * 10000000);
 				xpoints[i] = xpoint;
-				int ypoint = (int) (landuseNode.getLongitude() * 10000000);
+				int ypoint = (int) (landuseNode.getGeoLocation().y * 10000000);
 				ypoints[i] = ypoint;
 			}
 
-			polygons.add(new EnrichedPolygon(new Polygon(xpoints, ypoints, npoints), landuse.getLanduse()));
+			polygons.add(new EnrichedPolygon(new Polygon(xpoints, ypoints, npoints), landuse.getLanduseTags()));
 		}
 
-		for (Way way : ways) {
-			for (Node node : way.getNodeList()) {
+		for (Way<?,?> way : ways) {
+			for (NavigationNode node : way.getNodeList()) {
 				for (EnrichedPolygon p : polygons) {
-					if (p.getPolygon().contains((int) (node.getLatitude() * 10000000),
-							(int) (node.getLongitude() * 10000000))) {
-						String landuse = p.getLanduse();
-						node.setLanduse(landuse);
+					if (p.getPolygon().contains((int) (node.getGeoLocation().x* 10000000),
+							(int) (node.getGeoLocation().y* 10000000))) {
+						Set<LanduseTagEnum> landuse = p.getLanduse();
+						node.getTags().put(CityNodeTagCategoryEnum.landuse, landuse);
 
-						org.graphstream.graph.Node graphNode = graph.getNode(node.getId());
-
-						if (graphNode != null) {
-							if (landuse.equals("residential")) {
-								this.homeNodes.add(graphNode);
-							}
-							if (landuse.equals("commercial")) {
-								this.workNodes.add(graphNode);
-							}
-							if (landuse.equals("industrial")) {
-								this.workNodes.add(graphNode);
-							}
+						if (landuse.contains(LanduseTagEnum.RESIDENTIAL)) {
+							this.homeNodes.add(node);
+						}
+						if (landuse.contains(LanduseTagEnum.COMMERCIAL)) {
+							this.workNodes.add(node);
+						}
+						if (landuse.contains(LanduseTagEnum.INDUSTRY)) {
+							this.workNodes.add(node);
 						}
 					}
 				}
@@ -120,11 +118,11 @@ public class RegionParser {
 		log.info("Found #WorkNodes: " + this.workNodes.size());
 	}
 
-	public void setHomeNodes(List<org.graphstream.graph.Node> homeNodes) {
+	public void setHomeNodes(List<NavigationNode> homeNodes) {
 		this.homeNodes = homeNodes;
 	}
 
-	public void setWorkNodes(List<org.graphstream.graph.Node> workNodes) {
+	public void setWorkNodes(List<NavigationNode> workNodes) {
 		this.workNodes = workNodes;
 	}
 }

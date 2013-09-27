@@ -18,6 +18,7 @@ package de.pgalise.simulation.traffic.event;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
@@ -51,15 +52,15 @@ public class RoadBarrierTrafficEvent extends AbstractTrafficEvent {
 	/**
 	 * node id in graph
 	 */
-	private String nodeID;
+	private NavigationNode nodeID;
 
-	public RoadBarrierTrafficEvent(TrafficServerLocal responsibleServer,
+	public RoadBarrierTrafficEvent(TrafficServerLocal<?> responsibleServer,
 		long simulationTimestamp,
 		long elapsedTime,
 		long roadBarrierStartTimestamp,
 		long roadBarrierEndTimestamp,
 		Coordinate roadBarrierPoint,
-		String nodeID
+		NavigationNode nodeID
 		) {
 		super(responsibleServer, simulationTimestamp, elapsedTime);
 		this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
@@ -92,11 +93,11 @@ public class RoadBarrierTrafficEvent extends AbstractTrafficEvent {
 		this.roadBarrierPoint = roadBarrierPoint;
 	}
 
-	public String getNodeID() {
+	public NavigationNode getNodeID() {
 		return nodeID;
 	}
 
-	public void setNodeID(String nodeID) {
+	public void setNodeID(NavigationNode nodeID) {
 		this.nodeID = nodeID;
 	}
 

@@ -41,10 +41,12 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
+import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import java.util.LinkedList;
@@ -227,10 +229,16 @@ public class TrafficControllerTest {
 		StartParameter startParam = createNiceMock(StartParameter.class);
 
 		// create sensors
-		SensorHelper sensorHelper = new SensorHelper(0, new Coordinate(100, 100),
-				SensorType.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>(), "");
-		SensorHelper sensorHelper2 = new SensorHelper(1, new Coordinate(100, 600),
-				SensorType.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>(), "");
+		Sensor<?> sensor = new InductionLoopSensor(null,
+			null,
+			null);
+		SensorHelper sensorHelper = new SensorHelper(sensor, new Coordinate(100, 100),
+				SensorTypeEnum.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>());
+		Sensor<?> sensor2 = new InductionLoopSensor(null,
+			null,
+			null);
+		SensorHelper sensorHelper2 = new SensorHelper(sensor2, new Coordinate(100, 600),
+				SensorTypeEnum.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>());
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 

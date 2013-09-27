@@ -19,7 +19,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -58,8 +58,8 @@ public class Anemometer extends WeatherSensor {
 	 *             {@link AnemometerWhiteNoiseInterferer}
 	 */
 	
-	public Anemometer(Output output, long sensorId, Coordinate position, WeatherController weatherController, WeatherInterferer weatherInterferer) {
-		this(output, sensorId, position, weatherController, 1, weatherInterferer);
+	public Anemometer(Output output, Coordinate position, WeatherController weatherController, WeatherInterferer weatherInterferer) {
+		this(output, position, weatherController, 1, weatherInterferer);
 	}
 
 	/**
@@ -80,9 +80,9 @@ public class Anemometer extends WeatherSensor {
 	 *             {@link AnemometerWhiteNoiseInterferer}
 	 */
 	
-	public Anemometer(final Output output, final long sensorId, final Coordinate position, final WeatherController weatherController, final int updateLimit, final WeatherInterferer weatherInterferer)
+	public Anemometer(final Output output, final Coordinate position, final WeatherController weatherController, final int updateLimit, final WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof AnemometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
 		// AnemometerWhiteNoiseInterferer.class.getName() + "'");
@@ -90,8 +90,8 @@ public class Anemometer extends WeatherSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.ANEMOMETER;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.ANEMOMETER;
 	}
 
 	/**

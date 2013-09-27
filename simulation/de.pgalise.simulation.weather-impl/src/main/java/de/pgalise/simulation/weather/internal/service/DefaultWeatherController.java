@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
@@ -50,6 +49,8 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.HotDayEvent;
@@ -88,7 +89,7 @@ import java.util.HashSet;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
 @Local
-public class DefaultWeatherController extends AbstractController<WeatherEvent> implements WeatherController {
+public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter> implements WeatherController {
 
 	/**
 	 * Logger
@@ -350,7 +351,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent> i
 	}
 
 	@Override
-	protected void onStart(StartParameter param) {
+	protected void onStart(InfrastructureStartParameter param) {
 		// Save values
 		this.startWeatherService(param.getCity());
 

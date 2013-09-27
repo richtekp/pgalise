@@ -17,10 +17,10 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.BusRoute;
 import java.util.ArrayList;
 import java.util.List;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
-import de.pgalise.simulation.shared.traffic.BusRoute;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
 /**
@@ -38,7 +38,7 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 	/**
 	 * List with bus routes
 	 */
-	private List<String> routeIds;
+	private List<BusRoute<?>> busRoutes;
 
 	/**
 	 * List with busses
@@ -48,25 +48,22 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 	/**
 	 * Constructor
 	 * 
+	 * @param responsibleServer 
 	 * @param createRandomVehicleDataList
 	 *            List with busses
-	 * @param id
-	 *            ID of the event
+	 * @param elaspsedTime 
 	 * @param time
 	 *            Timestamp
 	 * @param busRoutes
 	 *            List with bus routes
 	 */
-	public CreateBussesEvent(TrafficServerLocal responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
-			List<BusRoute> busRoutes) {
+	public CreateBussesEvent(TrafficServerLocal<?> responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
+			List<BusRoute<?>> busRoutes) {
 		super(responsibleServer, time,
 			elaspsedTime);
 		// this.busRoutes = busRoutes;
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
-		this.routeIds = new ArrayList<>();
-		for (BusRoute r : busRoutes) {
-			this.routeIds.add(r.getRouteId());
-		}
+		this.busRoutes = busRoutes;
 	}
 
 	/**
@@ -87,23 +84,23 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 	/**
 	 * @return the busLines
 	 */
-	public List<String> getRouteIds() {
-		return routeIds;
+	public List<BusRoute<?>> getBusRoutes() {
+		return busRoutes;
 	}
 
 	/**
 	 * @param busLines
 	 *            the busLines to set
 	 */
-	public void setRouteIds(List<String> busLines) {
-		this.routeIds = busLines;
+	public void setBusRoutes(List<BusRoute<?>> busLines) {
+		this.busRoutes = busLines;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((routeIds == null) ? 0 : routeIds.hashCode());
+		result = prime * result + ((busRoutes == null) ? 0 : busRoutes.hashCode());
 		result = prime * result + ((createRandomVehicleDataList == null) ? 0 : createRandomVehicleDataList.hashCode());
 		result = prime * result + (int) (getSimulationTime() ^ (getSimulationTime() >>> 32));
 		return result;
@@ -121,11 +118,11 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 			return false;
 		}
 		CreateBussesEvent other = (CreateBussesEvent) obj;
-		if (routeIds == null) {
-			if (other.routeIds != null) {
+		if (busRoutes == null) {
+			if (other.busRoutes != null) {
 				return false;
 			}
-		} else if (!routeIds.equals(other.routeIds)) {
+		} else if (!busRoutes.equals(other.busRoutes)) {
 			return false;
 		}
 		if (createRandomVehicleDataList == null) {

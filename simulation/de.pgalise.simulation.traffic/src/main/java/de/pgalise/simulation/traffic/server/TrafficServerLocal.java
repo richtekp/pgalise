@@ -22,18 +22,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
@@ -56,9 +55,9 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
  * @author Lena
  */
 public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServer<E> {
-	public static EnumSet<SensorType> RESPONSIBLE_FOR_SENSOR_TYPES = EnumSet.of(SensorType.TRAFFICLIGHT_SENSOR,
-			SensorType.INFRARED, SensorType.INDUCTIONLOOP, SensorType.TOPORADAR, SensorType.GPS_BIKE,
-			SensorType.GPS_BUS, SensorType.GPS_CAR, SensorType.GPS_TRUCK, SensorType.GPS_MOTORCYCLE);
+	public static EnumSet<SensorTypeEnum> RESPONSIBLE_FOR_SENSOR_TYPES = EnumSet.of(SensorTypeEnum.TRAFFICLIGHT_SENSOR,
+			SensorTypeEnum.INFRARED, SensorTypeEnum.INDUCTIONLOOP, SensorTypeEnum.TOPORADAR, SensorTypeEnum.GPS_BIKE,
+			SensorTypeEnum.GPS_BUS, SensorTypeEnum.GPS_CAR, SensorTypeEnum.GPS_TRUCK, SensorTypeEnum.GPS_MOTORCYCLE);
 
 	/** 
 	 * @return scheduler {@link Scheduler}
@@ -127,7 +126,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param startTimestamp
 	 * @return {@link TrafficTrip}
 	 */
-	public TrafficTrip createTrip(String startNodeID, String targetNodeID, long startTimestamp);
+	public TrafficTrip createTrip(NavigationNode startNodeID, NavigationNode targetNodeID, long startTimestamp);
 
 	/**
 	 * Creates a trip of a vehicle with either a specified start node or a specified end nodes at a specific time. 
@@ -138,7 +137,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param isStartNode specifies if nodeID is start node or target node
 	 * @return {@link TrafficTrip}
 	 */
-	public TrafficTrip createTrip(Geometry cityZone, String nodeID, long startTimestamp, boolean isStartNode);
+	public TrafficTrip createTrip(Geometry cityZone, NavigationNode nodeID, long startTimestamp, boolean isStartNode);
 
 	/**
 	 * Creates a trip with randomly chosen start and end notes. If the date is null, the 
@@ -155,7 +154,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * Returns a representation of the city traffic infrastructure as a graph.
 	 * @return {@link Graph}
 	 */
-	public Graph getGraph();
+	public TrafficGraph<?> getGraph();
 
 	/**
 	 * Calculates the shortest path between to nodes.
@@ -163,7 +162,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param dest target node
 	 * @return the shortest path between start node and target node
 	 */
-	public Path getShortestPath(Node start, Node dest);
+	public List<NavigationEdge<?,?>> getShortestPath(NavigationNode start, NavigationNode dest);
 
 	/**
 	 * 
@@ -177,14 +176,14 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param busStopIds
 	 * @return
 	 */
-	public Path getBusRoute(List<String> busStopIds);
+	public List<NavigationEdge<?,?>> getBusRoute(List<BusStop<?>> busStopIds);
 
 	/**
 	 * Returns the nodes of the graph for a given list of bus stop ids.
 	 * @param busStopIds
 	 * @return
 	 */
-	public Map<String, Node> getBusStopNodes(List<String> busStopIds);
+	public Map<BusStop<?>, NavigationNode> getBusStopNodes(List<BusStop<?>> busStopIds);
 	
 	/**
 	 * 
@@ -253,5 +252,5 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param timestamp current simulation time
 	 * @return currently blocked roads
 	 */
-	public Set<Edge> getBlockedRoads(long timestamp);
+	public Set<NavigationEdge<?,?>> getBlockedRoads(long timestamp);
 }

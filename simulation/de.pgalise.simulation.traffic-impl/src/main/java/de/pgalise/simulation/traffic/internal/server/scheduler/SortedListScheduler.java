@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
@@ -90,7 +90,7 @@ public class SortedListScheduler extends Scheduler {
 			// log.debug("Check item: " + currentTime + " >= " + item.getDepartureTime() + " " + (currentTime >=
 			// item.getDepartureTime()) + " " + new Date(item.getDepartureTime()).toString());
 			if (currentTime >= item.getDepartureTime()) {
-				if (item.getVehicle().getState() != State.DRIVING) {
+				if (item.getVehicle().getVehicleState() != VehicleStateEnum.DRIVING) {
 					// SortedListScheduler.log
 					// .debug("Item (\"" + item.getVehicle().getName()
 					// + "\") has been expired");

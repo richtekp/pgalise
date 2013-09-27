@@ -19,8 +19,8 @@ package de.pgalise.simulation.weather.service;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
+import de.pgalise.simulation.traffic.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;

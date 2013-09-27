@@ -16,14 +16,14 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.Node;
+import de.pgalise.simulation.shared.city.NavigationNode;
 
 /**
  * Returns a valid node.
  * 
  * @author Timo
  */
-public class ValidNodeMessage extends CCWebSocketMessage<Node> {
+public class ValidNodeMessage extends CCWebSocketMessage<NavigationNode> {
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ public class ValidNodeMessage extends CCWebSocketMessage<Node> {
 	 * @param content
 	 *            new valid node on the graph
 	 */
-	public ValidNodeMessage(int messageID, Node content) {
+	public ValidNodeMessage(int messageID, NavigationNode content) {
 		super(messageID, CCWebSocketMessage.MessageType.VALID_NODE, content);
 	}
 }

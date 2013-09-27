@@ -28,7 +28,8 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 /**
  * Ignores the gate messages.
  * Only for testing or if you can not use InfoSphere or other DSMS, which
@@ -46,7 +47,7 @@ public class NoGPSGateStrategy implements GPSGateStrategy {
 	public void reset() throws IllegalStateException {}
 
 	@Override
-	public void start(StartParameter param) throws IllegalStateException {}
+	public void start(InfrastructureStartParameter param) throws IllegalStateException {}
 
 	@Override
 	public void stop() throws IllegalStateException {}

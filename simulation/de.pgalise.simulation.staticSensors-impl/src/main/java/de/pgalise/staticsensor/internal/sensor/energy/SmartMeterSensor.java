@@ -21,7 +21,7 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergySensor;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -59,8 +59,8 @@ public class SmartMeterSensor extends EnergySensor {
 	 *            Energy interferer
 	 */
 	
-	public SmartMeterSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter, EnergyInterferer interferer) {
-		this(output, sensorId, position, weatherController, energyController, randomSeedService, measureRadiusInMeter,
+	public SmartMeterSensor(Output output, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter, EnergyInterferer interferer) {
+		this(output, position, weatherController, energyController, randomSeedService, measureRadiusInMeter,
 				1, interferer);
 	}
 
@@ -87,15 +87,15 @@ public class SmartMeterSensor extends EnergySensor {
 	 *            Energy interferer
 	 */
 	
-	public SmartMeterSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter, int updateLimit, EnergyInterferer interferer) {
-		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,
+	public SmartMeterSensor(Output output, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int measureRadiusInMeter, int updateLimit, EnergyInterferer interferer) {
+		super(output, position, weatherController, energyController, randomSeedService, updateLimit,
 				interferer);
 		this.measureRadiusInMeter = measureRadiusInMeter;
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.SMARTMETER;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.SMARTMETER;
 	}
 
 	@Override

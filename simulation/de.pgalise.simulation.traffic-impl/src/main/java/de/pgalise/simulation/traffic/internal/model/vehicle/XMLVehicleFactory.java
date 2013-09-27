@@ -23,7 +23,7 @@ import org.w3c.dom.Document;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;

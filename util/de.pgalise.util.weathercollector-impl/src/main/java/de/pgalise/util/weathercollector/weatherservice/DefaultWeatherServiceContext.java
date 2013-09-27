@@ -80,6 +80,7 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext<Defau
 	 * 
 	 * @param city
 	 *            City
+	 * @param databaseManager 
 	 * @return Best ServiceData
 	 */
 	@Override

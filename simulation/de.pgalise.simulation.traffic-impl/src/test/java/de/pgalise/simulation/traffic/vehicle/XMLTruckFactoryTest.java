@@ -23,7 +23,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLTruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;

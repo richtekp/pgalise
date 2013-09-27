@@ -33,26 +33,25 @@ import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -74,18 +73,18 @@ public class DefaultSimulationControllerTest {
 	private static final long INTERVAL = 1000;
 	private static final long CLOCK_GENERATOR_INTERVAL = 1000;
 	private static DefaultSimulationController testClass;
-	private static InitParameter initParameter;
-	private static StartParameter startParameter;
+	private static InfrastructureInitParameter initParameter;
+	private static InfrastructureStartParameter startParameter;
 //	private static EventInitiatorMock eventInitiator;
 	private static ServiceDictionary serviceDictionary;
 	private static OperationCenterController operationCenterController;
 	private static ControlCenterController controlCenterController;
-	private static TrafficController trafficController;
+	private static TrafficController<?> trafficController;
 	private static StaticSensorController staticSensorController;
 	private static EnergyController energyController;
 	private static WeatherController weatherController;
 	private static EntityManager sensorPersistenceService;
-	private static ServerConfigurationReader<Controller<?>> serverConfigurationReader;
+	private static ServerConfigurationReader<Controller<?,?,?>> serverConfigurationReader;
 	private static CityInfrastructureData cityInfrastructureData;
 	private static ServerConfiguration serverConfiguration;
 
@@ -133,27 +132,9 @@ public class DefaultSimulationControllerTest {
 
 		serverConfiguration = new ServerConfiguration();
 
-		initParameter = new InitParameter(cityInfrastructureData, serverConfiguration, START_TIMESTAMP, END_TIMESTAMP,
+		initParameter = new InfrastructureInitParameter(cityInfrastructureData, serverConfiguration, START_TIMESTAMP, END_TIMESTAMP,
 				INTERVAL, CLOCK_GENERATOR_INTERVAL, "", "", new TrafficFuzzyData(0, 0.9, 1), new Boundary(
 						new Coordinate(), new Coordinate()));
-
-		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1),
-				new Coordinate(referencePoint.x-1, referencePoint.y-1)
-			}
-		);
-		City city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
-
 	}
 
 	/**
@@ -249,11 +230,11 @@ public class DefaultSimulationControllerTest {
 	@Test
 	public void testCreateSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
-
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
-				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>(), "");
+		Sensor<?> sensor = null;
+		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor, new Coordinate(), SensorTypeEnum.ANEMOMETER,
+				new LinkedList<SensorInterfererType>());
+		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
+				new LinkedList<SensorInterfererType>());
 
 		/* The operation center will receive both sensors: */
 		operationCenterController.createSensor(sensorHelperStaticSensor);
@@ -295,12 +276,13 @@ public class DefaultSimulationControllerTest {
 	@Test
 	public void testCreateSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
-
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
-				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>(), "");
-		List<SensorHelper> sensorHelperList = new LinkedList<>();
+		Sensor<?> sensor = null;
+		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor, new Coordinate(), SensorTypeEnum.ANEMOMETER,
+				new LinkedList<SensorInterfererType>());
+		Sensor<?> sensor2 = null;
+		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor2, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
+				new LinkedList<SensorInterfererType>());
+		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensorHelperStaticSensor);
 		sensorHelperList.add(sensorHelperTrafficSensor);
 
@@ -343,11 +325,11 @@ public class DefaultSimulationControllerTest {
 	@Test
 	public void testDeleteSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
-
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
-				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>(), "");
+		Sensor<?> sensor1 = null, sensor2= null;
+		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor1, new Coordinate(), SensorTypeEnum.ANEMOMETER,
+				new LinkedList<SensorInterfererType>());
+		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor2, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
+				new LinkedList<SensorInterfererType>());
 
 		/* The operation center will receive both sensors: */
 		operationCenterController.deleteSensor(sensorHelperStaticSensor);
@@ -389,12 +371,12 @@ public class DefaultSimulationControllerTest {
 	@Test
 	public void testDeleteSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
-
-		SensorHelper sensorHelperStaticSensor = new SensorHelper(1, new Coordinate(), SensorType.ANEMOMETER,
-				new LinkedList<SensorInterfererType>(), "");
-		SensorHelper sensorHelperTrafficSensor = new SensorHelper(2, new Coordinate(), SensorType.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>(), "");
-		List<SensorHelper> sensorHelperList = new LinkedList<>();
+		Sensor<?> sensor1 = null, sensor2 = null;
+		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor1, new Coordinate(), SensorTypeEnum.ANEMOMETER,
+				new LinkedList<SensorInterfererType>());
+		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor2, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
+				new LinkedList<SensorInterfererType>());
+		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensorHelperStaticSensor);
 		sensorHelperList.add(sensorHelperTrafficSensor);
 
@@ -439,7 +421,7 @@ public class DefaultSimulationControllerTest {
 		testClass.start(startParameter);
 
 		EventInitiator eventInitiatorMock = EasyMock.createNiceMock(EventInitiator.class);
-		EventList testSimulationEventList = new EventList(new LinkedList<AbstractEvent>(), 0,
+		EventList<Event> testSimulationEventList = new EventList<>(new LinkedList<Event>(), 0,
 				UUID.randomUUID());
 
 		testClass.update(testSimulationEventList);

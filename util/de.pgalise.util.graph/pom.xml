@@ -23,14 +23,6 @@
 			<artifactId>btree</artifactId>
 		</dependency>	
 	    <dependency>
-			<groupId>org.graphstream</groupId>
-			<artifactId>gs-core</artifactId>
-		</dependency>
-	    <dependency>
-			<groupId>org.graphstream</groupId>
-			<artifactId>gs-algo</artifactId>
-	    </dependency>		
-	    <dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared</artifactId>
 	    </dependency>
@@ -56,5 +48,9 @@
 	  <version>9.2</version>
 	  <type>jar</type>
 	 </dependency>
+<!--	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>traffic</artifactId>
+	 </dependency>-->
 	</dependencies>
 </project>

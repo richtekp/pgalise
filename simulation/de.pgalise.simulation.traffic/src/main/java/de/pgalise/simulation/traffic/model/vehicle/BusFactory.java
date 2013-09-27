@@ -17,7 +17,7 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Interface to provide methods to create different types of {@link Bus}.

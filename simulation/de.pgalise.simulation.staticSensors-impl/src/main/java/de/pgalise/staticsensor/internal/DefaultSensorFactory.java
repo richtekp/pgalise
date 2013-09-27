@@ -28,13 +28,13 @@ import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorHelperPhotovoltaik;
-import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
-import de.pgalise.simulation.shared.sensor.SensorHelperWindPower;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.energy.SensorHelperPhotovoltaik;
+import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
+import de.pgalise.simulation.energy.SensorHelperWindPower;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -137,7 +137,7 @@ public class DefaultSensorFactory implements SensorFactory {
 	}
 
 	@Override
-	public Sensor createSensor(SensorHelper sensorHelper, EnumSet<SensorType> allowedTypes)
+	public Sensor<?> createSensor(SensorHelper<?> sensorHelper, EnumSet<SensorTypeEnum> allowedTypes)
 			throws InterruptedException, ExecutionException {
 		if (!allowedTypes.contains(sensorHelper.getSensorType())) {
 			// log.warn("Sensor not created, because the caller is not responsible for this type of sensors");
@@ -150,7 +150,7 @@ public class DefaultSensorFactory implements SensorFactory {
 		switch (sensorHelper.getSensorType()) {
 			case PHOTOVOLTAIK:
 				if (sensorHelper instanceof SensorHelperPhotovoltaik) {
-					return new PhotovoltaikSensor(this.sensorOutput, sensorHelper.getSensorID(), position,
+					return new PhotovoltaikSensor(this.sensorOutput, position,
 							this.weatherCtrl, this.energyCtrl, this.rss,
 							((SensorHelperPhotovoltaik) sensorHelper).getArea(), sensorHelper.getUpdateSteps(),
 							this.createEnergyInterferer(sensorHelper.getSensorInterfererType()));
@@ -161,7 +161,7 @@ public class DefaultSensorFactory implements SensorFactory {
 			case WINDPOWERSENSOR:
 				if (sensorHelper instanceof SensorHelperWindPower) {
 					SensorHelperWindPower sensorHelperWindPower = (SensorHelperWindPower) sensorHelper;
-					return new WindPowerSensor(this.sensorOutput, sensorHelper.getSensorID(), position,
+					return new WindPowerSensor(this.sensorOutput, position,
 							this.weatherCtrl, this.energyCtrl, this.rss, sensorHelperWindPower.getRotorLength(),
 							sensorHelperWindPower.getActivityValue(), sensorHelper.getUpdateSteps(),
 							this.createEnergyInterferer(sensorHelper.getSensorInterfererType()));
@@ -170,40 +170,40 @@ public class DefaultSensorFactory implements SensorFactory {
 				}
 
 			case THERMOMETER:
-				return new Thermometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new Thermometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case WINDFLAG:
-				return new WindFlagSensor(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new WindFlagSensor(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case BAROMETER:
-				return new Barometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new Barometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case HYGROMETER:
-				return new Hygrometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new Hygrometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case PYRANOMETER:
-				return new Pyranometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new Pyranometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case RAIN:
-				return new RainSensor(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new RainSensor(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case ANEMOMETER:
-				return new Anemometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new Anemometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case LUXMETER:
-				return new Luxmeter(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+				return new Luxmeter(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			case SMARTMETER:
 				if (sensorHelper instanceof SensorHelperSmartMeter) {
-					return new SmartMeterSensor(this.sensorOutput, sensorHelper.getSensorID(), position,
+					return new SmartMeterSensor(this.sensorOutput, position,
 							this.weatherCtrl, this.energyCtrl, this.rss,
 							((SensorHelperSmartMeter) sensorHelper).getMeasureRadiusInMeter(),
 							sensorHelper.getUpdateSteps(), this.createEnergyInterferer(sensorHelper
@@ -233,7 +233,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					infraredInterferer = new InfraredNoInterferer();
 				}
 
-				return new InfraredSensor(this.sensorOutput, sensorHelper.getSensorID(), null,
+				return new InfraredSensor(this.sensorOutput, null,
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						infraredInterferer);
 
@@ -256,7 +256,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					inductionLoopInterferer = new InductionLoopNoInterferer();
 				}
 
-				return new InductionLoopSensor(this.sensorOutput, sensorHelper.getSensorID(),
+				return new InductionLoopSensor(this.sensorOutput, 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						inductionLoopInterferer);
 
@@ -280,7 +280,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					toporadarInterferer = new TopoRadarNoInterferer();
 				}
 
-				return new TopoRadarSensor(this.sensorOutput, sensorHelper.getSensorID(),
+				return new TopoRadarSensor(this.sensorOutput, 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						toporadarInterferer);
 
@@ -319,7 +319,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					gpsInterferer = new GpsNoInterferer();
 				}
 
-				return new GpsSensor(this.sensorOutput, sensorHelper.getSensorID(), null,
+				return new GpsSensor(this.sensorOutput, null,
 						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), new Coordinate(0, 0), gpsInterferer);
 			default:
 				throw new NoValidControllerForSensorException(String.format("%s is not a known SensorType!",

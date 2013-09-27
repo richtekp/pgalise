@@ -19,7 +19,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
 import java.util.Collection;
 import java.util.List;
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Message to delete a sensor.

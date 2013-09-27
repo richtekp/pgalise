@@ -16,17 +16,18 @@
  
 package de.pgalise.simulation.operationCenter.internal.message;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.Collection;
 /**
  * If you want to remove more than one sensor at the same time.
  * @author Timo
  */
-public class RemoveSensorsMessage extends OCWebSocketMessage<Collection<Integer>> {
+public class RemoveSensorsMessage extends OCWebSocketMessage<Collection<Sensor<?>>> {
 	/**
 	 * Constructor
 	 * @param content a list with all sensor ids that will be removed.
 	 */
-	public RemoveSensorsMessage(Collection<Integer> content) {
+	public RemoveSensorsMessage(Collection<Sensor<?>> content) {
 		super(OCWebSocketMessage.MessageType.REMOVE_SENSORS, content);
 	}
 }

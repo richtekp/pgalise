@@ -18,10 +18,9 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import java.util.Random;
 
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
@@ -47,15 +46,15 @@ public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<Vehicl
 
 	@Override
 	public void handleEvent(VehicleEvent<?> event) {
-		for (final Sensor sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
+		for (final Sensor<?> sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
 			if (sensor instanceof StaticTrafficSensor) {
 				((StaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());
 			}
 		}
 
 		if (event.getVehicle().getData() instanceof BusData) {
-			Node n = ((BusData) event.getVehicle().getData()).getBusStops().get(
-					event.getVehicle().getCurrentNode().getId());
+			NavigationNode n = ((BusData) event.getVehicle().getData()).getBusStops().get(
+					event.getVehicle().getCurrentNode());
 			// only at busstops the amount of passengers can change
 			if (n != null) {
 				int lastBusStop = ((BusData) event.getVehicle().getData()).getBusStopOrder().indexOf(n.getId());

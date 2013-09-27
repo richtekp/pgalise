@@ -31,10 +31,10 @@ import org.junit.Test;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.profile.CSVProfileLoader;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
-import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Building;
 
 /**
  * Tests the public methods of the CSVEnergyConsumptionManager.
@@ -80,7 +80,7 @@ public class CSVEnergyConsumptionManagerTest {
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
 		List<Building> buildingList = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			buildingList.add(new Building(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));
+			buildingList.add(new DefaultBuilding(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));
 		}
 		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
 		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);

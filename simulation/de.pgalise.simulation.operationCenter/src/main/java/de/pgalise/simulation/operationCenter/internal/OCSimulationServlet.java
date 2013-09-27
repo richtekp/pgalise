@@ -42,7 +42,9 @@ import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
 /**
@@ -150,18 +152,18 @@ public class OCSimulationServlet extends HttpServlet {
 			} else if(req.getParameter("start") != null && req.getParameter("start").equalsIgnoreCase("true")) {
 				
 				log.debug("start");
-				ocSimulationController.start(gson.fromJson(req.getParameter("json"), StartParameter.class));
+				ocSimulationController.start(gson.fromJson(req.getParameter("json"), InfrastructureStartParameter.class));
 
 			} else if(req.getParameter("init") != null && req.getParameter("init").equalsIgnoreCase("true")) { 
 				
 				log.debug("init");
 				/* If the simulation is already stopped, than stop if, before start. */
 				try {
-					ocSimulationController.init(gson.fromJson(req.getParameter("json"), InitParameter.class));
+					ocSimulationController.init(gson.fromJson(req.getParameter("json"), InfrastructureInitParameter.class));
 				} catch(Exception e) {
 					ocSimulationController.stop();
 					ocSimulationController.reset();
-					ocSimulationController.init(gson.fromJson(req.getParameter("json"), InitParameter.class));
+					ocSimulationController.init(gson.fromJson(req.getParameter("json"), InfrastructureInitParameter.class));
 				}
 				
 			} else if(req.getParameter("reset") != null && req.getParameter("reset").equalsIgnoreCase("true")) {

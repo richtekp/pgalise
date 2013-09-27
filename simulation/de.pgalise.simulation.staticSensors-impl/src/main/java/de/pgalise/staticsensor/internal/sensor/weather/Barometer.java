@@ -19,7 +19,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -55,9 +55,9 @@ public class Barometer extends WeatherSensor {
 	 *            is not a type of {@link BarometerWhiteNoiseInterferer}
 	 */
 	
-	public Barometer(final Output output, final long sensorId, final Coordinate position, final WeatherController weatherController, WeatherInterferer weatherInterferer)
+	public Barometer(final Output output, final Coordinate position, final WeatherController weatherController, WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
-		this(output, sensorId, position, weatherController, 1, weatherInterferer);
+		this(output, position, weatherController, 1, weatherInterferer);
 	}
 
 	/**
@@ -76,8 +76,8 @@ public class Barometer extends WeatherSensor {
 	 *            argument 'weatherController' is not a type of {@link BarometerWhiteNoiseInterferer}
 	 */
 	
-	public Barometer(Output output, long sensorId, Coordinate position, WeatherController weatherController, int updateLimit, WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+	public Barometer(Output output, Coordinate position, WeatherController weatherController, int updateLimit, WeatherInterferer weatherInterferer) throws IllegalArgumentException {
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof BarometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
 		// BarometerWhiteNoiseInterferer.class.getName() + "'");
@@ -94,8 +94,8 @@ public class Barometer extends WeatherSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.BAROMETER;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.BAROMETER;
 	}
 
 	/**

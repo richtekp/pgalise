@@ -84,7 +84,6 @@ import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfere
 import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.Node;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.service.ServerConfigurationEntity;
@@ -96,14 +95,19 @@ import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.simulation.shared.traffic.BusRoute;
-import de.pgalise.simulation.shared.traffic.VehicleInformation;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
@@ -249,31 +253,19 @@ public class CCWebSocketUser extends MessageInbound {
 				synchronized (cityInfrastructureDataLock) {
 					if(this.cityInfrastructureData != null) {
 						AskForValidNodeMessage askForValidNodeMessage = this.gson.fromJson(message, AskForValidNodeMessage.class);
-						de.pgalise.simulation.controlCenter.internal.model.Node node;
+						NavigationNode node;
 						if(askForValidNodeMessage.getContent().isOnJunction()) {
-							Node tmpNode = this.cityInfrastructureData.getNearestJunctionNode(
-									askForValidNodeMessage.getContent().getPosition().x, 
-									askForValidNodeMessage.getContent().getPosition().y);
-							node = new de.pgalise.simulation.controlCenter.internal.model.Node(true, 
-									true, 
-									tmpNode.getId(), 
-									new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude()));
+							node = this.cityInfrastructureData.getNearestJunctionNode(
+									askForValidNodeMessage.getContent().getGeoLocation().x, 
+									askForValidNodeMessage.getContent().getGeoLocation().y);
 						} else if(askForValidNodeMessage.getContent().isOnStreet()) {
-							Node tmpNode = this.cityInfrastructureData.getNearestStreetNode(
-									askForValidNodeMessage.getContent().getPosition().x, 
-									askForValidNodeMessage.getContent().getPosition().y);
-							node = new de.pgalise.simulation.controlCenter.internal.model.Node(false, 
-									true, 
-									tmpNode.getId(), 
-									new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude()));
+							node = this.cityInfrastructureData.getNearestStreetNode(
+									askForValidNodeMessage.getContent().getGeoLocation().x, 
+									askForValidNodeMessage.getContent().getGeoLocation().y);
 						} else {
-							Node tmpNode = this.cityInfrastructureData.getNearestNode(
-									askForValidNodeMessage.getContent().getPosition().x, 
-									askForValidNodeMessage.getContent().getPosition().y);
-							node = new de.pgalise.simulation.controlCenter.internal.model.Node(false, 
-									false, 
-									tmpNode.getId(), 
-									new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude()));
+							node = this.cityInfrastructureData.getNearestNode(
+									askForValidNodeMessage.getContent().getGeoLocation().x, 
+									askForValidNodeMessage.getContent().getGeoLocation().y);
 						}
 						
 						this.sendMessage(new ValidNodeMessage(ccWebSocketMessage.getMessageID(), node));
@@ -284,8 +276,8 @@ public class CCWebSocketUser extends MessageInbound {
 				}
 				
 			case CCWebSocketMessage.MessageType.CREATE_SENSORS_MESSAGE:
-				List<SensorHelper> sensorHelperList = new LinkedList<>(this.gson.fromJson(message, CreateSensorsMessage.class).getContent());
-				for(SensorHelper sensorHelper : sensorHelperList) {
+				List<SensorHelper<?>> sensorHelperList = new LinkedList<>(this.gson.fromJson(message, CreateSensorsMessage.class).getContent());
+				for(SensorHelper<?> sensorHelper : sensorHelperList) {
 					sensorHelper.setSensorInterfererType(sensorInterfererService.getSensorInterferes(sensorHelper.getSensorType(), 
 							this.simulationStartParameter.isWithSensorInterferes()));
 				}
@@ -388,7 +380,7 @@ public class CCWebSocketUser extends MessageInbound {
 				/* Created server configuration */
 				
 				/* Create init parameters: */
-				InitParameter initParameter = new InitParameter(this.cityInfrastructureData, 
+				InfrastructureInitParameter initParameter = new InfrastructureInitParameter(this.cityInfrastructureData, 
 						serverConfiguration, 
 						ccSimulationStartParameter.getStartTimestamp(), 
 						ccSimulationStartParameter.getEndTimestamp(), 
@@ -407,24 +399,21 @@ public class CCWebSocketUser extends MessageInbound {
 				Random random = new Random(this.serviceDictionary.getRandomSeedService().getSeed(CCWebSocketUser.class.getName()));
 				
 				/* To produce new sensor ids, we have to save all the used ones */
-				Set<Integer> usedIntegerIDs = new HashSet<>();
 				Set<UUID> usedUUIDs = new HashSet<>();
 				
 				/* Create sensors: */
 				for(SensorHelper sensorHelper : ccSimulationStartParameter.getSensorHelperList()) {
 					sensorHelper.setSensorInterfererType(sensorInterfererService.getSensorInterferes(sensorHelper.getSensorType(), 
 							ccSimulationStartParameter.isWithSensorInterferes()));
-					usedIntegerIDs.add(sensorHelper.getSensorID());
 				}
 				this.simulationController.createSensors(ccSimulationStartParameter.getSensorHelperList());
 				
 				/* Create start parameters: */
-				StartParameter startParameter = new StartParameter(ccSimulationStartParameter.getCity(),
+				StartParameter startParameter = new InfrastructureStartParameter(ccSimulationStartParameter.getCity(),
 						ccSimulationStartParameter.isAggregatedWeatherDataEnabled(), 
-						ccSimulationStartParameter.getWeatherEventList(), 
-						ccSimulationStartParameter.getBusRoutes());
+						ccSimulationStartParameter.getWeatherEventList());
 				
-				List<Integer> newIntegerIDs = new LinkedList<>();
+				List<Sensor<?>> newIntegerIDs = new LinkedList<>();
 				List<UUID> newUUIDs = new LinkedList<>();
 				
 				List<Event> simulationEventList = new LinkedList<>();
@@ -436,11 +425,8 @@ public class CCWebSocketUser extends MessageInbound {
 				
 				/* Save the new and old IDs from create random vehicles: */
 				usedUUIDs.addAll(ccSimulationStartParameter.getRandomDynamicSensorBundle().getUsedUUIDs());
-				usedIntegerIDs.addAll(ccSimulationStartParameter.getRandomDynamicSensorBundle().getUsedSensorIDs());
 				for(CreateRandomVehicleData data : createRandomVehiclesEvent.getCreateRandomVehicleDataList()) {
 					for(SensorHelper sensor : data.getSensorHelpers()) {
-						newIntegerIDs.add(sensor.getSensorID());
-						usedIntegerIDs.add(sensor.getSensorID());
 					}
 				}
 				
@@ -462,8 +448,6 @@ public class CCWebSocketUser extends MessageInbound {
 					/* Update the new used IDs: */
 					for(CreateRandomVehicleData data : attractionTrafficEvent.getCreateRandomVehicleDataList()) {
 						for(SensorHelper sensor : data.getSensorHelpers()) {
-							newIntegerIDs.add(sensor.getSensorID());
-							usedIntegerIDs.add(sensor.getSensorID());
 						}
 					}
 				}
@@ -473,13 +457,13 @@ public class CCWebSocketUser extends MessageInbound {
 				log.debug("Selected bus routes in cc: " +ccSimulationStartParameter.getBusRoutes().size());
 				
 				List<CreateRandomVehicleData> busDataList = new LinkedList<>();
-				List<BusRoute> busRouteList = new LinkedList<>();
-				for(BusRoute busRoute : ccSimulationStartParameter.getBusRoutes()) {
+				List<BusRoute<?>> busRouteList = new LinkedList<>();
+				for(BusRoute<?> busRoute : ccSimulationStartParameter.getBusRoutes()) {
 					if(busRoute.isUsed()) {
-						log.debug("Selected bus route: " +busRoute.getRouteId());
+						log.debug("Selected bus route: " +busRoute.getId());
 						busRouteList.add(busRoute);
 					} else {
-						log.debug("Not selected bus route: " +busRoute.getRouteId());
+						log.debug("Not selected bus route: " +busRoute.getId());
 					}
 				}
 				
@@ -492,21 +476,21 @@ public class CCWebSocketUser extends MessageInbound {
 				
 				for(int i = 0; i < totalNumberOfBusTrips; i++) {
 					UUID id = this.getUniqueRandomUUID(usedUUIDs, random);
-					List<SensorHelper> sensorLists = new ArrayList<>();
-					sensorLists.add(new SensorHelper(this.getUniqueRandomIntID(usedIntegerIDs, random), 
+					List<SensorHelper<?>> sensorLists = new ArrayList<>();
+					Sensor<?> sensor = null;
+					NavigationNode sensorCoordinate = null;
+					sensorLists.add(new SensorHelper<>(sensor, 
 							new Coordinate(), 
-							SensorType.GPS_BUS, 
-							new ArrayList<SensorInterfererType>(),
-							""));
-					sensorLists.add(new SensorHelper(this.getUniqueRandomIntID(usedIntegerIDs, random), 
+							SensorTypeEnum.GPS_BUS, 
+							new ArrayList<SensorInterfererType>()));
+					sensorLists.add(new SensorHelper<>(sensor, 
 							new Coordinate(), 
-							SensorType.INFRARED, 
-							new ArrayList<SensorInterfererType>(),
-							""));
+							SensorTypeEnum.INFRARED, 
+							new ArrayList<SensorInterfererType>()));
 					busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation( true,
 							VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString()) ));
 				}
-				simulationEventList.add(new CreateBussesEvent(serviceDictionary.getController(TrafficServerLocal.class), ccSimulationStartParameter.getStartTimestamp(), 0, busDataList, busRouteList));
+				simulationEventList.add(new CreateBussesEvent(serviceDictionary.getController(TrafficServerLocal.class), ccSimulationStartParameter.getStartTimestamp(), 0L, busDataList, busRouteList));
 				
 				/* Add events to simulation: */
 				this.simulationController.addSimulationEventList(new EventList<>(simulationEventList, 0, UUID.randomUUID()));
@@ -546,15 +530,8 @@ public class CCWebSocketUser extends MessageInbound {
 				this.simulationController.update(new EventList(simulationEventList, 0, UUID.randomUUID()));
 				
 				/* Send message with new used ids: */
-				List<Integer> newIntegerIDs = new LinkedList<>();
+				List<Sensor<?>> newIntegerIDs = new LinkedList<>();
 				List<UUID> newUUIDs = new LinkedList<>();
-				for(AbstractEvent event : simulationEventList) {
-					for(CreateRandomVehicleData data : ((CreateRandomVehiclesEvent<?>)event).getCreateRandomVehicleDataList()) {
-						for(SensorHelper sensor : data.getSensorHelpers()) {
-							newIntegerIDs.add(sensor.getSensorID());
-						}
-					}
-				}
 				this.sendMessage(new UsedIDsMessage(ccWebSocketMessage.getMessageID(), new IDWrapper(newIntegerIDs, newUUIDs)));
 				return;	
 			}
@@ -575,15 +552,8 @@ public class CCWebSocketUser extends MessageInbound {
 				this.simulationController.update(new EventList(simulationEventList, 0, UUID.randomUUID()));
 				
 				/* Send message with new used ids: */
-				List<Integer> newIntegerIDs = new LinkedList<>();
+				List<Sensor<?>> newIntegerIDs = new LinkedList<>();
 				List<UUID> newUUIDs = new LinkedList<>();
-				for(AbstractEvent event : simulationEventList) {
-					for(CreateRandomVehicleData data : ((CreateRandomVehiclesEvent<?>)event).getCreateRandomVehicleDataList()) {
-						for(SensorHelper sensor : data.getSensorHelpers()) {
-							newIntegerIDs.add(sensor.getSensorID());
-						}
-					}
-				}
 				this.sendMessage(new UsedIDsMessage(ccWebSocketMessage.getMessageID(), new IDWrapper(newIntegerIDs, newUUIDs)));
 				return;
 			}	
@@ -636,6 +606,9 @@ public class CCWebSocketUser extends MessageInbound {
 	
 	/**
 	 * Send a message to the client.
+	 * 
+	 * @param message
+	 * @throws IOException  
 	 */
 	public void sendMessage(CCWebSocketMessage<?> message) throws IOException {
 		log.debug("Sending: " + message.toJson(this.gson));
@@ -665,7 +638,7 @@ public class CCWebSocketUser extends MessageInbound {
 		if(CCWebSocketServlet.getUser() == this) {
 			try {
 				this.sendMessage(new OnConnectMessage(this.busService.getAllBusRoutes()));
-			} catch (IOException | ClassNotFoundException | SQLException e) {
+			} catch (IOException e) {
 				log.error("Exception", e);
 			}
 		} else {

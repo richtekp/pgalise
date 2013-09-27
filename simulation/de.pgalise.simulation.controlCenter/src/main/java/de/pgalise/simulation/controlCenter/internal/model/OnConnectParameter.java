@@ -16,10 +16,10 @@
  
 package de.pgalise.simulation.controlCenter.internal.model;
 
+import de.pgalise.simulation.traffic.BusRoute;
 import java.util.List;
 import java.util.Map;
 
-import de.pgalise.simulation.shared.traffic.BusRoute;
 /**
  * Parameters that are needed on connect.
  * This is useful, if new sensors, vehicletypes or vehicle models are added to the simulation.

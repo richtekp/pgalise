@@ -23,7 +23,7 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergySensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -69,10 +69,10 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public PhotovoltaikSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public PhotovoltaikSensor(Output output, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int area,
 			EnergyInterferer interferer) throws InterruptedException, ExecutionException {
-		this(output, sensorId, position, weatherController, energyController, randomSeedService, area, 1, interferer);
+		this(output, position, weatherController, energyController, randomSeedService, area, 1, interferer);
 	}
 
 	/**
@@ -98,8 +98,8 @@ public class PhotovoltaikSensor extends EnergySensor {
 	 *            Energy interferer
 	 */
 	
-	public PhotovoltaikSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int area, int updateLimit, EnergyInterferer interferer) throws InterruptedException, ExecutionException {
-		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,
+	public PhotovoltaikSensor(Output output, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, int area, int updateLimit, EnergyInterferer interferer) throws InterruptedException, ExecutionException {
+		super(output, position, weatherController, energyController, randomSeedService, updateLimit,
 				interferer);
 		this.area = area;
 	}
@@ -140,8 +140,8 @@ public class PhotovoltaikSensor extends EnergySensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.PHOTOVOLTAIK;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.PHOTOVOLTAIK;
 	}
 
 	/**

@@ -17,17 +17,27 @@
 	<name>de.pgalise.simulation.sensorFramework</name>
 	
 	<dependencies>
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>services</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weather</artifactId>
-		</dependency>
+<!--	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>traffic</artifactId>
+	 </dependency>-->
+<!--	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>shared</artifactId>
+	 </dependency>-->
+	 <dependency>
+	  <groupId>org.jscience</groupId>
+	  <artifactId>jscience</artifactId>
+	  <version>4.3.1</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>	
 </project>

@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.StationDataMap;
@@ -162,7 +162,7 @@ public class DefaultWeatherService implements WeatherService {
 		this.referenceValues = null;
 		this.parameters = new HashMap<>();
 		this.cachedParameters = new HashMap<>();
-		this.gridConverter = new LinearWeatherPositionConverter(city.getReferenceArea());
+		this.gridConverter = new LinearWeatherPositionConverter(city.getBoundaries());
 		this.plannedEventModifiers = new ArrayList<>();
 
 		// Add parameters

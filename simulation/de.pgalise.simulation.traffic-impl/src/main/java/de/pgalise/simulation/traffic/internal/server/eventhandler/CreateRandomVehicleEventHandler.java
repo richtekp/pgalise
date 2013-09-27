@@ -22,10 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
@@ -36,6 +37,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 /**
  * Creates random vehicles with random trips.
  * 
+ * @param <E> 
  * @author Mustafa
  * @version 1.0
  */
@@ -204,7 +206,7 @@ public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent
 						data.getVehicleInformation().getVehicleType());
 
 				// Create vehicle
-				final Vehicle<? extends VehicleData> v = this.eHandler.createVehicle(data, trip);
+				final Vehicle<?> v = this.eHandler.createVehicle(data, trip);
 
 				if (v == null) {
 					switch (data.getVehicleInformation().getVehicleType()) {

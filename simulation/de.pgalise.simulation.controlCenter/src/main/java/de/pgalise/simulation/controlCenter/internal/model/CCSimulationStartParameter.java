@@ -19,19 +19,21 @@ package de.pgalise.simulation.controlCenter.internal.model;
 import java.util.Collection;
 import java.util.List;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.traffic.BusRoute;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 
 /**
  * All parameters to start the simulation. This is an extra version only for the control center,
  * because not everything can be done on the client side and is not needed by the client.
  * @author Timo
  */
-public class CCSimulationStartParameter { 
+public class CCSimulationStartParameter extends InfrastructureStartParameter { 
 	/**
 	 * Option to start with sensor interferes.
 	 * If true, all sensor interferes will be activated.
@@ -71,7 +73,7 @@ public class CCSimulationStartParameter {
 	/**
 	 * Sensorhelper list.
 	 */
-	private List<SensorHelper> sensorHelperList;
+	private List<SensorHelper<?>> sensorHelperList;
 	
 	/**
 	 * list of simulation event lists
@@ -157,7 +159,7 @@ public class CCSimulationStartParameter {
 			String ipWeatherController, String ipStaticSensorController,
 			String ipEnergyController,
 			List<String> trafficServerIPList, City city,
-			List<SensorHelper> sensorHelperList,
+			List<SensorHelper<?>> sensorHelperList,
 			List<EventList<?>> simulationEventLists,
 			List<WeatherEventHelper> weatherEventList,
 			OSMAndBusstopFileData osmAndBusstopFileData,
@@ -238,6 +240,7 @@ public class CCSimulationStartParameter {
 		this.interval = interval;
 	}
 
+	@Override
 	public City getCity() {
 		return city;
 	}
@@ -278,11 +281,11 @@ public class CCSimulationStartParameter {
 		this.trafficServerIPList = trafficServerIPList;
 	}
 	
-	public List<SensorHelper> getSensorHelperList() {
+	public List<SensorHelper<?>> getSensorHelperList() {
 		return sensorHelperList;
 	}
 
-	public void setSensorHelperList(List<SensorHelper> sensorHelperList) {
+	public void setSensorHelperList(List<SensorHelper<?>> sensorHelperList) {
 		this.sensorHelperList = sensorHelperList;
 	}
 

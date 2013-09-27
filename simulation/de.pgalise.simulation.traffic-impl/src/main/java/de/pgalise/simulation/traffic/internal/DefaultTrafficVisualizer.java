@@ -16,13 +16,12 @@
  
 package de.pgalise.simulation.traffic.internal;
 
+import de.pgalise.simulation.shared.city.TrafficGraph;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.util.List;
-
-import org.graphstream.graph.Graph;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficVisualizer;
@@ -31,7 +30,6 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
-import de.pgalise.util.graph.DefaultGraphVisualizer;
 import javax.vecmath.Vector2d;
 
 /**
@@ -60,7 +58,7 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 		init();
 	}
 
-	public DefaultTrafficVisualizer(int width, int height, Graph graph, TrafficGraphExtensions ee) {
+	public DefaultTrafficVisualizer(int width, int height, TrafficGraph<?> graph, TrafficGraphExtensions ee) {
 		super(width, height, graph);
 		this.trafficGraphExtensions = ee;
 		init();

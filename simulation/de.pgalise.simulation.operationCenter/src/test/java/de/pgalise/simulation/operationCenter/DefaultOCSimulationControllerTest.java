@@ -43,18 +43,21 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.it.TestUtils;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.simulation.shared.traffic.BusRoute;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 
 /**
  * J-Unit tests for {@link DefaultOCSimulationController}
@@ -160,12 +163,12 @@ public class DefaultOCSimulationControllerTest {
 	/**
 	 * Init parameter
 	 */
-	private static InitParameter INIT_PARAMETER;
+	private static InfrastructureInitParameter INIT_PARAMETER;
 
 	/**
 	 * Start parameter
 	 */
-	private static StartParameter START_PARAMTER;
+	private static InfrastructureStartParameter START_PARAMTER;
 
 	/**
 	 * List of sensor helper
@@ -176,11 +179,11 @@ public class DefaultOCSimulationControllerTest {
 	public static void setUp() {
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST = new LinkedList<>();
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(2, new Coordinate(),
-				SensorType.ANEMOMETER, new LinkedList<SensorInterfererType>(), ""));
+				SensorTypeEnum.ANEMOMETER, new LinkedList<SensorInterfererType>(), ""));
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(3, new Coordinate(),
-				SensorType.BAROMETER, new LinkedList<SensorInterfererType>(), ""));
+				SensorTypeEnum.BAROMETER, new LinkedList<SensorInterfererType>(), ""));
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(4, new Coordinate(),
-				SensorType.INDUCTIONLOOP, new LinkedList<SensorInterfererType>(), ""));
+				SensorTypeEnum.INDUCTIONLOOP, new LinkedList<SensorInterfererType>(), ""));
 
 		DefaultOCSimulationControllerTest.OC_SENSOR_STREAM_CONTROLLER = EasyMock
 				.createNiceMock(OCSensorStreamController.class);
@@ -194,28 +197,11 @@ public class DefaultOCSimulationControllerTest {
 		DefaultOCSimulationControllerTest.GATE_MESSAGE_STRATEGY = EasyMock.createNiceMock(GPSGateStrategy.class);
 
 		/* Create init paramter: */
-		DefaultOCSimulationControllerTest.INIT_PARAMETER = new InitParameter(null, null, 0, 0, 0, 0, "", "", null, null);
+		DefaultOCSimulationControllerTest.INIT_PARAMETER = new InfrastructureInitParameter(null, null, 0, 0, 0, 0, "", "", null, null);
 
 		/* Create start parameter: */
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
-			new Coordinate(1,
-			1),
-			new Coordinate(1,
-			2),
-			new Coordinate(2,
-			2),
-			new Coordinate(2,
-			1),
-			new Coordinate(1,
-			1)
-		});
-		City city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
-		DefaultOCSimulationControllerTest.START_PARAMTER = new StartParameter(city, true, null, new LinkedList<BusRoute>());
+		City city = TestUtils.createDefaultTestCityInstance();
+		DefaultOCSimulationControllerTest.START_PARAMTER = new InfrastructureStartParameter(city, true, null);
 
 		DefaultOCSimulationControllerTest.TESTCLASS = new DefaultOCSimulationController(
 				DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE,

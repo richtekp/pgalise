@@ -17,6 +17,8 @@
 package de.pgalise.simulation.event;
 
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import java.util.List;
@@ -35,7 +37,7 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
  * 
  * @author Timo
  */
-public interface EventInitiator extends Controller<Event> {
+public interface EventInitiator extends Controller<Event, StartParameter, InitParameter> {
 
 	/**
 	 * Returns the event thread. Use this only for testing.
@@ -70,6 +72,6 @@ public interface EventInitiator extends Controller<Event> {
 	 */
 	public void setControlCenterController(ControlCenterController controlCenterController);
 	
-	public void setFrontController(List<Controller<?>> frontController);
+	public void setFrontController(List<Controller<?,?,?>> frontController);
 
 }

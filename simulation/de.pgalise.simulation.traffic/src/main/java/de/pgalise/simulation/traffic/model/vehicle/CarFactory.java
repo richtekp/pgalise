@@ -19,7 +19,7 @@ package de.pgalise.simulation.traffic.model.vehicle;
 import java.awt.Color;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Interface to provide methods to create different types of {@link Car}.

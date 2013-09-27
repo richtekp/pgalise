@@ -18,10 +18,10 @@
 
 
 	<dependencies>
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.util</groupId>
 			<artifactId>parser</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>weather</artifactId>

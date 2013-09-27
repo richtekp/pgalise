@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
@@ -84,7 +84,7 @@ public class TreeSetScheduler extends Scheduler {
 		for (ScheduleItem item : this.scheduledItems) {
 			// item has been expired
 			if (currentTime >= item.getDepartureTime()) {
-				if (item.getVehicle().getState() != State.DRIVING) {
+				if (item.getVehicle().getVehicleState() != VehicleStateEnum.DRIVING) {
 					// if (item.reversePath()) {
 					// List<Node> path = item.getVehicle().getPath().getNodePath();
 					// Collections.reverse(path);

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -71,8 +71,8 @@ public class InductionLoopSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(final Output output, final long sensorId, final Coordinate position, final InductionLoopInterferer interferer) {
-		this(output, sensorId, position, 1, interferer);
+	public InductionLoopSensor(final Output output, final Coordinate position, final InductionLoopInterferer interferer) {
+		this(output, position, 1, interferer);
 	}
 
 	/**
@@ -89,8 +89,8 @@ public class InductionLoopSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(Output output, long sensorId, Coordinate position, int updateLimit, final InductionLoopInterferer interferer) {
-		super(output, sensorId, position, updateLimit);
+	public InductionLoopSensor(Output output, Coordinate position, int updateLimit, final InductionLoopInterferer interferer) {
+		super(output, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
@@ -102,8 +102,8 @@ public class InductionLoopSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.INDUCTIONLOOP;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.INDUCTIONLOOP;
 	}
 
 	public void setInterferer(final InductionLoopInterferer interferer) throws IllegalArgumentException {

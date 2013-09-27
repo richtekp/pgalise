@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.internal.positionconverter;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
@@ -51,7 +51,7 @@ public class LinearWeatherPositionConverterTest {
 		 * Test: Temperature
 		 */
 		Coordinate referencePoint = new Coordinate(20, 20);
-		Geometry referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+		Geometry referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 

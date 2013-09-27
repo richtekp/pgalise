@@ -24,6 +24,7 @@ import javax.ejb.Stateless;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
@@ -34,7 +35,8 @@ import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 @Lock(LockType.READ)
 @Local
 @Stateless(name = "de.pgalise.simulation.internal.visualizationcontroller.ControlCenterControllerMock")
-public class ControlCenterControllerMock extends AbstractController implements ControlCenterController {
+public class ControlCenterControllerMock extends AbstractController<Event, StartParameter, InitParameter> implements ControlCenterController {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default
@@ -66,5 +68,5 @@ public class ControlCenterControllerMock extends AbstractController implements C
 	protected void onResume() {}
 
 	@Override
-	protected void onUpdate(EventList simulationEventList) {}
+	protected void onUpdate(EventList<Event> simulationEventList) {}
 }

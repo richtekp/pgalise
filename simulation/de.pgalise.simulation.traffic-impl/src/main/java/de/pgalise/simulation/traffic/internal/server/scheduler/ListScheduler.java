@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
@@ -91,7 +91,7 @@ public class ListScheduler extends Scheduler {
 		for (ScheduleItem item : this.scheduledItems) {
 			// item has been expired
 			if (currentTime >= item.getDepartureTime()) {
-				if (item.getVehicle().getState() != State.DRIVING) {
+				if (item.getVehicle().getVehicleState() != VehicleStateEnum.DRIVING) {
 					item.setScheduleTime(currentTime);
 					// ListScheduler.log
 					// .debug("Item (\"" + item.getVehicle().getName()

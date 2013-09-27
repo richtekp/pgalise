@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;

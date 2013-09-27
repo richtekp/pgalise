@@ -21,6 +21,7 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * Interface for the traffic sensors
@@ -28,7 +29,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Mischa
  * @version 1.0 (Oct 28, 2012)
  */
-public abstract class StaticTrafficSensor extends Sensor {
+public abstract class StaticTrafficSensor extends Sensor<TrafficEvent> {
 
 	/**
 	 * Constructor
@@ -43,9 +44,9 @@ public abstract class StaticTrafficSensor extends Sensor {
 	 *            Update limit
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, long sensorId, Coordinate position, int updateLimit)
+	protected StaticTrafficSensor(Output output, Coordinate position, int updateLimit)
 			throws IllegalArgumentException {
-		super(output, sensorId, position, updateLimit);
+		super(output, position, updateLimit);
 	}
 
 	/**
@@ -57,8 +58,8 @@ public abstract class StaticTrafficSensor extends Sensor {
 	 *            Position of the sensor
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, long sensorId, Coordinate position) throws IllegalArgumentException {
-		super(output, sensorId, position);
+	protected StaticTrafficSensor(Output output, Coordinate position) throws IllegalArgumentException {
+		super(output, position);
 	}
 
 	/**

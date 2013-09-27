@@ -36,8 +36,6 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.city.Building;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -48,6 +46,10 @@ import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.StatusEnum;
+import de.pgalise.simulation.shared.city.Building;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -62,8 +64,9 @@ import de.pgalise.simulation.weather.service.WeatherController;
 @Singleton(name = "de.pgalise.simulation.energy.EnergyController")
 @Remote(EnergyController.class)
 @Local(EnergyControllerLocal.class)
-public class DefaultEnergyController extends AbstractController<EnergyEvent> implements
+public class DefaultEnergyController extends AbstractController<EnergyEvent, InfrastructureStartParameter, InfrastructureInitParameter> implements
 		EnergyControllerLocal {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Wrapps geo location and measure radius in meter.
@@ -179,7 +182,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent> imp
 
 	private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap;
 	
-	private InitParameter initParameter;
+	private InfrastructureInitParameter initParameter;
 	
 	/**
 	 * Default
@@ -248,7 +251,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent> imp
 	}
 
 	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
+	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
 		this.buildingsMap.clear();
 		this.initParameter = param;
 	}
@@ -265,7 +268,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent> imp
 	}
 
 	@Override
-	protected void onStart(StartParameter param) {
+	protected void onStart(InfrastructureStartParameter param) {
 		this.city = param.getCity();
 		this.cityInfrastructure = this.initParameter.getCityInfrastructureData();
 		this.energyConsumptionManager.init(this.initParameter.getStartTimestamp(),

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.model;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ import java.util.UUID;
  * @author Timo
  */
 public class IDWrapper {
-	private List<Integer> integerIDList;
+	private List<Sensor<?>> integerIDList;
 	private List<UUID> uuidList;
 	
 	/**
@@ -35,16 +36,16 @@ public class IDWrapper {
 	 * @param uuidList
 	 * 			all used UUIDs
 	 */
-	public IDWrapper(List<Integer> integerIDList, List<UUID> uuidList) {
+	public IDWrapper(List<Sensor<?>> integerIDList, List<UUID> uuidList) {
 		this.integerIDList = integerIDList;
 		this.uuidList = uuidList;
 	}
 
-	public List<Integer> getIntegerIDList() {
+	public List<Sensor<?>> getIntegerIDList() {
 		return integerIDList;
 	}
 
-	public void setIntegerIDList(List<Integer> integerIDList) {
+	public void setIntegerIDList(List<Sensor<?>> integerIDList) {
 		this.integerIDList = integerIDList;
 	}
 

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.pgalise.simulation.operationCenter.internal.model.OCOnConnectData;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 /**
  * The on connect message will be send to the client when it connects.
  * It contains information about possible sensor types and sensor units.
@@ -39,7 +39,7 @@ public class OnConnectMessage extends OCWebSocketMessage<OCOnConnectData>{
 	private static Map<Integer, String> getSensorTypeIds() {
 		Map<Integer, String> sensorIdMap = new HashMap<>();
 		
-		for(Entry<Integer, SensorType> entry : SensorType.getSensorTypeIdsAsUnmodifiable().entrySet()) {
+		for(Entry<Integer, SensorTypeEnum> entry : SensorTypeEnum.getSensorTypeIdsAsUnmodifiable().entrySet()) {
 			sensorIdMap.put(entry.getKey(), entry.getValue().toString());
 		}
 		
@@ -49,7 +49,7 @@ public class OnConnectMessage extends OCWebSocketMessage<OCOnConnectData>{
 	private static Map<Integer, String> getSensorUnits() {
 		Map<Integer, String> sensorUnitMap = new HashMap<>();
 
-		for(Entry<Integer, SensorType> entry : SensorType.getSensorTypeIdsAsUnmodifiable().entrySet()) {
+		for(Entry<Integer, SensorTypeEnum> entry : SensorTypeEnum.getSensorTypeIdsAsUnmodifiable().entrySet()) {
 			sensorUnitMap.put(entry.getKey(), entry.getValue().getUnit());
 		}
 		

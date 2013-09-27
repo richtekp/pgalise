@@ -28,7 +28,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.internal.DefaultCity;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
@@ -81,7 +81,7 @@ public class ReferenceCityTest {
 	 */
 	private static DefaultWeatherService service;
 	
-	private	City city;
+	private	DefaultCity city;
 	
 	@Resource
 	private UserTransaction userTransaction;

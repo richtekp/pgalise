@@ -17,6 +17,7 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -25,6 +26,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 /**
  * The attraction traffic event will lead to more traffic on the given point in the given time window.
  * 
+ * @param <D> 
  * @author Timo
  */
 public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomVehiclesEvent<D> {
@@ -46,15 +48,15 @@ public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomV
 	/**
 	 * Node id in graph
 	 */
-	private String nodeID;
+	private NavigationNode nodeID;
 
 	public AttractionTrafficEvent(
-		TrafficServerLocal server,
+		TrafficServerLocal<?> server,
 		long simulationTimestamp,
 		long elapsedTime,
 		long attractionStartTimestamp,
 		long attractionEndTimestamp,
-		String nodeID,
+		NavigationNode nodeID,
 		List<CreateRandomVehicleData> createRandomVehicleDataList) {
 		super(
 			server,simulationTimestamp, elapsedTime,
@@ -80,11 +82,11 @@ public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomV
 		this.attractionEndTimestamp = attractionEndTimestamp;
 	}
 
-	public String getNodeID() {
+	public NavigationNode getNodeID() {
 		return nodeID;
 	}
 
-	public void setNodeID(String nodeID) {
+	public void setNodeID(NavigationNode nodeID) {
 		this.nodeID = nodeID;
 	}
 

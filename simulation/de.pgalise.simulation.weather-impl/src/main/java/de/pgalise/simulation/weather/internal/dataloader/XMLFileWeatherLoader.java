@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.dataloader;
 
+import de.pgalise.simulation.shared.city.City;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.File;
@@ -27,7 +28,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;

@@ -5,6 +5,7 @@
 package de.pgalise.simulation.traffic.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.service.ServiceDictionary;
+import de.pgalise.simulation.shared.city.TrafficGraph;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
@@ -12,7 +13,6 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import java.util.Map;
-import org.graphstream.graph.Graph;
 
 /**
  * An event concerning one vehicle (general traffic event are described using {@link TrafficEvent}
@@ -30,7 +30,7 @@ public interface VehicleEvent<D extends VehicleData> extends TrafficEvent {
 	 */
 	Scheduler getDrivingVehicles() ;
 
-	Graph getGraph()  ;
+	TrafficGraph<?> getGraph()  ;
 
 	TrafficGraphExtensions getTrafficGraphExtensions()  ;
 	

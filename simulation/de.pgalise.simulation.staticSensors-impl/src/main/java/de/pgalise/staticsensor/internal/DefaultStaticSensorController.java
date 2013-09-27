@@ -41,7 +41,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
 import de.pgalise.simulation.staticsensor.StaticSensorControllerLocal;
 
@@ -58,7 +58,7 @@ import de.pgalise.simulation.staticsensor.StaticSensorControllerLocal;
 @Singleton(name = "de.pgalise.simulation.staticsensor.StaticSensorController")
 @Remote(StaticSensorController.class)
 @Local(StaticSensorControllerLocal.class)
-public class DefaultStaticSensorController extends AbstractController<Event> implements StaticSensorControllerLocal {
+public class DefaultStaticSensorController extends AbstractController<Event, StartParameter, InitParameter> implements StaticSensorControllerLocal {
 	/**
 	 * Logger
 	 */
@@ -97,7 +97,7 @@ public class DefaultStaticSensorController extends AbstractController<Event> imp
 
 	@Override
 	public void createSensor(SensorHelper sensor) throws SensorException {
-		Sensor newSensor = null;
+		Sensor<?> newSensor = null;
 		try {
 			newSensor = this.sensorFactory.createSensor(sensor,
 					StaticSensorControllerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
@@ -113,7 +113,7 @@ public class DefaultStaticSensorController extends AbstractController<Event> imp
 	@Override
 	public void deleteSensor(SensorHelper sensor) throws SensorException {
 		// Check sensor
-		Sensor newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor<?> newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
 		if (newSensor != null && this.sensorRegistry.removeSensor(newSensor) != null) {
 			return;
 		}
@@ -151,7 +151,7 @@ public class DefaultStaticSensorController extends AbstractController<Event> imp
 
 		boolean state = false;
 		// Check sensor
-		Sensor newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor<?> newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
 		if (newSensor != null) {
 			state = newSensor.isActivated();
 		}
@@ -190,15 +190,15 @@ public class DefaultStaticSensorController extends AbstractController<Event> imp
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}

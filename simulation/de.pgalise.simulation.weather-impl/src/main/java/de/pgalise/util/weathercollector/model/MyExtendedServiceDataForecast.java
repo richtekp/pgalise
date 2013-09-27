@@ -16,7 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.internal.DefaultCity;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
@@ -48,7 +48,7 @@ public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast im
 	public MyExtendedServiceDataForecast(
 		Date measureDate,
 		Time measureTime, 
-		City city,
+		DefaultCity city,
 		Measure<Float, Temperature> temperatureHigh,
 		Measure<Float, Temperature> temperatureLow,
 		Float relativHumidity,

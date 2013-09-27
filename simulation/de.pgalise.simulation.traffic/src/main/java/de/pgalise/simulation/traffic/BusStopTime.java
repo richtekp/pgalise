@@ -1,161 +1,56 @@
-/* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
- 
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.traffic.BusTrip;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-
 /**
- * 
- * @author marcus
  *
+ * @param <S> 
+ * @param <T> 
+ * @author richter
  */
-@Entity
-//@Table(name = "PGALISE.BUS_STOP_TIMES")
-public class BusStopTime extends AbstractIdentifiable {
-	private static final long serialVersionUID = 1L;
+public interface BusStopTime<S extends BusStop<?>, T extends BusTrip<?,?>> {
 	
-	@JoinColumn(name = "TRIP_ID")
-	@OneToOne
-	private BusTrip busTrip;
-	
-	@JoinColumn(name = "STOP_ID")
-	@OneToOne
-	private BusStop busStop;
-	
-	@Column(name = "ARRIVAL_TIME")
-	@Temporal(TemporalType.TIME)
-	private Date arrivalTime;
-	
-	@Column(name = "DEPARTURE_TIME")
-	@Temporal(TemporalType.TIME)
-	private Date departureTime;
-	
-	@Column(name = "STOP_SEQUENCE")
-	private int stopSequence;
-	
-	@Column(name = "PICKUP_TYPE")
-	private String pickupTime;
-	
-	@Column(name = "STOP_HEADSIGN")
-	private String stopHeadsign;
-	
-	@Column(name = "DROP_OFF_TYPE")
-	private String dropOffType;
-	
-	@Column(name = "SHAPE_DIST_TRAVELED")
-	private String shapeDistTraveled;
-	
-	public BusStopTime() {}
 
-	public BusStopTime(BusTrip trip,
-			BusStop busStop, Date arrivalTime, Date departureTime,
-			int stopSequence, String pickupTime, String stopHeadsign,
-			String dropOffType, String shapeDistTraveled) {
-		this.busTrip = trip;
-		this.busStop = busStop;
-		this.arrivalTime = arrivalTime;
-		this.departureTime = departureTime;
-		this.stopSequence = stopSequence;
-		this.pickupTime = pickupTime;
-		this.stopHeadsign = stopHeadsign;
-		this.dropOffType = dropOffType;
-		this.shapeDistTraveled = shapeDistTraveled;
-	}
+	public T getBusTrip();
 
-	public BusTrip getTripId() {
-		return busTrip;
-	}
+	public void setBusTrip(T busTrip) ;
 
-	public void setTripId(BusTrip busTrip) {
-		this.busTrip = busTrip
-;	}
+	public S getStopId() ;
 
-	public BusStop getStopId() {
-		return busStop;
-	}
+	public void setStopId(S busStop) ;
 
-	public void setStopId(BusStop busStop) {
-		this.busStop = busStop;
-	}
+	public Date getArrivalTime() ;
 
-	public Date getArrivalTime() {
-		return arrivalTime;
-	}
+	public void setArrivalTime(Date arrivalTime) ;
 
-	public void setArrivalTime(Date arrivalTime) {
-		this.arrivalTime = arrivalTime;
-	}
+	public Date getDepartureTime() ;
 
-	public Date getDepartureTime() {
-		return departureTime;
-	}
+	public void setDepartureTime(Date departureTime) ;
 
-	public void setDepartureTime(Date departureTime) {
-		this.departureTime = departureTime;
-	}
+	public int getStopSequence() ;
 
-	public int getStopSequence() {
-		return stopSequence;
-	}
+	public void setStopSequence(int stopSequence) ;
 
-	public void setStopSequence(int stopSequence) {
-		this.stopSequence = stopSequence;
-	}
+	public String getPickupTime() ;
 
-	public String getPickupTime() {
-		return pickupTime;
-	}
+	public void setPickupTime(String pickupTime) ;
 
-	public void setPickupTime(String pickupTime) {
-		this.pickupTime = pickupTime;
-	}
+	public String getStopHeadsign() ;
 
-	public String getStopHeadsign() {
-		return stopHeadsign;
-	}
+	public void setStopHeadsign(String stopHeadsign) ;
 
-	public void setStopHeadsign(String stopHeadsign) {
-		this.stopHeadsign = stopHeadsign;
-	}
+	public String getDropOffType() ;
 
-	public String getDropOffType() {
-		return dropOffType;
-	}
+	public void setDropOffType(String dropOffType) ;
 
-	public void setDropOffType(String dropOffType) {
-		this.dropOffType = dropOffType;
-	}
+	public String getShapeDistTraveled() ;
 
-	public String getShapeDistTraveled() {
-		return shapeDistTraveled;
-	}
-
-	public void setShapeDistTraveled(String shapeDistTraveled) {
-		this.shapeDistTraveled = shapeDistTraveled;
-	}	
-	
+	public void setShapeDistTraveled(String shapeDistTraveled) ;	
 	
 }

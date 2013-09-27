@@ -18,12 +18,13 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import java.io.Serializable;
 
-import org.graphstream.graph.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
@@ -48,17 +49,16 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	/**
 	 * Last registered node of the graph
 	 */
-	private Node lastRegisteredNode;
+	private NavigationNode lastRegisteredNode;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param id
-	 *            ID of the car
 	 * @param name
 	 *            Name of the car
 	 * @param carData
 	 *            Information of the car
+	 * @param trafficGraphExtensions  
 	 */
 	public DefaultMotorizedVehicle(String name, T carData, TrafficGraphExtensions trafficGraphExtensions) {
 		super( name, trafficGraphExtensions);
@@ -68,8 +68,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	/**
 	 * Constructor
 	 * 
-	 * @param id
-	 *            ID of the car
+	 * @param trafficGraphExtensions 
 	 * @param carData
 	 *            Information of the car
 	 */
@@ -82,14 +81,14 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	}
 
 	@Override
-	protected void passedNode(Node passedNode) {
+	protected void passedNode(NavigationNode passedNode) {
 		if (this.getPreviousEdge() != null) {
 			// log.debug("Unregister car " + this.getName() + " from edge: " + this.getPreviousEdge().getId());
 			this.getTrafficGraphExtensions().unregisterFromEdge(this.getPreviousEdge(), this.getPreviousNode(),
 					this.getCurrentNode(), this);
 		}
 
-		if (Vehicle.State.UPDATEABLE_VEHICLES.contains(this.getState())) {
+		if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.getVehicleState())) {
 			if (this.getCurrentEdge() != null) {
 				// log.debug("Register car " + this.getName() + " on edge: " + this.getCurrentEdge().getId());
 				this.getTrafficGraphExtensions().registerOnEdge(this.getCurrentEdge(), this.getCurrentNode(),
@@ -99,11 +98,11 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	}
 
 	@Override
-	protected void postUpdate(Node passedNode) {
-		if (this.getState() != State.REACHED_TARGET) {
+	protected void postUpdate(NavigationNode passedNode) {
+		if (this.getVehicleState() != VehicleStateEnum.REACHED_TARGET) {
 			if (passedNode != null) {
 				if (this.getTrafficGraphExtensions().getPosition(passedNode).equals(this.getPosition())
-						&& this.getState() != State.PAUSED) {
+						&& this.getVehicleState() != VehicleStateEnum.PAUSED) {
 					this.getTrafficGraphExtensions().registerOnNode(passedNode, this);
 					log.debug("Registering car "
 							+ this.getName()

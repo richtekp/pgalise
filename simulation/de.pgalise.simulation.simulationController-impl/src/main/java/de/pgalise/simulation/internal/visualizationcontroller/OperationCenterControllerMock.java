@@ -30,7 +30,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 /**
  * Mock for {@link OperationCenterController}. It does not send anything to the operation center.
@@ -39,7 +39,8 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 @Lock(LockType.READ)
 @Local
 @Stateless(name = "de.pgalise.simulation.internal.visualizationcontroller.OperationCenterControllerMock")
-public class OperationCenterControllerMock extends AbstractController<Event> implements OperationCenterController {
+public class OperationCenterControllerMock extends AbstractController<Event, StartParameter, InitParameter> implements OperationCenterController {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Default
@@ -51,21 +52,21 @@ public class OperationCenterControllerMock extends AbstractController<Event> imp
 			throws IllegalStateException {}
 
 	@Override
-	public void createSensor(SensorHelper sensor) throws SensorException {}
+	public void createSensor(SensorHelper<?> sensor) throws SensorException {}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors)
+	public void createSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {}
 
 	@Override
-	public void deleteSensor(SensorHelper sensor) throws SensorException {}
+	public void deleteSensor(SensorHelper<?> sensor) throws SensorException {}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors)
+	public void deleteSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {}
 
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+	public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
 		return false;
 	}
 

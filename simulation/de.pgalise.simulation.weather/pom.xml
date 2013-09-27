@@ -32,6 +32,16 @@
 		<dependency>
 			<groupId>de.pgalise.util</groupId>
 			<artifactId>graph</artifactId>
-		</dependency>		
+		</dependency>
+<!--	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>traffic</artifactId>
+	 </dependency>-->
+	 <dependency>
+	  <groupId>org.jscience</groupId>
+	  <artifactId>jscience</artifactId>
+	  <version>4.3.1</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 </project>

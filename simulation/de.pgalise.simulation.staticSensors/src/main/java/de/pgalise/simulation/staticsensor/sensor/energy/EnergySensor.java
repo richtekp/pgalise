@@ -21,6 +21,7 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -30,7 +31,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @author Marcus
  * @version 1.0
  */
-public abstract class EnergySensor extends Sensor {
+public abstract class EnergySensor extends Sensor<EnergyEvent> {
 
 	/**
 	 * The energy controller used by the energy sensor.
@@ -72,10 +73,10 @@ public abstract class EnergySensor extends Sensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	protected EnergySensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	protected EnergySensor(Output output, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int updateLimit,
 			EnergyInterferer interferer) {
-		super(output, sensorId, position, updateLimit);
+		super(output, position, updateLimit);
 		if (weatherController == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("weather"));
 		}

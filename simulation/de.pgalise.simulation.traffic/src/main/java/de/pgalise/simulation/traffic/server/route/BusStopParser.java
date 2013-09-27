@@ -24,13 +24,17 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.graphstream.graph.Graph;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.traffic.BusStop;
+import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.TrafficGraph;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 /**
  * @author Lena
@@ -39,7 +43,9 @@ public class BusStopParser {
 	private static final Logger log = LoggerFactory.getLogger(BusStopParser.class);
 
 	private CityInfrastructureData trafficInformation;
-	private List<BusStop> busStops;
+	private List<BusStop<?>> busStops;
+	@PersistenceContext(unitName = "pgalise")
+	private EntityManager entityManager;
 
 	public BusStopParser(CityInfrastructureData trafficInformation) {
 		this.trafficInformation = trafficInformation;
@@ -51,62 +57,20 @@ public class BusStopParser {
 	 * 
 	 * @param graph
 	 * @return
-	 * @throws ClassNotFoundException
-	 * @throws SQLException
 	 */
-	public List<BusStop> parseBusStops(Graph graph) {
-		this.busStops = new ArrayList<>();
-		int count = 0;
-
-		try {
-			Class.forName("org.apache.derby.jdbc.ClientDriver");
-			Connection con = DriverManager.getConnection("jdbc:derby://127.0.0.1:5201/database", "pgalise",
-					"somepw");
-
-			String query = "select stop_name, stop_id, stop_lat, stop_lon from pgalise.bus_stops";
-
-			Statement s = con.createStatement();
-			ResultSet rs = s.executeQuery(query);
-
-			while (rs.next()) {
-				double lat = rs.getDouble("stop_lat");
-				double lon = rs.getDouble("stop_lon");
-				Boundary boundary = this.trafficInformation.getBoundary();
-				double latSW = boundary.getSouthWest().x;
-				double lonSW = boundary.getSouthWest().y;
-				double latNE = boundary.getNorthEast().x;
-				double lonNE = boundary.getNorthEast().y;
-				if ((lat > latSW) && (lat < latNE) && (lon > lonSW) && (lon < lonNE)) {
-					de.pgalise.simulation.shared.city.Node osmNode = this.trafficInformation.getNearestNode(lat,
-							lon);
-					org.graphstream.graph.Node node = graph.getNode(osmNode.getId());
-					if (node != null) {
-						BusStop stop = new BusStop(rs.getString("stop_id"), rs.getString("stop_name"), node);
-						this.busStops.add(stop);
-					} else {
-						log.debug("No node found next to the busstop '" + rs.getString("stop_name"));
-					}
-				} else {
-					count++;
-					// log.debug("'" + rs.getString("stop_name") + "' is outside boundary");
-				}
-			}
-
-			con.close();
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-
-		log.info("Number of parsed BusStops: " + this.busStops.size());
-		log.info("Number of parsed BusStops being outside of the boundary: " + count);
-
+	public List<BusStop<?>> parseBusStops(TrafficGraph<?> graph) {
+		TypedQuery query = entityManager.createQuery("SELECT x FROM BusStop x",
+			BusStop.class);
+		List<BusStop<?>> queriedBusStops = query.getResultList();
+		log.info("Number of parsed BusStops: %d", this.busStops.size());
+		log.info("Number of parsed BusStops being outside of the boundary: %d", queriedBusStops.size()-this.busStops.size());
 		return this.busStops;
 	}
 
 	/**
 	 * @return the busStops
 	 */
-	public List<BusStop> getBusStops() {
+	public List<BusStop<?>> getBusStops() {
 		return this.busStops;
 	}
 
@@ -114,7 +78,7 @@ public class BusStopParser {
 	 * @param busStops
 	 *            the busStops to set
 	 */
-	public void setBusStops(List<BusStop> busStops) {
+	public void setBusStops(List<BusStop<?>> busStops) {
 		this.busStops = busStops;
 	}
 }

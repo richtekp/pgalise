@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.weather.model;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.City;
 
 /**
  *

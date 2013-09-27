@@ -33,7 +33,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -49,12 +49,13 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author Lena
  * @version 1.0
  */
-public class DefaultSensorController extends AbstractController<TrafficEvent> implements TrafficSensorController {
+public class DefaultSensorController extends AbstractController<TrafficEvent, StartParameter, InitParameter> implements TrafficSensorController {
 	/**
 	 * Logger
 	 */
 	private static final Logger log = LoggerFactory.getLogger(DefaultSensorController.class);
 	private static final String NAME = "SensorController";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Sensor domain
@@ -64,7 +65,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	/**
 	 * TrafficServer
 	 */
-	private TrafficServerLocal server;
+	private TrafficServerLocal<?> server;
 
 	/**
 	 * TrafficSensorFactory which can create different Traffic-Sensors
@@ -81,7 +82,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	 */
 	private final Coordinate mapper;
 
-	public DefaultSensorController(TrafficServerLocal server, SensorRegistry sensorRegistry,
+	public DefaultSensorController(TrafficServerLocal<?> server, SensorRegistry sensorRegistry,
 			SensorFactory sensorFactory, Coordinate mapper, TrafficGraphExtensions trafficGraphExtensions) {
 		this.server = server;
 		this.sensorRegistry = sensorRegistry;
@@ -97,7 +98,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	public void createSensor(SensorHelper sensor) throws SensorException {
 		try {
 			// Add sensor
-			final Sensor newSensor = sensorFactory
+			final Sensor<?> newSensor = sensorFactory
 					.createSensor(sensor, TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
 			if (newSensor != null) {
 				if (newSensor instanceof InductionLoopSensor) {
@@ -114,7 +115,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 				// log.debug("Add sensor to Registry " + sensorRegistry.hashCode());
 				sensorRegistry.addSensor(newSensor);
 				if (newSensor instanceof StaticTrafficSensor) {
-					trafficGraphExtensions.addSensor(server.getGraph().getNode(sensor.getNodeId()),
+					trafficGraphExtensions.addSensor(sensor.getNodeId(),
 							(StaticTrafficSensor) newSensor);
 					log.info("Sensor " + sensor.getSensorID() + " added to node " + sensor.getNodeId());
 				}
@@ -129,7 +130,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	public void deleteSensor(SensorHelper sensor) throws SensorException {
 		// Check sensor
 		boolean isRemoved = false;
-		Sensor newSensor = sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor<?> newSensor = sensorRegistry.getSensor(sensor.getSensorID());
 		if (newSensor != null) {
 			if (newSensor instanceof GpsSensor) {
 				((GpsSensor) newSensor).getVehicle().setHasGPS(false);
@@ -195,8 +196,8 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 		VehicleData data = vehicle.getData();
 
 		// Prepare GPS sensor
-		int sensorId = data.getGpsSensorHelper().getSensorID();
-		Sensor sensor = sensorRegistry.getSensor(sensorId);
+		Sensor<?> sensorId = data.getGpsSensorHelper().getSensorID();
+		Sensor<?> sensor = sensorRegistry.getSensor(sensorId);
 		if (sensor == null) {
 			GpsSensor newSensor;
 			try {
@@ -246,7 +247,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	@Override
 	public void onRemove(Vehicle<? extends VehicleData> vehicle) {
 		// Check sensor
-		Sensor newSensor = sensorRegistry.getSensor(vehicle.getData().getGpsSensorHelper().getSensorID());
+		Sensor<?> newSensor = sensorRegistry.getSensor(vehicle.getData().getGpsSensorHelper().getSensorID());
 		if (newSensor != null) {
 			vehicle.setHasGPS(false);
 			sensorRegistry.removeSensor(newSensor);

@@ -21,14 +21,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.service.Orientation;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
+import java.util.HashSet;
+import java.util.Set;
 import javax.vecmath.Vector2d;
 
 /**
@@ -40,15 +41,15 @@ import javax.vecmath.Vector2d;
  */
 public class AdvancedCarFinder implements SurroundingCarsFinder {
 	@Override
-	public List<Vehicle<? extends VehicleData>> findCars(Vehicle<? extends VehicleData> car, long time) {
+	public Set<Vehicle<? extends VehicleData>> findCars(Vehicle<? extends VehicleData> car, long time) {
 		TrafficGraphExtensions trafficGraphExtensions = car.getTrafficGraphExtensions();
 
-		List<Vehicle<? extends VehicleData>> allCarsOnEdge = new ArrayList<>();
+		Set<Vehicle<? extends VehicleData>> allCarsOnEdge;
 		double visibilityRange = 0.075 * (time / 1000d);
-		Node fromNode = car.getCurrentNode();
-		Node toNode = car.getNextNode();
-		Edge currentEdge = car.getCurrentEdge();
-		Edge nextEdge = null;
+		NavigationNode fromNode = car.getCurrentNode();
+		NavigationNode toNode = car.getNextNode();
+		NavigationEdge<?,?> currentEdge = car.getCurrentEdge();
+		NavigationEdge<?,?> nextEdge = null;
 
 		// Visibility range erhoehen, da der Startpunkt auf der Edge liegt
 		// visibilityRange += car.getPosition().length();
@@ -72,7 +73,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		// AdvancedCarFinder.log.debug("Visibility range: " + visibilityRange);
 
 		// Liste mit Kanten
-		List<Edge> edges = new ArrayList<>();
+		List<NavigationEdge<?,?>> edges = new ArrayList<>();
 		edges.add(currentEdge);
 
 		double edgesLength = 0;
@@ -81,9 +82,9 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		// Visibilityrange des gegebenen Vehicles befinden
 		while (visibilityRange >= edgesLength) {
 			try {
-				nextEdge = car.getPath().getEdgePath().get(currentEdge.getIndex() + 1);
+				nextEdge = car.getPath().get(car.getPath().indexOf(currentEdge) + 1);
 				fromNode = toNode;
-				toNode = car.getPath().getNodePath().get(toNode.getIndex() + 1);
+				toNode = car.getNodePath().get(car.getNodePath().indexOf(toNode) + 1);
 			} catch (IndexOutOfBoundsException e) {
 				break;
 			}
@@ -125,7 +126,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 
 	@Override
 	public Vehicle<? extends VehicleData> findNearestCar(Vehicle<? extends VehicleData> car, long time) {
-		List<Vehicle<? extends VehicleData>> vehicles = this.findCars(car, time);
+		Set<Vehicle<? extends VehicleData>> vehicles = this.findCars(car, time);
 		Vector2d carPos = new Vector2d(car.getPosition().x, car.getPosition().y);
 
 		Vehicle<? extends VehicleData> nearestCar = null;

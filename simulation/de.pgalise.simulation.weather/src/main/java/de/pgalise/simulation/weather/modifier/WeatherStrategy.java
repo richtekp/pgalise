@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.modifier;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 

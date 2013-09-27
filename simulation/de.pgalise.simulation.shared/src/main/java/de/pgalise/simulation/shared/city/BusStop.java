@@ -1,78 +1,61 @@
-/* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
- 
 package de.pgalise.simulation.shared.city;
 
-import java.io.Serializable;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 
 /**
- * A bus stop is a {@link Node} with a bus stop name.
- * @author Timo
+ *
+ * @param <N> 
+ * @author richter
  */
-public class BusStop extends Node implements Serializable {
-	private static final long serialVersionUID = -8112215320374809034L;
-	private String name;
+public interface BusStop<N extends NavigationNode> extends Identifiable, NavigationNode {
+	
+
+	public Coordinate getLocation() ;
+
+	public void setLocation(Coordinate location) ;
 
 	/**
-	 * New bus stop.
-	 * 
-	 * @param name
-	 * @param latitude
-	 * @param longitude
+	 * @return the stopName
 	 */
-	public BusStop(String id, String name, double latitude, double longitude) {
-		super(id, latitude, longitude);
-		this.name = name;
-	}
+	public String getStopName() ;
 
-	public String getName() {
-		return this.name;
-	}
+	/**
+	 * @param stopName the stopName to set
+	 */
+	public void setStopName(String stopName) ;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public String getStopCode() ;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+	public void setStopCode(String stopCode) ;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		BusStop other = (BusStop) obj;
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
+	public String getZoneId() ;
+
+	public void setZoneId(String zoneId) ;
+
+	public String getStopUrl() ;
+
+	public void setStopUrl(String stopUrl) ;
+
+	public String getLocationType() ;
+
+	public void setLocationType(String locationType) ;
+
+	public String getParentStation() ;
+
+	public void setParentStation(String parentStation) ;
+
+	public String getStopTimezone() ;
+
+	public void setStopTimezone(String stopTimezone) ;
+
+	public String getWheelchairBoarding() ;
+
+	public void setWheelchairBoarding(String wheelchairBoarding) ;
+
 }

@@ -19,8 +19,8 @@ package de.pgalise.util.weathercollector;
 import de.pgalise.it.TestUtils;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
@@ -88,7 +88,7 @@ public class DefaultWeatherServiceManagerTest {
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
 		entityManager.joinTransaction();
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
+		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
 			new Coordinate(1,
 			1),
 			new Coordinate(1,
@@ -100,7 +100,7 @@ public class DefaultWeatherServiceManagerTest {
 			new Coordinate(1,
 			1)
 		});
-		City city = new City("Berlin",
+		DefaultCity city = new DefaultCity("Berlin",
 			3375222,
 			80,
 			true,

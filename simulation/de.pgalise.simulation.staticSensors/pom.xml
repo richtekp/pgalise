@@ -17,10 +17,10 @@
 
 	<!-- Hier die Abhängigkeiten definieren -->
 	<dependencies>
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>weather</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared</artifactId>
@@ -33,10 +33,10 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>energy</artifactId>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>traffic</artifactId>
-		</dependency>
+		</dependency>-->
 	 <dependency>
 	  <groupId>com.vividsolutions</groupId>
 	  <artifactId>jts</artifactId>

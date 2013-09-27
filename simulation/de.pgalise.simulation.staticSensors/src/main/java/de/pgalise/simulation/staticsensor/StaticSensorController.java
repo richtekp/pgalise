@@ -16,7 +16,9 @@
  
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.sensorFramework.SensorManagerController;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 
 /**
@@ -27,4 +29,4 @@ import de.pgalise.simulation.shared.event.Event;
  * @author Marcus
  * @author Timo
  */
-public interface StaticSensorController extends SensorManagerController<Event> {}
+public interface StaticSensorController extends SensorManagerController<Event, StartParameter, InitParameter> {}

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,7 +28,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.impl.OSMCityInfrastructureData;
 

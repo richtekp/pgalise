@@ -16,6 +16,9 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 import java.util.Iterator;
@@ -23,27 +26,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import org.graphstream.algorithm.Algorithm;
-import org.graphstream.algorithm.Dijkstra;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficVisualizer;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.model.vehicle.ExtendedXMLVehicleFactory;
 import de.pgalise.simulation.traffic.internal.server.jam.DefaultNaSchModel;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
 import de.pgalise.util.generic.MutableBoolean;
@@ -69,10 +66,6 @@ public class TrafficVisualizerTest {
 	 */
 	private TrafficGraphExtensions ee;
 
-	/**
-	 * Algorithm for route construction
-	 */
-	private Algorithm algo = new Dijkstra();
 
 	@Before
 	public void init() {
@@ -88,7 +81,7 @@ public class TrafficVisualizerTest {
 	public void vizualizerTest() throws InterruptedException {
 		final MutableBoolean exit = new MutableBoolean();
 		exit.setValue(false);
-		final Graph graph = createGraph();
+		final TrafficGraph<?> graph = createGraph();
 		algo.init(graph);
 		final List<Vehicle<? extends VehicleData>> vehicles = createVehicles(graph);
 
@@ -117,7 +110,7 @@ public class TrafficVisualizerTest {
 					for (Iterator<Vehicle<? extends VehicleData>> it = vehicles.iterator(); it.hasNext();) {
 						Vehicle<? extends VehicleData> v = it.next();
 						nasch.update(v, currentTime, graph, 0.5);
-						for (final Node node : graph) {
+						for (final NavigationNode node : graph) {
 							try {
 								ee.getTrafficRule(node).update(
 										new EventList(null, allTime, UUID.randomUUID()));
@@ -126,7 +119,7 @@ public class TrafficVisualizerTest {
 							}
 						}
 						// v.update(currentTime);
-						if (v.getState() == State.REACHED_TARGET) {
+						if (v.getVehicleState() == VehicleStateEnum.REACHED_TARGET) {
 							it.remove();
 						}
 					}
@@ -157,7 +150,7 @@ public class TrafficVisualizerTest {
 	 * @return List of vehicles which got positioned on the graph
 	 * @throws InterruptedException
 	 */
-	private List<Vehicle<? extends VehicleData>> createVehicles(Graph graph) throws InterruptedException {
+	private List<Vehicle<? extends VehicleData>> createVehicles(TrafficGraph<?> graph) throws InterruptedException {
 
 		// Sets the max speed of the edges
 		ee.setMaxSpeed(graph.getEdge("ab"), 50.0);
@@ -293,29 +286,29 @@ public class TrafficVisualizerTest {
 	 * 
 	 * @return created graph
 	 */
-	private Graph createGraph() {
-		Graph graph = new SingleGraph("city");
-		Node a = this.addNode(graph, "a", 1, 1);
-		Node b = this.addNode(graph, "b", 2, 2);
-		Node c = this.addNode(graph, "c", 4, 7);
-		Node d = this.addNode(graph, "d", 9, 4);
-		Node e = this.addNode(graph, "e", 11, 7);
-		Node f = this.addNode(graph, "f", 2, 10);
+	private TrafficGraph<?> createGraph() {
+		TrafficGraph<?> graph = new TrafficGraph<>(DefaultTrafficEdge.class);
+		NavigationNode a = this.addNode(graph, "a", 1, 1);
+		NavigationNode b = this.addNode(graph, "b", 2, 2);
+		NavigationNode c = this.addNode(graph, "c", 4, 7);
+		NavigationNode d = this.addNode(graph, "d", 9, 4);
+		NavigationNode e = this.addNode(graph, "e", 11, 7);
+		NavigationNode f = this.addNode(graph, "f", 2, 10);
 
-		Edge ab = null;
+		NavigationEdge<?.?> ab = null;
 		ab = graph.addEdge("ab", a, b);
 		ab.setAttribute("weight", 1);
-		Edge bc = null;
+		NavigationEdge<?.?> bc = null;
 		bc = graph.addEdge("bc", b, c);
 		bc.setAttribute("weight", 1);
-		Edge cd = null;
+		NavigationEdge<?.?> cd = null;
 		cd = graph.addEdge("cd", c, d);
 		ee.setPriorityRoad(cd, true);
 		cd.setAttribute("weight", 1);
-		Edge de = null;
+		NavigationEdge<?.?> de = null;
 		de = graph.addEdge("de", d, e);
 		de.setAttribute("weight", 1);
-		Edge fc = null;
+		NavigationEdge<?.?> fc = null;
 		fc = graph.addEdge("fc", f, c);
 		ee.setPriorityRoad(fc, true);
 		fc.setAttribute("weight", 1);
@@ -335,8 +328,8 @@ public class TrafficVisualizerTest {
 	 *            Y-Position of the node
 	 * @return The added node
 	 */
-	private Node addNode(Graph graph, String id, double x, double y) {
-		Node node = graph.addNode(id);
+	private NavigationNode addNode(TrafficGraph<?> graph, String id, double x, double y) {
+		NavigationNode node = graph.addNode(id);
 		node.setAttribute("position", new Vector2d(x, y));
 		return node;
 	}
@@ -350,7 +343,7 @@ public class TrafficVisualizerTest {
 	 *            Destination node
 	 * @return Path
 	 */
-	protected Path getRoute(Node start, Node dest) {
+	protected Path getRoute(NavigationNode start, NavigationNode dest) {
 		((Dijkstra) algo).setSource(start);
 		algo.compute();
 

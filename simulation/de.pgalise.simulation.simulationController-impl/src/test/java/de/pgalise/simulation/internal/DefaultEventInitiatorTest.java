@@ -42,8 +42,12 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.shared.event.energy.EnergyEvent;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
@@ -82,11 +86,10 @@ public class DefaultEventInitiatorTest {
 		cal.set(2011, 0, 0, 1, 0, 0);
 		endTimestamp = cal.getTimeInMillis();
 
-		initParameter = new InitParameter(null, null, startTimestamp, endTimestamp, INTERVAL, CLOCK_GENERATOR_INTERVAL,
+		initParameter = new InitParameter( null, startTimestamp, endTimestamp, INTERVAL, CLOCK_GENERATOR_INTERVAL,
 				"", "", null, null);
 
-		startParameter = new StartParameter(null, true, null,
-				null);
+		startParameter = new StartParameter( true, null);
 
 		energyController = new EnergyControllerMock();
 		weatherController = new WeatherControllerMock();
@@ -109,7 +112,7 @@ public class DefaultEventInitiatorTest {
 		testClass = new DefaultEventInitiator();
 		testClass._setServiceDictionary(serviceDictionary);
 		testClass.setOperationCenterController(operationCenterController);
-		List<Controller<?>> controllerCollection = new LinkedList<>();
+		List<Controller<?,?,?>> controllerCollection = new LinkedList<>();
 		controllerCollection.add(staticSensorController);
 		testClass.setFrontController(controllerCollection);
 		testClass.setControlCenterController(controlCenterController);
@@ -171,7 +174,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
@@ -179,11 +182,11 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
 			return false;
 		}
 
@@ -244,19 +247,19 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensor(SensorHelper sensor) throws SensorException {
+		public void deleteSensor(SensorHelper<?> sensor) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
 			return false;
 		}
 
@@ -310,23 +313,23 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensor(SensorHelper sensor) throws SensorException {
+		public void createSensor(SensorHelper<?> sensor) throws SensorException {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensor(SensorHelper sensor) throws SensorException {
+		public void deleteSensor(SensorHelper<?> sensor) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
 			return false;
 		}
 
@@ -375,7 +378,7 @@ public class DefaultEventInitiatorTest {
 
 		private int updateCounter;
 
-		public WeatherControllerMock() {
+		WeatherControllerMock() {
 			this.updateCounter = 0;
 		}
 
@@ -388,7 +391,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(StartParameter param) throws IllegalStateException {
+		public void start(InfrastructureStartParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -396,7 +399,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(EventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<WeatherEvent> simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -438,12 +441,12 @@ public class DefaultEventInitiatorTest {
 
 		private int updateCounter;
 
-		public EnergyControllerMock() {
+		EnergyControllerMock() {
 			this.updateCounter = 0;
 		}
 
 		@Override
-		public void init(InitParameter param) throws InitializationException, IllegalStateException {
+		public void init(InfrastructureInitParameter param) throws InitializationException, IllegalStateException {
 		}
 
 		@Override
@@ -451,7 +454,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(StartParameter param) throws IllegalStateException {
+		public void start(InfrastructureStartParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -459,7 +462,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(EventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<EnergyEvent> simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -495,23 +498,23 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensor(SensorHelper sensor) throws SensorException {
+		public void createSensor(SensorHelper<?> sensor) throws SensorException {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensor(SensorHelper sensor) throws SensorException {
+		public void deleteSensor(SensorHelper<?> sensor) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
 			return false;
 		}
 
@@ -533,7 +536,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(EventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<Event> simulationEventList) throws IllegalStateException {
 		}
 
 		@Override
@@ -542,7 +545,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void addSimulationEventList(EventList simulationEventList) {
+		public void addSimulationEventList(EventList<?> simulationEventList) {
 		}
 
 		@Override
@@ -580,7 +583,7 @@ public class DefaultEventInitiatorTest {
 		/**
 		 * Constructor
 		 */
-		public ControlCenterControllerMock() {
+		ControlCenterControllerMock() {
 			this.updateCount = 0;
 		}
 		
@@ -598,7 +601,7 @@ public class DefaultEventInitiatorTest {
 		public void stop() throws IllegalStateException {}
 
 		@Override
-		public void update(EventList simulationEventList)
+		public void update(EventList<Event> simulationEventList)
 				throws IllegalStateException {
 			this.updateCount++;
 		}

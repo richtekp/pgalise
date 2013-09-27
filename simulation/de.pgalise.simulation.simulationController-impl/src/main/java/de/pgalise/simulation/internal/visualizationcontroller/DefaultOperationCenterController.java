@@ -45,7 +45,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
 /**
@@ -57,11 +57,12 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 @Lock(LockType.READ)
 @Local
 @Singleton(name = "de.pgalise.simulation.visualizationcontroller.OperationCenterControler")
-public class DefaultOperationCenterController extends AbstractController<Event> implements OperationCenterController {
+public class DefaultOperationCenterController extends AbstractController<Event, StartParameter, InitParameter> implements OperationCenterController {
 	private static final Logger log = LoggerFactory.getLogger(DefaultOperationCenterController.class);
 	private static final String NAME = "OperationCenterController";
 	private static final TypeToken<Collection<SensorHelper>> sensorCollectionTypeToken = new TypeToken<Collection<SensorHelper>>() {
 	};
+	private static final long serialVersionUID = 1L;
 	private int connectionTimeout;
 	private String servletURL;
 	@EJB
@@ -174,7 +175,7 @@ public class DefaultOperationCenterController extends AbstractController<Event> 
 	protected void onInit(InitParameter param) throws InitializationException {
 		log.debug("init");
 		this.servletURL = param.getOperationCenterURL();
-		InitParameter initParameter = new InitParameter(null, param.getServerConfiguration(),
+		InitParameter initParameter = new InitParameter(param.getServerConfiguration(),
 				param.getStartTimestamp(), param.getEndTimestamp(), param.getInterval(),
 				param.getClockGeneratorInterval(), param.getOperationCenterURL(), param.getControlCenterURL(),
 				param.getTrafficFuzzyData(), param.getCityBoundary());
@@ -193,10 +194,9 @@ public class DefaultOperationCenterController extends AbstractController<Event> 
 	@Override
 	protected void onStart(StartParameter param) {
 		log.debug("start");
-		StartParameter startParameterCopy = new StartParameter(param.getCity(),
+		StartParameter startParameterCopy = new StartParameter(
 				param.isAggregatedWeatherDataEnabled(),
-				param.getWeatherEventHelperList(),
-				param.getBusRouteList());
+				param.getWeatherEventHelperList());
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("start", "true");
 		requestParameterMap.put("json", this.gson.toJson(startParameterCopy));
@@ -225,7 +225,7 @@ public class DefaultOperationCenterController extends AbstractController<Event> 
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("createsensors", "true");
 		requestParameterMap.put("json", gson.toJson(sensors, sensorCollectionTypeToken.getType()));
@@ -233,7 +233,7 @@ public class DefaultOperationCenterController extends AbstractController<Event> 
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("deletesensors", "true");
 		requestParameterMap.put("json", gson.toJson(sensors, sensorCollectionTypeToken.getType()));

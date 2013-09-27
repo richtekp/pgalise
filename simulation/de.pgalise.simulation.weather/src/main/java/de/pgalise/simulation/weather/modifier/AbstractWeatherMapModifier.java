@@ -21,7 +21,7 @@ import java.util.Comparator;
 import java.util.Properties;
 import java.util.Random;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.StationData;

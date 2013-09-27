@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.traffic.Building;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 
 /**

@@ -16,13 +16,16 @@
  
 package de.pgalise.simulation.traffic.server.rules;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.SimulationComponent;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.TrafficGraph;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
@@ -31,137 +34,24 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * 
  * @author Marcus
  */
-public abstract class TrafficRule implements SimulationComponent {
+public abstract class TrafficRule extends AbstractIdentifiable implements SimulationComponent<Event> {
 	private static final Logger log = LoggerFactory
 			.getLogger(TrafficRule.class);
 
-	/**
-	 * Class that records all relevant data for a traffic rule 'transaction'
-	 * 
-	 * @author Marcus
-	 */
-	public static class TrafficRuleData {
+	private final NavigationNode node;
+	private TrafficGraph<?> graph;
 
-		/**
-		 * the considered {@link Vehicle}
-		 */
-		private final Vehicle<? extends VehicleData> vehicle;
-
-		/**
-		 * the {@link Edge} where the considered {@link Vehicle} is coming from
-		 */
-		private final Edge from;
-
-		/**
-		 * the {@link Edge} to which the considered {@link Vehicle} is planning
-		 * to go
-		 */
-		private final Edge to;
-
-		/**
-		 * the {@link TrafficRuleCallback} which method are invoked on certain
-		 * events
-		 */
-		private final TrafficRuleCallback callback;
-
-		/**
-		 * Creates a {@link TrafficRuleData} with the passed arguments.
-		 * 
-		 * @param vehicle
-		 *            the considered {@link Vehicle}
-		 * @param from
-		 *            the {@link Edge} where the considered {@link Vehicle} is
-		 *            coming from
-		 * @param to
-		 *            the {@link Edge} to which the considered {@link Vehicle}
-		 *            is planning to go
-		 * @param callback
-		 *            the {@link TrafficRuleCallback} which method are invoked
-		 *            on certain events
-		 * @throws IllegalArgumentException
-		 *             if any of the passed arguments is null
-		 */
-		public TrafficRuleData(final Vehicle<? extends VehicleData> vehicle,
-				final Edge from, final Edge to,
-				final TrafficRuleCallback callback)
-				throws IllegalArgumentException {
-			if (vehicle == null) {
-				throw new IllegalArgumentException(
-						ExceptionMessages.getMessageForNotNull("vehicle"));
-			}
-			if (from == null) {
-				throw new IllegalArgumentException(
-						ExceptionMessages.getMessageForNotNull("from"));
-			}
-			if (to == null) {
-				throw new IllegalArgumentException(
-						ExceptionMessages.getMessageForNotNull("to"));
-			}
-			if (callback == null) {
-				throw new IllegalArgumentException(
-						ExceptionMessages.getMessageForNotNull("callback"));
-			}
-			this.vehicle = vehicle;
-			this.from = from;
-			this.to = to;
-			this.callback = callback;
-		}
-
-		/**
-		 * Returns the considered {@link Vehicle}.
-		 * 
-		 * @return the considered {@link Vehicle}
-		 */
-		public Vehicle<? extends VehicleData> getVehicle() {
-			return this.vehicle;
-		}
-
-		/**
-		 * Returns the {@link Edge} where the considered {@link Vehicle} is
-		 * coming from.
-		 * 
-		 * @return the {@link Edge} where the considered {@link Vehicle} is
-		 *         coming from
-		 */
-		public Edge getFrom() {
-			return this.from;
-		}
-
-		/**
-		 * Returns the {@link Edge} to which the considered {@link Vehicle} is
-		 * planning to go.
-		 * 
-		 * @return the {@link Edge} to which the considered {@link Vehicle} is
-		 *         planning to go
-		 */
-		public Edge getTo() {
-			return this.to;
-		}
-
-		/**
-		 * Returns the {@link TrafficRuleCallback} which method are invoked on
-		 * certain events.
-		 * 
-		 * @return the {@link TrafficRuleCallback} which method are invoked on
-		 *         certain events
-		 */
-		public TrafficRuleCallback getCallback() {
-			return this.callback;
-		}
-	}
-
-	private final Node node;
-
-	public TrafficRule(final Node node) throws RuntimeException {
+	public TrafficRule(final NavigationNode node,TrafficGraph<?> graph) throws RuntimeException {
 		if (node == null) {
 			throw new IllegalArgumentException(
 					ExceptionMessages.getMessageForNotNull("node"));
 		}
 		this.checkNode(node);
 		this.node = node;
+		this.graph = graph;
 	}
 
-	protected abstract void checkNode(final Node node) throws RuntimeException;
+	protected abstract void checkNode(final NavigationNode node) throws RuntimeException;
 
 	/**
 	 * Registers a {@link Vehicle} with the passed arguments. The arguments
@@ -191,7 +81,7 @@ public abstract class TrafficRule implements SimulationComponent {
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
 	public abstract void register(final Vehicle<? extends VehicleData> vehicle,
-			final Edge from, final Edge to, final TrafficRuleCallback callback)
+			final NavigationEdge<?,?> from, final NavigationEdge<?,?> to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException;
 
 	/**
@@ -222,7 +112,7 @@ public abstract class TrafficRule implements SimulationComponent {
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
 	public void register(final Vehicle<? extends VehicleData> vehicle,
-			final Node from, final Node to, final TrafficRuleCallback callback)
+			final NavigationNode from, final NavigationNode to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException {
 		if (from == null) {
 			throw new IllegalArgumentException(
@@ -237,10 +127,10 @@ public abstract class TrafficRule implements SimulationComponent {
 		log.debug("to:"+ to.getId());
 		log.debug("this.node:"+ this.node.getId());
 		
-		Edge edgeFrom = null;
+		NavigationEdge<?,?> edgeFrom = null;
 		log.debug("#Edges conntected to node 'from': "
-				+ from.getEdgeSet().size());
-		for (final Edge edge : from) {
+				+ graph.edgesOf(from).size());
+		for (final NavigationEdge<?,?> edge : graph.edgesOf(from)) {
 			log.debug("Node conntected with edge: "+edge.getOpposite(from).getId());
 			if (edge.getOpposite(from).getId().equals(this.getNode().getId())) {
 				edgeFrom = edge;
@@ -253,8 +143,8 @@ public abstract class TrafficRule implements SimulationComponent {
 							+ "'s node trough an edge.");
 		}
 
-		Edge edgeTo = null;
-		for (final Edge edge : to) {
+		NavigationEdge<?,?> edgeTo = null;
+		for (final NavigationEdge<?,?> edge : graph.edgesOf(to)) {
 			if (edge.getOpposite(to).getId().equals(this.getNode().getId())) {
 				edgeTo = edge;
 			}
@@ -271,7 +161,16 @@ public abstract class TrafficRule implements SimulationComponent {
 	 * 
 	 * @return the {@link Node} on which this {@link TrafficRule} is applied
 	 */
-	public Node getNode() {
+	public NavigationNode getNode() {
 		return this.node;
+	}
+
+	public void setGraph(
+		TrafficGraph<?> graph) {
+		this.graph = graph;
+	}
+
+	public TrafficGraph<?> getGraph() {
+		return graph;
 	}
 }

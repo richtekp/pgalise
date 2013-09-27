@@ -24,11 +24,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.shared.city.Building;
-import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.traffic.internal.DefaultBuilding;
 import de.pgalise.simulation.shared.city.Node;
 import de.pgalise.simulation.shared.city.Way;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.util.cityinfrastructure.impl.DefaultBuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.impl.OSMCityInfrastructureData;
 
@@ -105,7 +105,7 @@ public class OSMCityInfrastructureDataTest {
 		int radiusInMeter = 500;
 		Node tmpNode = osmParser.getNodes().get((int) (Math.random() * osmParser.getNodes().size()));
 		Coordinate centerPoint = new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude());
-		for (Building building : osmParser.getBuildingsInRadius(centerPoint, radiusInMeter)) {
+		for (DefaultBuilding building : osmParser.getBuildingsInRadius(centerPoint, radiusInMeter)) {
 			assertTrue(this.getDistanceInMeter(centerPoint, building.getCenterPoint()) <= radiusInMeter);
 		}
 	}

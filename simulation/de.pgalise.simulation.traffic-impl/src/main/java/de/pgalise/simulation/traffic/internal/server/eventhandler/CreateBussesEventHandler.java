@@ -16,14 +16,12 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +29,13 @@ import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.traffic.BusTrip;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.traffic.internal.DefaultBusTrip;
 import de.pgalise.simulation.traffic.internal.model.vehicle.RandomBusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -65,7 +67,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 	/**
 	 * Traffic server
 	 */
-	private TrafficServerLocal server;
+	private TrafficServerLocal<?> server;
 
 	/**
 	 * 
@@ -90,13 +92,13 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 	 * @param busTrips
 	 *            List with bus trips
 	 */
-	public void createBusses(List<BusTrip> busTrips) {
+	public void createBusses(List<BusTrip<?,?>> busTrips) {
 		int c = 1;
 		for (int i = 0; i < busTrips.size(); i++) {
-			BusTrip trip = busTrips.get(i);
+			BusTrip<?,?> trip = busTrips.get(i);
 			if (trip.getBusStops().size() > 0) {
-				Path path = this.server.getBusRoute(trip.getBusStops());
-				if (path.getNodeCount() > 1) {
+				List<NavigationEdge<?,?>> path = this.server.getBusRoute(trip.getBusStops());
+				if (path != null) {
 					Vehicle<BusData> b = this.server.getBusFactory().createRandomBus(trip.getGpsSensor(),
 							trip.getInfraredSensor());
 					b.getData().setBusStopOrder(trip.getBusStops());
@@ -105,7 +107,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 					b.getData().setBusStops(this.server.getBusStopNodes(trip.getBusStops()));
 
 					// Correct the bus stop order
-					for (Iterator<String> l = b.getData().getBusStopOrder().iterator(); l.hasNext();) {
+					for (Iterator<BusStop<?>> l = b.getData().getBusStopOrder().iterator(); l.hasNext();) {
 						if (!b.getData().getBusStops().containsKey(l.next())) {
 							l.remove();
 						}
@@ -142,7 +144,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 						// item.setLastUpdate(cal.getTimeInMillis() - this.server.getUpdateIntervall());
 						this.server.getScheduler().scheduleItem(item);
 					} catch (IllegalAccessException e) {
-						e.printStackTrace();
+						throw new RuntimeException(e);
 					}
 					// try {
 					// this.createGpsSensor(trip.getGpsSensor(), b);
@@ -174,9 +176,9 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 		for (CreateRandomVehicleData vehicleData : cbe.getCreateRandomVehicleDataList()) {
 			SensorHelper infraredSensor = null, gpsSensor = null;
 			for(SensorHelper sensorHelper : vehicleData.getSensorHelpers()) {
-				if(sensorHelper.getSensorType().equals(SensorType.GPS_BUS)) {
+				if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_BUS)) {
 					gpsSensor= sensorHelper;
-				}else if(sensorHelper.getSensorType().equals(SensorType.INFRARED)) {
+				}else if(sensorHelper.getSensorType().equals(SensorTypeEnum.INFRARED)) {
 					infraredSensor = sensorHelper;
 				}
 			}
@@ -202,20 +204,16 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 		}
 
 		// Create all trips
-		List<BusTrip> allTrips = new ArrayList<>();
+		List<BusTrip<?,?>> allTrips = new ArrayList<>();
 		BusService bs = new DefaultBusService();
-		try {
-			for (String busRoute : cbe.getRouteIds()) {
-				allTrips.addAll(bs.getBusLineData(busRoute, cbe.getSimulationTime()));
-			}
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+		for (BusRoute<?> busRoute : cbe.getBusRoutes()) {
+			allTrips.addAll(bs.getBusLineData(busRoute, cbe.getSimulationTime()));
 		}
 
 		// Combine busses, other sensors with trips
-		List<BusTrip> trips = new ArrayList<>();
+		List<BusTrip<?,?>> trips = new ArrayList<>();
 		for (int i = 0; i < allTrips.size(); i++) {
-			BusTrip t = allTrips.get(i);
+			BusTrip<?,?> t = allTrips.get(i);
 			t.setBus(buses.get(i));
 			t.setGpsSensor(gpsSensors.get(i));
 			t.setInfraredSensor(infraredSensors.get(i));
@@ -238,7 +236,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 	}
 
 	@Override
-	public void init(TrafficServerLocal server) {
+	public void init(TrafficServerLocal<CreateBussesEvent> server) {
 		this.server = server;
 	}
 }

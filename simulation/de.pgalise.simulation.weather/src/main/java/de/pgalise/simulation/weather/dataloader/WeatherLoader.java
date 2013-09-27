@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.dataloader;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.City;
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.WeatherCondition;

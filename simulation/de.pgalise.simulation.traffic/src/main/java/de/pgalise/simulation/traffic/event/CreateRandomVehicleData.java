@@ -19,8 +19,8 @@ package de.pgalise.simulation.traffic.event;
 import java.io.Serializable;
 import java.util.List;
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.traffic.VehicleInformation;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.VehicleInformation;
 
 /**
  * Holds data for a random vehicle.
@@ -37,7 +37,7 @@ public class CreateRandomVehicleData implements Serializable {
 	/**
 	 * List of SensorHelper for sensors
 	 */
-	private List<SensorHelper> sensorHelpers;
+	private List<SensorHelper<?>> sensorHelpers;
 
 	/**
 	 * Information about the vehicle
@@ -52,7 +52,7 @@ public class CreateRandomVehicleData implements Serializable {
 	 * @param vehicleInformation
 	 *            Information about the vehicle
 	 */
-	public CreateRandomVehicleData(List<SensorHelper> sensorHelpers, VehicleInformation vehicleInformation) {
+	public CreateRandomVehicleData(List<SensorHelper<?>> sensorHelpers, VehicleInformation vehicleInformation) {
 		this.sensorHelpers = sensorHelpers;
 		this.vehicleInformation = vehicleInformation;
 	}
@@ -86,7 +86,7 @@ public class CreateRandomVehicleData implements Serializable {
 		return true;
 	}
 
-	public List<SensorHelper> getSensorHelpers() {
+	public List<SensorHelper<?>> getSensorHelpers() {
 		return sensorHelpers;
 	}
 
@@ -103,7 +103,7 @@ public class CreateRandomVehicleData implements Serializable {
 		return result;
 	}
 
-	public void setSensorHelpers(List<SensorHelper> sensorHelpers) {
+	public void setSensorHelpers(List<SensorHelper<?>> sensorHelpers) {
 		this.sensorHelpers = sensorHelpers;
 	}
 
