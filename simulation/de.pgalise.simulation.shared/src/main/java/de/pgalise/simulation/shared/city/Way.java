@@ -23,9 +23,11 @@ import de.pgalise.simulation.shared.city.WayTagEnum;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.jgrapht.DirectedGraph;
 
 /**
  * A way is logical union of {@link NavigationEdge}s, i.e. a highway with a number. Information about oneway limilations or speed limits are encapsulated in {@link NavigationEdge} because these constraints might not apply to the entire way as definded above.
@@ -123,5 +125,26 @@ public class Way<E extends NavigationEdge<N,E>, N extends NavigationNode> implem
 			retValue.add(edge.getTarget());
 		}
 		return retValue;
+	}
+	
+	public void setEdgeList(List<N> nodes, DirectedGraph<N,E> graph) {
+		List<E> edgeList0 = new LinkedList<>();
+		Iterator<N> it = nodes.iterator();
+		N last = it.next();
+		while(it.hasNext()) {
+			N current = it.next();
+			E edge = graph.getEdge(last,
+				current);
+			if(edge != null) {
+				edgeList0.add(edge);
+			}
+		}
+		this.edgeList = edgeList0;
+	}
+	
+	public void setOneWay() {
+		for(E edge : edgeList) {
+			if(!edge.)
+		}
 	}
 }

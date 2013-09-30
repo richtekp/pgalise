@@ -25,6 +25,11 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.event.AbstractVehicleEvent;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
@@ -34,7 +39,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,11 +48,11 @@ import org.slf4j.LoggerFactory;
  * certain time a new vehicle with the same ID and properties are generated that has the the given target node as start
  * node and a random target node for the {@link TrafficTrip}. The class are used by the {@link AttractionTrafficEvent}.
  * 
- * @param <E> 
+ * @param <D> 
  * @author Andreas
  * @version 1.0
  */
-public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> extends AbstractTrafficEventHandler<E> implements VehicleEventHandler<E> {
+public abstract class AbstractVehicleEventHandler<D extends VehicleData> extends AbstractTrafficEventHandler<D> implements VehicleEventHandler<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, AbstractVehicleEvent<D>, BaseVehicle<D>> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(AbstractVehicleEventHandler.class);
 
 	/**
@@ -68,9 +73,9 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 *            Vehicle informations
 	 * @param trip
 	 *            Traffic trip
-	 * @return Vehicle<? extends VehicleData>
+	 * @return Vehicle<? extends VehicleData,N,E>
 	 */
-	public Vehicle<? extends VehicleData> createVehicle(CreateRandomVehicleData data, TrafficTrip trip) {
+	public BaseVehicle<D> createVehicle(CreateRandomVehicleData data, TrafficTrip trip) {
 		switch (data.getVehicleInformation().getVehicleType()) {
 			case TRUCK:
 				return this.createTruck(trip, data.getVehicleInformation()
@@ -90,7 +95,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	}
 
 	@Override
-	public void init(TrafficServerLocal server) {
+	public void init(DefaultTrafficServer<D> server) {
 		setResponsibleServer(server);
 		random = new Random(server.getServiceDictionary().getRandomSeedService()
 				.getSeed(AbstractVehicleEventHandler.class.getName()));
@@ -104,10 +109,10 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 * @param startTime
 	 *            start time of the vehicle
 	 */
-	public void scheduleVehicle(Vehicle<? extends VehicleData> vehicle, long startTime) {
+	public void scheduleVehicle(BaseVehicle<D> vehicle, long startTime) {
 		if (vehicle != null) {
 			try {
-				ScheduleItem item = new ScheduleItem(vehicle, startTime, this.getResponsibleServer().getUpdateIntervall());
+				DefaultScheduleItem item = new DefaultScheduleItem(vehicle, startTime, this.getResponsibleServer().getUpdateIntervall());
 				// item.setLastUpdate(startTime - this.getServer().getUpdateIntervall());
 				this.getResponsibleServer().getScheduler().scheduleItem(item);
 				// server.getScheduler().scheduleItem(new Item(v, trip.getStartTimeWayBack(), true));
@@ -152,9 +157,9 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 *            True if the GPS sensor should be activated
 	 * @return bicycle
 	 */
-	protected Vehicle<BicycleData> createBike(TrafficTrip trip, String name, double velocity,
+	protected BaseVehicle<BicycleData> createBike(TrafficTrip trip, String name, double velocity,
 			List<SensorHelper<?>> sensorHelpers, boolean gpsActivated) {
-		Vehicle<BicycleData> bike = null;
+		BaseVehicle<BicycleData> bike = null;
 		TrafficTrip tmpTrip = trip;
 
 		List<NavigationEdge<?,?>> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
@@ -199,9 +204,9 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 *            True if the GPS sensor should be activated
 	 * @return Car
 	 */
-	protected Vehicle<CarData> createCar(final TrafficTrip trip, final String name,
+	protected BaseVehicle<CarData> createCar(final TrafficTrip trip, final String name,
 			final double velocity, final List<SensorHelper<?>> sensorHelpers, final boolean gpsActivated) {
-		Vehicle<CarData> car = null;
+		BaseVehicle<CarData> car = null;
 		TrafficTrip tmpTrip = trip;
 
 		// log.debug("Calculating route "+trip);
@@ -241,9 +246,9 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 *            True if the GPS sensor should be activated
 	 * @return Motorcycle
 	 */
-	protected Vehicle<MotorcycleData> createMotorcycle(TrafficTrip trip, String name, double velocity,
+	protected BaseVehicle<MotorcycleData> createMotorcycle(TrafficTrip trip, String name, double velocity,
 			List<SensorHelper<?>> sensorHelpers, boolean gpsActivated) {
-		Vehicle<MotorcycleData> motorcycle = null;
+		BaseVehicle<MotorcycleData> motorcycle = null;
 		TrafficTrip tmpTrip = trip;
 
 		List<NavigationEdge<?,?>> path = this.getResponsibleServer().getShortestPath(
@@ -284,9 +289,9 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 *            True if the GPS sensor should be activated
 	 * @return Truck
 	 */
-	protected Vehicle<TruckData> createTruck(TrafficTrip trip, String name, double velocity,
+	protected BaseVehicle<TruckData> createTruck(TrafficTrip trip, String name, double velocity,
 			List<SensorHelper<?>> sensorHelpers, boolean gpsActivated) {
-		Vehicle<TruckData> truck = null;
+		BaseVehicle<TruckData> truck = null;
 		TrafficTrip tmpTrip = trip;
 
 		List<NavigationEdge<?,?>> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());

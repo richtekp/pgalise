@@ -19,6 +19,7 @@ package de.pgalise.util.graph;
 import java.util.List;
 
 import de.pgalise.util.generic.function.Function;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
@@ -26,10 +27,13 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  * It is a premise that the nodes and edges have a 'position' attribute 
  * which returns a {@link de.pgalise.util.vector.Vector2d}.
  *  
+ * @param <G> 
+ * @param <N> 
+ * @param <E> 
  * @author mustafa
  *
  */
-public interface GraphVisualizer<G extends DefaultDirectedGraph> {
+public interface GraphVisualizer<G extends DirectedGraph<N,E>, N,E> {
 	public void setGraph(G graph);
 	
 	public G getGraph();

@@ -23,17 +23,23 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import javax.vecmath.Vector2d;
 
 /**
  * Extension class which methods interact with edge's attribute hashmap
  * 
+ * @param <D> 
  * @author Marcus
  */
-public class DefaultGraphExtensions implements GraphExtensions {
+public class DefaultGraphExtensions<D extends VehicleData> implements GraphExtensions<DefaultTrafficNode<D>,DefaultTrafficEdge<D>> {
 
 	/**
 	 * constant value which holds the key for the position
@@ -80,14 +86,18 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 */
 	private final static String IS_PRIORITY_ROAD = "isPriorityRoad";
 	
-	private TrafficGraph<?> graph;
+	private DefaultTrafficGraph<D> graph;
+
+	protected DefaultGraphExtensions() {
+	}
 
 	public DefaultGraphExtensions(
-		TrafficGraph<?> graph) {
+		DefaultTrafficGraph<D> graph) {
 		this.graph = graph;
 	}
 
-	public TrafficGraph<?> getGraph() {
+	@Override
+	public DefaultTrafficGraph<D> getGraph() {
 		return graph;
 	}
 
@@ -100,7 +110,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null'
 	 */
-	public Double calculateLength(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Double calculateLength(final DefaultTrafficEdge<D> edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if (!this.hasPosition(edge.getSource()) || !this.hasPosition(edge.getTarget())) {
 			return null;
@@ -120,7 +130,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null'
 	 */
-	private Vector2d calculateVector(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	private Vector2d calculateVector(final DefaultTrafficEdge<D> edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if (!this.hasPosition(edge.getSource()) || !this.hasPosition(edge.getTarget())) {
 			return null;
@@ -131,12 +141,14 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	/**
 	 * Checks whether a passed node is null. If so this method throws an exception.
 	 * 
+	 * @param <X> 
+	 * @param <Y> 
 	 * @param node
 	 *            the node that has to be checked
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	protected static void checkNode(final TrafficNode node) throws IllegalArgumentException {
+	protected static void checkNode(final DefaultTrafficNode<?> node) throws IllegalArgumentException {
 		if (node == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("node"));
 		}
@@ -145,12 +157,14 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	/**
 	 * Checks whether a passed edge is null. If so this method throws an exception.
 	 * 
+	 * @param <X> 
+	 * @param <Y> 
 	 * @param edge
 	 *            the edge that has to be checked
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null'
 	 */
-	protected static void checkEdge(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	protected static void checkEdge(final DefaultTrafficEdge<?> edge) throws IllegalArgumentException {
 		if (edge == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("edge"));
 		}
@@ -167,7 +181,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public Coordinate getPosition(final TrafficNode node) throws IllegalArgumentException {
+	public Coordinate getPosition(final DefaultTrafficNode node) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		return node.getGeoLocation();
 	}
@@ -186,7 +200,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *                if node1 or node2 have no position data attached
 	 */
 	@Override
-	public Vector2d getVectorBetween(final TrafficNode from, final TrafficNode to) throws IllegalArgumentException,
+	public Vector2d getVectorBetween(final DefaultTrafficNode from, final DefaultTrafficNode to) throws IllegalArgumentException,
 			IllegalStateException {
 		DefaultGraphExtensions.checkNode(from);
 		DefaultGraphExtensions.checkNode(to);
@@ -213,7 +227,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public boolean hasPosition(final TrafficNode node) throws IllegalArgumentException {
+	public boolean hasPosition(final DefaultTrafficNode node) throws IllegalArgumentException {
 		return this.getPosition(node) != null;
 	}
 
@@ -230,7 +244,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public TrafficNode setPosition(final TrafficNode node, final Coordinate position) throws IllegalArgumentException {
+	public DefaultTrafficNode setPosition(final DefaultTrafficNode node, final Coordinate position) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		if (node.getGeoLocation() != null) {
 			throw new IllegalStateException("Argument \"node\" has already position property attached.");
@@ -256,7 +270,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' or argument 'length' is 'null' or length is not positive
 	 */
-	private static TrafficEdge<?,?> invalidateLength(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	private static <X extends DefaultTrafficEdge<?>> X invalidateLength(final X edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		edge.invalidateLength();
 		return edge;
@@ -273,7 +287,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null'
 	 */
-	private static TrafficEdge<?,?> invalidateVector(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	private static DefaultTrafficEdge<?> invalidateVector(final DefaultTrafficEdge<?> edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		edge.invalidateVector();
 		return edge;
@@ -289,7 +303,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public Double getLength(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Double getLength(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.getEdgeLength();
 	}
@@ -304,7 +318,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public Double getMaxSpeed(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Double getMaxSpeed(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.getMaxSpeed();
 	}
@@ -319,7 +333,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public String getStreetName(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public String getStreetName(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.getWay().getStreetName();
 	}
@@ -334,7 +348,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public Vector2d getVector(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Vector2d getVector(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.getVector();
 	}
@@ -349,7 +363,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public boolean hasMaxSpeed(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public boolean hasMaxSpeed(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		return this.getMaxSpeed(edge) != -1;
 	}
 
@@ -363,7 +377,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public boolean hasStreetName(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public boolean hasStreetName(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		return this.getStreetName(edge) != null;
 	}
 
@@ -378,7 +392,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null' or argument 'maxSpeed' is negative
 	 */
 	@Override
-	public TrafficEdge<?,?> setMaxSpeed(final TrafficEdge<?,?> edge, final double maxSpeed) throws IllegalArgumentException {
+	public DefaultTrafficEdge setMaxSpeed(final DefaultTrafficEdge edge, final double maxSpeed) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if (maxSpeed < 0) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("edge", true));
@@ -398,7 +412,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public TrafficEdge<?,?> setStreetName(final TrafficEdge<?,?> edge, final String streetName) throws IllegalArgumentException {
+	public DefaultTrafficEdge setStreetName(final DefaultTrafficEdge edge, final String streetName) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if(edge.getWay() == null) {
 			throw new IllegalStateException("way of node %s not set");
@@ -426,7 +440,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public TrafficEdge<?,?> setCarStreet(final TrafficEdge<?,?> edge, final Boolean isCarStreet) throws IllegalArgumentException {
+	public DefaultTrafficEdge setCarStreet(final DefaultTrafficEdge edge, final Boolean isCarStreet) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		edge.setCarsAllowed(isCarStreet);
 		return edge;
@@ -441,7 +455,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public TrafficEdge<?,?> setBicycleStreet(final TrafficEdge<?,?> edge, final Boolean isBicycleStreet) throws IllegalArgumentException {
+	public DefaultTrafficEdge setBicycleStreet(final DefaultTrafficEdge edge, final Boolean isBicycleStreet) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		edge.setBicyclesAllowed( isBicycleStreet);
 		return edge;
@@ -456,7 +470,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public TrafficEdge<?,?> setGrossVehicleWeight(final TrafficEdge<?,?> edge, final Integer grossVehicleWeight)
+	public DefaultTrafficEdge setGrossVehicleWeight(final DefaultTrafficEdge edge, final Integer grossVehicleWeight)
 			throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if (grossVehicleWeight != null && grossVehicleWeight <= 0) {
@@ -476,7 +490,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public TrafficEdge<?,?> setPriorityRoad(final TrafficEdge<?,?> edge, final Boolean isPriorityRoad) throws IllegalArgumentException {
+	public DefaultTrafficEdge setPriorityRoad(final DefaultTrafficEdge edge, final Boolean isPriorityRoad) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		edge.setPriorityRoad( isPriorityRoad);
 		return edge;
@@ -491,7 +505,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public Boolean isCarStreet(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Boolean isCarStreet(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.isCarsAllowed();
 	}
@@ -505,7 +519,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public Boolean isBicycleStreet(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Boolean isBicycleStreet(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.isBicyclesAllowed();
 	}
@@ -518,7 +532,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public Integer getGrossVehicleWeight(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Integer getGrossVehicleWeight(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.getGrossVehicleWeight();
 	}
@@ -531,7 +545,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null;
 	 */
 	@Override
-	public Boolean isPriorityRoad(final TrafficEdge<?,?> edge) throws IllegalArgumentException {
+	public Boolean isPriorityRoad(final DefaultTrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return edge.isPriorityRoad();
 	}
@@ -541,7 +555,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	}
 
 	@Override
-	public Double getLengthBetween(TrafficNode node1, TrafficNode node2) {
+	public Double getLengthBetween(DefaultTrafficNode<D> node1, DefaultTrafficNode<D> node2) {
 		checkNode(node1);
 		checkNode(node2);
 		return GeoToolsBootstrapping.distanceHaversineInM(node1.getGeoLocation(),

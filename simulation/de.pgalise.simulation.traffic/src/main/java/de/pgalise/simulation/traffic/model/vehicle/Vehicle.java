@@ -20,8 +20,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
 import java.util.List;
 import javax.vecmath.Vector2d;
 
@@ -33,7 +35,7 @@ import javax.vecmath.Vector2d;
  * @author Marina
  * @version 1.0 (Nov 12, 2012)
  */
-public interface Vehicle<E extends VehicleData> extends Identifiable {
+public interface Vehicle<D extends VehicleData, N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, V extends Vehicle<D,N,E,V>> extends Identifiable {
 
 	/**
 	 * @return the hasGPS
@@ -62,27 +64,27 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	/**
 	 * @return the currentNode
 	 */
-	public NavigationNode getCurrentNode();
+	public N getCurrentNode();
 
 	/**
 	 * @param currentNode
 	 *            the currentNode to set
 	 */
-	public void setCurrentNode(NavigationNode currentNode);
+	public void setCurrentNode(N currentNode);
 
 	/**
 	 * @return the nextNode
 	 */
-	public NavigationNode getNextNode();
+	public N getNextNode();
 
-	public NavigationNode getPreviousNode();
+	public N getPreviousNode();
 
 	/**
 	 * @return the path
 	 */
-	public List<NavigationEdge<?,?>> getPath();
+	public List<E> getPath();
 	
-	public List<NavigationNode> getNodePath();
+	public List<N> getNodePath();
 
 	/**
 	 * Sets the path of this vehicle. Simultaneously the currentNode and nextNode property will be set to the first and
@@ -91,7 +93,7 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param path
 	 *            the path to set
 	 */
-	public void setPath(List<NavigationEdge<?,?>> path);
+	public void setPath(List<E> path);
 
 	/**
 	 * @return the position
@@ -164,7 +166,7 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * 
 	 * @return current edge
 	 */
-	public NavigationEdge<?,?> getCurrentEdge();
+	public E getCurrentEdge();
 
 	/**
 	 * Sets the current edge.
@@ -172,28 +174,28 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * 
 	 * @param edge 
 	 */
-	public void setCurrentEdge(NavigationEdge<?,?> edge);
+	public void setCurrentEdge(E edge);
 
 	/**
 	 * Returns the next edge.
 	 * 
 	 * @return edge after the current edge
 	 */
-	public NavigationEdge<?,?> getNextEdge();
+	public E getNextEdge();
 
 	/**
 	 * Return the previous edge.
 	 * 
 	 * @return edge before the current edge
 	 */
-	public NavigationEdge<?,?> getPreviousEdge();
+	public E getPreviousEdge();
 
 	/**
 	 * Returns the vehicle data
 	 * 
 	 * @return VehicleData
 	 */
-	public E getData();
+	public D getData();
 
 	/**
 	 * Sets the vehicle data
@@ -201,7 +203,7 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param data
 	 *            Vehicle data to set
 	 */
-	public void setData(E data);
+	public void setData(D data);
 	
 	public TrafficGraphExtensions getTrafficGraphExtensions();
 
@@ -212,6 +214,6 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param node
 	 * @return index of the passed node in the path otherwise -1
 	 */
-	public int getIndex(NavigationNode node);
+	public int getIndex(N node);
 
 }

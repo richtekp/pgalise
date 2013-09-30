@@ -23,7 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -35,7 +38,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Mustafa
  * @version 1.0 (Nov 7, 2012)
  */
-public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<T> implements Vehicle<T>, Serializable {
+public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<T> {
 	/**
 	 * Serial
 	 */
@@ -49,7 +52,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	/**
 	 * Last registered node of the graph
 	 */
-	private NavigationNode lastRegisteredNode;
+	private DefaultTrafficNode lastRegisteredNode;
 
 	/**
 	 * Constructor
@@ -81,7 +84,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	}
 
 	@Override
-	protected void passedNode(NavigationNode passedNode) {
+	protected void passedNode(DefaultTrafficNode passedNode) {
 		if (this.getPreviousEdge() != null) {
 			// log.debug("Unregister car " + this.getName() + " from edge: " + this.getPreviousEdge().getId());
 			this.getTrafficGraphExtensions().unregisterFromEdge(this.getPreviousEdge(), this.getPreviousNode(),
@@ -98,7 +101,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	}
 
 	@Override
-	protected void postUpdate(NavigationNode passedNode) {
+	protected void postUpdate(DefaultTrafficNode passedNode) {
 		if (this.getVehicleState() != VehicleStateEnum.REACHED_TARGET) {
 			if (passedNode != null) {
 				if (this.getTrafficGraphExtensions().getPosition(passedNode).equals(this.getPosition())

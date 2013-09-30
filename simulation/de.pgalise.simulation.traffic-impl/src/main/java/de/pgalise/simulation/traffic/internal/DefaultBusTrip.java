@@ -25,6 +25,8 @@ import de.pgalise.simulation.shared.city.BusCalendar;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.traffic.BusTrip;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -40,7 +42,7 @@ import javax.persistence.OneToMany;
  * @author Lena
  */
 @Entity
-public class DefaultBusTrip extends DefaultTrafficTrip implements BusTrip<DefaultBusStopTime, BaseVehicle<BusData>> {
+public class DefaultBusTrip extends DefaultTrafficTrip implements BusTrip<DefaultBusStopTime, BaseVehicle<BusData>, DefaultTrafficNode<BusData>,DefaultTrafficEdge<BusData>> {
 	private static final long serialVersionUID = 1L;
 	
 	@ManyToOne

@@ -27,7 +27,12 @@ import org.w3c.dom.NodeList;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -38,7 +43,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class ExtendedXMLTruckFactory extends XMLAbstractFactory<TruckData> implements TruckFactory {
+public class ExtendedXMLTruckFactory extends XMLAbstractFactory<TruckData> implements TruckFactory<DefaultTrafficNode<TruckData>,DefaultTrafficEdge<TruckData>, BaseVehicle<TruckData>> {
 
 	/**
 	 * Constructor
@@ -67,7 +72,7 @@ public class ExtendedXMLTruckFactory extends XMLAbstractFactory<TruckData> imple
 	}
 
 	@Override
-	public Vehicle<TruckData> createRandomTruck( SensorHelper helper) {
+	public BaseVehicle<TruckData> createRandomTruck( SensorHelper helper) {
 		TruckData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
 		return new DefaultMotorizedVehicle<>( updateTruckData(data, Color.BLACK, random.nextInt(2)),
@@ -75,10 +80,8 @@ public class ExtendedXMLTruckFactory extends XMLAbstractFactory<TruckData> imple
 	}
 
 	@Override
-	public Vehicle<TruckData> createTruck( String typeId, Color color, int trailercount, SensorHelper helper) {
-		TruckData data = getVehicleData().get(typeId);
-		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>( updateTruckData(data, color, trailercount), trafficGraphExtensions);
+	public BaseVehicle<TruckData> createTruck( Color color, int trailercount, SensorHelper helper) {
+		return createRandomTruck(helper);
 	}
 
 	/**

@@ -18,10 +18,13 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -32,7 +35,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Mustafa
  * @version 1.0 (Feb 11, 2013)
  */
-public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<BicycleData> {
+public class DefaultBicycle extends BaseVehicle<BicycleData> {
 	/**
 	 * Serial
 	 */
@@ -59,7 +62,7 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<
 	}
 
 	@Override
-	protected void passedNode(NavigationNode node) {
+	protected void passedNode(DefaultTrafficNode node) {
 		if (this.getPreviousEdge() != null) {
 			log.debug("Unregistering bycicle " + this.getName() + " from edge: " + this.getPreviousEdge().getId());
 			this.getTrafficGraphExtensions().unregisterFromEdge(this.getPreviousEdge(), this.getPreviousNode(),
@@ -76,7 +79,7 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<
 	}
 
 	@Override
-	protected void postUpdate(NavigationNode node) {
+	protected void postUpdate(DefaultTrafficNode node) {
 	}
 
 	@Override

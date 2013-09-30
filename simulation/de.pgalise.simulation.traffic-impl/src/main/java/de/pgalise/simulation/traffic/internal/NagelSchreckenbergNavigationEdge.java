@@ -20,7 +20,7 @@
 //	/**
 //	 * size of the sections list is the information about 
 //	 */
-//	private List<Vehicle<?>> sections;
+//	private List<BaseVehicle<D>> sections;
 //	
 //	/**
 //	 * creates a <tt>NagelSchreckenbergNavigationEdge</tt> which a section for every km
@@ -40,17 +40,17 @@
 //	 * @return 
 //	 */
 //	@Override
-//	public boolean takeVehicle(Vehicle<?> vehicle, long timestamp) {
+//	public boolean takeVehicle(BaseVehicle<D> vehicle, long timestamp) {
 //		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //	}
 //
 //	@Override
-//	public Set<Vehicle<?>> getLeavingVehicles() {
+//	public Set<BaseVehicle<D>> getLeavingVehicles() {
 //		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //	}
 //
 //	@Override
-//	public Map<Vehicle<?>, List<NavigationEdge>> updateVehicles(long timestamp) {
+//	public Map<BaseVehicle<D>, List<NavigationEdge>> updateVehicles(long timestamp) {
 //		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //	}
 //	

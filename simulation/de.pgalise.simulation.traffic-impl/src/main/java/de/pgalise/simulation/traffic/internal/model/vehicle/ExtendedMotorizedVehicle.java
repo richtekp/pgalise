@@ -22,7 +22,10 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -51,7 +54,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	/**
 	 * Last registered node of the graph
 	 */
-	private NavigationNode lastRegisteredNode;
+	private DefaultTrafficNode lastRegisteredNode;
 
 	/**
 	 * Constructor
@@ -83,7 +86,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	}
 
 	@Override
-	protected void passedNode(final NavigationNode passedNode) {
+	protected void passedNode(final DefaultTrafficNode passedNode) {
 
 		if ((this.getPreviousNode() == null) || (this.getNextNode() == null)) {
 			// car eliminates the NPE
@@ -136,7 +139,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	}
 
 	@Override
-	protected void postUpdate(NavigationNode passedNode) {
+	protected void postUpdate(DefaultTrafficNode passedNode) {
 		if (this.getVehicleState() != VehicleStateEnum.REACHED_TARGET) {
 			if (passedNode != null) {
 				if (this.getTrafficGraphExtensions().getPosition(passedNode).equals(this.getPosition())

@@ -16,13 +16,30 @@
  
 package de.pgalise.simulation.traffic.server.scheduler;
 
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+
+
 /**
  * The ScheduleHandler can be used to inform components about scheduling event
  * (e.g. scheduling of a new item or removal of an item)
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
+ * @param <V> 
+ * @param <I> 
  * @author mustafa
  *
  */
-public interface ScheduleHandler {
-	public void onRemove(ScheduleItem v);
-	public void onSchedule(ScheduleItem v);
+public interface ScheduleHandler<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>,
+	I extends ScheduleItem<D,N,E,V>
+> {
+	public void onRemove(I v);
+	public void onSchedule(I v);
 }

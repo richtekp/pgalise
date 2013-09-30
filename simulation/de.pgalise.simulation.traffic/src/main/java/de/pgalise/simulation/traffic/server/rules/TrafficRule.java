@@ -1,57 +1,36 @@
-/* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
- 
 package de.pgalise.simulation.traffic.server.rules;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.service.SimulationComponent;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
 /**
- * Interface for traffic rules
- * 
- * @author Marcus
+ *
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
+ * @param <V> 
+ * @author richter
  */
-public abstract class TrafficRule extends AbstractIdentifiable implements SimulationComponent<Event> {
-	private static final Logger log = LoggerFactory
-			.getLogger(TrafficRule.class);
-
-	private final NavigationNode node;
-	private TrafficGraph<?> graph;
-
-	public TrafficRule(final NavigationNode node,TrafficGraph<?> graph) throws RuntimeException {
-		if (node == null) {
-			throw new IllegalArgumentException(
-					ExceptionMessages.getMessageForNotNull("node"));
-		}
-		this.checkNode(node);
-		this.node = node;
-		this.graph = graph;
-	}
-
-	protected abstract void checkNode(final NavigationNode node) throws RuntimeException;
+public interface TrafficRule <
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>> extends Identifiable, SimulationComponent<Event> {
+	
+	void checkNode(final NavigationNode node) throws RuntimeException;
 
 	/**
 	 * Registers a {@link Vehicle} with the passed arguments. The arguments
@@ -80,8 +59,8 @@ public abstract class TrafficRule extends AbstractIdentifiable implements Simula
 	 *             the {@link Vehicle} wants to turn around and turning around
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
-	public abstract void register(final Vehicle<? extends VehicleData> vehicle,
-			final NavigationEdge<?,?> from, final NavigationEdge<?,?> to, final TrafficRuleCallback callback)
+	public abstract void register(final V vehicle,
+			final E from, final E to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException;
 
 	/**
@@ -111,66 +90,19 @@ public abstract class TrafficRule extends AbstractIdentifiable implements Simula
 	 *             the {@link Vehicle} wants to turn around and turning around
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
-	public void register(final Vehicle<? extends VehicleData> vehicle,
-			final NavigationNode from, final NavigationNode to, final TrafficRuleCallback callback)
-			throws IllegalArgumentException, IllegalStateException {
-		if (from == null) {
-			throw new IllegalArgumentException(
-					"Parameter 'from' must not be null");
-		}
-		if (to == null) {
-			throw new IllegalArgumentException(
-					"Parameter 'to' must not be null");
-		}
-
-		log.debug("from:"+ from.getId());
-		log.debug("to:"+ to.getId());
-		log.debug("this.node:"+ this.node.getId());
-		
-		NavigationEdge<?,?> edgeFrom = null;
-		log.debug("#Edges conntected to node 'from': "
-				+ graph.edgesOf(from).size());
-		for (final NavigationEdge<?,?> edge : graph.edgesOf(from)) {
-			log.debug("Node conntected with edge: "+edge.getOpposite(from).getId());
-			if (edge.getOpposite(from).getId().equals(this.getNode().getId())) {
-				edgeFrom = edge;
-			}
-		}
-		if (edgeFrom == null) {
-			throw new IllegalStateException(
-					"Node 'from' isn't linked with this "
-							+ this.getClass().getName()
-							+ "'s node trough an edge.");
-		}
-
-		NavigationEdge<?,?> edgeTo = null;
-		for (final NavigationEdge<?,?> edge : graph.edgesOf(to)) {
-			if (edge.getOpposite(to).getId().equals(this.getNode().getId())) {
-				edgeTo = edge;
-			}
-		}
-		if (edgeTo == null) {
-			throw new IllegalStateException("Node 'to' isn't linked with this "
-					+ this.getClass().getName() + "'s node trough an edge.");
-		}
-		this.register(vehicle, edgeFrom, edgeTo, callback);
-	}
+	public void register(final V vehicle,
+			final N from, final N to, final TrafficRuleCallback callback)
+			throws IllegalArgumentException, IllegalStateException ;
 
 	/**
 	 * Returns the {@link Node} on which this {@link TrafficRule} is applied.
 	 * 
 	 * @return the {@link Node} on which this {@link TrafficRule} is applied
 	 */
-	public NavigationNode getNode() {
-		return this.node;
-	}
+	public N getNode() ;
 
 	public void setGraph(
-		TrafficGraph<?> graph) {
-		this.graph = graph;
-	}
+		TrafficGraph<N,E,D,V>  graph);
 
-	public TrafficGraph<?> getGraph() {
-		return graph;
-	}
+	public TrafficGraph<N,E,D,V>  getGraph() ;
 }

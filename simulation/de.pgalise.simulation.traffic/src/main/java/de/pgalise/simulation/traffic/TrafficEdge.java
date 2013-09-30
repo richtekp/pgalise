@@ -8,18 +8,23 @@ import de.pgalise.simulation.shared.city.Way;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Set;
 
 /**
  *
  * @author richter
+ * @param <N>
+ * @param <E>
+ * @param <D>
+ * @param <V>
  */
-public interface TrafficEdge<N extends NavigationNode, E extends TrafficEdge<N,E>> extends NavigationEdge<N,E> {
+public interface TrafficEdge<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D,N,E,V>> extends NavigationEdge<N,E> {
 	
 
-	Set<Vehicle<?>> getVehicles();
+	Set<V> getVehicles();
 	
-	void setVehicles(Set<Vehicle<?>> vehicles);
+	void setVehicles(Set<V> vehicles);
 	
 	/**
 	 * 

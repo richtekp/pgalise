@@ -71,7 +71,7 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 
 /**
  * The default implementation of {@link OCSimulationController}.
@@ -114,7 +114,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	/**
 	 * Map<UUID = vehicle id, 
 	 */
-	private Map<Vehicle<?>, VehicleData> vehicleDataMap;
+	private Map<BaseVehicle<D>, VehicleData> vehicleDataMap;
 
 	/**
 	 * Contructor

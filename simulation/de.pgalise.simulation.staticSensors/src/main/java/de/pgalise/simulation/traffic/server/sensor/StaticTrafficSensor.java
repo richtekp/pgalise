@@ -19,6 +19,8 @@ package de.pgalise.simulation.traffic.server.sensor;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -26,10 +28,13 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 /**
  * Interface for the traffic sensors
  * 
+ * @param <N> 
+ * @param <E> 
  * @author Mischa
  * @version 1.0 (Oct 28, 2012)
  */
-public abstract class StaticTrafficSensor extends Sensor<TrafficEvent> {
+public abstract class StaticTrafficSensor<N extends TrafficNode<N,E>, E extends TrafficEdge<N,E>> extends Sensor<TrafficEvent<N,E>> {
+	private TrafficNode node;
 
 	/**
 	 * Constructor
@@ -44,9 +49,10 @@ public abstract class StaticTrafficSensor extends Sensor<TrafficEvent> {
 	 *            Update limit
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, Coordinate position, int updateLimit)
+	protected StaticTrafficSensor(TrafficNode node, Output output, Coordinate position, int updateLimit)
 			throws IllegalArgumentException {
 		super(output, position, updateLimit);
+		this.node = node;
 	}
 
 	/**
@@ -58,8 +64,9 @@ public abstract class StaticTrafficSensor extends Sensor<TrafficEvent> {
 	 *            Position of the sensor
 	 * @throws IllegalArgumentException
 	 */
-	protected StaticTrafficSensor(Output output, Coordinate position) throws IllegalArgumentException {
+	protected StaticTrafficSensor(TrafficNode node, Output output, Coordinate position) throws IllegalArgumentException {
 		super(output, position);
+		this.node = node;
 	}
 
 	/**
@@ -68,5 +75,13 @@ public abstract class StaticTrafficSensor extends Sensor<TrafficEvent> {
 	 * @param vehicle
 	 *            Vehicle
 	 */
-	public abstract void vehicleOnNodeRegistered(Vehicle<? extends VehicleData> vehicle);
+	public abstract void vehicleOnNodeRegistered(Vehicle<? extends VehicleData,N,E> vehicle);
+
+	public void setNodeId(TrafficNode node) {
+		this.node = node;
+	}
+
+	public TrafficNode getNodeId() {
+		return node;
+	}
 }

@@ -20,6 +20,7 @@ import java.util.EnumSet;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
+import java.util.Set;
 
 /**
  * Factory to create sensors
@@ -31,13 +32,13 @@ public interface SensorFactory {
 	/**
 	 * Creates a sensor of a specific type.
 	 * 
-	 * @param sensorType
-	 *            Type of the sensor to create
+	 * @param sensorHelper 
+	 * @param allowedTypes 
 	 * @return sensor Returns the created sensor
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public Sensor<?> createSensor(SensorHelper<?> sensorHelper, EnumSet<SensorTypeEnum> allowedTypes)
+	public Sensor<?> createSensor(SensorHelper<?> sensorHelper, Set<SensorType> allowedTypes)
 			throws InterruptedException, ExecutionException;
 
 	/**

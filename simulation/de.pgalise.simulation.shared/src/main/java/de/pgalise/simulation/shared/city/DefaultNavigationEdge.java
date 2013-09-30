@@ -16,6 +16,8 @@ import javax.vecmath.Vector2d;
 
 /**
  *
+ * @param <N> 
+ * @param <E> 
  * @author richter
  */
 public class DefaultNavigationEdge<N extends DefaultNavigationNode, E extends DefaultNavigationEdge<N,E>> extends AbstractIdentifiable implements NavigationEdge<N,E> {
@@ -33,6 +35,7 @@ public class DefaultNavigationEdge<N extends DefaultNavigationNode, E extends De
 	@ManyToOne
 	private N target;
 	private Vector2d vector = null;
+	private boolean oneWay = false;
 	
 	/**
 	 * <tt>source</tt> and <tt>target</tt> are set using {@link Graph#addEdge(java.lang.Object, java.lang.Object) } or {@link Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object) }. You should invoke {@link #validateNavigationNodeDistance() } after a call to {@link Graph#addEdge(java.lang.Object, java.lang.Object) } or {@link Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object) }!
@@ -142,5 +145,15 @@ public class DefaultNavigationEdge<N extends DefaultNavigationNode, E extends De
 		}else {
 			throw new IllegalArgumentException(String.format("node %s is not part of this edge", this));
 		}
+	}
+
+	@Override
+	public boolean isOneWay() {
+		return this.oneWay;
+	}
+
+	@Override
+	public void setOneWay(boolean oneWay) {
+		this.oneWay = oneWay;
 	}
 }

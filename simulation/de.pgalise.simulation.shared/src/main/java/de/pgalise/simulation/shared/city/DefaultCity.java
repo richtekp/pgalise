@@ -14,14 +14,13 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.traffic.internal;
+package de.pgalise.simulation.shared.city;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.TrafficGraph;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -42,9 +41,6 @@ public class DefaultCity extends AbstractGeometricObject implements City {
 	 * Serial
 	 */
 	private static final long serialVersionUID = 3576972145732461552L;
-
-	@OneToOne
-	private TrafficGraph<?,?> graph;
 	
 	/**
 	 * Altitude (in m over normal null)
@@ -104,22 +100,13 @@ public class DefaultCity extends AbstractGeometricObject implements City {
 	 * @param boundaries 
 	 * @param graph  
 	 */
-	public DefaultCity(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Polygon boundaries, TrafficGraph<?,?> graph) {
+	public DefaultCity(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Polygon boundaries) {
 		super(boundaries);
 		this.name = name;
 		this.population = population;
 		this.altitude = altitude;
 		this.nearRiver = nearRiver;
 		this.nearSea = nearSea;
-		this.graph = graph;
-	}
-
-	public void setGraph(TrafficGraph<?> graph) {
-		this.graph = graph;
-	}
-
-	public TrafficGraph<?> getGraph() {
-		return graph;
 	}
 
 	public int getAltitude() {

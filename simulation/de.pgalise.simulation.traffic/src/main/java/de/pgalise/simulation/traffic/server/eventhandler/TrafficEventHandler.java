@@ -17,6 +17,10 @@
 package de.pgalise.simulation.traffic.server.eventhandler;
 
 import de.pgalise.simulation.service.event.EventHandler;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
@@ -24,11 +28,21 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
  * A TrafficHandler handles a specific type of a TrafficEvent 
  * raised by the user of the simulation. 
  * 
+ * @param <F> 
+ * @param <N> 
  * @param <E> 
+ * @param <D> 
+ * @param <V> 
  * @author Mustafa
  * @version 1.0 (Mar 21, 2013)
  */
-public interface TrafficEventHandler<E extends TrafficEvent> extends EventHandler<E> {
+public interface TrafficEventHandler<
+	F extends TrafficEvent<N,E,D,V,F>, 
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	D extends VehicleData, 
+	V extends Vehicle<D,N,E,V>
+> extends EventHandler<F> {
 
 	/**
 	 * Inits the event handler
@@ -36,7 +50,7 @@ public interface TrafficEventHandler<E extends TrafficEvent> extends EventHandle
 	 * @param server
 	 *            Corresponding {@link TrafficServer}
 	 */
-	void init(TrafficServerLocal<E>  server);
+	void init(TrafficServerLocal<F,N,E,D,V>  server);
 	
-	TrafficServerLocal<E>  getResponsibleServer();
+	TrafficServerLocal<F,N,E,D,V>  getResponsibleServer();
 }

@@ -21,7 +21,7 @@ import java.util.Random;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
@@ -84,7 +84,7 @@ public class DefaultNaSchModel implements TrafficJamModel {
 	}
 
 	@Override
-	public void update(Vehicle<?> v, long time, TrafficGraph<?> graph, double probability) {
+	public void update(BaseVehicle<D> v, long time, TrafficGraph<?,?> graph, double probability) {
 		// log.debug("\n\n--- Calculating update behavior of vehicle " + v.getName() + " ---");
 
 		// car length in mm
@@ -117,7 +117,7 @@ public class DefaultNaSchModel implements TrafficJamModel {
 			// log.debug("Vehicle " + v.getName() + " accelerated to " + v.getVelocity());
 		}
 
-		Vehicle<? extends VehicleData> carAhead = this.finder.findNearestCar(v, time);
+		Vehicle<? extends VehicleData,N,E> carAhead = this.finder.findNearestCar(v, time);
 		if (carAhead != null) {
 			// log.debug("Nearest vehicle to " + v.getName() + ": " + carAhead.getName());
 			Vector2d carAheadPos = new Vector2d(carAhead.getPosition().x, carAhead.getPosition().y);

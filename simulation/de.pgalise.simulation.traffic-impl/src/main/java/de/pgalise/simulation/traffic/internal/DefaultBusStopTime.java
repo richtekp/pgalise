@@ -20,6 +20,11 @@ import de.pgalise.simulation.traffic.internal.DefaultBusTrip;
 import de.pgalise.simulation.traffic.internal.DefaultBusStop;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.traffic.BusStopTime;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
+import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -37,7 +42,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_STOP_TIMES")
-public class DefaultBusStopTime extends AbstractIdentifiable implements BusStopTime<DefaultBusStop, DefaultBusTrip>{
+public class DefaultBusStopTime extends AbstractIdentifiable implements BusStopTime<DefaultBusStop, DefaultBusTrip, BaseVehicle<BusData>, DefaultTrafficNode<BusData>, DefaultTrafficEdge<BusData>>{
 	private static final long serialVersionUID = 1L;
 	
 	@JoinColumn(name = "TRIP_ID")

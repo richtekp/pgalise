@@ -18,17 +18,23 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.ArrayList;
 import java.util.List;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
 /**
  * The create busses event will create the given vehicles as busses
  * for the given routes.
+ * @param <N> 
+ * @param <E> 
  * @author Lena
  */
-public class CreateBussesEvent extends AbstractTrafficEvent {
+public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D> {
 
 	/**
 	 * Serial
@@ -57,7 +63,7 @@ public class CreateBussesEvent extends AbstractTrafficEvent {
 	 * @param busRoutes
 	 *            List with bus routes
 	 */
-	public CreateBussesEvent(TrafficServerLocal<?> responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
+	public CreateBussesEvent(DefaultTrafficServer<D> responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
 			List<BusRoute<?>> busRoutes) {
 		super(responsibleServer, time,
 			elaspsedTime);

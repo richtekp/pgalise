@@ -34,7 +34,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 import java.util.List;
 
@@ -129,7 +129,7 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 	private void scheduleVehicle(Vehicle<D> vehicle, long startTime, VehicleEvent<D> event) {
 		if (vehicle != null) {
 			// try {
-			ScheduleItem item = new ScheduleItem(vehicle, startTime, event.getResponsibleServer().getUpdateIntervall());
+			DefaultScheduleItem item = new DefaultScheduleItem(vehicle, startTime, event.getResponsibleServer().getUpdateIntervall());
 			event.getResponsibleServer().getItemsToScheduleAfterAttractionReached().add(item);
 			// event.getResponsibleServer().getScheduler().scheduleItem(item);
 			// } catch (IllegalAccessException e1) {

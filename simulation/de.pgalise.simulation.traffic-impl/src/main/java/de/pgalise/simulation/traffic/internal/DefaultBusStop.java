@@ -22,6 +22,7 @@ import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import java.util.Map;
 import java.util.Set;
 import javax.persistence.Column;
@@ -35,7 +36,7 @@ import org.hibernate.annotations.Type;
  * @author Lena
  */
 @Entity
-public class DefaultBusStop extends DefaultTrafficNode implements BusStop<DefaultTrafficNode> {
+public class DefaultBusStop extends DefaultTrafficNode<BusData> implements BusStop<DefaultTrafficNode<BusData>> {
 	private static final long serialVersionUID = 1L;
 	private String stopName;
 	@OneToOne(mappedBy = "busStop")

@@ -11,10 +11,6 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @author richter
  */
 public interface City extends Shaped {
-	
-	public void setGraph(TrafficGraph<?> graph) ;
-
-	public TrafficGraph<?> getGraph() ;
 
 	public int getAltitude() ;
 

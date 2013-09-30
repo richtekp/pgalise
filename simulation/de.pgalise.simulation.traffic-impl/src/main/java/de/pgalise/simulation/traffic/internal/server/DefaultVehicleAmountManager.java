@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
@@ -34,7 +35,7 @@ import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.VehicleAmountManager;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
@@ -138,26 +139,22 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 	/**
 	 * List of cars which can be scheduled if the percentage of cars increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareCars;
+	private List<BaseVehicle<?>> spareCars;
 
 	/**
 	 * List of trucks which can be scheduled if the percentage of trucks increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareTrucks;
+	private List<BaseVehicle<?>> spareTrucks;
 
 	/**
 	 * List of motorcycles which can be scheduled if the percentage of motorcycles increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareMotorcycles;
+	private List<BaseVehicle<?>> spareMotorcycles;
 
 	/**
 	 * List of bicycles which can be scheduled if the percentage of bicycles increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareBicycles;
+	private List<BaseVehicle<?>> spareBicycles;
 
 	private int maxBikes;
 
@@ -184,7 +181,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 	 *            delivers the amount of each vehicle in percentage, depending on Fuzzy Rules (e.g. depending on weather
 	 *            events)
 	 */
-	public DefaultVehicleAmountManager(TrafficServerLocal ts, double tolerance, int updateSteps, int timebuffer,
+	public DefaultVehicleAmountManager(DefaultTrafficServer<?> ts, double tolerance, int updateSteps, int timebuffer,
 			TrafficGovernor fuzzy) {
 		this.ts = ts;
 		this.scheduler = ts.getScheduler();
@@ -295,14 +292,14 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 		if (addPercentage > 0) {
 			log.debug("changingAmount of bicycles: " + changingAmount);
 			int count = 1;
-			for (Iterator<Vehicle> i = this.spareBicycles.iterator(); i.hasNext();) {
+			for (Iterator<BaseVehicle<?>> i = this.spareBicycles.iterator(); i.hasNext();) {
 				if (count > changingAmount) {
 					break;
 				}
-				Vehicle v = i.next();
+				BaseVehicle<?> v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
+				DefaultScheduleItem item = new DefaultScheduleItem(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -310,8 +307,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of bicycles: -" + changingAmount);
-			List<ScheduleItem> bicycles = new ArrayList<>();
-			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<DefaultScheduleItem> bicycles = new ArrayList<>();
+			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(BicycleData.class)) {
 					bicycles.add(item);
 				}
@@ -342,15 +339,15 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 		if (addPercentage > 0) {
 			log.debug("changingAmount of cars: " + changingAmount);
 			int count = 1;
-			for (Iterator<Vehicle> i = this.spareCars.iterator(); i.hasNext();) {
+			for (Iterator<BaseVehicle> i = this.spareCars.iterator(); i.hasNext();) {
 				if (count > changingAmount) {
 					break;
 				}
-				Vehicle v = i.next();
+				BaseVehicle<?> v = i.next();
 
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
+				DefaultScheduleItem<?> item = new DefaultScheduleItem<>(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -358,8 +355,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of cars: -" + changingAmount);
-			List<ScheduleItem> cars = new ArrayList<>();
-			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<DefaultScheduleItem> cars = new ArrayList<>();
+			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(CarData.class)) {
 					cars.add(item);
 				}
@@ -397,7 +394,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
+				DefaultScheduleItem item = new DefaultScheduleItem(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -405,8 +402,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of motorcycles: -" + changingAmount);
-			List<ScheduleItem> motorcycles = new ArrayList<>();
-			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<DefaultScheduleItem> motorcycles = new ArrayList<>();
+			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(MotorcycleData.class)) {
 					motorcycles.add(item);
 				}
@@ -443,7 +440,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 				Vehicle v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-				ScheduleItem item = new ScheduleItem(v, startTime, ts.getUpdateIntervall());
+				DefaultScheduleItem item = new DefaultScheduleItem(v, startTime, ts.getUpdateIntervall());
 				ts.getItemsToScheduleAfterFuzzy().add(item);
 				i.remove();
 
@@ -451,8 +448,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of trucks: -" + changingAmount);
-			List<ScheduleItem> trucks = new ArrayList<>();
-			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<DefaultScheduleItem> trucks = new ArrayList<>();
+			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(TruckData.class)) {
 					trucks.add(item);
 				}

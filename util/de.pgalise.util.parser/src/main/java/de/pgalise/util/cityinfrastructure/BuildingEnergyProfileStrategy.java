@@ -16,10 +16,10 @@
  
 package de.pgalise.util.cityinfrastructure;
 
+import de.pgalise.simulation.shared.city.Building;
 import java.io.Serializable;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.traffic.Building;
 
 /**
  * Interface for strategies to give an energy profile for a building.

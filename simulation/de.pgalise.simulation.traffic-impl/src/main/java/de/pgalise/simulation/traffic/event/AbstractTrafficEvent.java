@@ -18,30 +18,39 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
 /**
  * Superclass for all traffic events.
  * 
+ * @param <D> 
  * @author Timo
  */
-public abstract class AbstractTrafficEvent extends AbstractEvent implements TrafficEvent {
+public abstract class AbstractTrafficEvent<D extends VehicleData> extends AbstractEvent implements TrafficEvent<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>, AbstractVehicleEvent<D>> {
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -8313844787624266589L;
-	private TrafficServerLocal responsibleServer;
+	private DefaultTrafficServer<D> responsibleServer;
 	private final long simulationTime;
 	private final long elapsedTime;
 
 	/**
 	 * Constructor
 	 * 
-	 * @param eventType
-	 *            Event type
+	 * @param simulationTime 
+	 * @param elapsedTime 
 	 * @param responsibleServer  
 	 */
-	public AbstractTrafficEvent(TrafficServerLocal responsibleServer, long simulationTime, long elapsedTime) {
+	public AbstractTrafficEvent(DefaultTrafficServer<D> responsibleServer, long simulationTime, long elapsedTime) {
 		this.responsibleServer = responsibleServer;
 		this.simulationTime = simulationTime;
 		this.elapsedTime = elapsedTime;
@@ -58,12 +67,12 @@ public abstract class AbstractTrafficEvent extends AbstractEvent implements Traf
 	}
 	
 	@Override
-	public void setResponsibleServer(TrafficServerLocal serverId) {
+	public void setResponsibleServer(DefaultTrafficServer<D> serverId) {
 		this.responsibleServer = serverId;
 	}
 	
 	@Override
-	public TrafficServerLocal getResponsibleServer() {
+	public DefaultTrafficServer<D> getResponsibleServer() {
 		return this.responsibleServer;
 	}
 }

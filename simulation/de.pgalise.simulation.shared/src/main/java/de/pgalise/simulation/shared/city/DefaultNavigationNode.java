@@ -20,6 +20,7 @@ import javax.persistence.OneToMany;
  * @author richter
  */
 public class DefaultNavigationNode extends AbstractIdentifiable implements NavigationNode {
+	private static final long serialVersionUID = 1L;
 	@Embedded
 	private Coordinate geoLocation;
 	@MapKey

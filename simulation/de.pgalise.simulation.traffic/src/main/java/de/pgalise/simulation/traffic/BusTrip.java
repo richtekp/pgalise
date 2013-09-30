@@ -10,16 +10,24 @@ import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.List;
 import java.util.Map;
 
 /**
  *
  * @param <X> 
- * @param <V> 
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
  * @author richter
  */
-public interface BusTrip<X extends BusStopTime<?,?>, V extends Vehicle<BusData>> extends TrafficTrip {
+public interface BusTrip<
+	X extends BusStopTime<?,?,V,N,E>, 
+	V extends Vehicle<BusData, N,E,V>, 
+	N extends TrafficNode<N,E,BusData,V>, 
+	E extends TrafficEdge<N,E,BusData,V>
+> extends TrafficTrip {
 
 	public BusRoute<?> getRoute() ;
 

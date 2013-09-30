@@ -17,16 +17,21 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The create random vehicles event creates the given {@link List} of
  * {@link CreateRandomVehicleData}. The created vehicles do not need to have
  * a start or target point.
  * @param <D> 
+ * @param <N> 
+ * @param <E> 
  * @author Timo
  * @author Lena
  */
@@ -43,7 +48,7 @@ public class CreateRandomVehiclesEvent<D extends VehicleData> extends AbstractVe
 	private List<CreateRandomVehicleData> createRandomVehicleDataList;
 
 	public CreateRandomVehiclesEvent(
-		TrafficServerLocal responsibleServer, long timestamp, long elapsedTime,
+		DefaultTrafficServer<D> responsibleServer, long timestamp, long elapsedTime,
 		List<CreateRandomVehicleData> createRandomVehicleDataList) {
 		super(responsibleServer, timestamp, elapsedTime, null);
 		this.createRandomVehicleDataList = createRandomVehicleDataList;

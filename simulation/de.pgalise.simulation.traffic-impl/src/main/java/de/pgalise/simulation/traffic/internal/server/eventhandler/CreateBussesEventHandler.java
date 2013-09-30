@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
@@ -40,7 +40,7 @@ import de.pgalise.simulation.traffic.internal.model.vehicle.RandomBusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.GTFS.service.DefaultBusService;
 import java.util.Date;
@@ -140,7 +140,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 							+ cal.get(Calendar.YEAR));
 
 					try {
-						ScheduleItem item = new ScheduleItem(b, cal.getTimeInMillis(), this.server.getUpdateIntervall());
+						DefaultScheduleItem item = new DefaultScheduleItem(b, cal.getTimeInMillis(), this.server.getUpdateIntervall());
 						// item.setLastUpdate(cal.getTimeInMillis() - this.server.getUpdateIntervall());
 						this.server.getScheduler().scheduleItem(item);
 					} catch (IllegalAccessException e) {

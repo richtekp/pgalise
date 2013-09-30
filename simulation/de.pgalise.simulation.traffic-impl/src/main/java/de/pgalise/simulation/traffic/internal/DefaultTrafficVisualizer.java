@@ -16,7 +16,8 @@
  
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -24,7 +25,9 @@ import java.awt.Polygon;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficVisualizer;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.util.generic.async.AsyncHandler;
@@ -35,30 +38,31 @@ import javax.vecmath.Vector2d;
 /**
  * Default implementation of the TrafficVisualizer.
  * 
+ * @param <D> 
  * @author Mustafa
  * @author Marina
  */
-public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements TrafficVisualizer {
+public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGraphVisualizer<D> implements TrafficVisualizer<DefaultTrafficNode<D>,DefaultTrafficEdge<D>,D, BaseVehicle<D>> {
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -5898703038599896775L;
 
-	private List<Vehicle<? extends VehicleData>> vehicles;
+	private List<BaseVehicle<D>> vehicles;
 
 	private AsyncHandler handler;
 
 	private boolean finished;
 
-	private TrafficGraphExtensions trafficGraphExtensions;
+	private TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> trafficGraphExtensions;
 
-	public DefaultTrafficVisualizer(int width, int height, TrafficGraphExtensions ee) {
+	public DefaultTrafficVisualizer(int width, int height, TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> ee) {
 		super(width, height);
 		this.trafficGraphExtensions = ee;
 		init();
 	}
 
-	public DefaultTrafficVisualizer(int width, int height, TrafficGraph<?> graph, TrafficGraphExtensions ee) {
+	public DefaultTrafficVisualizer(int width, int height, DefaultTrafficGraph<D> graph, TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> ee) {
 		super(width, height, graph);
 		this.trafficGraphExtensions = ee;
 		init();
@@ -155,7 +159,7 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 		// }
 
 		g2d.setColor(Color.BLACK);
-		for (Vehicle<? extends VehicleData> v : vehicles) {
+		for (BaseVehicle<D> v : vehicles) {
 			Vector2d pos = new Vector2d(v.getPosition().x, v.getPosition().y);
 			pos = new Vector2d((pos.x * transform.getScaleX() + transform.getTranslateX()), (pos.y
 					* transform.getScaleX() + transform.getTranslateY()));
@@ -211,12 +215,12 @@ public class DefaultTrafficVisualizer extends DefaultGraphVisualizer implements 
 	}
 
 	@Override
-	public void setVehicles(List<Vehicle<? extends VehicleData>> vehicles) {
+	public void setVehicles(List<BaseVehicle<D>> vehicles) {
 		this.vehicles = vehicles;
 	}
 
 	@Override
-	public List<Vehicle<? extends VehicleData>> getVehicles() {
+	public List<BaseVehicle<D>> getVehicles() {
 		return this.vehicles;
 	}
 

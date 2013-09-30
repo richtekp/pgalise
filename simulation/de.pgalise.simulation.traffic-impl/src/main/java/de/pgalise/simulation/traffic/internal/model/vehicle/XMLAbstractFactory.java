@@ -40,10 +40,10 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 26, 2012)
- * @param <T>
+ * @param <D>
  *            Extension of the VehicleData
  */
-public abstract class XMLAbstractFactory<T extends VehicleData> {
+public abstract class XMLAbstractFactory<D extends VehicleData> {
 
 	/**
 	 * Random generator
@@ -72,7 +72,7 @@ public abstract class XMLAbstractFactory<T extends VehicleData> {
 	/**
 	 * Map of loaded specific {@link VehicleData} and the vehicleTypeId
 	 */
-	private Map<String, T> vehicleData;
+	private Map<String, D> vehicleData;
 
 	/**
 	 * TrafficGraphExtensions
@@ -122,11 +122,11 @@ public abstract class XMLAbstractFactory<T extends VehicleData> {
 		this.trafficGraphExtensions = trafficGraphExtensions;
 	}
 
-	public Map<String, T> getVehicleData() {
+	public Map<String, D> getVehicleData() {
 		return this.vehicleData;
 	}
 
-	public void setVehicleData(Map<String, T> vehicleData) {
+	public void setVehicleData(Map<String, D> vehicleData) {
 		this.vehicleData = vehicleData;
 	}
 
@@ -135,13 +135,13 @@ public abstract class XMLAbstractFactory<T extends VehicleData> {
 	 * 
 	 * @return random {@link VehicleData}
 	 */
-	public T getRandomVehicleData() {
+	public D getRandomVehicleData() {
 		if (vehicleData.isEmpty()) {
 			throw new RuntimeException("No vehicles are loaded!");
 		}
 
 		// return random value
-		List<T> valuesList = new ArrayList<>(vehicleData.values());
+		List<D> valuesList = new ArrayList<>(vehicleData.values());
 		int randomIndex = random.nextInt(valuesList.size());
 
 		return valuesList.get(randomIndex);
@@ -184,6 +184,6 @@ public abstract class XMLAbstractFactory<T extends VehicleData> {
 	 *            XML document
 	 * @return Map with typeID and {@link VehicleData}
 	 */
-	protected abstract Map<String, T> readVehicleData(Document doc);
+	protected abstract Map<String, D> readVehicleData(Document doc);
 
 }

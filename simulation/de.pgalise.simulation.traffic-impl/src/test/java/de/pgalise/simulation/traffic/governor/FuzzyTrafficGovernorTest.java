@@ -32,7 +32,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.city.DefaultCity;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.internal.governor.FuzzyTrafficGovernor;

@@ -78,7 +78,7 @@
 //	 * implementation notes:
 //	 * - is a list because for calculating distances goes from end to beginning a ListIterator can be used and List provides an iterator with deletion, i.e. ListIterator.
 //	 */
-//	private List<List<MutablePair<Vehicle<?>, Double>>> vehiclesOnLanes = new LinkedList<>();
+//	private List<List<MutablePair<BaseVehicle<D>, Double>>> vehiclesOnLanes = new LinkedList<>();
 //
 //	@OneToMany
 //	private List<Bicycle> bikesOnBikeLane = new LinkedList<>();
@@ -103,11 +103,11 @@
 ////		return position0.distance(position1);
 //	}
 //
-//	protected void setVehiclesOnLanes(List<List<MutablePair<Vehicle<?>, Double>>> vehiclesOnLanes) {
+//	protected void setVehiclesOnLanes(List<List<MutablePair<BaseVehicle<D>, Double>>> vehiclesOnLanes) {
 //		this.vehiclesOnLanes = vehiclesOnLanes;
 //	}
 //
-//	public List<List<MutablePair<Vehicle<?>, Double>>> getVehiclesOnLanes() {
+//	public List<List<MutablePair<BaseVehicle<D>, Double>>> getVehiclesOnLanes() {
 //		return vehiclesOnLanes;
 //	}
 //
@@ -140,9 +140,9 @@
 //	 *
 //	 */
 //	public void updateBikeLaneAdded() {
-//		for(List<MutablePair<Vehicle<?>, Double>> lane : vehiclesOnLanes) {
-//			for(ListIterator<MutablePair<Vehicle<?>, Double>> it = lane.listIterator(); it.hasNext(); ) {
-//				MutablePair<Vehicle<?>, Double> next = it.next();
+//		for(List<MutablePair<BaseVehicle<D>, Double>> lane : vehiclesOnLanes) {
+//			for(ListIterator<MutablePair<BaseVehicle<D>, Double>> it = lane.listIterator(); it.hasNext(); ) {
+//				MutablePair<BaseVehicle<D>, Double> next = it.next();
 //				if(next.getLeft() instanceof Bicycle) {
 //					it.remove();
 //					bikesOnBikeLane.add( (Bicycle) next.getLeft());
@@ -152,16 +152,16 @@
 //	}
 //
 //	public void addLanes(int count) {
-//		vehiclesOnLanes.addAll(Collections.nCopies(count, new LinkedList<MutablePair<Vehicle<?>,Double>>()));
+//		vehiclesOnLanes.addAll(Collections.nCopies(count, new LinkedList<MutablePair<BaseVehicle<D>,Double>>()));
 //	}
 //
 //	@Override
-//	public boolean takeVehicle(Vehicle<?> vehicle, long timestamp) {
+//	public boolean takeVehicle(BaseVehicle<D> vehicle, long timestamp) {
 //		double securityDistance = BaseVehicle.calculateSecurityDistance(vehicle.getCurrentVelocity());
 //		double securityDistanceInM = securityDistance;
-//		for(List<MutablePair<Vehicle<?>, Double>> lane : vehiclesOnLanes) {
+//		for(List<MutablePair<BaseVehicle<D>, Double>> lane : vehiclesOnLanes) {
 //			if(lane.isEmpty()) {
-//				lane.add(new MutablePair<Vehicle<?>, Double>(vehicle, 0.0));
+//				lane.add(new MutablePair<BaseVehicle<D>, Double>(vehicle, 0.0));
 //				vehicle.setCurrentEdge(this);
 //				vehicle.getCurrentEdge().setRight(timestamp);
 //				vehicle.getCurrentPosition().setLeft(getSource().getGeoLocation());
@@ -169,11 +169,11 @@
 //				getVehicles().add(vehicle);
 //				return true;
 //			}
-//			MutablePair<Vehicle<?>, Double> firstVehicle = lane.get(0);
+//			MutablePair<BaseVehicle<D>, Double> firstVehicle = lane.get(0);
 //			double distance = getSource().getGeoLocation().distance(firstVehicle.getLeft().getCurrentPosition().getLeft());
 //			double space = distance-securityDistanceInM;
 //			if(space >= 0) {
-//				lane.add(new MutablePair<Vehicle<?>, Double>(vehicle, 0.0));
+//				lane.add(new MutablePair<BaseVehicle<D>, Double>(vehicle, 0.0));
 //				vehicle.getCurrentEdge().setLeft(this);
 //				vehicle.getCurrentEdge().setRight(timestamp);
 //				vehicle.getCurrentPosition().setLeft(getSource().getGeoLocation());
@@ -186,12 +186,12 @@
 //	}
 //
 //	@Override
-//	public Set<Vehicle<?>> getLeavingVehicles() {
+//	public Set<BaseVehicle<D>> getLeavingVehicles() {
 //		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //	}
 //
 //	@Override
-//	public Map<Vehicle<?>, List<NavigationEdge>> updateVehicles(long timestamp) {
+//	public Map<BaseVehicle<D>, List<NavigationEdge>> updateVehicles(long timestamp) {
 ////		Vector2D targetSourceOrientationVector = new Vector2D(
 ////			getTarget().getGeoLocation().x, 
 ////			getTarget().getGeoLocation().y
@@ -204,8 +204,8 @@
 ////		);
 ////		Vector2D sourceTargetOrientationVector = new Vector2D(targetSourceOrientationVector);
 ////		sourceTargetOrientationVector = sourceTargetOrientationVector.negate();
-//		List<ListIterator<MutablePair<Vehicle<?>,Double>>> laneInverseIts = new LinkedList<>();
-//		for(List<MutablePair<Vehicle<?>, Double>> lane : vehiclesOnLanes) {
+//		List<ListIterator<MutablePair<BaseVehicle<D>,Double>>> laneInverseIts = new LinkedList<>();
+//		for(List<MutablePair<BaseVehicle<D>, Double>> lane : vehiclesOnLanes) {
 //			laneInverseIts.add(lane.listIterator(lane.size()));
 //		}
 //		boolean start = true;
@@ -216,28 +216,28 @@
 //				int processedOrWaitingCount = 0;
 //				outer:
 //				for(int i=0; i< laneInverseIts.size(); i++) {
-//					ListIterator<MutablePair<Vehicle<?>,Double>> laneInverseIt = laneInverseIts.get(i);
+//					ListIterator<MutablePair<BaseVehicle<D>,Double>> laneInverseIt = laneInverseIts.get(i);
 //					if(!laneInverseIt.hasPrevious()) {
 //						//completely processed
 //						processedOrWaitingCount++;
 //						continue;
 //					}
-//					MutablePair<Vehicle<?>, Double> vehicleDistancePair = laneInverseIt.previous();
-//					Vehicle<?> vehicle = vehicleDistancePair.getLeft();
+//					MutablePair<BaseVehicle<D>, Double> vehicleDistancePair = laneInverseIt.previous();
+//					BaseVehicle<D> vehicle = vehicleDistancePair.getLeft();
 //					double distance = vehicleDistancePair.getRight();
 //					Measure<Integer,Length> securityDistance = BaseVehicle.calculateSecurityDistance(vehicle.getCurrentVelocity().getLeft());
 //					double securityDistanceInM = securityDistance.getUnit().getConverterTo(SI.METER).convert(securityDistance.getValue());
 //					//check lane switch possible
 //					if(i+1 < laneInverseIts.size()) {
 //						//has left neighbour lane -> find behind neighbour (has to check all vehicles on neighbour lane)
-//						ListIterator<MutablePair<Vehicle<?>, Double>> leftLaneIt = vehiclesOnLanes.get(i+1).listIterator(vehiclesOnLanes.size());
+//						ListIterator<MutablePair<BaseVehicle<D>, Double>> leftLaneIt = vehiclesOnLanes.get(i+1).listIterator(vehiclesOnLanes.size());
 //						while(leftLaneIt.hasPrevious()) {
 //							if(leftLaneIt.nextIndex() < laneInverseIts.get(i+1).nextIndex()) {
 //								//position is not updated yet
 //								break;
 //							}
-//							MutablePair<Vehicle<?>, Double> leftLaneBehindNeighbourPair = leftLaneIt.previous();
-//							Vehicle<?> leftLaneBehindNeighbour = leftLaneBehindNeighbourPair.getLeft();
+//							MutablePair<BaseVehicle<D>, Double> leftLaneBehindNeighbourPair = leftLaneIt.previous();
+//							BaseVehicle<D> leftLaneBehindNeighbour = leftLaneBehindNeighbourPair.getLeft();
 //							double leftLaneAdvancedNeighbourDistance = leftLaneBehindNeighbourPair.getRight();
 //							if(leftLaneAdvancedNeighbourDistance-securityDistanceInM < 0) {
 //								continue;
@@ -252,9 +252,9 @@
 //								continue;
 //							}
 //							//lane switch possible (just like normal advancing except change in lane register
-//							MutablePair<Vehicle<?>, Double> leftLaneAdvancedNeighbourPair = leftLaneIt.next();
+//							MutablePair<BaseVehicle<D>, Double> leftLaneAdvancedNeighbourPair = leftLaneIt.next();
 //							leftLaneIt.previous();
-//							Vehicle<?> leftLaneAdvancedNeighbour = leftLaneAdvancedNeighbourPair.getLeft();
+//							BaseVehicle<D> leftLaneAdvancedNeighbour = leftLaneAdvancedNeighbourPair.getLeft();
 //							long deltaTime = timestamp -leftLaneAdvancedNeighbour.getCurrentPosition().getRight();
 //							advanceVehicle(vehicle, leftLaneAdvancedNeighbour, deltaTime, timestamp);
 //							laneInverseIt.remove();
@@ -264,14 +264,14 @@
 //					}
 //					if(i-1 > 0 && lurchingRightAllowed) {
 //						//has right neighbour lane -> find behind neighbour (has to check all vehicles on neighbour lane)
-//						ListIterator<MutablePair<Vehicle<?>, Double>> rightLaneIt = vehiclesOnLanes.get(i-1).listIterator(vehiclesOnLanes.size());
+//						ListIterator<MutablePair<BaseVehicle<D>, Double>> rightLaneIt = vehiclesOnLanes.get(i-1).listIterator(vehiclesOnLanes.size());
 //						while(rightLaneIt.hasPrevious()) {
 //							if(rightLaneIt.nextIndex() < laneInverseIts.get(i-1).nextIndex()) {
 //								//position is not updated yet
 //								break;
 //							}
-//							MutablePair<Vehicle<?>, Double> rightLaneBehindNeighbourPair = rightLaneIt.previous();
-//							Vehicle<?> rightLaneBehindNeighbour = rightLaneBehindNeighbourPair.getLeft();
+//							MutablePair<BaseVehicle<D>, Double> rightLaneBehindNeighbourPair = rightLaneIt.previous();
+//							BaseVehicle<D> rightLaneBehindNeighbour = rightLaneBehindNeighbourPair.getLeft();
 //							double rightLaneAdvancedNeighbourDistance = rightLaneBehindNeighbourPair.getRight();
 //							if(rightLaneAdvancedNeighbourDistance-securityDistanceInM < 0) {
 //								continue;
@@ -286,9 +286,9 @@
 //								continue;
 //							}
 //							//lane switch possible (just like normal advancing except change in lane register
-//							MutablePair<Vehicle<?>, Double> rightLaneAdvancedNeighbourPair = rightLaneIt.next();
+//							MutablePair<BaseVehicle<D>, Double> rightLaneAdvancedNeighbourPair = rightLaneIt.next();
 //							rightLaneIt.previous();
-//							Vehicle<?> rightLaneAdvancedNeighbour = rightLaneAdvancedNeighbourPair.getLeft();
+//							BaseVehicle<D> rightLaneAdvancedNeighbour = rightLaneAdvancedNeighbourPair.getLeft();
 //							long deltaTime = timestamp-rightLaneAdvancedNeighbour.getCurrentPosition().getRight();
 //							advanceVehicle(vehicle, rightLaneAdvancedNeighbour, deltaTime, timestamp);
 //							laneInverseIt.remove();
@@ -299,13 +299,13 @@
 //				}
 //				if(processedOrWaitingCount == laneInverseIts.size()) {
 //					//zero or more lanes are process, except at least one; the latest will be processed -> find latest non-processed -> has to break
-//					ListIterator<ListIterator<MutablePair<Vehicle<?>,Double>>> itsIt = laneInverseIts.listIterator(laneInverseIts.size());
+//					ListIterator<ListIterator<MutablePair<BaseVehicle<D>,Double>>> itsIt = laneInverseIts.listIterator(laneInverseIts.size());
 //					while(itsIt.hasPrevious()) {
-//						ListIterator<MutablePair<Vehicle<?>,Double>> it = itsIt.previous();
+//						ListIterator<MutablePair<BaseVehicle<D>,Double>> it = itsIt.previous();
 //						if(it.hasPrevious()) {
-//							MutablePair<Vehicle<?>,Double> vehicleDistancePair = it.previous();
-//							Vehicle<?> vehicle = vehicleDistancePair.getLeft();
-//							Vehicle<?> advanced = it.next().getLeft();
+//							MutablePair<BaseVehicle<D>,Double> vehicleDistancePair = it.previous();
+//							BaseVehicle<D> vehicle = vehicleDistancePair.getLeft();
+//							BaseVehicle<D> advanced = it.next().getLeft();
 //							it.previous();
 //							double newDistance = calculateDistanceInOrientation(vehicle.getCurrentPosition().getLeft(), vehicle.getCurrentPosition().getLeft());
 //							long deltaTime = timestamp -advanced.getCurrentPosition().getRight();
@@ -316,7 +316,7 @@
 //					}
 //				}
 //			}
-//			for(ListIterator<MutablePair<Vehicle<?>,Double>> laneInverseIt : laneInverseIts) {
+//			for(ListIterator<MutablePair<BaseVehicle<D>,Double>> laneInverseIt : laneInverseIts) {
 //				//updates as long as current iterator position is not updatable fast forward (i.e. lane switch has to be checked)
 //			}
 //			start = false;
@@ -329,7 +329,7 @@
 //	 * @param advanced the more advanced vehicle on the same lane whose position is already updated
 //	 * @return the new distance to the advanced vehicle
 //	 */
-//	private double advanceVehicle(Vehicle<?> vehicle, Vehicle<?> advanced, long deltaTime, long timestamp) {
+//	private double advanceVehicle(BaseVehicle<D> vehicle, BaseVehicle<D> advanced, long deltaTime, long timestamp) {
 ////		Coordinate newPosition = calculateNewPosition(vehicle.getCurrentPosition().getLeft(), orientation, vehicle.getCurrentVelocity().getLeft(), deltaTime);
 //		
 //		throw new UnsupportedOperationException();
@@ -349,7 +349,7 @@
 //	 * @param maxDistance
 //	 * @return 
 //	 */
-//	private double advanceVehicle(Vehicle<?> vehicle, Vehicle<?> advanced, long deltaTime, long timestamp, double maxDistance) {
+//	private double advanceVehicle(BaseVehicle<D> vehicle, BaseVehicle<D> advanced, long deltaTime, long timestamp, double maxDistance) {
 //		throw new UnsupportedOperationException();
 //		
 ////		vehicle.getCurrentVelocity().setLeft((int)(maxDistance/deltaTime));

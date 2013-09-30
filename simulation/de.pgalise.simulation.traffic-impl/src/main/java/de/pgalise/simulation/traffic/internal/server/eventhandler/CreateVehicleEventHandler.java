@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.TrafficTrip;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
@@ -109,7 +109,7 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
 					GEOMETRY_FACTORY.createPoint(
 						trip.getStartNode().getGeoLocation()))) {
 				// Create vehicle
-				Vehicle<? extends VehicleData> v = this.createVehicle(data, trip);
+				Vehicle<? extends VehicleData,N,E> v = this.createVehicle(data, trip);
 	
 				// Schedule vehicle
 				this.scheduleVehicle(v, trip.getStartTime());

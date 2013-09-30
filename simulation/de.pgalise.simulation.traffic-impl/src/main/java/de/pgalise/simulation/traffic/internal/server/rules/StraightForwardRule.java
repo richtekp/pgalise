@@ -22,15 +22,16 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.rules.TrafficRule;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 import java.util.ArrayList;
@@ -39,18 +40,19 @@ import java.util.ArrayList;
  * {@link TrafficRule} used for {@link Node}s that have just two edges. Hence a vehicle can pass <br>
  * the node immediately
  * 
+ * @param <D> 
  * @author Marcus
  */
-public class StraightForwardRule extends TrafficRule {
+public class StraightForwardRule<D extends VehicleData> extends AbstractTrafficRule<D> {
 	/**
 	 * contains for both {@link Edge}s the {@link Vehicle}s that are in there
 	 */
-	private final Map<NavigationEdge<?,?>, TrafficRuleData> vehiclesInNode = new HashMap<>(2);
+	private final Map<DefaultTrafficEdge<D>, DefaultTrafficRuleData<D>> vehiclesInNode = new HashMap<>(2);
 
 	/**
 	 * contains for both {@link Edge}s the {@link Vehicle} that are waiting for getting in
 	 */
-	private final Map<NavigationEdge<?,?>, Queue<TrafficRuleData>> vehiclesWaiting = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D>, Queue<DefaultTrafficRuleData<D>>> vehiclesWaiting = new HashMap<>();
 
 	/**
 	 * Creates a {@link StraightForwardRule} for the passed {@link Node}.
@@ -63,17 +65,17 @@ public class StraightForwardRule extends TrafficRule {
 	 * @throws IllegalStateException
 	 *             if argument 'node' hasn't exactly two edges
 	 */
-	public StraightForwardRule(final NavigationNode node, TrafficGraph<?> graph) throws IllegalArgumentException, IllegalStateException {
+	public StraightForwardRule(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph) throws IllegalArgumentException, IllegalStateException {
 		super(node, graph);
 		this.vehiclesInNode.put(this.getEdge1(), null);
 		this.vehiclesInNode.put(this.getEdge2(), null);
 
-		this.vehiclesWaiting.put(this.getEdge1(), new LinkedList<TrafficRuleData>());
-		this.vehiclesWaiting.put(this.getEdge2(), new LinkedList<TrafficRuleData>());
+		this.vehiclesWaiting.put(this.getEdge1(), new LinkedList<DefaultTrafficRuleData<D>>());
+		this.vehiclesWaiting.put(this.getEdge2(), new LinkedList<DefaultTrafficRuleData<D>>());
 	}
 
 	@Override
-	protected void checkNode(final NavigationNode node) throws IllegalStateException {
+	protected void checkNode(final DefaultTrafficNode<D> node) throws IllegalStateException {
 		if (getGraph().edgesOf(node).size() != 2) {
 			throw new IllegalStateException("Argument 'node' must have exactly 2 edges. This has "
 					+ getGraph().edgesOf(node).size() + ".");
@@ -98,7 +100,7 @@ public class StraightForwardRule extends TrafficRule {
 	 *             {@link Edge} 'to' aren't linked with this {@link StraightForwardRule}'s {@link Node}
 	 */
 	@Override
-	public void register(final Vehicle<?> vehicle, final NavigationEdge<?,?> from, final NavigationEdge<?,?> to, final TrafficRuleCallback callback)
+	public void register(final BaseVehicle<D> vehicle, final DefaultTrafficEdge<D> from, final DefaultTrafficEdge<D> to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, UnsupportedOperationException {
 		// if (from == to) {
 		// throw new UnsupportedOperationException("Argument 'from' must not be the same edge as argument 'to'.");
@@ -109,7 +111,7 @@ public class StraightForwardRule extends TrafficRule {
 		if (!this.vehiclesInNode.containsKey(to)) {
 			throw new UnsupportedOperationException("Edge 'to' isn't linked with this StraightForwardRule's node.");
 		}
-		final TrafficRuleData trafficRuleData = new TrafficRuleData(vehicle, from, to, callback);
+		final DefaultTrafficRuleData<D> trafficRuleData = new DefaultTrafficRuleData<>(vehicle, from, to, callback);
 
 		if (true || (this.vehiclesInNode.get(from) == null)) {
 			// Let vehicle in
@@ -135,8 +137,8 @@ public class StraightForwardRule extends TrafficRule {
 		/*
 		 * Let vehicles out
 		 */
-		final TrafficRuleData inNodeTrafficRuleData1 = this.vehiclesInNode.get(this.getEdge1());
-		final TrafficRuleData inNodeTrafficRuleData2 = this.vehiclesInNode.get(this.getEdge2());
+		final DefaultTrafficRuleData<D> inNodeTrafficRuleData1 = this.vehiclesInNode.get(this.getEdge1());
+		final DefaultTrafficRuleData<D> inNodeTrafficRuleData2 = this.vehiclesInNode.get(this.getEdge2());
 		if (inNodeTrafficRuleData1 != null) {
 			this.vehiclesInNode.put(inNodeTrafficRuleData1.getFrom(), null);
 			inNodeTrafficRuleData1.getCallback().onExit();
@@ -149,8 +151,8 @@ public class StraightForwardRule extends TrafficRule {
 		/*
 		 * Let vehicles in from the waiting list
 		 */
-		final TrafficRuleData waitingTrafficRuleData1 = this.vehiclesWaiting.get(this.getEdge1()).poll();
-		final TrafficRuleData waitingTrafficRuleData2 = this.vehiclesWaiting.get(this.getEdge2()).poll();
+		final DefaultTrafficRuleData<D> waitingTrafficRuleData1 = this.vehiclesWaiting.get(this.getEdge1()).poll();
+		final DefaultTrafficRuleData<D> waitingTrafficRuleData2 = this.vehiclesWaiting.get(this.getEdge2()).poll();
 		if (waitingTrafficRuleData1 != null) {
 			this.vehiclesInNode.put(waitingTrafficRuleData1.getFrom(), waitingTrafficRuleData1);
 			waitingTrafficRuleData1.getCallback().onEnter();
@@ -166,7 +168,7 @@ public class StraightForwardRule extends TrafficRule {
 	 * 
 	 * @return the first {@link Edge} of the {@link Node} on which the {@link StraightForwardRule} is applied
 	 */
-	private NavigationEdge<?,?> getEdge1() {
+	private DefaultTrafficEdge<D> getEdge1() {
 		return new ArrayList<>(getGraph().edgesOf(getNode())).get(0);
 	}
 
@@ -175,7 +177,7 @@ public class StraightForwardRule extends TrafficRule {
 	 * 
 	 * @return the second {@link Edge} of the {@link Node} on which the {@link StraightForwardRule} is applied
 	 */
-	private NavigationEdge<?,?> getEdge2() {
+	private DefaultTrafficEdge<D> getEdge2() {
 		return new ArrayList<>(getGraph().edgesOf(getNode())).get(1);
 	}
 }

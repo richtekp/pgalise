@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -81,9 +81,9 @@ public class TrafficVisualizerTest {
 	public void vizualizerTest() throws InterruptedException {
 		final MutableBoolean exit = new MutableBoolean();
 		exit.setValue(false);
-		final TrafficGraph<?> graph = createGraph();
+		final TrafficGraph<?,?> graph = createGraph();
 		algo.init(graph);
-		final List<Vehicle<? extends VehicleData>> vehicles = createVehicles(graph);
+		final List<Vehicle<? extends VehicleData,N,E>> vehicles = createVehicles(graph);
 
 		RandomSeedService seedService = new DefaultRandomSeedService();
 		seedService.init(System.currentTimeMillis());
@@ -107,8 +107,8 @@ public class TrafficVisualizerTest {
 					}
 					long currentTime = 1000;
 					allTime += currentTime;
-					for (Iterator<Vehicle<? extends VehicleData>> it = vehicles.iterator(); it.hasNext();) {
-						Vehicle<? extends VehicleData> v = it.next();
+					for (Iterator<Vehicle<? extends VehicleData,N,E>> it = vehicles.iterator(); it.hasNext();) {
+						Vehicle<? extends VehicleData,N,E> v = it.next();
 						nasch.update(v, currentTime, graph, 0.5);
 						for (final NavigationNode node : graph) {
 							try {
@@ -150,7 +150,7 @@ public class TrafficVisualizerTest {
 	 * @return List of vehicles which got positioned on the graph
 	 * @throws InterruptedException
 	 */
-	private List<Vehicle<? extends VehicleData>> createVehicles(TrafficGraph<?> graph) throws InterruptedException {
+	private List<Vehicle<? extends VehicleData,N,E>> createVehicles(TrafficGraph<?,?> graph) throws InterruptedException {
 
 		// Sets the max speed of the edges
 		ee.setMaxSpeed(graph.getEdge("ab"), 50.0);
@@ -159,41 +159,41 @@ public class TrafficVisualizerTest {
 		// Creates the default car factory
 
 		// Creating the cars
-		Vehicle<? extends VehicleData> carA = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carA = factory.createRandomCar( null);
 		carA.setTrafficGraphExtensions(ee);
 		carA.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 		carA.setVelocity(27);
 		carA.setName("carA");
 
-		Vehicle<? extends VehicleData> carB = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carB = factory.createRandomCar( null);
 		carB.setTrafficGraphExtensions(ee);
 		carB.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carC = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carC = factory.createRandomCar( null);
 		carC.setTrafficGraphExtensions(ee);
 		carC.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carD = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carD = factory.createRandomCar( null);
 		carD.setTrafficGraphExtensions(ee);
 		carD.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carE = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carE = factory.createRandomCar( null);
 		carE.setTrafficGraphExtensions(ee);
 		carE.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carF = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carF = factory.createRandomCar( null);
 		carF.setTrafficGraphExtensions(ee);
 		carF.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carG = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carG = factory.createRandomCar( null);
 		carG.setTrafficGraphExtensions(ee);
 		carG.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carH = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carH = factory.createRandomCar( null);
 		carH.setTrafficGraphExtensions(ee);
 		carH.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
-		Vehicle<? extends VehicleData> carI = factory.createRandomCar( null);
+		Vehicle<? extends VehicleData,N,E> carI = factory.createRandomCar( null);
 		carI.setTrafficGraphExtensions(ee);
 		carI.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 
@@ -267,7 +267,7 @@ public class TrafficVisualizerTest {
 		carI.setName("carI");
 		carI.setVelocity(10);
 
-		List<Vehicle<? extends VehicleData>> vehicles = new LinkedList<>();
+		List<Vehicle<? extends VehicleData,N,E>> vehicles = new LinkedList<>();
 		vehicles.add(carA);
 		vehicles.add(carB);
 		vehicles.add(carC);
@@ -286,8 +286,8 @@ public class TrafficVisualizerTest {
 	 * 
 	 * @return created graph
 	 */
-	private TrafficGraph<?> createGraph() {
-		TrafficGraph<?> graph = new TrafficGraph<>(DefaultTrafficEdge.class);
+	private TrafficGraph<?,?> createGraph() {
+		TrafficGraph<?,?> graph = new TrafficGraph<>(DefaultTrafficEdge.class);
 		NavigationNode a = this.addNode(graph, "a", 1, 1);
 		NavigationNode b = this.addNode(graph, "b", 2, 2);
 		NavigationNode c = this.addNode(graph, "c", 4, 7);
@@ -328,7 +328,7 @@ public class TrafficVisualizerTest {
 	 *            Y-Position of the node
 	 * @return The added node
 	 */
-	private NavigationNode addNode(TrafficGraph<?> graph, String id, double x, double y) {
+	private NavigationNode addNode(TrafficGraph<?,?> graph, String id, double x, double y) {
 		NavigationNode node = graph.addNode(id);
 		node.setAttribute("position", new Vector2d(x, y));
 		return node;

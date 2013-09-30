@@ -167,7 +167,7 @@ public enum SensorTypeEnum implements SensorType {
 	 * maps sensor type ids integers to {@link SensorType}
 	 */
 	private static Map<Integer, SensorType> SENSOR_TYPE_IDS;
-
+	
 	/**
 	 * Returns SENSOR_TYPE_IDS.
 	 * 

@@ -26,7 +26,12 @@ import org.w3c.dom.NodeList;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -37,7 +42,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFactory {
+public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFactory<DefaultTrafficNode<BusData>,DefaultTrafficEdge<BusData>, BaseVehicle<BusData>> {
 
 	/**
 	 * Constructor
@@ -76,7 +81,7 @@ public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFac
 	}
 
 	@Override
-	public Vehicle<BusData> createRandomBus( SensorHelper helper, SensorHelper infraredSensor) {
+	public BaseVehicle<BusData> createRandomBus( SensorHelper helper, SensorHelper infraredSensor) {
 		BusData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
 		data.setInfraredSensorHelper(infraredSensor);
@@ -84,11 +89,9 @@ public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFac
 	}
 
 	@Override
-	public Vehicle<BusData> createBus( String typeId, SensorHelper helper, SensorHelper infraredSensor) {
-		BusData data = getVehicleData().get(typeId);
-		data.setGpsSensorHelper(helper);
-		data.setInfraredSensorHelper(infraredSensor);
-		return new DefaultMotorizedVehicle<>( "bus" + getNextCounter(), data, this.trafficGraphExtensions);
+	public BaseVehicle<BusData> createBus(  SensorHelper helper, SensorHelper infraredSensor) {
+		return createRandomBus(helper,
+			infraredSensor);
 	}
 
 	@Override

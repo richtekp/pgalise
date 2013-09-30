@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.traffic.server.scheduler;
 
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -28,21 +30,21 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * On every update step the TrafficServer iterates through the expired items to update
  * the vehicles that are already on the road.
  * 
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
+ * @param <V> 
+ * @param <I> 
  * @see Item
  * @see Administration
  * @author mustafa
  */
-public abstract class Scheduler {
-	private Modus modus;
-
-	public static enum Modus {
-		READ, WRITE;
-		public static EnumSet<Modus> READ_OR_WRITE = EnumSet.of(READ, WRITE);
-	}
-
-	public Scheduler() {
-		this.modus = Modus.READ;
-	}
+public interface Scheduler<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>,
+	I extends ScheduleItem<D,N,E,V>> {
 
 	/**
 	 * Changes the access rights to this scheduler
@@ -50,9 +52,7 @@ public abstract class Scheduler {
 	 * @param modus
 	 *            new access mode to set
 	 */
-	void changeModus(Modus modus) {
-		this.modus = modus;
-	}
+	void changeModus(ScheduleModus modus);
 
 	/**
 	 * Adds a schedule handler to this scheduler.
@@ -63,15 +63,9 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void addScheduleHandler(ScheduleHandler handler) throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onAddScheduleHandler(handler);
-		} else {
-			throw new IllegalAccessException("Can't add schedule handler, write access needed (current: " + modus + ")");
-		}
-	}
+	public void addScheduleHandler(ScheduleHandler<D,N,E,V,I> handler) throws IllegalAccessException ;
 
-	protected abstract void onAddScheduleHandler(ScheduleHandler handler);
+	void onAddScheduleHandler(ScheduleHandler<D,N,E,V,I> handler);
 
 	/**
 	 * Removes a schedule handler to this scheduler.
@@ -82,16 +76,9 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void removeScheduleHandler(ScheduleHandler handler) throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onRemoveScheduleHandler(handler);
-		} else {
-			throw new IllegalAccessException("Can't remove schedule handler, write access needed (current: " + modus
-					+ ")");
-		}
-	}
+	public void removeScheduleHandler(ScheduleHandler<D,N,E,V,I> handler) throws IllegalAccessException ;
 
-	protected abstract void onRemoveScheduleHandler(ScheduleHandler handler);
+	void onRemoveScheduleHandler(ScheduleHandler<D,N,E,V,I> handler);
 
 	/**
 	 * Removes all schedule handler from this scheduler.
@@ -100,16 +87,9 @@ public abstract class Scheduler {
 	 *             when access right is not set to {@link Modus#WRITE}
 	 * @see ScheduleHandler
 	 */
-	public void removeAllHandler() throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onRemoveAllHandler();
-		} else {
-			throw new IllegalAccessException("Can't remove all schedule handler, write access needed (current: "
-					+ modus + ")");
-		}
-	}
+	public void removeAllHandler() throws IllegalAccessException;
 
-	protected abstract void onRemoveAllHandler();
+	void onRemoveAllHandler();
 
 	/**
 	 * Adds an item to the proper position in the schedule.
@@ -119,30 +99,25 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void scheduleItem(ScheduleItem item) throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onScheduleItem(item);
-		} else {
-			throw new IllegalAccessException("Can't schedule item, write access needed (current: " + modus + ")");
-		}
-	}
+	public void scheduleItem(I item) throws IllegalAccessException ;
 
-	protected abstract void onScheduleItem(ScheduleItem item);
+	void onScheduleItem(I item);
 
 	/**
 	 * Returns a shallow copy of vehicles should be driving already. Important: Does not remove vehicles that arrived at
 	 * their target.
 	 * 
+	 * @param currentTime 
 	 * @see #removeExpiredItems(List)
 	 * @return a shallow copy of vehicles should be driving already
 	 */
-	public abstract List<ScheduleItem> getExpiredItems(long currentTime);
+	List<I> getExpiredItems(long currentTime);
 
 	/**
 	 * @see #removeScheduledItems(List)
 	 * @return a shallow copy of scheduled items
 	 */
-	public abstract List<ScheduleItem> getScheduledItems();
+	List<I> getScheduledItems();
 
 	/**
 	 * Searches for the passed vehicles in the expired items list and removes them.
@@ -151,16 +126,9 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void removeScheduledItems(List<Vehicle<? extends VehicleData>> vehicles) throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onRemoveScheduledItems(vehicles);
-		} else {
-			throw new IllegalAccessException("Can't remove scheduled items, write access needed (current: " + modus
-					+ ")");
-		}
-	}
+	public void removeScheduledItems(List<V> vehicles) throws IllegalAccessException ;
 
-	protected abstract void onRemoveScheduledItems(List<Vehicle<? extends VehicleData>> vehicles);
+	void onRemoveScheduledItems(List<V> vehicles);
 
 	/**
 	 * Searches for the passed vehicles in the expired items list and removes them.
@@ -169,15 +137,9 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void removeExpiredItems(List<Vehicle<? extends VehicleData>> vehicles) throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onRemoveExpiredItems(vehicles);
-		} else {
-			throw new IllegalAccessException("Can't remove expired items, write access needed (current: " + modus + ")");
-		}
-	}
+	public void removeExpiredItems(List<V> vehicles) throws IllegalAccessException;
 
-	protected abstract void onRemoveExpiredItems(List<Vehicle<? extends VehicleData>> vehicles);
+	void onRemoveExpiredItems(List<V> vehicles);
 
 	/**
 	 * Clears scheduled items.
@@ -185,16 +147,9 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void clearScheduledItems() throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onClearScheduledItems();
-		} else {
-			throw new IllegalAccessException("Can't clear scheduled items list, write access needed (current: " + modus
-					+ ")");
-		}
-	}
+	public void clearScheduledItems() throws IllegalAccessException ;
 
-	protected abstract void onClearScheduledItems();
+	void onClearScheduledItems();
 
 	/**
 	 * Clears expired items.
@@ -202,14 +157,7 @@ public abstract class Scheduler {
 	 * @throws IllegalAccessException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void clearExpiredItems() throws IllegalAccessException {
-		if (this.modus == Modus.WRITE) {
-			onClearExpiredItems();
-		} else {
-			throw new IllegalAccessException("Can't clear expired items list, write access needed (current: " + modus
-					+ ")");
-		}
-	}
+	public void clearExpiredItems() throws IllegalAccessException ;
 
-	protected abstract void onClearExpiredItems();
+	void onClearExpiredItems();
 }

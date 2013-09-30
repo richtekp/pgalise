@@ -101,7 +101,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import de.pgalise.util.GTFS.service.DefaultBusService;
@@ -271,7 +271,7 @@ public class TrafficServerTest {
 				new SensorHelper(sensor, null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>()));
 		car.setName("Car A");
 		car.setPath(path);
-		server1.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START, server1.getUpdateIntervall()));
+		server1.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START, server1.getUpdateIntervall()));
 
 		Sensor<?> sensor2 = new GpsSensor(null,
 			null,
@@ -283,12 +283,12 @@ public class TrafficServerTest {
 				new SensorHelper(sensor2, null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>()));
 		car3.setName("Car B");
 		car3.setPath(path);
-		server1.getScheduler().scheduleItem(new ScheduleItem(car3, SIMULATION_START + 1000, server1.getUpdateIntervall()));
+		server1.getScheduler().scheduleItem(new DefaultScheduleItem(car3, SIMULATION_START + 1000, server1.getUpdateIntervall()));
 
 		// 2.auto
 
 		int i = -1000;
-		List<Vehicle<? extends VehicleData>> addedVehicles = new LinkedList<>();
+		List<Vehicle<? extends VehicleData,N,E>> addedVehicles = new LinkedList<>();
 		int droveOverBoundaries = 0;
 		while ((i / 1000) < 6131) {
 			EventList eventList = new EventList(null, SIMULATION_START + i, UUID.randomUUID());
@@ -304,7 +304,7 @@ public class TrafficServerTest {
 
 			if (server1.getScheduler().getExpiredItems(SIMULATION_START + i).size() == 1 && droveOverBoundaries == 1) {
 				log.info((i / 1000) + " updates needed to drive over the boundaries");// 5137
-				Vehicle<? extends VehicleData> v = createVehicle(server2, i / 1000);
+				Vehicle<? extends VehicleData,N,E> v = createVehicle(server2, i / 1000);
 				v.setVehicleState(VehicleStateEnum.STOPPED);
 				addedVehicles.add(v);
 				droveOverBoundaries = 2;
@@ -314,7 +314,7 @@ public class TrafficServerTest {
 				isEmpty()) {
 				droveOverBoundaries = 3;
 			} else if (droveOverBoundaries == 3) {
-				for (Vehicle<? extends VehicleData> v : addedVehicles) {
+				for (Vehicle<? extends VehicleData,N,E> v : addedVehicles) {
 					v.setVehicleState(VehicleStateEnum.DRIVING);
 				}
 				droveOverBoundaries++;
@@ -331,7 +331,7 @@ public class TrafficServerTest {
 		}
 	}
 
-	private Vehicle<? extends VehicleData> createVehicle(TrafficServerLocal server2, int i)
+	private Vehicle<? extends VehicleData,N,E> createVehicle(TrafficServerLocal server2, int i)
 			throws IllegalAccessException {
 			Sensor<?> sensor = new GpsSensor(null,
 				null,
@@ -347,7 +347,7 @@ public class TrafficServerTest {
 		car2.setPath(server2.getShortestPath(startNode,endNode));
 
 		server2.getScheduler().scheduleItem(
-				new ScheduleItem(car2, SIMULATION_START + (5135 * 1000), server2.getUpdateIntervall()));
+				new DefaultScheduleItem(car2, SIMULATION_START + (5135 * 1000), server2.getUpdateIntervall()));
 
 		return car2;
 	}
@@ -553,7 +553,7 @@ public class TrafficServerTest {
 
 			nodeForStaticSensor = car.getNodePath().get(0);
 
-			server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+			server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 		if (VEHICLE_TYPE.equals("truck") || VEHICLE_TYPE.equals("all")) {
 			Sensor<?> sensor = new GpsSensor(null,
@@ -569,7 +569,7 @@ public class TrafficServerTest {
 			TrafficTrip tripTruck = server0.createTrip(server0.getCityZone(), truck.getData().getType());
 			truck.setPath(server0.getShortestPath(tripTruck.getStartNode(), tripTruck.getTargetNode()));
 
-			server0.getScheduler().scheduleItem(new ScheduleItem(truck, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+			server0.getScheduler().scheduleItem(new DefaultScheduleItem(truck, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 		if (VEHICLE_TYPE.equals("bike") || VEHICLE_TYPE.equals("all")) {
 			Sensor<?> sensor = new GpsSensor(null,
@@ -585,7 +585,7 @@ public class TrafficServerTest {
 			TrafficTrip tripBike = server0.createTrip(server0.getCityZone(), bike.getData().getType());
 			bike.setPath(server0.getShortestPath(tripBike.getStartNode(), tripBike.getTargetNode()));
 
-			server0.getScheduler().scheduleItem(new ScheduleItem(bike, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+			server0.getScheduler().scheduleItem(new DefaultScheduleItem(bike, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 
 		if (VEHICLE_TYPE.equals("motorcycle") || VEHICLE_TYPE.equals("all")) {
@@ -603,7 +603,7 @@ public class TrafficServerTest {
 			motorcycle.setPath(server0.getShortestPath(tripMotorcycle.getStartNode(), tripMotorcycle.getTargetNode()));
 
 			server0.getScheduler().scheduleItem(
-					new ScheduleItem(motorcycle, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+					new DefaultScheduleItem(motorcycle, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 
 		EventList eventList = new EventList(null, SIMULATION_START, UUID.randomUUID());
@@ -691,7 +691,7 @@ public class TrafficServerTest {
 		car.setPath(server0.getShortestPath(trip.getStartNode(),
 				trip.getTargetNode()));
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 
 		assertEquals(1, (server0.getScheduler().getScheduledItems().size()));
 
@@ -762,7 +762,7 @@ public class TrafficServerTest {
 		car.setPath(server0.getShortestPath(trip.getStartNode(),
 				trip.getTargetNode()));
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 
 		assertEquals(1, (server0.getScheduler().getScheduledItems().size()));
 

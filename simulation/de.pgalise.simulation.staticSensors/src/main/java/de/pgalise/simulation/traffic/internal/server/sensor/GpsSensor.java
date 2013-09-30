@@ -24,7 +24,10 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -38,7 +41,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  * @author Mischa
  * @version 1.1
  */
-public class GpsSensor extends Sensor<TrafficEvent> {
+public class GpsSensor<N extends TrafficNode, E extends TrafficEdge<N,E>> extends Sensor<TrafficEvent> {
 
 	/**
 	 * Search signal time for GPS connection
@@ -58,12 +61,12 @@ public class GpsSensor extends Sensor<TrafficEvent> {
 	/**
 	 * Sensor type
 	 */
-	private SensorTypeEnum type;
+	private SensorType type;
 
 	/**
 	 * Vehicle
 	 */
-	private Vehicle<? extends VehicleData> vehicle;
+	private Vehicle<? extends VehicleData,N,E> vehicle;
 
 	/**
 	 * Option that shows if the sensor has a signal
@@ -93,8 +96,8 @@ public class GpsSensor extends Sensor<TrafficEvent> {
 	 * @param interferer
 	 *            GPS interferer
 	 */
-	public GpsSensor(final Output output, final Vehicle<? extends VehicleData> vehicle,
-			final int updateLimit, final SensorTypeEnum sensor, Coordinate position, final GpsInterferer interferer) {
+	public GpsSensor(final Output output, final Vehicle<? extends VehicleData,N,E> vehicle,
+			final int updateLimit, final SensorType sensor, Coordinate position, final GpsInterferer interferer) {
 
 		super(output, position, updateLimit);
 		if (interferer == null) {
@@ -119,7 +122,7 @@ public class GpsSensor extends Sensor<TrafficEvent> {
 	 * @param interferer
 	 *            GPS interferer
 	 */
-	public GpsSensor(Output output, Vehicle<? extends VehicleData> vehicle, SensorTypeEnum sensor,
+	public GpsSensor(Output output, Vehicle<? extends VehicleData,N,E> vehicle, SensorTypeEnum sensor,
 			final Coordinate position, final GpsInterferer interferer) {
 		this(output, vehicle, 1, sensor, position, interferer);
 	}
@@ -159,11 +162,11 @@ public class GpsSensor extends Sensor<TrafficEvent> {
 	}
 
 	@Override
-	public SensorTypeEnum getSensorType() {
+	public SensorType getSensorType() {
 		return this.type;
 	}
 
-	public Vehicle<? extends VehicleData> getVehicle() {
+	public Vehicle<? extends VehicleData,N,E> getVehicle() {
 		return this.vehicle;
 	}
 
@@ -187,11 +190,11 @@ public class GpsSensor extends Sensor<TrafficEvent> {
 		this.interferer = interferer;
 	}
 
-	public void setSensorType(SensorTypeEnum sensor) {
+	public void setSensorType(SensorType sensor) {
 		this.type = sensor;
 	}
 
-	public void setVehicle(Vehicle<? extends VehicleData> vehicle) {
+	public void setVehicle(Vehicle<? extends VehicleData,N,E> vehicle) {
 		if (vehicle == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("vehicle"));
 		}

@@ -31,7 +31,7 @@ import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -58,7 +58,7 @@ public class BusStopParser {
 	 * @param graph
 	 * @return
 	 */
-	public List<BusStop<?>> parseBusStops(TrafficGraph<?> graph) {
+	public List<BusStop<?>> parseBusStops(TrafficGraph<?,?,?,?> graph) {
 		TypedQuery query = entityManager.createQuery("SELECT x FROM BusStop x",
 			BusStop.class);
 		List<BusStop<?>> queriedBusStops = query.getResultList();

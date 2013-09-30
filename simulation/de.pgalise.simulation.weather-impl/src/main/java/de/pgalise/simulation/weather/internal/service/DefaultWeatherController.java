@@ -89,7 +89,7 @@ import java.util.HashSet;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
 @Local
-public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter> implements WeatherController {
+public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter, InitParameter> implements WeatherController {
 
 	/**
 	 * Logger

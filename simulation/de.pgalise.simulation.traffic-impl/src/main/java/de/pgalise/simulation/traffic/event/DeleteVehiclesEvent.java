@@ -17,12 +17,14 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import java.util.UUID;
 
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * Removes the vehicles with the given {@link UUID}.
@@ -36,10 +38,10 @@ public class DeleteVehiclesEvent<D extends VehicleData> extends AbstractVehicleE
 	 */
 	private static final long serialVersionUID = 1533612793042541169L;
 	
-	public DeleteVehiclesEvent(TrafficServerLocal server,
+	public DeleteVehiclesEvent(DefaultTrafficServer<D> server,
 		long simulationTime,
 		long elapsedTime,
-		Vehicle<D> deleteVehicle) {
+		V deleteVehicle) {
 		super(server,
 			simulationTime,
 			elapsedTime, deleteVehicle);
@@ -64,7 +66,7 @@ public class DeleteVehiclesEvent<D extends VehicleData> extends AbstractVehicleE
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		DeleteVehiclesEvent other = (DeleteVehiclesEvent) obj;
+		DeleteVehiclesEvent<?> other = (DeleteVehiclesEvent) obj;
 		if (getVehicle() == null) {
 			if (other.getVehicle() != null) {
 				return false;

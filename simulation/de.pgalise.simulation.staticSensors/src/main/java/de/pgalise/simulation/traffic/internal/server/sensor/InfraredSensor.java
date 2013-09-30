@@ -25,6 +25,8 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
@@ -37,7 +39,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  * @author Andreas
  * @version 1.0
  */
-public class InfraredSensor extends Sensor {
+public class InfraredSensor<N extends TrafficNode, E extends TrafficEdge<N,E>> extends Sensor {
 	/**
 	 * Logger
 	 */
@@ -51,7 +53,7 @@ public class InfraredSensor extends Sensor {
 	/**
 	 * According vehicle
 	 */
-	private Vehicle<? extends BusData> vehicle;
+	private Vehicle<? extends BusData,N,E> vehicle;
 	
 	private boolean sendData;
 
@@ -71,7 +73,7 @@ public class InfraredSensor extends Sensor {
 	 * @param interferer
 	 *            InfraredInterferer
 	 */
-	public InfraredSensor(final Output output, final Vehicle<? extends BusData> vehicle,
+	public InfraredSensor(final Output output, final Vehicle<? extends BusData,N,E> vehicle,
 			final Coordinate position, final int updateLimit, final InfraredInterferer interferer) {
 		super(output, position, updateLimit);
 		if (interferer == null) {
@@ -95,7 +97,7 @@ public class InfraredSensor extends Sensor {
 	 * @param interferer
 	 *            InfraredInterferer
 	 */
-	public InfraredSensor(final Output output, final Vehicle<? extends BusData> vehicle,
+	public InfraredSensor(final Output output, final Vehicle<? extends BusData,N,E> vehicle,
 			final Coordinate position, final InfraredInterferer interferer) {
 		this(output, vehicle, position, 1, interferer);
 	}
@@ -192,11 +194,11 @@ public class InfraredSensor extends Sensor {
 		}
 	}
 
-	public Vehicle<? extends BusData> getVehicle() {
+	public Vehicle<? extends BusData,N,E> getVehicle() {
 		return vehicle;
 	}
 
-	public void setVehicle(Vehicle<? extends BusData> vehicle) {
+	public void setVehicle(Vehicle<? extends BusData,N,E> vehicle) {
 		this.vehicle = vehicle;
 	}
 	

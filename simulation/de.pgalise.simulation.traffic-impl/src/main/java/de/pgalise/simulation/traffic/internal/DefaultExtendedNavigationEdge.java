@@ -66,14 +66,14 @@
 //	}
 //
 //	@Override
-//	public boolean takeVehicle(Vehicle<?> vehicle, long timestamp) {
+//	public boolean takeVehicle(BaseVehicle<D> vehicle, long timestamp) {
 //		if(getVehicles().contains(vehicle)) {
 //			throw new IllegalArgumentException("vehicle is already on this edge");
 //		}
 //		vehicle.setVelocity(vehicle.getData().getMaxVelocity());
 //		vehicle.getCurrentVelocity().setRight(timestamp);
 ////		DoubleArrayList securityDistances = new DoubleArrayList(vehicles.size()+1);
-////		for(Vehicle<?> vehicle0 : vehicles) {
+////		for(BaseVehicle<D> vehicle0 : vehicles) {
 ////			double securityDistance = BaseVehicle.calculateSecurityDistance(vehicle0.getCurrentVelocity().getLeft());
 ////			securityDistances.add(securityDistance);
 ////		}
@@ -82,7 +82,7 @@
 ////		double averageVelocity = Descriptive.mean(securityDistances);
 ////		double averageSecurityDistance = BaseVehicle.calculateSecurityDistance(averageVelocity);
 //		double securityDistanceSumInM = 0;
-//		for(Vehicle<?> vehicle0 : getVehicles()) {
+//		for(BaseVehicle<D> vehicle0 : getVehicles()) {
 //			Measure<Integer,Length> securityDistance = BaseVehicle.calculateSecurityDistance(vehicle0.getCurrentVelocity().getLeft());
 //			securityDistanceSumInM += securityDistance.getUnit().getConverterTo(SI.METER).convert(securityDistance.getValue());
 //		}
@@ -100,7 +100,7 @@
 //	}
 //
 //	@Override
-//	public Set<Vehicle<?>> getLeavingVehicles() {
+//	public Set<BaseVehicle<D>> getLeavingVehicles() {
 //		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //	}
 //
@@ -110,10 +110,10 @@
 //	 * @param timestamp 
 //	 */
 //	@Override
-//	public Map<Vehicle<?>, List<E>> updateVehicles(long timestamp) {
+//	public Map<BaseVehicle<D>, List<E>> updateVehicles(long timestamp) {
 //		LOGGER.debug(String.format("updating %d vehicles", getVehicles().size()));
-//		Map<Vehicle<?>, List<E>> retValue = new HashMap<>(getVehicles().size());
-//		for(Vehicle<?> vehicle : getVehicles()) {
+//		Map<BaseVehicle<D>, List<E>> retValue = new HashMap<>(getVehicles().size());
+//		for(BaseVehicle<D> vehicle : getVehicles()) {
 //			if(vehicle.getCurrentSimulationSteps().isEmpty()) {
 //				LOGGER.debug(String.format("%s has no simulation steps left", vehicle));
 //				continue;
@@ -127,7 +127,7 @@
 //			List<E> passedEdges = moveOnRoute(vehicle, new LongMeasure<>(deltaTime, SI.MILLI(SI.SECOND)));
 //			retValue.put(vehicle, passedEdges);
 //		}
-//		for(Entry<Vehicle<?>,List<E>> entry : retValue.entrySet()) {
+//		for(Entry<BaseVehicle<D>,List<E>> entry : retValue.entrySet()) {
 //			for(E passedEge : entry.getValue()) {
 //				passedEge.getVehicles().remove(entry.getKey());
 //			}
@@ -171,7 +171,7 @@
 //	 * @param deltaTime 
 //	 * @return a {@link List} with passed node (possibly empty) if the vehicle moved on the save {@link NavigationEdge} without reaching a node
 //	 */
-//	public List<E> moveOnRoute(Vehicle<?> vehicle, Measure<Long, Duration> deltaTime) {
+//	public List<E> moveOnRoute(BaseVehicle<D> vehicle, Measure<Long, Duration> deltaTime) {
 //		LOGGER.debug(String.format("moving vehicle %s", this.getId()));
 //		long newTimestamp = vehicle.getPosition().getRight()+deltaTime.longValue(SI.MILLI(SI.SECOND));
 //		List<E> retValue = new LinkedList<>();

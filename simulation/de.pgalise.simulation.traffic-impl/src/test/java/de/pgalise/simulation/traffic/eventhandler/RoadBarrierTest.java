@@ -83,7 +83,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import de.pgalise.util.GTFS.service.DefaultBusService;
@@ -244,7 +244,7 @@ public class RoadBarrierTest {
 
 		log.debug("#### STEP 0 ##########################################################################");
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START, 1000));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
 		EventList eventList = new EventList(null, currentTime, UUID.randomUUID());
@@ -356,7 +356,7 @@ public class RoadBarrierTest {
 		log.debug("Node " + closedNode + " Current node=" + car.getCurrentNode() + " Next node=" + car.getNextNode());
 		log.debug("#### STEP 0 ##########################################################################");
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START, 1000));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
 		EventList eventList = new EventList(null, currentTime, UUID.randomUUID());
@@ -469,8 +469,8 @@ public class RoadBarrierTest {
 
 		log.debug("#### STEP 0 ##########################################################################");
 
-		List<ScheduleItem> vehicleItems = server0.getScheduler().getExpiredItems(SIMULATION_END);
-		Vehicle<? extends VehicleData> bus = vehicleItems.get(0).getVehicle();
+		List<DefaultScheduleItem> vehicleItems = server0.getScheduler().getExpiredItems(SIMULATION_END);
+		Vehicle<? extends VehicleData,N,E> bus = vehicleItems.get(0).getVehicle();
 		vehicleItems.get(0).setDepartureTime(SIMULATION_START);
 		Path path = bus.getPath();
 

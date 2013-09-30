@@ -25,20 +25,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 
 /**
  * The event handler removes vehicles with the given List of UUIDs from the server. The class are used by the
@@ -97,7 +97,7 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 	 * @param node
 	 *            Node that is blocked by {@link RoadBarrier}
 	 */
-	private void calculateNewWay(Vehicle<? extends VehicleData> vehicle, NavigationNode node) {
+	private void calculateNewWay(Vehicle<? extends VehicleData,N,E> vehicle, NavigationNode node) {
 		if (VehicleTypeEnum.VEHICLES_FOR_INDIVIDUAL_TRAFFIC.contains(vehicle.getData().getType())
 				&& vehicle.getPath().contains(node)
 				&& (!vehicle.getNextNode().equals(node) || !vehicle.getCurrentNode().equals(node))) {
@@ -216,9 +216,9 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 			this.removeEdgesFromGraph(edges);
 
 			// New Path for all vehicles with this edge
-			List<ScheduleItem> vehicleItems = this.server.getScheduler().getExpiredItems(e.getRoadBarrierEndTimestamp());
-			for (ScheduleItem item : vehicleItems) {
-				Vehicle<? extends VehicleData> vehicle = item.getVehicle();
+			List<DefaultScheduleItem> vehicleItems = this.server.getScheduler().getExpiredItems(e.getRoadBarrierEndTimestamp());
+			for (DefaultScheduleItem item : vehicleItems) {
+				Vehicle<? extends VehicleData,N,E> vehicle = item.getVehicle();
 				this.calculateNewWay(vehicle, blockedNode);
 			}
 		}

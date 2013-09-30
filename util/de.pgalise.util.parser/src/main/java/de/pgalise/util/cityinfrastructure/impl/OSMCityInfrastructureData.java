@@ -51,13 +51,17 @@ import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.OMGeo.Polygon;
 
 import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.traffic.CityInfrastructureData;
-import de.pgalise.simulation.traffic.Way;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.traffic.Building;
-import de.pgalise.simulation.traffic.BusStop;
-import de.pgalise.simulation.traffic.NavigationNode;
+import de.pgalise.simulation.shared.city.Building;
+import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.LanduseTagEnum;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.Way;
+import de.pgalise.simulation.shared.city.WayTagEnum;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -187,7 +191,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * 
 	 * @author Timo
 	 */
-	private static class TmpWay extends Way{
+	private static class TmpWay extends Way<?,?>{
 		private static final long serialVersionUID = 2310070836622850662L;
 		private List<String> nodeReferenceList;
 
@@ -269,6 +273,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	private Boundary boundary;
 	private List<Building> buildings;
 	private BuildingEnergyProfileStrategy buildingEnergyProfileStrategy;
+	private TrafficGraph<?,?> graph;
 
 	/**
 	 * Constructor
@@ -282,11 +287,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @throws IOException
 	 */
 	public OSMCityInfrastructureData(InputStream osmIN, InputStream busStopIN,
-			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
+			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy, TrafficGraph<?,?> graph) throws IOException {
 		this.prTreeDistanceCalculator = new NodeDistance();
 		this.prTreeNodeFilter = new PRTreeNodeFilter();
 		this.buildingEnergyProfileStrategy = buildingEnergyProfileStrategy;
 		this.parse(osmIN, busStopIN);
+		this.graph = graph;
 	}
 
 	/**
@@ -343,8 +349,8 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param osmFile
 	 * @return
 	 */
-	private List<Way<?,?>> combineMotorWaysWithBusStops(List<Way<?,?>> motorWays, List<BusStop<?>> busStops) {
-		List<Way<?,?>> wayList = new ArrayList<>(motorWays);
+	private <E extends NavigationEdge<N,E>, N extends NavigationNode> List<Way<?,?>> combineMotorWaysWithBusStops(List<Way<E,N>> motorWays, List<BusStop<?>> busStops) {
+		List<Way<E,N>> wayList = new ArrayList<>(motorWays);
 
 		/* Eliminate multiple bus stops: */
 		Set<String> busStopNameSet = new HashSet<>();
@@ -360,10 +366,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		}
 
 		/* Build a node way map: */
-		Map<NavigationNode, List<Way<?,?>>> nodeWayMap = new HashMap<>();
-		for (Way<?,?>way : wayList) {
+		Map<NavigationNode, List<Way<E,N>>> nodeWayMap = new HashMap<>();
+		for (Way<E,N> way : wayList) {
 			for (NavigationNode node : way.getNodeList()) {
-				List<Way<?,?>> tmpWayList = nodeWayMap.get(node);
+				List<Way<E,N>> tmpWayList = nodeWayMap.get(node);
 				if (tmpWayList == null) {
 					tmpWayList = new ArrayList<>();
 					nodeWayMap.put(node, tmpWayList);
@@ -421,9 +427,9 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 				for (int j = i + 1; j < nodeDistanceList.size(); j++) {
 					NavigationNode node2 = nodeDistanceList.get(j).getNode();
-					List<Way<?,?>> waysNode2 = nodeWayMap.get(node2);
+					List<Way<E,N>> waysNode2 = nodeWayMap.get(node2);
 
-					for (Way<?,?>possibleWay : nodeWayMap.get(node1)) {
+					for (Way<E,N>possibleWay : nodeWayMap.get(node1)) {
 						/*
 						 * Node1 and node2 must be on the same street and the distance between node1 and node2 must be
 						 * larger than the distance between bus stop and node2.
@@ -435,9 +441,9 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 										busStop.getLocation().y))) {
 
 							/* Insert busstop as new node: */
-							List<BusStop<?>> newNodeList = new ArrayList<>();
+							List<N> newNodeList = new ArrayList<>();
 							boolean nodeFound = false;
-							for (NavigationNode node : possibleWay.getNodeList()) {
+							for (N node : possibleWay.getNodeList()) {
 								if (!nodeFound && (node.equals(node1) || node.equals(node2))) {
 									newNodeList.add(busStop);
 									nodeFound = true;
@@ -446,7 +452,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 								newNodeList.add(node);
 							}
 
-							possibleWay.setNodeList(newNodeList);
+							possibleWay.setEdgeList(newNodeList, graph);
 
 							continue BusStopLoop;
 						}
@@ -475,14 +481,14 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		 */
 		Map<String, List<Polygon>> landUseMap = new HashMap<>();
 		for (Way<?,?>landuse : this.landUseWays) {
-			if (landuse.getLanduse().equalsIgnoreCase("industrial")) {
+			if (landuse.getLanduseTags().contains(LanduseTagEnum.INDUSTRY)) {
 				List<Polygon> polygonList = landUseMap.get("industrial");
 				if (polygonList == null) {
 					polygonList = new ArrayList<>();
 					landUseMap.put("industrial", polygonList);
 				}
 				polygonList.add(this.wayToPolygon2d(landuse));
-			} else if (landuse.getLanduse().equalsIgnoreCase("retail")) {
+			} else if (landuse.getLanduseTags().contains(LanduseTagEnum.RETAIL)) {
 				List<Polygon> polygonList = landUseMap.get("retail");
 				if (polygonList == null) {
 					polygonList = new ArrayList<>();

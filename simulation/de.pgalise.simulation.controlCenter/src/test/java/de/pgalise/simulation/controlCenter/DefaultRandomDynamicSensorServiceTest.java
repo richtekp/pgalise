@@ -41,7 +41,7 @@ import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 
 /**
  * J-Unit tests for {@link DefaultCreateRandomVehicleService}.<br />

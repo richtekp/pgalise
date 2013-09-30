@@ -10,7 +10,7 @@ import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
@@ -282,7 +282,7 @@ public class TestUtils {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1)
 			}
 		);
-		TrafficGraph<?> trafficGraph = new TrafficGraph<>(NavigationEdge.class);
+		TrafficGraph<?,?> trafficGraph = new TrafficGraph<>(NavigationEdge.class);
 		City city = new DefaultCity("Berlin",
 			3375222,
 			80,

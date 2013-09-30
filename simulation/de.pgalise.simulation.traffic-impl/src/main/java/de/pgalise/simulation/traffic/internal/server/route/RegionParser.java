@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.traffic.server.route;
+package de.pgalise.simulation.traffic.internal.server.route;
 
 import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
 import de.pgalise.simulation.shared.city.LanduseTagEnum;
@@ -27,14 +27,17 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.shared.city.Way;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.route.EnrichedPolygon;
 import java.util.Set;
 
 /**
  * @author Lena
  */
-public class RegionParser {
+public class RegionParser<D extends VehicleData> {
 
 	/**
 	 * Log
@@ -49,11 +52,11 @@ public class RegionParser {
 		}
 	}
 
-	private List<NavigationNode> homeNodes = new ArrayList<>();
+	private List<DefaultTrafficNode<D>> homeNodes = new ArrayList<>();
 
 	private CityInfrastructureData trafficInformation;
 
-	private List<NavigationNode> workNodes = new ArrayList<>();
+	private List<DefaultTrafficNode<D>> workNodes = new ArrayList<>();
 
 	/**
 	 * Constructor
@@ -64,11 +67,11 @@ public class RegionParser {
 		this.trafficInformation = trafficInformation;
 	}
 
-	public List<NavigationNode> getHomeNodes() {
+	public List<DefaultTrafficNode<D>> getHomeNodes() {
 		return this.homeNodes;
 	}
 
-	public List<NavigationNode> getWorkNodes() {
+	public List<DefaultTrafficNode<D>> getWorkNodes() {
 		return this.workNodes;
 	}
 
@@ -94,7 +97,7 @@ public class RegionParser {
 		}
 
 		for (Way<?,?> way : ways) {
-			for (NavigationNode node : way.getNodeList()) {
+			for (DefaultTrafficNode<?> node : way.getNodeList()) {
 				for (EnrichedPolygon p : polygons) {
 					if (p.getPolygon().contains((int) (node.getGeoLocation().x* 10000000),
 							(int) (node.getGeoLocation().y* 10000000))) {
@@ -118,11 +121,11 @@ public class RegionParser {
 		log.info("Found #WorkNodes: " + this.workNodes.size());
 	}
 
-	public void setHomeNodes(List<NavigationNode> homeNodes) {
+	public void setHomeNodes(List<DefaultTrafficNode<D>> homeNodes) {
 		this.homeNodes = homeNodes;
 	}
 
-	public void setWorkNodes(List<NavigationNode> workNodes) {
+	public void setWorkNodes(List<DefaultTrafficNode<D>> workNodes) {
 		this.workNodes = workNodes;
 	}
 }

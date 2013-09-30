@@ -154,7 +154,7 @@ public abstract class Sensor<E extends Event> extends AbstractIdentifiable imple
 	 * 
 	 * @return sensortype
 	 */
-	public abstract SensorTypeEnum getSensorType();
+	public abstract SensorType getSensorType();
 
 	/**
 	 * determines whether the sensor is activated

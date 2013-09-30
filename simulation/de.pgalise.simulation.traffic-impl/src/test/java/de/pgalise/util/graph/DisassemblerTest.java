@@ -29,7 +29,7 @@ import org.junit.Test;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import org.geotools.geometry.jts.JTS;
@@ -44,7 +44,7 @@ public class DisassemblerTest {
 	@Test
 	public void disassemble() {
 		Disassembler dis = new QuadrantDisassembler();
-		TrafficGraph<?> graph = new TrafficGraph<>(DefaultNavigationEdge.class);
+		TrafficGraph<?,?> graph = new TrafficGraph<>(DefaultNavigationEdge.class);
 		NavigationNode node = new DefaultNavigationNode();
 
 		// erster qudrant

@@ -34,13 +34,21 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.city.DefaultNavigationEdge;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.rules.LeftYieldsToRight;
 import de.pgalise.simulation.traffic.internal.server.rules.PriorityRoad;
 import de.pgalise.simulation.traffic.internal.server.rules.Roundabout;
@@ -48,18 +56,21 @@ import de.pgalise.simulation.traffic.internal.server.rules.StraightForwardRule;
 import de.pgalise.simulation.traffic.model.vehicle.MotorizedVehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.rules.TrafficRule;
+import de.pgalise.simulation.traffic.internal.server.rules.AbstractTrafficRule;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
  * Extension class which extends EdgeExtensions by traffic related aspects
  * 
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
  * @author Marcus, Mustafa, Marina
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficGraphExtensions")
 @Local(TrafficGraphExtensions.class)
-public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implements TrafficGraphExtensions {
+public class DefaultTrafficGraphExtensions<D extends VehicleData> extends DefaultGraphExtensions<D> implements TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> {
 	private static final Logger log = LoggerFactory.getLogger(DefaultTrafficGraphExtensions.class);
 
 	/**
@@ -80,24 +91,27 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	/**
 	 * Set with traffic rules
 	 */
-	private final Set<TrafficRule> trafficRules = new HashSet<>(1);
+	private final Set<AbstractTrafficRule<D>> trafficRules = new HashSet<>(1);
 
 	private RandomSeedService rss;
 
 	private long currentSimTime;
 
+	protected DefaultTrafficGraphExtensions() {
+	}
+
 	/**
 	 * 
 	 */
-	private final Map<Vehicle<?>, NavigationEdge<?,?>> vehicleToEdges = new HashMap<>();
+	private final Map<BaseVehicle<D>, DefaultTrafficEdge<D>> vehicleToEdges = new HashMap<>();
 
 	public DefaultTrafficGraphExtensions(
-		TrafficGraph<?> graph) {
+		DefaultTrafficGraph<D> graph) {
 		super(graph);
 	}
 
 	public DefaultTrafficGraphExtensions(RandomSeedService rss,
-		TrafficGraph<?> graph) {
+		DefaultTrafficGraph<D> graph) {
 		super(graph);
 		this.rss = rss;
 	}
@@ -122,16 +136,16 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	private TrafficRule getBestTrafficRule(final NavigationNode node) throws IllegalArgumentException {
+	private AbstractTrafficRule<D> getBestTrafficRule(final DefaultTrafficNode<D> node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 
 		if (getGraph().edgesOf(node).size() == 2) {
-			final TrafficRule trafficRule = new StraightForwardRule(node, getGraph());
+			final AbstractTrafficRule<D> trafficRule = new StraightForwardRule<>(node, getGraph());
 			this.trafficRules.add(trafficRule);
 			return trafficRule;
 		}
 
-		final TrafficRule trafficRule = new Roundabout(node, getGraph(), this.rss, this, this.currentSimTime);
+		final AbstractTrafficRule<D> trafficRule = new Roundabout<>(node, getGraph(), this.rss, this, this.currentSimTime);
 		this.trafficRules.add(trafficRule);
 		return trafficRule;
 
@@ -171,7 +185,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public boolean addSensor(final NavigationNode node, final StaticTrafficSensor sensor) throws IllegalArgumentException {
+	public boolean addSensor(final DefaultTrafficNode<D> node, final StaticTrafficSensor<DefaultTrafficNode<D>, DefaultTrafficEdge<D>> sensor) throws IllegalArgumentException {
 		if (node == null) {
 			log.error("Can't add sensor " + sensor.getId()+ " to an empty node");
 		}
@@ -192,7 +206,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public Set<StaticTrafficSensor> getSensorsAsUnmodifialable(final NavigationNode node) throws IllegalArgumentException {
+	public Set<StaticTrafficSensor<DefaultTrafficNode<D>, DefaultTrafficEdge<D>>> getSensorsAsUnmodifialable(final DefaultTrafficNode<D> node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		return Collections.unmodifiableSet(this.getSensors(node));
 	}
@@ -208,7 +222,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public synchronized TrafficRule getTrafficRule(final NavigationNode node) throws IllegalArgumentException {
+	public synchronized AbstractTrafficRule<D> getTrafficRule(final DefaultTrafficNode<D> node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (node.getTrafficRule() == null) {
 			this.setTrafficRule(node, this.getBestTrafficRule(node));
@@ -228,7 +242,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' or argument 'vehicle' is 'null'
 	 */
 	@Override
-	public void registerOnNode(final NavigationNode node, final Vehicle<? extends VehicleData> vehicle)
+	public void registerOnNode(final DefaultTrafficNode<D> node, final BaseVehicle<D> vehicle)
 			throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (vehicle == null) {
@@ -242,7 +256,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 			mapName = "bicycles";
 		}
 
-		Set<Vehicle<?>> vehicles = node.getVehicles();
+		Set<BaseVehicle<D>> vehicles = node.getVehicles();
 		if (vehicles == null) {
 			vehicles = new HashSet<>(16);
 			node.setVehicles(vehicles);
@@ -264,7 +278,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' or argument 'vehicle' is 'null'
 	 */
 	@Override
-	public void unregisterFromNode(final NavigationNode node, final Vehicle<? extends VehicleData> vehicle)
+	public void unregisterFromNode(final DefaultTrafficNode<D> node, final BaseVehicle<D> vehicle)
 			throws IllegalArgumentException {
 		String mapName;
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicle.getData().getType())) {
@@ -273,15 +287,15 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 			mapName = "bicycles";
 		}
 
-		Set<Vehicle<?>> vehicles = node.getVehicles();
+		Set<BaseVehicle<D>> vehicles = node.getVehicles();
 		if (vehicles != null) {
 			vehicles.remove(vehicle);
 		}
 	}
 
 	@Override
-	public Set<Vehicle<? extends VehicleData>> getVehiclesOnNode(final NavigationNode node, final VehicleTypeEnum vehicleType) {
-		Set<Vehicle<?>> vehicles = new HashSet<>(16);
+	public Set<BaseVehicle<D>> getVehiclesOnNode(final DefaultTrafficNode<D> node, final VehicleTypeEnum vehicleType) {
+		Set<BaseVehicle<D>> vehicles = new HashSet<>(16);
 		String mapName;
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicleType)) {
 			mapName = "cars";
@@ -308,7 +322,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public boolean removeSensor(final NavigationNode node, final StaticTrafficSensor sensor) throws IllegalArgumentException {
+	public boolean removeSensor(final DefaultTrafficNode<D> node, final StaticTrafficSensor<DefaultTrafficNode<D>, DefaultTrafficEdge<D>> sensor) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
@@ -328,7 +342,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public synchronized NavigationNode setTrafficRule(final NavigationNode node, final TrafficRule trafficRule)
+	public synchronized DefaultTrafficNode<D> setTrafficRule(final DefaultTrafficNode<D> node, final AbstractTrafficRule<D> trafficRule)
 			throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		if (trafficRule == null) {
@@ -349,7 +363,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @return the {@link TrafficRule}s as an unmodifiable {@link Set}
 	 */
 	@Override
-	public Set<TrafficRule> getTrafficRulesAsUnmodifiableSet() {
+	public Set<AbstractTrafficRule<D>> getTrafficRulesAsUnmodifiableSet() {
 		return Collections.unmodifiableSet(this.trafficRules);
 	}
 
@@ -360,9 +374,9 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *            the {@link SimulationEventList}
 	 */
 	@Override
-	public void updateTrafficRules(EventList simulationEventList) {
+	public void updateTrafficRules(EventList<D> simulationEventList) {
 		this.currentSimTime = simulationEventList.getTimestamp();
-		for (final TrafficRule trafficRule : this.trafficRules) {
+		for (final AbstractTrafficRule<?> trafficRule : this.trafficRules) {
 			trafficRule.update(simulationEventList);
 		}
 	}
@@ -375,7 +389,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	private void createSensorSet(final NavigationNode node) throws IllegalArgumentException {
+	private void createSensorSet(final DefaultTrafficNode<D> node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		node.setSensors(new HashSet<StaticTrafficSensor>(16));
 	}
@@ -390,7 +404,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public Set<StaticTrafficSensor> getSensors(final NavigationNode node) throws IllegalArgumentException {
+	public Set<StaticTrafficSensor<DefaultTrafficNode<D>, DefaultTrafficEdge<D>>> getSensors(final DefaultTrafficNode<D> node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (node.getSensors() == null) {
 			this.createSensorSet(node);
@@ -405,7 +419,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public boolean addVehicle(final NavigationEdge<?,?> edge, final Vehicle<? extends VehicleData> vehicle)
+	public boolean addVehicle(final DefaultTrafficEdge<D> edge, final BaseVehicle<D> vehicle)
 			throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if (vehicle == null) {
@@ -425,12 +439,12 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public boolean removeVehicleFromItsEdge(final Vehicle<? extends VehicleData> vehicle)
+	public boolean removeVehicleFromItsEdge(final BaseVehicle<D> vehicle)
 			throws IllegalArgumentException {
 		if (vehicle == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("vehicle"));
 		}
-		final NavigationEdge<?,?> edge = this.vehicleToEdges.remove(vehicle);
+		final DefaultTrafficEdge<D> edge = this.vehicleToEdges.remove(vehicle);
 		if (edge == null) {
 			return false;
 		}
@@ -443,7 +457,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public Set<Vehicle<? extends VehicleData>> getVehiclesAsUnmodifialable(final NavigationEdge<?,?> edge)
+	public Set<BaseVehicle<D>> getVehiclesAsUnmodifialable(final DefaultTrafficEdge<D> edge)
 			throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		return Collections.unmodifiableSet(this.getVehicles(edge));
@@ -455,7 +469,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public NavigationEdge<?,?> getEdgeFor(final Vehicle<? extends VehicleData> vehicle) throws IllegalArgumentException {
+	public DefaultTrafficEdge<D> getEdgeFor(final BaseVehicle<D> vehicle) throws IllegalArgumentException {
 		if (vehicle == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("vehicle"));
 		}
@@ -475,9 +489,9 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @throws IllegalArgumentException
 	 */
 	@Override
-	public Set<Vehicle<? extends VehicleData>> getVehiclesFor(NavigationEdge<?,?> edge, NavigationNode from, NavigationNode to)
+	public Set<BaseVehicle<D>> getVehiclesFor(DefaultTrafficEdge<D> edge, DefaultTrafficNode<D> from, DefaultTrafficNode<D> to)
 			throws IllegalArgumentException {
-		Set<Vehicle<?>> registeredCars = edge.getVehicles();
+		Set<BaseVehicle<D>> registeredCars = edge.getVehicles();
 		if (registeredCars == null) {
 			registeredCars = new HashSet<>();
 		} else {
@@ -491,7 +505,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	private Set<Vehicle<?>> getVehicles(final NavigationEdge<?,?> edge) throws IllegalArgumentException {
+	private Set<BaseVehicle<D>> getVehicles(final DefaultTrafficEdge<D> edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if (edge.getVehicles() == null) {
 			this.createVehicleSet(edge);
@@ -503,9 +517,9 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 * @param edge
 	 * @throws IllegalArgumentException
 	 */
-	private void createVehicleSet(final NavigationEdge<?,?> edge) throws IllegalArgumentException {
+	private void createVehicleSet(final DefaultTrafficEdge<D> edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
-		edge.setVehicles(new HashSet<Vehicle<?>>());
+		edge.setVehicles(new HashSet<BaseVehicle<D>>());
 	}
 
 	/**
@@ -521,13 +535,13 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *            Vehicle to register
 	 */
 	@Override
-	public void registerOnEdge(NavigationEdge<?,?> edge, NavigationNode from, NavigationNode to, Vehicle<?> v) {
+	public void registerOnEdge(DefaultTrafficEdge<D> edge, DefaultTrafficNode<D> from, DefaultTrafficNode<D> to, BaseVehicle<D> v) {
 		if(v == null) {
 			throw new IllegalArgumentException("v");
 		}
-		Set<Vehicle<?>> vehicles = edge.getVehicles();
+		Set<BaseVehicle<D>> vehicles = edge.getVehicles();
 		if(vehicles == null) {
-			edge.setVehicles(new HashSet<Vehicle<?>>(10));
+			edge.setVehicles(new HashSet<BaseVehicle<D>>(10));
 		}
 		edge.getVehicles().add(v);
 	}
@@ -545,7 +559,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *            Vehicle to unregister
 	 */
 	@Override
-	public void unregisterFromEdge(NavigationEdge<?,?> edge, NavigationNode from, NavigationNode to, Vehicle<? extends VehicleData> v) {
+	public void unregisterFromEdge(DefaultTrafficEdge<D> edge, DefaultTrafficNode<D> from, DefaultTrafficNode<D> to, BaseVehicle<D> v) {
 		if(edge.getVehicles() != null) {
 			edge.getVehicles().remove(v);
 		}

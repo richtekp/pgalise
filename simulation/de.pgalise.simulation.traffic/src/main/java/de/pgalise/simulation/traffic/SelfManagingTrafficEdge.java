@@ -7,6 +7,7 @@ package de.pgalise.simulation.traffic;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,9 +16,11 @@ import java.util.Set;
  * Experimental simulation facilities
  * @param <N> 
  * @param <E> 
+ * @param <D> 
+ * @param <V> 
  * @author richter
  */
-public interface SelfManagingNavigationEdge<N extends NavigationNode, E extends NavigationEdge<N,E>> extends NavigationEdge<N,E> {
+public interface SelfManagingTrafficEdge<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D,N,E,V>> extends TrafficEdge<N,E,D,V> {
 	
 	/**
 	 * both indicates whether there's possibilty (i.e. space) to take a vehicle on
@@ -28,7 +31,7 @@ public interface SelfManagingNavigationEdge<N extends NavigationNode, E extends 
 	 * @param timestamp 
 	 * @return
 	 */
-	boolean takeVehicle(Vehicle<?> vehicle, long timestamp);
+	boolean takeVehicle(V vehicle, long timestamp);
 
 	/**
 	 * retrieves vehicles which left the edge on the last simulation step. This is
@@ -37,7 +40,7 @@ public interface SelfManagingNavigationEdge<N extends NavigationNode, E extends 
 	 *
 	 * @return
 	 */
-	Set<Vehicle<?>> getLeavingVehicles();
+	Set<V> getLeavingVehicles();
 	
 	/**
 	 * updates all {@link Vehicle}s on this edge to be in the situation which has 
@@ -45,6 +48,6 @@ public interface SelfManagingNavigationEdge<N extends NavigationNode, E extends 
 	 * @param timestamp
 	 * @return a <tt>List</tt> of passed {@link NavigationEdge}s 
 	 */
-	Map<Vehicle<?>, List<E>> updateVehicles(long timestamp);
+	Map<V, List<E>> updateVehicles(long timestamp);
 	
 }

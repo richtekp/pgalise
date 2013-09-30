@@ -29,29 +29,31 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.rules.TrafficRule;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
-import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
 /**
  * Class for roundabouts
  * 
+ * @param <D> 
  * @author Marcus
  * @version 1.0 (Oct 28, 2012)
  */
-public class Roundabout extends TrafficRule {
+public class Roundabout<D extends VehicleData> extends AbstractTrafficRule<D> {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 
 	 */
-	private final TrafficGraphExtensions trafficGraphExtensions;
+	private final TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> trafficGraphExtensions;
 
 	/**
 	 * a {@link Random} instance which seed is returned by this {@link Roundabout}'s {@link RandomSeedService}
@@ -71,26 +73,28 @@ public class Roundabout extends TrafficRule {
 	/**
 	 * maps all the milliseconds for passing the roundabout from each {@link Edge} to each {@link Edge}
 	 */
-	private final Map<NavigationEdge<?,?>, Map<NavigationEdge<?,?>, Integer>> edgeToEdgeTimes = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D> , Map<DefaultTrafficEdge<D> , Integer>> edgeToEdgeTimes = new HashMap<>();
 
 	/**
 	 * collects {@link Edge}s where {@link Vehicle}s that have to wait.
 	 */
-	private final Map<NavigationEdge<?,?>, Queue<TrafficRuleData>> vehiclesWaiting = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D> , Queue<DefaultTrafficRuleData<D>>> vehiclesWaiting = new HashMap<>();
 
 	/**
 	 * collects {@link Vehicle}s that are currently in the {@link Roundabout}
 	 */
-	private final Map<TrafficRuleData, Integer> vehiclesInRoundabout = new HashMap<>();
+	private final Map<DefaultTrafficRuleData<D>, Integer> vehiclesInRoundabout = new HashMap<>();
 
 	/**
 	 * Creates a {@link Roundabout} for the passed {@link Node}.
 	 * 
 	 * @param node
 	 *            the {@link Node} on which the {@link Roundabout} will be applied
+	 * @param graph 
 	 * @param randomSeedService
 	 *            the {@link RandomSeedService} for generating replicable random numbers for letting waiting
 	 *            {@link Vehicle}s in
+	 * @param trafficGraphExtensions 
 	 * @param millisPerRound
 	 *            the milliseconds a {@link Vehicle} needs for a whole round in the {@link Roundabout}
 	 * @param maxNumberOfVehicles
@@ -101,8 +105,8 @@ public class Roundabout extends TrafficRule {
 	 *             if argument 'node' is null or has no edge <br>
 	 *             if argument 'simulationTime' is a negative number
 	 */
-	public Roundabout(final NavigationNode node, TrafficGraph<?> graph, final RandomSeedService randomSeedService,
-			final TrafficGraphExtensions trafficGraphExtensions, final int millisPerRound,
+	public Roundabout(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph, final RandomSeedService randomSeedService,
+			final TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> trafficGraphExtensions, final int millisPerRound,
 			final int maxNumberOfVehicles, final long simulationTime) throws IllegalArgumentException {
 		super(node, graph);
 		if (randomSeedService == null) {
@@ -124,8 +128,8 @@ public class Roundabout extends TrafficRule {
 		this.maxNumberOfVehicles = maxNumberOfVehicles;
 		this.previousTime = simulationTime;
 
-		for (final NavigationEdge<?,?> edge : getGraph().edgesOf(this.getNode())) {
-			this.vehiclesWaiting.put(edge, new LinkedList<TrafficRuleData>());
+		for (final DefaultTrafficEdge<D>  edge : getGraph().edgesOf(this.getNode())) {
+			this.vehiclesWaiting.put(edge, new LinkedList<DefaultTrafficRuleData<D>>());
 		}
 
 		this.random = new Random(randomSeedService.getSeed(Roundabout.class.getName()));
@@ -140,22 +144,24 @@ public class Roundabout extends TrafficRule {
 	 * 
 	 * @param node
 	 *            the {@link Node} on which the {@link Roundabout} will be applied
+	 * @param graph 
 	 * @param randomSeedService
 	 *            the {@link RandomSeedService} for generating replicable random numbers
+	 * @param trafficGraphExtensions 
 	 * @param simulationTime
 	 *            the current time of the simulation
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is null or has no edge <br>
 	 *             if argument 'simulationTime' is a negative number
 	 */
-	public Roundabout(final NavigationNode node, TrafficGraph<?> graph, final RandomSeedService randomSeedService,
-			final TrafficGraphExtensions trafficGraphExtensions, final long simulationTime)
+	public Roundabout(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph, final RandomSeedService randomSeedService,
+			final TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> trafficGraphExtensions, final long simulationTime)
 			throws IllegalArgumentException {
 		this(node, graph, randomSeedService, trafficGraphExtensions, 40000, 5, simulationTime);
 	}
 
 	@Override
-	protected void checkNode(final NavigationNode node) throws IllegalArgumentException {
+	protected void checkNode(final DefaultTrafficNode<D> node) throws IllegalArgumentException {
 		if (getGraph().edgesOf(node).isEmpty()) {
 			throw new IllegalArgumentException("Argument 'node' must have at least one edge.");
 		}
@@ -166,9 +172,9 @@ public class Roundabout extends TrafficRule {
 	 * Calculated values will be written to 'edgeToEdgeTimes' map.
 	 */
 	private void calculateTimes() {
-		for (final NavigationEdge<?,?> from : getGraph().edgesOf(this.getNode())) {
-			final HashMap<NavigationEdge<?,?>, Integer> map = new HashMap<>();
-			for (final NavigationEdge<?,?> to : this.getNode()) {
+		for (final DefaultTrafficEdge<D>  from : getGraph().edgesOf(this.getNode())) {
+			final HashMap<DefaultTrafficEdge<D> , Integer> map = new HashMap<>();
+			for (final DefaultTrafficEdge<D>  to : getGraph().edgesOf(this.getNode())) {
 				map.put(to, this.calculateTime(from, to));
 			}
 			this.edgeToEdgeTimes.put(from, map);
@@ -184,9 +190,9 @@ public class Roundabout extends TrafficRule {
 	 *            the target {@link Edge}
 	 * @return the time in milliseconds for getting from {@link Edge} 'from' to {@link Edge} 'to'
 	 */
-	private int calculateTime(final NavigationEdge<?,?> from, final NavigationEdge<?,?> to) {
-		final NavigationNode nodeFrom = from.getSource()!= this.getNode() ? from.getSource(): from.getTarget();
-		final NavigationNode nodeTo = to.getSource() != this.getNode() ? to.getSource() : to.getTarget();
+	private int calculateTime(final DefaultTrafficEdge<D>  from, final DefaultTrafficEdge<D>  to) {
+		final DefaultTrafficNode<D> nodeFrom = from.getSource()!= this.getNode() ? from.getSource(): from.getTarget();
+		final DefaultTrafficNode<D> nodeTo = to.getSource() != this.getNode() ? to.getSource() : to.getTarget();
 
 		double angle = (this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom).angle(
 				this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo)) * 180D)
@@ -218,14 +224,14 @@ public class Roundabout extends TrafficRule {
 	 * @throws IllegalStateException
 	 *             if argument 'from' or argument 'to' isn't linked with this roundabout's node
 	 */
-	public int getMillis(final NavigationEdge<?,?> from, final NavigationEdge<?,?> to) throws IllegalArgumentException, IllegalStateException {
+	public int getMillis(final DefaultTrafficEdge<D>  from, final DefaultTrafficEdge<D>  to) throws IllegalArgumentException, IllegalStateException {
 		if (from == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("from"));
 		}
 		if (to == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("to"));
 		}
-		final Map<NavigationEdge<?,?>, Integer> map = this.edgeToEdgeTimes.get(from);
+		final Map<DefaultTrafficEdge<D> , Integer> map = this.edgeToEdgeTimes.get(from);
 		if (map == null) {
 			throw new IllegalStateException("Argument 'from' isn't linked with this roundabout's node");
 		}
@@ -255,9 +261,9 @@ public class Roundabout extends TrafficRule {
 	 *             if {@link Edge} 'from' or {@link Edge} 'to' aren't linked with this {@link Roundabout}'s {@link Node}
 	 */
 	@Override
-	public void register(final Vehicle<?> vehicle, final NavigationEdge<?,?> from, final NavigationEdge<?,?> to,
+	public void register(final BaseVehicle<D> vehicle, final DefaultTrafficEdge<D>  from, final DefaultTrafficEdge<D>  to,
 			final TrafficRuleCallback callback) throws IllegalArgumentException {
-		final TrafficRuleData trafficRuleData = new TrafficRuleData(vehicle, from, to, callback);
+		final DefaultTrafficRuleData<D> trafficRuleData = new DefaultTrafficRuleData<>(vehicle, from, to, callback);
 		if (!this.vehiclesWaiting.containsKey(trafficRuleData.getFrom())) {
 			throw new IllegalStateException("Edge 'from' isn't linked with this Roundabout's node.");
 		}
@@ -294,8 +300,6 @@ public class Roundabout extends TrafficRule {
 	 * 
 	 * @param simulationEventList
 	 *            the {@link SimulationEventList}
-	 * @throws UpdateException
-	 *             not thrown in here
 	 */
 	@Override
 	public void update(final EventList<Event> simulationEventList) {
@@ -303,7 +307,7 @@ public class Roundabout extends TrafficRule {
 		this.previousTime = simulationEventList.getTimestamp();
 
 		// Throw out vehicles
-		for (final TrafficRuleData trafficRuleData : new HashSet<>(this.vehiclesInRoundabout.keySet())) {
+		for (final DefaultTrafficRuleData<D> trafficRuleData : new HashSet<>(this.vehiclesInRoundabout.keySet())) {
 			this.vehiclesInRoundabout.put(trafficRuleData, this.vehiclesInRoundabout.get(trafficRuleData) - timeDif);
 
 			if (this.vehiclesInRoundabout.get(trafficRuleData) <= 0) {
@@ -314,11 +318,11 @@ public class Roundabout extends TrafficRule {
 		}
 
 		// Let vehicles randomly in
-		final ArrayList<Queue<TrafficRuleData>> queues = new ArrayList<>();
+		final ArrayList<Queue<DefaultTrafficRuleData<D>>> queues = new ArrayList<>();
 		while ((this.vehiclesInRoundabout.size() < this.getMaxNumberOfVehicles()) && this.fillQueueList(queues)) {
 			// Dequeue waiting cars
-			final Queue<TrafficRuleData> queue = queues.get(this.random.nextInt(queues.size()));
-			final TrafficRuleData trafficRuleData = queue.peek();
+			final Queue<DefaultTrafficRuleData<D>> queue = queues.get(this.random.nextInt(queues.size()));
+			final DefaultTrafficRuleData<D> trafficRuleData = queue.peek();
 			if (trafficRuleData.getCallback().onEnter()) {
 				this.vehiclesInRoundabout.put(queue.poll(),
 						this.getMillis(trafficRuleData.getFrom(), trafficRuleData.getTo()));
@@ -339,10 +343,10 @@ public class Roundabout extends TrafficRule {
 	 * @param queues
 	 * @return
 	 */
-	private boolean fillQueueList(final List<Queue<TrafficRuleData>> queues) {
+	private boolean fillQueueList(final List<Queue<DefaultTrafficRuleData<D>>> queues) {
 		queues.clear();
 		boolean result = false;
-		for (final Queue<TrafficRuleData> value : this.vehiclesWaiting.values()) {
+		for (final Queue<DefaultTrafficRuleData<D>> value : this.vehiclesWaiting.values()) {
 			if (value.size() > 0) {
 				queues.add(value);
 				result = true;
@@ -358,7 +362,7 @@ public class Roundabout extends TrafficRule {
 	 */
 	public int getNumberOfVehiclesWaiting() {
 		int result = 0;
-		for (final NavigationEdge<?,?> key : this.vehiclesWaiting.keySet()) {
+		for (final DefaultTrafficEdge<D>  key : this.vehiclesWaiting.keySet()) {
 			result += this.getNumberOfVehiclesWaiting(key);
 		}
 		return result;
@@ -377,11 +381,11 @@ public class Roundabout extends TrafficRule {
 	 * @throws IllegalStateException
 	 *             if the passed {@link Edge} isn't linked with this {@link Roundabout}'s {@link Node}
 	 */
-	public int getNumberOfVehiclesWaiting(final NavigationEdge<?,?> from) throws IllegalArgumentException, IllegalStateException {
+	public int getNumberOfVehiclesWaiting(final DefaultTrafficEdge<D>  from) throws IllegalArgumentException, IllegalStateException {
 		if (from == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("edge"));
 		}
-		final Queue<TrafficRuleData> queue = this.vehiclesWaiting.get(from);
+		final Queue<DefaultTrafficRuleData<D>> queue = this.vehiclesWaiting.get(from);
 		if (queue == null) {
 			throw new IllegalStateException("Argument 'edge' isn't linked with this Roundabout's node.");
 		}

@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.traffic.server.scheduler;
+package de.pgalise.simulation.traffic.internal.server.scheduler;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -23,35 +23,52 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
+import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
  * A TrafficServer may use a Scheduler for each type of vehicle. 
  * The SchedulerComposite can be used to manage these Scheduler easily.
  * 
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
+ * @param <V> 
+ * @param <I> 
  * @see Scheduler
  * @author mustafa
  *
  */
-public class SchedulerComposite extends Scheduler {
-	private EnumMap<VehicleTypeEnum, Scheduler> schedulerMap;
-	private List<Scheduler> list;
+public class SchedulerComposite<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>,
+	I extends ScheduleItem<D,N,E,V>
+> implements Scheduler<D,N,E,V,I> {
+	private EnumMap<VehicleTypeEnum, Scheduler<D,N,E,V,I>> schedulerMap;
+	private List<Scheduler<D,N,E,V,I>> list;
 
 	public SchedulerComposite() {
 		schedulerMap = new EnumMap<>(VehicleTypeEnum.class);
 		list = new LinkedList<>();
 	}
 
-	public void addScheduler(EnumSet<VehicleTypeEnum> criteria, Scheduler scheduler) {
+	public void addScheduler(EnumSet<VehicleTypeEnum> criteria, Scheduler<D,N,E,V,I> scheduler) {
 		for (VehicleTypeEnum e : criteria) {
 			schedulerMap.put(e, scheduler);
 		}
 		list.add(scheduler);
 	}
 
-	public Scheduler getScheduler(EnumSet<VehicleTypeEnum> criteria) {
-		Scheduler foundScheduler = null;
+	public Scheduler<D,N,E,V,I> getScheduler(EnumSet<VehicleTypeEnum> criteria) {
+		Scheduler<D,N,E,V,I> foundScheduler = null;
 		int i = 0;
 		for (VehicleTypeEnum e : criteria) {
 			if (i == 0) {
@@ -67,12 +84,12 @@ public class SchedulerComposite extends Scheduler {
 		return foundScheduler;
 	}
 
-	public Scheduler getScheduler(VehicleTypeEnum type) {
+	public Scheduler<D,N,E,V,I> getScheduler(VehicleTypeEnum type) {
 		return schedulerMap.get(type);
 	}
 
 	@Override
-	protected void onScheduleItem(ScheduleItem item) {
+	public void onScheduleItem(I item) {
 		try {
 			schedulerMap.get(item.getVehicle().getData().getType()).scheduleItem(item);
 		} catch (IllegalAccessException e) {
@@ -81,26 +98,26 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	public List<ScheduleItem> getExpiredItems(long currentTime) {
-		List<ScheduleItem> items = new ArrayList<>();
-		for (Scheduler s : list) {
+	public List<I> getExpiredItems(long currentTime) {
+		List<I> items = new ArrayList<>();
+		for (Scheduler<D,N,E,V,I> s : list) {
 			items.addAll(s.getExpiredItems(currentTime));
 		}
 		return items;
 	}
 
 	@Override
-	public List<ScheduleItem> getScheduledItems() {
-		List<ScheduleItem> items = new ArrayList<>();
-		for (Scheduler s : list) {
+	public List<I> getScheduledItems() {
+		List<I> items = new ArrayList<>();
+		for (Scheduler<D,N,E,V,I> s : list) {
 			items.addAll(s.getScheduledItems());
 		}
 		return items;
 	}
 
 	@Override
-	protected void onRemoveScheduledItems(List<Vehicle<? extends VehicleData>> vehicles) {
-		for (Scheduler s : list) {
+	public void onRemoveScheduledItems(List<V> vehicles) {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			try {
 				s.removeScheduledItems(vehicles);
 			} catch (IllegalAccessException e) {
@@ -110,8 +127,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	protected void onClearScheduledItems() {
-		for (Scheduler s : list) {
+	public void onClearScheduledItems() {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			try {
 				s.clearScheduledItems();
 			} catch (IllegalAccessException e) {
@@ -121,8 +138,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	protected void onRemoveExpiredItems(List<Vehicle<? extends VehicleData>> vehicles) {
-		for (Scheduler s : list) {
+	public void onRemoveExpiredItems(List<V> vehicles) {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			try {
 				s.removeExpiredItems(vehicles);
 			} catch (IllegalAccessException e) {
@@ -132,8 +149,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	protected void onClearExpiredItems() {
-		for (Scheduler s : list) {
+	public void onClearExpiredItems() {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			try {
 				s.clearExpiredItems();
 			} catch (IllegalAccessException e) {
@@ -143,8 +160,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	protected void onAddScheduleHandler(ScheduleHandler handler) {
-		for (Scheduler s : list) {
+	public void onAddScheduleHandler(ScheduleHandler<D,N,E,V,I> handler) {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			try {
 				s.addScheduleHandler(handler);
 			} catch (IllegalAccessException e) {
@@ -154,8 +171,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	protected void onRemoveScheduleHandler(ScheduleHandler handler) {
-		for (Scheduler s : list) {
+	public void onRemoveScheduleHandler(ScheduleHandler<D,N,E,V,I> handler) {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			try {
 				s.removeScheduleHandler(handler);
 			} catch (IllegalAccessException e) {
@@ -165,8 +182,8 @@ public class SchedulerComposite extends Scheduler {
 	}
 
 	@Override
-	protected void onRemoveAllHandler() {
-		for (Scheduler s : list) {
+	public void onRemoveAllHandler() {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			try {
 				s.removeAllHandler();
 			} catch (IllegalAccessException e) {
@@ -175,9 +192,10 @@ public class SchedulerComposite extends Scheduler {
 		}
 	}
 
-	public void changeModus(Modus modus) {
+	@Override
+	public void changeModus(ScheduleModus modus) {
 		super.changeModus(modus);
-		for (Scheduler s : list) {
+		for (Scheduler<D,N,E,V,I> s : list) {
 			s.changeModus(modus);
 		}
 	}

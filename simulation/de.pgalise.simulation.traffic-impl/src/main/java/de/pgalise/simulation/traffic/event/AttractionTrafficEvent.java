@@ -18,10 +18,13 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The attraction traffic event will lead to more traffic on the given point in the given time window.
@@ -51,7 +54,7 @@ public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomV
 	private NavigationNode nodeID;
 
 	public AttractionTrafficEvent(
-		TrafficServerLocal<?> server,
+		DefaultTrafficServer<D> server,
 		long simulationTimestamp,
 		long elapsedTime,
 		long attractionStartTimestamp,

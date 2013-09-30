@@ -4,7 +4,7 @@
  */
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.traffic.City;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.MutableTimeSensitive;
 import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.util.Set;

@@ -21,16 +21,17 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.List;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The create random busses event will create random busses
  * for the given bus linves.
  * @author Lena
  */
-public class CreateRandomBussesEvent extends AbstractTrafficEvent {
+public class CreateRandomBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D> {
 	/**
 	 * Serial
 	 */
@@ -56,7 +57,7 @@ public class CreateRandomBussesEvent extends AbstractTrafficEvent {
 	 * @param agencyName
 	 *            Agency name
 	 */
-	public CreateRandomBussesEvent(TrafficServerLocal responsibleServer, long timestamp, long elapsedTime, List<String> busLines, String agencyName) {
+	public CreateRandomBussesEvent(DefaultTrafficServer<D> responsibleServer, long timestamp, long elapsedTime, List<String> busLines, String agencyName) {
 		super(responsibleServer, timestamp, elapsedTime);
 		this.busLines = busLines;
 		this.agencyName = agencyName;

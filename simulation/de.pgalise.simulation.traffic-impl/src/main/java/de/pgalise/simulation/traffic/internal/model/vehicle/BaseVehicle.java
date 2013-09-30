@@ -23,10 +23,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.Orientation;
+import de.pgalise.simulation.shared.city.DefaultNavigationEdge;
+import de.pgalise.simulation.shared.city.DefaultNavigationNode;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -45,7 +51,7 @@ import javax.vecmath.Vector2d;
  * @version 1.0 (Nov 1, 2012)
  */
 @Entity
-public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable implements Vehicle<E> {
+public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable implements Vehicle<D, DefaultTrafficNode<D>,DefaultTrafficEdge<D>,BaseVehicle<D>> {
 	/**
 	 * Serial
 	 */
@@ -74,7 +80,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	/**
 	 * Current node
 	 */
-	private transient NavigationNode currentNode;
+	private transient DefaultTrafficNode<D> currentNode;
 	/**
 	 * Position
 	 */
@@ -106,29 +112,29 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	/**
 	 * Path
 	 */
-	private transient List<NavigationEdge<?,?>> edgePath;
+	private transient List<DefaultTrafficEdge<D>> edgePath;
 	
-	private transient List<NavigationNode> nodePath;
+	private transient List<DefaultTrafficNode<D>> nodePath;
 
 	/**
 	 * Current edge
 	 */
-	private transient NavigationEdge<?,?> currentEdge;
+	private transient DefaultTrafficEdge<D> currentEdge;
 
 	/**
 	 * Previous node
 	 */
-	private transient NavigationNode prevNode;
+	private transient DefaultTrafficNode<D> prevNode;
 
 	/**
 	 * Previous edge
 	 */
-	private transient NavigationEdge<?,?> prevEdge;
+	private transient DefaultTrafficEdge<D> prevEdge;
 
 	/**
 	 * Information
 	 */
-	private E vehicleData;
+	private D vehicleData;
 
 	private boolean isVirgin = false;
 
@@ -155,14 +161,14 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 //		this.state = (State.NOT_STARTED);
 	}
 
-	public BaseVehicle(String name, E data, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseVehicle(String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
 		this.name = name;
 		this.vehicleData = data;
 		this.trafficGraphExtensions = trafficGraphExtensions;
 		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
 	}
 
-	public BaseVehicle(UUID id, String name, E data, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseVehicle(UUID id, String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
 		throw new UnsupportedOperationException("clearify the purpose of passing of id");
 //		this.name = name;
 //		this.data = data;
@@ -171,17 +177,17 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public NavigationEdge<?,?> getCurrentEdge() {
+	public DefaultTrafficEdge<D> getCurrentEdge() {
 		return this.currentEdge;
 	}
 
 	@Override
-	public NavigationNode getCurrentNode() {
+	public DefaultTrafficNode<D> getCurrentNode() {
 		return this.currentNode;
 	}
 
 	@Override
-	public E getData() {
+	public D getData() {
 		return this.vehicleData;
 	}
 
@@ -196,17 +202,17 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public NavigationEdge<?,?> getNextEdge() {
+	public DefaultTrafficEdge<D> getNextEdge() {
 		return this._getNextEdge();
 	}
 
 	@Override
-	public NavigationNode getNextNode() {
+	public DefaultTrafficNode<D> getNextNode() {
 		return this._getNextNode();
 	}
 
 	@Override
-	public List<NavigationEdge<?,?>> getPath() {
+	public List<DefaultTrafficEdge<D>> getPath() {
 		return this.edgePath;
 	}
 
@@ -216,7 +222,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public NavigationEdge<?,?> getPreviousEdge() {
+	public DefaultTrafficEdge<D> getPreviousEdge() {
 		try {
 			int index = this.edgePath.indexOf(this.currentEdge);
 			if (index >= 0) {
@@ -228,7 +234,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public NavigationNode getPreviousNode() {
+	public DefaultTrafficNode<D> getPreviousNode() {
 		try {
 			int index = this.edgePath.indexOf(this.currentNode);
 			if (index >= 0) {
@@ -255,17 +261,17 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public void setCurrentEdge(NavigationEdge<?,?> edge) {
+	public void setCurrentEdge(DefaultTrafficEdge<D> edge) {
 		this.currentEdge = edge;
 	}
 
 	@Override
-	public void setCurrentNode(NavigationNode currentNode) {
+	public void setCurrentNode(DefaultTrafficNode<D> currentNode) {
 		this.currentNode = currentNode;
 	}
 
 	@Override
-	public void setData(E data) {
+	public void setData(D data) {
 		this.vehicleData = data;
 	}
 
@@ -284,17 +290,17 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 		this.name = name;
 	}
 	
-	private static List<NavigationNode> creaeteNodePath(List<NavigationEdge<?,?>> edgePath) {
-		List<NavigationNode> retValue = new LinkedList<>();
+	private static <X extends VehicleData> List<DefaultTrafficNode<X>> creaeteNodePath(List<DefaultTrafficEdge<X>> edgePath) {
+		List<DefaultTrafficNode<X>> retValue = new LinkedList<>();
 		retValue.add(edgePath.get(0).getSource());
-		for(NavigationEdge<?,?> edge : edgePath) {
+		for(DefaultTrafficEdge<X> edge : edgePath) {
 			retValue.add(edge.getTarget());
 		}
 		return retValue;
 	}
 
 	@Override
-	public void setPath(List<NavigationEdge<?,?>> path) {
+	public void setPath(List<DefaultTrafficEdge<D>> path) {
 		if (path.size() < 1) {
 			throw new IllegalArgumentException("A path needs to consist of at least one edge");
 		}
@@ -346,7 +352,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 		// this.velocity));
 		this.position = this.update(elapsedTime, this.position, this.direction);
 
-		NavigationNode passedNode = this.currentNode;
+		DefaultTrafficNode<D> passedNode = this.currentNode;
 
 		// has reached node but not last node
 		this.handleReachedNode();
@@ -372,8 +378,8 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * 
 	 * @return
 	 */
-	private NavigationEdge<?,?> _getNextEdge() {
-		NavigationEdge<?,?> nextEdge = null;
+	private DefaultTrafficEdge<D> _getNextEdge() {
+		DefaultTrafficEdge<D> nextEdge = null;
 		try {
 			int index = this.edgePath.indexOf(this.currentEdge);
 			if (index >= 0) {
@@ -390,8 +396,8 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * 
 	 * @return
 	 */
-	private NavigationNode _getNextNode() {
-		NavigationNode nextNode = null;
+	private DefaultTrafficNode<D> _getNextNode() {
+		DefaultTrafficNode<D> nextNode = null;
 		try {
 			int index = this.nodePath.indexOf(this.currentNode);
 			if (index >= 0) {
@@ -491,12 +497,12 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 				this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
 	}
 
-	private void _passedNode(NavigationNode passedNode) {
+	private void _passedNode(DefaultTrafficNode<D> passedNode) {
 		// if(this.state!=State.PAUSED)
 		passedNode(passedNode);
 	}
 
-	private void _postUpdate(NavigationNode lastPassedNode) {
+	private void _postUpdate(DefaultTrafficNode<D> lastPassedNode) {
 		// if(this.state!=State.PAUSED)
 		postUpdate(lastPassedNode);
 	}
@@ -511,7 +517,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * 
 	 * @param passedNode
 	 */
-	protected void passedNode(NavigationNode passedNode) {
+	protected void passedNode(DefaultTrafficNode<D> passedNode) {
 	}
 
 	/**
@@ -520,7 +526,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * @param lastPassedNode
 	 *            Passed Node on the last update otherwise null
 	 */
-	protected void postUpdate(NavigationNode lastPassedNode) {
+	protected void postUpdate(DefaultTrafficNode<D> lastPassedNode) {
 	}
 
 	/**
@@ -560,9 +566,9 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public int getIndex(NavigationNode node) {
+	public int getIndex(DefaultTrafficNode<D> node) {
 		for (int i = 0; i < this.edgePath.size(); i++) {
-			NavigationNode n = this.nodePath.get(i);
+			DefaultTrafficNode<D> n = this.nodePath.get(i);
 			if (n.getId().equals(node.getId())) {
 				return i;
 			}
@@ -571,11 +577,12 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	public void setNodePath(
-		List<NavigationNode> nodePath) {
+		List<DefaultTrafficNode<D>> nodePath) {
 		this.nodePath = nodePath;
 	}
 
-	public List<NavigationNode> getNodePath() {
+	@Override
+	public List<DefaultTrafficNode<D>> getNodePath() {
 		return nodePath;
 	}
 }

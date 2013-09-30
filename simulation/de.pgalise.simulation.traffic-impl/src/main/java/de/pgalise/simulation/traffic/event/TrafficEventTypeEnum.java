@@ -2,16 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.traffic.server.eventhandler;
+package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.traffic.event.CreateBussesEvent;
-import de.pgalise.simulation.traffic.event.CreateRandomBussesEvent;
-import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
-import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import java.util.Collections;
 import java.util.HashMap;

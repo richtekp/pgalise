@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.TrafficTrip;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
@@ -76,7 +76,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 					false);
 
 			// Create vehicle
-			Vehicle<?> v = this.createVehicle(data, trip);
+			BaseVehicle<D> v = this.createVehicle(data, trip);
 
 			if (v == null) {
 				continue;

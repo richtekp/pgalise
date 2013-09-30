@@ -58,7 +58,7 @@ public interface TrafficServer<E extends TrafficEvent> extends SensorManagerCont
 	 * @param serverId 
 	 * @param targetNodeId
 	 */
-	public void takeVehicle(Vehicle<?> vehicle, NavigationNode startNodeId, NavigationNode targetNodeId,
+	public void takeVehicle(Vehicle<?,?,?,?> vehicle, NavigationNode startNodeId, NavigationNode targetNodeId,
 			TrafficServer<?> serverId);
 
 	/**

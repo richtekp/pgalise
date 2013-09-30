@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.TrafficGraph;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -28,13 +27,17 @@ import de.pgalise.util.graph.GraphVisualizer;
  * An extension of the GraphVisualizer adding features especially for the traffic 
  * aspect of the graph.
  *  
+ * @param <N> 
+ * @param <E> 
+ * @param <D> 
+ * @param <V> 
  * @author Marina, Mustafa
  */
-public interface TrafficVisualizer extends GraphVisualizer<TrafficGraph<?>> {
+public interface TrafficVisualizer<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D,N,E,V>> extends GraphVisualizer<TrafficGraph<N,E,D,V>,N,E> {
 
-	public void setVehicles(List<Vehicle<? extends VehicleData>> vehicles);
+	public void setVehicles(List<V> vehicles);
 
-	public List<Vehicle<? extends VehicleData>> getVehicles();
+	public List<V> getVehicles();
 
 	/**
 	 * The window of this TrafficVisualizer has to run in the main thread. To provide flowing animations you have to

@@ -5,6 +5,11 @@
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -13,10 +18,10 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  *
  * @author richter
  */
-public class RandomBusFactory implements BusFactory {
+public class RandomBusFactory implements BusFactory<DefaultTrafficNode<BusData>,DefaultTrafficEdge<BusData>, BaseVehicle<BusData>> {
 
 	@Override
-	public Vehicle<BusData> createBus(String typeId,
+	public BaseVehicle<BusData> createBus(
 		SensorHelper gpsSensor,
 		SensorHelper infraredSensor) {
 		return createRandomBus(gpsSensor,
@@ -24,7 +29,7 @@ public class RandomBusFactory implements BusFactory {
 	}
 
 	@Override
-	public Vehicle<BusData> createRandomBus(SensorHelper gpsSensor,
+	public BaseVehicle<BusData> createRandomBus(SensorHelper gpsSensor,
 		SensorHelper infraredSensor) {
 		BusData busData = new BusData(1,
 			2,

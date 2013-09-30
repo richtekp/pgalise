@@ -26,7 +26,11 @@ import org.w3c.dom.NodeList;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -37,7 +41,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLBicycleFactory extends XMLAbstractFactory<BicycleData> implements BicycleFactory {
+public class XMLBicycleFactory extends XMLAbstractFactory<BicycleData> implements BicycleFactory<DefaultTrafficNode<BicycleData>,DefaultTrafficEdge<BicycleData>, BaseVehicle<BicycleData>> {
 
 	/**
 	 * Constructor
@@ -66,17 +70,15 @@ public class XMLBicycleFactory extends XMLAbstractFactory<BicycleData> implement
 	}
 
 	@Override
-	public Vehicle<BicycleData> createRandomBicycle( SensorHelper helper) {
+	public BaseVehicle<BicycleData> createRandomBicycle( SensorHelper helper) {
 		BicycleData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
 		return new DefaultBicycle( "bicycle" + getNextCounter(), data, this.trafficGraphExtensions);
 	}
 
 	@Override
-	public Vehicle<BicycleData> createBicycle( String typeId, SensorHelper helper) {
-		BicycleData data = getVehicleData().get(typeId);
-		data.setGpsSensorHelper(helper);
-		return new DefaultBicycle( "bicycle" + getNextCounter(), data, this.trafficGraphExtensions);
+	public BaseVehicle<BicycleData> createBicycle(  SensorHelper helper) {
+		return createRandomBicycle(helper);
 	}
 
 	/**

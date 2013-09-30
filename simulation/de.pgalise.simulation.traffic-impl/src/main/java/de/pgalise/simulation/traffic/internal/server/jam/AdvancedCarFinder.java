@@ -41,10 +41,10 @@ import javax.vecmath.Vector2d;
  */
 public class AdvancedCarFinder implements SurroundingCarsFinder {
 	@Override
-	public Set<Vehicle<? extends VehicleData>> findCars(Vehicle<? extends VehicleData> car, long time) {
+	public Set<Vehicle<? extends VehicleData,N,E>> findCars(Vehicle<? extends VehicleData,N,E> car, long time) {
 		TrafficGraphExtensions trafficGraphExtensions = car.getTrafficGraphExtensions();
 
-		Set<Vehicle<? extends VehicleData>> allCarsOnEdge;
+		Set<Vehicle<? extends VehicleData,N,E>> allCarsOnEdge;
 		double visibilityRange = 0.075 * (time / 1000d);
 		NavigationNode fromNode = car.getCurrentNode();
 		NavigationNode toNode = car.getNextNode();
@@ -60,8 +60,8 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 
 		// Autos die sich hinter dem gegebenen Vehicle befinden werden aus der
 		// Liste geloescht
-		for (Iterator<Vehicle<? extends VehicleData>> i = allCarsOnEdge.iterator(); i.hasNext();) {
-			Vehicle<? extends VehicleData> v = i.next();
+		for (Iterator<Vehicle<? extends VehicleData,N,E>> i = allCarsOnEdge.iterator(); i.hasNext();) {
+			Vehicle<? extends VehicleData,N,E> v = i.next();
 			Orientation orientation = Orientation.getOrientation(v.getDirection());
 			if (Orientation.isBeyond(orientation, car.getPosition(), v.getPosition())) {
 				i.remove();
@@ -110,8 +110,8 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 
 		// Vehicles vor der Endposition der letzten betrachteten Kante aus der
 		// Liste loeschen
-		for (Iterator<Vehicle<? extends VehicleData>> i = allCarsOnEdge.iterator(); i.hasNext();) {
-			Vehicle<? extends VehicleData> v = i.next();
+		for (Iterator<Vehicle<? extends VehicleData,N,E>> i = allCarsOnEdge.iterator(); i.hasNext();) {
+			Vehicle<? extends VehicleData,N,E> v = i.next();
 			// log.debug("All cars on Edge: " + v.getName());
 			Orientation orientation = Orientation.getOrientation(v.getDirection());
 			if (!Orientation.isBeyond(orientation, endPosition, v.getPosition()) && (v.getCurrentEdge() == nextEdge)) {
@@ -125,14 +125,14 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 	}
 
 	@Override
-	public Vehicle<? extends VehicleData> findNearestCar(Vehicle<? extends VehicleData> car, long time) {
-		Set<Vehicle<? extends VehicleData>> vehicles = this.findCars(car, time);
+	public Vehicle<? extends VehicleData,N,E> findNearestCar(Vehicle<? extends VehicleData,N,E> car, long time) {
+		Set<Vehicle<? extends VehicleData,N,E>> vehicles = this.findCars(car, time);
 		Vector2d carPos = new Vector2d(car.getPosition().x, car.getPosition().y);
 
-		Vehicle<? extends VehicleData> nearestCar = null;
+		Vehicle<? extends VehicleData,N,E> nearestCar = null;
 		double distance = -1;
 
-		for (Vehicle<? extends VehicleData> v : vehicles) {
+		for (Vehicle<? extends VehicleData,N,E> v : vehicles) {
 			// AdvancedCarFinder.log.debug("Checking " + v.getName() + " as potential nearest car with its distance: "
 			// + v.getPosition().sub(car.getPosition()).length());
 			Vector2d otherCarPos = new Vector2d(v.getPosition().x, v.getPosition().y);

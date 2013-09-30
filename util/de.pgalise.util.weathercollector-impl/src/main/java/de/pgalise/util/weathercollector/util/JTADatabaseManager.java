@@ -4,8 +4,8 @@
  */
 package de.pgalise.util.weathercollector.util;
 
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.simulation.traffic.internal.DefaultCity;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
@@ -80,18 +80,18 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	}
 
 	@Override
-	public List<DefaultCity> getReferenceCities() {
+	public List<City> getReferenceCities() {
 		// Get cities
-		List<DefaultCity> citylist;
+		List<City> citylist;
 		try {
-			TypedQuery<DefaultCity> query = em.createNamedQuery("City.getAll", DefaultCity.class);
+			TypedQuery<City> query = em.createNamedQuery("City.getAll", DefaultCity.class);
 			citylist = query.getResultList();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 		// Returns
-		return (citylist == null) ? new ArrayList<DefaultCity>(1) : citylist;
+		return (citylist == null) ? new ArrayList<City>(1) : citylist;
 	}
 
 	@Override

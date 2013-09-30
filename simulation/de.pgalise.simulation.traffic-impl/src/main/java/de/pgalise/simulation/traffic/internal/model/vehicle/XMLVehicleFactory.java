@@ -24,7 +24,11 @@ import org.w3c.dom.Document;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
@@ -44,32 +48,36 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLVehicleFactory implements CarFactory, BusFactory, TruckFactory, MotorcycleFactory, BicycleFactory {
+public class XMLVehicleFactory implements CarFactory<DefaultTrafficNode<CarData>,DefaultTrafficEdge<CarData>, BaseVehicle<CarData>>, 
+	BusFactory<DefaultTrafficNode<BusData>,DefaultTrafficEdge<BusData>, BaseVehicle<BusData>>, 
+	TruckFactory<DefaultTrafficNode<TruckData>,DefaultTrafficEdge<TruckData>, BaseVehicle<TruckData>>, 
+	MotorcycleFactory<DefaultTrafficNode<MotorcycleData>,DefaultTrafficEdge<MotorcycleData>, BaseVehicle<MotorcycleData>>, 
+	BicycleFactory<DefaultTrafficNode<BicycleData>,DefaultTrafficEdge<BicycleData>, BaseVehicle<BicycleData>> {
 
 	/**
 	 * Car factory
 	 */
-	private final CarFactory carFactory;
+	private final CarFactory<DefaultTrafficNode<CarData>,DefaultTrafficEdge<CarData>, BaseVehicle<CarData>> carFactory;
 
 	/**
 	 * Bus factory
 	 */
-	private final BusFactory busFactory;
+	private final BusFactory<DefaultTrafficNode<BusData>,DefaultTrafficEdge<BusData>, BaseVehicle<BusData>> busFactory;
 
 	/**
 	 * Truck factory
 	 */
-	private final TruckFactory truckFactory;
+	private final TruckFactory<DefaultTrafficNode<TruckData>,DefaultTrafficEdge<TruckData>, BaseVehicle<TruckData>> truckFactory;
 
 	/**
 	 * Motorcycle factory
 	 */
-	private final MotorcycleFactory motorcycleFactory;
+	private final MotorcycleFactory<DefaultTrafficNode<MotorcycleData>,DefaultTrafficEdge<MotorcycleData>, BaseVehicle<MotorcycleData>> motorcycleFactory;
 
 	/**
 	 * Bicycle factory
 	 */
-	private final BicycleFactory bicycleFactory;
+	private final BicycleFactory<DefaultTrafficNode<BicycleData>,DefaultTrafficEdge<BicycleData>, BaseVehicle<BicycleData>> bicycleFactory;
 
 	/**
 	 * XML File
@@ -110,53 +118,53 @@ public class XMLVehicleFactory implements CarFactory, BusFactory, TruckFactory, 
 	}
 
 	@Override
-	public Vehicle<BicycleData> createBicycle( String typeId, SensorHelper gpsSensor) {
-		return this.bicycleFactory.createBicycle( typeId, gpsSensor);
+	public BaseVehicle<BicycleData> createBicycle(  SensorHelper gpsSensor) {
+		return this.bicycleFactory.createRandomBicycle(  gpsSensor);
 	}
 
 	@Override
-	public Vehicle<BusData> createBus( String typeId, SensorHelper gpsSensor, SensorHelper infraredSensor) {
-		return this.busFactory.createBus( typeId, gpsSensor, infraredSensor);
+	public BaseVehicle<BusData> createBus(  SensorHelper gpsSensor, SensorHelper infraredSensor) {
+		return this.busFactory.createRandomBus(  gpsSensor, infraredSensor);
 	}
 
 	@Override
-	public Vehicle<CarData> createCar( String typeId, Color color, SensorHelper gpsSensor) {
-		return this.carFactory.createCar( typeId, color, gpsSensor);
+	public BaseVehicle<CarData> createCar(  Color color, SensorHelper gpsSensor) {
+		return this.carFactory.createCar(  color, gpsSensor);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createMotorcycle( String typeId, Color color, SensorHelper gpsSensor) {
-		return this.motorcycleFactory.createMotorcycle( typeId, color, gpsSensor);
+	public BaseVehicle<MotorcycleData> createMotorcycle(  Color color, SensorHelper gpsSensor) {
+		return this.motorcycleFactory.createMotorcycle(  color, gpsSensor);
 	}
 
 	@Override
-	public Vehicle<BicycleData> createRandomBicycle( SensorHelper gpsSensor) {
+	public BaseVehicle<BicycleData> createRandomBicycle( SensorHelper gpsSensor) {
 		return this.bicycleFactory.createRandomBicycle( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<BusData> createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor) {
+	public BaseVehicle<BusData> createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor) {
 		return this.busFactory.createRandomBus( gpsSensor, infraredSensor);
 	}
 
 	@Override
-	public Vehicle<CarData> createRandomCar( SensorHelper gpsSensor) {
+	public BaseVehicle<CarData> createRandomCar( SensorHelper gpsSensor) {
 		return this.carFactory.createRandomCar( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createRandomMotorcycle( SensorHelper gpsSensor) {
+	public BaseVehicle<MotorcycleData> createRandomMotorcycle( SensorHelper gpsSensor) {
 		return this.motorcycleFactory.createRandomMotorcycle( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<TruckData> createRandomTruck( SensorHelper gpsSensor) {
+	public BaseVehicle<TruckData> createRandomTruck( SensorHelper gpsSensor) {
 		return this.truckFactory.createRandomTruck( gpsSensor);
 	}
 
 	@Override
-	public Vehicle<TruckData> createTruck( String typeId, Color color, int trailercount, SensorHelper gpsSensor) {
-		return this.truckFactory.createTruck( typeId, color, trailercount, gpsSensor);
+	public BaseVehicle<TruckData> createTruck(  Color color, int trailercount, SensorHelper gpsSensor) {
+		return this.truckFactory.createTruck(  color, trailercount, gpsSensor);
 	}
 
 	public BicycleFactory getBicycleFactory() {

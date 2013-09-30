@@ -20,6 +20,8 @@ import java.awt.Color;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 
 /**
  * Interface to provide methods to create different types of {@link Car}.
@@ -27,7 +29,7 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
  * @author Andreas
  * @version 1.0
  */
-public interface CarFactory {
+public interface CarFactory<N extends TrafficNode<N,E,CarData,V>, E extends TrafficEdge<N,E, CarData,V>, V extends Vehicle<CarData, N,E,V>> {
 
 	/**
 	 * Method to create a {@link Car} with the given typeId.
@@ -40,7 +42,7 @@ public interface CarFactory {
 	 *            Color of the {@link Car}
 	 * @return created {@link Car}
 	 */
-	public Vehicle<CarData> createCar( String typeId, Color color, SensorHelper gpsSensor);
+	public V createCar(  Color color, SensorHelper gpsSensor);
 
 	/**
 	 * Method to create a random {@link Car}.
@@ -49,7 +51,7 @@ public interface CarFactory {
 	 *            ID of the {@link Car}
 	 * @return created {@link Car}
 	 */
-	public Vehicle<CarData> createRandomCar( SensorHelper gpsSensor);
+	public V createRandomCar( SensorHelper gpsSensor);
 
 	public RandomSeedService getRandomSeedService();
 }

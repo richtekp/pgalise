@@ -19,6 +19,8 @@ package de.pgalise.simulation.traffic;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
@@ -28,10 +30,20 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * incoming traffic events and generates traffic sensor data.
  * 
  * 
+ * @param <D> 
+ * @param <N> 
  * @param <E> 
+ * @param <V> 
+ * @param <F> 
  * @author Mustafa
  * @version 1.0 (Oct 23, 2012)
  */
-public interface TrafficController<E extends TrafficEvent> extends SensorManagerController<E, StartParameter, InitParameter> {
+public interface TrafficController<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>,
+	F extends TrafficEvent<N,E,D,V,F>
+> extends SensorManagerController<F, StartParameter, InitParameter> {
 
 }

@@ -25,6 +25,8 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
@@ -38,12 +40,12 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterfere
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 28, 2012)
  */
-public class TopoRadarSensor extends StaticTrafficSensor {
+public class TopoRadarSensor<N extends TrafficNode<N,E>, E extends TrafficEdge<N,E>> extends StaticTrafficSensor<N,E> {
 
 	/**
 	 * The last registered vehicles
 	 */
-	private List<Vehicle<? extends VehicleData>> registeredVehicles;
+	private List<Vehicle<? extends VehicleData,N,E>> registeredVehicles;
 
 	/**
 	 * InfraredInterferer interferer
@@ -64,9 +66,9 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final Coordinate position, final int updateLimit,
+	public TopoRadarSensor(TrafficNode node, final Output output, final Coordinate position, final int updateLimit,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
-		super(output, position, updateLimit);
+		super(node, output, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
@@ -86,9 +88,9 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final Coordinate position,
+	public TopoRadarSensor(TrafficNode node, final Output output, final Coordinate position,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
-		this(output, position, 1, interferer);
+		this(node, output, position, 1, interferer);
 
 	}
 
@@ -132,7 +134,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public void vehicleOnNodeRegistered(Vehicle<? extends VehicleData> vehicle) {
+	public void vehicleOnNodeRegistered(Vehicle<? extends VehicleData,N,E> vehicle) {
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicle.getData().getType())) {
 			this.registeredVehicles.add(vehicle);
 		}

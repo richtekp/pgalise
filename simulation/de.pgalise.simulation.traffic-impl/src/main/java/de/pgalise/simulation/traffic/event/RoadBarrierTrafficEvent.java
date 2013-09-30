@@ -19,15 +19,21 @@ package de.pgalise.simulation.traffic.event;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * The road barrier traffic event will block a route during the given time window.
  * 
+ * @param <N> 
+ * @param <E> 
  * @author Timo
  */
-public class RoadBarrierTrafficEvent extends AbstractTrafficEvent {
+public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTrafficEvent<D> {
 
 	/**
 	 * Serial
@@ -54,7 +60,7 @@ public class RoadBarrierTrafficEvent extends AbstractTrafficEvent {
 	 */
 	private NavigationNode nodeID;
 
-	public RoadBarrierTrafficEvent(TrafficServerLocal<?> responsibleServer,
+	public RoadBarrierTrafficEvent(DefaultTrafficServer<D> responsibleServer,
 		long simulationTimestamp,
 		long elapsedTime,
 		long roadBarrierStartTimestamp,

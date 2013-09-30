@@ -73,4 +73,18 @@ public interface NavigationEdge<N extends NavigationNode, E extends NavigationEd
 	void setTarget(N target);
 	
 	N getOpposite(NavigationNode node);
+	
+	/**
+	 * legacy (to be removed in favour of two edged model)
+	 * @return 
+	 */
+	boolean isOneWay();
+	
+	
+	/**
+	 * legacy (to be removed in favour of two edged model)
+	 * 
+	 * @param oneWay 
+	 */
+	void setOneWay(boolean oneWay);
 }

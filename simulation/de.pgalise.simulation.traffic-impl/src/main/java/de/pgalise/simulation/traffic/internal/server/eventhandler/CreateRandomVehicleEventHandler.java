@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.TrafficTrip;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
@@ -206,7 +206,7 @@ public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent
 						data.getVehicleInformation().getVehicleType());
 
 				// Create vehicle
-				final Vehicle<?> v = this.eHandler.createVehicle(data, trip);
+				final BaseVehicle<D> v = this.eHandler.createVehicle(data, trip);
 
 				if (v == null) {
 					switch (data.getVehicleInformation().getVehicleType()) {

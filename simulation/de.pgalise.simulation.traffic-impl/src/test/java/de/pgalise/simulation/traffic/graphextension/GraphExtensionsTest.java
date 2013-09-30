@@ -17,7 +17,7 @@
 package de.pgalise.simulation.traffic.graphextension;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.city.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;

@@ -6,6 +6,8 @@ package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.traffic.BusTrip;
+import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.Date;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Date;
  * @param <T> 
  * @author richter
  */
-public interface BusStopTime<S extends BusStop<?>, T extends BusTrip<?,?>> {
+public interface BusStopTime<S extends BusStop<N>, T extends BusTrip<?,V,N,E>, V extends Vehicle<BusData,N,E,V>, N extends TrafficNode<N,E,BusData,V>, E extends TrafficEdge<N,E,BusData,V>> {
 	
 
 	public T getBusTrip();

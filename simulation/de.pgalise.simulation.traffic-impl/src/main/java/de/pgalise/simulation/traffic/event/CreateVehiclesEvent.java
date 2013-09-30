@@ -17,10 +17,13 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
 
 /**
  * Creates vehicles with given path.
@@ -42,7 +45,7 @@ public class CreateVehiclesEvent<D extends VehicleData> extends AbstractVehicleE
 	private List<CreateRandomVehicleData> vehicles;
 
 	public CreateVehiclesEvent(
-		TrafficServerLocal server,
+		DefaultTrafficServer<D> server,
 		long simulationTime,
 		long elapsedTime,
 		List<CreateRandomVehicleData> vehicles) {
@@ -71,7 +74,7 @@ public class CreateVehiclesEvent<D extends VehicleData> extends AbstractVehicleE
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		CreateVehiclesEvent other = (CreateVehiclesEvent) obj;
+		CreateVehiclesEvent<?> other = (CreateVehiclesEvent) obj;
 		if (vehicles == null) {
 			if (other.vehicles != null) {
 				return false;

@@ -22,6 +22,9 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -32,7 +35,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * 
  * @author Marcus
  */
-public class TrafficLightSensor extends StaticTrafficSensor {
+public class TrafficLightSensor<D extends VehicleData> extends StaticTrafficSensor<DefaultTrafficNode<D>, DefaultTrafficEdge<D>> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -80,7 +83,7 @@ public class TrafficLightSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public void vehicleOnNodeRegistered(Vehicle<? extends VehicleData> vehicle) {
+	public void vehicleOnNodeRegistered(BaseVehicle<D> vehicle) {
 		// nothing to do here
 	}
 }

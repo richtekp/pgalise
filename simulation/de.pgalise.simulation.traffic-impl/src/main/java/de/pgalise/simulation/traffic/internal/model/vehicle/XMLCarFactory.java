@@ -28,7 +28,12 @@ import org.w3c.dom.NodeList;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -39,17 +44,15 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFactory {
+public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFactory<DefaultTrafficNode<CarData>,DefaultTrafficEdge<CarData>, BaseVehicle<CarData>> {
 
 	@Override
-	public Vehicle<CarData> createCar( String typeId, Color color, SensorHelper helper) {
-		CarData data = getVehicleData().get(typeId);
-		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>( updateCarData(data, color), trafficGraphExtensions);
+	public BaseVehicle<CarData> createCar(  Color color, SensorHelper helper) {
+		return createRandomCar(helper);
 	}
 
 	@Override
-	public Vehicle<CarData> createRandomCar( SensorHelper helper) {
+	public BaseVehicle<CarData> createRandomCar( SensorHelper helper) {
 		CarData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
 		return new DefaultMotorizedVehicle<>( updateCarData(data, Color.BLACK), trafficGraphExtensions);

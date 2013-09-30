@@ -19,8 +19,8 @@ package de.pgalise.simulation.traffic.graphextension;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 
 import javax.vecmath.Vector2d;
@@ -32,7 +32,7 @@ import javax.vecmath.Vector2d;
  * @author Marcus
  * @version 1.0 (Feb 17, 2013)
  */
-public interface GraphExtensions {
+public interface GraphExtensions<N extends TrafficNode<N,E,?,?>, E extends TrafficEdge<N,E,?,?>> {
 
 	/**
 	 * Returns the position of the passed node argument. If the node hasn't an attached position property this method
@@ -44,7 +44,7 @@ public interface GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	public Coordinate getPosition(final TrafficNode node);
+	public Coordinate getPosition(final N node);
 
 	/**
 	 * Returns the vector between the two nodes as difference.
@@ -57,7 +57,7 @@ public interface GraphExtensions {
 	 * @exception IllegalArgumentException
 	 *                if node1 or node2 is null
 	 */
-	public Vector2d getVectorBetween(final TrafficNode from, final TrafficNode to);
+	public Vector2d getVectorBetween(final N from, final N to);
 
 	/**
 	 * Checks whether the passed node has an attached position.
@@ -66,7 +66,7 @@ public interface GraphExtensions {
 	 *            the node that has to be checked
 	 * @return true if the node has an attached position property, otherwise false
 	 */
-	public boolean hasPosition(final TrafficNode node);
+	public boolean hasPosition(final N node);
 
 	/**
 	 * Sets the position of the passed node argument. Additionally the new lengths and vectors for each edge of the
@@ -78,7 +78,7 @@ public interface GraphExtensions {
 	 *            the new position of the node
 	 * @return the passed node for method chaining
 	 */
-	public TrafficNode setPosition(final TrafficNode node, final Coordinate position);
+	public N setPosition(final N node, final Coordinate position);
 
 	/**
 	 * Returns the length between two nodes.
@@ -86,7 +86,7 @@ public interface GraphExtensions {
 	 * @param node2
 	 * @return
 	 */
-	public Double getLengthBetween(final TrafficNode node1, final TrafficNode node2);
+	public Double getLengthBetween(final N node1, final N node2);
 	
 	/**
 	 * Returns the length of the passed edge.
@@ -95,7 +95,7 @@ public interface GraphExtensions {
 	 *            the edge which length is asked
 	 * @return the length of the passed edge or null if at least one of the edge's node has no position
 	 */
-	public Double getLength(final TrafficEdge<?,?> edge);
+	public Double getLength(final E edge);
 
 	/**
 	 * Returns the maximal speed of the passed edge.
@@ -104,7 +104,7 @@ public interface GraphExtensions {
 	 *            the edge which maximal speed is asked (vector units per hour)
 	 * @return the maximal speed of the passed edge or null if maxSpeed havn't been set yet
 	 */
-	public Double getMaxSpeed(final TrafficEdge<?,?> edge);
+	public Double getMaxSpeed(final E edge);
 
 	/**
 	 * Returns the street name of the passed edge.
@@ -113,7 +113,7 @@ public interface GraphExtensions {
 	 *            the edge which street name is asked
 	 * @return the street name of the passed edge or null if streetName havn't been set yet
 	 */
-	public String getStreetName(final TrafficEdge<?,?> edge);
+	public String getStreetName(final E edge);
 
 	/**
 	 * Returns the Vector of the passed edge.
@@ -122,7 +122,7 @@ public interface GraphExtensions {
 	 *            the edge which vector is asked.
 	 * @return the vector of the passed edge or null if at least one of the edge's node has no position
 	 */
-	public Vector2d getVector(final TrafficEdge<?,?> edge);
+	public Vector2d getVector(final E edge);
 
 	/**
 	 * Checks whether a passed edge has attached the maxSpeed property.
@@ -131,7 +131,7 @@ public interface GraphExtensions {
 	 *            the edge that has to be checked
 	 * @return true if the passed edge has attached the maxSpeed property,
 	 */
-	public boolean hasMaxSpeed(final TrafficEdge<?,?> edge);
+	public boolean hasMaxSpeed(final E edge);
 
 	/**
 	 * Checks whether a passed edge has attached the streetName property.
@@ -140,7 +140,7 @@ public interface GraphExtensions {
 	 *            the edge that has to be checked
 	 * @return true if the passed edge has attached the streetName property, otherwise false
 	 */
-	public boolean hasStreetName(final TrafficEdge<?,?> edge);
+	public boolean hasStreetName(final E edge);
 
 	/**
 	 * Sets the maximum speed of the passed edge.
@@ -150,7 +150,7 @@ public interface GraphExtensions {
 	 * @param maxSpeed
 	 *            the new maximum speed of the edge
 	 */
-	public TrafficEdge<?,?> setMaxSpeed(final TrafficEdge<?,?> edge, final double maxSpeed);
+	public E setMaxSpeed(final E edge, final double maxSpeed);
 
 	/**
 	 * Sets the street name of the passed edge.
@@ -160,7 +160,7 @@ public interface GraphExtensions {
 	 * @param length
 	 *            the new street name of the edge
 	 */
-	public TrafficEdge<?,?> setStreetName(final TrafficEdge<?,?> edge, final String streetName);
+	public E setStreetName(final E edge, final String streetName);
 
 	/**
 	 * Determines whether the passed edge is a street for cars.
@@ -171,7 +171,7 @@ public interface GraphExtensions {
 	 *            flag whether the passed edge is a street for cars or not
 	 * @return the passed edge for method chaining
 	 */
-	public TrafficEdge<?,?> setCarStreet(final TrafficEdge<?,?> edge, final Boolean isCarStreet);
+	public E setCarStreet(final E edge, final Boolean isCarStreet);
 
 	/**
 	 * @param edge
@@ -179,7 +179,7 @@ public interface GraphExtensions {
 	 * @param isBicycleStreet
 	 * @return the passed edge for method chaining
 	 */
-	public TrafficEdge<?,?> setBicycleStreet(final TrafficEdge<?,?> edge, final Boolean isBicycleStreet);
+	public E setBicycleStreet(final E edge, final Boolean isBicycleStreet);
 
 	/**
 	 * @param edge
@@ -189,7 +189,7 @@ public interface GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null;
 	 */
-	public TrafficEdge<?,?> setGrossVehicleWeight(final TrafficEdge<?,?> edge, final Integer grossVehicleWeight);
+	public E setGrossVehicleWeight(final E edge, final Integer grossVehicleWeight);
 
 	/**
 	 * @param edge
@@ -197,7 +197,7 @@ public interface GraphExtensions {
 	 * @param isPriorityRoad
 	 * @return the passed edge for method chaining
 	 */
-	public TrafficEdge<?,?> setPriorityRoad(final TrafficEdge<?,?> edge, final Boolean isPriorityRoad);
+	public E setPriorityRoad(final E edge, final Boolean isPriorityRoad);
 
 	/**
 	 * @param edge
@@ -205,7 +205,7 @@ public interface GraphExtensions {
 	 * @return true if the passed edge is a street for cars and false if cars are not allowed to use this street. 'null'
 	 *         if it isn't determined.
 	 */
-	public Boolean isCarStreet(final TrafficEdge<?,?> edge);
+	public Boolean isCarStreet(final E edge);
 
 	/**
 	 * @param edge
@@ -213,26 +213,26 @@ public interface GraphExtensions {
 	 * @return true if the passed edge is a street for bicycles and false if bicycles are not allowed to use this
 	 *         street. 'null' if it isn't determined.
 	 */
-	public Boolean isBicycleStreet(final TrafficEdge<?,?> edge);
+	public Boolean isBicycleStreet(final E edge);
 
 	/**
 	 * @param edge
 	 *            the considered edge
 	 * @return the
 	 */
-	public Integer getGrossVehicleWeight(final TrafficEdge<?,?> edge);
+	public Integer getGrossVehicleWeight(final E edge);
 
 	/**
 	 * @param edge
 	 *            the considered edge
 	 * @return
 	 */
-	public Boolean isPriorityRoad(final TrafficEdge<?,?> edge);
+	public Boolean isPriorityRoad(final E edge);
 
 	/**
 	 * ...
 	 */
 	public void reset();
 	
-	TrafficGraph<?> getGraph();
+	TrafficGraph<N,E,?,?> getGraph();
 }

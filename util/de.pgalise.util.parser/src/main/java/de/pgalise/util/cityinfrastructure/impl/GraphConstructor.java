@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.traffic.Way;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import javax.vecmath.Vector2d;

@@ -43,9 +43,9 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler.Modus;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import javax.vecmath.Vector2d;
 
 /**
@@ -73,7 +73,7 @@ public class SchedulerTest {
 	 *            TrafficGraphExtensions
 	 * @return List with four vehicles
 	 */
-	public static List<Vehicle<? extends VehicleData>> createVehicles(TrafficGraphExtensions ee) {
+	public static List<Vehicle<? extends VehicleData,N,E>> createVehicles(TrafficGraphExtensions ee) {
 		Dijkstra algo = new Dijkstra(Element.NODE, "weight", null);
 		algo.init(SchedulerTest.graph);
 		algo.setSource(SchedulerTest.graph.getNode("a"));
@@ -81,24 +81,24 @@ public class SchedulerTest {
 
 		Path shortestPath = algo.getPath(SchedulerTest.graph.getNode("c"));
 
-		List<Vehicle<? extends VehicleData>> vehicles = new ArrayList<>();
+		List<Vehicle<? extends VehicleData,N,E>> vehicles = new ArrayList<>();
 
-		Vehicle<? extends VehicleData> a = new BaseVehicle<>(ee);
+		Vehicle<? extends VehicleData,N,E> a = new BaseVehicle<>(ee);
 		a.setName("a");
 		a.setPath(shortestPath);
 		vehicles.add(a);
 
-		Vehicle<? extends VehicleData> b = new BaseVehicle<>(ee);
+		Vehicle<? extends VehicleData,N,E> b = new BaseVehicle<>(ee);
 		b.setName("b");
 		b.setPath(shortestPath);
 		vehicles.add(b);
 
-		Vehicle<? extends VehicleData> c = new BaseVehicle<>(ee);
+		Vehicle<? extends VehicleData,N,E> c = new BaseVehicle<>(ee);
 		c.setName("c");
 		c.setPath(shortestPath);
 		vehicles.add(c);
 
-		Vehicle<? extends VehicleData> d = new BaseVehicle<>(ee);
+		Vehicle<? extends VehicleData,N,E> d = new BaseVehicle<>(ee);
 		d.setName("d");
 		d.setPath(shortestPath);
 		vehicles.add(d);
@@ -120,12 +120,12 @@ public class SchedulerTest {
 	 *            Start time of the vehicles
 	 */
 	public static void testScheduler(Scheduler scheduler, long startTime) {
-		List<ScheduleItem> vehicles = null;
+		List<DefaultScheduleItem> vehicles = null;
 		vehicles = scheduler.getExpiredItems(startTime);
 		Assert.assertNotNull(vehicles);
 		Assert.assertEquals(0, vehicles.size());
 
-		List<ScheduleItem> items = null;
+		List<DefaultScheduleItem> items = null;
 		items = scheduler.getScheduledItems();
 		Assert.assertNotNull(items);
 		Assert.assertEquals(4, items.size());
@@ -211,7 +211,7 @@ public class SchedulerTest {
 	 *            List with vehicles
 	 * @return List of vehicles names as String
 	 */
-	private static String getVehicles(List<ScheduleItem> vehicles) {
+	private static String getVehicles(List<DefaultScheduleItem> vehicles) {
 		StringBuilder str = new StringBuilder();
 		str.append("(");
 		for (int i = 0; i < vehicles.size(); i++) {
@@ -233,20 +233,20 @@ public class SchedulerTest {
 
 	@Test
 	public void listSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<? extends VehicleData>> vehicles = SchedulerTest.createVehicles(this.ee);
+		List<Vehicle<? extends VehicleData,N,E>> vehicles = SchedulerTest.createVehicles(this.ee);
 
 		long startTime = System.currentTimeMillis();
 
 		Administration admin = ListScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		Scheduler scheduler = admin.getScheduler();
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the ListScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));
@@ -257,20 +257,20 @@ public class SchedulerTest {
 
 	@Test
 	public void sortedListSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<? extends VehicleData>> vehicles = SchedulerTest.createVehicles(this.ee);
+		List<Vehicle<? extends VehicleData,N,E>> vehicles = SchedulerTest.createVehicles(this.ee);
 
 		long startTime = System.currentTimeMillis();
 
 		Administration admin = SortedListScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		Scheduler scheduler = admin.getScheduler();
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the SortedListScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));
@@ -281,20 +281,20 @@ public class SchedulerTest {
 
 	@Test
 	public void treeSetSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<? extends VehicleData>> vehicles = SchedulerTest.createVehicles(this.ee);
+		List<Vehicle<? extends VehicleData,N,E>> vehicles = SchedulerTest.createVehicles(this.ee);
 
 		long startTime = System.currentTimeMillis();
 
 		Administration admin = TreeSetScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		Scheduler scheduler = admin.getScheduler();
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the TreeSetScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));
