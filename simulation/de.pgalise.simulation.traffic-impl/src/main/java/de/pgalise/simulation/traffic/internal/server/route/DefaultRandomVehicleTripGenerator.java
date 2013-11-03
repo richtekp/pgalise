@@ -147,7 +147,7 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 	 *            Buffer
 	 * @return TrafficTrip
 	 */
-	private TrafficTrip createBikeTrip(Date date, int buffer) {
+	private DefaultTrafficTrip createBikeTrip(Date date, int buffer) {
 		return this.createCarTrip(date, buffer);
 	}
 
@@ -177,7 +177,7 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 		// log.debug(String.format("Created Trip (%s, %s)",
 		// startNode.getAttribute("position"),
 		// targetNode.getAttribute("position")));
-		return new TrafficTrip(this.startNode.getId(), this.targetNode.getId(),
+		return new DefaultTrafficTrip(this.startNode, this.targetNode,
 				this.startTimeWayThere);// ,this.startTimeWayBack);
 	}
 
@@ -190,11 +190,11 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 	 *            Buffer
 	 * @return TrafficTrip
 	 */
-	private TrafficTrip createTruckTrip(Date date, int buffer) {
+	private DefaultTrafficTrip createTruckTrip(Date date, int buffer) {
 		// Amount of trucks just depends on fuzzy. Every trip is a work trip
 		this.createTruckWorkTrip(date, buffer);
 
-		return new TrafficTrip(this.startNode.getId(), this.targetNode.getId(),
+		return new DefaultTrafficTrip(this.startNode, this.targetNode,
 				this.startTimeWayThere);// ,this.startTimeWayBack);
 	}
 
@@ -430,7 +430,7 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 				.size()));
 
 		// Set target node
-		return new TrafficTrip(startNode, this.targetNode,
+		return new DefaultTrafficTrip(startNode, this.targetNode,
 				startTimestamp);
 	}
 }

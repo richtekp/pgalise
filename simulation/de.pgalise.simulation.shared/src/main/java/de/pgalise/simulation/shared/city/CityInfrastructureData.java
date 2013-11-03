@@ -22,6 +22,7 @@ import java.util.Map;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Boundary;
 
 /**
  * Contains streets, bus stops and landuse information.

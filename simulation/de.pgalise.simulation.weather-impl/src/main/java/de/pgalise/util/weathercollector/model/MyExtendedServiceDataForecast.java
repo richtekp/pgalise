@@ -48,7 +48,7 @@ public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast im
 	public MyExtendedServiceDataForecast(
 		Date measureDate,
 		Time measureTime, 
-		City city,
+		DefaultCity city,
 		Measure<Float, Temperature> temperatureHigh,
 		Measure<Float, Temperature> temperatureLow,
 		Float relativHumidity,

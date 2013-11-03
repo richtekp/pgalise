@@ -97,7 +97,7 @@ public class DefaultStaticSensorController extends AbstractController<Event, Sta
 
 	@Override
 	public void createSensor(SensorHelper sensor) throws SensorException {
-		Sensor newSensor = null;
+		Sensor<?> newSensor = null;
 		try {
 			newSensor = this.sensorFactory.createSensor(sensor,
 					StaticSensorControllerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
@@ -113,7 +113,7 @@ public class DefaultStaticSensorController extends AbstractController<Event, Sta
 	@Override
 	public void deleteSensor(SensorHelper sensor) throws SensorException {
 		// Check sensor
-		Sensor newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor<?> newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
 		if (newSensor != null && this.sensorRegistry.removeSensor(newSensor) != null) {
 			return;
 		}
@@ -151,7 +151,7 @@ public class DefaultStaticSensorController extends AbstractController<Event, Sta
 
 		boolean state = false;
 		// Check sensor
-		Sensor newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor<?> newSensor = this.sensorRegistry.getSensor(sensor.getSensorID());
 		if (newSensor != null) {
 			state = newSensor.isActivated();
 		}

@@ -27,6 +27,9 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  * It is a premise that the nodes and edges have a 'position' attribute 
  * which returns a {@link de.pgalise.util.vector.Vector2d}.
  *  
+ * @param <G> 
+ * @param <N> 
+ * @param <E> 
  * @author mustafa
  *
  */

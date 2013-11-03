@@ -105,7 +105,7 @@ public class OSMCityInfrastructureDataTest {
 		int radiusInMeter = 500;
 		Node tmpNode = osmParser.getNodes().get((int) (Math.random() * osmParser.getNodes().size()));
 		Coordinate centerPoint = new Coordinate(tmpNode.getLatitude(), tmpNode.getLongitude());
-		for (Building building : osmParser.getBuildingsInRadius(centerPoint, radiusInMeter)) {
+		for (DefaultBuilding building : osmParser.getBuildingsInRadius(centerPoint, radiusInMeter)) {
 			assertTrue(this.getDistanceInMeter(centerPoint, building.getCenterPoint()) <= radiusInMeter);
 		}
 	}

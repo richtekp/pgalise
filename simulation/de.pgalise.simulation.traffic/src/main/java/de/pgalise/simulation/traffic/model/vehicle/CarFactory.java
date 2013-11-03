@@ -29,7 +29,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
  * @author Andreas
  * @version 1.0
  */
-public interface CarFactory {
+public interface CarFactory<N extends TrafficNode<N,E,CarData,V>, E extends TrafficEdge<N,E, CarData,V>, V extends Vehicle<CarData, N,E,V>> {
 
 	/**
 	 * Method to create a {@link Car} with the given typeId.
@@ -51,7 +51,7 @@ public interface CarFactory {
 	 *            ID of the {@link Car}
 	 * @return created {@link Car}
 	 */
-	public Vehicle<CarData> createRandomCar( SensorHelper gpsSensor);
+	public V createRandomCar( SensorHelper gpsSensor);
 
 	public RandomSeedService getRandomSeedService();
 }

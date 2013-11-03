@@ -65,8 +65,8 @@ public abstract class TrafficRule implements SimulationComponent {
 	 *             the {@link Vehicle} wants to turn around and turning around
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
-	public abstract void register(final V vehicle,
-			final E from, final E to, final TrafficRuleCallback callback)
+	public abstract void register(final Vehicle<? extends VehicleData> vehicle,
+			final Edge from, final Edge to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException;
 
 	/**

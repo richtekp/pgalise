@@ -58,8 +58,8 @@ public class Anemometer extends WeatherSensor {
 	 *             {@link AnemometerWhiteNoiseInterferer}
 	 */
 	
-	public Anemometer(Output output, long sensorId, Coordinate position, WeatherController weatherController, WeatherInterferer weatherInterferer) {
-		this(output, sensorId, position, weatherController, 1, weatherInterferer);
+	public Anemometer(Output output, Coordinate position, WeatherController weatherController, WeatherInterferer weatherInterferer) {
+		this(output, position, weatherController, 1, weatherInterferer);
 	}
 
 	/**

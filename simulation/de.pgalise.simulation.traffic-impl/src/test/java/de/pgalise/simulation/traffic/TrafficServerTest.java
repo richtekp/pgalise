@@ -707,10 +707,13 @@ public class TrafficServerTest {
 				List<AbstractTrafficEvent> list = new ArrayList<>();
 				List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
 
-				List<SensorHelper> sensorLists = new ArrayList<>();
-				sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_CAR,
-						new ArrayList<SensorInterfererType>(), ""));
-				trip = new TrafficTrip("97775877", "373877298", SIMULATION_START + 4000);
+				List<SensorHelper<?>> sensorLists = new ArrayList<>();
+				sensorLists.add(new SensorHelper(sensor, new Coordinate(), SensorTypeEnum.GPS_CAR,
+						new ArrayList<SensorInterfererType>()));
+				NavigationNode startNode = new DefaultTrafficNode(new Coordinate(1,
+					2)), endNode = new DefaultTrafficNode(new Coordinate(2,
+					3));
+				trip = new DefaultTrafficTrip(startNode, endNode, SIMULATION_START + 4000);
 				vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(
 						true, VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1, trip, "K.A.R.R")));
 

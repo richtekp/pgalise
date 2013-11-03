@@ -206,7 +206,7 @@ public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent
 						data.getVehicleInformation().getVehicleType());
 
 				// Create vehicle
-				final Vehicle<? extends VehicleData> v = this.eHandler.createVehicle(data, trip);
+				final BaseVehicle<D> v = this.eHandler.createVehicle(data, trip);
 
 				if (v == null) {
 					switch (data.getVehicleInformation().getVehicleType()) {

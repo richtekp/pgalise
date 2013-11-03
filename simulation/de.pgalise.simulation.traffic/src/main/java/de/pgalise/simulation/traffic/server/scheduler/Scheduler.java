@@ -30,21 +30,21 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * On every update step the TrafficServer iterates through the expired items to update
  * the vehicles that are already on the road.
  * 
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
+ * @param <V> 
+ * @param <I> 
  * @see Item
  * @see Administration
  * @author mustafa
  */
-public abstract class Scheduler {
-	private Modus modus;
-
-	public static enum Modus {
-		READ, WRITE;
-		public static EnumSet<Modus> READ_OR_WRITE = EnumSet.of(READ, WRITE);
-	}
-
-	public Scheduler() {
-		this.modus = Modus.READ;
-	}
+public interface Scheduler<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>,
+	I extends ScheduleItem<D,N,E,V>> {
 
 	/**
 	 * Changes the access rights to this scheduler

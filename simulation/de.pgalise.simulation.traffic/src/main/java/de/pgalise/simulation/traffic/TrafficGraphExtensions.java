@@ -140,7 +140,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * 
 	 * @return the {@link TrafficRule}s as an unmodifiable {@link Set}
 	 */
-	public Set<TrafficRule<D, N, E, V>> getTrafficRulesAsUnmodifiableSet();
+	public Set<TrafficRule> getTrafficRulesAsUnmodifiableSet();
 
 	/**
 	 * Updates all TrafficRules.
@@ -155,14 +155,14 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @param vehicle
 	 * @return
 	 */
-	public boolean addVehicle(final E edge, final V vehicle);
+	public boolean addVehicle(final Edge edge, final Vehicle<? extends VehicleData> vehicle);
 
 	/**
 	 * @param vehicle
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public boolean removeVehicleFromItsEdge(final V vehicle);
+	public boolean removeVehicleFromItsEdge(final Vehicle<? extends VehicleData> vehicle);
 
 	/**
 	 * @param edge
@@ -181,7 +181,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * Returns the registered vehicles for a given edge.
 	 * 
 	 * @param edge
-	 *            Edge to check
+	 *            NavigationEdge to check
 	 * @param from
 	 *            Start node of the given edge
 	 * @param to
@@ -189,13 +189,13 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @return A list with vehicles registered on the given edge
 	 * @throws IllegalArgumentException
 	 */
-	public List<Vehicle<? extends VehicleData>> getVehiclesFor(Edge edge, Node from, Node to);
+	public Set<V> getVehiclesFor(E edge, N from, N to);
 
 	/**
 	 * Registers a car on a given edge.
 	 * 
 	 * @param edge
-	 *            Edge to register the car on
+	 *            NavigationEdge to register the car on
 	 * @param from
 	 *            Start node of the given edge
 	 * @param to
@@ -203,13 +203,13 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @param v
 	 *            Vehicle to register
 	 */
-	public void registerOnEdge(Edge edge, Node from, Node to, Vehicle<? extends VehicleData> v);
+	public void registerOnEdge(E edge, N from, N to, V v);
 
 	/**
 	 * Unregisters a registered vehicle from the passed edge.
 	 * 
 	 * @param edge
-	 *            Edge to unregister the car from
+	 *            NavigationEdge to unregister the car from
 	 * @param from
 	 *            Start node of the given edge
 	 * @param to
@@ -217,7 +217,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @param v
 	 *            Vehicle to unregister
 	 */
-	public void unregisterFromEdge(Edge edge, Node from, Node to, Vehicle<? extends VehicleData> v);
+	public void unregisterFromEdge(E edge, N from, N to, V v);
 
-	public Set<Sensor> getSensors(Node node);
+	public Set<StaticTrafficSensor<N,E>> getSensors(N node);
 }

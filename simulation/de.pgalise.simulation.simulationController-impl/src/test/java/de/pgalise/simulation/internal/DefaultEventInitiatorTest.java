@@ -174,7 +174,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
@@ -182,11 +182,11 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
 			return false;
 		}
 
@@ -378,7 +378,7 @@ public class DefaultEventInitiatorTest {
 
 		private int updateCounter;
 
-		public WeatherControllerMock() {
+		WeatherControllerMock() {
 			this.updateCounter = 0;
 		}
 
@@ -391,7 +391,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(StartParameter param) throws IllegalStateException {
+		public void start(InfrastructureStartParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -399,7 +399,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(EventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<WeatherEvent> simulationEventList) throws IllegalStateException {
 			this.updateCounter++;
 		}
 
@@ -536,7 +536,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void update(EventList simulationEventList) throws IllegalStateException {
+		public void update(EventList<Event> simulationEventList) throws IllegalStateException {
 		}
 
 		@Override
@@ -545,7 +545,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void addSimulationEventList(EventList simulationEventList) {
+		public void addSimulationEventList(EventList<?> simulationEventList) {
 		}
 
 		@Override

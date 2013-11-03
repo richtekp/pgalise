@@ -1,138 +1,110 @@
-/* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
- 
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
+import de.pgalise.simulation.shared.city.BusAgency;
+import de.pgalise.simulation.traffic.BusTrip;
+import de.pgalise.simulation.shared.persistence.Identifiable;
+import java.util.List;
 
 /**
- * 
- * @author marcus
  *
+ * @author richter
  */
-@Entity
-//@Table(name = "PGALISE.BUS_ROUTES")
-public class BusRoute extends AbstractIdentifiable {
-	private static final long serialVersionUID = 1L;
+public interface BusRoute<T extends BusTrip> extends Identifiable {
+
+	/**
+	 * @return the routeShortName
+	 */
+	String getRouteShortName();
+
+	/**
+	 * @param routeShortName
+	 *            the routeShortName to set
+	 */
+	void setRouteShortName(String routeShortName);
+	/**
+	 * @return the routeLongName
+	 */
+	String getRouteLongName();
+
+	/**
+	 * @param routeLongName
+	 *            the routeLongName to set
+	 */
+	void setRouteLongName(String routeLongName);
+
+	/**
+	 * @return the routeType
+	 */
+	int getRouteType();
+	/**
+	 * @param routeType
+	 *            the routeType to set
+	 */
+	void setRouteType(int routeType);
+
+	boolean isUsed();
+
+	void setUsed(boolean used);
+
+	BusAgency getAgency();
 	
-	@Column(name = "ROUTE_SHORT_NAME")
-	private String routeShortName;
-	
-	@Column(name = "ROUTE_LONG_NAME")
-	private String routeLongName;
-	
-	@Column(name = "ROUTE_TYPE")
-	private short routeType;
-	
-	@Column(name = "AGENCY_ID")
-	private String agencyId;
-	
-	@Column(name = "ROUTE_DESC")
-	private String routeDesc;
-	
-	@Column(name = "ROUTE_URL")
-	private String routeUrl;
-	
-	@Column(name = "ROUTE_COLOR")
-	private String routeColor;
-	
-	@Column(name = "ROUTE_TEXT_COLOR")
-	private String routeTextColor;
-	
-	public BusRoute() {}
+	void setAgency(BusAgency agencyId);
 
-	public BusRoute(String routeShortName,
-			String routeLongName, short routeType, String agencyId,
-			String routeDesc, String routeUrl, String routeColor,
-			String routeTextColor) {
-		this.routeShortName = routeShortName;
-		this.routeLongName = routeLongName;
-		this.routeType = routeType;
-		this.agencyId = agencyId;
-		this.routeDesc = routeDesc;
-		this.routeUrl = routeUrl;
-		this.routeColor = routeColor;
-		this.routeTextColor = routeTextColor;
-	}
+	String getRouteDesc();
 
-	public String getRouteShortName() {
-		return routeShortName;
-	}
+	void setRouteDesc(String routeDesc);
 
-	public void setRouteShortName(String routeShortName) {
-		this.routeShortName = routeShortName;
-	}
+	String getRouteUrl();
 
-	public String getRouteLongName() {
-		return routeLongName;
-	}
+	void setRouteUrl(String routeUrl);
 
-	public void setRouteLongName(String routeLongName) {
-		this.routeLongName = routeLongName;
-	}
+	String getRouteColor();
 
-	public short getRouteType() {
-		return routeType;
-	}
+	void setRouteColor(String routeColor);
 
-	public void setRouteType(short routeType) {
-		this.routeType = routeType;
-	}
+	String getRouteTextColor();
 
-	public String getAgencyId() {
-		return agencyId;
-	}
+	void setRouteTextColor(String routeTextColor);
 
-	public void setAgencyId(String agencyId) {
-		this.agencyId = agencyId;
-	}
+	/**
+	 * @return the weekdayTripWayThere
+	 */
+	List<T> getWeekdayTripWayThere();
+	/**
+	 * @param weekdayTripWayThere the weekdayTripWayThere to set
+	 */
+	void setWeekdayTripWayThere(List<T> weekdayTripWayThere);
 
-	public String getRouteDesc() {
-		return routeDesc;
-	}
+	/**
+	 * @return the weekdayTripWayBack
+	 */
+	List<T> getWeekdayTripWayBack();
 
-	public void setRouteDesc(String routeDesc) {
-		this.routeDesc = routeDesc;
-	}
+	/**
+	 * @param weekdayTripWayBack the weekdayTripWayBack to set
+	 */
+	void setWeekdayTripWayBack(List<T> weekdayTripWayBack);
+	/**
+	 * @return the weekendTripWayThere
+	 */
+	List<T> getWeekendTripWayThere();
 
-	public String getRouteUrl() {
-		return routeUrl;
-	}
+	/**
+	 * @param weekendTripWayThere the weekendTripWayThere to set
+	 */
+	void setWeekendTripWayThere(List<T> weekendTripWayThere);
 
-	public void setRouteUrl(String routeUrl) {
-		this.routeUrl = routeUrl;
-	}
+	/**
+	 * @return the weekendTripWayBack
+	 */
+	List<T> getWeekendTripWayBack();
 
-	public String getRouteColor() {
-		return routeColor;
-	}
-
-	public void setRouteColor(String routeColor) {
-		this.routeColor = routeColor;
-	}
-
-	public String getRouteTextColor() {
-		return routeTextColor;
-	}
-
-	public void setRouteTextColor(String routeTextColor) {
-		this.routeTextColor = routeTextColor;
-	}
-	
-	
+	/**
+	 * @param weekendTripWayBack the weekendTripWayBack to set
+	 */
+	void setWeekendTripWayBack(List<T> weekendTripWayBack);
 }

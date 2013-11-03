@@ -37,11 +37,21 @@ import de.pgalise.simulation.traffic.server.TrafficServer;
  * Provides functionality to create a traffic graph based on an open street map. Generates also random routes between
  * the nodes.
  * 
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
+ * @param <V> 
+ * @param <B> 
  * @author Lena
  * @author mischa
  */
-public interface RouteConstructor {
-	public TrafficTrip createTrip(int serverId, Geometry cityZone, VehicleTypeEnum vehicleType);
+public interface RouteConstructor<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>,
+	B extends BusStop<?>> {
+	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, VehicleTypeEnum vehicleType);
 
 	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, NavigationNode nodeID, long startTimestamp, boolean isStartNode);
 

@@ -48,9 +48,9 @@ public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandle
 	public void handleEvent(VehicleEvent<?> event) {
 		defaultHandler.handleEvent(event);
 
-		final Vehicle<? extends VehicleData> vehicle = event.getVehicle();
+		final Vehicle<? extends VehicleData,N,E> vehicle = event.getVehicle();
 
-		if (vehicle instanceof DefaultMotorizedVehicle<?>) {
+		if (vehicle instanceof DefaultMotorizedBaseVehicle<D>) {
 			if ((vehicle.getPreviousNode() == null) || (vehicle.getNextNode() == null)) {
 				// car eliminates the NPE
 				return;

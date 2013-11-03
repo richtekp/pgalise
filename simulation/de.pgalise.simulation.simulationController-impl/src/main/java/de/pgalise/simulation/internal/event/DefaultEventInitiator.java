@@ -146,7 +146,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 						/*
 						 * FrontController...
 						 */
-						for(Controller<?> c : DefaultEventInitiator.this.frontControllerList) {
+						for(Controller<?,?,?> c : DefaultEventInitiator.this.frontControllerList) {
 							c.update(new EventList(new ArrayList<>(),
 									DefaultEventInitiator.this.currentTimestamp, UUID.randomUUID()));
 						}
@@ -242,7 +242,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	
 	private ControlCenterController controlCenterController;
 	
-	private List<Controller<?>> frontControllerList;
+	private List<Controller<?,?,?>> frontControllerList;
 
 	/**
 	 * Default constructor

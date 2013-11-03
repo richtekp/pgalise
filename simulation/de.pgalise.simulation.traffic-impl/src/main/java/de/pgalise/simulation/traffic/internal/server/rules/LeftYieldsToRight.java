@@ -28,17 +28,23 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
+import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 import javax.vecmath.Vector2d;
 import javax.vecmath.Vector3d;
 
@@ -47,27 +53,27 @@ import javax.vecmath.Vector3d;
  * 
  * @author Marcus
  */
-public class LeftYieldsToRight extends TrafficRule {
+public class LeftYieldsToRight<D extends VehicleData> extends AbstractTrafficRule<D> {
 
 	/**
 	 * maps the right {@link Edge} for each {@link Edge}
 	 */
-	private final Map<Edge, Edge> rights = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D>, DefaultTrafficEdge<D>> rights = new HashMap<>();
 
 	/**
 	 * maps the straight {@link Edge} for each {@link Edge}
 	 */
-	private final Map<Edge, Edge> straights = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D>, DefaultTrafficEdge<D>> straights = new HashMap<>();
 
 	/**
 	 * maps the left {@link Edge} for each {@link Edge}
 	 */
-	private final Map<Edge, Edge> lefts = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D>, DefaultTrafficEdge<D>> lefts = new HashMap<>();
 
 	/**
 	 * maps to each {@link Edge} a {@link Queue} with waiting {@link Vehicle}s
 	 */
-	private final Map<Edge, Queue<TrafficRuleData>> waiting = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D>, Queue<DefaultTrafficRuleData<D>>> waiting = new HashMap<>();
 
 	/**
 	 * a {@link Random} instance which seed is returned by this {@link LeftYieldsToRight}'s {@link RandomSeedService}
@@ -77,21 +83,24 @@ public class LeftYieldsToRight extends TrafficRule {
 	/**
 	 * 
 	 */
-	private final TrafficGraphExtensions trafficGraphExtensions;
+	private final DefaultTrafficGraphExtensions<D> trafficGraphExtensions;
 
 	/**
 	 * Creates a {@link LeftYieldsToRight} with the passed arguments.
 	 * 
 	 * @param node
 	 *            the node on which this {@link LeftYieldsToRight} is applied
+	 * @param graph 
+	 * @param randomSeedService 
+	 * @param trafficGraphExtensions 
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' or argument 'randomSeedService' is null
 	 * @throws IllegalStateException
 	 *             if the passed {@link Node} doesn't have 3 or 4 {@link Edge}s
 	 */
-	public LeftYieldsToRight(final Node node, final RandomSeedService randomSeedService,
-			final TrafficGraphExtensions trafficGraphExtensions) throws IllegalArgumentException, IllegalStateException {
-		super(node);
+	public LeftYieldsToRight(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph, final RandomSeedService randomSeedService,
+			final DefaultTrafficGraphExtensions<D> trafficGraphExtensions) throws IllegalArgumentException, IllegalStateException {
+		super(node, graph);
 		if (randomSeedService == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("randomSeedService"));
 		}
@@ -104,8 +113,8 @@ public class LeftYieldsToRight extends TrafficRule {
 	}
 
 	@Override
-	protected void checkNode(final Node node) throws IllegalStateException {
-		final int edgeSize = node.getEdgeSet().size();
+	protected void checkNode(final DefaultTrafficNode<D> node) throws IllegalStateException {
+		final int edgeSize = getGraph().edgesOf(node).size();
 		if ((edgeSize < 3) || (edgeSize > 4)) {
 			throw new IllegalStateException(
 					ExceptionMessages.getMessageForMustBetween("node.getEdgeSet().size()", 3, 5));
@@ -116,12 +125,12 @@ public class LeftYieldsToRight extends TrafficRule {
 	 * Sets up the instance members
 	 */
 	private void setUp() {
-		if (this.getNode().getEdgeSet().size() == 3) {
+		if (getGraph().edgesOf(getNode()).size() == 3) {
 			double maxAngle = Double.MIN_VALUE;
-			Edge straight1 = null;
-			Edge straight2 = null;
-			for (final Edge from : this.getNode()) {
-				for (final Edge to : this.getNode()) {
+			DefaultTrafficEdge<D> straight1 = null;
+			DefaultTrafficEdge<D> straight2 = null;
+			for (final DefaultTrafficEdge<D> from : getGraph().edgesOf(this.getNode())) {
+				for (final DefaultTrafficEdge<D> to : getGraph().edgesOf(this.getNode())) {
 					final double angle = this.calculateAngle(from, to);
 					if (angle > maxAngle) {
 						maxAngle = angle;
@@ -130,8 +139,8 @@ public class LeftYieldsToRight extends TrafficRule {
 					}
 				}
 			}
-			Edge nonStraight = null;
-			for (final Edge edge : this.getNode()) {
+			DefaultTrafficEdge<D> nonStraight = null;
+			for (final DefaultTrafficEdge<D> edge : getGraph().edgesOf(this.getNode())) {
 				if ((edge != straight1) && (edge != straight2)) {
 					nonStraight = edge;
 					break;
@@ -153,9 +162,9 @@ public class LeftYieldsToRight extends TrafficRule {
 			}
 
 		} else {
-			for (final Edge from : this.getNode()) {
-				final Map<Double, Edge> angles = new HashMap<>();
-				for (final Edge to : this.getNode()) {
+			for (final DefaultTrafficEdge<D> from : getGraph().edgesOf(this.getNode())) {
+				final Map<Double, DefaultTrafficEdge<D>> angles = new HashMap<>();
+				for (final DefaultTrafficEdge<D> to : getGraph().edgesOf(this.getNode())) {
 					final double angle = this.calculateLeftAngle(from, to);
 					angles.put(angle, to);
 				}
@@ -166,8 +175,8 @@ public class LeftYieldsToRight extends TrafficRule {
 				this.lefts.put(from, angles.get(sortedAngles.get(2)));
 			}
 		}
-		for (final Edge edge : this.getNode()) {
-			this.waiting.put(edge, new LinkedList<TrafficRuleData>());
+		for (final DefaultTrafficEdge<D> edge : getGraph().edgesOf(this.getNode())) {
+			this.waiting.put(edge, new LinkedList<DefaultTrafficRuleData<D>>());
 		}
 	}
 
@@ -180,9 +189,9 @@ public class LeftYieldsToRight extends TrafficRule {
 	 *            the second {@link Edge}
 	 * @return the angle between 'from' and 'to' always smaller than 180
 	 */
-	private double calculateAngle(final Edge from, final Edge to) {
-		final Node nodeFrom = from.getNode0() != this.getNode() ? from.getNode0() : from.getNode1();
-		final Node nodeTo = to.getNode0() != this.getNode() ? to.getNode0() : to.getNode1();
+	private double calculateAngle(final DefaultTrafficEdge<D> from, final DefaultTrafficEdge<D> to) {
+		final DefaultTrafficNode<D> nodeFrom = from.getSource() != this.getNode() ? from.getSource() : from.getTarget();
+		final DefaultTrafficNode<D> nodeTo = to.getSource() != this.getNode() ? to.getSource() : to.getTarget();
 
 		return (this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom).angle(
 				this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo)) * 180D)
@@ -198,9 +207,9 @@ public class LeftYieldsToRight extends TrafficRule {
 	 *            the second {@link Edge}
 	 * @return the counter-clockwise angle between 'from' and 'to'
 	 */
-	private double calculateLeftAngle(final Edge from, final Edge to) {
-		final Node nodeFrom = from.getNode0() != this.getNode() ? from.getNode0() : from.getNode1();
-		final Node nodeTo = to.getNode0() != this.getNode() ? to.getNode0() : to.getNode1();
+	private double calculateLeftAngle(final DefaultTrafficEdge<D> from, final DefaultTrafficEdge<D> to) {
+		final DefaultTrafficNode<D> nodeFrom = from.getSource() != this.getNode() ? from.getSource() : from.getTarget();
+		final DefaultTrafficNode<D> nodeTo = to.getSource() != this.getNode() ? to.getSource() : to.getTarget();
 
 		double angle = (this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom).angle(
 				this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo)) * 180D)
@@ -237,7 +246,7 @@ public class LeftYieldsToRight extends TrafficRule {
 	 *             or if both {@link Edge}s are the same object
 	 */
 	@Override
-	public void register(final Vehicle<? extends VehicleData> vehicle, final Edge from, final Edge to,
+	public void register(final BaseVehicle<D> vehicle, final DefaultTrafficEdge<D> from, final DefaultTrafficEdge<D> to,
 			final TrafficRuleCallback callback) throws IllegalArgumentException, UnsupportedOperationException {
 		if (!this.waiting.containsKey(from)) {
 			throw new UnsupportedOperationException("Edge 'from' isn't linked with this LeftYieldsToRight's node.");
@@ -248,7 +257,7 @@ public class LeftYieldsToRight extends TrafficRule {
 		if (from == to) {
 			throw new UnsupportedOperationException("Edge 'from' and Edge 'to' must not be the same object.");
 		}
-		final TrafficRuleData trafficRuleData = new TrafficRuleData(vehicle, from, to, callback);
+		final DefaultTrafficRuleData<D> trafficRuleData = new DefaultTrafficRuleData<>(vehicle, from, to, callback);
 		this.waiting.get(trafficRuleData.getFrom()).offer(trafficRuleData);
 	}
 
@@ -261,9 +270,9 @@ public class LeftYieldsToRight extends TrafficRule {
 	 *             not thrown in here
 	 */
 	@Override
-	public void update(final EventList simulationEventList) {
-		final Set<Edge> movedTrafficRuleDatas = new HashSet<>();
-		for (final Edge edge : this.waiting.keySet()) {
+	public void update(final EventList<Event> simulationEventList) {
+		final Set<DefaultTrafficEdge<D>> movedTrafficRuleDatas = new HashSet<>();
+		for (final DefaultTrafficEdge<D> edge : this.waiting.keySet()) {
 			final TrafficRuleData trafficRuleData = this.waiting.get(edge).peek();
 			if (trafficRuleData != null) {
 				if (this.rights.get(trafficRuleData.getFrom()) == trafficRuleData.getTo()) {
@@ -271,7 +280,7 @@ public class LeftYieldsToRight extends TrafficRule {
 					movedTrafficRuleDatas.add(edge);
 				} else if (this.straights.get(trafficRuleData.getFrom()) == trafficRuleData.getTo()) {
 					// Vehicle wants to go straight
-					final Queue<TrafficRuleData> rightEdgeWaiting = this.waiting.get(this.rights.get(trafficRuleData
+					final Queue<DefaultTrafficRuleData<D>> rightEdgeWaiting = this.waiting.get(this.rights.get(trafficRuleData
 							.getFrom()));
 					TrafficRuleData rightTrafficRuleData = null;
 					if (rightEdgeWaiting != null) {
@@ -282,13 +291,13 @@ public class LeftYieldsToRight extends TrafficRule {
 					}
 				} else if (this.lefts.get(trafficRuleData.getFrom()) == trafficRuleData.getTo()) {
 					// Vehicle wants to turn right
-					final Queue<TrafficRuleData> rightEdgeWaiting = this.waiting.get(this.rights.get(trafficRuleData
+					final Queue<DefaultTrafficRuleData<D>> rightEdgeWaiting = this.waiting.get(this.rights.get(trafficRuleData
 							.getFrom()));
 					TrafficRuleData rightTrafficRuleData = null;
 					if (rightEdgeWaiting != null) {
 						rightTrafficRuleData = rightEdgeWaiting.peek();
 					}
-					final Queue<TrafficRuleData> straightEdgeWaiting = this.waiting.get(this.straights
+					final Queue<DefaultTrafficRuleData<D>> straightEdgeWaiting = this.waiting.get(this.straights
 							.get(trafficRuleData.getFrom()));
 					TrafficRuleData straightTrafficRuleData = null;
 					if (straightEdgeWaiting != null) {
@@ -307,10 +316,10 @@ public class LeftYieldsToRight extends TrafficRule {
 		}
 		if (movedTrafficRuleDatas.isEmpty() && (this.getNumberOfWaitingVehicles() > 0)) {
 			// choose one randomly
-			final List<Queue<TrafficRuleData>> allQueues = new ArrayList<>(this.waiting.values());
-			Collections.sort(allQueues, new Comparator<Queue<TrafficRuleData>>() {
+			final List<Queue<DefaultTrafficRuleData<D>>> allQueues = new ArrayList<>(this.waiting.values());
+			Collections.sort(allQueues, new Comparator<Queue<DefaultTrafficRuleData<D>>>() {
 				@Override
-				public int compare(Queue<TrafficRuleData> o1, Queue<TrafficRuleData> o2) {
+				public int compare(Queue<DefaultTrafficRuleData<D>> o1, Queue<DefaultTrafficRuleData<D>> o2) {
 					return o1.size() - o2.size();
 				}
 			});
@@ -321,15 +330,15 @@ public class LeftYieldsToRight extends TrafficRule {
 					break;
 				}
 			}
-			final Queue<TrafficRuleData> queue = allQueues.get(this.random.nextInt(to));
+			final Queue<DefaultTrafficRuleData<D>> queue = allQueues.get(this.random.nextInt(to));
 			final TrafficRuleData trafficRuleData = queue.peek();
 			if (trafficRuleData.getCallback().onEnter()) {
 				trafficRuleData.getCallback().onExit();
 				queue.poll();
 			}
 		}
-		for (final Edge edge : movedTrafficRuleDatas) {
-			final Queue<TrafficRuleData> queue = this.waiting.get(edge);
+		for (final DefaultTrafficEdge<D> edge : movedTrafficRuleDatas) {
+			final Queue<DefaultTrafficRuleData<D>> queue = this.waiting.get(edge);
 			final TrafficRuleData trafficRuleData = queue.peek();
 			if (trafficRuleData.getCallback().onEnter()) {
 				trafficRuleData.getCallback().onExit();
@@ -345,7 +354,7 @@ public class LeftYieldsToRight extends TrafficRule {
 	 */
 	public int getNumberOfWaitingVehicles() {
 		int result = 0;
-		for (final Queue<TrafficRuleData> queue : this.waiting.values()) {
+		for (final Queue<DefaultTrafficRuleData<D>> queue : this.waiting.values()) {
 			result += queue.size();
 		}
 		return result;

@@ -16,14 +16,12 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
-import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +67,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 	/**
 	 * Traffic server
 	 */
-	private TrafficServerLocal<?> server;
+	private TrafficServerLocal server;
 
 	/**
 	 * 
@@ -146,7 +144,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<Create
 						// item.setLastUpdate(cal.getTimeInMillis() - this.server.getUpdateIntervall());
 						this.server.getScheduler().scheduleItem(item);
 					} catch (IllegalAccessException e) {
-						e.printStackTrace();
+						throw new RuntimeException(e);
 					}
 					// try {
 					// this.createGpsSensor(trip.getGpsSensor(), b);

@@ -40,12 +40,12 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterfere
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 28, 2012)
  */
-public class TopoRadarSensor extends StaticTrafficSensor {
+public class TopoRadarSensor<N extends TrafficNode<N,E>, E extends TrafficEdge<N,E>> extends StaticTrafficSensor<N,E> {
 
 	/**
 	 * The last registered vehicles
 	 */
-	private List<Vehicle<? extends VehicleData>> registeredVehicles;
+	private List<Vehicle<? extends VehicleData,N,E>> registeredVehicles;
 
 	/**
 	 * InfraredInterferer interferer
@@ -134,7 +134,7 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public void vehicleOnNodeRegistered(Vehicle<? extends VehicleData> vehicle) {
+	public void vehicleOnNodeRegistered(Vehicle<? extends VehicleData,N,E> vehicle) {
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicle.getData().getType())) {
 			this.registeredVehicles.add(vehicle);
 		}

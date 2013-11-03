@@ -18,17 +18,12 @@
     <!-- Hier die Abh??ngigkeiten definieren -->
     <dependencies>
         <dependency>
-            <groupId>de.pgalise.simulation</groupId>
-            <artifactId>weather</artifactId>
-        </dependency>
-        <dependency>
             <groupId>de.pgalise.util</groupId>
             <artifactId>graph</artifactId>
         </dependency>
         <dependency>
             <groupId>de.pgalise.simulation</groupId>
             <artifactId>shared</artifactId>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>de.pgalise.util</groupId>
@@ -42,6 +37,14 @@
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.pgalise.simulation</groupId>
+            <artifactId>staticSensors</artifactId>
         </dependency>
     </dependencies>
 </project>

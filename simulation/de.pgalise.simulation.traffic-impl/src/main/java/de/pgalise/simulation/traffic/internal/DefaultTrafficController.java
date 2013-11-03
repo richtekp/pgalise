@@ -89,6 +89,7 @@ public class DefaultTrafficController<
 	 */
 	private static final Logger log = LoggerFactory.getLogger(DefaultTrafficController.class);
 	private static final String NAME = "TrafficController";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Server configuration
@@ -193,7 +194,7 @@ public class DefaultTrafficController<
 
 	@Override
 	protected void onStart(StartParameter param) {
-		for (DefaultTrafficServer<D> server : serverList) {
+		for (TrafficServer<?> server : serverList) {
 			server.start(param);
 		}
 	}
@@ -213,16 +214,16 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	protected void onUpdate(EventList<AbstractTrafficEvent<D>> simulationEventList) {
+	protected void onUpdate(EventList<TrafficEvent> simulationEventList) {
 		if(serverList.size()>1) {
 			updateAsynchronous(simulationEventList);
 		}
 		serverList.get(0).update(simulationEventList);
 	}
 	
-	private void updateAsynchronous(EventList<AbstractTrafficEvent<D>> simulationEventList) {
-		List<AbstractTrafficEvent<D>> eventList = new ArrayList<>(16);
-		for (AbstractTrafficEvent<D> e : simulationEventList.getEventList()) {
+	private void updateAsynchronous(EventList<TrafficEvent> simulationEventList) {
+		List<TrafficEvent> eventList = new ArrayList<>(16);
+		for (TrafficEvent e : simulationEventList.getEventList()) {
 			if (!e.getType().equals(TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT)) {
 				log.info(String.format(
 						"Received event (%s) will be splitted into multiple events to distribute the load equally",
@@ -233,10 +234,10 @@ public class DefaultTrafficController<
 			}
 		}
 
-		final EventList<AbstractTrafficEvent<D>> newList = new EventList<>(eventList, simulationEventList.getTimestamp(),
+		final EventList<TrafficEvent> newList = new EventList<>(eventList, simulationEventList.getTimestamp(),
 				simulationEventList.getId());
 
-		for (final DefaultTrafficServer<D> server : serverList) {
+		for (final TrafficServer<TrafficEvent> server : serverList) {
 			asyncHandler.addDelegateFunction(new Function() {
 				@Override
 				public void delegate() {
@@ -265,8 +266,8 @@ public class DefaultTrafficController<
 	 * @param e
 	 * @return
 	 */
-	private List<AbstractTrafficEvent<D>> divideEvent(AbstractTrafficEvent<D> e) {
-		List<AbstractTrafficEvent<D>> eventList = new ArrayList<>(16);
+	private List<TrafficEvent> divideEvent(TrafficEvent e) {
+		List<TrafficEvent> eventList = new ArrayList<>(16);
 		if (e.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
 			CreateVehiclesEvent<?> originalEvent = (CreateVehiclesEvent) e;
 
@@ -297,7 +298,7 @@ public class DefaultTrafficController<
 					}
 				}
 			}
-			eventList.addAll(eventForEachServer);
+			eventList.addAll(Arrays.asList(eventForEachServer));
 		} else if (e.getType().equals(TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
 			CreateRandomVehiclesEvent<?> originalEvent = (CreateRandomVehiclesEvent) e;
 
@@ -319,7 +320,7 @@ public class DefaultTrafficController<
 
 				log.info(String.format("Creating new event from original [%s - %s)", a, b));
 
-				AbstractTrafficEvent<D> newEvent = new CreateRandomVehiclesEvent<>(serverList.get(i), System.currentTimeMillis(), 0, 
+				TrafficEvent newEvent = new CreateRandomVehiclesEvent<>(serverList.get(i), System.currentTimeMillis(), 0, 
 						new ArrayList<>( originalEvent.getCreateRandomVehicleDataList().subList(a, b)));
 				eventList.add(newEvent);
 			}
@@ -361,9 +362,9 @@ public class DefaultTrafficController<
 	 *            server configurations
 	 * @return List with traffic servers
 	 */
-	private List<DefaultTrafficServer<D>> getTrafficServer(ServerConfiguration serverConfig) {
-		final List<DefaultTrafficServer<D>> serverList0 = new ArrayList<>(16);
-		serverConfigReader.read(serverConfig, new ServiceHandler<DefaultTrafficServer<D>>() {
+	private List<TrafficServerLocal<TrafficEvent>> getTrafficServer(ServerConfiguration serverConfig) {
+		final List<TrafficServerLocal<TrafficEvent>> serverList0 = new ArrayList<>(16);
+		serverConfigReader.read(serverConfig, new ServiceHandler<TrafficServerLocal<TrafficEvent>>() {
 
 			@Override
 			public String getName() {
@@ -371,7 +372,7 @@ public class DefaultTrafficController<
 			}
 
 			@Override
-			public void handle(String server, DefaultTrafficServer<D> service) {
+			public void handle(String server, TrafficServerLocal<TrafficEvent> service) {
 				log.info(String.format("Using %s on server %s", getName(), server));
 				serverList0.add(service);
 			}

@@ -16,143 +16,135 @@
  
 package de.pgalise.simulation.shared.city;
 
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.LanduseTagEnum;
+import de.pgalise.simulation.shared.city.WayTagEnum;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
+import org.jgrapht.DirectedGraph;
 
 /**
- * A way consist of several instance of {@link Node}. Ways can be streets, oneway streets, highways, landuse, railways, cycleways or buildings.
- * Some ways have a max speed limit.
+ * A way is logical union of {@link NavigationEdge}s, i.e. a highway with a number. Information about oneway limilations or speed limits are encapsulated in {@link NavigationEdge} because these constraints might not apply to the entire way as definded above.
+ * @param <E> 
+ * @param <N> 
  * @author Timo
  */
-public class Way implements Serializable {
+public class Way<E extends NavigationEdge<N,E>, N extends NavigationNode> implements Serializable {
 	private static final long serialVersionUID = 2942128399393060939L;
-	private int maxSpeed;
-	private List<Node> nodeList;
-	private boolean oneWay, building;
-	private String streetname, highway, landuse, railway, cycleway;
-	private Map<String, String> buildingTypeMap;
-
+	private List<E> edgeList;
+	private String streetName;
+	private Set<WayTagEnum> tags;
+	private Set<LanduseTagEnum> landuseTags;
+	
 	/**
 	 * Default
 	 */
-	public Way() {}
+	protected Way() {}
 	
 	/**
 	 * Constructor
-	 * @param maxSpeed
-	 * 			max speed limit for the street
-	 * @param nodeList
-	 * 			all node of the street
-	 * @param oneWay
-	 * 			is it a one way street
-	 * @param building
-	 * 			is it a building
-	 * @param streetname
-	 * 			a street name (if there is any)
-	 * @param highway
-	 * 			a highway name (if there is any)
-	 * @param landuse
-	 * 			a landuse tag (if there is any)
-	 * @param railway
-	 * 			a railway tag (if there is any)
-	 * @param buildingTypeMap
-	 * 			all possible information about this build (if there are any information)
-	 * @param cycleway
-	 * 			a cycle way tag (if there is any)
+	 * @param edgeList 
+	 * @param streetname 
+	 * @param tags 
 	 */
-	public Way(int maxSpeed, List<Node> nodeList, boolean oneWay,
-			boolean building, String streetname, String highway,
-			String landuse, String railway, Map<String, String> buildingTypeMap, String cycleway) {
-		this.maxSpeed = maxSpeed;
-		this.nodeList = nodeList;
-		this.oneWay = oneWay;
-		this.building = building;
-		this.streetname = streetname;
-		this.highway = highway;
-		this.landuse = landuse;
-		this.railway = railway;
-		this.buildingTypeMap = buildingTypeMap;
-		this.cycleway = cycleway;
+	public Way(List<E> edgeList, String streetname, Set<WayTagEnum> tags) {
+		this(edgeList,
+			streetname);
+		this.tags = tags;
+		this.landuseTags = new HashSet<>();
 	}
 
-	public String getHighway() {
-		return this.highway;
+	public Way(
+		List<E> edgeList,
+		String streetname) {
+		this.edgeList = edgeList;
+		this.streetName = streetname;
+		this.tags = new HashSet<>();
+		this.landuseTags = new HashSet<>();
 	}
 
-	public String getLanduse() {
-		return this.landuse;
+	public Way(
+		List<E> edgeList,
+		String streetname,
+		Set<WayTagEnum> tags,
+		Set<LanduseTagEnum> landuseTags) {
+		this(edgeList,
+			streetname,
+			tags);
+		this.landuseTags = landuseTags;
 	}
 
-	public int getMaxSpeed() {
-		return this.maxSpeed;
+	public Collection<WayTagEnum> getTags() {
+		return tags;
 	}
 
-	public List<Node> getNodeList() {
-		return this.nodeList;
+	public void setLanduseTags(
+		Set<LanduseTagEnum> landuseTags) {
+		this.landuseTags = landuseTags;
 	}
 
-	public String getStreetname() {
-		return this.streetname;
+	public Set<LanduseTagEnum> getLanduseTags() {
+		return landuseTags;
 	}
 
-	public boolean isOneWay() {
-		return this.oneWay;
+	public void setTags(Set<WayTagEnum> tags) {
+		this.tags = tags;
 	}
 
-	public void setHighway(String highway) {
-		this.highway = highway;
+	public List<E> getEdgeList() {
+		return edgeList;
 	}
 
-	public void setLanduse(String landuse) {
-		this.landuse = landuse;
+	public void setEdgeList(List<E> edgeList) {
+		this.edgeList = edgeList;
 	}
 
-	public void setMaxSpeed(int maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	public String getStreetName() {
+		return this.streetName;
 	}
 
-	public void setNodeList(List<Node> nodeList) {
-		this.nodeList = nodeList;
+	public void setStreetName(String streetname) {
+		this.streetName = streetname;
 	}
-
-	public void setOneWay(boolean oneWay) {
-		this.oneWay = oneWay;
+	
+	/**
+	 * retrieves the nodes of the way for the edge list. Usage is discouraged 
+	 * due to low performance and unnecessary copy (all information that can be retrieved from the node list might as well be retrieved from the edge list)
+	 * @return 
+	 */
+	public List<N> getNodeList() {
+		List<N> retValue = new LinkedList<>();
+		retValue.add(edgeList.get(0).getSource());
+		for(NavigationEdge<N,E> edge : edgeList) {
+			retValue.add(edge.getTarget());
+		}
+		return retValue;
 	}
-
-	public void setStreetname(String streetname) {
-		this.streetname = streetname;
+	
+	public void setEdgeList(List<N> nodes, DirectedGraph<N,E> graph) {
+		List<E> edgeList0 = new LinkedList<>();
+		Iterator<N> it = nodes.iterator();
+		N last = it.next();
+		while(it.hasNext()) {
+			N current = it.next();
+			E edge = graph.getEdge(last,
+				current);
+			if(edge != null) {
+				edgeList0.add(edge);
+			}
+		}
+		this.edgeList = edgeList0;
 	}
-
-	public String getRailway() {
-		return railway;
-	}
-
-	public void setRailway(String railway) {
-		this.railway = railway;
-	}
-
-	public boolean isBuilding() {
-		return building;
-	}
-
-	public void setBuilding(boolean building) {
-		this.building = building;
-	}
-
-	public Map<String, String> getBuildingTypeMap() {
-		return buildingTypeMap;
-	}
-
-	public void setBuildingTypeMap(Map<String, String> buildingTypeMap) {
-		this.buildingTypeMap = buildingTypeMap;
-	}
-
-	public String getCycleway() {
-		return cycleway;
-	}
-
-	public void setCycleway(String cycleway) {
-		this.cycleway = cycleway;
+	
+	public void setOneWay() {
+		for(E edge : edgeList) {
+			if(!edge.)
+		}
 	}
 }

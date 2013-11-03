@@ -23,9 +23,20 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 /**
  * Local view of the TrafficController.
  * 
+ * @param <D> 
+ * @param <N> 
+ * @param <E> 
+ * @param <V> 
+ * @param <F> 
  * @author mustafa
  *
  */
-public interface TrafficControllerLocal<E extends TrafficEvent> extends TrafficController<E> {
+public interface TrafficControllerLocal<
+	F extends TrafficEvent<N,E,D,V,F>,
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>
+> extends TrafficController<D,N,E,V,F> {
 	
 }

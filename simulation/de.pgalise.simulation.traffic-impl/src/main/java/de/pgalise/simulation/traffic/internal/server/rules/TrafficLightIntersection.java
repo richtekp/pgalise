@@ -38,6 +38,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * A TrafficlightSetof is a gadjet that controlls a crossing street. It is also a sensor, because it measure its state
  * and sends data.
  * 
+ * @param <D> 
  * @author Marcus
  */
 public class TrafficLightIntersection<D extends VehicleData> extends AbstractTrafficRule<D> {
@@ -83,15 +84,13 @@ public class TrafficLightIntersection<D extends VehicleData> extends AbstractTra
 	/**
 	 * Waiting queue
 	 */
-	private final Map<Edge, Queue<TrafficRuleData>> waiting = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D> , Queue<DefaultTrafficRuleData<D>>> waiting = new HashMap<>();
 
 	/**
 	 * Constructor to create an instance of an {@link TrafficLightIntersection}
 	 * 
-	 * @param output
-	 *            the SensorOutput used by the {@link TrafficLightIntersection} to transmit data
-	 * @param sensorId
-	 *            the unique integer id of the sensor
+	 * @param trafficGraphExtensions 
+	 * @param graph 
 	 * @param node
 	 *            the considered node this TrafficLightSetof is responsible for
 	 * @throws IllegalArgumentException

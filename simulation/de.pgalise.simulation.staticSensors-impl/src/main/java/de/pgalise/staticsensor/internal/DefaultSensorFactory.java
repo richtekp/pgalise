@@ -89,6 +89,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
+import java.util.Set;
 
 /**
  * Default implementation of the SensorFactory.
@@ -139,7 +140,7 @@ public class DefaultSensorFactory implements SensorFactory {
 	}
 
 	@Override
-	public Sensor createSensor(SensorHelper sensorHelper, EnumSet<SensorType> allowedTypes)
+	public Sensor<?> createSensor(SensorHelper<?> sensorHelper, Set<SensorType> allowedTypes)
 			throws InterruptedException, ExecutionException {
 		if (!allowedTypes.contains(sensorHelper.getSensorType())) {
 			// log.warn("Sensor not created, because the caller is not responsible for this type of sensors");
@@ -149,10 +150,9 @@ public class DefaultSensorFactory implements SensorFactory {
 		if (sensorHelper.getPosition() != null) {
 			position = sensorHelper.getPosition();
 		}
-		switch (sensorHelper.getSensorType()) {
-			case PHOTOVOLTAIK:
+		if (sensorHelper.getSensorType().equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
 				if (sensorHelper instanceof SensorHelperPhotovoltaik) {
-					return new PhotovoltaikSensor(this.sensorOutput, sensorHelper.getSensorID(), position,
+					return new PhotovoltaikSensor(this.sensorOutput, position,
 							this.weatherCtrl, this.energyCtrl, this.rss,
 							((SensorHelperPhotovoltaik) sensorHelper).getArea(), sensorHelper.getUpdateSteps(),
 							this.createEnergyInterferer(sensorHelper.getSensorInterfererType()));
@@ -160,10 +160,10 @@ public class DefaultSensorFactory implements SensorFactory {
 					throw new RuntimeException("Photovoltaik sensorhelper is not of type SensorHelperPhotovoltaik");
 				}
 
-			case WINDPOWERSENSOR:
+			 } else if(sensorHelper.getSensorType().equals(EnergySensorTypeEnum.WINDPOWERSENSOR)) {
 				if (sensorHelper instanceof SensorHelperWindPower) {
 					SensorHelperWindPower sensorHelperWindPower = (SensorHelperWindPower) sensorHelper;
-					return new WindPowerSensor(this.sensorOutput, sensorHelper.getSensorID(), position,
+					return new WindPowerSensor(this.sensorOutput, position,
 							this.weatherCtrl, this.energyCtrl, this.rss, sensorHelperWindPower.getRotorLength(),
 							sensorHelperWindPower.getActivityValue(), sensorHelper.getUpdateSteps(),
 							this.createEnergyInterferer(sensorHelper.getSensorInterfererType()));
@@ -171,41 +171,41 @@ public class DefaultSensorFactory implements SensorFactory {
 					throw new RuntimeException("Windpower sensorhelper is not of type SensorHelperWindPower.");
 				}
 
-			case THERMOMETER:
-				return new Thermometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.THERMOMETER)) {
+				return new Thermometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case WINDFLAG:
-				return new WindFlagSensor(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.WINDFLAG)) {
+				return new WindFlagSensor(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case BAROMETER:
-				return new Barometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.BAROMETER)) {
+				return new Barometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case HYGROMETER:
-				return new Hygrometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.HYGROMETER)) {
+				return new Hygrometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case PYRANOMETER:
-				return new Pyranometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.PYRANOMETER)) {
+				return new Pyranometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case RAIN:
-				return new RainSensor(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.RAIN)) {
+				return new RainSensor(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case ANEMOMETER:
-				return new Anemometer(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.ANEMOMETER)) {
+				return new Anemometer(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case LUXMETER:
-				return new Luxmeter(this.sensorOutput, sensorHelper.getSensorID(), position, this.weatherCtrl,
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.LUXMETER)) {
+				return new Luxmeter(this.sensorOutput, position, this.weatherCtrl,
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
-			case SMARTMETER:
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.SMARTMETER)) {
 				if (sensorHelper instanceof SensorHelperSmartMeter) {
-					return new SmartMeterSensor(this.sensorOutput, sensorHelper.getSensorID(), position,
+					return new SmartMeterSensor(this.sensorOutput, position,
 							this.weatherCtrl, this.energyCtrl, this.rss,
 							((SensorHelperSmartMeter) sensorHelper).getMeasureRadiusInMeter(),
 							sensorHelper.getUpdateSteps(), this.createEnergyInterferer(sensorHelper
@@ -213,10 +213,10 @@ public class DefaultSensorFactory implements SensorFactory {
 				} else {
 					throw new RuntimeException("SmartMeter sensorhelper is not of type SmartMeterSensorHelper");
 				}
-			case TRAFFIC_LIGHT_INTERSECTION:
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
 				// Can't be returned here, because of missing dependencies
 				return null;
-			case INFRARED: // Infrared
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.INFRARED)) { // Infrared
 				InfraredInterferer infraredInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
 					List<InfraredInterferer> infraredInterferers = new ArrayList<>();
@@ -235,11 +235,11 @@ public class DefaultSensorFactory implements SensorFactory {
 					infraredInterferer = new InfraredNoInterferer();
 				}
 
-				return new InfraredSensor(this.sensorOutput, sensorHelper.getSensorID(), null,
+				return new InfraredSensor(this.sensorOutput, null,
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						infraredInterferer);
 
-			case INDUCTIONLOOP: // Inductionloop
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.INDUCTIONLOOP)) { // Inductionloop
 
 				InductionLoopInterferer inductionLoopInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
@@ -258,11 +258,11 @@ public class DefaultSensorFactory implements SensorFactory {
 					inductionLoopInterferer = new InductionLoopNoInterferer();
 				}
 
-				return new InductionLoopSensor(this.sensorOutput, sensorHelper.getSensorID(),
+				return new InductionLoopSensor(this.sensorOutput, 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						inductionLoopInterferer);
 
-			case TOPORADAR: // Toporadar
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.TOPORADAR)) { // Toporadar
 
 				TopoRadarInterferer toporadarInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
@@ -282,15 +282,19 @@ public class DefaultSensorFactory implements SensorFactory {
 					toporadarInterferer = new TopoRadarNoInterferer();
 				}
 
-				return new TopoRadarSensor(this.sensorOutput, sensorHelper.getSensorID(),
+				return new TopoRadarSensor(this.sensorOutput, 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						toporadarInterferer);
 
-			case GPS_BIKE: // GPS
-			case GPS_BUS:
-			case GPS_CAR:
-			case GPS_TRUCK:
-			case GPS_MOTORCYCLE:
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_BIKE)) {
+				 throw new UnsupportedOperationException();// GPS
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_BUS)) {
+				 throw new UnsupportedOperationException();
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_CAR)) {
+				 throw new UnsupportedOperationException();
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_TRUCK)) {
+				 throw new UnsupportedOperationException();
+			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_MOTORCYCLE)) {
 
 				GpsInterferer gpsInterferer;
 				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
@@ -321,9 +325,9 @@ public class DefaultSensorFactory implements SensorFactory {
 					gpsInterferer = new GpsNoInterferer();
 				}
 
-				return new GpsSensor(this.sensorOutput, sensorHelper.getSensorID(), null,
+				return new GpsSensor(this.sensorOutput, null,
 						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), new Coordinate(0, 0), gpsInterferer);
-			default:
+			 }else {
 				throw new NoValidControllerForSensorException(String.format("%s is not a known SensorType!",
 						sensorHelper.getSensorType().toString()));
 		}
@@ -366,37 +370,36 @@ public class DefaultSensorFactory implements SensorFactory {
 	 * im Traffic.internal package. Muss Marcus ordentlicher machen
 	 */
 	private SensorInterferer createSensorInterferer(SensorInterfererType sensorInterfererType) {
-		switch (sensorInterfererType) {
-			case ANEMOMETER_WHITE_NOISE_INTERFERER:
-				return new AnemometerWhiteNoiseInterferer(this.rss);
-			case BAROMETER_WHITE_NOISE_INTERFERER:
-				return new BarometerWhiteNoiseInterferer(this.rss);
-			case HYGROMETER_WHITE_NOISE_INTERFERER:
-				return new HygrometerWhiteNoiseInterferer(this.rss);
-				// case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
-				// return new InductionLoopWhiteNoiseInterferer(this.rss);
-				// case INFRARED_WHITE_NOISE_INTERFERER:
-				// return new InfraredWhiteNoiseInterferer(this.rss);
-			case LUXMETER_WHITE_NOISE_INTERFERER:
-				return new LuxmeterWhiteNoiseInterferer(this.rss);
-			case PHOTOVOLTAIK_WHITE_NOISE_INTERFERER:
-				return new PhotovoltaikWhiteNoiseInterferer(this.rss);
-			case PYRANOMETER_WHITE_NOISE_INTERFERER:
-				return new PyranometerWhiteNoiseInterferer(this.rss);
-			case RAINSENSOR_WHITE_NOISE_INTERFERER:
-				return new RainsensorWhiteNoiseInterferer(this.rss);
-			case SMART_METER_WHITE_NOISE_INTERFERER:
-				return new SmartMeterWhiteNoiseInterferer(this.rss);
-			case THERMOMETER_WHITE_NOISE_INTERFERER:
-				return new ThermometerWhiteNoiseInterferer(this.rss);
-			case WIND_FLAG_WHITE_NOISE_INTERFERER:
-				return new WindFlagWhiteNoiseInterferer(this.rss);
-			case WIND_POWER_WHITE_NOISE_INTERFERER:
-				return new WindPowerWhiteNoiseInterferer(this.rss);
-			default:
-				break;
+		if(sensorInterfererType.equals(SensorInterfererType.ANEMOMETER_WHITE_NOISE_INTERFERER)) {
+		 return new AnemometerWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.BAROMETER_WHITE_NOISE_INTERFERER)) {
+		 return new BarometerWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.HYGROMETER_WHITE_NOISE_INTERFERER)) {
+		 return new HygrometerWhiteNoiseInterferer(this.rss);
+		 // case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
+		 // return new InductionLoopWhiteNoiseInterferer(this.rss);
+		 // case INFRARED_WHITE_NOISE_INTERFERER:
+		 // return new InfraredWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.LUXMETER_WHITE_NOISE_INTERFERER)) {
+		 return new LuxmeterWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.PHOTOVOLTAIK_WHITE_NOISE_INTERFERER)) {
+		 return new PhotovoltaikWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.PYRANOMETER_WHITE_NOISE_INTERFERER)) {
+		 return new PyranometerWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.RAINSENSOR_WHITE_NOISE_INTERFERER)) {
+		 return new RainsensorWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.SMART_METER_WHITE_NOISE_INTERFERER)) {
+		 return new SmartMeterWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.THERMOMETER_WHITE_NOISE_INTERFERER)) {
+		 return new ThermometerWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.WIND_FLAG_WHITE_NOISE_INTERFERER)) {
+		 return new WindFlagWhiteNoiseInterferer(this.rss);
+		} else if(sensorInterfererType.equals(SensorInterfererType.WIND_POWER_WHITE_NOISE_INTERFERER)) {
+		 return new WindPowerWhiteNoiseInterferer(this.rss);
+		}else {
+			throw new RuntimeException();
 		}
-		throw new RuntimeException();
+		
 	}
 
 	@Override

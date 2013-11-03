@@ -240,6 +240,7 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 		this.interval = interval;
 	}
 
+	@Override
 	public City getCity() {
 		return city;
 	}

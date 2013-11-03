@@ -39,11 +39,11 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * @author Lena
  * @version 1.0 (Oct 23, 2012)
  */
-public interface TrafficSensorController extends SensorManagerController<TrafficEvent> {
+public interface TrafficSensorController<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D,N,E,V>, F extends TrafficEvent<N,E,D,V,F>> extends SensorManagerController<F, InfrastructureStartParameter, InfrastructureInitParameter> {
 	
-	public void onSchedule(Vehicle<? extends VehicleData> v);
+	public void onSchedule(V v);
 
-	public void onUpdate(Vehicle<? extends VehicleData> vehicle, EventList<TrafficEvent> eventList);
+	public void onUpdate(V vehicle, EventList<F> eventList);
 
-	public void onRemove(Vehicle<? extends VehicleData> vehicle);
+	public void onRemove(V vehicle);
 }

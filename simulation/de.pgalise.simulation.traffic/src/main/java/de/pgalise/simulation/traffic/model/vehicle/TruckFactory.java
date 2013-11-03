@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
  * @author Andreas
  * @version 1.0
  */
-public interface TruckFactory {
+public interface TruckFactory<N extends TrafficNode<N,E,TruckData,V>, E extends TrafficEdge<N,E, TruckData,V>, V extends Vehicle<TruckData, N,E,V>> {
 
 	/**
 	 * Method to create a {@link Truck} with the given typeId.
@@ -52,5 +52,5 @@ public interface TruckFactory {
 	 *            ID of the {@link Truck}
 	 * @return created {@link Truck}
 	 */
-	public Vehicle<TruckData> createRandomTruck( SensorHelper gpsSensor);
+	public V createRandomTruck( SensorHelper gpsSensor);
 }

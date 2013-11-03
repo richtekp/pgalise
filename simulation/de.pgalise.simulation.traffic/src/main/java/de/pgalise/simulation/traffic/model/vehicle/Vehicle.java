@@ -93,7 +93,7 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param path
 	 *            the path to set
 	 */
-	public void setPath(Path path);
+	public void setPath(List<E> path);
 
 	/**
 	 * @return the position

@@ -25,9 +25,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -70,17 +67,17 @@ public class Roundabout extends TrafficRule {
 	/**
 	 * maps all the milliseconds for passing the roundabout from each {@link Edge} to each {@link Edge}
 	 */
-	private final Map<Edge, Map<Edge, Integer>> edgeToEdgeTimes = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D> , Map<DefaultTrafficEdge<D> , Integer>> edgeToEdgeTimes = new HashMap<>();
 
 	/**
 	 * collects {@link Edge}s where {@link Vehicle}s that have to wait.
 	 */
-	private final Map<Edge, Queue<TrafficRuleData>> vehiclesWaiting = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D> , Queue<DefaultTrafficRuleData<D>>> vehiclesWaiting = new HashMap<>();
 
 	/**
 	 * collects {@link Vehicle}s that are currently in the {@link Roundabout}
 	 */
-	private final Map<TrafficRuleData, Integer> vehiclesInRoundabout = new HashMap<>();
+	private final Map<DefaultTrafficRuleData<D>, Integer> vehiclesInRoundabout = new HashMap<>();
 
 	/**
 	 * Creates a {@link Roundabout} for the passed {@link Node}.
@@ -102,8 +99,8 @@ public class Roundabout extends TrafficRule {
 	 *             if argument 'node' is null or has no edge <br>
 	 *             if argument 'simulationTime' is a negative number
 	 */
-	public Roundabout(final Node node, final RandomSeedService randomSeedService,
-			final TrafficGraphExtensions trafficGraphExtensions, final int millisPerRound,
+	public Roundabout(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph, final RandomSeedService randomSeedService,
+			final TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> trafficGraphExtensions, final int millisPerRound,
 			final int maxNumberOfVehicles, final long simulationTime) throws IllegalArgumentException {
 		super(node, graph);
 		if (randomSeedService == null) {
@@ -141,16 +138,18 @@ public class Roundabout extends TrafficRule {
 	 * 
 	 * @param node
 	 *            the {@link Node} on which the {@link Roundabout} will be applied
+	 * @param graph 
 	 * @param randomSeedService
 	 *            the {@link RandomSeedService} for generating replicable random numbers
+	 * @param trafficGraphExtensions 
 	 * @param simulationTime
 	 *            the current time of the simulation
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is null or has no edge <br>
 	 *             if argument 'simulationTime' is a negative number
 	 */
-	public Roundabout(final Node node, final RandomSeedService randomSeedService,
-			final TrafficGraphExtensions trafficGraphExtensions, final long simulationTime)
+	public Roundabout(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph, final RandomSeedService randomSeedService,
+			final TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> trafficGraphExtensions, final long simulationTime)
 			throws IllegalArgumentException {
 		this(node, graph, randomSeedService, trafficGraphExtensions, 40000, 5, simulationTime);
 	}
@@ -167,9 +166,9 @@ public class Roundabout extends TrafficRule {
 	 * Calculated values will be written to 'edgeToEdgeTimes' map.
 	 */
 	private void calculateTimes() {
-		for (final TrafficEdge  from : getGraph().edgesOf(this.getNode())) {
-			final HashMap<TrafficEdge , Integer> map = new HashMap<>();
-			for (final TrafficEdge  to : getGraph().edgesOf(this.getNode())) {
+		for (final DefaultTrafficEdge<D>  from : getGraph().edgesOf(this.getNode())) {
+			final HashMap<DefaultTrafficEdge<D> , Integer> map = new HashMap<>();
+			for (final DefaultTrafficEdge<D>  to : getGraph().edgesOf(this.getNode())) {
 				map.put(to, this.calculateTime(from, to));
 			}
 			this.edgeToEdgeTimes.put(from, map);
@@ -185,9 +184,9 @@ public class Roundabout extends TrafficRule {
 	 *            the target {@link Edge}
 	 * @return the time in milliseconds for getting from {@link Edge} 'from' to {@link Edge} 'to'
 	 */
-	private int calculateTime(final TrafficEdge from, final TrafficEdge to) {
-		final Node nodeFrom = from.getSource() != this.getNode() ? from.getSource() : from.getTarget();
-		final Node nodeTo = to.getSource() != this.getNode() ? to.getSource() : to.getTarget();
+	private int calculateTime(final DefaultTrafficEdge<D>  from, final DefaultTrafficEdge<D>  to) {
+		final DefaultTrafficNode<D> nodeFrom = from.getSource()!= this.getNode() ? from.getSource(): from.getTarget();
+		final DefaultTrafficNode<D> nodeTo = to.getSource() != this.getNode() ? to.getSource() : to.getTarget();
 
 		double angle = (this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom).angle(
 				this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo)) * 180D)

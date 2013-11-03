@@ -135,11 +135,10 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 @Singleton(name = "de.pgalise.simulation.traffic.server.TrafficServer")
 @Local(TrafficServerLocal.class)
 @Remote(TrafficServer.class)
-public class DefaultTrafficServer<D extends VehicleData> extends AbstractController<AbstractVehicleEvent<D>, StartParameter, InfrastructureInitParameter> implements 
-	TrafficServerLocal<AbstractVehicleEvent<D>, DefaultTrafficNode<D>, DefaultTrafficEdge<D>,D, BaseVehicle<D>>, 
-	ScheduleHandler<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, BaseVehicle<D>, ScheduleItem<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, BaseVehicle<D>>>, 
-	VehicleEventHandler<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, AbstractVehicleEvent<D>, BaseVehicle<D>> {
-	private static final long serialVersionUID = 1L;
+public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> implements 
+	TrafficServerLocal<VehicleEvent<?>>, 
+	ScheduleHandler, 
+	VehicleEventHandler<VehicleEvent<?>> {
 
 	@Override
 	public DefaultTrafficServer<D> getResponsibleServer() {
@@ -152,12 +151,12 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 	}
 
 	@Override
-	public void handleEvent(AbstractVehicleEvent<D> event) {
+	public void handleEvent(VehicleEvent<?> event) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public void init(DefaultTrafficServer<D> server) {
+	public void init(TrafficServerLocal<VehicleEvent<?>> server) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	
@@ -170,12 +169,12 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 	 * @author Mustafa
 	 * @version 1.0 (Feb 17, 2013)
 	 */
-	private static class ReceivedVehicle<X extends DefaultTrafficNode<?>, Y extends DefaultTrafficEdge<?>> implements Comparable<ReceivedVehicle> {
+	private static class ReceivedVehicle implements Comparable<ReceivedVehicle> {
 
 		/**
 		 * Vehicle
 		 */
-		private final BaseVehicle<?> vehicle;
+		private final Vehicle<? extends VehicleData> vehicle;
 
 		private DefaultTrafficServer<?> server;
 
@@ -194,20 +193,14 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 
 		@Override
 		public int compareTo(ReceivedVehicle o) {
-			if (o.serverId > this.serverId) {
-				return -1;
-			} else if (o.serverId < this.serverId) {
-				return 1;
-			} else {
-				return 0;
-			}
+			return server.getId().compareTo(o.getServer().getId());
 		}
 
-		public int getServerId() {
-			return this.serverId;
+		public DefaultTrafficServer getServer() {
+			return this.server;
 		}
 
-		public Vehicle<? extends VehicleData> getVehicle() {
+		public BaseVehicle<?> getVehicle() {
 			return this.vehicle;
 		}
 	}
@@ -415,8 +408,8 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
@@ -565,7 +558,7 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 			this.vehicleEventHandlerManager.handleEvent(
 				new GenericVehicleEvent<>(this, this.currentTime, this.updateIntervall, rv.getVehicle(), VehicleEventTypeEnum.VEHICLE_UPDATE));
 
-			List<Vehicle<? extends VehicleData>> vehicles = this.trafficGraphExtensions.getVehiclesOnNode(rv
+			Set<BaseVehicle<D>> vehicles = this.trafficGraphExtensions.getVehiclesOnNode(rv
 					.getVehicle().getCurrentNode(), rv.getVehicle().getData().getType());
 			if (vehicles.isEmpty()) {
 				if (rv.getVehicle().getPosition().toString().equals(posBeforeUpdate)) {
@@ -574,8 +567,8 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 							+ rv.getVehicle().getCurrentNode().getId());
 				}
 				try {
-					rv.getVehicle().setState(State.NOT_STARTED);
-					ScheduleItem item = new ScheduleItem(rv.getVehicle(), this.currentTime, this.updateIntervall);
+					rv.getVehicle().setVehicleState(VehicleStateEnum.NOT_STARTED);
+					DefaultScheduleItem item = new DefaultScheduleItem(rv.getVehicle(), this.currentTime, this.updateIntervall);
 					log.debug(String.format("Scheduled moved vehicle %s to drive on next update: %s", item.getVehicle()
 							.getName(), item.toString()));
 					// item.setLastUpdate(this.currentTime + this.updateIntervall);
@@ -599,7 +592,7 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 	}
 
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+	public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
 		return this.sensorController.statusOfSensor(sensor);
 	}
 
@@ -671,7 +664,7 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 		this.scheduler = new SchedulerComposite();
 		this.scheduler.addScheduler(VehicleTypeEnum.MOTORIZED_VEHICLES, s);
 		this.scheduler.addScheduler(EnumSet.of(VehicleTypeEnum.BIKE), s2);
-		this.scheduler.changeModus(Modus.WRITE);
+		this.scheduler.changeModus(ScheduleModus.WRITE);
 		try {
 			s.addScheduleHandler(this);
 			s2.addScheduleHandler(this);
@@ -805,7 +798,7 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 	}
 
 	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
+	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
 		try {
 			this.serverList = this.getTrafficServer(param.getServerConfiguration());
 			this.loadSensorDependencies(param);
@@ -893,13 +886,13 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 			this.trafficEventHandlerManager.handleEvent(event);
 		}
 
-		this.scheduler.changeModus(Modus.READ);
+		this.scheduler.changeModus(ScheduleModus.READ);
 		/*
 		 * update vehicles and update handlers
 		 */
 		List<Vehicle<? extends VehicleData>> removeableVehicles = this.updateVehicles(
 				simulationEventList.getTimestamp(), simulationEventList);
-		this.scheduler.changeModus(Modus.WRITE);
+		this.scheduler.changeModus(ScheduleModus.WRITE);
 
 		try {
 			this.getScheduler().removeExpiredItems(removeableVehicles);
@@ -965,7 +958,7 @@ public class DefaultTrafficServer<D extends VehicleData> extends AbstractControl
 			if (roadBarrier.getEnd() <= timestamp) {
 
 				// Add edges to graph
-				for (Edge edge : roadBarrier.getEdges()) {
+				for (E edge : roadBarrier.getEdges()) {
 					this.addEdgeToGraph(edge);
 				}
 

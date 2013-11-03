@@ -109,7 +109,7 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
 					GEOMETRY_FACTORY.createPoint(
 						trip.getStartNode().getGeoLocation()))) {
 				// Create vehicle
-				Vehicle<? extends VehicleData> v = this.createVehicle(data, trip);
+				Vehicle<? extends VehicleData,N,E> v = this.createVehicle(data, trip);
 	
 				// Schedule vehicle
 				this.scheduleVehicle(v, trip.getStartTime());

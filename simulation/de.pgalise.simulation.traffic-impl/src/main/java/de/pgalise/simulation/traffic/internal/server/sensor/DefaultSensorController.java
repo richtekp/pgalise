@@ -51,7 +51,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author Lena
  * @version 1.0
  */
-public class DefaultSensorController extends AbstractController<TrafficEvent> implements TrafficSensorController {
+public class DefaultSensorController<N extends TrafficNode, E extends TrafficEdge<N,E>> extends AbstractController<TrafficEvent, StartParameter, InitParameter> implements TrafficSensorController<N,E> {
 	/**
 	 * Logger
 	 */
@@ -67,7 +67,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	/**
 	 * TrafficServer
 	 */
-	private TrafficServerLocal server;
+	private TrafficServerLocal<?,N,E> server;
 
 	/**
 	 * TrafficSensorFactory which can create different Traffic-Sensors
@@ -84,7 +84,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	 */
 	private final Coordinate mapper;
 
-	public DefaultSensorController(TrafficServerLocal server, SensorRegistry sensorRegistry,
+	public DefaultSensorController(TrafficServerLocal<?,N,E> server, SensorRegistry sensorRegistry,
 			SensorFactory sensorFactory, Coordinate mapper, TrafficGraphExtensions trafficGraphExtensions) {
 		this.server = server;
 		this.sensorRegistry = sensorRegistry;
@@ -132,7 +132,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	public void deleteSensor(SensorHelper sensor) throws SensorException {
 		// Check sensor
 		boolean isRemoved = false;
-		Sensor newSensor = sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor<?> newSensor = sensorRegistry.getSensor(sensor.getSensorID());
 		if (newSensor != null) {
 			if (newSensor instanceof GpsSensor) {
 				((GpsSensor) newSensor).getVehicle().setHasGPS(false);
@@ -186,24 +186,24 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	}
 
 	@Override
-	protected void onUpdate(EventList<TrafficEvent> simulationEventList) {
+	protected void onUpdate(EventList<TrafficEvent<N,E>> simulationEventList) {
 		/* Nothing to do here: */
 	}
 
 	@Override
-	public void onUpdate(Vehicle<? extends VehicleData> vehicle, EventList<TrafficEvent> eventList) {
+	public void onUpdate(Vehicle<? extends VehicleData,N,E> vehicle, EventList<TrafficEvent<N,E>> eventList) {
 	}
 
-	public void prepareUpdate(Vehicle<? extends VehicleData> vehicle) {
+	public void prepareUpdate(Vehicle<? extends VehicleData,N,E> vehicle) {
 		VehicleData data = vehicle.getData();
 
 		// Prepare GPS sensor
 		Sensor<?> sensorId = data.getGpsSensorHelper().getSensorID();
 		Sensor<?> sensor = sensorRegistry.getSensor(sensorId);
 		if (sensor == null) {
-			GpsSensor newSensor;
+			GpsSensor<N,E> newSensor;
 			try {
-				newSensor = (GpsSensor) this.sensorFactory.createSensor(data.getGpsSensorHelper(),
+				newSensor = (GpsSensor<N,E>) this.sensorFactory.createSensor(data.getGpsSensorHelper(),
 						TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
 				newSensor.setVehicle(vehicle);
 				vehicle.getData().setGpsSensor(newSensor);
@@ -226,8 +226,8 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 					try {
 						newSensor = (InfraredSensor) this.sensorFactory.createSensor(busdata.getInfraredSensorHelper(),
 								TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
-						newSensor.setVehicle((Vehicle<? extends BusData>) vehicle);
-						((Vehicle<? extends BusData>) vehicle).getData().setInfraredSensor(newSensor);
+						newSensor.setVehicle((Vehicle<? extends BusData,N,E>) vehicle);
+						((Vehicle<? extends BusData,N,E>) vehicle).getData().setInfraredSensor(newSensor);
 						log.debug("InfraredSensor " + newSensor.getId()+ " registered for vehicle "
 								+ vehicle.getName());
 						sensorRegistry.addSensor(newSensor);
@@ -237,7 +237,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 				} else {
 					// workaround (warum auch immer ist in der registry sonst ein falsches fahrzeug gespeichert)
 					// evtl. sensorregistry beim start clearen?
-					((InfraredSensor) sensor).setVehicle((Vehicle<? extends BusData>) vehicle);
+					((InfraredSensor) sensor).setVehicle((Vehicle<? extends BusData,N,E>) vehicle);
 				}
 
 				// log.debug("sending infrared sensor data for vehicle " + vehicle.getId());
@@ -247,9 +247,9 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	}
 
 	@Override
-	public void onRemove(Vehicle<? extends VehicleData> vehicle) {
+	public void onRemove(Vehicle<? extends VehicleData,N,E> vehicle) {
 		// Check sensor
-		Sensor newSensor = sensorRegistry.getSensor(vehicle.getData().getGpsSensorHelper().getSensorID());
+		Sensor<?> newSensor = sensorRegistry.getSensor(vehicle.getData().getGpsSensorHelper().getSensorID());
 		if (newSensor != null) {
 			vehicle.setHasGPS(false);
 			sensorRegistry.removeSensor(newSensor);
@@ -257,19 +257,19 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	}
 
 	@Override
-	public void onSchedule(Vehicle<? extends VehicleData> vehicle) {
+	public void onSchedule(Vehicle<? extends VehicleData,N,E> vehicle) {
 		prepareUpdate(vehicle);
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
+	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		for (SensorHelper sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
+	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
 		for (SensorHelper sensor : sensors) {
 			this.deleteSensor(sensor);
 		}

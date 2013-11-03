@@ -61,8 +61,8 @@ public abstract class WeatherSensor extends Sensor<WeatherEvent> {
 	 */
 	
 	
-	protected WeatherSensor(Output output, Long sensorId, final Coordinate position, WeatherController weatherController, int updateLimit, final WeatherInterferer weatherInterferer) {
-		super(output, sensorId, position, updateLimit);
+	protected WeatherSensor(Output output, final Coordinate position, WeatherController weatherController, int updateLimit, final WeatherInterferer weatherInterferer) {
+		super(output, position, updateLimit);
 		if (weatherController == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("weathercontroller"));
 		}

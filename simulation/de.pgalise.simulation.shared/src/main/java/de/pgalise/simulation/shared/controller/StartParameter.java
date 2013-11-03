@@ -19,9 +19,7 @@ package de.pgalise.simulation.shared.controller;
 import java.io.Serializable;
 import java.util.List;
 
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
-import de.pgalise.simulation.shared.traffic.BusRoute;
 /**
  * The start parameters will be send to every controller on start.
  * It contains all information needed in the start state.
@@ -30,10 +28,8 @@ import de.pgalise.simulation.shared.traffic.BusRoute;
  */
 public class StartParameter implements Serializable {
 	private static final long serialVersionUID = -292240397372883199L;
-	private City city;
 	private boolean aggregatedWeatherDataEnabled;
 	private List<WeatherEventHelper> weatherEventHelperList;
-	private List<BusRoute> busRouteList;
 	
 	/**
 	 * Default
@@ -47,23 +43,12 @@ public class StartParameter implements Serializable {
 	 * @param weatherEventHelperList
 	 * @param busRouteList
 	 */
-	public StartParameter(City city,
+	public StartParameter(
 			boolean aggregatedWeatherDataEnabled,
-			List<WeatherEventHelper> weatherEventHelperList,
-			List<BusRoute> busRouteList) {
+			List<WeatherEventHelper> weatherEventHelperList) {
 		super();
-		this.city = city;
 		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
 		this.weatherEventHelperList = weatherEventHelperList;
-		this.busRouteList = busRouteList;
-	}
-
-	public City getCity() {
-		return city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
 	}
 
 	public List<WeatherEventHelper> getWeatherEventHelperList() {
@@ -82,12 +67,4 @@ public class StartParameter implements Serializable {
 	public void setAggregatedWeatherDataEnabled(boolean aggregatedWeatherDataEnabled) {
 		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
 	}
-
-	public List<BusRoute> getBusRouteList() {
-		return busRouteList;
-	}
-
-	public void setBusRouteList(List<BusRoute> busRouteList) {
-		this.busRouteList = busRouteList;
-	}
-	}
+}

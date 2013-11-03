@@ -21,9 +21,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
@@ -40,7 +37,7 @@ import java.util.ArrayList;
 
 /**
  * {@link TrafficRule} used for {@link Node}s that have just two edges. Hence a vehicle can pass <br>
- * the TrafficNode immediately
+ * the node immediately
  * 
  * @author Marcus
  */
@@ -53,20 +50,21 @@ public class StraightForwardRule extends TrafficRule {
 	/**
 	 * contains for both {@link Edge}s the {@link Vehicle} that are waiting for getting in
 	 */
-	private final Map<Edge, Queue<TrafficRuleData>> vehiclesWaiting = new HashMap<>();
+	private final Map<DefaultTrafficEdge<D>, Queue<DefaultTrafficRuleData<D>>> vehiclesWaiting = new HashMap<>();
 
 	/**
 	 * Creates a {@link StraightForwardRule} for the passed {@link Node}.
 	 * 
 	 * @param node
 	 *            the {@link Node} on which the {@link StraightForwardRule} will be applied
+	 * @param graph 
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is null
 	 * @throws IllegalStateException
 	 *             if argument 'node' hasn't exactly two edges
 	 */
-	public StraightForwardRule(final TrafficNode node) throws IllegalArgumentException, IllegalStateException {
-		super(node);
+	public StraightForwardRule(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph) throws IllegalArgumentException, IllegalStateException {
+		super(node, graph);
 		this.vehiclesInNode.put(this.getEdge1(), null);
 		this.vehiclesInNode.put(this.getEdge2(), null);
 
@@ -99,7 +97,6 @@ public class StraightForwardRule extends TrafficRule {
 	 *             if argument 'from' references the same {@link Edge} as argument 'to' or if {@link Edge} 'from' or
 	 *             {@link Edge} 'to' aren't linked with this {@link StraightForwardRule}'s {@link Node}
 	 */
-	@SuppressWarnings({ "unchecked", "unused", "rawtypes" })
 	@Override
 	public void register(final Vehicle vehicle, final TrafficEdge from, final TrafficEdge to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, UnsupportedOperationException {
@@ -169,8 +166,8 @@ public class StraightForwardRule extends TrafficRule {
 	 * 
 	 * @return the first {@link Edge} of the {@link Node} on which the {@link StraightForwardRule} is applied
 	 */
-	private TrafficEdge getEdge1() {
-		return this.getNode().getEdge(0);
+	private DefaultTrafficEdge<D> getEdge1() {
+		return new ArrayList<>(getGraph().edgesOf(getNode())).get(0);
 	}
 
 	/**

@@ -73,10 +73,10 @@ public abstract class EnergySensor extends Sensor<EnergyEvent> {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	protected EnergySensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	protected EnergySensor(Output output, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, int updateLimit,
 			EnergyInterferer interferer) {
-		super(output, sensorId, position, updateLimit);
+		super(output, position, updateLimit);
 		if (weatherController == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("weather"));
 		}

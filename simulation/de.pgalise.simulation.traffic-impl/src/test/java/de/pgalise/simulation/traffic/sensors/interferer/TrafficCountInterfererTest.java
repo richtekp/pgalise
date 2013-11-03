@@ -69,7 +69,7 @@ public class TrafficCountInterfererTest {
 	/**
 	 * Test vehicle
 	 */
-	public static Vehicle<? extends VehicleData> testVehicle;
+	public static Vehicle<? extends VehicleData,N,E> testVehicle;
 
 	/**
 	 * Path to the XML file

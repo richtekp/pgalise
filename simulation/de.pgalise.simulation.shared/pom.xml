@@ -18,10 +18,6 @@
 	
     <!-- Hier die Abh??ngigkeiten definieren -->
     <dependencies>
-        <dependency>
-            <groupId>org.graphstream</groupId>
-            <artifactId>gs-core</artifactId>
-        </dependency>
 <!--        <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>javax.persistence</artifactId>

@@ -45,6 +45,7 @@ import java.util.List;
  * In addition all vehicles which were created by an attraction event will be prepared for its way back.
  * 
  * 
+ * @param <D> 
  * @author marcus
  * @author Lena
  */
@@ -57,15 +58,15 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 
 	@Override
 	public void handleEvent(VehicleEvent<D> event) {
-		for (final Sensor sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
+		for (final Sensor<?> sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
 			if (sensor instanceof StaticTrafficSensor) {
 				((StaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());
 			}
 		}
 
 		if (event.getVehicle().getData() instanceof BusData) {
-			Node n = ((BusData) event.getVehicle().getData()).getBusStops().get(
-					event.getVehicle().getCurrentNode().getId());
+			NavigationNode n = ((BusData) event.getVehicle().getData()).getBusStops().get(
+					event.getVehicle().getCurrentNode());
 			// only at busstops the amount of passengers can change
 			if (n != null) {
 				Random random = new Random(event.getServiceDictionary().getRandomSeedService()
@@ -128,7 +129,7 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 	private void scheduleVehicle(Vehicle<D> vehicle, long startTime, VehicleEvent<D> event) {
 		if (vehicle != null) {
 			// try {
-			ScheduleItem item = new ScheduleItem(vehicle, startTime, event.getResponsibleServer().getUpdateIntervall());
+			DefaultScheduleItem item = new DefaultScheduleItem(vehicle, startTime, event.getResponsibleServer().getUpdateIntervall());
 			event.getResponsibleServer().getItemsToScheduleAfterAttractionReached().add(item);
 			// event.getResponsibleServer().getScheduler().scheduleItem(item);
 			// } catch (IllegalAccessException e1) {

@@ -76,7 +76,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 					false);
 
 			// Create vehicle
-			Vehicle<? extends VehicleData> v = this.createVehicle(data, trip);
+			BaseVehicle<D> v = this.createVehicle(data, trip);
 
 			if (v == null) {
 				continue;

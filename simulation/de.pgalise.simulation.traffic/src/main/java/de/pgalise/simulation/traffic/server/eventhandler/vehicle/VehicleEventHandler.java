@@ -16,17 +16,31 @@
  
 package de.pgalise.simulation.traffic.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 
 /**
  * Handler for the events being fired during the update of a specific vehicle.
 
+* @param <D> 
+* @param <N> 
 * @param <E> 
+* @param <F> 
+* @param <V> 
 * @see VehicleEventType
  * @see VehicleEvent
  * @author mustafa
  *
  */
-public interface VehicleEventHandler<E extends VehicleEvent<?>> extends TrafficEventHandler<E> {
+public interface VehicleEventHandler<
+	D extends VehicleData, 
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	F extends VehicleEvent<D,N,E,V,F>, 
+	V extends Vehicle<D,N,E,V>
+> extends TrafficEventHandler<F,N,E,D,V> {
 	
 }

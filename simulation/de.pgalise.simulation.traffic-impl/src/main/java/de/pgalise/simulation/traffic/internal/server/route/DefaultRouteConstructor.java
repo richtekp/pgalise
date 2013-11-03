@@ -81,7 +81,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	private final long time;
 	private final CityInfrastructureData trafficInformation;
 
-	private TrafficGraphExtensions trafficGraphExtensions;
+	private DefaultTrafficGraphExtensions trafficGraphExtensions;
 	private List<BusStop<?>> busStops;
 
 	private Map<TrafficServer<?>, List<NavigationNode>> startHomeNodesForServer = new HashMap<>();
@@ -99,7 +99,6 @@ public class DefaultRouteConstructor implements RouteConstructor {
 		private Foo(final boolean inUse, DefaultTrafficGraph<?> graph) {
 			this.inUse = inUse;
 			this.graph = graph;
-			this.dijkstra = dijkstra;
 		}
 	}
 
@@ -128,7 +127,6 @@ public class DefaultRouteConstructor implements RouteConstructor {
 			map.add(new Foo(false, null, null));
 		}
 
-		carNavigator = new Dijkstra(Element.NODE, "weight", null);
 		this.init();
 	}
 
@@ -184,7 +182,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	}
 
 	@Override
-	public TrafficTrip createTrip(int serverId, Geometry cityZone, VehicleTypeEnum vehicleType) {
+	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, VehicleTypeEnum vehicleType) {
 		if (cityZone == null) {// for tests (if there is just 1 server and cityzone is undefined)
 			return this.gen.createVehicleTrip(getAllHomeNodes(), getAllWorkNodes(), vehicleType, null, -1);
 		} else {

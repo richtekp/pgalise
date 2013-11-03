@@ -359,7 +359,7 @@ public class NonJTADatabaseManager implements EntityDatabaseManager {
 	 * @param serviceData
 	 *            Current service weather data
 	 */
-	private void saveCurrentWeather(City city, MyExtendedServiceDataCurrent serviceData) {
+	private void saveCurrentWeather(DefaultCity city, MyExtendedServiceDataCurrent serviceData) {
 		if ((serviceData == null) || (serviceData.getMeasureDate() == null)) {
 			throw new IllegalArgumentException("serviceData");
 		}

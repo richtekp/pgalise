@@ -104,7 +104,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 	private ServiceDictionary serviceDictionary;
 
 	@EJB
-	private ServerConfigurationReader<Controller<?>> serverConfigReader;
+	private ServerConfigurationReader<Controller<?,?,?>> serverConfigReader;
 	
 	@EJB
 	private ConfigReader configReader;
@@ -114,7 +114,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 	 */
 	private StartParameter startParameter;
 	
-	private List<Controller<?>> frontControllerList;
+	private List<Controller<?,?,?>> frontControllerList;
 
 	/**
 	 * Default constructor
@@ -234,7 +234,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 		
 		serverConfigReader.read(
 			param.getServerConfiguration(), 
-				new ServiceHandler<Controller<?>>() {
+				new ServiceHandler<Controller<?,?,?>>() {
 					@Override
 					public String getName() {
 						return ServiceDictionary.FRONT_CONTROLLER;

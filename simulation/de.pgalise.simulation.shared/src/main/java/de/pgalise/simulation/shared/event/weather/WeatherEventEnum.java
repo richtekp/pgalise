@@ -21,8 +21,6 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.pgalise.simulation.shared.sensor.SensorType;
-
 /**
  * Enum for strategies to modify weather data
  * 

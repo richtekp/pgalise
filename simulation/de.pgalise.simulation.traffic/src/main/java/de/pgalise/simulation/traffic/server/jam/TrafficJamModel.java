@@ -16,8 +16,9 @@
  
 package de.pgalise.simulation.traffic.server.jam;
 
-import org.graphstream.graph.Graph;
-
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
@@ -27,7 +28,11 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * 
  * @author Marina, Mustafa
  */
-public interface TrafficJamModel {
+public interface TrafficJamModel<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>> {
 
 	/**
 	 * Sets a new {@link SurroundingCarsFinder}
@@ -51,5 +56,5 @@ public interface TrafficJamModel {
 	 * @param probability
 	 *            The probability for slowing down (e.g. 0.1 for 10%)
 	 */
-	public void update(Vehicle<? extends VehicleData> v, long time, Graph graph, double probability);
+	public void update(V v, long time, TrafficGraph<?,?,?,?> graph, double probability);
 }

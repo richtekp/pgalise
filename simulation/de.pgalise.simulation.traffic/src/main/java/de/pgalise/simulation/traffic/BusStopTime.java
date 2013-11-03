@@ -24,12 +24,10 @@ import java.util.Date;
 
 /**
  * 
- * @param <S> 
- * @param <T> 
  * @author marcus
  *
  */
-public interface BusStopTime<S extends BusStop<N>, T extends BusTrip<?,V,N,E>, V extends Vehicle<BusData,N,E,V>, N extends TrafficNode<N,E,BusData,V>, E extends TrafficEdge<N,E,BusData,V>> {
+public interface BusStopTime {
 	
 	@JoinColumn(name = "TRIP_ID")
 	@OneToOne

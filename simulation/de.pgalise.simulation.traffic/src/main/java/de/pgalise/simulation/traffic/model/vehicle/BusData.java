@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
@@ -227,7 +225,7 @@ public class BusData extends VehicleData {
 		return busStopOrder;
 	}
 
-	public void setBusStopOrder(List<String> busStopOrder) {
+	public void setBusStopOrder(List<BusStop<?>> busStopOrder) {
 		this.busStopOrder = busStopOrder;
 	}
 
