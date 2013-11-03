@@ -40,10 +40,10 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * 
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 26, 2012)
- * @param <T>
+ * @param <D>
  *            Extension of the VehicleData
  */
-public abstract class XMLAbstractFactory<T extends VehicleData> {
+public abstract class XMLAbstractFactory<D extends VehicleData> {
 
 	/**
 	 * Random generator

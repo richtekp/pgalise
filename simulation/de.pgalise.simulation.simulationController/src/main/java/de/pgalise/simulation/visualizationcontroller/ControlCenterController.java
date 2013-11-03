@@ -17,7 +17,10 @@
 package de.pgalise.simulation.visualizationcontroller;
 
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.SimulationComponent;
+import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.event.Event;
 
 /**
  * The interface for the control center. It receives all information from the simulation
@@ -25,7 +28,7 @@ import de.pgalise.simulation.service.SimulationComponent;
  * 
  * @author Timo
  */
-public interface ControlCenterController extends VisualizationController, Controller, SimulationComponent {
+public interface ControlCenterController extends VisualizationController, Controller<Event, StartParameter, InitParameter>, SimulationComponent<Event> {
 	/**
 	 * Displays an exception.
 	 * 

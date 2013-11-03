@@ -16,10 +16,11 @@
  
 package de.pgalise.simulation.controlCenter.internal.util.service;
 
+import de.pgalise.simulation.sensorFramework.SensorType;
 import java.util.List;
 
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 
 /**
  * Provides the correct sensor interferer.

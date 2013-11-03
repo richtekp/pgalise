@@ -19,19 +19,27 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.List;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.Orientation;
+import de.pgalise.simulation.shared.city.DefaultNavigationEdge;
+import de.pgalise.simulation.shared.city.DefaultNavigationNode;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
+import java.util.LinkedList;
 import java.util.UUID;
+import javax.persistence.Entity;
 import javax.vecmath.Vector2d;
 
 /**
@@ -42,7 +50,8 @@ import javax.vecmath.Vector2d;
  * @author Marina
  * @version 1.0 (Nov 1, 2012)
  */
-public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable implements Vehicle<E> {
+@Entity
+public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable implements Vehicle<D, DefaultTrafficNode<D>,DefaultTrafficEdge<D>,BaseVehicle<D>> {
 	/**
 	 * Serial
 	 */
@@ -71,13 +80,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	/**
 	 * Current node
 	 */
-	private transient Node currentNode;
-
-	/**
-	 * List with nodes
-	 */
-	private transient List<Node> nodes;
-
+	private transient DefaultTrafficNode<D> currentNode;
 	/**
 	 * Position
 	 */
@@ -101,46 +104,54 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	/**
 	 * Current state
 	 */
-	private State state = State.NOT_STARTED;
+	/*
+	 * state is a reserved SQL keyword
+	 */
+	private VehicleStateEnum vehicleState = VehicleStateEnum.NOT_STARTED;
 
 	/**
 	 * Path
 	 */
-	private transient Path path;
+	private transient List<DefaultTrafficEdge<D>> edgePath;
+	
+	private transient List<DefaultTrafficNode<D>> nodePath;
 
 	/**
 	 * Current edge
 	 */
-	private transient Edge currentEdge;
+	private transient DefaultTrafficEdge<D> currentEdge;
 
 	/**
 	 * Previous node
 	 */
-	private transient Node prevNode;
+	private transient DefaultTrafficNode<D> prevNode;
 
 	/**
 	 * Previous edge
 	 */
-	private transient Edge prevEdge;
+	private transient DefaultTrafficEdge<D> prevEdge;
 
 	/**
 	 * Information
 	 */
-	private E data;
+	private D vehicleData;
 
 	private boolean isVirgin = false;
 
 	private transient TrafficGraphExtensions trafficGraphExtensions;
 
+	public BaseVehicle() {
+	}
+
 	public BaseVehicle(TrafficGraphExtensions trafficGraphExtensions) {
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.state = (State.NOT_STARTED);
+		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
 	}
 
 	public BaseVehicle( String name, TrafficGraphExtensions trafficGraphExtensions) {
 		this.name = name;
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.state = (State.NOT_STARTED);
+		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
 	}
 
 	public BaseVehicle(UUID id, String name, TrafficGraphExtensions trafficGraphExtensions) {
@@ -150,14 +161,14 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 //		this.state = (State.NOT_STARTED);
 	}
 
-	public BaseVehicle(String name, E data, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseVehicle(String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
 		this.name = name;
-		this.data = data;
+		this.vehicleData = data;
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.state = (State.NOT_STARTED);
+		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
 	}
 
-	public BaseVehicle(UUID id, String name, E data, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseVehicle(UUID id, String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
 		throw new UnsupportedOperationException("clearify the purpose of passing of id");
 //		this.name = name;
 //		this.data = data;
@@ -166,18 +177,18 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public Edge getCurrentEdge() {
+	public DefaultTrafficEdge<D> getCurrentEdge() {
 		return this.currentEdge;
 	}
 
 	@Override
-	public Node getCurrentNode() {
+	public DefaultTrafficNode<D> getCurrentNode() {
 		return this.currentNode;
 	}
 
 	@Override
-	public E getData() {
-		return this.data;
+	public D getData() {
+		return this.vehicleData;
 	}
 
 	@Override
@@ -191,18 +202,18 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public Edge getNextEdge() {
+	public DefaultTrafficEdge<D> getNextEdge() {
 		return this._getNextEdge();
 	}
 
 	@Override
-	public Node getNextNode() {
+	public DefaultTrafficNode<D> getNextNode() {
 		return this._getNextNode();
 	}
 
 	@Override
-	public Path getPath() {
-		return this.path;
+	public List<DefaultTrafficEdge<D>> getPath() {
+		return this.edgePath;
 	}
 
 	@Override
@@ -211,11 +222,11 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public Edge getPreviousEdge() {
+	public DefaultTrafficEdge<D> getPreviousEdge() {
 		try {
-			int index = this.path.getEdgePath().indexOf(this.currentEdge);
+			int index = this.edgePath.indexOf(this.currentEdge);
 			if (index >= 0) {
-				this.prevEdge = this.path.getEdgePath().get(index - 1);
+				this.prevEdge = this.edgePath.get(index - 1);
 			}
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -223,11 +234,11 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public Node getPreviousNode() {
+	public DefaultTrafficNode<D> getPreviousNode() {
 		try {
-			int index = this.path.getNodePath().indexOf(this.currentNode);
+			int index = this.edgePath.indexOf(this.currentNode);
 			if (index >= 0) {
-				this.prevNode = this.path.getNodePath().get(this.path.getNodePath().indexOf(this.currentNode) - 1);
+				this.prevNode = this.nodePath.get(this.nodePath.indexOf(this.currentNode) - 1);
 			}
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -235,8 +246,8 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public State getState() {
-		return this.state;
+	public VehicleStateEnum getVehicleState() {
+		return this.vehicleState;
 	}
 
 	@Override
@@ -250,18 +261,18 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public void setCurrentEdge(Edge edge) {
+	public void setCurrentEdge(DefaultTrafficEdge<D> edge) {
 		this.currentEdge = edge;
 	}
 
 	@Override
-	public void setCurrentNode(Node currentNode) {
+	public void setCurrentNode(DefaultTrafficNode<D> currentNode) {
 		this.currentNode = currentNode;
 	}
 
 	@Override
-	public void setData(E data) {
-		this.data = data;
+	public void setData(D data) {
+		this.vehicleData = data;
 	}
 
 	@Override
@@ -278,17 +289,26 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	private static <X extends VehicleData> List<DefaultTrafficNode<X>> creaeteNodePath(List<DefaultTrafficEdge<X>> edgePath) {
+		List<DefaultTrafficNode<X>> retValue = new LinkedList<>();
+		retValue.add(edgePath.get(0).getSource());
+		for(DefaultTrafficEdge<X> edge : edgePath) {
+			retValue.add(edge.getTarget());
+		}
+		return retValue;
+	}
 
 	@Override
-	public void setPath(Path path) {
-		if (path.getNodePath().size() < 2) {
-			throw new IllegalArgumentException("A path needs to consist of at least two nodes");
+	public void setPath(List<DefaultTrafficEdge<D>> path) {
+		if (path.size() < 1) {
+			throw new IllegalArgumentException("A path needs to consist of at least one edge");
 		}
-		this.path = path;
-		this.nodes = path.getNodePath();
-		this.currentNode = this.nodes.get(0);
+		this.edgePath = path;
+		this.nodePath = BaseVehicle.creaeteNodePath(path);
+		this.currentNode = this.nodePath.get(0);
 		this.position = this.getTrafficGraphExtensions().getPosition(this.currentNode);
-		this.currentEdge = path.getEdgePath().get(0);
+		this.currentEdge = path.get(0);
 		// calculate direction from currentNode to nextNode
 		this.direction = this.getDirection(this.getTrafficGraphExtensions().getPosition(this.currentNode), this
 				.getTrafficGraphExtensions().getPosition(this._getNextNode()));
@@ -301,13 +321,13 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public void setState(State state) {
+	public void setVehicleState(VehicleStateEnum state) {
 		// if (state != this.state)
 		// logger.debug("Changed state of vehicle " + this.getName() + " from " + this.state + " to " + state);
-		if (state == State.NOT_STARTED) {
+		if (state == VehicleStateEnum.NOT_STARTED) {
 			this.isVirgin = true;
 		}
-		this.state = state;
+		this.vehicleState = state;
 	}
 
 	@Override
@@ -318,13 +338,13 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	@Override
 	public void update(long elapsedTime) {
 		this._preUpdate(elapsedTime);
-		if (!(State.UPDATEABLE_VEHICLES.contains(this.state))) {
+		if (!(VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.vehicleState))) {
 			return;
 		}
-		if (this.state == State.STOPPED || this.state == State.IN_TRAFFIC_RULE) {
+		if (this.vehicleState == VehicleStateEnum.STOPPED || this.vehicleState == VehicleStateEnum.IN_TRAFFIC_RULE) {
 			this.velocity = 0;
-		} else if (this.state != State.PAUSED) {
-			this.state = State.DRIVING;
+		} else if (this.vehicleState != VehicleStateEnum.PAUSED) {
+			this.vehicleState = VehicleStateEnum.DRIVING;
 		}
 
 		// logger.debug(String.format("Vehicle '%s' position and velocity before update: %s, %s", this.name,
@@ -332,7 +352,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 		// this.velocity));
 		this.position = this.update(elapsedTime, this.position, this.direction);
 
-		Node passedNode = this.currentNode;
+		DefaultTrafficNode<D> passedNode = this.currentNode;
 
 		// has reached node but not last node
 		this.handleReachedNode();
@@ -358,12 +378,12 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * 
 	 * @return
 	 */
-	private Edge _getNextEdge() {
-		Edge nextEdge = null;
+	private DefaultTrafficEdge<D> _getNextEdge() {
+		DefaultTrafficEdge<D> nextEdge = null;
 		try {
-			int index = this.path.getEdgePath().indexOf(this.currentEdge);
+			int index = this.edgePath.indexOf(this.currentEdge);
 			if (index >= 0) {
-				nextEdge = this.path.getEdgePath().get(index + 1);
+				nextEdge = this.edgePath.get(index + 1);
 			}
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -376,12 +396,12 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * 
 	 * @return
 	 */
-	private Node _getNextNode() {
-		Node nextNode = null;
+	private DefaultTrafficNode<D> _getNextNode() {
+		DefaultTrafficNode<D> nextNode = null;
 		try {
-			int index = this.path.getNodePath().indexOf(this.currentNode);
+			int index = this.nodePath.indexOf(this.currentNode);
 			if (index >= 0) {
-				nextNode = this.path.getNodePath().get(this.path.getNodePath().indexOf(this.currentNode) + 1);
+				nextNode = this.nodePath.get(this.nodePath.indexOf(this.currentNode) + 1);
 			}
 		} catch (IndexOutOfBoundsException e) {
 		}
@@ -408,12 +428,12 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 
 	protected void handleReachedNode() {
 		boolean reachedNextNode = this.hasReachedNextNode(this.orientation, this.position);
-		if (reachedNextNode && (this._getNextNode() != this.nodes.get(this.nodes.size() - 1))) {
+		if (reachedNextNode && (this._getNextNode() != this.nodePath.get(this.nodePath.size() - 1))) {
 			// new direction and orientation
 			this.direction = this.getDirection(
 					this.getTrafficGraphExtensions().getPosition(this._getNextNode()),
 					this.getTrafficGraphExtensions().getPosition(
-							this.nodes.get(this.nodes.indexOf(this._getNextNode()) + 1)));
+							this.nodePath.get(this.nodePath.indexOf(this._getNextNode()) + 1)));
 			this.orientation = this.getOrientation(this.direction);
 
 			// calculate new position on the path
@@ -450,14 +470,14 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 			}
 		}
 		// arrived at targets position
-		else if (reachedNextNode && (this._getNextNode() == this.nodes.get(this.nodes.size() - 1))) {
+		else if (reachedNextNode && (this._getNextNode() == this.nodePath.get(this.nodePath.size() - 1))) {
 			this.position = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
 
 			log.debug(String.format("Vehicle \"%s\" arrived at target node \"%s\"", this.name, this.currentNode.getId()));
 
 			this.prevNode = this.currentNode;
 			this.currentNode = this._getNextNode();
-			setState(State.REACHED_TARGET);
+			setVehicleState(VehicleStateEnum.REACHED_TARGET);
 			this.prevEdge = this.currentEdge;
 			this.currentEdge = null;
 
@@ -477,12 +497,12 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 				this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
 	}
 
-	private void _passedNode(Node passedNode) {
+	private void _passedNode(DefaultTrafficNode<D> passedNode) {
 		// if(this.state!=State.PAUSED)
 		passedNode(passedNode);
 	}
 
-	private void _postUpdate(Node lastPassedNode) {
+	private void _postUpdate(DefaultTrafficNode<D> lastPassedNode) {
 		// if(this.state!=State.PAUSED)
 		postUpdate(lastPassedNode);
 	}
@@ -497,7 +517,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * 
 	 * @param passedNode
 	 */
-	protected void passedNode(Node passedNode) {
+	protected void passedNode(DefaultTrafficNode<D> passedNode) {
 	}
 
 	/**
@@ -506,7 +526,7 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	 * @param lastPassedNode
 	 *            Passed Node on the last update otherwise null
 	 */
-	protected void postUpdate(Node lastPassedNode) {
+	protected void postUpdate(DefaultTrafficNode<D> lastPassedNode) {
 	}
 
 	/**
@@ -546,13 +566,23 @@ public class BaseVehicle<E extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public int getIndex(Node node) {
-		for (int i = 0; i < this.path.getNodePath().size(); i++) {
-			Node n = this.path.getNodePath().get(i);
+	public int getIndex(DefaultTrafficNode<D> node) {
+		for (int i = 0; i < this.edgePath.size(); i++) {
+			DefaultTrafficNode<D> n = this.nodePath.get(i);
 			if (n.getId().equals(node.getId())) {
 				return i;
 			}
 		}
 		return -1;
+	}
+
+	public void setNodePath(
+		List<DefaultTrafficNode<D>> nodePath) {
+		this.nodePath = nodePath;
+	}
+
+	@Override
+	public List<DefaultTrafficNode<D>> getNodePath() {
+		return nodePath;
 	}
 }

@@ -31,150 +31,35 @@ import org.hibernate.annotations.Type;
 /**
  * Represents the city from the simulation
  * 
- * @author Andreas Rehfeldt
- * @version 1.0 (Sep 11, 2012)
+ * @author richter
  */
-@Entity
-//@Table(name = "PGALISE.WEATHER_CITY")
-@NamedQuery(name = "City.getAll", query = "SELECT i FROM City i")
-public class City extends AbstractIdentifiable {
+public interface City extends Shaped {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = 3576972145732461552L;
+	public int getAltitude() ;
 
-	/**
-	 * Altitude (in m over normal null)
-	 */
-	@Column(name = "ALTITUDE")
-	private int altitude = 4;
+	public String getName() ;
 
-	/**
-	 * Name
-	 */
-	@Column(name = "NAME")
-	private String name = "Oldenburg (Oldb)";
+	public int getPopulation() ;
 
-	/**
-	 * Option that the city is near a river
-	 */
-	@Column(name = "NEAR_RIVER")
-	private boolean nearRiver = false;
+	public int getRate() ;
 
-	/**
-	 * Option that the city is near the sea
-	 */
-	@Column(name = "NEAR_SEA")
-	private boolean nearSea = false;
+	public boolean isNearRiver() ;
 
-	/**
-	 * Population
-	 */
-	@Column(name = "POPULATION")
-	private int population = 162481;
+	public boolean isNearSea() ;
 
-	/**
-	 * Rate for reference evaluation
-	 */
-	@Transient
-	private int rate = 0;
+	public void setAltitude(int altitude) ;
 	
-	@Type(type="org.hibernate.spatial.GeometryType")
-	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
-	private Polygon referenceArea;
+	public void setName(String name) ;
 
-	/**
-	 * Default constructor
-	 */
-	protected City() {
-	}
+	public void setNearRiver(boolean nearRiver) ;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param name
-	 *            Name
-	 * @param population
-	 *            Population
-	 * @param altitude
-	 *            Altitude
-	 * @param nearRiver
-	 *            Option that the city is near a river
-	 * @param nearSea
-	 *            Option that the city is near the sea
-	 * @param referenceArea  
-	 */
-	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Polygon referenceArea) {
-		super();
-		this.name = name;
-		this.population = population;
-		this.nearRiver = nearRiver;
-		this.nearSea = nearSea;
-		this.altitude = altitude;
-		this.referenceArea = referenceArea;
-	}
+	public void setNearSea(boolean nearSea) ;
 
-	public Geometry getReferenceArea() {
-		return referenceArea;
-	}
+	public void setPopulation(int population) ;
 
-	public Coordinate getReferencePoint() {
-		Point centroid = referenceArea.getCentroid();
-		Coordinate retValue = new Coordinate(centroid.getX(), centroid.getY());
-		return retValue;
-	}
+	public void setRate(int rate) ;
 
-	public int getAltitude() {
-		return this.altitude;
-	}
+	Coordinate getReferencePoint();
 
-	public String getName() {
-		return this.name;
-	}
-
-	public int getPopulation() {
-		return this.population;
-	}
-
-	public int getRate() {
-		return this.rate;
-	}
-
-	public boolean isNearRiver() {
-		return this.nearRiver;
-	}
-
-	public boolean isNearSea() {
-		return this.nearSea;
-	}
-
-	public void setAltitude(int altitude) {
-		this.altitude = altitude;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setNearRiver(boolean nearRiver) {
-		this.nearRiver = nearRiver;
-	}
-
-	public void setNearSea(boolean nearSea) {
-		this.nearSea = nearSea;
-	}
-
-	public void setPopulation(int population) {
-		this.population = population;
-	}
-	
-	public void setRate(int rate) {
-		this.rate = rate;
-	}
-
-	public void setReferenceArea(Polygon referenceArea) {
-		this.referenceArea = referenceArea;
-	}
-
+	void setReferencePoint(Coordinate referencePoint);
 }

@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
@@ -48,6 +47,8 @@ import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -177,7 +178,7 @@ public class DefaultWeatherControllerTest {
 		initParameter.setStartTimestamp(startTimestamp);
 		initParameter.setEndTimestamp(endTimestamp);
 		
-		StartParameter parameter = new StartParameter();
+		InfrastructureStartParameter parameter = new InfrastructureStartParameter();
 		parameter.setCity(city);
 		parameter.setWeatherEventHelperList(null);
 		parameter.setAggregatedWeatherDataEnabled(true);

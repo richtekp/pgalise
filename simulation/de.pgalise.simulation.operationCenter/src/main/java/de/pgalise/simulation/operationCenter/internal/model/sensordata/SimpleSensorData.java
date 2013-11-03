@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
-import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
+import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
 
 /**
  * A simple sensor data with one value. E.g. for {@link SensorHelperSmartMeter}.

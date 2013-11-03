@@ -19,11 +19,10 @@ package de.pgalise.simulation.traffic.server.route;
 import java.util.Date;
 import java.util.List;
 
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficTrip;
 
 /**
  * Generates (random) trips.
@@ -39,21 +38,21 @@ public interface RandomVehicleTripGenerator {
 	 *            Vehicle type
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(List<Node> startHomeNodes, List<Node> startWorkNodes, VehicleTypeEnum vehicleType, Date date, int buffer);
+	public TrafficTrip createVehicleTrip(List<NavigationNode> startHomeNodes, List<NavigationNode> startWorkNodes, VehicleTypeEnum vehicleType, Date date, int buffer);
 
-	public List<Node> getHomeNodes();
+	public List<NavigationNode> getHomeNodes();
 
 	public RandomSeedService getRandomSeedService();
 
-	public List<Node> getWorkNodes();
+	public List<NavigationNode> getWorkNodes();
 
 	public void init();
 
-	public void setHomeNodes(List<Node> homeNodes);
+	public void setHomeNodes(List<NavigationNode> homeNodes);
 
 	public void setRandomSeedService(RandomSeedService randomSeedService);
 
-	public void setWorkNodes(List<Node> workNodes);
+	public void setWorkNodes(List<NavigationNode> workNodes);
 
 	/**
 	 * Create a traffic trip with given target node ID and time
@@ -66,7 +65,7 @@ public interface RandomVehicleTripGenerator {
 	 *            startTimeWayThere
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(List<Node> startHomeNodes, String targetNode, long startTimestamp);
+	public TrafficTrip createVehicleTrip(List<NavigationNode> startHomeNodes, NavigationNode targetNode, long startTimestamp);
 
 	/**
 	 * Create a traffic trip with given start node ID and time
@@ -79,5 +78,5 @@ public interface RandomVehicleTripGenerator {
 	 *            startTimeWayThere
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(String startNode, List<Node> homeNodes, long startTimestamp);
+	public TrafficTrip createVehicleTrip(NavigationNode startNode, List<NavigationNode> homeNodes, long startTimestamp);
 }

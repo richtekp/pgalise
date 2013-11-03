@@ -51,5 +51,18 @@
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-classic</artifactId>
 				</dependency>
+        <dependency>
+            <groupId>com.javadocmd</groupId>
+            <artifactId>simplelatlng</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.3</version>
+				</dependency>
+				<dependency>
+					<groupId>de.pgalise.simulation</groupId>
+					<artifactId>sensorFramework</artifactId>
+				</dependency>
     </dependencies>
 </project>

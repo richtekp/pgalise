@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 
 /**
  * Sensor data for traffic light. The sensorID of the
@@ -42,7 +42,7 @@ public class TrafficLightSensorData extends SensorData {
 	 * 			the id of this traffic light
 	 */
 	public TrafficLightSensorData(int sensorID, int sensorValue, double angle1, double angle2, int trafficLightID) {
-		super(SensorType.TRAFFIC_LIGHT_INTERSECTION.getSensorTypeId(), sensorID);
+		super(SensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION.getSensorTypeId(), sensorID);
 		this.value = sensorValue;
 		this.angle1 = angle1;
 		this.angle2 = angle2;

@@ -30,8 +30,8 @@ import javax.ejb.embeddable.EJBContainer;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
@@ -92,7 +92,7 @@ public class DefaultWeatherServiceTest  {
 	 */
 	private WeatherLoader<DefaultWeatherCondition> loader;
 
-	private City city;
+	private DefaultCity city;
 	
 	@Resource
 	private UserTransaction utx;
@@ -108,7 +108,7 @@ public class DefaultWeatherServiceTest  {
 		
 		
 		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
@@ -117,7 +117,7 @@ public class DefaultWeatherServiceTest  {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1)
 			}
 		);
-		city = new City("Berlin",
+		city = new DefaultCity("Berlin",
 			3375222,
 			80,
 			true,

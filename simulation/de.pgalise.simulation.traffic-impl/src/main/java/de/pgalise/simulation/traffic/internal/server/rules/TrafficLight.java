@@ -16,9 +16,9 @@
  
 package de.pgalise.simulation.traffic.internal.server.rules;
 
-import org.graphstream.graph.Edge;
-
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 
 
@@ -27,7 +27,7 @@ import de.pgalise.simulation.traffic.TrafficGraphExtensions;
  * 
  * @author Marcus
  */
-public class TrafficLight {
+public class TrafficLight extends AbstractIdentifiable {
 
 	/**
 	 * Current state
@@ -37,19 +37,20 @@ public class TrafficLight {
 	private final static TrafficLightState TRAFFIC_LIGHT_RED_STATE = new TrafficLightRedState();
 	private final static TrafficLightState TRAFFIC_LIGHT_RED_YELLOW_STATE = new TrafficLightRedYellowState();
 	private final static TrafficLightState TRAFFIC_LIGHT_YELLOW_STATE = new TrafficLightYellowState();
+	private static final long serialVersionUID = 1L;
 		
-	private final Edge edge1;
-	private final Edge edge2;
+	private final NavigationEdge<?,?> edge1;
+	private final NavigationEdge<?,?> edge2;
 	
 	private final double angle1;
 	private final double angle2;
 	
-	private final short intersectionID;
+	private final TrafficLightIntersection intersectionID;
 
 	private TrafficLightState currentState = TrafficLight.TRAFFIC_LIGHT_BLINKING_STATE;
 
-	public TrafficLight(final Edge edge1, final Edge edge2, double angle1, double angle2, 
-			final TrafficGraphExtensions trafficGraphExtensions, short intersectionID) {
+	public TrafficLight(final NavigationEdge<?,?> edge1, final NavigationEdge<?,?> edge2, double angle1, double angle2, 
+			final TrafficGraphExtensions trafficGraphExtensions, TrafficLightIntersection intersectionID) {
 		if(edge1 == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("edge1"));
 		}
@@ -62,11 +63,11 @@ public class TrafficLight {
 		this.intersectionID = intersectionID;
 	}
 
-	Edge getEdge1() {
+	NavigationEdge<?,?> getEdge1() {
 		return this.edge1;
 	}
 
-	Edge getEdge2() {
+	NavigationEdge<?,?> getEdge2() {
 		return this.edge2;
 	}
 
@@ -155,7 +156,7 @@ public class TrafficLight {
 		this.currentState = currentState;
 	}
 
-	public short getIntersectionID() {
+	public TrafficLightIntersection getIntersectionID() {
 		return intersectionID;
 	}
 }

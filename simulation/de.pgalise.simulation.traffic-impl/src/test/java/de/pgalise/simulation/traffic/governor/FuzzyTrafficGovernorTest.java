@@ -32,9 +32,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.DefaultCity;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.internal.governor.FuzzyTrafficGovernor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -80,7 +80,7 @@ public class FuzzyTrafficGovernorTest {
 
 		StartParameter parameter = new StartParameter();
 		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
@@ -88,7 +88,7 @@ public class FuzzyTrafficGovernorTest {
 				new Coordinate(referencePoint.x, referencePoint.y-1)
 			}
 		);
-		City city = new City("test_city", 200000, 100, true, true, referenceArea);
+		DefaultCity city = new DefaultCity("test_city", 200000, 100, true, true, referenceArea);
 		parameter.setCity(city);
 		parameter.setWeatherEventHelperList(null);
 		parameter.setAggregatedWeatherDataEnabled(true);

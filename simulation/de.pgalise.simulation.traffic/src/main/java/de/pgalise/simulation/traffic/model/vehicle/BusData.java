@@ -23,8 +23,10 @@ import java.util.Map;
 import org.graphstream.graph.Node;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.shared.city.NavigationNode;
 
 /**
  * Class with data, which define a bus.
@@ -46,7 +48,7 @@ public class BusData extends VehicleData {
 	/**
 	 * Bus stop order of the bus stops
 	 */
-	private List<String> busStopOrder;
+	private List<BusStop<?>> busStopOrder;
 
 	/**
 	 * Last bus stop passed (visited); index of the bus stop order
@@ -92,7 +94,7 @@ public class BusData extends VehicleData {
 	/**
 	 * List of busstops
 	 */
-	private Map<String, Node> busStops;
+	private Map<BusStop<?>, NavigationNode> busStops;
 
 	/**
 	 * Constructor
@@ -205,11 +207,11 @@ public class BusData extends VehicleData {
 		this.currentPassengerCount = currentPassengerCount;
 	}
 
-	public Map<String, Node> getBusStops() {
+	public Map<BusStop<?>, NavigationNode> getBusStops() {
 		return busStops;
 	}
 
-	public void setBusStops(Map<String, Node> busStops) {
+	public void setBusStops(Map<BusStop<?>, NavigationNode> busStops) {
 		this.busStops = busStops;
 	}
 
@@ -221,7 +223,7 @@ public class BusData extends VehicleData {
 				+ infraredSensorHelper + ", busStops=" + busStops + "]";
 	}
 
-	public List<String> getBusStopOrder() {
+	public List<BusStop<?>> getBusStopOrder() {
 		return busStopOrder;
 	}
 

@@ -19,17 +19,14 @@ package de.pgalise.simulation.traffic;
 import java.util.List;
 import java.util.Set;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.graphextension.GraphExtensions;
+import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
+import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
  * ...
@@ -62,7 +59,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the {@link StaticTrafficSensor} to attach
 	 * @return true if {@link StaticTrafficSensor} could have been added, otherwise false
 	 */
-	public boolean addSensor(final Node node, final Sensor sensor);
+	public boolean addSensor(final N node, final StaticTrafficSensor sensor);
 
 	/**
 	 * Returns the {@link StaticTrafficSensor}s from the passed node as an unmodifiable set.
@@ -71,7 +68,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the node which {@link StaticTrafficSensor}s shall be returned as an unmodifiable set.
 	 * @return an unmodifiable set of the {@link StaticTrafficSensor}s of the passed node
 	 */
-	public Set<Sensor> getSensorsAsUnmodifialable(final Node node);
+	public Set<StaticTrafficSensor<N,E>> getSensorsAsUnmodifialable(final N node);
 
 	/**
 	 * Returns the TrafficlightSetof of the passed node. If the passed node hasn't an attached TrafficLightSetof
@@ -81,7 +78,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the node which TrafficlightSetof is asked
 	 * @return the TrafficlightSetof of the passed node
 	 */
-	public TrafficRule getTrafficRule(final Node node);
+	public TrafficRule getTrafficRule(final N node);
 
 	/**
 	 * Registers the passed vehicle at the passed node. <br>
@@ -92,7 +89,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @param vehicle
 	 *            the vehicle that shall register at the passed node
 	 */
-	public void registerOnNode(final Node node, final Vehicle<? extends VehicleData> vehicle);
+	public void registerOnNode(final N node, final V vehicle);
 
 	/**
 	 * Unregisters the passed vehicle at the passed node. <br>
@@ -105,7 +102,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' or argument 'vehicle' is 'null'
 	 */
-	public void unregisterFromNode(final Node node, final Vehicle<? extends VehicleData> vehicle);
+	public void unregisterFromNode(final N node, final V vehicle);
 
 	/**
 	 * Returns the ...
@@ -114,7 +111,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @param vehicleType
 	 * @return
 	 */
-	public List<Vehicle<? extends VehicleData>> getVehiclesOnNode(final Node node, final VehicleTypeEnum vehicleType);
+	public Set<V> getVehiclesOnNode(final N node, final VehicleTypeEnum vehicleType);
 
 	/**
 	 * Removes the passed {@link StaticTrafficSensor} from the passed node.
@@ -125,7 +122,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the {@link StaticTrafficSensor} that shall have the passed static traffic sensor removed
 	 * @return true if the passed {@link StaticTrafficSensor} could have been removed from the passed node
 	 */
-	public boolean removeSensor(final Node node, final Sensor sensor);
+	public boolean removeSensor(final N node, final StaticTrafficSensor<N,E> sensor);
 
 	/**
 	 * Sets the TrafficlightSetof of the passed node.
@@ -136,14 +133,14 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the new TrafficlightSetof of the node
 	 * @return the passed node for method chaining
 	 */
-	public Node setTrafficRule(final Node node, final TrafficRule trafficRule);
+	public N setTrafficRule(final N node, final TrafficRule<D, N, E, V> trafficRule);
 
 	/**
 	 * Returns the {@link TrafficRule}s as an unmodifiable {@link Set}.
 	 * 
 	 * @return the {@link TrafficRule}s as an unmodifiable {@link Set}
 	 */
-	public Set<TrafficRule> getTrafficRulesAsUnmodifiableSet();
+	public Set<TrafficRule<D, N, E, V>> getTrafficRulesAsUnmodifiableSet();
 
 	/**
 	 * Updates all TrafficRules.
@@ -151,22 +148,21 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 * @param simulationEventList
 	 *            the {@link SimulationEventList}
 	 */
-	public void updateTrafficRules(EventList simulationEventList);
+	public void updateTrafficRules(EventList<?> simulationEventList);
 
 	/**
 	 * @param edge
 	 * @param vehicle
 	 * @return
 	 */
-	public boolean addVehicle(final Edge edge, final Vehicle<? extends VehicleData> vehicle);
+	public boolean addVehicle(final E edge, final V vehicle);
 
 	/**
-	 * @param edge
 	 * @param vehicle
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	public boolean removeVehicleFromItsEdge(final Vehicle<? extends VehicleData> vehicle);
+	public boolean removeVehicleFromItsEdge(final V vehicle);
 
 	/**
 	 * @param edge

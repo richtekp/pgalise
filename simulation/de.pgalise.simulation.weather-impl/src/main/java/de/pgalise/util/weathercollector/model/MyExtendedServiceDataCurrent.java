@@ -16,7 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.internal.DefaultCity;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
@@ -64,7 +64,7 @@ public class MyExtendedServiceDataCurrent extends DefaultServiceDataCurrent impl
 	}
 
 	public MyExtendedServiceDataCurrent(
-		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, DefaultWeatherCondition condition, Time sunrise, Time sunset) {
+		Date measureDate, Time measureTime, DefaultCity city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, DefaultWeatherCondition condition, Time sunrise, Time sunset) {
 		super(
 			measureDate,
 			measureTime, 

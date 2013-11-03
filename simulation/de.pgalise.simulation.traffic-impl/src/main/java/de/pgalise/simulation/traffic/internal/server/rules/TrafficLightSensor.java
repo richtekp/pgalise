@@ -18,11 +18,16 @@ package de.pgalise.simulation.traffic.internal.server.rules;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
@@ -30,7 +35,8 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * 
  * @author Marcus
  */
-public class TrafficLightSensor extends StaticTrafficSensor {
+public class TrafficLightSensor<D extends VehicleData> extends StaticTrafficSensor<DefaultTrafficNode<D>, DefaultTrafficEdge<D>> {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Traffic light
@@ -61,23 +67,23 @@ public class TrafficLightSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.TRAFFICLIGHT_SENSOR;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.TRAFFICLIGHT_SENSOR;
 	}
 
 	@Override
-	public void transmitUsageData(EventList eventList) {
+	public void transmitUsageData(EventList<TrafficEvent> eventList) {
 		// // Send data
 		this.getOutput().transmitDouble(this.trafficLight.getAngle1());
 		this.getOutput().transmitDouble(this.trafficLight.getAngle2());
 		this.getOutput().transmitByte((byte) this.trafficLight.getState().getStateId()); // stateId
-		this.getOutput().transmitShort(this.trafficLight.getIntersectionID());
+		this.getOutput().transmitLong(this.trafficLight.getId());
 		this.getOutput().transmitShort((short) 0);
 		this.getOutput().transmitShort((short) 0);
 	}
 
 	@Override
-	public void vehicleOnNodeRegistered(Vehicle<? extends VehicleData> vehicle) {
+	public void vehicleOnNodeRegistered(BaseVehicle<D> vehicle) {
 		// nothing to do here
 	}
 }

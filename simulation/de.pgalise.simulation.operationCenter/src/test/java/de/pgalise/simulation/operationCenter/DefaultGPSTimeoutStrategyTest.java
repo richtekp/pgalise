@@ -29,9 +29,9 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.operationCenter.internal.strategy.DefaultGPSTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 
 /**
  * J-Unit tests for {@link DefaultGPSTimeoutStrategy}
@@ -98,7 +98,7 @@ public class DefaultGPSTimeoutStrategyTest {
 		/* Create sensors: */
 		for (int i = 0; i < DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL_SIZE; i++) {
 
-			SensorHelper tmpSensorHelper = new SensorHelper(i, new Coordinate(), SensorType.GPS_CAR,
+			SensorHelper tmpSensorHelper = new SensorHelper(i, new Coordinate(), SensorTypeEnum.GPS_CAR,
 					new LinkedList<SensorInterfererType>(), "");
 			DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL.add(tmpSensorHelper);
 

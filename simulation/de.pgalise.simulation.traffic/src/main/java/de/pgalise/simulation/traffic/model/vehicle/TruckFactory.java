@@ -18,7 +18,9 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.awt.Color;
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 
 /**
  * Interface to provide methods to create different types of {@link Truck}.
@@ -41,7 +43,7 @@ public interface TruckFactory {
 	 *            Number of trailers
 	 * @return created {@link Truck}
 	 */
-	public Vehicle<TruckData> createTruck( String typeId, Color color, int trailercount, SensorHelper gpsSensor);
+	public V createTruck(  Color color, int trailercount, SensorHelper gpsSensor);
 
 	/**
 	 * Method to create a random {@link Truck}.

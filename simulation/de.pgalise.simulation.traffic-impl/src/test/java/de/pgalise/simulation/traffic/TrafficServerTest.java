@@ -16,6 +16,11 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.traffic.internal.DefaultBusRoute;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
@@ -36,9 +41,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-import org.graphstream.graph.implementations.AbstractNode;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -61,7 +63,6 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
@@ -77,28 +78,30 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.simulation.shared.traffic.BusRoute;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
-import de.pgalise.simulation.shared.traffic.VehicleInformation;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import de.pgalise.util.GTFS.service.DefaultBusService;
@@ -251,28 +254,36 @@ public class TrafficServerTest {
 		TrafficServerLocal<VehicleEvent<?>> server1 = createTrafficServer(Arrays.asList(server2));
 		server1.setCityZone(gs.get(0));
 
-		Path path = getNodes(server1, server2, 1, gs);
+		List<NavigationEdge<?,?>> path = getNodes(server1, server2, 1, gs);
 
 		StartParameter startParam = new StartParameter();
 
 		server1.start(startParam);
 		server2.start(startParam);
 
+		Sensor<?> sensor = new GpsSensor(null,
+			null,
+			SensorTypeEnum.GPS_MOTORCYCLE,
+			null,
+			null);
 		Vehicle<CarData> car = server1.getCarFactory().createRandomCar(
 				
-				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
-						""));
+				new SensorHelper(sensor, null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>()));
 		car.setName("Car A");
 		car.setPath(path);
-		server1.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START, server1.getUpdateIntervall()));
+		server1.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START, server1.getUpdateIntervall()));
 
+		Sensor<?> sensor2 = new GpsSensor(null,
+			null,
+			SensorTypeEnum.GPS_MOTORCYCLE,
+			null,
+			null);
 		Vehicle<CarData> car3 = server1.getCarFactory().createRandomCar(
 				
-				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
-						""));
+				new SensorHelper(sensor2, null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>()));
 		car3.setName("Car B");
 		car3.setPath(path);
-		server1.getScheduler().scheduleItem(new ScheduleItem(car3, SIMULATION_START + 1000, server1.getUpdateIntervall()));
+		server1.getScheduler().scheduleItem(new DefaultScheduleItem(car3, SIMULATION_START + 1000, server1.getUpdateIntervall()));
 
 		// 2.auto
 
@@ -293,8 +304,8 @@ public class TrafficServerTest {
 
 			if (server1.getScheduler().getExpiredItems(SIMULATION_START + i).size() == 1 && droveOverBoundaries == 1) {
 				log.info((i / 1000) + " updates needed to drive over the boundaries");// 5137
-				Vehicle<? extends VehicleData> v = createVehicle(server2, i / 1000);
-				v.setState(State.STOPPED);
+				Vehicle<? extends VehicleData,N,E> v = createVehicle(server2, i / 1000);
+				v.setVehicleState(VehicleStateEnum.STOPPED);
 				addedVehicles.add(v);
 				droveOverBoundaries = 2;
 			}
@@ -303,8 +314,8 @@ public class TrafficServerTest {
 				isEmpty()) {
 				droveOverBoundaries = 3;
 			} else if (droveOverBoundaries == 3) {
-				for (Vehicle<? extends VehicleData> v : addedVehicles) {
-					v.setState(State.DRIVING);
+				for (Vehicle<? extends VehicleData,N,E> v : addedVehicles) {
+					v.setVehicleState(VehicleStateEnum.DRIVING);
 				}
 				droveOverBoundaries++;
 			}
@@ -320,18 +331,23 @@ public class TrafficServerTest {
 		}
 	}
 
-	private Vehicle<? extends VehicleData> createVehicle(TrafficServerLocal server2, int i)
+	private Vehicle<? extends VehicleData,N,E> createVehicle(TrafficServerLocal server2, int i)
 			throws IllegalAccessException {
+			Sensor<?> sensor = new GpsSensor(null,
+				null,
+				SensorTypeEnum.GPS_MOTORCYCLE,
+				null,
+				null);
 		Vehicle<CarData> car2 = server2.getCarFactory().createRandomCar(
 				
-				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
-						""));
+				new SensorHelper(sensor, null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>()));
 		car2.setName("Car " + i);
-		car2.setPath(server2.getShortestPath(server2.getGraph().getNode("72670411"),
-				server2.getGraph().getNode("1196593599")));
+		NavigationNode startNode = new DefaultTrafficNode(new Coordinate(1,2)), endNode = new DefaultTrafficNode(new Coordinate(3,
+			6));
+		car2.setPath(server2.getShortestPath(startNode,endNode));
 
 		server2.getScheduler().scheduleItem(
-				new ScheduleItem(car2, SIMULATION_START + (5135 * 1000), server2.getUpdateIntervall()));
+				new DefaultScheduleItem(car2, SIMULATION_START + (5135 * 1000), server2.getUpdateIntervall()));
 
 		return car2;
 	}
@@ -341,40 +357,38 @@ public class TrafficServerTest {
 	/**
 	 * @return nodes from two distinct areas
 	 */
-	private Path getNodes(TrafficServerLocal server, TrafficServerLocal server2, int id, List<Geometry> gs) {
+	private List<NavigationEdge<?,?>> getNodes(TrafficServerLocal<?> server, TrafficServerLocal<?> server2, int id, List<Geometry> gs) {
 		int found = 0;
-		Node nodes[] = new AbstractNode[2];
+		NavigationNode nodes[] = new NavigationNode[2];
 		while (found < 2) {
 			TrafficTrip trip = server.createTrip(gs.get(0), VehicleTypeEnum.CAR);
 			TrafficTrip trip2 = server2.createTrip(gs.get(1), VehicleTypeEnum.CAR);
 
 			if (nodes[0] == null) {
 				if (gs.get(0).covers(
-						GEOMETRY_FACTORY.createPoint(server.getTrafficGraphExtesions().getPosition(server.getGraph().getNode(trip.getStartNode()))))) {
+						GEOMETRY_FACTORY.createPoint(trip.getStartNode().getGeoLocation()))) {
 					log.debug("Found node in the first area: "
 							+ trip.getStartNode()
 							+ ", "
-							+ server.getTrafficGraphExtesions().getPosition(
-									server.getGraph().getNode(trip.getStartNode())));
-					nodes[0] = server.getGraph().getNode(trip.getStartNode());
+							+ trip.getStartNode());
+					nodes[0] = trip.getStartNode();
 					found++;
 				}
 			}
 			if (nodes[1] == null) {
 				if (gs.get(1).covers(
-						GEOMETRY_FACTORY.createPoint(server.getTrafficGraphExtesions().getPosition(server.getGraph().getNode(trip2.getStartNode()))))) {
+						GEOMETRY_FACTORY.createPoint(trip2.getStartNode().getGeoLocation()))) {
 					log.debug("Found node in the second area: "
 							+ trip2.getStartNode()
 							+ ", "
-							+ server.getTrafficGraphExtesions().getPosition(
-									server.getGraph().getNode(trip2.getStartNode())));
-					nodes[1] = server.getGraph().getNode(trip2.getStartNode());
+							+ trip2.getStartNode());
+					nodes[1] = trip2.getStartNode();
 					found++;
 				}
 			}
 			if (nodes[0] != null && nodes[1] != null) {
 				try {
-					Path path = server.getShortestPath(nodes[0], nodes[1]);
+					List<NavigationEdge<?,?>> path = server.getShortestPath(nodes[0], nodes[1]);
 					return path;
 				} catch (Exception e) {
 					log.warn("No path found between the nodes");
@@ -395,7 +409,7 @@ public class TrafficServerTest {
 		int carCount = 10;
 
 		EventList eventList = new EventList(Arrays.asList(createRandomVehicleEvent(city, carCount,
-				SensorType.GPS_CAR, VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1)), SIMULATION_START,
+				SensorTypeEnum.GPS_CAR, VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1)), SIMULATION_START,
 				UUID.randomUUID());
 
 		TrafficServerLocal server0 = createTrafficServer(null);
@@ -420,7 +434,7 @@ public class TrafficServerTest {
 		int truckCount = 5;
 
 		EventList eventList = new EventList(Arrays.asList(createRandomVehicleEvent(city,
-				truckCount, SensorType.GPS_TRUCK, VehicleTypeEnum.TRUCK, VehicleModelEnum.TRUCK_COCA_COLA)),
+				truckCount, SensorTypeEnum.GPS_TRUCK, VehicleTypeEnum.TRUCK, VehicleModelEnum.TRUCK_COCA_COLA)),
 				SIMULATION_START, UUID.randomUUID());
 
 		TrafficServerLocal server0 = createTrafficServer(null);
@@ -444,22 +458,31 @@ public class TrafficServerTest {
 		log.debug("##########################");
 
 		List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
-		List<BusRoute> busRoutes = new ArrayList<>();
-		BusRoute b301a = new BusRoute("301a", "301", "Eversten", 3);
+		List<BusRoute<?>> busRoutes = new ArrayList<>();
+		BusRoute<?> b301a = new DefaultBusRoute( "301", "Eversten", 3);
 		busRoutes.add(b301a);
 		List<CreateRandomVehicleData> busDataList = new ArrayList<>();
 		int tnbt = (new DefaultBusService()).getTotalNumberOfBusTrips(busRoutes, SIMULATION_START);
 		for (int i = 0; i < tnbt; i++) {
 			UUID id = UUID.randomUUID();
-			List<SensorHelper> sensorLists = new ArrayList<>();
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_BUS,
-					new ArrayList<SensorInterfererType>(), ""));
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.INFRARED,
-					new ArrayList<SensorInterfererType>(), ""));
+			List<SensorHelper<?>> sensorLists = new ArrayList<>();
+			Sensor<?> sensor = new GpsSensor(null,
+				null,
+				0,
+				SensorTypeEnum.GPS_BUS,
+				null, null);
+			sensorLists.add(new SensorHelper(sensor, new Coordinate(), SensorTypeEnum.GPS_BUS,
+					new ArrayList<SensorInterfererType>()));
+			Sensor<?> sensor2 = new InfraredSensor(null,
+				null,
+				null,
+				null);
+			sensorLists.add(new SensorHelper(sensor2, new Coordinate(), SensorTypeEnum.INFRARED,
+					new ArrayList<SensorInterfererType>()));
 			busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation( true,
 					VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, id.toString())));
 		}
-		TrafficServerLocal trafficServerLocal = EasyMock.createNiceMock(TrafficServerLocal.class);
+		TrafficServerLocal<?> trafficServerLocal = EasyMock.createNiceMock(TrafficServerLocal.class);
 		trafficEventList.add(new CreateBussesEvent(trafficServerLocal, SIMULATION_START, 0, busDataList, busRoutes));
 
 		EventList eventList = new EventList(trafficEventList, SIMULATION_START, UUID.randomUUID());
@@ -512,59 +535,75 @@ public class TrafficServerTest {
 		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 		Coordinate location;
-		Node nodeForStaticSensor = null;
+		NavigationNode nodeForStaticSensor = null;
 
 		if (VEHICLE_TYPE.equals("car") || VEHICLE_TYPE.equals("all")) {
+			Sensor<?> sensor = new GpsSensor(null,
+				null,
+				SensorTypeEnum.GPS_CAR,
+				null,
+				null);
 			Vehicle<CarData> car = server0.getCarFactory().createRandomCar(
 					
-					new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR,
-							new ArrayList<SensorInterfererType>(), ""));
+					new SensorHelper(sensor, null, SensorTypeEnum.GPS_CAR,
+							new ArrayList<SensorInterfererType>()));
 			car.setName("K.I.T.T");
 			TrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
-			car.setPath(server0.getShortestPath(server0.getGraph().getNode(trip.getStartNode()), server0.getGraph()
-					.getNode(trip.getTargetNode())));
+			car.setPath(server0.getShortestPath(trip.getStartNode(), trip.getTargetNode()));
 
-			nodeForStaticSensor = car.getPath().getNodePath().get(0);
+			nodeForStaticSensor = car.getNodePath().get(0);
 
-			server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+			server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 		if (VEHICLE_TYPE.equals("truck") || VEHICLE_TYPE.equals("all")) {
+			Sensor<?> sensor = new GpsSensor(null,
+				null,
+				SensorTypeEnum.GPS_CAR,
+				null,
+				null);
 			Vehicle<TruckData> truck = server0.getTruckFactory().createRandomTruck(
 					
-					new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_TRUCK,
-							new ArrayList<SensorInterfererType>(), ""));
+					new SensorHelper(sensor, null, SensorTypeEnum.GPS_TRUCK,
+							new ArrayList<SensorInterfererType>()));
 			truck.setName("Coca Cola Truck");
 			TrafficTrip tripTruck = server0.createTrip(server0.getCityZone(), truck.getData().getType());
-			truck.setPath(server0.getShortestPath(server0.getGraph().getNode(tripTruck.getStartNode()), server0.getGraph()
-					.getNode(tripTruck.getTargetNode())));
+			truck.setPath(server0.getShortestPath(tripTruck.getStartNode(), tripTruck.getTargetNode()));
 
-			server0.getScheduler().scheduleItem(new ScheduleItem(truck, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+			server0.getScheduler().scheduleItem(new DefaultScheduleItem(truck, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 		if (VEHICLE_TYPE.equals("bike") || VEHICLE_TYPE.equals("all")) {
+			Sensor<?> sensor = new GpsSensor(null,
+				null,
+				SensorTypeEnum.GPS_BIKE,
+				null,
+				null);
 			Vehicle<BicycleData> bike = server0.getBikeFactory().createRandomBicycle(
 					
-					new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_BIKE,
-							new ArrayList<SensorInterfererType>(), ""));
+					new SensorHelper(sensor, null, SensorTypeEnum.GPS_BIKE,
+							new ArrayList<SensorInterfererType>()));
 			bike.setName("tlottmann's Fahrrad");
 			TrafficTrip tripBike = server0.createTrip(server0.getCityZone(), bike.getData().getType());
-			bike.setPath(server0.getShortestPath(server0.getGraph().getNode(tripBike.getStartNode()), server0.getGraph()
-					.getNode(tripBike.getTargetNode())));
+			bike.setPath(server0.getShortestPath(tripBike.getStartNode(), tripBike.getTargetNode()));
 
-			server0.getScheduler().scheduleItem(new ScheduleItem(bike, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+			server0.getScheduler().scheduleItem(new DefaultScheduleItem(bike, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 
 		if (VEHICLE_TYPE.equals("motorcycle") || VEHICLE_TYPE.equals("all")) {
+			Sensor<?> sensor = new GpsSensor(null,
+				null,
+				SensorTypeEnum.GPS_MOTORCYCLE,
+				null,
+				null);
 			Vehicle<MotorcycleData> motorcycle = server0.getMotorcycleFactory().createRandomMotorcycle(
 					
-					new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_MOTORCYCLE,
-							new ArrayList<SensorInterfererType>(), ""));
+					new SensorHelper(sensor, null, SensorTypeEnum.GPS_MOTORCYCLE,
+							new ArrayList<SensorInterfererType>()));
 			motorcycle.setName("Jens' Kawasaki");
 			TrafficTrip tripMotorcycle = server0.createTrip(server0.getCityZone(), motorcycle.getData().getType());
-			motorcycle.setPath(server0.getShortestPath(server0.getGraph().getNode(tripMotorcycle.getStartNode()), server0
-					.getGraph().getNode(tripMotorcycle.getTargetNode())));
+			motorcycle.setPath(server0.getShortestPath(tripMotorcycle.getStartNode(), tripMotorcycle.getTargetNode()));
 
 			server0.getScheduler().scheduleItem(
-					new ScheduleItem(motorcycle, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+					new DefaultScheduleItem(motorcycle, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 		}
 
 		EventList eventList = new EventList(null, SIMULATION_START, UUID.randomUUID());
@@ -580,11 +619,16 @@ public class TrafficServerTest {
 
 		log.debug("##############################################################################");
 
-		location = ((Coordinate) nodeForStaticSensor.getAttribute("position"));
+		location = ((Coordinate) nodeForStaticSensor.getGeoLocation());
 		if (location != null) {
-			SensorHelper helper = new SensorHelper(getUniqueSensorID(), location, SensorType.INDUCTIONLOOP,
-					new LinkedList<SensorInterfererType>(), "");
-			helper.setNodeId(nodeForStaticSensor.getId());
+			Sensor<?> sensor = new GpsSensor(null,
+				null,
+				SensorTypeEnum.GPS_MOTORCYCLE,
+				null,
+				null);
+			SensorHelper helper = new SensorHelper(sensor, location, SensorTypeEnum.INDUCTIONLOOP,
+					new LinkedList<SensorInterfererType>());
+			//helper.setNodeId(nodeForStaticSensor.getId());
 			server0.createSensor(helper);
 		}
 
@@ -634,16 +678,20 @@ public class TrafficServerTest {
 		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 
+		Sensor<?> sensor = new GpsSensor(null,
+			null,
+			SensorTypeEnum.GPS_CAR,
+			null,
+			null);
 		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(
 				
-				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
-						""));
+				new SensorHelper(sensor, null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>()));
 		car.setName("K.I.T.T");
 		TrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
-		car.setPath(server0.getShortestPath(server0.getGraph().getNode(trip.getStartNode()),
-				server0.getGraph().getNode(trip.getTargetNode())));
+		car.setPath(server0.getShortestPath(trip.getStartNode(),
+				trip.getTargetNode()));
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 
 		assertEquals(1, (server0.getScheduler().getScheduledItems().size()));
 
@@ -698,16 +746,20 @@ public class TrafficServerTest {
 		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 
+		Sensor<?> sensor = new GpsSensor(null,
+			null,
+			SensorTypeEnum.GPS_CAR,
+			null,
+			null);
 		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(
 				
-				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
-						""));
+				new SensorHelper(sensor, null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>()));
 		car.setName("K.I.T.T");
 		TrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
-		car.setPath(server0.getShortestPath(server0.getGraph().getNode(trip.getStartNode()),
-				server0.getGraph().getNode(trip.getTargetNode())));
+		car.setPath(server0.getShortestPath(trip.getStartNode(),
+				trip.getTargetNode()));
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START + 1000, server0.getUpdateIntervall()));
 
 		assertEquals(1, (server0.getScheduler().getScheduledItems().size()));
 
@@ -723,16 +775,18 @@ public class TrafficServerTest {
 				List<AbstractTrafficEvent> list = new ArrayList<>();
 				List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
 
-				List<SensorHelper> sensorLists = new ArrayList<>();
-				sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_CAR,
-						new ArrayList<SensorInterfererType>(), ""));
+				List<SensorHelper<?>> sensorLists = new ArrayList<>();
+				sensorLists.add(new SensorHelper(sensor, new Coordinate(), SensorTypeEnum.GPS_CAR,
+						new ArrayList<SensorInterfererType>()));
 				vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation(
 						true, VehicleTypeEnum.CAR, VehicleModelEnum.CAR_BMW_1, null, "K.A.R.R")));
 
+				NavigationNode node = new DefaultTrafficNode(new Coordinate(4,
+					4));
 				list.add(new AttractionTrafficEvent( server0, 
 					SIMULATION_START,
 					SIMULATION_END, SIMULATION_START + 4000,
-						SIMULATION_START + 8000, "242052866", vehicleDataList
+						SIMULATION_START + 8000, node, vehicleDataList
 					));
 				eventList = new EventList(list, SIMULATION_START + i, UUID.randomUUID());
 			} else {
@@ -782,7 +836,7 @@ public class TrafficServerTest {
 				eventHandlerManager, serverList, sensorFactory, null);
 		server0.setCityZone(JTS.toGeometry(new Envelope(0, 0, 100, 200)));
 
-		InitParameter initParam = new InitParameter();
+		InfrastructureInitParameter initParam = new InfrastructureInitParameter();
 		initParam.setCityInfrastructureData(city);
 		initParam.setStartTimestamp(SIMULATION_START);
 		initParam.setEndTimestamp(SIMULATION_END);
@@ -803,12 +857,17 @@ public class TrafficServerTest {
 	 * @return CreateRandomVehiclesEvent
 	 */
 	private static CreateRandomVehiclesEvent<?> createRandomVehicleEvent(CityInfrastructureData cityInfrastructureData,
-			int count, SensorType sensorType, VehicleTypeEnum vehicleType, VehicleModelEnum vehicleModel) {
+			int count, SensorTypeEnum sensorType, VehicleTypeEnum vehicleType, VehicleModelEnum vehicleModel) {
 		/* create random cars */
 		List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
-		List<SensorHelper> sensorLists = new ArrayList<>();
-		sensorLists.add(new SensorHelper(getUniqueSensorID(), null, sensorType, new ArrayList<SensorInterfererType>(),
-				""));
+		List<SensorHelper<?>> sensorLists = new ArrayList<>();
+		
+		Sensor<?> sensor = new GpsSensor(null,
+			null,
+			SensorTypeEnum.GPS_MOTORCYCLE,
+			null,
+			null);
+		sensorLists.add(new SensorHelper(sensor, null, sensorType, new ArrayList<SensorInterfererType>()));
 
 		for (int i = 0; i < count; i++) {
 			vehicleDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation( true, vehicleType,
@@ -819,21 +878,5 @@ public class TrafficServerTest {
 			SIMULATION_START,
 			SIMULATION_END, 
 			vehicleDataList);
-	}
-
-	/**
-	 * Returns a new unique sensor id.
-	 * 
-	 * @param randomSeedService
-	 * @return unique ID
-	 */
-	private static int getUniqueSensorID() {
-		Random random = new Random(sd.getRandomSeedService().getSeed(TrafficServerTest.class.getName()));
-		int sensorID = random.nextInt();
-		while (sensorID < 1 || USED_SENSOR_IDS.contains(sensorID)) {
-			sensorID = random.nextInt();
-		}
-		USED_SENSOR_IDS.add(sensorID);
-		return sensorID;
 	}
 }

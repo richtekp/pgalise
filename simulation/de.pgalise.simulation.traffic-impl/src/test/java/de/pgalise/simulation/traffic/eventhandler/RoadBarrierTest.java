@@ -63,14 +63,15 @@ import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.simulation.shared.traffic.BusRoute;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
-import de.pgalise.simulation.shared.traffic.VehicleInformation;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.internal.DefaultBusRoute;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
+import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.DefaultOSMCityInfrastructureDataService;
 import de.pgalise.simulation.traffic.TrafficServerTest;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
@@ -82,7 +83,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import de.pgalise.util.GTFS.service.DefaultBusService;
@@ -223,13 +224,13 @@ public class RoadBarrierTest {
 		// Create car
 		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(
 				
-				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
+				new SensorHelper(getUniqueSensorID(), null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>(),
 						""));
 		car.setName("K.I.T.T");
 
 		Path path;
 		do {
-			TrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
+			DefaultTrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
 			path = server0.getShortestPath(server0.getGraph().getNode(trip.getStartNode()),
 					server0.getGraph().getNode(trip.getTargetNode()));
 		} while (path.getNodeCount() < 5);
@@ -243,7 +244,7 @@ public class RoadBarrierTest {
 
 		log.debug("#### STEP 0 ##########################################################################");
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START, 1000));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
 		EventList eventList = new EventList(null, currentTime, UUID.randomUUID());
@@ -335,13 +336,13 @@ public class RoadBarrierTest {
 		// Create car
 		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(
 				
-				new SensorHelper(getUniqueSensorID(), null, SensorType.GPS_CAR, new ArrayList<SensorInterfererType>(),
+				new SensorHelper(getUniqueSensorID(), null, SensorTypeEnum.GPS_CAR, new ArrayList<SensorInterfererType>(),
 						""));
 		car.setName("K.I.T.T");
 
 		Path path;
 		do {
-			TrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
+			DefaultTrafficTrip trip = server0.createTrip(server0.getCityZone(), car.getData().getType());
 			path = server0.getShortestPath(server0.getGraph().getNode(trip.getStartNode()),
 					server0.getGraph().getNode(trip.getTargetNode()));
 		} while (path.getNodeCount() < 5);
@@ -355,7 +356,7 @@ public class RoadBarrierTest {
 		log.debug("Node " + closedNode + " Current node=" + car.getCurrentNode() + " Next node=" + car.getNextNode());
 		log.debug("#### STEP 0 ##########################################################################");
 
-		server0.getScheduler().scheduleItem(new ScheduleItem(car, SIMULATION_START, 1000));
+		server0.getScheduler().scheduleItem(new DefaultScheduleItem(car, SIMULATION_START, 1000));
 
 		long currentTime = SIMULATION_START;
 		EventList eventList = new EventList(null, currentTime, UUID.randomUUID());
@@ -442,15 +443,15 @@ public class RoadBarrierTest {
 
 		List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
 		List<BusRoute> busRoutes = new ArrayList<>();
-		BusRoute b301a = new BusRoute("301a", "301", "Eversten", 3);
+		DefaultBusRoute b301a = new DefaultBusRoute("301", "Eversten", 3);
 		busRoutes.add(b301a);
 		List<CreateRandomVehicleData> busDataList = new ArrayList<>();
 		int tnbt = (new DefaultBusService()).getTotalNumberOfBusTrips(busRoutes, SIMULATION_START);
 		for (int i = 0; i < tnbt; i++) {
 			List<SensorHelper> sensorLists = new ArrayList<>();
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.GPS_BUS,
+			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorTypeEnum.GPS_BUS,
 					new ArrayList<SensorInterfererType>(), ""));
-			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorType.INFRARED,
+			sensorLists.add(new SensorHelper(getUniqueSensorID(), new Coordinate(), SensorTypeEnum.INFRARED,
 					new ArrayList<SensorInterfererType>(), ""));
 			busDataList.add(new CreateRandomVehicleData(sensorLists, new VehicleInformation( true,
 					VehicleTypeEnum.BUS, VehicleModelEnum.BUS_CITARO, null, null)));
@@ -468,8 +469,8 @@ public class RoadBarrierTest {
 
 		log.debug("#### STEP 0 ##########################################################################");
 
-		List<ScheduleItem> vehicleItems = server0.getScheduler().getExpiredItems(SIMULATION_END);
-		Vehicle<? extends VehicleData> bus = vehicleItems.get(0).getVehicle();
+		List<DefaultScheduleItem> vehicleItems = server0.getScheduler().getExpiredItems(SIMULATION_END);
+		Vehicle<? extends VehicleData,N,E> bus = vehicleItems.get(0).getVehicle();
 		vehicleItems.get(0).setDepartureTime(SIMULATION_START);
 		Path path = bus.getPath();
 

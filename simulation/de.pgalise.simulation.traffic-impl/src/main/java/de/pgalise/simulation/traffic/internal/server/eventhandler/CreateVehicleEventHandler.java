@@ -22,10 +22,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
@@ -79,8 +80,8 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
 		for (CreateRandomVehicleData data : event.getVehicles()) {
 			TrafficTrip trip = data.getVehicleInformation().getTrip();
 			
-			if((trip.getStartNode()==null || trip.getStartNode().isEmpty()) &&
-					(trip.getTargetNode()==null || trip.getTargetNode().equals(""))) {
+			if((trip.getStartNode()==null ) &&
+					(trip.getTargetNode()==null )) {
 //				log.debug("No trip was specified. Creating random route...");
 				trip = getResponsibleServer().createTrip(getResponsibleServer().getCityZone(), 
 						data.getVehicleInformation().getVehicleType());
@@ -88,8 +89,8 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
 						data.getVehicleInformation()
 						.getTrip().getStartTime());
 			}
-			else if((trip.getStartNode()==null || trip.getStartNode().equals("")) &&
-					!(trip.getTargetNode()==null || trip.getTargetNode().isEmpty())) {
+			else if((trip.getStartNode()==null ) &&
+					!(trip.getTargetNode()==null )) {
 //				log.debug("Just the target node was specified. Generating random start node...");
 				trip = getResponsibleServer().createTrip(getResponsibleServer().getCityZone(), 
 						trip.getTargetNode(),
@@ -106,7 +107,7 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
 			
 			if (this.getResponsibleServer().getCityZone().covers(
 					GEOMETRY_FACTORY.createPoint(
-						(Coordinate) this.getResponsibleServer().getGraph().getNode(trip.getStartNode()).getAttribute("position")))) {
+						trip.getStartNode().getGeoLocation()))) {
 				// Create vehicle
 				Vehicle<? extends VehicleData> v = this.createVehicle(data, trip);
 	

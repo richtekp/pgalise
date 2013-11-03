@@ -18,24 +18,25 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import java.util.Random;
 
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
+import java.util.List;
 
 /**
  * If a vehicle reached its target a VEHICLE_REACHED_TARGET event is thrown. This handler handles 
@@ -83,7 +84,7 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 			TrafficEvent te = event.getEventForVehicleMap().get(event.getVehicle().getId());
 			if (te instanceof AttractionTrafficEvent) {
 				// logger.debug("Vehicle " + event.getVehicle().getName() + " reached attraction");
-				AttractionTrafficEvent e = ((AttractionTrafficEvent) te);
+				AttractionTrafficEvent<?> e = ((AttractionTrafficEvent) te);
 				long startTime = e.getAttractionEndTimestamp();
 
 				if (event.getSimulationTime() >= e.getAttractionEndTimestamp()) {
@@ -113,11 +114,12 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 	}
 
 	private void modifyVehicleForWayBack(VehicleEvent<D> event, TrafficTrip trip) {
-		Path path = event.getResponsibleServer().getShortestPath(event.getResponsibleServer().getGraph().getNode(trip.getStartNode()),
-				event.getResponsibleServer().getGraph().getNode(trip.getTargetNode()));
-		if (path.getNodeCount() > 1) {
+		List<NavigationEdge<?,?>>  path = event.getResponsibleServer().getShortestPath(
+			trip.getStartNode(),
+			trip.getTargetNode());
+		if (path != null) {
 			event.getVehicle().setPath(path);
-			event.getVehicle().setState(State.NOT_STARTED);
+			event.getVehicle().setVehicleState(VehicleStateEnum.NOT_STARTED);
 
 			scheduleVehicle(event.getVehicle(), trip.getStartTime(), event);
 		}

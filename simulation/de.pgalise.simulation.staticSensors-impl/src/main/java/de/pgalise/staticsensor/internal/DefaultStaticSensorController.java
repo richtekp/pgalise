@@ -41,7 +41,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
 import de.pgalise.simulation.staticsensor.StaticSensorControllerLocal;
 
@@ -58,7 +58,7 @@ import de.pgalise.simulation.staticsensor.StaticSensorControllerLocal;
 @Singleton(name = "de.pgalise.simulation.staticsensor.StaticSensorController")
 @Remote(StaticSensorController.class)
 @Local(StaticSensorControllerLocal.class)
-public class DefaultStaticSensorController extends AbstractController<Event> implements StaticSensorControllerLocal {
+public class DefaultStaticSensorController extends AbstractController<Event, StartParameter, InitParameter> implements StaticSensorControllerLocal {
 	/**
 	 * Logger
 	 */
@@ -190,15 +190,15 @@ public class DefaultStaticSensorController extends AbstractController<Event> imp
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}

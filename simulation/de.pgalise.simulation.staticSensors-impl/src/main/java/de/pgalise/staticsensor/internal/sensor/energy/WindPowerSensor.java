@@ -23,7 +23,7 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergySensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -99,10 +99,10 @@ public class WindPowerSensor extends EnergySensor {
 	 * @param interferer
 	 *            Energy interferer
 	 */
-	public WindPowerSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public WindPowerSensor(Output output, Coordinate position, WeatherController weatherController,
 			EnergyController energyController, RandomSeedService randomSeedService, double rotorLength,
 			double activityValue, EnergyInterferer interferer) throws InterruptedException, ExecutionException {
-		this(output, sensorId, position, weatherController, energyController, randomSeedService, rotorLength,
+		this(output, position, weatherController, energyController, randomSeedService, rotorLength,
 				activityValue, 1, interferer);
 	}
 
@@ -131,9 +131,9 @@ public class WindPowerSensor extends EnergySensor {
 	 *            Energy interferer
 	 */
 	
-	public WindPowerSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, double rotorLength, double activityValue, int updateLimit, EnergyInterferer interferer) throws InterruptedException,
+	public WindPowerSensor(Output output, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, double rotorLength, double activityValue, int updateLimit, EnergyInterferer interferer) throws InterruptedException,
 			ExecutionException {
-		super(output, sensorId, position, weatherController, energyController, randomSeedService, updateLimit,
+		super(output, position, weatherController, energyController, randomSeedService, updateLimit,
 				interferer);
 		this.activityValue = activityValue;
 		this.rotorLength = rotorLength;
@@ -207,8 +207,8 @@ public class WindPowerSensor extends EnergySensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.WINDPOWERSENSOR;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.WINDPOWERSENSOR;
 	}
 
 	/**

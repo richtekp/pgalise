@@ -16,10 +16,10 @@
  
 package de.pgalise.simulation.weather.internal.util.comparator;
 
+import de.pgalise.simulation.shared.city.City;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import de.pgalise.simulation.shared.city.City;
 
 /**
  * Comparator for cities

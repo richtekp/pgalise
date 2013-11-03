@@ -23,7 +23,7 @@ import java.util.Set;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -60,9 +60,9 @@ public class WeatherStation extends WeatherSensor {
 	 * @param sensors
 	 *            Weather sensors
 	 */
-	protected WeatherStation(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	protected WeatherStation(Output output, Coordinate position, WeatherController weatherController,
 			final WeatherInterferer weatherInterferer, int updateLimit, WeatherSensor... sensors) {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 		if(sensors == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensors"));
 		}
@@ -85,14 +85,14 @@ public class WeatherStation extends WeatherSensor {
 	 * @param updateLimit
 	 *            Update limit
 	 */
-	protected WeatherStation(Output output, long sensorId, Coordinate position, WeatherController weatherController, int updateLimit,
+	protected WeatherStation(Output output, Coordinate position, WeatherController weatherController, int updateLimit,
 			final WeatherInterferer weatherInterferer) {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.WEATHER_STATION;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.WEATHER_STATION;
 	}
 
 	@Override

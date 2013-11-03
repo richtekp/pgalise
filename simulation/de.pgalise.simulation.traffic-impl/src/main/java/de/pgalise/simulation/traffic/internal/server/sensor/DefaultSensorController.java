@@ -33,8 +33,10 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -55,6 +57,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	 */
 	private static final Logger log = LoggerFactory.getLogger(DefaultSensorController.class);
 	private static final String NAME = "SensorController";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Sensor domain
@@ -97,7 +100,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 	public void createSensor(SensorHelper sensor) throws SensorException {
 		try {
 			// Add sensor
-			final Sensor newSensor = sensorFactory
+			final Sensor<?> newSensor = sensorFactory
 					.createSensor(sensor, TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
 			if (newSensor != null) {
 				if (newSensor instanceof InductionLoopSensor) {
@@ -114,9 +117,9 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 				// log.debug("Add sensor to Registry " + sensorRegistry.hashCode());
 				sensorRegistry.addSensor(newSensor);
 				if (newSensor instanceof StaticTrafficSensor) {
-					trafficGraphExtensions.addSensor(server.getGraph().getNode(sensor.getNodeId()),
+					trafficGraphExtensions.addSensor(null,
 							(StaticTrafficSensor) newSensor);
-					log.info("Sensor " + sensor.getSensorID() + " added to node " + sensor.getNodeId());
+					log.info("Sensor " + sensor.getSensorID() + " added to node " + sensor);
 				}
 			}
 		} catch (InterruptedException | ExecutionException ex) {
@@ -195,8 +198,8 @@ public class DefaultSensorController extends AbstractController<TrafficEvent> im
 		VehicleData data = vehicle.getData();
 
 		// Prepare GPS sensor
-		int sensorId = data.getGpsSensorHelper().getSensorID();
-		Sensor sensor = sensorRegistry.getSensor(sensorId);
+		Sensor<?> sensorId = data.getGpsSensorHelper().getSensorID();
+		Sensor<?> sensor = sensorRegistry.getSensor(sensorId);
 		if (sensor == null) {
 			GpsSensor newSensor;
 			try {

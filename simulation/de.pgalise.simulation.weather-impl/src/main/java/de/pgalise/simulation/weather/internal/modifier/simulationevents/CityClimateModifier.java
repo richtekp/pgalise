@@ -269,35 +269,25 @@ public class CityClimateModifier extends WeatherSimulationEventModifier {
 	 * @return Changed value
 	 */
 	public float getWindVelocity(float windVelocity, CityLocationEnum cityLocation) {
-		float refvalue;
+		float refvalue = 0;
 
-		switch (cityLocation.getId()) {
-			case 1: // Vorort
+		if(cityLocation.equals(CityLocationEnum.SUBURBAN)) {
 				refvalue = 0.69f;
-				break;
-			case 2: // Industrie
+		}else if(cityLocation.equals(CityLocationEnum.INDUSTRY)) {
 				refvalue = 0.60f;
-				break;
-			case 3: // Grünfläche
+		}else if(cityLocation.equals(CityLocationEnum.GREEN_AREA)) {
 				refvalue = 0.49f;
-				break;
-			case 4: // Innenstadt (ohne Flussnähe)
+		}else if(cityLocation.equals(CityLocationEnum.DOWNTOWN_NORIVER)) {
 				refvalue = 0.57f;
-				break;
-			case 5: // Innenstadt (mit Flussnähe)
+		}else if(cityLocation.equals(CityLocationEnum.DOWNTOWN_RIVER)) {
 				refvalue = 0.71f;
-				break;
-			case 6: // Gewerbe
+		}else if(cityLocation.equals(CityLocationEnum.INDUSTRIAL_ZONE)) {
 				refvalue = 0.54f;
-				break;
-			case 7: // Aue
+		}else if(cityLocation.equals(CityLocationEnum.MEADOW)) {
 				refvalue = 0.74f;
-				break;
-			default: // Freiland
+		}else if(cityLocation.equals(CityLocationEnum.OPEN_LAND)) {
 				refvalue = 1;
-				break;
 		}
-
 		return windVelocity * refvalue;
 	}
 

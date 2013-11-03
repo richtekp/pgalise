@@ -17,12 +17,12 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.shared.event.EventType;
-import org.graphstream.graph.Node;
+import de.pgalise.simulation.shared.city.NavigationNode;
 
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorizedVehicle;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
@@ -56,25 +56,25 @@ public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandle
 				return;
 			}
 
-			Node passedNode = vehicle.getCurrentNode();
+			NavigationNode passedNode = vehicle.getCurrentNode();
 			vehicle.setPosition(event.getTrafficGraphExtensions().getPosition(passedNode));
 			final double vel = vehicle.getVelocity();
 			vehicle.setVelocity(0);
-			vehicle.setState(State.STOPPED);
+			vehicle.setVehicleState(VehicleStateEnum.STOPPED);
 			event.getTrafficGraphExtensions().getTrafficRule(passedNode)
 					.register(vehicle, vehicle.getPreviousNode(), vehicle.getNextNode(), new TrafficRuleCallback() {
 
 						@Override
 						public boolean onEnter() {
 							// is allowed to drive
-							vehicle.setState(State.IN_TRAFFIC_RULE);
+							vehicle.setVehicleState(VehicleStateEnum.IN_TRAFFIC_RULE);
 							return true;
 						}
 
 						@Override
 						public boolean onExit() {
 							// leaves the trafficRule
-							vehicle.setState(State.DRIVING);
+							vehicle.setVehicleState(VehicleStateEnum.DRIVING);
 							vehicle.setVelocity(vel);
 							return true;
 						}

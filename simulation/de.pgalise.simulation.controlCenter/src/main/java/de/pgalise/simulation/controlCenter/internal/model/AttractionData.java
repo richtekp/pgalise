@@ -17,13 +17,15 @@
 package de.pgalise.simulation.controlCenter.internal.model;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.city.NavigationNode;
 
 /**
  * Data to create an attraction event.
  * @author Timo
  */
-public class AttractionData {
-	private int id;
+public class AttractionData extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * when will the attraction start.
@@ -43,7 +45,7 @@ public class AttractionData {
 	/**
 	 * Node id in graph
 	 */
-	private String nodeID;
+	private NavigationNode nodeID;
 	
 	/**
 	 * This vehicles will drive to the attraction point.
@@ -60,23 +62,14 @@ public class AttractionData {
 	 * @param randomVehicleBundle
 	 * 			defines which vehicle will drive to the attraction
 	 */
-	public AttractionData(int id, long attractionStartTimestamp,
+	public AttractionData(long attractionStartTimestamp,
 			long attractionEndTimestamp, Coordinate attractionPoint,
-			String nodeID, RandomVehicleBundle randomVehicleBundle) {
-		this.id = id;
+			NavigationNode nodeID, RandomVehicleBundle randomVehicleBundle) {
 		this.attractionStartTimestamp = attractionStartTimestamp;
 		this.attractionEndTimestamp = attractionEndTimestamp;
 		this.attractionPoint = attractionPoint;
 		this.nodeID = nodeID;
 		this.randomVehicleBundle = randomVehicleBundle;
-	}
-	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public long getAttractionStartTimestamp() {
@@ -103,11 +96,11 @@ public class AttractionData {
 		this.attractionPoint = attractionPoint;
 	}
 
-	public String getNodeID() {
+	public NavigationNode getNodeID() {
 		return nodeID;
 	}
 
-	public void setNodeID(String nodeID) {
+	public void setNodeID(NavigationNode nodeID) {
 		this.nodeID = nodeID;
 	}
 

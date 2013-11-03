@@ -19,7 +19,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -52,9 +52,9 @@ public class WindFlagSensor extends WeatherSensor {
 	 * @param weatherController
 	 *            Reference to the weather controller of the simulation
 	 */
-	public WindFlagSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public WindFlagSensor(Output output, Coordinate position, WeatherController weatherController,
 			final WeatherInterferer weatherInterferer) {
-		this(output, sensorId, position, weatherController, 1, weatherInterferer);
+		this(output, position, weatherController, 1, weatherInterferer);
 	}
 
 	/**
@@ -71,14 +71,14 @@ public class WindFlagSensor extends WeatherSensor {
 	 * @param updateLimit
 	 *            Update limit
 	 */
-	public WindFlagSensor(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public WindFlagSensor(Output output, Coordinate position, WeatherController weatherController,
 			int updateLimit, final WeatherInterferer weatherInterferer) {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.WINDFLAG;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.WINDFLAG;
 	}
 
 	/**

@@ -70,7 +70,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.simulationController.event.EventInitiator")
 @Local
-public class DefaultEventInitiator extends AbstractController<Event> implements EventInitiator {
+public class DefaultEventInitiator extends AbstractController<Event, StartParameter, InitParameter> implements EventInitiator {
 	private static final String NAME = "EventInitiator";
 	private static SimpleDateFormat sdf;
 
@@ -466,7 +466,7 @@ public class DefaultEventInitiator extends AbstractController<Event> implements 
 	}
 
 	@Override
-	public void setFrontController(List<Controller<?>> controller) {
+	public void setFrontController(List<Controller<?,?,?>> controller) {
 		this.frontControllerList = controller;
 	}
 }

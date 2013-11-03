@@ -40,7 +40,7 @@ import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -51,7 +51,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -73,13 +73,14 @@ import javax.persistence.EntityManager;
 @Singleton(name = "de.pgalise.simulation.SimulationController")
 @Remote(SimulationController.class)
 @Local(SimulationControllerLocal.class)
-public class DefaultSimulationController extends AbstractController<Event> implements SimulationControllerLocal {
+public class DefaultSimulationController extends AbstractController<Event, StartParameter, InitParameter> implements SimulationControllerLocal {
 
 	/**
 	 * Logger
 	 */
 	private static final Logger log = LoggerFactory.getLogger(DefaultSimulationController.class);
 	private static final String NAME = "SimulationController";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * EventInitiator
@@ -291,7 +292,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			}
 		}
 		
-		for(Controller<?> c: frontControllerList) {
+		for(Controller<?,?,?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
 				c.reset();
 			}
@@ -313,15 +314,17 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 		for (Service c : this.serviceDictionary.getControllers()) {
 			if (!(c instanceof SimulationController)) {
 				if(c instanceof Controller)  {
-					((Controller)c).start(param);
+					((Controller<?,StartParameter,?>)c).start(param);
 				}
 			}
 
 		}
 
-		for(Controller<?> c: frontControllerList) {
+		for(Controller<?,?,?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
-				c.start(param);
+				if(c instanceof Controller) {
+					((Controller<?,StartParameter,?>)c).start(param);
+				}
 			}
 		}
 
@@ -356,7 +359,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			}
 		}
 		
-		for(Controller<?> c: frontControllerList) {
+		for(Controller<?,?,?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
 				c.stop();
 			}
@@ -374,9 +377,11 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 			}
 		}
 		
-		for(Controller<?> c: frontControllerList) {
+		for(Controller<?,?,?> c: frontControllerList) {
 			if (!(c instanceof SimulationController)) {
-				c.start(this.startParameter);
+				if(c instanceof Controller) {
+					((Controller)c).start(this.startParameter);
+				}
 			}
 		}
 
@@ -414,15 +419,15 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		for (SensorHelper<?> sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}
@@ -459,7 +464,7 @@ public class DefaultSimulationController extends AbstractController<Event> imple
 	 * 
 	 * @param serverConfigurationReader
 	 */
-	public void _setServerConfigurationReader(ServerConfigurationReader<Controller<?>> serverConfigurationReader) {
+	public void _setServerConfigurationReader(ServerConfigurationReader<Controller<?,?,?>> serverConfigurationReader) {
 		this.serverConfigReader = serverConfigurationReader;
 	}
 

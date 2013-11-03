@@ -16,11 +16,11 @@
  
 package de.pgalise.util.cityinfrastructure.impl;
 
+import de.pgalise.simulation.shared.city.Building;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 

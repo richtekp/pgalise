@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.server.scheduler;
 
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler.Modus;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 
 /**
  * To prohibit other components to manipulate the schedule plan
@@ -38,7 +38,7 @@ public class Administration {
 	public Scheduler getScheduler() {
 		return this.scheduler;
 	}
-	public void changeModus(Modus modus) {
+	public void changeModus(ScheduleModus modus) {
 		scheduler.changeModus(modus);
 	}
 }

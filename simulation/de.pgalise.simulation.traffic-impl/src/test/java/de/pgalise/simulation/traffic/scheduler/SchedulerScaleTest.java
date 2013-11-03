@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
@@ -44,9 +44,9 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler.Modus;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import javax.vecmath.Vector2d;
 
 /**
@@ -214,14 +214,14 @@ public class SchedulerScaleTest {
 		 * SortedListScheduler
 		 */
 		admin = SortedListScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		scheduler = admin.getScheduler();
 		schedulers.add(scheduler);
 
 		// Schedule
 		scheduleDuration = System.currentTimeMillis();
 		for (int i = 0; i < vehicles.size(); i++) {
-			scheduler.scheduleItem(new ScheduleItem(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
+			scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
 		}
 		log.info("Duration (in millis) of the SortedListScheduler: " + (System.currentTimeMillis() - scheduleDuration));
 
@@ -229,14 +229,14 @@ public class SchedulerScaleTest {
 		 * SortedListScheduler
 		 */
 		admin = TreeSetScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		scheduler = admin.getScheduler();
 		schedulers.add(scheduler);
 
 		// Schedule
 		scheduleDuration = System.currentTimeMillis();
 		for (int i = 0; i < vehicles.size(); i++) {
-			scheduler.scheduleItem(new ScheduleItem(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
+			scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(i), startTime + (i * SCHEDULE_INTERVAL), 1000));
 		}
 		log.info("Duration (in millis) of the TreeSetScheduler: " + (System.currentTimeMillis() - scheduleDuration));
 

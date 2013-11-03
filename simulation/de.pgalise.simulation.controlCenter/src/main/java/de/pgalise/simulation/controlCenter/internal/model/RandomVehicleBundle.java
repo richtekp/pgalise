@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.model;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ import java.util.UUID;
 public class RandomVehicleBundle {
 	private int randomCarAmount, randomBikeAmount, randomTruckAmount, randomMotorcycleAmount;
 	private double gpsCarRatio, gpsBikeRatio, gpsTruckRatio, gpsMotorcycleRatio;
-	private Set<Integer> usedSensorIDs;
+	private Set<Sensor<?>> usedSensorIDs;
 	private Set<UUID> usedUUIDs;
 	
 	/**
@@ -46,7 +47,7 @@ public class RandomVehicleBundle {
 			int randomBikeAmount, double gpsBikeRatio,
 			int randomTruckAmount, double gpsTruckRatio,
 			int randomMotorcycleAmount, double gpsMotorcycleRatio, 
-			Set<Integer> usedSensorIDs, Set<UUID> usedUUIDs) {
+			Set<Sensor<?>> usedSensorIDs, Set<UUID> usedUUIDs) {
 		super();
 		if(randomCarAmount < 0) {
 			throw new IllegalArgumentException("randomCarAmount must be >= 0!");
@@ -157,11 +158,11 @@ public class RandomVehicleBundle {
 		this.gpsMotorcycleRatio = gpsMotorcycleRatio;
 	}
 
-	public Set<Integer> getUsedSensorIDs() {
+	public Set<Sensor<?>> getUsedSensorIDs() {
 		return usedSensorIDs;
 	}
 
-	public void setUsedSensorIDs(Set<Integer> usedSensorIDs) {
+	public void setUsedSensorIDs(Set<Sensor<?>> usedSensorIDs) {
 		this.usedSensorIDs = usedSensorIDs;
 	}
 

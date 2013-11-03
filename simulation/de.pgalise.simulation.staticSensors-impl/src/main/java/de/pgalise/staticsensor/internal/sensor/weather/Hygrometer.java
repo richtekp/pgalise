@@ -19,7 +19,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -54,10 +54,10 @@ public class Hygrometer extends WeatherSensor {
 	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
 	 *            is not a type of {@link HygrometerWhiteNoiseInterferer}
 	 */
-	public Hygrometer(final Output output, final long sensorId, final Coordinate position,
+	public Hygrometer(final Output output, final Coordinate position,
 			final WeatherController weatherController, final WeatherInterferer weatherInterferer)
 			throws IllegalArgumentException {
-		this(output, sensorId, position, weatherController, 1, weatherInterferer);
+		this(output, position, weatherController, 1, weatherInterferer);
 	}
 
 	/**
@@ -75,9 +75,9 @@ public class Hygrometer extends WeatherSensor {
 	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
 	 *            argument 'weatherController' is not a type of {@link HygrometerWhiteNoiseInterferer}
 	 */
-	public Hygrometer(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public Hygrometer(Output output, Coordinate position, WeatherController weatherController,
 			int updateLimit, final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof HygrometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
 		// HygrometerWhiteNoiseInterferer.class.getName() + "'");
@@ -94,8 +94,8 @@ public class Hygrometer extends WeatherSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.HYGROMETER;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.HYGROMETER;
 	}
 
 	/**

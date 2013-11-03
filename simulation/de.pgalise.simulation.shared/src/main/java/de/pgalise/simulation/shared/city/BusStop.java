@@ -13,66 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
+public interface BusStop extends Identifiable, NavigationNode {
  
-package de.pgalise.simulation.shared.city;
 
-import java.io.Serializable;
+	public Coordinate getLocation() ;
+
+	public void setLocation(Coordinate location) ;
 
 /**
- * A bus stop is a {@link Node} with a bus stop name.
- * @author Timo
+	 * @return the stopName
  */
-public class BusStop extends Node implements Serializable {
-	private static final long serialVersionUID = -8112215320374809034L;
-	private String name;
+	public String getStopName() ;
 
 	/**
-	 * New bus stop.
-	 * 
-	 * @param name
-	 * @param latitude
-	 * @param longitude
+	 * @param stopName the stopName to set
 	 */
-	public BusStop(String id, String name, double latitude, double longitude) {
-		super(id, latitude, longitude);
-		this.name = name;
-	}
+	public void setStopName(String stopName) ;
 
-	public String getName() {
-		return this.name;
-	}
+	public String getStopCode() ;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public void setStopCode(String stopCode) ;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
-	}
+	public String getZoneId() ;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		BusStop other = (BusStop) obj;
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		return true;
-	}
+	public void setZoneId(String zoneId) ;
+
+	public String getStopUrl() ;
+
+	public void setStopUrl(String stopUrl) ;
+
+	public String getLocationType() ;
+
+	public void setLocationType(String locationType) ;
+
+	public String getParentStation() ;
+
+	public void setParentStation(String parentStation) ;
+
+	public String getStopTimezone() ;
+
+	public void setStopTimezone(String stopTimezone) ;
+
+	public String getWheelchairBoarding() ;
+
+	public void setWheelchairBoarding(String wheelchairBoarding) ;
+
 }

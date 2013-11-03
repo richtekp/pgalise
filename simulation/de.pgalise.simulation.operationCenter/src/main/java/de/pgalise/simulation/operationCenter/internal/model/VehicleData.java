@@ -26,7 +26,7 @@ import java.util.Collection;
  */
 public class VehicleData {
 	private Collection<SensorHelperTypeWrapper> sensors;
-	private Vehicle<?> vehicleID;
+	private BaseVehicle<D> vehicleID;
 	private int vehicleTypeID;
 	private int vehicleModelID;
 	
@@ -42,7 +42,7 @@ public class VehicleData {
 	 * 			the model of the vehicle
 	 */
 	public VehicleData(Collection<SensorHelperTypeWrapper> sensors,
-			Vehicle<?> vehicleID, int vehicleTypeID, int vehicleModelID) {
+			BaseVehicle<D> vehicleID, int vehicleTypeID, int vehicleModelID) {
 		this.sensors = sensors;
 		this.vehicleID = vehicleID;
 		this.vehicleTypeID = vehicleTypeID;
@@ -57,11 +57,11 @@ public class VehicleData {
 		this.sensors = sensors;
 	}
 	
-	public Vehicle<?> getVehicleID() {
+	public BaseVehicle<D> getVehicleID() {
 		return vehicleID;
 	}
 	
-	public void setVehicleID(Vehicle<?> vehicleID) {
+	public void setVehicleID(BaseVehicle<D> vehicleID) {
 		this.vehicleID = vehicleID;
 	}
 	

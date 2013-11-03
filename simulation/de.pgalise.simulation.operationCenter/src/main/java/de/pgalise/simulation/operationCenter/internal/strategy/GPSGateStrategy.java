@@ -21,14 +21,16 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.SensorManagerController;
+import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 
 /**
  * Interface to handle gate messages.
  * @author Timo
  */
-public interface GPSGateStrategy extends Controller<Event>, SensorManagerController<Event> {
+public interface GPSGateStrategy extends Controller<Event, InfrastructureStartParameter, InfrastructureInitParameter>, SensorManagerController<Event, InfrastructureStartParameter, InfrastructureInitParameter> {
 	/**
 	 * Handles a gate message.
 	 * @param gateInformationMap <Integer = sensor type, Double = percentage> e.g. 1, 0.8 means 80% of sensors from type 1.

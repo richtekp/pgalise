@@ -45,28 +45,28 @@ public interface CityInfrastructureData extends Serializable {
 	 * 
 	 * @return
 	 */
-	public List<Way> getCycleWays();
+	public List<Way<?, ?>> getCycleWays();
 
 	/**
 	 * Returns a list of land use areas e.g. industrial parks.
 	 * 
 	 * @return
 	 */
-	public List<Way> getLandUseWays();
+	public List<Way<?,?>> getLandUseWays();
 
 	/**
 	 * Returns a list of streets for cars. Some of the nodes can be instances of @TrafficLight.
 	 * 
 	 * @return
 	 */
-	public List<Way> getMotorWays();
+	public List<Way<?, ?>> getMotorWays();
 
 	/**
 	 * Returns a list of streets for cars with busstops as nodes. Some of the nodes can be instances of @TrafficLight.
 	 * 
 	 * @return
 	 */
-	public List<Way> getMotorWaysWithBusstops();
+	public List<Way<?, ?>> getMotorWaysWithBusstops();
 
 	/**
 	 * Returns the nearest used node.
@@ -75,7 +75,7 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param longitude
 	 * @return
 	 */
-	public Node getNearestNode(double latitude, double longitude);
+	public NavigationNode getNearestNode(double latitude, double longitude);
 
 	/**
 	 * Returns the nearest used street node.
@@ -83,7 +83,7 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param longitude
 	 * @return
 	 */
-	public Node getNearestStreetNode(double latitude, double longitude);
+	public NavigationNode getNearestStreetNode(double latitude, double longitude);
 	
 	/**
 	 * Returns the nearest used junction node.
@@ -91,39 +91,39 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param longitude
 	 * @return
 	 */
-	public Node getNearestJunctionNode(double latitude, double longitude);
+	public NavigationNode getNearestJunctionNode(double latitude, double longitude);
 	
 	/**
 	 * Returns a list with all used junction nodes.
 	 * @return
 	 */
-	public List<Node> getJunctionNodes();
+	public List<NavigationNode> getJunctionNodes();
 	
 	/**
 	 * Returns every used node. Some of the nodes can be instances of @TrafficLight.
 	 * @return
 	 */
-	public List<Node> getNodes();
+	public List<NavigationNode> getNodes();
 	
 	/**
 	 * Returns every street node.
 	 * @return
 	 */
-	public List<Node> getStreetNodes();
+	public List<NavigationNode> getStreetNodes();
 
 	/**
 	 * Returns a list of nodes with roundabouts.
 	 * 
 	 * @return
 	 */
-	public List<Node> getRoundAbouts();
+	public List<NavigationNode> getRoundAbouts();
 
 	/**
 	 * Returns all ways. Some of the nodes can be instances of @TrafficLight.
 	 * 
 	 * @return
 	 */
-	public List<Way> getWays();
+	public List<Way<?, ?>> getWays();
 	
 	/**
 	 * Returns the boundary of the map.
@@ -152,11 +152,11 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param boundary
 	 * @return
 	 */
-	public List<Node> getNodesInBoundary(Boundary boundary);
+	public List<NavigationNode> getNodesInBoundary(Boundary boundary);
 	
 	/**
 	 * Returns all ways for cars and bikes.
 	 * @return
 	 */
-	public List<Way> getCycleAndMotorways();
+	public List<Way<?, ?>> getCycleAndMotorways();
 }

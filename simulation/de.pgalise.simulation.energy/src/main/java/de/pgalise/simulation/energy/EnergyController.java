@@ -19,8 +19,10 @@ package de.pgalise.simulation.energy;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
+import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
+import de.pgalise.simulation.service.InitParameter;
 
 /**
  * Interface for the energy controllers. An energy controller is able to give the energy consumption in kWh on a
@@ -28,7 +30,7 @@ import de.pgalise.simulation.shared.sensor.SensorHelperSmartMeter;
  * 
  * @author Timo
  */
-public interface EnergyController extends Controller<EnergyEvent> {
+public interface EnergyController extends Controller<EnergyEvent, StartParameter, InitParameter> {
 
 	/**
 	 * Returns the current energy consumption on the given point.

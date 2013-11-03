@@ -31,15 +31,17 @@ import org.junit.Test;
 import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.controlCenter.internal.util.service.DefaultCreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 
 /**
  * J-Unit tests for {@link DefaultCreateRandomVehicleService}.<br />
@@ -69,7 +71,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 	private static final double GPS_TRUCK_RATIO = 1.0;
 	private static final int RANDOM_MOTORCYCLE_AMOUNT = 99;
 	private static final double GPS_MOTORCYCLE_RATIO = 0.5;
-	private static Set<Integer> usedSensorIDs;
+	private static Set<Sensor<?>> usedSensorIDs;
 	private static Set<UUID> usedUUIDs;
 	private static int carAmount = 0;
 	private static int carsWithGPSAmount = 0;
@@ -79,7 +81,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 	private static int bikesWithGPSAmount = 0;
 	private static int motorcycleAmount = 0;
 	private static int motorcyclesWithGPSAmount = 0;
-	private static Set<Integer> newSensorIDs = new HashSet<>();
+	private static Set<Sensor<?>> newSensorIDs = new HashSet<>();
 
 	private static Set<UUID> newUUIDs = new HashSet<>();
 
@@ -91,11 +93,11 @@ public class DefaultRandomDynamicSensorServiceTest {
 				new SensorInterfererServiceMock(), trafficServerLocal);
 
 		/* Create random used sensor ids: */
-		DefaultRandomDynamicSensorServiceTest.usedSensorIDs = new HashSet<>();
-		Random random = new Random();
-		while (DefaultRandomDynamicSensorServiceTest.usedSensorIDs.size() < 500) {
-			DefaultRandomDynamicSensorServiceTest.usedSensorIDs.add(Math.abs(random.nextInt()));
-		}
+//		DefaultRandomDynamicSensorServiceTest.usedSensorIDs = new HashSet<>();
+//		Random random = new Random();
+//		while (DefaultRandomDynamicSensorServiceTest.usedSensorIDs.size() < 500) {
+//			DefaultRandomDynamicSensorServiceTest.usedSensorIDs.add(Math.abs(random.nextInt()));
+//		}
 
 		/* Create random used UUIDs: */
 		DefaultRandomDynamicSensorServiceTest.usedUUIDs = new HashSet<>();
@@ -125,7 +127,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 					case CAR:
 						DefaultRandomDynamicSensorServiceTest.carAmount++;
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
-							if (sensorHelper.getSensorType() == SensorType.GPS_CAR) {
+							if (sensorHelper.getSensorType() == SensorTypeEnum.GPS_CAR) {
 								DefaultRandomDynamicSensorServiceTest.carsWithGPSAmount++;
 								DefaultRandomDynamicSensorServiceTest.newSensorIDs.add(sensorHelper.getSensorID());
 								break;
@@ -135,7 +137,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 					case BIKE:
 						DefaultRandomDynamicSensorServiceTest.bikeAmount++;
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
-							if (sensorHelper.getSensorType() == SensorType.GPS_BIKE) {
+							if (sensorHelper.getSensorType() == SensorTypeEnum.GPS_BIKE) {
 								DefaultRandomDynamicSensorServiceTest.bikesWithGPSAmount++;
 								DefaultRandomDynamicSensorServiceTest.newSensorIDs.add(sensorHelper.getSensorID());
 								break;
@@ -145,7 +147,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 					case MOTORCYCLE:
 						DefaultRandomDynamicSensorServiceTest.motorcycleAmount++;
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
-							if (sensorHelper.getSensorType() == SensorType.GPS_MOTORCYCLE) {
+							if (sensorHelper.getSensorType() == SensorTypeEnum.GPS_MOTORCYCLE) {
 								DefaultRandomDynamicSensorServiceTest.motorcyclesWithGPSAmount++;
 								DefaultRandomDynamicSensorServiceTest.newSensorIDs.add(sensorHelper.getSensorID());
 								break;
@@ -155,7 +157,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 					case TRUCK:
 						DefaultRandomDynamicSensorServiceTest.truckAmount++;
 						for (SensorHelper sensorHelper : createRandomVehicleData.getSensorHelpers()) {
-							if (sensorHelper.getSensorType() == SensorType.GPS_TRUCK) {
+							if (sensorHelper.getSensorType() == SensorTypeEnum.GPS_TRUCK) {
 								DefaultRandomDynamicSensorServiceTest.trucksWithGPSAmount++;
 								DefaultRandomDynamicSensorServiceTest.newSensorIDs.add(sensorHelper.getSensorID());
 								break;
@@ -198,7 +200,7 @@ public class DefaultRandomDynamicSensorServiceTest {
 	 */
 	@Test
 	public void testIDs() {
-		Set<Integer> allIDs = new HashSet<>();
+		Set<Sensor<?>> allIDs = new HashSet<>();
 		allIDs.addAll(DefaultRandomDynamicSensorServiceTest.newSensorIDs);
 		allIDs.addAll(DefaultRandomDynamicSensorServiceTest.usedSensorIDs);
 		Assert.assertEquals(DefaultRandomDynamicSensorServiceTest.usedSensorIDs.size()

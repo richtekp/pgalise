@@ -6,9 +6,11 @@ package de.pgalise.it;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeotoolsBootstrapping;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.persistence.Identifiable;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
@@ -271,7 +273,7 @@ public class TestUtils {
 	public static City createDefaultTestCityInstance() {
 		
 		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
-		Polygon referenceArea = GeotoolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
 				new Coordinate(referencePoint.x-1, referencePoint.y), 
@@ -280,12 +282,14 @@ public class TestUtils {
 				new Coordinate(referencePoint.x-1, referencePoint.y-1)
 			}
 		);
-		City city = new City("Berlin",
+		TrafficGraph<?,?> trafficGraph = new TrafficGraph<>(NavigationEdge.class);
+		City city = new DefaultCity("Berlin",
 			3375222,
 			80,
 			true,
 			true,
-			referenceArea);
+			referenceArea, 
+			trafficGraph);
 		return city;
 	}
 

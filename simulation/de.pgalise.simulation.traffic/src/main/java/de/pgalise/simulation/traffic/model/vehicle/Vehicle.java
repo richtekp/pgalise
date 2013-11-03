@@ -18,13 +18,13 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.persistence.Identifiable;
-import java.util.EnumSet;
-
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import java.util.List;
 import javax.vecmath.Vector2d;
 
 /**
@@ -36,45 +36,6 @@ import javax.vecmath.Vector2d;
  * @version 1.0 (Nov 12, 2012)
  */
 public interface Vehicle<E extends VehicleData> extends Identifiable {
-
-	/**
-	 * Status
-	 * 
-	 * @author Mustafa
-	 * @version 1.0 (Dec 27, 2012)
-	 */
-	public enum State {
-		/**
-		 * Initial status, vehicle is waiting for departure.
-		 */
-		NOT_STARTED,
-		/**
-		 * Vehicle is currently driving.
-		 */
-		DRIVING,
-		/**
-		 * Vehicle has arrived at its target.
-		 */
-		REACHED_TARGET,
-		/**
-		 * Vehicle is on his way but has to wait for example on a traffic junction.
-		 */
-		/**
-		 * Paused vehicles are not allowed to register on any nodes.
-		 */
-		PAUSED,
-		
-		
-		STOPPED,
-		/**
-		 * Vehicle is trapped in a traffic rule of Marcus.
-		 */
-		IN_TRAFFIC_RULE;
-		/**
-		 * Vehicles having this status are supposed to be updated when receiving an update event
-		 */
-		public static final EnumSet<State> UPDATEABLE_VEHICLES = EnumSet.of(State.NOT_STARTED, State.DRIVING, State.STOPPED, State.PAUSED);
-	}
 
 	/**
 	 * @return the hasGPS
@@ -103,25 +64,27 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	/**
 	 * @return the currentNode
 	 */
-	public Node getCurrentNode();
+	public N getCurrentNode();
 
 	/**
 	 * @param currentNode
 	 *            the currentNode to set
 	 */
-	public void setCurrentNode(Node currentNode);
+	public void setCurrentNode(N currentNode);
 
 	/**
 	 * @return the nextNode
 	 */
-	public Node getNextNode();
+	public N getNextNode();
 
-	public Node getPreviousNode();
+	public N getPreviousNode();
 
 	/**
 	 * @return the path
 	 */
-	public Path getPath();
+	public List<E> getPath();
+	
+	public List<N> getNodePath();
 
 	/**
 	 * Sets the path of this vehicle. Simultaneously the currentNode and nextNode property will be set to the first and
@@ -171,12 +134,12 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param state
 	 *            state to set
 	 */
-	public void setState(State state);
+	public void setVehicleState(VehicleStateEnum state);
 
 	/**
 	 * @return the state
 	 */
-	public State getState();
+	public VehicleStateEnum getVehicleState();
 
 	/**
 	 * Updates this vehicle's position, direction, orientation and status. If this vehicle reaches its target its status
@@ -203,36 +166,36 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * 
 	 * @return current edge
 	 */
-	public Edge getCurrentEdge();
+	public E getCurrentEdge();
 
 	/**
 	 * Sets the current edge.
 	 * 
-	 * @param current
-	 *            edge to set
+	 * 
+	 * @param edge 
 	 */
-	public void setCurrentEdge(Edge edge);
+	public void setCurrentEdge(E edge);
 
 	/**
 	 * Returns the next edge.
 	 * 
 	 * @return edge after the current edge
 	 */
-	public Edge getNextEdge();
+	public E getNextEdge();
 
 	/**
 	 * Return the previous edge.
 	 * 
 	 * @return edge before the current edge
 	 */
-	public Edge getPreviousEdge();
+	public E getPreviousEdge();
 
 	/**
 	 * Returns the vehicle data
 	 * 
 	 * @return VehicleData
 	 */
-	public E getData();
+	public D getData();
 
 	/**
 	 * Sets the vehicle data
@@ -240,7 +203,7 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param data
 	 *            Vehicle data to set
 	 */
-	public void setData(E data);
+	public void setData(D data);
 	
 	public TrafficGraphExtensions getTrafficGraphExtensions();
 
@@ -251,6 +214,6 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param node
 	 * @return index of the passed node in the path otherwise -1
 	 */
-	public int getIndex(Node node);
+	public int getIndex(N node);
 
 }

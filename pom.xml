@@ -265,11 +265,15 @@
 				<artifactId>gs-core</artifactId>
 				<version>1.1.1</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.graphstream</groupId>
 				<artifactId>gs-algo</artifactId>
 				<version>1.1.2</version>
+			</dependency>		-->
+			<dependency>
+					<groupId>net.sf.jgrapht</groupId>
+					<artifactId>jgrapht</artifactId>
+					<version>0.8.3</version>
 			</dependency>		
 
 			<dependency>

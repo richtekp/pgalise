@@ -26,9 +26,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -39,7 +43,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> implements MotorcycleFactory {
+public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> implements MotorcycleFactory<DefaultTrafficNode<MotorcycleData>,DefaultTrafficEdge<MotorcycleData>, BaseVehicle<MotorcycleData>> {
 
 	/**
 	 * Constructor
@@ -68,17 +72,15 @@ public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> imp
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createRandomMotorcycle( SensorHelper helper) {
+	public BaseVehicle<MotorcycleData> createRandomMotorcycle( SensorHelper helper) {
 		MotorcycleData data = getRandomVehicleData();
 		data.setGpsSensorHelper(helper);
 		return new DefaultMotorizedVehicle<>( updateMotorcycleData(data, Color.BLACK), trafficGraphExtensions);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createMotorcycle( String typeId, Color color, SensorHelper helper) {
-		MotorcycleData data = getVehicleData().get(typeId);
-		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>( updateMotorcycleData(data, color), trafficGraphExtensions);
+	public BaseVehicle<MotorcycleData> createMotorcycle(  Color color, SensorHelper helper) {
+		return createRandomMotorcycle(helper);
 	}
 
 	/**

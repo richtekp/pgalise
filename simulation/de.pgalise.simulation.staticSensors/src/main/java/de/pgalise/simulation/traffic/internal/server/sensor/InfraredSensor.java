@@ -24,10 +24,12 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
 
 /**
@@ -71,9 +73,9 @@ public class InfraredSensor extends Sensor {
 	 * @param interferer
 	 *            InfraredInterferer
 	 */
-	public InfraredSensor(final Output output, final long sensorId, final Vehicle<? extends BusData> vehicle,
+	public InfraredSensor(final Output output, final Vehicle<? extends BusData> vehicle,
 			final Coordinate position, final int updateLimit, final InfraredInterferer interferer) {
-		super(output, sensorId, position, updateLimit);
+		super(output, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
@@ -95,9 +97,9 @@ public class InfraredSensor extends Sensor {
 	 * @param interferer
 	 *            InfraredInterferer
 	 */
-	public InfraredSensor(final Output output, final long sensorId, final Vehicle<? extends BusData> vehicle,
+	public InfraredSensor(final Output output, final Vehicle<? extends BusData> vehicle,
 			final Coordinate position, final InfraredInterferer interferer) {
-		this(output, sensorId, vehicle, position, 1, interferer);
+		this(output, vehicle, position, 1, interferer);
 	}
 
 	public InfraredInterferer getInterferer() {
@@ -149,7 +151,7 @@ public class InfraredSensor extends Sensor {
 
 	@Override
 	public void logValueToSend(EventList eventList) {
-		if (this.vehicle.getState() == State.DRIVING) {
+		if (this.vehicle.getVehicleState() == VehicleStateEnum.DRIVING) {
 			// Get random passengers
 			int passengers = this.vehicle.getData().getCurrentPassengerCount();
 			int passengersToSend = 0;
@@ -183,7 +185,7 @@ public class InfraredSensor extends Sensor {
 		if (this.vehicle.getPosition() != null) {
 			this.setPosition(this.vehicle.getPosition());
 
-			if (State.UPDATEABLE_VEHICLES.contains(this.vehicle.getState()) && this.vehicle.getState() != State.NOT_STARTED) {
+			if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.vehicle.getVehicleState()) && this.vehicle.getVehicleState() != VehicleStateEnum.NOT_STARTED) {
 				if (sendData) {
 					sendData = false;
 					super.transmitData(eventList);

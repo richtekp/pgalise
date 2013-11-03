@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
@@ -43,9 +43,9 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler.Modus;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import javax.vecmath.Vector2d;
 
 /**
@@ -238,15 +238,15 @@ public class SchedulerTest {
 		long startTime = System.currentTimeMillis();
 
 		Administration admin = ListScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		Scheduler scheduler = admin.getScheduler();
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the ListScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));
@@ -262,15 +262,15 @@ public class SchedulerTest {
 		long startTime = System.currentTimeMillis();
 
 		Administration admin = SortedListScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		Scheduler scheduler = admin.getScheduler();
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the SortedListScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));
@@ -286,15 +286,15 @@ public class SchedulerTest {
 		long startTime = System.currentTimeMillis();
 
 		Administration admin = TreeSetScheduler.createInstance();
-		admin.changeModus(Modus.WRITE);
+		admin.changeModus(ScheduleModus.WRITE);
 		Scheduler scheduler = admin.getScheduler();
 
 		long scheduleDuration = System.currentTimeMillis();
 
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new ScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
+		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
 
 		SchedulerTest.log.info("Duration (in millis) of the TreeSetScheduler: "
 				+ (System.currentTimeMillis() - scheduleDuration));

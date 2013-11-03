@@ -19,7 +19,7 @@ package de.pgalise.simulation.traffic.model.vehicle;
 import java.io.Serializable;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 
 /**

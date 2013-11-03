@@ -18,11 +18,10 @@ package de.pgalise.simulation.traffic.internal.server.jam;
 
 import java.util.Random;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
@@ -85,7 +84,7 @@ public class DefaultNaSchModel implements TrafficJamModel {
 	}
 
 	@Override
-	public void update(Vehicle<? extends VehicleData> v, long time, Graph graph, double probability) {
+	public void update(Vehicle<? extends VehicleData> v, long time, TrafficGraph graph, double probability) {
 		// log.debug("\n\n--- Calculating update behavior of vehicle " + v.getName() + " ---");
 
 		// car length in mm
@@ -96,11 +95,11 @@ public class DefaultNaSchModel implements TrafficJamModel {
 			// log.debug(v.getData().getType() + " length: " + carLength);
 		}
 
-		Node node = v.getCurrentNode();
-		Node nextNode = v.getNextNode();
-		Edge edge = null;
+		NavigationNode node = v.getCurrentNode();
+		NavigationNode nextNode = v.getNextNode();
+		NavigationEdge<?,?> edge = null;
 		if (nextNode != null) {
-			edge = graph.getEdge(node.getId() + nextNode.getId());
+			edge = graph.getEdge(node, nextNode);
 		}
 		double maxSpeed = 0;
 		if (edge != null) {

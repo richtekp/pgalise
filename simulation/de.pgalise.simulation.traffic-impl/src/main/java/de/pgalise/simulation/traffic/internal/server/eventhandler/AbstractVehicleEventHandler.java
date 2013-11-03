@@ -19,13 +19,17 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 import java.util.List;
 import java.util.Random;
 
-import org.graphstream.graph.Path;
-
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.event.AbstractVehicleEvent;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
+import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
@@ -125,10 +129,10 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 *            List with SensorHelpers
 	 * @return SensorHelper for GPS Sensor
 	 */
-	private SensorHelper getGPSSensor(List<SensorHelper> sensors) {
-		for (SensorHelper sensorHelper : sensors) {
-			SensorType type = sensorHelper.getSensorType();
-			if (SensorType.GPS.contains(type)) {
+	private SensorHelper<?> getGPSSensor(List<SensorHelper<?>> sensors) {
+		for (SensorHelper<?> sensorHelper : sensors) {
+			SensorTypeEnum type = sensorHelper.getSensorType();
+			if (SensorTypeEnum.GPS.contains(type)) {
 				return sensorHelper;
 			}
 		}
@@ -158,12 +162,11 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 		Vehicle<BicycleData> bike = null;
 		TrafficTrip tmpTrip = trip;
 
-		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
-				.getGraph().getNode(tmpTrip.getTargetNode()));
+		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
 
 		// check if path could not be computed between the nodes
-		if (path.getNodeCount() > 1) {
-			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
+		if (path != null) {
+			SensorHelper<?> gpsSensorHelper = this.getGPSSensor(sensorHelpers);
 			bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle( gpsSensorHelper);
 			if (name != null) {
 				bike.setName(name);
@@ -207,12 +210,11 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 		TrafficTrip tmpTrip = trip;
 
 		// log.debug("Calculating route "+trip);
-		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
-				.getGraph().getNode(tmpTrip.getTargetNode()));
+		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
 
 		// check if path could not be computed between the nodes
-		if (path.getNodeCount() > 1) {
-			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
+		if (path != null) {
+			SensorHelper<?> gpsSensorHelper = this.getGPSSensor(sensorHelpers);
 			car = this.getResponsibleServer().getCarFactory().createRandomCar( gpsSensorHelper);
 
 			if (name != null) {
@@ -245,15 +247,17 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 * @return Motorcycle
 	 */
 	protected Vehicle<MotorcycleData> createMotorcycle(TrafficTrip trip, String name, double velocity,
-			List<SensorHelper> sensorHelpers, boolean gpsActivated) {
+			List<SensorHelper<?>> sensorHelpers, boolean gpsActivated) {
 		Vehicle<MotorcycleData> motorcycle = null;
 		TrafficTrip tmpTrip = trip;
 
-		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
-				.getGraph().getNode(tmpTrip.getTargetNode()));
+		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(
+			tmpTrip.getStartNode(), 
+			tmpTrip.getTargetNode()
+		);
 
 		// check if path could not be computed between the nodes
-		if (path.getNodeCount() > 1) {
+		if (path != null) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
 			motorcycle = this.getResponsibleServer().getMotorcycleFactory().createRandomMotorcycle( gpsSensorHelper);
 			if (name != null) {
@@ -286,15 +290,14 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 * @return Truck
 	 */
 	protected Vehicle<TruckData> createTruck(TrafficTrip trip, String name, double velocity,
-			List<SensorHelper> sensorHelpers, boolean gpsActivated) {
+			List<SensorHelper<?>> sensorHelpers, boolean gpsActivated) {
 		Vehicle<TruckData> truck = null;
 		TrafficTrip tmpTrip = trip;
 
-		Path path = this.getResponsibleServer().getShortestPath(this.getResponsibleServer().getGraph().getNode(tmpTrip.getStartNode()), this.getResponsibleServer()
-				.getGraph().getNode(tmpTrip.getTargetNode()));
+		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
 
 		// check if path could not be computed between the nodes
-		if (path.getNodeCount() > 1) {
+		if (path != null) {
 			SensorHelper gpsSensorHelper = this.getGPSSensor(sensorHelpers);
 			truck = this.getResponsibleServer().getTruckFactory().createRandomTruck( gpsSensorHelper);
 			if (name != null) {

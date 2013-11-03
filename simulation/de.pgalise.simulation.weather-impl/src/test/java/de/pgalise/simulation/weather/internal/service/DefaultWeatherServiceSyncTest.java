@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.internal.DefaultCity;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
@@ -97,7 +97,7 @@ public class DefaultWeatherServiceSyncTest {
 	 */
 	private WeatherLoader<DefaultWeatherCondition> loader;
 		
-	private City city;
+	private DefaultCity city;
 	
 	@Resource
 	private UserTransaction userTransaction;

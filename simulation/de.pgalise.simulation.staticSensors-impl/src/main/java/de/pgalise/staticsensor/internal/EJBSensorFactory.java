@@ -38,10 +38,12 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.ServerConfigurationIdentifier;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 
 /**
  * EJB-Wrapper around the DefaultSensorFactory.
@@ -106,7 +108,7 @@ public class EJBSensorFactory implements SensorFactory {
 	}
 
 	@Override
-	public Sensor createSensor(SensorHelper sensorHelper, EnumSet<SensorType> allowedTypes)
+	public Sensor<?> createSensor(SensorHelper<?> sensorHelper, Set<SensorType> allowedTypes)
 			throws InterruptedException, ExecutionException {
 		return factory.createSensor(sensorHelper, allowedTypes);
 	}

@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**

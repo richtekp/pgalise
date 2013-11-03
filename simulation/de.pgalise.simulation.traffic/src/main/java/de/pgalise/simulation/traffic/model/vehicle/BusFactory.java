@@ -17,7 +17,9 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 
 /**
  * Interface to provide methods to create different types of {@link Bus}.
@@ -36,7 +38,7 @@ public interface BusFactory {
 	 *            ID of the {@link Bus} type
 	 * @return created {@link Bus}
 	 */
-	public Vehicle<BusData> createBus( String typeId, SensorHelper gpsSensor, SensorHelper infraredSensor);
+	public V createBus(  SensorHelper gpsSensor, SensorHelper infraredSensor);
 
 	/**
 	 * Method to create a random {@link Bus}.

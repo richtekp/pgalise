@@ -20,15 +20,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.shared.graphextension.GraphExtensions;
-import de.pgalise.simulation.shared.traffic.BusStop;
-import de.pgalise.simulation.shared.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.TrafficServer;
 
 /**
  * Provides functionality to create a traffic graph based on an open street map. Generates also random routes between
@@ -40,29 +43,29 @@ import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 public interface RouteConstructor {
 	public TrafficTrip createTrip(int serverId, Geometry cityZone, VehicleTypeEnum vehicleType);
 
-	public TrafficTrip createTrip(int serverId, Geometry cityZone, String nodeID, long startTimestamp, boolean isStartNode);
+	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, NavigationNode nodeID, long startTimestamp, boolean isStartNode);
 
-	public TrafficTrip createTrip(int serverId, String startNodeID, String targetNodeID, long startTimestamp);
+	public TrafficTrip createTrip(TrafficServer<?> serverId, NavigationNode startNodeID, NavigationNode targetNodeID, long startTimestamp);
 
-	public TrafficTrip createTimedTrip(int serverId, Geometry cityZone, VehicleTypeEnum vehicleType, Date date, int buffer);
+	public TrafficTrip createTimedTrip(TrafficServer<?> serverId, Geometry cityZone, VehicleTypeEnum vehicleType, Date date, int buffer);
 
-	public Graph getGraph();
+	public TrafficGraph<N,E,?,?> getGraph();
 
-	public List<Node> getStartHomeNodes(Geometry cityZone);
+	public List<N> getStartHomeNodes(Geometry cityZone);
 
-	public List<Node> getStartWorkNodes(Geometry cityZone);
+	public List<N> getStartWorkNodes(Geometry cityZone);
 
-	public List<Node> getAllHomeNodes();
+	public List<N> getAllHomeNodes();
 
-	public List<Node> getAllWorkNodes();
+	public List<N> getAllWorkNodes();
 
-	public List<BusStop> getBusStops();
+	public List<B> getBusStops();
 
-	public Path getShortestPath(Node start, Node dest);
+	public List<E> getShortestPath(N start, N dest);
 
 	public GraphExtensions getTrafficGraphExtesions();
 
-	public Path getBusRoute(List<String> busStopIds);
+	public List<E> getBusRoute(List<B> busStopIds);
 
-	public Map<String, Node> getBusStopNodes(List<String> busStopIds);
+	public Map<String, N> getBusStopNodes(List<B> busStopIds);
 }

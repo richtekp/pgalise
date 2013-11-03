@@ -26,145 +26,37 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public class ScheduleItem implements Comparable<ScheduleItem> {
+public interface ScheduleItem<
+	D extends VehicleData,
+	N extends TrafficNode<N,E,D,V>, 
+	E extends TrafficEdge<N,E,D,V>, 
+	V extends Vehicle<D,N,E,V>> {
 
-	/**
-	 * Departure time
-	 */
-	private long time;
-
-	/**
-	 * Vehicle
-	 */
-	private final Vehicle<? extends VehicleData> vehicle;
-
-	/**
-	 * Point in time at which the vehicle got scheduled and starts driving.
-	 * (Needed for recognizing if a vehicle passed its startnode) 
-	 */
-	private long scheduledAt;
-
-	/**
-	 * the time the vehicle of this items has been updated
-	 */
-	private long lastUpdate;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param vehicle
-	 *            Vehicle
-	 * @param time
-	 *            Departure time
-	 * @param reversePath
-	 *            True if the vehicle's path shall be reversed before it begins its journey
-	 */
-	public ScheduleItem(Vehicle<? extends VehicleData> vehicle, long time, long updateIntervall) {
-		this.vehicle = vehicle;
-		this.time = time;
-		this.lastUpdate = time - updateIntervall;
-	}
 
 	/**
 	 * The time the vehicle should be departured.
 	 * 
 	 * @return
 	 */
-	public long getDepartureTime() {
-		return this.time;
-	}
+	public long getDepartureTime() ;
 
-	public void setDepartureTime(long time) {
-		this.time = time;
-	}
+	public void setDepartureTime(long time) ;
 
-	public Vehicle<? extends VehicleData> getVehicle() {
-		return this.vehicle;
-	}
+	public V getVehicle();
 
 	/**
 	 * @return the time the vehicle of this items has been updated
 	 */
-	public long getLastUpdate() {
-		return this.lastUpdate;
-	}
+	public long getLastUpdate();
 
-	public void setLastUpdate(long lastUpdate) {
-		this.lastUpdate = lastUpdate;
-	}
-
-	@Override
-	public String toString() {
-		return "Item [time=" + time + ", lastUpdate=" + lastUpdate + "]";
-	}
+	public void setLastUpdate(long lastUpdate) ;
 
 	/**
 	 * First time the vehicle is driving.
 	 * 
 	 * @return
 	 */
-	public long getScheduleTime() {
-		return scheduledAt;
-	}
+	public long getScheduleTime() ;
 
-	@Override
-	public int compareTo(ScheduleItem o) {
-		long thisTime = this.getDepartureTime();
-		long anotherTime = o.getDepartureTime();
-
-		if (thisTime < anotherTime) {
-			return -1;
-		}
-		if (thisTime > anotherTime) {
-			return 1;
-		}
-
-		// Same time
-		if (vehicle == null) {
-			return -1;
-		}
-		if (vehicle.equals(o.getVehicle())) {
-			return 0;
-		}
-
-		return 1;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (time ^ (time >>> 32));
-		result = prime * result + ((vehicle == null) ? 0 : vehicle.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		ScheduleItem other = (ScheduleItem) obj;
-		if (time != other.time) {
-			return false;
-		}
-		if (vehicle == null) {
-			if (other.vehicle != null) {
-				return false;
-			}
-		} else if (!vehicle.equals(other.vehicle)) {
-			return false;
-		}
-		return true;
-	}
-
-	public void setScheduleTime(long time) {
-		this.scheduledAt = time;
-	}
+	public void setScheduleTime(long time) ;
 }

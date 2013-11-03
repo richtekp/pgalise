@@ -16,18 +16,23 @@
  
 package de.pgalise.simulation.staticsensor;
 
+import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import java.util.EnumSet;
 
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Local interface of static sensor controller.
  * @author Timo
  */
 public interface StaticSensorControllerLocal extends StaticSensorController {
-	public static EnumSet<SensorType> RESPONSIBLE_FOR_SENSOR_TYPES = 
-			EnumSet.of(SensorType.PHOTOVOLTAIK, SensorType.WINDPOWERSENSOR,
-					SensorType.THERMOMETER, SensorType.WINDFLAG, SensorType.BAROMETER,
-					SensorType.HYGROMETER, SensorType.PYRANOMETER, SensorType.RAIN,
-					SensorType.ANEMOMETER, SensorType.LUXMETER, SensorType.SMARTMETER);
+	public static Set<SensorType> RESPONSIBLE_FOR_SENSOR_TYPES = 
+			new HashSet<SensorType>(Arrays.asList(EnergySensorTypeEnum.PHOTOVOLTAIK, EnergySensorTypeEnum.WINDPOWERSENSOR,
+					SensorTypeEnum.THERMOMETER, SensorTypeEnum.WINDFLAG, SensorTypeEnum.BAROMETER,
+					SensorTypeEnum.HYGROMETER, SensorTypeEnum.PYRANOMETER, SensorTypeEnum.RAIN,
+					SensorTypeEnum.ANEMOMETER, SensorTypeEnum.LUXMETER, SensorTypeEnum.SMARTMETER));
 }

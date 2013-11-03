@@ -32,12 +32,13 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.controlCenter.internal.model.OnConnectParameter;
 import de.pgalise.simulation.controlCenter.internal.model.SavedStartParameterData;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
-import de.pgalise.simulation.shared.sensor.SensorType;
-import de.pgalise.simulation.shared.traffic.BusRoute;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.BusRoute;
 
 /**
  * Message send on connect. It will Send the {@link OnConnectParameter} to the user.
@@ -156,7 +157,7 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 */
 	private static Map<Integer, String> getSensorTypesMap() {
 		Map<Integer, String> map = new HashMap<>();
-		Map<Integer, SensorType> sensorTypeMap = SensorType.getSensorTypeIdsAsUnmodifiable();
+		Map<Integer, SensorType> sensorTypeMap = SensorTypeEnum.getSensorTypeIdsAsUnmodifiable();
 		for (Entry<Integer, SensorType> entry : sensorTypeMap.entrySet()) {
 			map.put(entry.getKey(), entry.getValue().toString());
 		}

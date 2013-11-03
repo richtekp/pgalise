@@ -17,12 +17,16 @@
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 
-import org.graphstream.graph.Node;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 
 /**
@@ -31,7 +35,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Mustafa
  * @version 1.0 (Feb 11, 2013)
  */
-public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<BicycleData> {
+public class DefaultBicycle extends BaseVehicle<BicycleData> {
 	/**
 	 * Serial
 	 */
@@ -45,8 +49,6 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<
 	/**
 	 * Default constructor
 	 * 
-	 * @param id
-	 *            ID
 	 * @param name
 	 *            Name
 	 * @param data
@@ -60,14 +62,14 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<
 	}
 
 	@Override
-	protected void passedNode(Node node) {
+	protected void passedNode(DefaultTrafficNode node) {
 		if (this.getPreviousEdge() != null) {
 			log.debug("Unregistering bycicle " + this.getName() + " from edge: " + this.getPreviousEdge().getId());
 			this.getTrafficGraphExtensions().unregisterFromEdge(this.getPreviousEdge(), this.getPreviousNode(),
 					this.getCurrentNode(), this);
 		}
 
-		if (Vehicle.State.UPDATEABLE_VEHICLES.contains(this.getState())) {
+		if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.getVehicleState())) {
 			if (this.getCurrentEdge() != null) {
 				log.debug("Registering bycicle " + this.getName() + " on edge: " + this.getCurrentEdge().getId());
 				this.getTrafficGraphExtensions().registerOnEdge(this.getCurrentEdge(), this.getCurrentNode(),
@@ -77,7 +79,7 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> implements Vehicle<
 	}
 
 	@Override
-	protected void postUpdate(Node node) {
+	protected void postUpdate(DefaultTrafficNode node) {
 	}
 
 	@Override

@@ -19,7 +19,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -54,9 +54,9 @@ public class Luxmeter extends WeatherSensor {
 	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
 	 *            is not a type of {@link LuxmeterWhiteNoiseInterferer}
 	 */
-	public Luxmeter(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public Luxmeter(Output output, Coordinate position, WeatherController weatherController,
 			final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		this(output, sensorId, position, weatherController, 1, weatherInterferer);
+		this(output, position, weatherController, 1, weatherInterferer);
 	}
 
 	/**
@@ -74,9 +74,9 @@ public class Luxmeter extends WeatherSensor {
 	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
 	 *            argument 'weatherController' is not a type of {@link LuxmeterWhiteNoiseInterferer}
 	 */
-	public Luxmeter(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public Luxmeter(Output output, Coordinate position, WeatherController weatherController,
 			int updateLimit, final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 		// if (!(weatherInterferer instanceof LuxmeterWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '"
 		// + LuxmeterWhiteNoiseInterferer.class.getName() + "'");
@@ -93,8 +93,8 @@ public class Luxmeter extends WeatherSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.LUXMETER;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.LUXMETER;
 	}
 
 	/**

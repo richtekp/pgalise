@@ -27,62 +27,41 @@ public enum CityLocationEnum {
 	/**
 	 * Downtown without river
 	 */
-	DOWNTOWN_NORIVER(4),
+	DOWNTOWN_NORIVER,
 
 	/**
 	 * Downtown with river
 	 */
-	DOWNTOWN_RIVER(5),
+	DOWNTOWN_RIVER,
 
 	/**
 	 * Grassed area/park area
 	 */
-	GREEN_AREA(3),
+	GREEN_AREA,
 
 	/**
 	 * Industrial area
 	 */
-	INDUSTRIAL_ZONE(6),
+	INDUSTRIAL_ZONE,
 
 	/**
 	 * Industrial
 	 */
-	INDUSTRY(2),
+	INDUSTRY,
 
 	/**
 	 * Meadow/range land
 	 */
-	MEADOW(7),
+	MEADOW,
 
 	/**
 	 * open land / outdoor
 	 */
-	OPEN_LAND(0),
+	OPEN_LAND,
 
 	/**
 	 * Suburb
 	 */
-	SUBURBAN(1);
+	SUBURBAN;
 
-	/**
-	 * ID
-	 */
-	private int id;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 */
-	CityLocationEnum(int id) {
-		this.setId(id);
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 }

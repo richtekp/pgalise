@@ -18,9 +18,9 @@ package de.pgalise.util.graph;
 
 import java.util.List;
 
-import org.graphstream.graph.Graph;
-
 import de.pgalise.util.generic.function.Function;
+import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  * Visualizes a graph with its nodes and edges.
@@ -30,9 +30,10 @@ import de.pgalise.util.generic.function.Function;
  * @author mustafa
  *
  */
-public interface GraphVisualizer {
-	public void setGraph(Graph graph);
-	public Graph getGraph();
+public interface GraphVisualizer<G extends DirectedGraph<N,E>, N,E> {
+	public void setGraph(G graph);
+	
+	public G getGraph();
 
 	public void draw();
 

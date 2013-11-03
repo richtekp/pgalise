@@ -53,6 +53,7 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
@@ -60,7 +61,9 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
@@ -68,7 +71,7 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 
 /**
  * The default implementation of {@link OCSimulationController}.
@@ -82,35 +85,36 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventTypeEnum;
  * 
  * @author Timo
  */
-public class DefaultOCSimulationController extends AbstractController<Event> implements
+public class DefaultOCSimulationController extends AbstractController<Event, InfrastructureStartParameter, InfrastructureInitParameter> implements
 		OCSimulationController {
 	private static final Logger log = LoggerFactory
 			.getLogger(DefaultOCSimulationController.class);
+	private static final long serialVersionUID = 1L;
 	private GPSSensorTimeoutStrategy gpsTimeoutStrategy;
 	private OCWebSocketService ocWebSocketService;
 	private OCSensorStreamController ocSensorStreamController;
 	private OCHQFDataStreamController ocHqfDataStreamController;
 	private SendSensorDataStrategy sendSensorDataStrategy;
-	private InitParameter initParameter;
-	private StartParameter startParameter;
+	private InfrastructureInitParameter initParameter;
+	private InfrastructureStartParameter startParameter;
 	private long currentTimestamp;
 	private Set<SensorHelper> currentGPSSensorHelpers;
 	/**
 	 * Holds all current sensor ids.
 	 * <Integer = sensor type, Set<Integer = sensor id>>
 	 */
-	private Map<Integer, Set<Integer>> sensorTypeIDMap;
+	private Map<Integer, Set<Sensor<?>>> sensorTypeIDMap;
 	private Properties properties;
 	private GPSGateStrategy gateMessageStrategy;
 
 	/**
 	 * A map with marker as entry and sensor id as key.
 	 */
-	private Map<Integer, SensorHelperTypeWrapper> sensorMap;
+	private Map<Sensor<?>, SensorHelperTypeWrapper> sensorMap;
 	/**
 	 * Map<UUID = vehicle id, 
 	 */
-	private Map<Vehicle<?>, VehicleData> vehicleDataMap;
+	private Map<BaseVehicle<D>, VehicleData> vehicleDataMap;
 
 	/**
 	 * Contructor
@@ -213,11 +217,11 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 		this.gateMessageStrategy.deleteSensor(sensor);
 	}
 
-	public Map<Integer, SensorHelperTypeWrapper> getSensorMap() {
+	public Map<Sensor<?>, SensorHelperTypeWrapper> getSensorMap() {
 		return sensorMap;
 	}
 
-	public void setSensorMap(Map<Integer, SensorHelperTypeWrapper> sensorMap) {
+	public void setSensorMap(Map<Sensor<?>, SensorHelperTypeWrapper> sensorMap) {
 		this.sensorMap = sensorMap;
 	}
 
@@ -278,11 +282,11 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 		this.sensorMap = new HashMap<>();
 	}
 
-	public InitParameter getInitParameter() {
+	public InfrastructureInitParameter getInitParameter() {
 		return initParameter;
 	}
 
-	public void setInitParameter(InitParameter initParameter) {
+	public void setInitParameter(InfrastructureInitParameter initParameter) {
 		this.initParameter = initParameter;
 	}
 
@@ -290,7 +294,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 		return startParameter;
 	}
 
-	public void setStartParameter(StartParameter startParameter) {
+	public void setStartParameter(InfrastructureStartParameter startParameter) {
 		this.startParameter = startParameter;
 	}
 
@@ -304,7 +308,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 	}
 
 	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
+	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
 		this.currentTimestamp = param.getStartTimestamp();
 		this.setInitParameter(param);
 		try {
@@ -331,7 +335,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 	}
 
 	@Override
-	protected void onStart(StartParameter param) {
+	protected void onStart(InfrastructureStartParameter param) {
 		this.setStartParameter(param);
 		try {
 			
@@ -490,7 +494,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 					sensor);
 			this.sensorMap.put(sensor.getSensorID(), tmpSensorHelperTypeWrapper);
 			sensorHelperTypeWrapperList.add(tmpSensorHelperTypeWrapper);
-			Set<Integer> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorType().getSensorTypeId());
+			Set<Sensor<?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorType().getSensorTypeId());
 			if(sensorIDSet == null) {
 				sensorIDSet = new HashSet<>();
 				this.sensorTypeIDMap.put(sensor.getSensorType().getSensorTypeId(), sensorIDSet);
@@ -514,7 +518,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 	@Override
 	public void deleteSensors(Collection<SensorHelper> sensors)
 			throws SensorException {
-		List<Integer> sensorIDList = new LinkedList<>();
+		List<Sensor<?>> sensorIDList = new LinkedList<>();
 		for (SensorHelper sensor : sensors) {
 			sensorIDList.add(sensor.getSensorID());
 			sensorMap.remove(sensor.getSensorID());
@@ -583,7 +587,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 		for(VehicleData vehicleData : vehicleDataCollection) {
 			for(SensorHelperTypeWrapper sensor : vehicleData.getSensors()) {
 				this.sensorMap.put(sensor.getSensorHelper().getSensorID(), sensor);
-				Set<Integer> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorHelper().getSensorType().getSensorTypeId());
+				Set<Sensor<?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorHelper().getSensorType().getSensorTypeId());
 				if(sensorIDSet != null) {
 					sensorIDSet.remove(sensor.getSensorHelper().getSensorID());
 				}
@@ -616,7 +620,7 @@ public class DefaultOCSimulationController extends AbstractController<Event> imp
 		for(VehicleData vehicleData : vehicleDataCollection) {
 			for(SensorHelperTypeWrapper sensor : vehicleData.getSensors()) {
 				this.sensorMap.put(sensor.getSensorHelper().getSensorID(), sensor);
-				Set<Integer> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorHelper().getSensorType().getSensorTypeId());
+				Set<Sensor<?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorHelper().getSensorType().getSensorTypeId());
 				if(sensorIDSet == null) {
 					sensorIDSet = new HashSet<>();
 					this.sensorTypeIDMap.put(sensor.getSensorHelper().getSensorType().getSensorTypeId(), sensorIDSet);

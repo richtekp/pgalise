@@ -15,12 +15,4 @@
 	<packaging>jar</packaging>
 	
 	<name>de.pgalise.util.btree</name>
-	
-	<!-- Hier die Abhängigkeiten definieren -->
-	<dependencies>
-		<dependency>
-			<groupId>org.graphstream</groupId>
-			<artifactId>gs-core</artifactId>
-		</dependency>
-	</dependencies>
 </project>

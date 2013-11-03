@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLTruckFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.CompositeInductionLoopInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopBaseInterferer;

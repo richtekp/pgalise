@@ -138,26 +138,22 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 	/**
 	 * List of cars which can be scheduled if the percentage of cars increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareCars;
+	private List<BaseVehicle<?>> spareCars;
 
 	/**
 	 * List of trucks which can be scheduled if the percentage of trucks increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareTrucks;
+	private List<BaseVehicle<?>> spareTrucks;
 
 	/**
 	 * List of motorcycles which can be scheduled if the percentage of motorcycles increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareMotorcycles;
+	private List<BaseVehicle<?>> spareMotorcycles;
 
 	/**
 	 * List of bicycles which can be scheduled if the percentage of bicycles increases
 	 */
-	@SuppressWarnings("rawtypes")
-	private List<Vehicle> spareBicycles;
+	private List<BaseVehicle<?>> spareBicycles;
 
 	private int maxBikes;
 

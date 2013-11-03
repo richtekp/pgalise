@@ -51,13 +51,17 @@ import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.OMGeo.Polygon;
 
 import de.pgalise.simulation.shared.city.Boundary;
+import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.Node;
+import de.pgalise.simulation.shared.city.LanduseTagEnum;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.WayTagEnum;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
@@ -118,14 +122,14 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * 
 	 * @author Timo
 	 */
-	private static class NodeDistance implements DistanceCalculator<Node> {
+	private static class NodeDistance implements DistanceCalculator<NavigationNode> {
 		private static final long serialVersionUID = -1997875613977347848L;
 
 		@Override
-		public double distanceTo(Node n, PointND p) {
+		public double distanceTo(NavigationNode n, PointND p) {
 			/* euclidean distance */
-			return Math.sqrt(Math.pow((n.getLatitude() - p.getOrd(0)), 2)
-					+ Math.pow((n.getLongitude() - p.getOrd(1)), 2));
+			return Math.sqrt(Math.pow((n.getGeoLocation().x - p.getOrd(0)), 2)
+					+ Math.pow((n.getGeoLocation().y - p.getOrd(1)), 2));
 		}
 	}
 
@@ -134,7 +138,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * 
 	 * @author Timo
 	 */
-	private static class NodeMBRConverter implements MBRConverter<Node> {
+	private static class NodeMBRConverter implements MBRConverter<NavigationNode> {
 		private static final long serialVersionUID = 4175774127701744257L;
 
 		@Override
@@ -143,13 +147,13 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		}
 
 		@Override
-		public double getMax(int arg0, Node arg1) {
-			return arg0 == 0 ? arg1.getLatitude() : arg1.getLongitude();
+		public double getMax(int arg0, NavigationNode arg1) {
+			return arg0 == 0 ? arg1.getGeoLocation().x : arg1.getGeoLocation().y;
 		}
 
 		@Override
-		public double getMin(int arg0, Node arg1) {
-			return arg0 == 0 ? arg1.getLatitude() : arg1.getLongitude();
+		public double getMin(int arg0, NavigationNode arg1) {
+			return arg0 == 0 ? arg1.getGeoLocation().x : arg1.getGeoLocation().y;
 		}
 	}
 
@@ -173,11 +177,11 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * 
 	 * @author Timo
 	 */
-	private static class PRTreeNodeFilter implements NodeFilter<Node> {
+	private static class PRTreeNodeFilter implements NodeFilter<NavigationNode> {
 		private static final long serialVersionUID = -7994547301033310792L;
 
 		@Override
-		public boolean accept(Node arg0) {
+		public boolean accept(NavigationNode arg0) {
 			return true;
 		}
 	}
@@ -187,7 +191,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * 
 	 * @author Timo
 	 */
-	private static class TmpWay extends Way {
+	private static class TmpWay extends Way<?,?>{
 		private static final long serialVersionUID = 2310070836622850662L;
 		private List<String> nodeReferenceList;
 
@@ -236,39 +240,40 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * Serial
 	 */
 	private static final long serialVersionUID = -4969795656547242552L;
-	private List<BusStop> busStops;
+	private List<BusStop<?>> busStops;
 	/**
 	 * Distance calculator for the pr-tree
 	 */
-	private DistanceCalculator<Node> prTreeDistanceCalculator;
+	private DistanceCalculator<NavigationNode> prTreeDistanceCalculator;
 	/**
 	 * Node filter for the pr-tree
 	 */
-	private NodeFilter<Node> prTreeNodeFilter;
+	private NodeFilter<NavigationNode> prTreeNodeFilter;
 
 	/**
 	 * PR-Tree to answer spatial queries
 	 */
-	private PRTree<Node> allNodesTree;
+	private PRTree<NavigationNode> allNodesTree;
 
 	/**
 	 * PR-Tree to answer spatial queries
 	 */
-	private PRTree<Node> streetNodesTree;
+	private PRTree<NavigationNode> streetNodesTree;
 
-	private PRTree<Node> junctionNodesTree;
+	private PRTree<NavigationNode> junctionNodesTree;
 
 	/**
 	 * PR-Tree to answer spatial queries for buildings
 	 */
 	private PRTree<Building> buildingTree;
 
-	private List<Node> usedNodes, roundAbouts, streetNodes, junctionNodes;
+	private List<NavigationNode> usedNodes, roundAbouts, streetNodes, junctionNodes;
 
-	private List<Way> ways, motorWays, motorWaysWithBusstops, landUseWays, cycleWays, cycleAndMotorways;
+	private List<Way<?,?>> ways, motorWays, motorWaysWithBusstops, landUseWays, cycleWays, cycleAndMotorways;
 	private Boundary boundary;
 	private List<Building> buildings;
 	private BuildingEnergyProfileStrategy buildingEnergyProfileStrategy;
+	private TrafficGraph<?,?> graph;
 
 	/**
 	 * Constructor
@@ -282,11 +287,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @throws IOException
 	 */
 	public OSMCityInfrastructureData(InputStream osmIN, InputStream busStopIN,
-			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
+			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy, TrafficGraph<?,?> graph) throws IOException {
 		this.prTreeDistanceCalculator = new NodeDistance();
 		this.prTreeNodeFilter = new PRTreeNodeFilter();
 		this.buildingEnergyProfileStrategy = buildingEnergyProfileStrategy;
 		this.parse(osmIN, busStopIN);
+		this.graph = graph;
 	}
 
 	/**
@@ -343,16 +349,16 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param osmFile
 	 * @return
 	 */
-	private List<Way> combineMotorWaysWithBusStops(List<Way> motorWays, List<BusStop> busStops) {
-		List<Way> wayList = new ArrayList<>(motorWays);
+	private <E extends NavigationEdge<N,E>, N extends NavigationNode> List<Way<?,?>> combineMotorWaysWithBusStops(List<Way<E,N>> motorWays, List<BusStop<?>> busStops) {
+		List<Way<E,N>> wayList = new ArrayList<>(motorWays);
 
 		/* Eliminate multiple bus stops: */
 		Set<String> busStopNameSet = new HashSet<>();
-		List<BusStop> tmpBusStop = new ArrayList<>();
-		for (BusStop busStop : busStops) {
+		List<BusStop<?>> tmpBusStop = new ArrayList<>();
+		for (BusStop<?> busStop : busStops) {
 			if (busStop != null) {
 				int before = busStopNameSet.size();
-				busStopNameSet.add(busStop.getName());
+				busStopNameSet.add(busStop.getStopName());
 				if (before < busStopNameSet.size()) {
 					tmpBusStop.add(busStop);
 				}
@@ -360,10 +366,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		}
 
 		/* Build a node way map: */
-		Map<Node, List<Way>> nodeWayMap = new HashMap<>();
-		for (Way way : wayList) {
-			for (Node node : way.getNodeList()) {
-				List<Way> tmpWayList = nodeWayMap.get(node);
+		Map<NavigationNode, List<Way<E,N>>> nodeWayMap = new HashMap<>();
+		for (Way<E,N> way : wayList) {
+			for (NavigationNode node : way.getNodeList()) {
+				List<Way<E,N>> tmpWayList = nodeWayMap.get(node);
 				if (tmpWayList == null) {
 					tmpWayList = new ArrayList<>();
 					nodeWayMap.put(node, tmpWayList);
@@ -375,9 +381,9 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		/* Add busstops to ways as new nodes: */
 		class NodeDistanceWrapper {
 			private double distance;
-			private Node node;
+			private NavigationNode node;
 
-			private NodeDistanceWrapper(Node node, double distance) {
+			private NodeDistanceWrapper(NavigationNode node, double distance) {
 				this.node = node;
 				this.distance = distance;
 			}
@@ -386,18 +392,18 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 				return this.distance;
 			}
 
-			public Node getNode() {
+			public NavigationNode getNode() {
 				return this.node;
 			}
 		}
 
-		BusStopLoop: for (BusStop busStop : busStops) {
+		BusStopLoop: for (BusStop<?> busStop : busStops) {
 
 			List<NodeDistanceWrapper> nodeDistanceList = new ArrayList<>();
 
-			for (Node node : nodeWayMap.keySet()) {
-				nodeDistanceList.add(new NodeDistanceWrapper(node, this.getDistanceInKM(busStop.getLatitude(),
-						busStop.getLongitude(), node.getLatitude(), node.getLongitude())));
+			for (NavigationNode node : nodeWayMap.keySet()) {
+				nodeDistanceList.add(new NodeDistanceWrapper(node, this.getDistanceInKM(busStop.getLocation().x,
+						busStop.getLocation().y, node.getGeoLocation().x, node.getGeoLocation().y)));
 			}
 
 			Collections.sort(nodeDistanceList, new Comparator<NodeDistanceWrapper>() {
@@ -417,27 +423,27 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 			/* find possible street for the busstop: */
 			for (int i = 0; i < nodeDistanceList.size(); i++) {
-				Node node1 = nodeDistanceList.get(i).getNode();
+				NavigationNode node1 = nodeDistanceList.get(i).getNode();
 
 				for (int j = i + 1; j < nodeDistanceList.size(); j++) {
-					Node node2 = nodeDistanceList.get(j).getNode();
-					List<Way> waysNode2 = nodeWayMap.get(node2);
+					NavigationNode node2 = nodeDistanceList.get(j).getNode();
+					List<Way<E,N>> waysNode2 = nodeWayMap.get(node2);
 
-					for (Way possibleWay : nodeWayMap.get(node1)) {
+					for (Way<E,N>possibleWay : nodeWayMap.get(node1)) {
 						/*
 						 * Node1 and node2 must be on the same street and the distance between node1 and node2 must be
 						 * larger than the distance between bus stop and node2.
 						 */
 						if (waysNode2.contains(possibleWay)
-								&& (this.getDistanceInKM(node1.getLatitude(), node1.getLongitude(),
-										node2.getLatitude(), node2.getLongitude()) <= this.getDistanceInKM(
-										node2.getLatitude(), node2.getLongitude(), busStop.getLatitude(),
-										busStop.getLongitude()))) {
+								&& (this.getDistanceInKM(node1.getGeoLocation().x, node1.getGeoLocation().y,
+										node2.getGeoLocation().x, node2.getGeoLocation().y) <= this.getDistanceInKM(
+										node2.getGeoLocation().x, node2.getGeoLocation().y, busStop.getLocation().x,
+										busStop.getLocation().y))) {
 
 							/* Insert busstop as new node: */
-							List<Node> newNodeList = new ArrayList<>();
+							List<N> newNodeList = new ArrayList<>();
 							boolean nodeFound = false;
-							for (Node node : possibleWay.getNodeList()) {
+							for (N node : possibleWay.getNodeList()) {
 								if (!nodeFound && (node.equals(node1) || node.equals(node2))) {
 									newNodeList.add(busStop);
 									nodeFound = true;
@@ -446,7 +452,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 								newNodeList.add(node);
 							}
 
-							possibleWay.setNodeList(newNodeList);
+							possibleWay.setEdgeList(newNodeList, graph);
 
 							continue BusStopLoop;
 						}
@@ -464,7 +470,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param wayList
 	 * @return
 	 */
-	private List<Building> extractBuildings(List<Way> wayList) {
+	private List<Building> extractBuildings(List<Way<?,?>> wayList) {
 		List<Building> buildingList = new ArrayList<>();
 
 		List<String> tmpLandUseList = new ArrayList<>();
@@ -474,15 +480,15 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		 * Map<String = landuse tag, List<SimplePolygon2D = polygon of the landuse are.
 		 */
 		Map<String, List<Polygon>> landUseMap = new HashMap<>();
-		for (Way landuse : this.landUseWays) {
-			if (landuse.getLanduse().equalsIgnoreCase("industrial")) {
+		for (Way<?,?>landuse : this.landUseWays) {
+			if (landuse.getLanduseTags().contains(LanduseTagEnum.INDUSTRY)) {
 				List<Polygon> polygonList = landUseMap.get("industrial");
 				if (polygonList == null) {
 					polygonList = new ArrayList<>();
 					landUseMap.put("industrial", polygonList);
 				}
 				polygonList.add(this.wayToPolygon2d(landuse));
-			} else if (landuse.getLanduse().equalsIgnoreCase("retail")) {
+			} else if (landuse.getLanduseTags().contains(LanduseTagEnum.RETAIL)) {
 				List<Polygon> polygonList = landUseMap.get("retail");
 				if (polygonList == null) {
 					polygonList = new ArrayList<>();
@@ -527,7 +533,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 			}
 		}
 
-		for (Way way : wayList) {
+		for (Way<?,?>way : wayList) {
 			if (way.isBuilding()) {
 				if (way.getNodeList().isEmpty()) {
 					continue;
@@ -554,7 +560,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 				double maxLat = Double.MIN_VALUE;
 				double maxLng = Double.MIN_VALUE;
 
-				for (Node node : way.getNodeList()) {
+				for (NavigationNode node : way.getNodeList()) {
 
 					if (node.getTourism() != null) {
 						tourism = node.getTourism();
@@ -602,22 +608,22 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 						gambling = node.getGambling();
 					}
 
-					if (node.getLatitude() > maxLat) {
-						maxLat = node.getLatitude();
+					if (node.getGeoLocation().x > maxLat) {
+						maxLat = node.getGeoLocation().x;
 					}
-					if (node.getLatitude() < minLat) {
-						minLat = node.getLatitude();
+					if (node.getGeoLocation().x < minLat) {
+						minLat = node.getGeoLocation().x;
 					}
-					if (node.getLongitude() > maxLng) {
-						maxLng = node.getLongitude();
+					if (node.getGeoLocation().y > maxLng) {
+						maxLng = node.getGeoLocation().y;
 					}
-					if (node.getLongitude() < minLng) {
-						minLng = node.getLongitude();
+					if (node.getGeoLocation().y < minLng) {
+						minLng = node.getGeoLocation().y;
 					}
 				}
 
 				/* find other tags */
-				for (Node node : this.getNodesInBoundary(new Boundary(new Coordinate(maxLat, maxLng), new Coordinate(
+				for (NavigationNode node : this.getNodesInBoundary(new Boundary(new Coordinate(maxLat, maxLng), new Coordinate(
 						minLat, minLng)))) {
 					if (node.getTourism() != null) {
 						tourism = node.getTourism();
@@ -703,10 +709,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param wayList
 	 * @return
 	 */
-	private List<Way> extractCycleWays(List<Way> wayList) {
-		List<Way> cycleWays0 = new ArrayList<>();
+	private List<Way<?,?>> extractCycleWays(List<Way<?,?>> wayList) {
+		List<Way<?,?>> cycleWays0 = new ArrayList<>();
 
-		for (Way way : wayList) {
+		for (Way<?,?>way : wayList) {
 			if ((way.getHighway() != null) && way.getHighway().trim().equalsIgnoreCase("cycleway")) {
 				cycleWays0.add(way);
 			}
@@ -721,10 +727,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param ways
 	 * @return
 	 */
-	private List<Way> extractLanduseWays(List<Way> ways) {
-		List<Way> wayList = new ArrayList<>();
+	private List<Way<?,?>> extractLanduseWays(List<Way<?,?>> ways) {
+		List<Way<?,?>> wayList = new ArrayList<>();
 
-		for (Way way : ways) {
+		for (Way<?,?>way : ways) {
 			if ((way.getLanduse() != null) && !way.getLanduse().isEmpty()) {
 				wayList.add(way);
 			}
@@ -739,10 +745,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param osmFile
 	 * @return
 	 */
-	private List<Way> extractMotorWays(List<Way> ways) {
-		List<Way> wayList = new ArrayList<>();
+	private List<Way<?,?>> extractMotorWays(List<Way<?,?>> ways) {
+		List<Way<?,?>> wayList = new ArrayList<>();
 
-		OuterLoop: for (Way way : ways) {
+		OuterLoop: for (Way<?,?>way : ways) {
 			if (way.getHighway() != null) {
 				for (int i = 0; i < NON_MOTOR_HIGHWAYS.length; i++) {
 					if (way.getHighway().equalsIgnoreCase(NON_MOTOR_HIGHWAYS[i])) {
@@ -769,7 +775,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	private List<Node> extractRoundAbouts(List<Node> usedNodes) {
 		List<Node> roundAboutList = new ArrayList<>();
 
-		for (Node node : usedNodes) {
+		for (NavigationNode node : usedNodes) {
 			if (node.isRoundabout()) {
 				roundAboutList.add(node);
 			}
@@ -833,7 +839,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public List<Way> getCycleWays() {
+	public List<Way<?,?>> getCycleWays() {
 		return this.cycleWays;
 	}
 
@@ -905,22 +911,22 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public List<Way> getLandUseWays() {
+	public List<Way<?,?>> getLandUseWays() {
 		return this.landUseWays;
 	}
 
 	@Override
-	public List<Way> getMotorWays() {
+	public List<Way<?,?>> getMotorWays() {
 		return this.motorWays;
 	}
 
 	@Override
-	public List<Way> getMotorWaysWithBusstops() {
+	public List<Way<?,?>> getMotorWaysWithBusstops() {
 		return this.motorWaysWithBusstops;
 	}
 
 	@Override
-	public Node getNearestNode(double latitude, double longitude) {
+	public NavigationNode getNearestNode(double latitude, double longitude) {
 		List<DistanceResult<Node>> results = this.allNodesTree.nearestNeighbour(this.prTreeDistanceCalculator,
 				this.prTreeNodeFilter, 1, new SimplePointND(latitude, longitude));
 
@@ -932,7 +938,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public Node getNearestStreetNode(double latitude, double longitude) {
+	public NavigationNode getNearestStreetNode(double latitude, double longitude) {
 		List<DistanceResult<Node>> results = this.streetNodesTree.nearestNeighbour(this.prTreeDistanceCalculator,
 				this.prTreeNodeFilter, 1, new SimplePointND(latitude, longitude));
 
@@ -954,7 +960,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public List<Way> getWays() {
+	public List<Way<?,?>> getWays() {
 		return this.ways;
 	}
 
@@ -972,8 +978,8 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		/* String = node id / nd ref */
 		Map<String, Node> nodeMap = new HashMap<>();
 
-		Node northEastBoundary = null;
-		Node southWestBoundary = null;
+		NavigationNode northEastBoundary = null;
+		NavigationNode southWestBoundary = null;
 
 		XMLStreamReader parser = null;
 
@@ -982,7 +988,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 			TmpWay lastFoundWay = null;
 			BusStop lastBusstop = null;
-			Node lastNode = null;
+			NavigationNode lastNode = null;
 
 			while (parser.hasNext()) {
 				switch (parser.getEventType()) {
@@ -1011,10 +1017,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 								nodeMap.put(id, lastNode);
 
 								if (northEastBoundary == null
-										|| (northEastBoundary.getLatitude() < lat && northEastBoundary.getLongitude() < lon)) {
+										|| (northEastBoundary.getGeoLocation().x < lat && northEastBoundary.getGeoLocation().y < lon)) {
 									northEastBoundary = lastNode;
 								} else if (southWestBoundary == null
-										|| (southWestBoundary.getLatitude() > lat && southWestBoundary.getLongitude() > lon)) {
+										|| (southWestBoundary.getGeoLocation().x > lat && southWestBoundary.getGeoLocation().y > lon)) {
 									southWestBoundary = lastNode;
 								}
 							}
@@ -1027,14 +1033,14 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 							if (kValue.equalsIgnoreCase("highway")) {
 								if (vValue.equalsIgnoreCase("bus_stop")) {
-									lastBusstop = new BusStop(lastNode.getId(), "", lastNode.getLatitude(),
-											lastNode.getLongitude());
+									lastBusstop = new DefaultBusStop(lastNode.getId(), "", lastNode.getGeoLocation().x,
+											lastNode.getGeoLocation().y);
 								} else if (vValue.equalsIgnoreCase("mini_roundabout")
 										|| vValue.equalsIgnoreCase("roundabout")) {
 									lastNode.setRoundabout(true);
 								}
 							} else if (kValue.equalsIgnoreCase("name") && (lastBusstop != null)) {
-								lastBusstop.setName(vValue);
+								lastBusstop.setStopName(vValue);
 								tmpBusStopList.add(lastBusstop);
 								lastBusstop = null;
 							} else if (kValue.equalsIgnoreCase("tourism")) {
@@ -1103,7 +1109,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 								if (kValue.equalsIgnoreCase("name")) {
 
-									lastFoundWay.setStreetname(vValue);
+									lastFoundWay.setStreetName(vValue);
 								} else if (kValue.equalsIgnoreCase("maxspeed")) {
 									try {
 										lastFoundWay.setMaxSpeed(Integer.valueOf(vValue));
@@ -1188,11 +1194,11 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 		/* Set real nodes for all ways and save used nodes */
 		Set<Node> usedNodes0 = new HashSet<>();
-		List<Way> wayList = new ArrayList<>();
+		List<Way<?,?>> wayList = new ArrayList<>();
 		OuterLoop: for (TmpWay way : tmpWayList) {
 			List<Node> nodeList = new ArrayList<>();
 			for (String nodeReference : way.getNodeReferenceList()) {
-				Node node = nodeMap.get(nodeReference);
+				NavigationNode node = nodeMap.get(nodeReference);
 				if (node == null) {
 					continue OuterLoop;
 				}
@@ -1201,7 +1207,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 				usedNodes0.add(node);
 			}
 
-			wayList.add(new Way(way.getMaxSpeed(), nodeList, way.isOneWay(), way.isBuilding(), way.getStreetname(), way
+			wayList.add(new Way(way.getMaxSpeed(), nodeList, way.isOneWay(), way.isBuilding(), way.getStreetName(), way
 					.getHighway(), way.getLanduse(), way.getRailway(), way.getBuildingTypeMap(), way.getCycleway()));
 		}
 
@@ -1214,8 +1220,8 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		List<BusStop> tmpBusStops = this.parseBusStops(busStopIN);
 		this.motorWaysWithBusstops = this.combineMotorWaysWithBusStops(this.motorWays, tmpBusStops);
 		this.busStops = new ArrayList<>();
-		OuterLoop: for (Way way : this.motorWaysWithBusstops) {
-			for (Node node : way.getNodeList()) {
+		OuterLoop: for (Way<?,?>way : this.motorWaysWithBusstops) {
+			for (NavigationNode node : way.getNodeList()) {
 				if (node instanceof BusStop) {
 					this.busStops.add((BusStop) node);
 					continue OuterLoop;
@@ -1227,20 +1233,20 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		this.cycleWays = this.extractCycleWays(wayList);
 		this.roundAbouts = this.extractRoundAbouts(this.usedNodes);
 
-		Set<Way> cycleAndMotorwaySet = new HashSet<>(this.motorWays);
+		Set<Way<?,?>> cycleAndMotorwaySet = new HashSet<>(this.motorWays);
 		cycleAndMotorwaySet.addAll(this.motorWays);
 		this.cycleAndMotorways = new ArrayList<>(cycleAndMotorwaySet);
 
 		/* find used street nodes and junction nodes */
 		Set<Node> usedStreetNodes = new HashSet<>();
-		Map<Node, Set<Way>> junctionWayMap = new HashMap<>();
-		for (Way way : this.getMotorWaysWithBusstops()) {
-			for (Node node : way.getNodeList()) {
+		Map<Node, Set<Way<?,?>>> junctionWayMap = new HashMap<>();
+		for (Way<?,?>way : this.getMotorWaysWithBusstops()) {
+			for (NavigationNode node : way.getNodeList()) {
 				/* comparison with size is much faster than contains. */
 				int sizeBefore = usedStreetNodes.size();
 				usedStreetNodes.add(node);
 				if (sizeBefore == usedStreetNodes.size()) {
-					Set<Way> tmpJunctionWays = junctionWayMap.get(way);
+					Set<Way<?,?>> tmpJunctionWays = junctionWayMap.get(way);
 					if(tmpJunctionWays == null) {
 						tmpJunctionWays = new HashSet<>();
 						junctionWayMap.put(node, tmpJunctionWays);
@@ -1255,12 +1261,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		
 		/* Check the junction nodes. They need at least three edges: */
 		this.junctionNodes = new LinkedList<>();
-		for(Entry<Node, Set<Way>> entry : junctionWayMap.entrySet()) {
+		for(Entry<Node, Set<Way<?,?>>> entry : junctionWayMap.entrySet()) {
 			if(entry.getValue().size() >= 3) {
 				junctionNodes.add(entry.getKey());
 				/* check if three or more edges (junction is not the last node on one of the ways): */
 			} else {
-				for(Way way : entry.getValue()) {
+				for(Way<?,?>way : entry.getValue()) {
 					if(way.getNodeList().size() > 1) {
 						if(!way.getNodeList().get(0).equals(entry.getKey()) && !way.getNodeList().get(way.getNodeList().size() - 1).equals(entry.getKey())) {
 							junctionNodes.add(entry.getKey());
@@ -1280,9 +1286,9 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 		this.junctionNodesTree.load(this.junctionNodes);
 
 		if (northEastBoundary != null) {
-			this.boundary = new Boundary(new Coordinate(northEastBoundary.getLatitude(),
-					northEastBoundary.getLongitude()), new Coordinate(southWestBoundary.getLatitude(),
-					southWestBoundary.getLongitude()));
+			this.boundary = new Boundary(new Coordinate(northEastBoundary.getGeoLocation().x,
+					northEastBoundary.getGeoLocation().y), new Coordinate(southWestBoundary.getGeoLocation().x,
+					southWestBoundary.getGeoLocation().y));
 		}
 
 		this.buildings = this.extractBuildings(wayList);
@@ -1332,7 +1338,7 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 
 			/* Parse other: */
 			for (String[] text = csvParser.getLine(); text != null; text = csvParser.getLine()) {
-				busStopList.add(new BusStop(text[idColumn], text[nameColumn], Double.valueOf(text[latColumn]), Double
+				busStopList.add(new DefaultBusStop(text[idColumn], text[nameColumn], Double.valueOf(text[latColumn]), Double
 						.valueOf(text[lngColumn])));
 			}
 		} catch (IOException e) {
@@ -1361,12 +1367,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	 * @param way
 	 * @return
 	 */
-	private Polygon wayToPolygon2d(Way way) {
+	private Polygon wayToPolygon2d(Way<?,?>way) {
 		Geo[] geoArray = new Geo[way.getNodeList().size()];
 
 		for (int i = 0; i < way.getNodeList().size(); i++) {
-			Node tmpNode = way.getNodeList().get(i);
-			geoArray[i] = new Geo(tmpNode.getLatitude(), tmpNode.getLongitude());
+			NavigationNode tmpNode = way.getNodeList().get(i);
+			geoArray[i] = new Geo(tmpNode.getGeoLocation().x, tmpNode.getGeoLocation().y);
 		}
 
 		return new Polygon(geoArray);
@@ -1377,10 +1383,10 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public List<Node> getNodesInBoundary(Boundary boundary) {
+	public List<NavigationNode> getNodesInBoundary(Boundary boundary) {
 
-		List<Node> nodes = new ArrayList<>();
-		for (Node node : this.allNodesTree.find(boundary.getSouthWest().x, boundary
+		List<NavigationNode> nodes = new ArrayList<>();
+		for (NavigationNode node : this.allNodesTree.find(boundary.getSouthWest().x, boundary
 				.getSouthWest().y, boundary.getNorthEast().x, boundary
 				.getNorthEast().y)) {
 			nodes.add(node);
@@ -1390,13 +1396,13 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public List<Node> getStreetNodes() {
+	public List<NavigationNode> getStreetNodes() {
 		return this.streetNodes;
 	}
 
 	@Override
-	public Node getNearestJunctionNode(double latitude, double longitude) {
-		List<DistanceResult<Node>> results = this.junctionNodesTree.nearestNeighbour(this.prTreeDistanceCalculator,
+	public NavigationNode getNearestJunctionNode(double latitude, double longitude) {
+		List<DistanceResult<NavigationNode>> results = this.junctionNodesTree.nearestNeighbour(this.prTreeDistanceCalculator,
 				this.prTreeNodeFilter, 1, new SimplePointND(latitude, longitude));
 
 		if (results.size() > 0) {
@@ -1407,12 +1413,12 @@ public class OSMCityInfrastructureData implements CityInfrastructureData {
 	}
 
 	@Override
-	public List<Node> getJunctionNodes() {
+	public List<NavigationNode> getJunctionNodes() {
 		return this.junctionNodes;
 	}
 
 	@Override
-	public List<Way> getCycleAndMotorways() {
+	public List<Way<?,?>> getCycleAndMotorways() {
 		return this.cycleAndMotorways;
 	}
 }

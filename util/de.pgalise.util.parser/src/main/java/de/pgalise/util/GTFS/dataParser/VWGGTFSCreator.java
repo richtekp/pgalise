@@ -29,8 +29,7 @@ import java.util.List;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
-import de.pgalise.simulation.traffic.BusLineInformation;
-import de.pgalise.simulation.shared.traffic.BusStopInformation;
+import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.BusTrip;
 
 /**
@@ -269,14 +268,14 @@ public class VWGGTFSCreator {
 	/**
 	 * parses all VWG CSV files from the specified path for a specific busline
 	 */
-	public void parseVWGCSVFiles(String busLine) throws IOException {
+	public void parseVWGCSVFiles(BusRoute busLine) throws IOException {
 		String busStopName;
 		String stopTime = "06:00";
 		busstops = new ArrayList<>();
 
 		csvFiles = new ArrayList<>();
 		final File folder = new File("VWG-CSV-Files");
-		listRelevantFilesForFolder(folder, busLine);
+		listRelevantFilesForFolder(folder, busLine.getRouteLongName());
 
 		for (int i = 0; i < csvFiles.size(); i++) {
 			FileInputStream input = new FileInputStream(new File(csvFiles.get(i)));
@@ -304,8 +303,8 @@ public class VWGGTFSCreator {
 				cal.set(Calendar.MINUTE, minute);
 				cal.set(Calendar.SECOND, 0);
 				cal.set(Calendar.MILLISECOND, 0);
-
-				busstops.add(new BusStopInformation(busStopName, cal.getTimeInMillis()));
+String routeShortName, String routeLongName, int routeType
+				busstops.add(new BusStop(busStopName, cal.getTimeInMillis()));
 			}
 
 			String busLineToken = csvFiles.get(i).split("/")[1].substring(0, 5);

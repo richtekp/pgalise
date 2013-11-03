@@ -16,8 +16,8 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
-import de.pgalise.simulation.shared.sensor.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 
 /**
  * Sensordata for topo radar data. A {@link SensorHelper} with type {@link SensorType#TOPORADAR}.

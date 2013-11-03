@@ -16,11 +16,10 @@
  
 package de.pgalise.util.GTFS.service;
 
-import java.sql.SQLException;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.BusTrip;
 import java.util.List;
 
-import de.pgalise.simulation.shared.traffic.BusRoute;
-import de.pgalise.simulation.traffic.BusTrip;
 
 /**
  * 
@@ -35,8 +34,7 @@ public interface BusService {
 	 * @param time
 	 * @return
 	 */
-	public List<BusTrip> getBusLineData(String busLine, long time)
-			throws ClassNotFoundException, SQLException;
+	public List<BusTrip<?,?>> getBusLineData(BusRoute<?> busLine, long time);
 
 	/**
 	 * Returns the total number of bus trips for the given buslines an the actual day
@@ -45,17 +43,12 @@ public interface BusService {
 	 * @param time
 	 * @return
 	 */
-	public int getTotalNumberOfBusTrips(List<BusRoute> busLines, long time);
+	public int getTotalNumberOfBusTrips(List<BusRoute<?>> busLines, long time);
 	
 	/**
 	 * Returns all existing busroutes of the gtfs file
 	 * @return a list with BusRoutes
 	 */
-	public List<BusRoute> getAllBusRoutes() throws ClassNotFoundException, SQLException;
+	public List<BusRoute> getAllBusRoutes() ;
 	
-//	/**
-//	 * Returns all existing busroutes of the gtfs file
-//	 * @return a list with BusRoutes
-//	 */
-//	public List<BusRoute> getAllBusRoutes(InputStream routesStream);
 }

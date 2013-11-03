@@ -23,8 +23,10 @@ import java.util.List;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
@@ -64,9 +66,9 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final long sensorId, final Coordinate position, final int updateLimit,
+	public TopoRadarSensor(TrafficNode node, final Output output, final Coordinate position, final int updateLimit,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
-		super(output, sensorId, position, updateLimit);
+		super(node, output, position, updateLimit);
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
@@ -86,9 +88,9 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	 * @param interferer
 	 *            TopoRadarInterferer
 	 */
-	public TopoRadarSensor(final Output output, final long sensorId, final Coordinate position,
+	public TopoRadarSensor(TrafficNode node, final Output output, final Coordinate position,
 			final TopoRadarInterferer interferer) throws IllegalArgumentException {
-		this(output, sensorId, position, 1, interferer);
+		this(node, output, position, 1, interferer);
 
 	}
 
@@ -97,8 +99,8 @@ public class TopoRadarSensor extends StaticTrafficSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.TOPORADAR;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.TOPORADAR;
 	}
 
 	public void setInterferer(final TopoRadarInterferer interferer) throws IllegalArgumentException {

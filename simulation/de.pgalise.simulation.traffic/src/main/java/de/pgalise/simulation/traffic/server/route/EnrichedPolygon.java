@@ -16,22 +16,25 @@
  
 package de.pgalise.simulation.traffic.server.route;
 
+import de.pgalise.simulation.shared.city.LanduseTagEnum;
+import de.pgalise.simulation.shared.city.WayTagEnum;
 import java.awt.Polygon;
+import java.util.Set;
 
 /**
  * The enriched wraps a polygon with its landuse tag.
  * @author Timo
  */
 public class EnrichedPolygon {
-	private String landuse;
+	private Set<LanduseTagEnum> landuse;
 	private Polygon polygon;
 
-	public EnrichedPolygon(Polygon p, String l) {
+	public EnrichedPolygon(Polygon p, Set<LanduseTagEnum> l) {
 		this.polygon = p;
 		this.landuse = l;
 	}
 
-	public String getLanduse() {
+	public Set<LanduseTagEnum> getLanduse() {
 		return this.landuse;
 	}
 
@@ -39,7 +42,7 @@ public class EnrichedPolygon {
 		return this.polygon;
 	}
 
-	public void setLanduse(String landuse) {
+	public void setLanduse(Set<LanduseTagEnum> landuse) {
 		this.landuse = landuse;
 	}
 

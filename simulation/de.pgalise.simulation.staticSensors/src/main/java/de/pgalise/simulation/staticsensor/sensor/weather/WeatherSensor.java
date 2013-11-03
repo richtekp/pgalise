@@ -19,6 +19,7 @@ package de.pgalise.simulation.staticsensor.sensor.weather;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -30,7 +31,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @author marcus
  * @version 1.0 (Aug 23, 2012)
  */
-public abstract class WeatherSensor extends Sensor {
+public abstract class WeatherSensor extends Sensor<WeatherEvent> {
 
 	/**
 	 * Weather controller used by the weather sensors

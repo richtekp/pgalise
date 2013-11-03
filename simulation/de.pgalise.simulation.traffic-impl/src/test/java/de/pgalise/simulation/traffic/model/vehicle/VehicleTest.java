@@ -46,14 +46,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.sensor.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraphExtensions;
+import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorizedVehicle;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLVehicleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle.State;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import javax.vecmath.Vector2d;
 
 /**
@@ -127,7 +127,7 @@ public class VehicleTest {
 
 		car.setPath(shortestPath);
 
-		assertEquals(State.NOT_STARTED, car.getState());
+		assertEquals(VehicleStateEnum.NOT_STARTED, car.getVehicleState());
 
 		// shoudn't do anything
 		// UpdatedData data = car.getUpdate(0);
@@ -137,12 +137,12 @@ public class VehicleTest {
 		assertEquals(graph.getEdge("bc"), car.getNextEdge());
 		car.update(0);
 		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
-		assertEquals(State.DRIVING, car.getState());
+		assertEquals(VehicleStateEnum.DRIVING, car.getVehicleState());
 		assertTrue(car.getPosition().x == 0 && car.getPosition().y == 0);
 
 		car.update(1000);
 		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
-		assertEquals(State.DRIVING, car.getState());
+		assertEquals(VehicleStateEnum.DRIVING, car.getVehicleState());
 		assertTrue(car.getPosition().x == 1 && car.getPosition().y == 0);
 		// dürfte sich noch nicht geändert haben
 		assertEquals(graph.getEdge("ab"), car.getCurrentEdge());
@@ -151,7 +151,7 @@ public class VehicleTest {
 		// bei b angekommen
 		car.update(1000);
 		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
-		assertEquals(State.DRIVING, car.getState());
+		assertEquals(VehicleStateEnum.DRIVING, car.getVehicleState());
 		assertEquals(2, car.getPosition().x, 0);
 		assertEquals(0, car.getPosition().y, 0);
 		assertEquals(graph.getEdge("bc"), car.getCurrentEdge());
@@ -159,19 +159,19 @@ public class VehicleTest {
 
 		car.update(1000);
 		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
-		assertEquals(State.DRIVING, car.getState());
+		assertEquals(VehicleStateEnum.DRIVING, car.getVehicleState());
 		assertTrue(car.getPosition().x == 2 && car.getPosition().y == 1);
 
 		car.update(1000);
 		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
-		assertEquals(State.REACHED_TARGET, car.getState());
+		assertEquals(VehicleStateEnum.REACHED_TARGET, car.getVehicleState());
 		assertTrue(car.getPosition().x == 2 && car.getPosition().y == 2);
 		assertEquals(null, car.getCurrentEdge());
 		assertEquals(null, car.getNextEdge());
 
 		car.update(1000);
 		log.debug(String.format("x=%s, y=%s", car.getPosition().x, car.getPosition().y));
-		assertEquals(State.REACHED_TARGET, car.getState());
+		assertEquals(VehicleStateEnum.REACHED_TARGET, car.getVehicleState());
 		assertTrue(car.getPosition().x == 2 && car.getPosition().y == 2);
 	}
 
@@ -199,7 +199,7 @@ public class VehicleTest {
 		v.update(1000);
 		assertEquals(0, v.getPosition().x, 0.0001);
 		assertEquals(4, v.getPosition().y, 0.0001);
-		assertEquals(State.REACHED_TARGET, v.getState());
+		assertEquals(VehicleStateEnum.REACHED_TARGET, v.getVehicleState());
 	}
 
 	@Test

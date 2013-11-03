@@ -19,7 +19,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.sensor.SensorType;
+import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -35,6 +35,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhi
  * @version 1.0
  */
 public class Thermometer extends WeatherSensor {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Temperature
@@ -55,9 +56,9 @@ public class Thermometer extends WeatherSensor {
 	 *            'weatherController' is 'null' or if argument 'weatherController' is not a type of
 	 *            {@link ThermometerWhiteNoiseInterferer}
 	 */
-	public Thermometer(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public Thermometer(Output output, Coordinate position, WeatherController weatherController,
 			final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		this(output, sensorId, position, weatherController, 1, weatherInterferer);
+		this(output, position, weatherController, 1, weatherInterferer);
 	}
 
 	/**
@@ -75,9 +76,9 @@ public class Thermometer extends WeatherSensor {
 	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
 	 *            argument 'weatherController' is not a type of {@link ThermometerWhiteNoiseInterferer}
 	 */
-	public Thermometer(Output output, long sensorId, Coordinate position, WeatherController weatherController,
+	public Thermometer(Output output, Coordinate position, WeatherController weatherController,
 			int updateLimit, final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		super(output, sensorId, position, weatherController, updateLimit, weatherInterferer);
+		super(output, position, weatherController, updateLimit, weatherInterferer);
 		// if(!(weatherInterferer instanceof ThermometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
 		// ThermometerWhiteNoiseInterferer.class.getName() + "'");
@@ -85,8 +86,8 @@ public class Thermometer extends WeatherSensor {
 	}
 
 	@Override
-	public SensorType getSensorType() {
-		return SensorType.THERMOMETER;
+	public SensorTypeEnum getSensorType() {
+		return SensorTypeEnum.THERMOMETER;
 	}
 
 	/**

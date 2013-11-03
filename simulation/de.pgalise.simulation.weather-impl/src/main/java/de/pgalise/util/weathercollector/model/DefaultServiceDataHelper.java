@@ -16,7 +16,6 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.AbstractTimeSensitive;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
@@ -85,7 +84,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 	 * City
 	 */
 	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private City city;
+	private DefaultCity city;
 
 	/**
 	 * Current condition
@@ -114,7 +113,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 	 * @param apiSource the name of the weather API used to retrieve the date 
 	 * (e.g. Yahoo)
 	 */
-	public DefaultServiceDataHelper(City city, String apiSource) {
+	public DefaultServiceDataHelper(DefaultCity city, String apiSource) {
 		this.source = apiSource;
 		this.city = city;
 		this.apicity = "";
@@ -169,7 +168,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 	}
 
 	@Override
-	public City getCity() {
+	public DefaultCity getCity() {
 		return this.city;
 	}
 
@@ -194,7 +193,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 	}
 
 	@Override
-	public void setCity(City city) {
+	public void setCity(DefaultCity city) {
 		this.city = city;
 	}
 
