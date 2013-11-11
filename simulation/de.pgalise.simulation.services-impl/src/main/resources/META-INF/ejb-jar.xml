@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee">
-
-  <!-- Notice this changes the global jndi name -->
-	<module-name>de.pgalise.simulation.services-impl</module-name>
-</ejb-jar>

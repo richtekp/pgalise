@@ -17,12 +17,7 @@
     <name>de.pgalise.simulation.shared</name>
 	
     <!-- Hier die Abh??ngigkeiten definieren -->
-    <dependencies>
-<!--        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>javax.persistence</artifactId>
-        </dependency>-->
-					
+    <dependencies>					
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-spatial</artifactId>
@@ -54,12 +49,10 @@
         <dependency>
             <groupId>net.sf.jgrapht</groupId>
             <artifactId>jgrapht</artifactId>
-            <version>0.8.3</version>
 				</dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.2.3-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -71,8 +64,29 @@
         <dependency>
             <groupId>de.pgalise.util</groupId>
             <artifactId>btree</artifactId>
-            <version>2.0-SNAPSHOT</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>de.pgalise</groupId>
+            <artifactId>pgalise-it</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+				<dependency>
+					<groupId>org.apache.openejb</groupId>
+					<artifactId>openejb-client</artifactId>
+        <version>4.6.0-SNAPSHOT</version>  
+				</dependency>
+<dependency>
+	<groupId>javax</groupId>
+	<artifactId>javaee-web-api</artifactId>
+	<version>6.0</version>
+	<scope>provided</scope>
+</dependency>
+        <dependency>  
+        <groupId>org.apache.openejb</groupId>  
+        <artifactId>openejb-core</artifactId>  
+        <version>4.6.0-SNAPSHOT</version>  
+    </dependency>  
     </dependencies>
 </project>

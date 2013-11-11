@@ -341,13 +341,16 @@
 				-->
 				<!--<scope>provided</scope>-->
 			</dependency>
-
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-client</artifactId>
 				<version>${de.pgalise.openejb.version}</version>
 				<!--<scope>provided</scope>-->
-			</dependency>			
+			</dependency>	<dependency>
+    	<groupId>javax</groupId>
+    	<artifactId>javaee-api</artifactId>
+    	<version>6.0</version>
+	</dependency>		
 
 			<dependency>
 				<groupId>javax.servlet</groupId>
