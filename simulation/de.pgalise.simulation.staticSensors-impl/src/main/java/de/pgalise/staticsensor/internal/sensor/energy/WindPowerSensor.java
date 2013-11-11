@@ -20,6 +20,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
@@ -207,8 +209,8 @@ public class WindPowerSensor extends EnergySensor {
 	}
 
 	@Override
-	public SensorTypeEnum getSensorType() {
-		return SensorTypeEnum.WINDPOWERSENSOR;
+	public SensorType getSensorType() {
+		return EnergySensorTypeEnum.WINDPOWERSENSOR;
 	}
 
 	/**

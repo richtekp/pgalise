@@ -30,12 +30,14 @@ import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 
@@ -46,6 +48,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
  * @author Marcus
  */
 public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * TrafficGraphExtensions used for further calculations
@@ -70,17 +73,17 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 	/**
 	 * holds all edges of the node on which the PriorityRoad is set on
 	 */
-	private Map<DefaultTrafficEdge<D> , Boolean> edges;
+	private Map<TrafficEdge , Boolean> edges;
 
 	/**
 	 * holds all TrafficRuleData elements (Vehicle, Callbacks, etc.) being currently in the PriorityRoad
 	 */
-	private Map<DefaultTrafficEdge<D> , DefaultTrafficRuleData<D>> inNode;
+	private Map<TrafficEdge , TrafficRuleData> inNode;
 
 	/**
 	 * holds all TrafficRuleData elements (Vehicle, Callbacks, etc.) being currently waiting to get in the PriorityRoad
 	 */
-	private Map<DefaultTrafficEdge<D> , Queue<DefaultTrafficRuleData<D>>> outNode;
+	private Map<TrafficEdge , Queue<TrafficRuleData>> outNode;
 
 	/**
 	 * Creates an PriorityRoad
@@ -93,10 +96,10 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 	 * @throws IllegalArgumentException if at least one of the passed arguments is 'null' or millisInNode or giveAwayPriority isn't set correctly 
 	 * @throws IllegalStateException if the number of edges is not 3 or 4 or if not exactly 2 edges are marked as priority roads
 	 */
-	public PriorityRoad(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph, final RandomSeedService randomSeedService,
+	public PriorityRoad(final TrafficNode node, TrafficGraph graph, final RandomSeedService randomSeedService,
 			final TrafficGraphExtensions trafficEdgeExtensions, final int millisInNode, final double giveAwayPriority)
 			throws IllegalArgumentException, IllegalStateException {
-		super(node, graph);
+		super(node, graph,null);
 		if (randomSeedService == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("randomSeedService"));
 		}
@@ -116,7 +119,7 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 		this.giveAwayPriority = giveAwayPriority;
 	}
 
-	public PriorityRoad(final DefaultTrafficNode<D> node, DefaultTrafficGraph<D> graph, final RandomSeedService randomSeedService,
+	public PriorityRoad(final TrafficNode node, TrafficGraph graph, final RandomSeedService randomSeedService,
 			final TrafficGraphExtensions trafficEdgeExtensions) throws IllegalArgumentException, IllegalStateException {
 		this(node, graph, randomSeedService, trafficEdgeExtensions, 2000, 0.15);
 	}
@@ -129,7 +132,7 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 	 * @throws IllegalStateException  
 	 */
 	@Override
-	protected void checkNode(final DefaultTrafficNode<D> node) throws IllegalArgumentException, IllegalStateException {
+	public void checkNode(final TrafficNode node) throws IllegalArgumentException, IllegalStateException {
 		final int edgeSize = getGraph().edgesOf(node).size();
 		if ((edgeSize < 3) || (edgeSize > 4)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForMustBetween("node.getEdgeSet().size()",
@@ -139,7 +142,7 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 		this.inNode = new HashMap<>();
 		this.outNode = new HashMap<>();
 		int priorityRoadCounter = 0;
-		for (final DefaultTrafficEdge<D>  edge : getGraph().edgesOf(node)) {
+		for (final TrafficEdge  edge : getGraph().edgesOf(node)) {
 			Boolean isPriorityRoad = this.trafficEdgeExtensions.isPriorityRoad(edge);
 			if ((isPriorityRoad != null) && isPriorityRoad) {
 				priorityRoadCounter++;
@@ -147,7 +150,7 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 				isPriorityRoad = false;
 			}
 			this.inNode.put(edge, null);
-			this.outNode.put(edge, new LinkedList<DefaultTrafficRuleData<D>>());
+			this.outNode.put(edge, new LinkedList<TrafficRuleData>());
 			this.edges.put(edge, isPriorityRoad);
 		}
 		if (priorityRoadCounter != 2) {
@@ -159,13 +162,13 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 	 * Registered the vehicle on this PriorityRoad.
 	 */
 	@Override
-	public void register(final BaseVehicle<D> vehicle, final DefaultTrafficEdge<D>  from, final DefaultTrafficEdge<D>  to, final TrafficRuleCallback callback)
+	public void register(final Vehicle<?> vehicle, final TrafficEdge  from, final TrafficEdge  to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException {
 		if (from == to) {
 			throw new IllegalArgumentException("Turning around is not allowed here.");
 		}
 
-		final DefaultTrafficRuleData<D> trafficRuleData = new DefaultTrafficRuleData<>(vehicle, from, to, callback);
+		final TrafficRuleData trafficRuleData = new TrafficRuleData(vehicle.getData(), from, to, callback);
 
 		if (this.edges.get(trafficRuleData.getFrom()) == true) {
 			if (this.inNode.get(trafficRuleData.getFrom()) == null) {
@@ -188,9 +191,9 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 	 * Updates this PrioritzyRoad.
 	 */
 	@Override
-	public void update(final EventList<Event> simulationEventList) {
+	public void update(final EventList<VehicleEvent> simulationEventList) {
 		// Try to wipe out
-		for (final DefaultTrafficEdge<D>  edge : this.inNode.keySet()) {
+		for (final TrafficEdge  edge : this.inNode.keySet()) {
 			final TrafficRuleData trafficRuleData = this.inNode.get(edge);
 			if (trafficRuleData != null) {
 				trafficRuleData.getCallback().onExit();
@@ -201,8 +204,8 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 		// Try to let in
 		final int priorityCarsWaiting = this.getPriorityCarsWaiting();
 		if (priorityCarsWaiting == 0) {
-			for (final DefaultTrafficEdge<D>  edge : this.outNode.keySet()) {
-				final DefaultTrafficRuleData<D> trafficRuleData = this.outNode.get(edge).peek();
+			for (final TrafficEdge  edge : this.outNode.keySet()) {
+				final TrafficRuleData trafficRuleData = this.outNode.get(edge).peek();
 				if (trafficRuleData != null) {
 					if (trafficRuleData.getCallback().onEnter()) {
 						this.inNode.put(edge, trafficRuleData);
@@ -210,9 +213,9 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 				}
 			}
 		} else {
-			for (final DefaultTrafficEdge<D>  edge : this.outNode.keySet()) {
+			for (final TrafficEdge  edge : this.outNode.keySet()) {
 				if (this.edges.get(edge) == true) {
-					final DefaultTrafficRuleData<D> trafficRuleData = this.outNode.get(edge).peek();
+					final TrafficRuleData trafficRuleData = this.outNode.get(edge).peek();
 					if (trafficRuleData != null) {
 						if (trafficRuleData.getCallback().onEnter()) {
 							this.inNode.put(edge, trafficRuleData);
@@ -229,9 +232,9 @@ public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> 
 	 */
 	private int getPriorityCarsWaiting() {
 		int result = 0;
-		for (final DefaultTrafficEdge<D>  edge : this.outNode.keySet()) {
+		for (final TrafficEdge  edge : this.outNode.keySet()) {
 			if (this.edges.get(edge) == true) {
-				Queue<DefaultTrafficRuleData<D>> queue = this.outNode.get(edge);
+				Queue<TrafficRuleData> queue = this.outNode.get(edge);
 				result += queue.size();
 			}
 		}

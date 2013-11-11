@@ -17,6 +17,7 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import de.pgalise.it.TestUtils;
+import de.pgalise.simulation.shared.city.City;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -29,7 +30,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.traffic.internal.DefaultCity;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
@@ -97,7 +97,7 @@ public class DefaultWeatherServiceSyncTest {
 	 */
 	private WeatherLoader<DefaultWeatherCondition> loader;
 		
-	private DefaultCity city;
+	private City city;
 	
 	@Resource
 	private UserTransaction userTransaction;

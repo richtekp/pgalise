@@ -5,40 +5,119 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.NavigationNode;
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.CityNodeTag;
+import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
+import de.pgalise.simulation.shared.city.LanduseTagEnum;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
+import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 /**
- *
- * @param <N> 
- * @param <E> 
- * @param <D> 
- * @param <V> 
+ * A <tt>TrafficNode</tt> is a position (represented by a 
+ * {@link DirectPosition2D}) which are passed by {@link Vehicle}s when they 
+ * navigate from one {@link NavigationNode} to another. 
+ * <tt>NavigationNode</tt>s are supposed to be of no interest as a navigation target.<br/>
+ * <tt>NavigationNode</tt> uses a String {@link Id} which will be initialized with a the return of {@link UUID#randomUUID() } in order to avoid having two properties with the same semantic and still be able to implement {@link Node#getId() }.<br/>
+ * A node is considered to be reached if the difference of its location and another point is less or equals than {@link NavigationNode#NODE_RADIUS}. Any <tt>NavigationNode</tt> is obliged to have a distance of {@link #NODE_RADIUS} (exclusive) to any other different node. This constraint will be not checked at creation of <tt>NavigationNode</tt>s, but in {@link NavigationEdge} and possibly other data structures.
+ * @param <?> 
  * @author richter
  */
-public interface TrafficNode<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D, N,E,V>> extends NavigationNode {
+/*
+ * implementation notes:
+ * - default constructor is necessary and needs to be public in order to be 
+ * usage for Graph.addEdge (no idea why)
+ */
+@Entity
+public class TrafficNode extends NavigationNode  {
+	private static final long serialVersionUID = 1L;
 	
+	private boolean onJunction;
 	
-	/**
-	 * legacy (should be removable)
-	 * @return 
-	 */
-	boolean isOnStreet();
+	private boolean onStreet;
+	private boolean roundabout;
+	private Set<StaticTrafficSensor> sensors;
+	private Set<Vehicle<?>> vehicles;
+	private TrafficRule trafficRule;
+	private BusStop busStop;
+
+	protected TrafficNode() {
+		super();
+	}
 	
-	boolean isOnJunction();
-	
-	TrafficRule<D, N, E, V> getTrafficRule();
-	
-	void setTrafficRule(TrafficRule<D,N,E,V> trafficRule);
-	
-	Set<V> getVehicles();
-	
-	void setVehicles(Set<V> vehicles);
-	
-	Set<StaticTrafficSensor<N,E>> getSensors();
-	
-	void setSensors(Set<StaticTrafficSensor<N,E>> sensors);
+	public TrafficNode(Coordinate geoLocation) {
+		super(geoLocation);
+	}
+
+	public boolean isOnJunction() {
+		return onJunction;
+	}
+
+	public boolean isOnStreet() {
+		return onStreet;
+	}
+
+	public void setSensors(
+		Set<StaticTrafficSensor> sensors) {
+		this.sensors = sensors;
+	}
+
+	public Set<StaticTrafficSensor> getSensors() {
+		return sensors;
+	}
+
+	public void setVehicles(
+		Set<Vehicle<?>> vehicles) {
+		this.vehicles = vehicles;
+	}
+
+	public Set<Vehicle<?>> getVehicles() {
+		return vehicles;
+	}
+
+	public void setTrafficRule(TrafficRule trafficRule) {
+		this.trafficRule = trafficRule;
+	}
+
+	@Transient
+	public TrafficRule getTrafficRule() {
+		return trafficRule;
+	}
+
+	public void setRoundabout(boolean roundabout) {
+		this.roundabout = roundabout;
+	}
+
+	public boolean isRoundabout() {
+		return roundabout;
+	}
+
+	public void setBusStop(BusStop busStop) {
+		this.busStop = busStop;
+	}
+
+	public BusStop getBusStop() {
+		return busStop;
+	}
 }

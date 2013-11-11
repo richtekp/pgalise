@@ -22,20 +22,20 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
+import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 
 /**
  * Sensor for the traffic lights
  * 
  * @author Marcus
  */
-public class TrafficLightSensor<D extends VehicleData> extends StaticTrafficSensor<DefaultTrafficNode<D>, DefaultTrafficEdge<D>> {
+public class TrafficLightSensor<D extends VehicleData> extends AbstractStaticTrafficSensor {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -57,9 +57,9 @@ public class TrafficLightSensor<D extends VehicleData> extends StaticTrafficSens
 	 * @throws IllegalArgumentException
 	 *             Thrown if no traffic light is null
 	 */
-	public TrafficLightSensor(Output output, int sensorId, Coordinate position, TrafficLight trafficLight)
+	public TrafficLightSensor(TrafficNode node, Output output, Coordinate position, TrafficLight trafficLight)
 			throws IllegalArgumentException {
-		super(output, sensorId, position);
+		super(node, output, position);
 		if (trafficLight == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("trafficLight"));
 		}
@@ -83,7 +83,7 @@ public class TrafficLightSensor<D extends VehicleData> extends StaticTrafficSens
 	}
 
 	@Override
-	public void vehicleOnNodeRegistered(BaseVehicle<D> vehicle) {
+	public void vehicleOnNodeRegistered(Vehicle<?> vehicle) {
 		// nothing to do here
 	}
 }

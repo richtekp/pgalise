@@ -29,8 +29,8 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
@@ -42,7 +42,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFactory<DefaultTrafficNode<BusData>,DefaultTrafficEdge<BusData>, BaseVehicle<BusData>> {
+public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFactory {
 
 	/**
 	 * Constructor

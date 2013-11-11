@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 
 /**
@@ -31,7 +32,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
  * @author Andreas
  * @version 1.0
  */
-public class DeleteVehicleEventHandler extends AbstractTrafficEventHandler<DeleteVehiclesEvent> {
+public class DeleteVehicleEventHandler<D extends VehicleData> extends AbstractTrafficEventHandler<D,DeleteVehiclesEvent> {
 
 	/**
 	 * Logger

@@ -23,6 +23,8 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
 import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 
 /**
  * Interface for the energy controllers. An energy controller is able to give the energy consumption in kWh on a
@@ -30,7 +32,7 @@ import de.pgalise.simulation.service.InitParameter;
  * 
  * @author Timo
  */
-public interface EnergyController extends Controller<EnergyEvent, StartParameter, InitParameter> {
+public interface EnergyController extends Controller<EnergyEvent, InfrastructureStartParameter, InfrastructureInitParameter> {
 
 	/**
 	 * Returns the current energy consumption on the given point.

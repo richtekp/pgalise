@@ -16,7 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
@@ -36,7 +36,7 @@ import javax.measure.quantity.Temperature;
 @Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_CURRENT")
 @NamedQuery(name = "MyExtendedServiceDataCurrent.findByCityAndDate", query = "SELECT i FROM MyExtendedServiceDataCurrent i WHERE i.measureDate = :date AND i.city = :city")
-public class MyExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements MutableExtendedServiceDataCurrent<DefaultWeatherCondition> {
+public class MyExtendedServiceDataCurrent extends DefaultServiceDataCurrent implements ExtendedServiceDataCurrent<DefaultWeatherCondition> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -64,7 +64,7 @@ public class MyExtendedServiceDataCurrent extends DefaultServiceDataCurrent impl
 	}
 
 	public MyExtendedServiceDataCurrent(
-		Date measureDate, Time measureTime, DefaultCity city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, DefaultWeatherCondition condition, Time sunrise, Time sunset) {
+		Date measureDate, Time measureTime, City city, Measure<Float, Temperature> temperature, Float relativHumidity, Float visibility, Float windDirection, Float windVelocity, DefaultWeatherCondition condition, Time sunrise, Time sunset) {
 		super(
 			measureDate,
 			measureTime, 
@@ -139,17 +139,14 @@ public class MyExtendedServiceDataCurrent extends DefaultServiceDataCurrent impl
 		return this.visibility;
 	}
 
-	@Override
 	public void setSunrise(Time sunrise) {
 		this.sunrise = sunrise;
 	}
 
-	@Override
 	public void setSunset(Time sunset) {
 		this.sunset = sunset;
 	}
 
-	@Override
 	public void setVisibility(Float visibility) {
 		this.visibility = visibility;
 	}

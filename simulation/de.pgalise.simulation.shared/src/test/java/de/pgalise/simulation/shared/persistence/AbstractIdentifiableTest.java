@@ -33,7 +33,7 @@ public class AbstractIdentifiableTest {
 	@Test
 	public void testInit() throws InterruptedException {
 		AbstractIdentifiable instance = new AbstractIdentifiableImpl();
-		final int count = 100;
+		final int count = 10;
 		int threadCount = 20;
 		final Set<Long> usedIds = new HashSet<>();
 		Queue<Callable<Void>> threads = new LinkedList<>();

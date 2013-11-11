@@ -13,16 +13,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  *
  * @author richter
  */
-public interface ScheduleItem<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>> {
-<<<<<<< HEAD
-
-=======
-	
->>>>>>> ejb_skip
+public interface ScheduleItem {
 
 	/**
 	 * The time the vehicle should be departured.
@@ -33,7 +24,7 @@ public interface ScheduleItem<
 
 	public void setDepartureTime(long time) ;
 
-	public V getVehicle();
+	public Vehicle<?> getVehicle();
 
 	/**
 	 * @return the time the vehicle of this items has been updated

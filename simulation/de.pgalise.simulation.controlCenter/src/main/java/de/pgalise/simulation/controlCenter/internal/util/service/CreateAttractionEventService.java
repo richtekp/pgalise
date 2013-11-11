@@ -18,9 +18,10 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 
 /**
  * This services creates an attraction event.
@@ -51,7 +52,7 @@ public interface CreateAttractionEventService {
 			randomDynamicSensorBundle, 
 			RandomSeedService randomSeedService,
 			boolean withSensorInterferer,
-			NavigationNode nodeID,
+			TrafficNode nodeID,
 			Coordinate position,
 			long startTimestamp,
 			long endTimestamp);

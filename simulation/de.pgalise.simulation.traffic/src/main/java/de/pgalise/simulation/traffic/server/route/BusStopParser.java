@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import javax.persistence.EntityManager;
@@ -43,7 +43,7 @@ public class BusStopParser {
 	private static final Logger log = LoggerFactory.getLogger(BusStopParser.class);
 
 	private CityInfrastructureData trafficInformation;
-	private List<BusStop<?>> busStops;
+	private List<BusStop> busStops;
 	@PersistenceContext(unitName = "pgalise")
 	private EntityManager entityManager;
 
@@ -58,10 +58,10 @@ public class BusStopParser {
 	 * @param graph
 	 * @return
 	 */
-	public List<BusStop<?>> parseBusStops(TrafficGraph<?,?,?,?> graph) {
+	public List<BusStop> parseBusStops(TrafficGraph graph) {
 		TypedQuery query = entityManager.createQuery("SELECT x FROM BusStop x",
 			BusStop.class);
-		List<BusStop<?>> queriedBusStops = query.getResultList();
+		List<BusStop> queriedBusStops = query.getResultList();
 		log.info("Number of parsed BusStops: %d", this.busStops.size());
 		log.info("Number of parsed BusStops being outside of the boundary: %d", queriedBusStops.size()-this.busStops.size());
 		return this.busStops;
@@ -70,7 +70,7 @@ public class BusStopParser {
 	/**
 	 * @return the busStops
 	 */
-	public List<BusStop<?>> getBusStops() {
+	public List<BusStop> getBusStops() {
 		return this.busStops;
 	}
 
@@ -78,7 +78,7 @@ public class BusStopParser {
 	 * @param busStops
 	 *            the busStops to set
 	 */
-	public void setBusStops(List<BusStop<?>> busStops) {
+	public void setBusStops(List<BusStop> busStops) {
 		this.busStops = busStops;
 	}
 }

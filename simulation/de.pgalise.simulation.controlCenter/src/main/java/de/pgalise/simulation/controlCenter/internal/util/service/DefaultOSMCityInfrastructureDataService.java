@@ -29,7 +29,9 @@ import org.slf4j.Logger;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
-import de.pgalise.util.cityinfrastructure.impl.OSMCityInfrastructureData;
+import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 
 /**
  * The default implementation of {@link OSMCityInfrastructureDataService}.
@@ -59,8 +61,9 @@ public class DefaultOSMCityInfrastructureDataService implements OSMCityInfrastru
 	 * @return
 	 * @throws IOException
 	 */
-	public CityInfrastructureData createCityInfrastructureData(File osm, File busstops,
-			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
+	@Override
+	public TrafficInfrastructureData createCityInfrastructureData(File osm, File busstops,
+			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy, TrafficGraph graph) throws IOException {
 
 		Matcher osmNameMatcher = fileNamePattern.matcher(osm.getName());
 		osmNameMatcher.find();
@@ -78,7 +81,7 @@ public class DefaultOSMCityInfrastructureDataService implements OSMCityInfrastru
 			try {
 				fis = new FileInputStream(cityInfrastructuraDataFile.getAbsolutePath());
 				ois = new ObjectInputStream(fis);
-				return (CityInfrastructureData) ois.readObject();
+				return (TrafficInfrastructureData) ois.readObject();
 			} catch (Exception e) {
 				log.error("Exception", e);
 			} finally {
@@ -100,8 +103,12 @@ public class DefaultOSMCityInfrastructureDataService implements OSMCityInfrastru
 		if (cityInfrastructuraDataFile.exists()) {
 			cityInfrastructuraDataFile.delete();
 		}
-		CityInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(new FileInputStream(osm),
-				new FileInputStream(busstops), buildingEnergyProfileStrategy);
+		TrafficInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(
+			new FileInputStream(osm),
+			new FileInputStream(busstops), 
+			buildingEnergyProfileStrategy,
+			graph
+		);
 
 		FileOutputStream fis = null;
 		ObjectOutputStream oos = null;

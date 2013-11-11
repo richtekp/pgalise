@@ -22,6 +22,7 @@ import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -36,118 +37,30 @@ import org.slf4j.LoggerFactory;
  * @author Marcus
  * @version 1.0
  */
-@MappedSuperclass
-public abstract class Sensor<E extends Event> extends AbstractIdentifiable implements SimulationComponent<E> {
-	private final static Logger LOGGER = LoggerFactory.getLogger(Sensor.class);
-
-	/**
-	 * Determines whether the sensor is activated
-	 */
-	private boolean activated = true;
-
-	/**
-	 * will be incremented on each update and be set to 0 after update limit has been reached
-	 */
-	private int currentUpdateStep = 0;
-
-	/**
-	 * The number of measured values
-	 */
-	private long measuredValues = 0;
-
-	/**
-	 * The output used by the sensor to send his measured values.
-	 */
-	@Transient
-	private Output output;
-
-	/**
-	 * The position of the sensor in the environment
-	 */
-	@Embedded
-	private Coordinate position;
-
-	/**
-	 * Update limit
-	 */
-	private int updateLimit;
-
-	protected Sensor() {
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @throws IllegalArgumentException  
-	 */
-	protected Sensor(final Output output, final Coordinate position)
-			throws IllegalArgumentException {
-		this(output, position, 1);
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param updateLimit
-	 *            Update limit
-	 * @throws IllegalArgumentException  
-	 */
-	protected Sensor(final Output output, final Coordinate position, final int updateLimit)
-			throws IllegalArgumentException {
-		if (output == null) {
-			throw new IllegalArgumentException("Argument 'output' must not be 'null'.");
-		}
-		// if (position != null && (position.getX() < 0) || (position.getY() < 0)) {
-		// throw new IllegalArgumentException("Argument 'position' must have only positive values.");
-		// }
-		if (updateLimit < 1) {
-			throw new IllegalArgumentException("Argument 'updateLimit' must be greater than '0'.");
-		}
-
-		this.output = output;
-		this.position = position;
-		this.updateLimit = updateLimit;
-
-	}
+public interface Sensor<E extends Event> extends Identifiable, SimulationComponent<E> {
 
 	/**
 	 * returns the number of measured values of the sensor
 	 * 
 	 * @return measuredValues
 	 */
-	public long getMeasuredValues() {
-		return this.measuredValues;
-	}
+	public long getMeasuredValues();
 
 	/**
 	 * returns the output of the sensor
 	 * 
 	 * @return output
 	 */
-	public Output getOutput() {
-		return this.output;
-	}
+	public Output getOutput() ;
 
 	/**
 	 * Returns the position of the sensor in the environment
 	 * 
 	 * @return position
 	 */
-	public Coordinate getPosition() {
-		return this.position;
-	}
+	public Coordinate getPosition();
+	
+	void setPosition(Coordinate position);
 
 	/**
 	 * Returns the sensortype
@@ -161,29 +74,9 @@ public abstract class Sensor<E extends Event> extends AbstractIdentifiable imple
 	 * 
 	 * @return activated
 	 */
-	public boolean isActivated() {
-		return this.activated;
-	}
-
-	/**
-	 * sets the sensor activated
-	 * 
-	 * @param activated
-	 *            determines whether the sensor is activated
-	 */
-	public void setActivated(final boolean activated) {
-		this.activated = activated;
-	}
-
-	/**
-	 * Sets the position of the sensor in the environment
-	 * 
-	 * @param position
-	 *            Position
-	 */
-	public void setPosition(final Coordinate position) {
-		this.position = position;
-	}
+	public boolean isActivated();
+	
+	void setActivated(boolean activated);
 
 	/**
 	 * Makes the sensor measure its environment and doing the transmission sequence if it is activated.
@@ -192,14 +85,7 @@ public abstract class Sensor<E extends Event> extends AbstractIdentifiable imple
 	 *            List with SimulationEvents
 	 */
 	@Override
-	public void update(final EventList<E> eventList) {
-		if (eventList == null) {
-			throw new IllegalArgumentException("\"eventList\" must not be null");
-		}
-		if (this.isActivated()) {
-			this.transmitData(eventList);
-		}
-	}
+	public void update(final EventList<E> eventList) ;
 
 	/**
 	 * subclasses are supposed to implement this method to send their usage data through their output
@@ -207,60 +93,5 @@ public abstract class Sensor<E extends Event> extends AbstractIdentifiable imple
 	 * @param eventList
 	 *            List with SimulationEvents
 	 */
-	public abstract void transmitUsageData(EventList<E> eventList);
-
-	/**
-	 * performs the whole transmission sequence
-	 * 
-	 * @param eventList
-	 *            List with SimulationEvents
-	 */
-	protected void transmitData(final EventList<E> eventList) {
-		if (++this.currentUpdateStep >= this.updateLimit) {
-
-			this.beginTransmit();
-			this.transmitMetaData(eventList);
-			this.transmitUsageData(eventList);
-			this.endTransmit();
-			this.measuredValues++;
-			this.currentUpdateStep = 0;
-		}
-		// else
-		// log.debug("Sensor " + this.getSensorType() + " is not allowed to send data because of the updateSteps");
-
-		// logValueToSend(eventList); // for test purpose (damit nichts an infosphere gesendet wird)
-	}
-
-	protected void logValueToSend(EventList<E> eventList) {
-		LOGGER.debug("sending event list %s", eventList);
-	}
-
-	/**
-	 * Initializes the transmission sequence
-	 */
-	private void beginTransmit() {
-		this.getOutput().beginTransmit();
-	}
-
-	/**
-	 * Finalizes the transmission sequence
-	 */
-	private void endTransmit() {
-		this.getOutput().endTransmit();
-	}
-
-	/**
-	 * Transmits the metadata of the sensor. The current Timestamp (long), the sensorId (int) and the sensorTypeId (int)
-	 * 
-	 * @param eventList
-	 *            List with SimulationEvents
-	 */
-	private void transmitMetaData(final EventList<E> eventList) {
-		// Timestamp
-		this.getOutput().transmitLong(eventList.getTimestamp());
-		// SensorId
-		this.getOutput().transmitLong(this.getId());
-		// SensorTypeId
-		this.getOutput().transmitByte((byte) this.getSensorType().getSensorTypeId());
-	}
+	void transmitUsageData(EventList<E> eventList);
 }

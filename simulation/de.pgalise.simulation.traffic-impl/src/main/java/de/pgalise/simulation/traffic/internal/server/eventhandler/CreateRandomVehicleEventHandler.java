@@ -26,13 +26,15 @@ import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
+import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * Creates random vehicles with random trips.
@@ -41,7 +43,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Mustafa
  * @version 1.0
  */
-public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent<?>> extends AbstractVehicleEventHandler<E> {
+public class CreateRandomVehicleEventHandler<D extends VehicleData, E extends CreateRandomVehiclesEvent<D>> extends AbstractVehicleEventHandler<D,E> {
 
 	/**
 	 * Logger
@@ -65,7 +67,7 @@ public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent
 	}
 
 	@Override
-	public void handleEvent(E event) {
+	public void handleEvent(CreateRandomVehiclesEvent event) {
 		if (!event.getResponsibleServer().equals(this.getResponsibleServer())) {
 			return;
 		}
@@ -107,14 +109,14 @@ public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent
 	 * 
 	 * @author marcus
 	 */
-	private static class CreateThread extends Thread {
+	private static class CreateThread<X extends VehicleData, Y extends CreateRandomVehiclesEvent<X>> extends Thread {
 
-		private final CreateRandomVehicleEventHandler<?> eHandler;
+		private final CreateRandomVehicleEventHandler<X,Y> eHandler;
 		private final List<CreateRandomVehicleData> vehicleList;
 		private final int startIndex;
 		private final int endIndex;
 
-		private CreateThread(final CreateRandomVehicleEventHandler<?> eHandler,
+		private CreateThread(final CreateRandomVehicleEventHandler<X,Y> eHandler,
 				List<CreateRandomVehicleData> vehicleList, int startIndex, int endIndex) {
 			this.eHandler = eHandler;
 			this.vehicleList = vehicleList;
@@ -206,7 +208,7 @@ public class CreateRandomVehicleEventHandler<E extends CreateRandomVehiclesEvent
 						data.getVehicleInformation().getVehicleType());
 
 				// Create vehicle
-				final BaseVehicle<D> v = this.eHandler.createVehicle(data, trip);
+				final Vehicle<?> v = this.eHandler.createVehicle(data, trip);
 
 				if (v == null) {
 					switch (data.getVehicleInformation().getVehicleType()) {

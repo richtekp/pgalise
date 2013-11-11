@@ -16,16 +16,10 @@
  
 package de.pgalise.simulation.traffic.scheduler;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.graphstream.algorithm.Dijkstra;
-import org.graphstream.algorithm.Dijkstra.Element;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-import org.graphstream.graph.implementations.SingleGraph;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,7 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
@@ -44,9 +42,11 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import javax.vecmath.Vector2d;
+import org.jgrapht.alg.DijkstraShortestPath;
 
 /**
  * Tests the implementations of the {@link Scheduler}
@@ -55,11 +55,14 @@ import javax.vecmath.Vector2d;
  * @version 1.0 (Nov 22, 2012)
  */
 public class SchedulerTest {
+	private static TrafficNode a = new TrafficNode(new Coordinate( 0, 0));
+	private static TrafficNode b = new TrafficNode(new Coordinate( 2, 0));
+	private static TrafficNode c = new TrafficNode(new Coordinate( 2, 2));
 
 	/**
 	 * Graph
 	 */
-	private static Graph graph;
+	private static TrafficGraph graph;
 
 	/**
 	 * Logger
@@ -73,32 +76,29 @@ public class SchedulerTest {
 	 *            TrafficGraphExtensions
 	 * @return List with four vehicles
 	 */
-	public static List<Vehicle<? extends VehicleData,N,E>> createVehicles(TrafficGraphExtensions ee) {
-		Dijkstra algo = new Dijkstra(Element.NODE, "weight", null);
-		algo.init(SchedulerTest.graph);
-		algo.setSource(SchedulerTest.graph.getNode("a"));
-		algo.compute();
+	public static List<Vehicle<?>> createVehicles(TrafficGraphExtensions ee) {
+		DijkstraShortestPath<TrafficNode, TrafficEdge> algo = new DijkstraShortestPath<>(graph, a, c, Double.POSITIVE_INFINITY);
 
-		Path shortestPath = algo.getPath(SchedulerTest.graph.getNode("c"));
+		List<TrafficEdge> shortestPath = algo.getPathEdgeList();
 
-		List<Vehicle<? extends VehicleData,N,E>> vehicles = new ArrayList<>();
+		List<Vehicle<?>> vehicles = new ArrayList<>();
 
-		Vehicle<? extends VehicleData,N,E> a = new BaseVehicle<>(ee);
+		Vehicle<?> a = new BaseVehicle<>(ee);
 		a.setName("a");
 		a.setPath(shortestPath);
 		vehicles.add(a);
 
-		Vehicle<? extends VehicleData,N,E> b = new BaseVehicle<>(ee);
+		Vehicle<?> b = new BaseVehicle<>(ee);
 		b.setName("b");
 		b.setPath(shortestPath);
 		vehicles.add(b);
 
-		Vehicle<? extends VehicleData,N,E> c = new BaseVehicle<>(ee);
+		Vehicle<?> c = new BaseVehicle<>(ee);
 		c.setName("c");
 		c.setPath(shortestPath);
 		vehicles.add(c);
 
-		Vehicle<? extends VehicleData,N,E> d = new BaseVehicle<>(ee);
+		Vehicle<?> d = new BaseVehicle<>(ee);
 		d.setName("d");
 		d.setPath(shortestPath);
 		vehicles.add(d);
@@ -120,12 +120,12 @@ public class SchedulerTest {
 	 *            Start time of the vehicles
 	 */
 	public static void testScheduler(Scheduler scheduler, long startTime) {
-		List<DefaultScheduleItem> vehicles = null;
+		List<ScheduleItem> vehicles = null;
 		vehicles = scheduler.getExpiredItems(startTime);
 		Assert.assertNotNull(vehicles);
 		Assert.assertEquals(0, vehicles.size());
 
-		List<DefaultScheduleItem> items = null;
+		List<ScheduleItem> items = null;
 		items = scheduler.getScheduledItems();
 		Assert.assertNotNull(items);
 		Assert.assertEquals(4, items.size());
@@ -165,41 +165,22 @@ public class SchedulerTest {
 	}
 
 	/**
-	 * Add nodes to the graph
-	 * 
-	 * @param graph
-	 *            Graph
-	 * @param id
-	 *            ID
-	 * @param x
-	 *            X-coordinate
-	 * @param y
-	 *            Y-coordinate
-	 * @return Node
-	 */
-	private static Node addNode(Graph graph, String id, double x, double y) {
-		Node node = graph.addNode(id);
-		node.setAttribute("position", new Vector2d(x, y));
-		return node;
-	}
-
-	/**
 	 * Create a test graph
 	 * 
 	 * @return Graph
 	 */
-	private static Graph createGraph() {
-		Graph graph = new SingleGraph("city");
-		Node a = SchedulerTest.addNode(graph, "a", 0, 0);
-		Node b = SchedulerTest.addNode(graph, "b", 2, 0);
-		Node c = SchedulerTest.addNode(graph, "c", 2, 2);
+	private static TrafficGraph createGraph() {
 
-		Edge ab = null;
-		ab = graph.addEdge("ab", a, b);
-		ab.setAttribute("weight", 1);
-		Edge bc = null;
-		bc = graph.addEdge("bc", b, c);
-		bc.setAttribute("weight", 1);
+		TrafficGraph graph = new DefaultTrafficGraph();
+
+		TrafficEdge ab = graph.addEdge(a,
+			b);
+		graph.setEdgeWeight(ab,
+			1);
+		TrafficEdge bc = graph.addEdge(b,
+			c);
+		graph.setEdgeWeight(bc,
+			1);
 
 		return graph;
 	}
@@ -211,7 +192,7 @@ public class SchedulerTest {
 	 *            List with vehicles
 	 * @return List of vehicles names as String
 	 */
-	private static String getVehicles(List<DefaultScheduleItem> vehicles) {
+	private static String getVehicles(List<ScheduleItem> vehicles) {
 		StringBuilder str = new StringBuilder();
 		str.append("(");
 		for (int i = 0; i < vehicles.size(); i++) {
@@ -233,7 +214,7 @@ public class SchedulerTest {
 
 	@Test
 	public void listSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<? extends VehicleData,N,E>> vehicles = SchedulerTest.createVehicles(this.ee);
+		List<Vehicle<?>> vehicles = SchedulerTest.createVehicles(this.ee);
 
 		long startTime = System.currentTimeMillis();
 
@@ -257,7 +238,7 @@ public class SchedulerTest {
 
 	@Test
 	public void sortedListSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<? extends VehicleData,N,E>> vehicles = SchedulerTest.createVehicles(this.ee);
+		List<Vehicle<?>> vehicles = SchedulerTest.createVehicles(this.ee);
 
 		long startTime = System.currentTimeMillis();
 
@@ -281,7 +262,7 @@ public class SchedulerTest {
 
 	@Test
 	public void treeSetSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<? extends VehicleData,N,E>> vehicles = SchedulerTest.createVehicles(this.ee);
+		List<Vehicle<?>> vehicles = SchedulerTest.createVehicles(this.ee);
 
 		long startTime = System.currentTimeMillis();
 
@@ -305,6 +286,6 @@ public class SchedulerTest {
 
 	@Before
 	public void setUp() {
-		this.ee = new DefaultTrafficGraphExtensions(new DefaultRandomSeedService());
+		this.ee = new DefaultTrafficGraphExtensions(new DefaultRandomSeedService(), graph);
 	}
 }

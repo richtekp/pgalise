@@ -20,4 +20,6 @@ public interface  ExtendedServiceDataCurrent<C extends WeatherCondition> extends
 	Time getSunset();
 
 	Float getVisibility();
+	
+	
 }

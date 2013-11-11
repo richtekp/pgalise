@@ -17,11 +17,6 @@
 package de.pgalise.simulation.traffic.internal.server.route;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,25 +30,15 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.traffic.internal.DefaultBusStop;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.shared.city.BusStop;
-import de.pgalise.simulation.shared.city.DefaultNavigationNode;
-import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficTrip;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
-import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.route.BusStopParser;
 import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
@@ -73,7 +58,7 @@ import org.jgrapht.alg.DijkstraShortestPath;
  */
 public class DefaultRouteConstructor implements RouteConstructor {
 	private RandomVehicleTripGenerator gen;
-	private DefaultTrafficGraph<D> graph;
+	private TrafficGraph graph;
 	private final GraphConstructor graphConstructor;
 	private final RandomSeedService randomSeedService;
 	private final RegionParser regionParser;
@@ -81,11 +66,11 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	private final long time;
 	private final CityInfrastructureData trafficInformation;
 
-	private DefaultTrafficGraphExtensions trafficGraphExtensions;
-	private List<BusStop<?>> busStops;
+	private TrafficGraphExtensions trafficGraphExtensions;
+	private List<BusStop> busStops;
 
-	private Map<TrafficServer<?>, List<NavigationNode>> startHomeNodesForServer = new HashMap<>();
-	private Map<TrafficServer<?>, List<NavigationNode>> startWorkNodesForServer = new HashMap<>();
+	private Map<TrafficServer<?>, List<TrafficNode>> startHomeNodesForServer = new HashMap<>();
+	private Map<TrafficServer<?>, List<TrafficNode>> startWorkNodesForServer = new HashMap<>();
 
 	final Set<Foo> map = new HashSet<>();
 
@@ -94,9 +79,9 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	private static class Foo {
 
 		private boolean inUse;
-		private DefaultTrafficGraph<?> graph;
+		private TrafficGraph graph;
 
-		private Foo(final boolean inUse, DefaultTrafficGraph<?> graph) {
+		private Foo(final boolean inUse, TrafficGraph graph) {
 			this.inUse = inUse;
 			this.graph = graph;
 		}
@@ -113,7 +98,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	 * @param randomSeedService
 	 * @param trafficGraphExtensions
 	 */
-	public DefaultRouteConstructor(Coordinate mapper, CityInfrastructureData cityInfrastructure, long time,
+	public DefaultRouteConstructor(Coordinate mapper, TrafficInfrastructureData cityInfrastructure, long time,
 			RandomSeedService randomSeedService, TrafficGraphExtensions trafficGraphExtensions) {
 		this.trafficInformation = cityInfrastructure;
 		this.graphConstructor = new GraphConstructor(trafficGraphExtensions);
@@ -124,7 +109,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 		this.trafficGraphExtensions = trafficGraphExtensions;
 
 		for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
-			map.add(new Foo(false, null, null));
+			map.add(new Foo( false, null));
 		}
 
 		this.init();
@@ -157,8 +142,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	 * 
 	 * @return 
 	 */
-	public DefaultTrafficGraph<?> createGraph() {
-		this.graph = this.graphConstructor.createGraph("City", this.trafficInformation.getCycleAndMotorways());
+	public TrafficGraph createGraph() {
+//		this.graph = this.graphConstructor.createGraph("City", this.trafficInformation.getCycleAndMotorways());
 		return this.graph;
 	}
 
@@ -202,7 +187,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
-	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, NavigationNode nodeID, long startTimestamp,
+	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, TrafficNode  nodeID, long startTimestamp,
 			boolean isStartNode) {
 		if (!isStartNode) {
 			if (startHomeNodesForServer.get(serverId) == null) {
@@ -223,50 +208,50 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	}
 
 	@Override
-	public TrafficTrip createTrip(TrafficServer<?> serverId, NavigationNode startNodeID, NavigationNode targetNodeID, long startTimestamp) {
-		return new DefaultTrafficTrip(startNodeID, targetNodeID, startTimestamp);
+	public TrafficTrip createTrip(TrafficServer<?> serverId, TrafficNode startNodeID, TrafficNode targetNodeID, long startTimestamp) {
+		return new TrafficTrip(startNodeID, targetNodeID, startTimestamp);
 	}
 
 	@Override
-	public List<DefaultTrafficNode<D>> getAllHomeNodes() {
+	public List<TrafficNode> getAllHomeNodes() {
 		return this.regionParser.getHomeNodes();
 	}
 
 	@Override
-	public List<DefaultTrafficNode<D>> getAllWorkNodes() {
+	public List<TrafficNode> getAllWorkNodes() {
 		return this.regionParser.getWorkNodes();
 	}
 
 	@Override
-	public List<DefaultTrafficEdge<D>>  getBusRoute(List<BusStop<?>> busStopIds) {
-		HashMap<NavigationNode, BusStop<?>> stopMap = new HashMap<>();
-		for (BusStop<?> stop : busStops) {
+	public List<TrafficEdge>  getBusRoute(List<BusStop> busStopIds) {
+		HashMap<NavigationNode, BusStop> stopMap = new HashMap<>();
+		for (BusStop stop : busStops) {
 			stopMap.put(stop, stop);
 		}
 
 		// create list which contains only existing nodes
-		List<DefaultTrafficNode<?>> stopNodes = new LinkedList<>();
-		for (BusStop<?> stopId : busStopIds) {
+		List<TrafficNode> stopNodes = new LinkedList<>();
+		for (BusStop stopId : busStopIds) {
 			stopNodes.add(stopId);
 		}
 
-		List<DefaultTrafficEdge<D>>  path = new LinkedList<> ();
+		List<TrafficEdge>  path = new LinkedList<> ();
 		if (stopNodes.isEmpty()) {
 			return path;
 		}
 
 		NavigationNode rootNode = stopNodes.get(0);
-		DefaultTrafficNode<D> currentNode = stopNodes.get(0);
-		DefaultTrafficNode<D> nextNode;
+		TrafficNode currentNode = stopNodes.get(0);
+		TrafficNode nextNode;
 
-		List<DefaultTrafficEdge<D>>  intermediatePath;
+		List<TrafficEdge>  intermediatePath;
 
 		for (int i = 1; i < stopNodes.size(); i++) {
 			nextNode = stopNodes.get(i);
 
 			intermediatePath = getShortestPath(currentNode, nextNode);
 
-			for (DefaultTrafficEdge<D> e : intermediatePath) {
+			for (TrafficEdge e : intermediatePath) {
 				path.add(e);
 			}
 
@@ -277,16 +262,16 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	}
 
 	@Override
-	public Map<BusStop<?>, DefaultTrafficNode<D>> getBusStopNodes(List<BusStop<?>> busStopIds) {
-		HashMap<BusStop<?>, DefaultTrafficNode<D>> stopMap = new HashMap<>();
-		for (BusStop<?> stop : busStops) {
+	public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds) {
+		HashMap<BusStop, TrafficNode> stopMap = new HashMap<>();
+		for (BusStop stop : busStops) {
 			stopMap.put(stop, stop);
 		}
 
 		// create list which contains only existing nodes
-		HashMap<BusStop<?>, NavigationNode> resultMap = new HashMap<>();
-		for (BusStop<?> stopId : busStopIds) {
-			NavigationNode n = stopMap.get(stopId);
+		HashMap<BusStop, TrafficNode> resultMap = new HashMap<>();
+		for (BusStop stopId : busStopIds) {
+			TrafficNode n = stopMap.get(stopId);
 			if (n != null) {
 				resultMap.put(stopId, n);
 			}
@@ -296,19 +281,19 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	}
 
 	@Override
-	public List<BusStop<?>> getBusStops() {
+	public List<BusStop> getBusStops() {
 		return busStops;
 	}
 
 	@Override
-	public DefaultTrafficGraph<D> getGraph() {
+	public TrafficGraph getGraph() {
 		return this.graph;
 	}
 
 	@Override
-	public List<DefaultTrafficEdge<D>> getShortestPath(DefaultTrafficNode<D> start, DefaultTrafficNode<D> dest) {
+	public List<TrafficEdge> getShortestPath(TrafficNode start, TrafficNode dest) {
 		long t = System.currentTimeMillis();
-		List<DefaultTrafficEdge<D>> path = DijkstraShortestPath.findPathBetween(graph,
+		List<TrafficEdge> path = DijkstraShortestPath.findPathBetween(graph,
 			start,
 			dest);
 		return path;
@@ -341,9 +326,9 @@ public class DefaultRouteConstructor implements RouteConstructor {
 
 
 	@Override
-	public List<NavigationNode> getStartHomeNodes(Geometry cityZone) {
-		List<NavigationNode> nodes = new ArrayList<>();
-		for (DefaultTrafficNode<D> node : getAllHomeNodes()) {
+	public List<TrafficNode> getStartHomeNodes(Geometry cityZone) {
+		List<TrafficNode> nodes = new ArrayList<>();
+		for (TrafficNode node : getAllHomeNodes()) {
 			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node)))) {
 				nodes.add(node);
 			}
@@ -352,9 +337,9 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	}
 
 	@Override
-	public List<NavigationNode> getStartWorkNodes(Geometry cityZone) {
-		List<NavigationNode> nodes = new ArrayList<>();
-		for (NavigationNode node : getAllWorkNodes()) {
+	public List<TrafficNode> getStartWorkNodes(Geometry cityZone) {
+		List<TrafficNode> nodes = new ArrayList<>();
+		for (TrafficNode node : getAllWorkNodes()) {
 			if (cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(node)))) {
 				nodes.add(node);
 			}
@@ -379,7 +364,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 
 	private void init() {
 		createGraph();
-		carNavigator.init(graph);
+//		carNavigator.init(graph);
 		parseHomeAndWorkNodes();
 		this.busStops = parseBusStops();
 	}

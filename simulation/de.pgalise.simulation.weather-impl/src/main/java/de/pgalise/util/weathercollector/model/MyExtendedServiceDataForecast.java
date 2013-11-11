@@ -16,7 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
@@ -36,7 +36,7 @@ import javax.measure.quantity.Temperature;
 @Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_FORECAST")
 @NamedQuery(name = "MyExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM MyExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast implements MutableExtendedServiceDataForecast<DefaultWeatherCondition> {
+public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast implements ExtendedServiceDataForecast<DefaultWeatherCondition> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -48,7 +48,7 @@ public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast im
 	public MyExtendedServiceDataForecast(
 		Date measureDate,
 		Time measureTime, 
-		DefaultCity city,
+		City city,
 		Measure<Float, Temperature> temperatureHigh,
 		Measure<Float, Temperature> temperatureLow,
 		Float relativHumidity,

@@ -230,7 +230,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 		this.entityManager.merge(city);
 
 		// Get the data
-		ServiceDataForecast<DefaultWeatherCondition> data;
+		DefaultServiceDataForecast data;
 		TypedQuery<DefaultServiceDataForecast> query = this.entityManager.createNamedQuery("DefaultServiceDataForecast.findByDate",
 				DefaultServiceDataForecast.class);
 		query.setParameter("date", new Date(timestamp));

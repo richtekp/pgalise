@@ -16,12 +16,12 @@
  
 package de.pgalise.simulation.traffic.internal.server.scheduler;
 
-import de.pgalise.simulation.shared.city.DefaultNavigationEdge;
-import de.pgalise.simulation.shared.city.DefaultNavigationNode;
+import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -35,7 +35,7 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, BaseVehicle<D>>, Comparable<ScheduleItem<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, BaseVehicle<D>>> {
+public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem, Comparable<ScheduleItem> {
 
 	/**
 	 * Departure time
@@ -45,7 +45,7 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem<
 	/**
 	 * Vehicle
 	 */
-	private final BaseVehicle<D> vehicle;
+	private final Vehicle<D> vehicle;
 
 	/**
 	 * Point in time at which the vehicle got scheduled and starts driving.
@@ -68,7 +68,7 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem<
 	 * @param reversePath
 	 *            True if the vehicle's path shall be reversed before it begins its journey
 	 */
-	public DefaultScheduleItem(BaseVehicle<D> vehicle, long time, long updateIntervall) {
+	public DefaultScheduleItem(Vehicle<D> vehicle, long time, long updateIntervall) {
 		this.vehicle = vehicle;
 		this.time = time;
 		this.lastUpdate = time - updateIntervall;
@@ -87,7 +87,7 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem<
 		this.time = time;
 	}
 
-	public BaseVehicle<D> getVehicle() {
+	public Vehicle<D> getVehicle() {
 		return this.vehicle;
 	}
 
@@ -117,7 +117,7 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem<
 	}
 
 	@Override
-	public int compareTo(ScheduleItem<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, BaseVehicle<D>> o) {
+	public int compareTo(ScheduleItem o) {
 		long thisTime = this.getDepartureTime();
 		long anotherTime = o.getDepartureTime();
 

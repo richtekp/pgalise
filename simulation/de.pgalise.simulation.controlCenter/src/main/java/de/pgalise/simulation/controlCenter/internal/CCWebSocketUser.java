@@ -90,25 +90,26 @@ import de.pgalise.simulation.service.ServerConfigurationEntity;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.traffic.event.CreateBussesEvent;
-import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.traffic.VehicleInformation;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 
@@ -173,7 +174,7 @@ public class CCWebSocketUser extends MessageInbound {
 	 * Lock to get sure that city infrastructure is parsed before called.
 	 */
 	private final Object cityInfrastructureDataLock;
-	private CityInfrastructureData cityInfrastructureData;
+	private TrafficInfrastructureData cityInfrastructureData;
 	private Properties properties;
 	private CCSimulationStartParameter simulationStartParameter;
 
@@ -244,7 +245,7 @@ public class CCWebSocketUser extends MessageInbound {
 							osmCityInfrastructureDataService.createCityInfrastructureData(
 									new File(path +osmAndBusstopFileMessage.getContent().getOsmFileName()), 
 									new File(path +osmAndBusstopFileMessage.getContent().getBusStopFileName()), 
-									buildingEnergyProfileStrategy);
+									buildingEnergyProfileStrategy, null);
 					this.sendMessage(new OSMParsedMessage(ccWebSocketMessage.getMessageID(), this.cityInfrastructureData.getBoundary()));
 					return;
 				}
@@ -419,7 +420,7 @@ public class CCWebSocketUser extends MessageInbound {
 				List<Event> simulationEventList = new LinkedList<>();
 				
 				/* Create random vehicles: */
-				CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent)randomDynamicSensorService.createRandomDynamicSensors(ccSimulationStartParameter.getRandomDynamicSensorBundle(), 
+				CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent<?>)randomDynamicSensorService.createRandomDynamicSensors(ccSimulationStartParameter.getRandomDynamicSensorBundle(), 
 						this.serviceDictionary.getRandomSeedService(), ccSimulationStartParameter.isWithSensorInterferes());
 				simulationEventList.add(createRandomVehiclesEvent);
 				
@@ -457,8 +458,8 @@ public class CCWebSocketUser extends MessageInbound {
 				log.debug("Selected bus routes in cc: " +ccSimulationStartParameter.getBusRoutes().size());
 				
 				List<CreateRandomVehicleData> busDataList = new LinkedList<>();
-				List<BusRoute<?>> busRouteList = new LinkedList<>();
-				for(BusRoute<?> busRoute : ccSimulationStartParameter.getBusRoutes()) {
+				List<BusRoute> busRouteList = new LinkedList<>();
+				for(BusRoute busRoute : ccSimulationStartParameter.getBusRoutes()) {
 					if(busRoute.isUsed()) {
 						log.debug("Selected bus route: " +busRoute.getId());
 						busRouteList.add(busRoute);
@@ -523,7 +524,7 @@ public class CCWebSocketUser extends MessageInbound {
 				break;
 			
 			case CCWebSocketMessage.MessageType.CREATE_RANDOM_VEHICLES: {
-				List<AbstractEvent> simulationEventList = new LinkedList<>();
+				List<TrafficEvent> simulationEventList = new LinkedList<>();
 				RandomVehicleBundle rvb = this.gson.fromJson(message, CreateRandomVehiclesMessage.class).getContent();
 				simulationEventList.add(randomDynamicSensorService.createRandomDynamicSensors(rvb, 
 								this.serviceDictionary.getRandomSeedService(), this.simulationStartParameter.isWithSensorInterferes()));

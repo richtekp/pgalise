@@ -18,6 +18,8 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorizedVehicle;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
@@ -32,7 +34,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * 
  * @author marcus
  */
-public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleEvent<?>> {
+public class ExtendedVehiclePassedNodeHandler<D extends VehicleData> extends AbstractVehicleEventHandler<D,VehicleEvent> {
 	private VehiclePassedNodeHandler defaultHandler;
 
 	public ExtendedVehiclePassedNodeHandler() {
@@ -45,18 +47,18 @@ public class ExtendedVehiclePassedNodeHandler extends AbstractVehicleEventHandle
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent<?> event) {
+	public void handleEvent(VehicleEvent event) {
 		defaultHandler.handleEvent(event);
 
-		final Vehicle<? extends VehicleData,N,E> vehicle = event.getVehicle();
+		final Vehicle<?> vehicle = event.getVehicle();
 
-		if (vehicle instanceof DefaultMotorizedBaseVehicle<D>) {
+		if (vehicle instanceof BaseVehicle) {
 			if ((vehicle.getPreviousNode() == null) || (vehicle.getNextNode() == null)) {
 				// car eliminates the NPE
 				return;
 			}
 
-			NavigationNode passedNode = vehicle.getCurrentNode();
+			TrafficNode passedNode = vehicle.getCurrentNode();
 			vehicle.setPosition(event.getTrafficGraphExtensions().getPosition(passedNode));
 			final double vel = vehicle.getVelocity();
 			vehicle.setVelocity(0);

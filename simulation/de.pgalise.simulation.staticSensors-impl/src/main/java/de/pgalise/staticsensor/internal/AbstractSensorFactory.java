@@ -13,7 +13,7 @@ import de.pgalise.simulation.sensorFramework.output.Output;
  * @param <S> 
  * @author richter
  */
-public abstract class AbstractSensorFactory<S extends Sensor<?>> implements SensorFactory<S> {
+public abstract class AbstractSensorFactory<S extends Sensor<?>> implements SensorFactory {
 	private Output output;
 
 	public AbstractSensorFactory(Output output) {

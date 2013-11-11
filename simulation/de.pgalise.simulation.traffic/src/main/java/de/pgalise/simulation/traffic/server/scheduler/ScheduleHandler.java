@@ -33,13 +33,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author mustafa
  *
  */
-public interface ScheduleHandler<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>,
-	I extends ScheduleItem<D,N,E,V>
-> {
-	public void onRemove(I v);
-	public void onSchedule(I v);
+public interface ScheduleHandler {
+	public void onRemove(ScheduleItem v);
+	public void onSchedule(ScheduleItem v);
 }

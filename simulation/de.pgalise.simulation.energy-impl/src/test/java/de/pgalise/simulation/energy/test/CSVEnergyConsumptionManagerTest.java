@@ -80,7 +80,7 @@ public class CSVEnergyConsumptionManagerTest {
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
 		List<Building> buildingList = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			buildingList.add(new DefaultBuilding(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));
+			buildingList.add(new Building( new Coordinate(53.136765, 8.216524), null));
 		}
 		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
 		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);

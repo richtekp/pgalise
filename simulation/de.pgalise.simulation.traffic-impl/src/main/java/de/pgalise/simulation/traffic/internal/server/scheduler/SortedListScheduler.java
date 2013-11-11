@@ -27,8 +27,10 @@ import java.util.ListIterator;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.scheduler.AbstractScheduler;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
@@ -37,16 +39,16 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
  * @author Andreas
  * @version 1.0 (Nov 8, 2012)
  */
-public class SortedListScheduler extends Scheduler {
+public class SortedListScheduler extends BaseScheduler {
 	/**
 	 * Items of the scheduler
 	 */
-	private List<DefaultScheduleItem> scheduledItems;
+	private List<ScheduleItem> scheduledItems;
 
 	/**
 	 * List of vehicles
 	 */
-	private List<DefaultScheduleItem> vehicles;
+	private List<ScheduleItem> vehicles;
 
 	/**
 	 * List of handler
@@ -72,7 +74,7 @@ public class SortedListScheduler extends Scheduler {
 	}
 
 	@Override
-	protected void onScheduleItem(DefaultScheduleItem item) {
+	protected void onScheduleItem(ScheduleItem item) {
 		this.scheduledItems.add(item);
 
 		// log.debug("Scheduling item with SortedListScheduler (name=" + item.getVehicle().getName() + ", time="
@@ -82,9 +84,9 @@ public class SortedListScheduler extends Scheduler {
 	}
 
 	@Override
-	public List<DefaultScheduleItem> getExpiredItems(long currentTime) {
-		List<DefaultScheduleItem> list = new ArrayList<>();
-		for (DefaultScheduleItem item : this.scheduledItems) {
+	public List<ScheduleItem> getExpiredItems(long currentTime) {
+		List<ScheduleItem> list = new ArrayList<>();
+		for (ScheduleItem item : this.scheduledItems) {
 			// item has been expired
 			// log.debug("Check item: " + currentTime + " >= " + item.getDepartureTime() + " " + (currentTime >=
 			// item.getDepartureTime()) + " " + new Date(item.getDepartureTime()).toString());
@@ -117,16 +119,16 @@ public class SortedListScheduler extends Scheduler {
 	}
 
 	@Override
-	public List<DefaultScheduleItem> getScheduledItems() {
+	public List<ScheduleItem> getScheduledItems() {
 		return new ArrayList<>(this.scheduledItems);
 	}
 
 	@Override
-	protected void onRemoveScheduledItems(List<Vehicle<? extends VehicleData,N,E>> vehicles) {
-		for (Iterator<DefaultScheduleItem> i = scheduledItems.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
-			Vehicle<? extends VehicleData,N,E> a = item.getVehicle();
-			for (Vehicle<? extends VehicleData,N,E> b : vehicles) {
+	protected void onRemoveScheduledItems(List<Vehicle<?>> vehicles) {
+		for (Iterator<ScheduleItem> i = scheduledItems.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
+			Vehicle<?> a = item.getVehicle();
+			for (Vehicle<?> b : vehicles) {
 				if (a.getId().equals(b.getId())) {
 					i.remove();
 					onRemove(item);
@@ -136,11 +138,11 @@ public class SortedListScheduler extends Scheduler {
 	}
 
 	@Override
-	protected void onRemoveExpiredItems(List<Vehicle<? extends VehicleData,N,E>> list) {
-		for (Iterator<DefaultScheduleItem> i = vehicles.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
-			Vehicle<? extends VehicleData,N,E> a = item.getVehicle();
-			for (Vehicle<? extends VehicleData,N,E> b : list) {
+	protected void onRemoveExpiredItems(List<Vehicle<?>> list) {
+		for (Iterator<ScheduleItem> i = vehicles.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
+			Vehicle<?> a = item.getVehicle();
+			for (Vehicle<?> b : list) {
 				if (a.getId().equals(b.getId())) {
 					i.remove();
 					onRemove(item);
@@ -152,8 +154,8 @@ public class SortedListScheduler extends Scheduler {
 
 	@Override
 	protected void onClearScheduledItems() {
-		for (Iterator<DefaultScheduleItem> i = this.scheduledItems.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
+		for (Iterator<ScheduleItem> i = this.scheduledItems.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			i.remove();
 			onRemove(item);
 		}
@@ -161,8 +163,8 @@ public class SortedListScheduler extends Scheduler {
 
 	@Override
 	protected void onClearExpiredItems() {
-		for (Iterator<DefaultScheduleItem> i = this.vehicles.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
+		for (Iterator<ScheduleItem> i = this.vehicles.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			i.remove();
 			onRemove(item);
 		}
@@ -178,13 +180,13 @@ public class SortedListScheduler extends Scheduler {
 		handlerList.remove(handler);
 	}
 
-	private void onRemove(DefaultScheduleItem v) {
+	private void onRemove(ScheduleItem v) {
 		for (ScheduleHandler s : handlerList) {
 			s.onRemove(v);
 		}
 	}
 
-	private void onSchedule(DefaultScheduleItem v) {
+	private void onSchedule(ScheduleItem v) {
 		for (ScheduleHandler s : handlerList) {
 			s.onSchedule(v);
 		}

@@ -29,8 +29,8 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -41,7 +41,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class ExtendedXMLBicycleFactory extends XMLAbstractFactory<BicycleData> implements BicycleFactory<DefaultTrafficNode<BicycleData>,DefaultTrafficEdge<BicycleData>, BaseVehicle<BicycleData>> {
+public class ExtendedXMLBicycleFactory extends XMLAbstractFactory<BicycleData> implements BicycleFactory {
 
 	/**
 	 * Constructor

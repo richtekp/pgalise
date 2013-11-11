@@ -44,8 +44,12 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.Position;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -89,12 +93,12 @@ public class DefaultEnergyControllerTest {
 	/**
 	 * Init parameters
 	 */
-	private static InitParameter initParameter;
+	private static InfrastructureInitParameter initParameter;
 
 	/**
 	 * Start parameters
 	 */
-	private static StartParameter startParameter;
+	private static InfrastructureStartParameter startParameter;
 
 	/**
 	 * Service dictionary to e.g. find weather controller.
@@ -139,19 +143,31 @@ public class DefaultEnergyControllerTest {
 			new Coordinate(1,
 			1)
 		});
-		City city = new DefaultCity("Berlin",
+		City city = new City("Berlin",
 			3375222,
 			80,
 			true,
 			true,
-			referenceArea);
+			new Position(referenceArea));
 
 		// City information
-		Map<EnergyProfileEnum, List<City>> map = new HashMap<>();
-		List<City> buildingList = new ArrayList<>();
+		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
+		List<Building> buildingList = new ArrayList<>();
 		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
 		for (int i = 0; i < 100; i++) {
-			buildingList.add(new DefaultBuilding(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));
+			buildingList.add(
+				new Building(
+					new Coordinate(53.136765, 8.216524), 
+					new Position(
+						GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+							new Coordinate[]{
+								new Coordinate(), 
+								new Coordinate()
+							}
+						)
+					)
+				)
+			);
 		}
 
 		DefaultEnergyControllerTest.information = EasyMock.createNiceMock(CityInfrastructureData.class);
@@ -185,19 +201,21 @@ public class DefaultEnergyControllerTest {
 				.andStubReturn(DefaultEnergyControllerTest.weather);
 		EasyMock.replay(DefaultEnergyControllerTest.serviceDictionary);
 
-		DefaultEnergyControllerTest.initParameter = new InitParameter(DefaultEnergyControllerTest.information,
-				EasyMock.createNiceMock(ServerConfiguration.class), DefaultEnergyControllerTest.startTime,
+		DefaultEnergyControllerTest.initParameter = new InfrastructureInitParameter(
+			null,
+			EasyMock.createNiceMock(ServerConfiguration.class), 
+			DefaultEnergyControllerTest.startTime,
 				DefaultEnergyControllerTest.endTime, interval, interval, "http://localhost:8080/operationCenter",
 				"", null,
 				new Boundary(new Coordinate(), new Coordinate()));
 
-		city = new DefaultCity("Berlin",
+		city = new City("Berlin",
 			3375222,
 			80,
 			true,
 			true,
-			referenceArea);
-		DefaultEnergyControllerTest.startParameter = new StartParameter(city,
+			new Position(referenceArea));
+		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(city,
 				true, new ArrayList<WeatherEventHelper>());
 		
 		// EnergyEventStrategy

@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>de.pgalise</groupId>
+	<artifactId>parent-pom</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>PG ALISE Parent POM</name>
+
+	<properties>
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	  <applicationVersion>2.0-SNAPSHOT</applicationVersion>
+	  <java.compiler.source>1.7</java.compiler.source>
+	  <java.compiler.target>1.7</java.compiler.target>
+		<de.pgalise.openejb.version>4.5.2</de.pgalise.openejb.version>
+		<de.pgalise.geotools.version>9.2</de.pgalise.geotools.version>
+	</properties>
+		
+	<modules>
+	  <module>util</module>
+	  <module>simulation</module>
+	  <module>ear</module>
+	</modules>
+	
+	<repositories>
+	  <repository>
+	    <id>PGAliseRepository</id>
+	    <url>http://134.106.56.230:18081/nexus/content/groups/public</url>
+	    <releases>
+		<enabled>true</enabled>
+		<updatePolicy>daily</updatePolicy>
+	    </releases>
+	    <snapshots>
+	      <enabled>true</enabled>
+	      <updatePolicy>daily</updatePolicy>
+	      </snapshots>
+	  </repository>
+	</repositories>
+	<pluginRepositories>
+	  <pluginRepository>
+	    <id>PGAliseRepository</id>
+	    <url>http://134.106.56.230:18081/nexus/content/groups/public</url>
+	    <releases>
+	    <enabled>true</enabled>
+	    <updatePolicy>daily</updatePolicy>
+	    </releases>
+	    <snapshots>
+	      <enabled>true</enabled>
+	      <updatePolicy>always</updatePolicy>
+	    </snapshots>
+	  </pluginRepository>
+	</pluginRepositories>	
+
+	<!-- Werden für alle Projekte als Abhängigkeit definiert -->
+	<dependencies>
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.1</version>
+			<scope>test</scope>
+		</dependency>		
+	</dependencies>
+
+	<!-- Werden in einem Modul als Abhängigkeit definiert, wenn sie da explizit eingetragen werden-->
+	<!-- Allerdings kann hier bestimmt werden, welche Versionen verwendet werden sollen! -->
+	<dependencyManagement>
+		<dependencies>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.13</version>
+		</dependency>		
+			<dependency>
+				<groupId>de.pgalise.util</groupId>
+				<artifactId>btree</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.util</groupId>
+				<artifactId>parser</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.util</groupId>
+				<artifactId>graph</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.pgalise</groupId>
+				<artifactId>util</artifactId>
+				<version>1.0.0-SNAPSHOT</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>staticSensors</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>staticSensors-impl</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>	
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>staticSensors-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>ejb</type>
+			</dependency>						
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>sensorFramework</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>sensorFramework-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>ejb</type>
+			</dependency>			
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>shared</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>weather</artifactId>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>weather-impl</artifactId>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>weather-impl</artifactId>
+				<type>ejb</type>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.util</groupId>
+				<artifactId>weathercollector</artifactId>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.util</groupId>
+				<artifactId>weathercollector-impl</artifactId>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>energy</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>			
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>energy-impl</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>			
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>energy-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>ejb</type>
+			</dependency>				
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>services</artifactId>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>services-impl</artifactId>
+				<version>2.1-SNAPSHOT</version>
+			</dependency>	
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>services-impl</artifactId>
+				<version>2.1-SNAPSHOT</version>
+				<type>ejb</type>
+			</dependency>	
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>traffic</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>traffic-impl</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>			
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>traffic-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>ejb</type>
+			</dependency>								
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>simulationController</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>simulationController-impl</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>simulationController-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>ejb</type>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.pgalise</groupId>
+				<artifactId>simulation-ear</artifactId>
+				<version>${applicationVersion}</version>
+				<type>ear</type>
+			</dependency>
+
+			<dependency>
+				<groupId>de.pgalise.util</groupId>
+				<artifactId>generic</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+
+<!--			<dependency>
+				<groupId>org.graphstream</groupId>
+				<artifactId>gs-core</artifactId>
+				<version>1.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.graphstream</groupId>
+				<artifactId>gs-algo</artifactId>
+				<version>1.1.2</version>
+			</dependency>		-->
+			<dependency>
+					<groupId>net.sf.jgrapht</groupId>
+					<artifactId>jgrapht</artifactId>
+					<version>0.8.3</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.directory.studio</groupId>
+				<artifactId>org.apache.commons.lang</artifactId>
+				<version>2.6</version>
+			</dependency>				
+
+			
+			<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-spatial</artifactId>
+					<version>4.0-M1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-core</artifactId>
+				<version>4.2.5.Final</version>
+			</dependency>
+			<dependency>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-entitymanager</artifactId>
+					<version>4.2.5.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>9.2-1003.jdbc4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgis</groupId>
+				<artifactId>postgis-jdbc</artifactId>
+				<version>2.0.1</version>
+			</dependency>
+		
+			<dependency>
+				<groupId>com.vividsolutions</groupId>
+				<artifactId>jts</artifactId>
+				<version>1.13</version>
+			</dependency>
+			<dependency>
+				<groupId>com.javadocmd</groupId>
+				<artifactId>simplelatlng</artifactId>
+				<version>1.2.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.ejb</groupId>
+				<artifactId>ejb-api</artifactId>
+				<version>3.0</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.openejb</groupId>
+				<artifactId>openejb-server</artifactId>
+				<version>${de.pgalise.openejb.version}</version>
+				<!--
+				<exclusions>
+					<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+					</exclusion>
+				</exclusions>
+				-->
+				<!--<scope>provided</scope>-->
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.openejb</groupId>
+				<artifactId>openejb-client</artifactId>
+				<version>${de.pgalise.openejb.version}</version>
+				<!--<scope>provided</scope>-->
+			</dependency>			
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.5</version>
+				<scope>provided</scope>
+			</dependency>			
+
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-catalina</artifactId>
+				<version>7.0.30</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.tomcat</groupId>
+				<artifactId>tomcat-coyote</artifactId>
+				<version>7.0.30</version>
+				 <scope>provided</scope>
+			 </dependency>
+	      	
+			<dependency>
+	  			<groupId>net.sf.json-lib</groupId>
+	  			<artifactId>json-lib</artifactId>
+	  			<version>2.4</version>
+	  			<classifier>jdk15</classifier>
+			</dependency>
+	    	<dependency>
+	        	<groupId>org.apache.commons</groupId>
+	        	<artifactId>commons-io</artifactId>
+	        	<version>1.3.2</version>
+	   		</dependency>
+	   	 	<dependency>
+	    	    <groupId>xom</groupId>
+	    	    <artifactId>xom</artifactId>
+	      	  	<version>1.1</version>
+	    	</dependency>	      	
+
+				<dependency>
+	      		<groupId>com.google.code.gson</groupId>
+	      		<artifactId>gson</artifactId>
+	      		<version>2.2.2</version>
+	    	</dependency>
+
+			<dependency>
+				<groupId>com.googlecode.json-simple</groupId>
+				<artifactId>json-simple</artifactId>
+				<version>1.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>net.sf.opencsv</groupId>
+				<artifactId>opencsv</artifactId>
+				<version>2.3</version>
+			</dependency>	 
+			
+			<dependency>
+				<groupId>net.sf.supercsv</groupId>
+				<artifactId>super-csv</artifactId>
+				<version>2.0.0-beta-1</version>
+			</dependency>
+
+			<dependency>
+	            <groupId>pcingola</groupId>
+	            <artifactId>jfuzzy</artifactId>
+	            <version>2.1a</version>
+	        </dependency>			   	
+
+			<dependency>
+				<groupId>org.ostermiller</groupId>
+				<artifactId>utils</artifactId>
+				<version>1.07.00</version>
+			</dependency>	        
+
+			<dependency>
+				<groupId>org.apache.tika</groupId>
+				<artifactId>tika-parsers</artifactId>
+				<version>1.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>javassist</groupId>
+						<artifactId>javassist</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>3.17.1-GA</version>
+			</dependency>
+
+			<dependency>
+	  			<groupId>openmap</groupId>
+	  			<artifactId>openmap</artifactId>
+	  			<version>1.0</version>
+			</dependency>	
+
+			<dependency>
+				<groupId>org.jfree</groupId>
+				<artifactId>jfreechart</artifactId>
+				<version>1.0.14</version>
+				<exclusions>
+					<exclusion>
+						<groupId>xml-apis</groupId>
+						<artifactId>xml-apis</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>	
+
+			<dependency>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+				<version>3.0</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>de.pgalise</groupId>
+				<artifactId>pgalise-it</artifactId>
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
+			 <groupId>org.geotools</groupId>
+			 <artifactId>gt-api</artifactId>
+			 <version>${de.pgalise.geotools.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>${java.compiler.source}</source>
+					<target>${java.compiler.target}</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+	
+			<!-- For reporting and tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.5.1</version>
+			</plugin>
+		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.8</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+
+				<plugin>
+					<artifactId>maven-ejb-plugin</artifactId>
+					<version>2.3</version>
+					<configuration>
+						<ejbVersion>3.1</ejbVersion>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>				
+
+	            <plugin>
+	                <groupId>org.apache.maven.plugins</groupId>
+	                <artifactId>maven-war-plugin</artifactId>
+	                <version>2.1.1</version>
+	            </plugin>
+	            <plugin>
+	                <groupId>org.apache.maven.plugins</groupId>
+	        		<artifactId>maven-dependency-plugin</artifactId>
+	        		<version>2.5</version>
+	            </plugin>	
+            </plugins>		
+		</pluginManagement>
+	</build>
+
+	<reporting>
+		<plugins>
+			
+			<!-- Checkstyle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<enableRulesSummary>false</enableRulesSummary>
+				</configuration>
+			</plugin>
+			
+			<!-- FindBugs -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<xmlOutput>true</xmlOutput>
+				</configuration>
+			</plugin>
+			
+			<!-- PMD -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.7.1</version>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.7</targetJdk>
+				</configuration>
+			</plugin>
+			
+		</plugins>	
+	</reporting>
+	
+	<distributionManagement>
+		<repository>
+			<id>PGAliseRepository</id>
+			<name>PG ALISE Repository</name>
+			<url>http://134.106.56.230:18081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>PGAliseRepository</id>
+			<name>PG ALISE Repository</name>
+			<url>http://134.106.56.230:18081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>

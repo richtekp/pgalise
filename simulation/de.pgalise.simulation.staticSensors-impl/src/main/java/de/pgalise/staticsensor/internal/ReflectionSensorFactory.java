@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @author richter
  */
-public class ReflectionSensorFactory<S extends Sensor<?>> extends AbstractSensorFactory<S> implements SensorFactory<S>{
+public class ReflectionSensorFactory<S extends Sensor<?>> extends AbstractSensorFactory implements SensorFactory {
 	private Class<S> clazz;
 
 	public ReflectionSensorFactory(Output output, Class<S> clazz) {

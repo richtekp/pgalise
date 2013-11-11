@@ -162,7 +162,7 @@ public class DefaultWeatherService implements WeatherService {
 		this.referenceValues = null;
 		this.parameters = new HashMap<>();
 		this.cachedParameters = new HashMap<>();
-		this.gridConverter = new LinearWeatherPositionConverter(city.getBoundaries());
+		this.gridConverter = new LinearWeatherPositionConverter(city.getPosition().getBoundaries());
 		this.plannedEventModifiers = new ArrayList<>();
 
 		// Add parameters

@@ -19,14 +19,14 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
  * @param <D> 
  * @author richter
  */
-public class GenericVehicleEvent<D extends VehicleData,N extends TrafficNode, E extends TrafficEdge<N,E>> extends AbstractVehicleEvent<D,N,E>{
+public class GenericVehicleEvent<D extends VehicleData> extends AbstractVehicleEvent<D>{
 	private static final long serialVersionUID = 1L;
 	private EventType type;
 
 	public GenericVehicleEvent(TrafficServerLocal server,
 		long simulationTime,
 		long elapsedTime,
-		Vehicle<D,N,E> vehicles,
+		Vehicle<D> vehicles,
 		EventType type) {
 		super(server,
 			simulationTime,

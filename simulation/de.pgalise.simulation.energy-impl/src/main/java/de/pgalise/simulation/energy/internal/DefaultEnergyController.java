@@ -48,8 +48,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -231,7 +231,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 								timestamp,
 								entry.getKey(),
 								
-										building.getCenterPoint());
+										building.getPosition().getCenterPoint());
 			}
 		}
 

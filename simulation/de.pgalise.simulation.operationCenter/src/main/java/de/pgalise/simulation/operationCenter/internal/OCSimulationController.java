@@ -24,8 +24,8 @@ import de.pgalise.simulation.operationCenter.internal.message.GateMessage;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.visualizationcontroller.VisualizationController;
 
 /**

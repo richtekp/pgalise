@@ -50,9 +50,10 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -85,7 +86,7 @@ public class DefaultSimulationControllerTest {
 	private static WeatherController weatherController;
 	private static EntityManager sensorPersistenceService;
 	private static ServerConfigurationReader<Controller<?,?,?>> serverConfigurationReader;
-	private static CityInfrastructureData cityInfrastructureData;
+	private static TrafficInfrastructureData cityInfrastructureData;
 	private static ServerConfiguration serverConfiguration;
 
 	@BeforeClass
@@ -104,7 +105,7 @@ public class DefaultSimulationControllerTest {
 		sensorPersistenceService = EasyMock.createNiceMock(EntityManager.class);
 		serverConfigurationReader = EasyMock.createNiceMock(ServerConfigurationReader.class);
 		EventInitiator eventInitiator = EasyMock.createNiceMock(EventInitiator.class);
-		cityInfrastructureData = EasyMock.createNiceMock(CityInfrastructureData.class);
+		cityInfrastructureData = EasyMock.createNiceMock(TrafficInfrastructureData.class);
 
 		/* Prepare service dictionary: */
 		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);

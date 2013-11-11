@@ -62,16 +62,16 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 
 /**
  * The default implementation of {@link OCSimulationController}.
@@ -114,7 +114,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	/**
 	 * Map<UUID = vehicle id, 
 	 */
-	private Map<BaseVehicle<D>, VehicleData> vehicleDataMap;
+	private Map<Vehicle<?>, VehicleData> vehicleDataMap;
 
 	/**
 	 * Contructor
@@ -200,9 +200,9 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	@Override
-	public void createSensor(SensorHelper sensor) throws SensorException,
+	public void createSensor(SensorHelper<?> sensor) throws SensorException,
 			IllegalStateException {
-		List<SensorHelper> sensorHelperList = new LinkedList<>();
+		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensor);
 		this.createSensors(sensorHelperList);
 		this.gateMessageStrategy.createSensor(sensor);
@@ -211,7 +211,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	@Override
 	public void deleteSensor(SensorHelper sensor) throws SensorException,
 			IllegalStateException {
-		List<SensorHelper> sensorHelperList = new LinkedList<>();
+		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensor);
 		this.deleteSensors(sensorHelperList);
 		this.gateMessageStrategy.deleteSensor(sensor);
@@ -445,7 +445,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 					log.warn("Create new random vehicles: " +((CreateBussesEvent) event)
 							.getCreateRandomVehicleDataList().size());
 					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					for (CreateRandomVehicleData data : ((CreateBussesEvent) event)
+					for (CreateRandomVehicleData data : ((CreateBussesEvent<?>) event)
 							.getCreateRandomVehicleDataList()) {
 						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
 					}
@@ -485,7 +485,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors)
+	public void createSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {
 
 		List<SensorHelperTypeWrapper> sensorHelperTypeWrapperList = new LinkedList<>();
@@ -516,7 +516,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors)
+	public void deleteSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {
 		List<Sensor<?>> sensorIDList = new LinkedList<>();
 		for (SensorHelper sensor : sensors) {
@@ -582,7 +582,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 	
 	private void removeVehicleSensors(Collection<VehicleData> vehicleDataCollection) {
-		Collection<SensorHelper> sensorHelperCollection = new LinkedList<>();
+		Collection<SensorHelper<?>> sensorHelperCollection = new LinkedList<>();
 		
 		for(VehicleData vehicleData : vehicleDataCollection) {
 			for(SensorHelperTypeWrapper sensor : vehicleData.getSensors()) {
@@ -615,7 +615,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	 * @param vehicleDataCollection
 	 */
 	private void createsVehicleSensors(Collection<VehicleData> vehicleDataCollection) {
-		Collection<SensorHelper> sensorHelperCollection = new LinkedList<>();
+		Collection<SensorHelper<?>> sensorHelperCollection = new LinkedList<>();
 		
 		for(VehicleData vehicleData : vehicleDataCollection) {
 			for(SensorHelperTypeWrapper sensor : vehicleData.getSensors()) {

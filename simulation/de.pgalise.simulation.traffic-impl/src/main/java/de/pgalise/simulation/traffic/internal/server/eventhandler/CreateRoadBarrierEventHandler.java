@@ -29,16 +29,19 @@ import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 
 /**
  * The event handler removes vehicles with the given List of UUIDs from the server. The class are used by the
@@ -47,7 +50,7 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleIt
  * @author Andreas
  * @version 1.0
  */
-public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<RoadBarrierTrafficEvent> {
+public class CreateRoadBarrierEventHandler<D extends VehicleData> extends AbstractTrafficEventHandler<D,RoadBarrierTrafficEvent<D>> {
 
 	/**
 	 * Logger
@@ -62,7 +65,7 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 	/**
 	 * Graph
 	 */
-	private TrafficGraph<NavigationEdge> graph;
+	private TrafficGraph graph;
 
 	/**
 	 * Constructor
@@ -75,7 +78,7 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 	 * Init the handler
 	 */
 	@Override
-	public void init(TrafficServerLocal<?> server) {
+	public void init(TrafficServerLocal<RoadBarrierTrafficEvent<D>> server) {
 		this.server = server;
 	}
 
@@ -109,22 +112,22 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 //			log.debug("RoadBarrier: Calculate new path for " + vehicle.getData().getType() + " " + vehicle.getId());
 
 //			Node start = vehicle.getCurrentNode();
-			NavigationNode start = vehicle.getNextNode();
+			TrafficNode start = vehicle.getNextNode();
 
 			// Check destination
-			NavigationNode destination;
+			TrafficNode destination;
 			int t = 0;
 			do {
 				t++;
 				destination = vehicle.getNodePath().get(vehicle.getNodePath().size() - t);
 			} while (destination.equals(node));
 			
-			List<NavigationEdge<?,?>> path ;
+			List<TrafficEdge> path ;
 			path = this.server.getShortestPath(vehicle.getCurrentNode(), vehicle.getNextNode());
 
-			List<NavigationEdge<?,?>> newPath = this.server.getShortestPath(start, destination);
+			List<TrafficEdge> newPath = this.server.getShortestPath(start, destination);
 			
-			for (NavigationEdge<?,?> e : newPath) {
+			for (TrafficEdge e : newPath) {
 				path.add(e);
 			}
 
@@ -144,7 +147,7 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 			BusData bus = ((BusData) vehicle.getData());
 
 			// Node is bus stop
-			Map<BusStop<?>, NavigationNode> busStops = bus.getBusStops();
+			Map<BusStop, TrafficNode> busStops = bus.getBusStops();
 			if (busStops.get(node.getId()) != null) {
 				// Delete bus stop
 				busStops.remove(node.getId());
@@ -157,30 +160,30 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 
 			// To avoid errors, sets the current node for start
 //			Node start = vehicle.getCurrentNode();
-			NavigationNode start = vehicle.getNextNode();
+			TrafficNode start = vehicle.getNextNode();
 
 			// Check destination
 			int nextIndex = bus.getLastBusStop() + 1;
 			if (nextIndex < bus.getBusStopOrder().size()) {
-				NavigationNode destination = busStops.get(bus.getBusStopOrder().get(nextIndex));
+				TrafficNode destination = busStops.get(bus.getBusStopOrder().get(nextIndex));
 
-				List<NavigationEdge<?,?>> path ;
+				List<TrafficEdge> path ;
 				path = this.server.getShortestPath(vehicle.getCurrentNode(), vehicle.getNextNode());
 				
 				// Path to the next bus stop
-				List<NavigationEdge<?,?>>  newPath = this.server.getShortestPath(start, destination);
+				List<TrafficEdge>  newPath = this.server.getShortestPath(start, destination);
 
 				// Path of the remaining bus stops
-				List<BusStop<?>> remainingStops = bus.getBusStopOrder().subList(nextIndex,
+				List<BusStop> remainingStops = bus.getBusStopOrder().subList(nextIndex,
 						(bus.getBusStopOrder().size() - 1));
-				List<NavigationEdge<?,?>> pathRemainingStops = this.server.getBusRoute(remainingStops);
+				List<TrafficEdge> pathRemainingStops = this.server.getBusRoute(remainingStops);
 				if (pathRemainingStops != null) {
-					for (NavigationEdge<?,?> e : pathRemainingStops) {
+					for (TrafficEdge e : pathRemainingStops) {
 						newPath.add(e);
 					}
 				}
 				
-				for (NavigationEdge<?,?> e : newPath) {
+				for (TrafficEdge e : newPath) {
 					path.add(e);
 				}
 
@@ -202,10 +205,10 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 		this.graph = this.server.getGraph();
 
 		// Blocked node
-		NavigationNode blockedNode = e.getNodeID();
+		TrafficNode blockedNode = e.getNodeID();
 
 		// Change the node on the graph
-		Set<NavigationEdge<?,?>> edges = this.getAllEdges(blockedNode);
+		Set<TrafficEdge> edges = this.getAllEdges(blockedNode);
 		if (!edges.isEmpty()) {
 
 			// Sets the RoadBarrier to the server
@@ -216,9 +219,9 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 			this.removeEdgesFromGraph(edges);
 
 			// New Path for all vehicles with this edge
-			List<DefaultScheduleItem> vehicleItems = this.server.getScheduler().getExpiredItems(e.getRoadBarrierEndTimestamp());
-			for (DefaultScheduleItem item : vehicleItems) {
-				Vehicle<? extends VehicleData,N,E> vehicle = item.getVehicle();
+			List<ScheduleItem> vehicleItems = this.server.getScheduler().getExpiredItems(e.getRoadBarrierEndTimestamp());
+			for (ScheduleItem item : vehicleItems) {
+				Vehicle<?> vehicle = item.getVehicle();
 				this.calculateNewWay(vehicle, blockedNode);
 			}
 		}
@@ -231,8 +234,8 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 	 *            Node
 	 * @return Set<Edge>
 	 */
-	private Set<NavigationEdge<?,?> > getAllEdges(NavigationNode node) {
-		Set<NavigationEdge<?,?> > edges = new HashSet<>();
+	private Set<TrafficEdge > getAllEdges(TrafficNode node) {
+		Set<TrafficEdge > edges = new HashSet<>();
 
 		edges.addAll(graph.incomingEdgesOf(node));
 		edges.addAll(graph.outgoingEdgesOf(node));
@@ -246,8 +249,8 @@ public class CreateRoadBarrierEventHandler extends AbstractTrafficEventHandler<R
 	 * @param edges
 	 *            List of edges to remove
 	 */
-	private void removeEdgesFromGraph(Set<NavigationEdge<?,?>> edges) {
-		for (NavigationEdge<?,?> edge : edges) {
+	private void removeEdgesFromGraph(Set<TrafficEdge> edges) {
+		for (TrafficEdge edge : edges) {
 			this.graph.removeEdge(edge);
 		}
 

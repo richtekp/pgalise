@@ -12,6 +12,6 @@ package de.pgalise.simulation.shared.city;
  * implementation notes:
  * - this makes tags type save and allows usage of enums for tag values
  */
-public interface CityNodeTag {
+public interface CityNodeTag extends BaseTag {
 	
 }

@@ -33,7 +33,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  * @author mustafa
  *
  */
-public interface GraphVisualizer<G extends DirectedGraph<N,E>, N,E> {
+public interface GraphVisualizer<G extends DirectedGraph> {
 	public void setGraph(G graph);
 	
 	public G getGraph();

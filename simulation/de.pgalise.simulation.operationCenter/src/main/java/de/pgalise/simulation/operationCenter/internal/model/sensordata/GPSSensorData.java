@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 
@@ -56,7 +57,7 @@ public class GPSSensorData extends SensorData {
 	 * @param travelTimeInMs
 	 * 			the travel time in milliseconds since beginning to drive
 	 */
-	public GPSSensorData(int sensorType, int sensorID,
+	public GPSSensorData(int sensorType, Sensor sensorID,
 			double latitude, double longitude,
 			double distanceInMperStep,
 			int totalDistanceInM,

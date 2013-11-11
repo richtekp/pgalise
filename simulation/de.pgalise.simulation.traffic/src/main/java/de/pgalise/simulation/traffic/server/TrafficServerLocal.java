@@ -17,7 +17,6 @@
 package de.pgalise.simulation.traffic.server;
 
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,9 +26,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.shared.city.BusStop;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
@@ -57,7 +54,7 @@ import java.util.HashSet;
  * @author mustafa
  * @author Lena
  */
-public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServer<E> {
+public interface TrafficServerLocal<F extends TrafficEvent> extends TrafficServer<F> {
 	public static Set<SensorType> RESPONSIBLE_FOR_SENSOR_TYPES = new HashSet<SensorType>(
 		Arrays.asList(
 			SensorTypeEnum.TRAFFICLIGHT_SENSOR,
@@ -139,7 +136,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param startTimestamp
 	 * @return {@link TrafficTrip}
 	 */
-	public TrafficTrip createTrip(N startNodeID, N targetNodeID, long startTimestamp);
+	public TrafficTrip createTrip(TrafficNode startNodeID, TrafficNode targetNodeID, long startTimestamp);
 
 	/**
 	 * Creates a trip of a vehicle with either a specified start node or a specified end nodes at a specific time. 
@@ -150,7 +147,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param isStartNode specifies if nodeID is start node or target node
 	 * @return {@link TrafficTrip}
 	 */
-	public TrafficTrip createTrip(Geometry cityZone, N nodeID, long startTimestamp, boolean isStartNode);
+	public TrafficTrip createTrip(Geometry cityZone, TrafficNode nodeID, long startTimestamp, boolean isStartNode);
 
 	/**
 	 * Creates a trip with randomly chosen start and end notes. If the date is null, the 
@@ -175,7 +172,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param dest target node
 	 * @return the shortest path between start node and target node
 	 */
-	public List<F> getShortestPath(N start, N dest);
+	public List<TrafficEdge> getShortestPath(TrafficNode start, TrafficNode dest);
 
 	/**
 	 * 
@@ -189,20 +186,20 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param busStopIds
 	 * @return
 	 */
-	public List<F> getBusRoute(List<BusStop<?>> busStopIds);
+	public List<TrafficEdge> getBusRoute(List<BusStop> busStopIds);
 
 	/**
 	 * Returns the nodes of the graph for a given list of bus stop ids.
 	 * @param busStopIds
 	 * @return
 	 */
-	public Map<BusStop<?>, N> getBusStopNodes(List<BusStop<?>> busStopIds);
+	public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds);
 	
 	/**
 	 * 
 	 * @return {@link SimulationEventHandlerManager}
 	 */
-	public TrafficEventHandlerManager<TrafficEventHandler<E>,E> getTrafficEventHandlerManager();
+	public TrafficEventHandlerManager<TrafficEventHandler<F>,F> getTrafficEventHandlerManager();
 	
 	/**
 	 * 
@@ -221,7 +218,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * by an attraction event this function will return this event.
 	 * @return
 	 */
-	public Map<Long, AbstractTrafficEvent> getEventForVehicle();
+	public Map<Long, F> getEventForVehicle();
 
 	/**
 	 * Items to schedule after the corresponding vehicle reached the attraction.
@@ -244,7 +241,7 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @deprecated Should be used in the implementation only
 	 * @return
 	 */
-	public List<Vehicle<? extends VehicleData>> getItemsToRemoveAfterFuzzy();
+	public List<Vehicle<?>> getItemsToRemoveAfterFuzzy();
 	
 	/**
 	 * @deprecated
@@ -265,5 +262,5 @@ public interface TrafficServerLocal<E extends TrafficEvent> extends TrafficServe
 	 * @param timestamp current simulation time
 	 * @return currently blocked roads
 	 */
-	public Set<F> getBlockedRoads(long timestamp);
+	public Set<TrafficEdge> getBlockedRoads(long timestamp);
 }

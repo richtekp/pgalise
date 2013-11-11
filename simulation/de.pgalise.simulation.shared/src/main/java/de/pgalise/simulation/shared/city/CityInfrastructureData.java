@@ -23,6 +23,8 @@ import java.util.Map;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.city.Boundary;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import javax.persistence.MappedSuperclass;
 
 /**
  * Contains streets, bus stops and landuse information.
@@ -33,41 +35,127 @@ import de.pgalise.simulation.shared.city.Boundary;
  * 
  * @author Timo
  */
-public interface CityInfrastructureData extends Serializable {
-	/**
-	 * Returns a list of BusStops.
-	 * 
-	 * @return
-	 */
-	public List<BusStop> getBusStops();
+@MappedSuperclass
+public abstract class CityInfrastructureData<W extends Way> extends AbstractIdentifiable {
+	private List<W> cycleWays;
+	private List<W> landUseWays;
+	private List<W> motorWays;
+	private List<W> motorWaysWithBusStops;
+	private List<NavigationNode> junctionNodes;
+	private List<NavigationNode> nodes;
+	private List<NavigationNode> streetNodes;
+	private List<Way<?,?>> ways;
+	private Boundary boundary;
+	private List<W> cycleAndMotorways;  
 
-	/**
-	 * Returns all cycle ways. Some of the nodes can be instances of @TrafficLight.
-	 * 
-	 * @return
-	 */
-	public List<Way<?, ?>> getCycleWays();
+	public void setWays(
+		List<Way<?,?>> ways) {
+		this.ways = ways;
+	}
 
-	/**
-	 * Returns a list of land use areas e.g. industrial parks.
-	 * 
-	 * @return
-	 */
-	public List<Way<?,?>> getLandUseWays();
+	public void setStreetNodes(List<NavigationNode> streetNodes) {
+		this.streetNodes = streetNodes;
+	}
 
-	/**
-	 * Returns a list of streets for cars. Some of the nodes can be instances of @TrafficLight.
-	 * 
-	 * @return
-	 */
-	public List<Way<?, ?>> getMotorWays();
+	public void setNodes(List<NavigationNode> nodes) {
+		this.nodes = nodes;
+	}
 
+	public void setMotorWaysWithBusStops(
+		List<W> motorWaysWithBusStops) {
+		this.motorWaysWithBusStops = motorWaysWithBusStops;
+	}
+
+	public void setMotorWays(
+		List<W> motorWays) {
+		this.motorWays = motorWays;
+	}
+
+	public void setLandUseWays(
+		List<W> landUseWays) {
+		this.landUseWays = landUseWays;
+	}
+
+	public void setJunctionNodes(List<NavigationNode> junctionNodes) {
+		this.junctionNodes = junctionNodes;
+	}
+
+	public void setCycleWays(
+		List<W> cycleWays) {
+		this.cycleWays = cycleWays;
+	}
+
+	public void setCycleAndMotorways(
+		List<W> cycleAndMotorways) {
+		this.cycleAndMotorways = cycleAndMotorways;
+	}
+
+	public void setBoundary(Boundary boundary) {
+		this.boundary = boundary;
+	}
+
+	public List<Way<?,?>> getWays() {
+		return ways;
+	}
+
+	public List<NavigationNode> getStreetNodes() {
+		return streetNodes;
+	}
+
+	public List<NavigationNode> getNodes() {
+		return nodes;
+	}
+
+	public List<W> getMotorWaysWithBusStops() {
+		return motorWaysWithBusStops;
+	}
+
+	public List<W> getMotorWays() {
+		return motorWays;
+	}
+
+	public List<W> getLandUseWays() {
+		return landUseWays;
+	}
+
+	public List<NavigationNode> getJunctionNodes() {
+		return junctionNodes;
+	}
+
+	public List<W> getCycleWays() {
+		return cycleWays;
+	}
+
+	public List<W> getCycleAndMotorways() {
+		return cycleAndMotorways;
+	}
+
+	public Boundary getBoundary() {
+		return boundary;
+	}
+	
 	/**
-	 * Returns a list of streets for cars with busstops as nodes. Some of the nodes can be instances of @TrafficLight.
-	 * 
+	 * Returns the number of buildings.
+	 * @param geolocation
+	 * @param radiusInMeter
 	 * @return
 	 */
-	public List<Way<?, ?>> getMotorWaysWithBusstops();
+	public abstract Map<EnergyProfileEnum, List<Building>> getBuildings(Coordinate geolocation, int radiusInMeter);
+	
+	/**
+	 * Returns all buildings in the radius.
+	 * @param centerPoint
+	 * @param radiusInMeter
+	 * @return
+	 */
+	public abstract List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter);
+	
+	/**
+	 * Returns all nodes in the boundary.
+	 * @param boundary
+	 * @return
+	 */
+	public abstract List<NavigationNode> getNodesInBoundary(Boundary boundary);
 
 	/**
 	 * Returns the nearest used node.
@@ -76,7 +164,7 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param longitude
 	 * @return
 	 */
-	public NavigationNode getNearestNode(double latitude, double longitude);
+	public abstract NavigationNode getNearestNode(double latitude, double longitude);
 
 	/**
 	 * Returns the nearest used street node.
@@ -84,7 +172,7 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param longitude
 	 * @return
 	 */
-	public NavigationNode getNearestStreetNode(double latitude, double longitude);
+	public abstract NavigationNode getNearestStreetNode(double latitude, double longitude);
 	
 	/**
 	 * Returns the nearest used junction node.
@@ -92,72 +180,5 @@ public interface CityInfrastructureData extends Serializable {
 	 * @param longitude
 	 * @return
 	 */
-	public NavigationNode getNearestJunctionNode(double latitude, double longitude);
-	
-	/**
-	 * Returns a list with all used junction nodes.
-	 * @return
-	 */
-	public List<NavigationNode> getJunctionNodes();
-	
-	/**
-	 * Returns every used node. Some of the nodes can be instances of @TrafficLight.
-	 * @return
-	 */
-	public List<NavigationNode> getNodes();
-	
-	/**
-	 * Returns every street node.
-	 * @return
-	 */
-	public List<NavigationNode> getStreetNodes();
-
-	/**
-	 * Returns a list of nodes with roundabouts.
-	 * 
-	 * @return
-	 */
-	public List<NavigationNode> getRoundAbouts();
-
-	/**
-	 * Returns all ways. Some of the nodes can be instances of @TrafficLight.
-	 * 
-	 * @return
-	 */
-	public List<Way<?, ?>> getWays();
-	
-	/**
-	 * Returns the boundary of the map.
-	 * @return
-	 */
-	public Boundary getBoundary();
-	
-	/**
-	 * Returns the number of buildings.
-	 * @param geolocation
-	 * @param radiusInMeter
-	 * @return
-	 */
-	public Map<EnergyProfileEnum, List<Building>> getBuildings(Coordinate geolocation, int radiusInMeter);
-	
-	/**
-	 * Returns all buildings in the radius.
-	 * @param centerPoint
-	 * @param radiusInMeter
-	 * @return
-	 */
-	public List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter);
-	
-	/**
-	 * Returns all nodes in the boundary.
-	 * @param boundary
-	 * @return
-	 */
-	public List<NavigationNode> getNodesInBoundary(Boundary boundary);
-	
-	/**
-	 * Returns all ways for cars and bikes.
-	 * @return
-	 */
-	public List<Way<?, ?>> getCycleAndMotorways();
+	public abstract NavigationNode getNearestJunctionNode(double latitude, double longitude);
 }

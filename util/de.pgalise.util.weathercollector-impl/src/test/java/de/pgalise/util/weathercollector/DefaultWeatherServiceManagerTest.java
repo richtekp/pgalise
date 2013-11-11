@@ -19,7 +19,7 @@ package de.pgalise.util.weathercollector;
 import de.pgalise.it.TestUtils;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
@@ -88,24 +88,8 @@ public class DefaultWeatherServiceManagerTest {
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
 		entityManager.joinTransaction();
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
-			new Coordinate(1,
-			1),
-			new Coordinate(1,
-			2),
-			new Coordinate(2,
-			2),
-			new Coordinate(2,
-			1),
-			new Coordinate(1,
-			1)
-		});
-		DefaultCity city = new DefaultCity("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
+		
+		City city = TestUtils.createDefaultTestCityInstance();
 		entityManager.persist(city);
 		instance.saveInformations(baseDatabaseManager);
 		Query queryCurrent = entityManager.createQuery("SELECT x FROM DefaultServiceDataCurrent x");

@@ -19,6 +19,7 @@ package de.pgalise.simulation.traffic.internal.server.rules;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 
 
@@ -39,8 +40,8 @@ public class TrafficLight extends AbstractIdentifiable {
 	private final static TrafficLightState TRAFFIC_LIGHT_YELLOW_STATE = new TrafficLightYellowState();
 	private static final long serialVersionUID = 1L;
 		
-	private final NavigationEdge<?,?> edge1;
-	private final NavigationEdge<?,?> edge2;
+	private final TrafficEdge edge1;
+	private final TrafficEdge edge2;
 	
 	private final double angle1;
 	private final double angle2;
@@ -49,7 +50,7 @@ public class TrafficLight extends AbstractIdentifiable {
 
 	private TrafficLightState currentState = TrafficLight.TRAFFIC_LIGHT_BLINKING_STATE;
 
-	public TrafficLight(final NavigationEdge<?,?> edge1, final NavigationEdge<?,?> edge2, double angle1, double angle2, 
+	public TrafficLight(final TrafficEdge edge1, final TrafficEdge edge2, double angle1, double angle2, 
 			final TrafficGraphExtensions trafficGraphExtensions, TrafficLightIntersection intersectionID) {
 		if(edge1 == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("edge1"));
@@ -63,11 +64,11 @@ public class TrafficLight extends AbstractIdentifiable {
 		this.intersectionID = intersectionID;
 	}
 
-	NavigationEdge<?,?> getEdge1() {
+	TrafficEdge getEdge1() {
 		return this.edge1;
 	}
 
-	NavigationEdge<?,?> getEdge2() {
+	TrafficEdge getEdge2() {
 		return this.edge2;
 	}
 

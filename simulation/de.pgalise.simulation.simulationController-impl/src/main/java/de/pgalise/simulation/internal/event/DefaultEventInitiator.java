@@ -48,10 +48,10 @@ import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -390,8 +390,8 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 				 * Add new events here!
 				 */
 
-				if (event instanceof AbstractTrafficEvent) {
-					this.addTrafficEvent((AbstractTrafficEvent) event, simulationEventList.getTimestamp());
+				if (event instanceof TrafficEvent) {
+					this.addTrafficEvent((TrafficEvent) event, simulationEventList.getTimestamp());
 				} else if (event instanceof WeatherEvent) {
 					this.addWeatherEvent((WeatherEvent) event, simulationEventList.getTimestamp());
 				} else if (event instanceof EnergyEvent) {

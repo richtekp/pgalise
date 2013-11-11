@@ -16,9 +16,12 @@
  
 package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -26,15 +29,20 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.ArrayList;
 import java.util.List;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
+import java.util.Map;
 
 /**
  * The create busses event will create the given vehicles as busses
  * for the given routes.
+ * @param <D>
  * @param <N> 
  * @param <E> 
  * @author Lena
  */
-public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D> {
+public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D,CreateBussesEvent<D>> {
 
 	/**
 	 * Serial
@@ -44,7 +52,7 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	/**
 	 * List with bus routes
 	 */
-	private List<BusRoute<?>> busRoutes;
+	private List<BusRoute> busRoutes;
 
 	/**
 	 * List with busses
@@ -63,8 +71,8 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	 * @param busRoutes
 	 *            List with bus routes
 	 */
-	public CreateBussesEvent(DefaultTrafficServer<D> responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
-			List<BusRoute<?>> busRoutes) {
+	public CreateBussesEvent(TrafficServerLocal<CreateBussesEvent<D>> responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
+			List<BusRoute> busRoutes) {
 		super(responsibleServer, time,
 			elaspsedTime);
 		// this.busRoutes = busRoutes;
@@ -90,7 +98,7 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	/**
 	 * @return the busLines
 	 */
-	public List<BusRoute<?>> getBusRoutes() {
+	public List<BusRoute> getBusRoutes() {
 		return busRoutes;
 	}
 
@@ -98,7 +106,7 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	 * @param busLines
 	 *            the busLines to set
 	 */
-	public void setBusRoutes(List<BusRoute<?>> busLines) {
+	public void setBusRoutes(List<BusRoute> busLines) {
 		this.busRoutes = busLines;
 	}
 

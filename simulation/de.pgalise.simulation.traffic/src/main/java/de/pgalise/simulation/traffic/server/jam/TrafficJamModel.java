@@ -28,11 +28,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * 
  * @author Marina, Mustafa
  */
-public interface TrafficJamModel<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>> {
+public interface TrafficJamModel {
 
 	/**
 	 * Sets a new {@link SurroundingCarsFinder}
@@ -56,5 +52,5 @@ public interface TrafficJamModel<
 	 * @param probability
 	 *            The probability for slowing down (e.g. 0.1 for 10%)
 	 */
-	public void update(V v, long time, TrafficGraph<?,?,?,?> graph, double probability);
+	public void update(Vehicle<?> v, long time, TrafficGraph graph, double probability);
 }

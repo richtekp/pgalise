@@ -62,19 +62,16 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.sensorFramework.SensorHelperTrafficLightIntersection;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.shared.city.BusStop;
-import de.pgalise.simulation.shared.city.DefaultNavigationNode;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.BusStop;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficTrip;
-import de.pgalise.simulation.traffic.event.AbstractVehicleEvent;
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLVehicleFactory;
@@ -90,7 +87,6 @@ import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.TrafficServer;
@@ -98,11 +94,8 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
-import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
@@ -135,13 +128,17 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 @Singleton(name = "de.pgalise.simulation.traffic.server.TrafficServer")
 @Local(TrafficServerLocal.class)
 @Remote(TrafficServer.class)
-public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> implements 
-	TrafficServerLocal<VehicleEvent<?>>, 
+public class DefaultTrafficServer extends AbstractController<
+	VehicleEvent,
+	InfrastructureStartParameter,
+	InfrastructureInitParameter
+> implements 
+	TrafficServerLocal<VehicleEvent>, 
 	ScheduleHandler, 
-	VehicleEventHandler<VehicleEvent<?>> {
+	VehicleEventHandler<VehicleEvent> {
 
 	@Override
-	public DefaultTrafficServer<D> getResponsibleServer() {
+	public TrafficServerLocal<VehicleEvent> getResponsibleServer() {
 		return this;
 	}
 
@@ -151,12 +148,12 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent<?> event) {
+	public void handleEvent(VehicleEvent event) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public void init(TrafficServerLocal<VehicleEvent<?>> server) {
+	public void init(TrafficServerLocal<VehicleEvent> server) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	
@@ -174,9 +171,9 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 		/**
 		 * Vehicle
 		 */
-		private final Vehicle<? extends VehicleData> vehicle;
+		private final Vehicle<?> vehicle;
 
-		private DefaultTrafficServer<?> server;
+		private TrafficServerLocal<VehicleEvent> server;
 
 		/**
 		 * Constructor
@@ -186,7 +183,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 		 * @param server
 		 *            ID of the server
 		 */
-		ReceivedVehicle(BaseVehicle<?> vehicle, DefaultTrafficServer server) {
+		ReceivedVehicle(Vehicle<?> vehicle, TrafficServerLocal<VehicleEvent> server) {
 			this.vehicle = vehicle;
 			this.server = server;
 		}
@@ -196,11 +193,11 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 			return server.getId().compareTo(o.getServer().getId());
 		}
 
-		public DefaultTrafficServer getServer() {
+		public TrafficServerLocal<VehicleEvent> getServer() {
 			return this.server;
 		}
 
-		public BaseVehicle<?> getVehicle() {
+		public Vehicle<?> getVehicle() {
 			return this.vehicle;
 		}
 	}
@@ -244,7 +241,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	 * Event handler manager
 	 */
 	@EJB
-	private TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent<?>>, VehicleEvent<?>> trafficEventHandlerManager;
+	private TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> trafficEventHandlerManager;
 
 	/**
 	 * Vehicle event handler manager
@@ -268,7 +265,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	 * Server configurations
 	 */
 	@EJB
-	private ServerConfigurationReader<TrafficServerLocal<VehicleEvent<?>>> serverConfigReader;
+	private ServerConfigurationReader<TrafficServerLocal<VehicleEvent>> serverConfigReader;
 
 	/**
 	 * Config reader
@@ -290,7 +287,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 
 	private List<ScheduleItem> itemsToScheduleAfterFuzzy;
 
-	private List<Vehicle<? extends VehicleData>> itemsToRemoveAfterFuzzy;
+	private List<Vehicle<?>> itemsToRemoveAfterFuzzy;
 
 	/**
 	 * Traffic sensor controller
@@ -318,7 +315,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	/**
 	 * List of all known traffic servers
 	 */
-	private List<TrafficServerLocal<VehicleEvent<?>>> serverList;
+	private List<TrafficServerLocal<VehicleEvent>> serverList;
 
 	/**
 	 * All known other city zones
@@ -340,7 +337,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	 */
 	private long updateIntervall;
 
-	private Map<Long, AbstractTrafficEvent> eventForVehicle;
+	private Map<Long, VehicleEvent> eventForVehicle;
 
 	@EJB
 	private TrafficGovernor fuzzyTrafficGovernor;
@@ -374,8 +371,8 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	 * @param graph  
 	 */
 	public DefaultTrafficServer(Coordinate coordinate, ServiceDictionary serviceDictionary, SensorRegistry sensorRegistry,
-			TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent<?>>, VehicleEvent<?>> eventHandlerManager, List<TrafficServerLocal<VehicleEvent<?>>> slist,
-			SensorFactory sensorFactory, Graph graph) {
+			TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager, List<TrafficServerLocal<VehicleEvent>> slist,
+			SensorFactory sensorFactory, TrafficGraph graph) {
 		this.coordinate = coordinate;
 		this.serviceDictionary = serviceDictionary;
 		this.sensorRegistry = sensorRegistry;
@@ -384,7 +381,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 		this.trafficGraphExtensions = new DefaultTrafficGraphExtensions<>(serviceDictionary.getRandomSeedService(), graph);
 
 		this.trafficEventHandlerManager = eventHandlerManager;
-		this.vehicleEventHandlerManager = new DefaultVehicleEventHandlerManager<>();
+		this.vehicleEventHandlerManager = new DefaultVehicleEventHandlerManager();
 		// this.vehicleFuzzyManager = new DefaultVehicleFuzzyManager(this, tolerance, checkSteps, timebuffer,
 		// trafficGovernor);
 
@@ -400,10 +397,8 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 			final TrafficLightIntersection trafficLightIntersection = new TrafficLightIntersection(
 					node, getGraph(), this.trafficGraphExtensions);
 			this.trafficGraphExtensions.setTrafficRule(node, trafficLightIntersection);
-			this.sensorRegistry.addSensor(new TrafficLightSensor(this.sensorFactory.getOutput(), helper
-					.getTrafficLightIds().get(0), null, trafficLightIntersection.getTrafficLight0()));
-			this.sensorRegistry.addSensor(new TrafficLightSensor(this.sensorFactory.getOutput(), helper
-					.getTrafficLightIds().get(1), null, trafficLightIntersection.getTrafficLight1()));
+			this.sensorRegistry.addSensor(new TrafficLightSensor(null,this.sensorFactory.getOutput(), null, trafficLightIntersection.getTrafficLight0()));
+			this.sensorRegistry.addSensor(new TrafficLightSensor(null,this.sensorFactory.getOutput(), null, trafficLightIntersection.getTrafficLight1()));
 		}
 	}
 
@@ -420,7 +415,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public TrafficTrip createTrip(Geometry cityZone, DefaultTrafficNode<D> nodeID, long startTimestamp, boolean isStartNode) {
+	public TrafficTrip createTrip(Geometry cityZone, TrafficNode nodeID, long startTimestamp, boolean isStartNode) {
 		return this.routeConstructor.createTrip(this, cityZone, nodeID, startTimestamp, isStartNode);
 	}
 
@@ -430,7 +425,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public TrafficTrip createTrip(DefaultTrafficNode<D> startNodeID, DefaultTrafficNode<D> targetNodeID, long startTimestamp) {
+	public TrafficTrip createTrip(TrafficNode startNodeID, TrafficNode targetNodeID, long startTimestamp) {
 		return this.routeConstructor.createTrip(this, startNodeID, targetNodeID, startTimestamp);
 	}
 
@@ -457,12 +452,12 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public List<DefaultTrafficEdge<D>> getBusRoute(List<BusStop<?>> busStopIds) {
+	public List<TrafficEdge> getBusRoute(List<BusStop> busStopIds) {
 		return this.routeConstructor.getBusRoute(busStopIds);
 	}
 
 	@Override
-	public Map<String, DefaultTrafficNode<D>> getBusStopNodes(List<BusStop<?>> busStopIds) {
+	public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds) {
 		return this.routeConstructor.getBusStopNodes(busStopIds);
 	}
 
@@ -477,7 +472,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public TrafficGraph<N, E> getGraph() {
+	public TrafficGraph getGraph() {
 		return this.routeConstructor.getGraph();
 	}
 
@@ -497,7 +492,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public List<DefaultTrafficEdge<D>> getShortestPath(DefaultTrafficNode<D> start, DefaultTrafficNode<D> dest) {
+	public List<TrafficEdge> getShortestPath(TrafficNode start, TrafficNode dest) {
 		return this.routeConstructor.getShortestPath(start, dest);
 	}
 
@@ -558,7 +553,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 			this.vehicleEventHandlerManager.handleEvent(
 				new GenericVehicleEvent<>(this, this.currentTime, this.updateIntervall, rv.getVehicle(), VehicleEventTypeEnum.VEHICLE_UPDATE));
 
-			Set<BaseVehicle<D>> vehicles = this.trafficGraphExtensions.getVehiclesOnNode(rv
+			Set<Vehicle<?>> vehicles = this.trafficGraphExtensions.getVehiclesOnNode(rv
 					.getVehicle().getCurrentNode(), rv.getVehicle().getData().getType());
 			if (vehicles.isEmpty()) {
 				if (rv.getVehicle().getPosition().toString().equals(posBeforeUpdate)) {
@@ -566,17 +561,13 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 					log.debug("Vehicle " + rv.getVehicle().getName() + " registered on node "
 							+ rv.getVehicle().getCurrentNode().getId());
 				}
-				try {
-					rv.getVehicle().setVehicleState(VehicleStateEnum.NOT_STARTED);
-					DefaultScheduleItem item = new DefaultScheduleItem(rv.getVehicle(), this.currentTime, this.updateIntervall);
-					log.debug(String.format("Scheduled moved vehicle %s to drive on next update: %s", item.getVehicle()
-							.getName(), item.toString()));
-					// item.setLastUpdate(this.currentTime + this.updateIntervall);
-					this.scheduler.scheduleItem(item);
-					i.remove();
-				} catch (IllegalAccessException e) {
-					log.warn("see nested exception", e);
-				}
+				rv.getVehicle().setVehicleState(VehicleStateEnum.NOT_STARTED);
+				DefaultScheduleItem item = new DefaultScheduleItem(rv.getVehicle(), this.currentTime, this.updateIntervall);
+				log.debug(String.format("Scheduled moved vehicle %s to drive on next update: %s", item.getVehicle()
+						.getName(), item.toString()));
+				// item.setLastUpdate(this.currentTime + this.updateIntervall);
+				this.scheduler.scheduleItem(item);
+				i.remove();
 			} else {
 				log.debug("Could not process moved vehicle " + rv.getVehicle().getName()
 						+ ". There is already a vehicle on the same position, amount: " + vehicles.size());
@@ -597,8 +588,8 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public void takeVehicle(BaseVehicle<D> vehicle, N startNodeId, N targetNodeId,
-			TrafficServer<?> serverId) {
+	public void takeVehicle(Vehicle<?> vehicle, TrafficNode startNodeId, TrafficNode targetNodeId,
+			TrafficServerLocal<VehicleEvent> serverId) {
 		log.debug("Received vehicle " + vehicle.getName() + " from another server (" + serverId + "), nodeId: "
 				+ startNodeId);
 		vehicle.setTrafficGraphExtensions(this.trafficGraphExtensions);
@@ -616,10 +607,10 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	 *            server configuration
 	 * @return List of all traffic servers
 	 */
-	private List<TrafficServerLocal<VehicleEvent<?>>> getTrafficServer(ServerConfiguration serverConfig) {
+	private List<TrafficServerLocal<VehicleEvent>> getTrafficServer(ServerConfiguration serverConfig) {
 		this.serverConfigReader.read(
 			serverConfig, 
-			new ServiceHandler<TrafficServerLocal<VehicleEvent<?>>>() {
+			new ServiceHandler<TrafficServerLocal<VehicleEvent>>() {
 
 			@Override
 			public String getName() {
@@ -627,7 +618,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 			}
 
 			@Override
-			public void handle(String server, TrafficServerLocal<VehicleEvent<?>> service) {
+			public void handle(String server, TrafficServerLocal<VehicleEvent> service) {
 				if (!server.equals(DefaultTrafficServer.this.configReader.getProperty(ServerConfigurationIdentifier.SERVER_HOST))) {
 					log.debug("Found another traffic server on host: " + server);
 					DefaultTrafficServer.this.serverList.add(service);
@@ -665,12 +656,8 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 		this.scheduler.addScheduler(VehicleTypeEnum.MOTORIZED_VEHICLES, s);
 		this.scheduler.addScheduler(EnumSet.of(VehicleTypeEnum.BIKE), s2);
 		this.scheduler.changeModus(ScheduleModus.WRITE);
-		try {
-			s.addScheduleHandler(this);
-			s2.addScheduleHandler(this);
-		} catch (IllegalAccessException e) {
-			log.warn("see nested exception", e);
-		}
+		s.addScheduleHandler(this);
+		s2.addScheduleHandler(this);
 	}
 
 	/**
@@ -687,7 +674,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 		try (InputStream stream = DefaultTrafficServer.class.getResourceAsStream("/eventhandler.conf")) {
 			this.trafficEventHandlerManager.init(stream,
 				DefaultTrafficServer.class);
-			for(TrafficEventHandler<VehicleEvent<?>> a : this.trafficEventHandlerManager) {
+			for(TrafficEventHandler<VehicleEvent> a : this.trafficEventHandlerManager) {
 				a.init(this);
 			}
 		}
@@ -721,7 +708,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	 * @return List with vehicles that have to remove from the server
 	 */
 	private List<Vehicle<? extends VehicleData>> updateVehicles(long currentTime,
-			EventList<VehicleEvent<?>> simulationEventList) {
+			EventList<VehicleEvent> simulationEventList) {
 		List<Vehicle<? extends VehicleData>> removeableVehicles = new ArrayList<>();
 		this.currentTime = currentTime;
 
@@ -735,9 +722,11 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 				long elapsedTime = currentTime - item.getLastUpdate();
 				item.setLastUpdate(currentTime);
 				// log.debug("Elapsed time since last vehicle update: "+elapsedTime);/
-				N varNode = vehicle.getCurrentNode();
+				TrafficNode varNode = vehicle.getCurrentNode();
 
-				this.vehicleEventHandlerManager.handleEvent(new GenericVehicleEvent<>(this, currentTime, elapsedTime,vehicle,
+				this.vehicleEventHandlerManager.handleEvent(
+					new GenericVehicleEvent<>(
+						this, currentTime, elapsedTime,vehicle,
 						VehicleEventTypeEnum.VEHICLE_UPDATE));
 
 				// if (!varNode.getId().equals(vehicle.getCurrentNode().getId())) {
@@ -748,12 +737,14 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 				loop: for (int k = startNode; k < actualNode; k++) {
 					// log.debug("Loop: Vehicle "+vehicle.getName()+" passed Node from index #"+k +" to #"+(k+1));
 					varNode = vehicle.getNodePath().get(k);// 0
-					N curNode = vehicle.getNodePath().get(k + 1);// 1
+					TrafficNode curNode = vehicle.getNodePath().get(k + 1);// 1
 					if (!varNode.getId().equals(curNode.getId()) && (vehicle.getVehicleState() != VehicleStateEnum.REACHED_TARGET)) {
 						log.debug("Vehicle " + vehicle.getName() + " passed node " + curNode.getId());
 						if (this.cityZone == null
 								|| this.cityZone.covers(GEOMETRY_FACTORY.createPoint(this.trafficGraphExtensions.getPosition(curNode)))) {
-							this.vehicleEventHandlerManager.handleEvent(new GenericVehicleEvent<>(this, currentTime, 0, vehicle, VehicleEventTypeEnum.VEHICLE_PASSED_NODE));
+							this.vehicleEventHandlerManager.handleEvent(
+								new GenericVehicleEvent<>(
+									this, currentTime, 0, vehicle, VehicleEventTypeEnum.VEHICLE_PASSED_NODE));
 						} else {
 							// vehicle is driving out of boundaries
 							for (int j = 0; j < this.cityZones.size(); j++) {
@@ -830,17 +821,13 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 
 	@Override
 	protected void onReset() {
-		try {
-			this.scheduler.changeModus(ScheduleModus.WRITE);
-			this.scheduler.clearExpiredItems();
-			this.scheduler.clearScheduledItems();
-			// log.debug("Scheduler resetted, expired #items: "
-			// + this.scheduler.getExpiredItems(this.currentTime).size());
-			// log.debug("Scheduler resetted, scheduled #items: "
-			// + this.scheduler.getScheduledItems().size());
-		} catch (IllegalAccessException e) {
-			log.warn("see nested exception", e);
-		}
+		this.scheduler.changeModus(ScheduleModus.WRITE);
+		this.scheduler.clearExpiredItems();
+		this.scheduler.clearScheduledItems();
+		// log.debug("Scheduler resetted, expired #items: "
+		// + this.scheduler.getExpiredItems(this.currentTime).size());
+		// log.debug("Scheduler resetted, scheduled #items: "
+		// + this.scheduler.getScheduledItems().size());
 		this.listedRoadBarriers.clear();
 		this.trafficGraphExtensions.reset();
 		this.cityZones.clear();
@@ -856,8 +843,8 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	protected void onStart(StartParameter param) {
-		for (TrafficServerLocal<VehicleEvent<?>> server : this.serverList) {
+	protected void onStart(InfrastructureStartParameter param) {
+		for (TrafficServerLocal<VehicleEvent> server : this.serverList) {
 			this.cityZones.add(server.getCityZone());
 		}
 		// not working..
@@ -878,11 +865,11 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	protected void onUpdate(EventList<VehicleEvent<?>> simulationEventList) {
+	protected void onUpdate(EventList<VehicleEvent> simulationEventList) {
 		/*
 		 * Handle incoming events
 		 */
-		for (VehicleEvent<?> event : simulationEventList.getEventList()) {
+		for (VehicleEvent event : simulationEventList.getEventList()) {
 			this.trafficEventHandlerManager.handleEvent(event);
 		}
 
@@ -890,22 +877,14 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 		/*
 		 * update vehicles and update handlers
 		 */
-		List<Vehicle<? extends VehicleData>> removeableVehicles = this.updateVehicles(
+		List<Vehicle<?>> removeableVehicles = this.updateVehicles(
 				simulationEventList.getTimestamp(), simulationEventList);
 		this.scheduler.changeModus(ScheduleModus.WRITE);
 
-		try {
-			this.getScheduler().removeExpiredItems(removeableVehicles);
-		} catch (IllegalAccessException e) {
-			log.warn("see nested exception", e);
-		}
+		this.getScheduler().removeExpiredItems(removeableVehicles);
 
 		for (ScheduleItem item : itemsToScheduleAfterAttractionReached) {
-			try {
-				this.getScheduler().scheduleItem(item);
-			} catch (IllegalAccessException e) {
-				log.warn("see nested exception", e);
-			}
+			this.getScheduler().scheduleItem(item);
 		}
 		itemsToScheduleAfterAttractionReached.clear();
 
@@ -913,19 +892,11 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 			this.vehicleFuzzyManager.checkVehicleAmount(simulationEventList.getTimestamp());
 		}
 
-		try {
-			this.scheduler.removeScheduledItems(itemsToRemoveAfterFuzzy);
-		} catch (IllegalAccessException e1) {
-			log.warn("see nested exception", e1);
-		}
+		this.scheduler.removeScheduledItems(itemsToRemoveAfterFuzzy);
 		itemsToRemoveAfterFuzzy.clear();
 
 		for (ScheduleItem item : itemsToScheduleAfterFuzzy) {
-			try {
-				this.getScheduler().scheduleItem(item);
-			} catch (IllegalAccessException e) {
-			log.warn("see nested exception", e);
-			}
+			this.getScheduler().scheduleItem(item);
 		}
 		itemsToScheduleAfterFuzzy.clear();
 
@@ -941,7 +912,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent<?>>, VehicleEvent<?>> getTrafficEventHandlerManager() {
+	public TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> getTrafficEventHandlerManager() {
 		return trafficEventHandlerManager;
 	}
 
@@ -958,7 +929,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 			if (roadBarrier.getEnd() <= timestamp) {
 
 				// Add edges to graph
-				for (E edge : roadBarrier.getEdges()) {
+				for (TrafficEdge edge : roadBarrier.getEdges()) {
 					this.addEdgeToGraph(edge);
 				}
 
@@ -979,7 +950,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	 * @param edge
 	 *            Edge to add
 	 */
-	private void addEdgeToGraph(final E edge) {
+	private void addEdgeToGraph(final TrafficEdge edge) {
 		// Add edge to the graph
 		this.getGraph().addEdge(
 			edge.getSource(), 
@@ -994,8 +965,8 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public Set<E> getBlockedRoads(long timestamp) {
-		Set<E> blockNodes = new HashSet<>();
+	public Set<TrafficEdge> getBlockedRoads(long timestamp) {
+		Set<TrafficEdge> blockNodes = new HashSet<>();
 
 		// Adds the node IDs to the set
 		for (RoadBarrier roadBarrier : this.listedRoadBarriers) {
@@ -1008,7 +979,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public Map<Long, AbstractTrafficEvent> getEventForVehicle() {
+	public Map<Long, VehicleEvent> getEventForVehicle() {
 		return eventForVehicle;
 	}
 
@@ -1023,7 +994,7 @@ public class DefaultTrafficServer extends AbstractController<VehicleEvent<?>> im
 	}
 
 	@Override
-	public List<Vehicle<? extends VehicleData>> getItemsToRemoveAfterFuzzy() {
+	public List<Vehicle<?>> getItemsToRemoveAfterFuzzy() {
 		return this.itemsToRemoveAfterFuzzy;
 	}
 

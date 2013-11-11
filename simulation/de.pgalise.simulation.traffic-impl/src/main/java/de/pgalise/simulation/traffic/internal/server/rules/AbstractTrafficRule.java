@@ -21,14 +21,17 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
+import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
+import java.util.ArrayList;
 
 /**
  * Interface for traffic rules
@@ -38,19 +41,15 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  */
 public abstract class AbstractTrafficRule<
 	D extends VehicleData> extends AbstractIdentifiable implements 
-TrafficRule<
-	D, 
-	DefaultTrafficNode<D>, 
-	DefaultTrafficEdge<D>, 
-	BaseVehicle<D>
-> {
+TrafficRule {
 	private static final Logger log = LoggerFactory
 			.getLogger(AbstractTrafficRule.class);
 
-	private final DefaultTrafficNode<D> node;
-	private DefaultTrafficGraph<D>  graph;
+	private final TrafficNode node;
+	private TrafficGraph  graph;
+	private TrafficRuleData data;
 
-	public AbstractTrafficRule(final DefaultTrafficNode<D> node,DefaultTrafficGraph<D> graph) throws RuntimeException {
+	public AbstractTrafficRule(final TrafficNode node,TrafficGraph graph, TrafficRuleData data) throws RuntimeException {
 		if (node == null) {
 			throw new IllegalArgumentException(
 					ExceptionMessages.getMessageForNotNull("node"));
@@ -58,9 +57,17 @@ TrafficRule<
 		this.checkNode(node);
 		this.node = node;
 		this.graph = graph;
+		this.data = data;
 	}
 
-	protected abstract void checkNode(final DefaultTrafficNode<D> node) throws RuntimeException;
+	public void setData(TrafficRuleData data) {
+		this.data = data;
+	}
+
+	@Override
+	public TrafficRuleData getData() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 
 	/**
 	 * Registers a {@link Vehicle} with the passed arguments. The arguments
@@ -90,40 +97,8 @@ TrafficRule<
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
 	@Override
-	public abstract void register(final BaseVehicle<D> vehicle,
-			final DefaultTrafficEdge<D> from, final DefaultTrafficEdge<D> to, final TrafficRuleCallback callback)
-			throws IllegalArgumentException, IllegalStateException;
-
-	/**
-	 * Registers a {@link Vehicle} with the passed arguments. The arguments
-	 * specify from which {@link Edge} the {@link Vehicle} is coming from and to
-	 * which {@link Edge} it plans to go. Additionally a
-	 * {@link TrafficRuleCallback} is passed which methods will be invoked when
-	 * the {@link Vehicle} can enter the {@link Node} and also when it can leave
-	 * the {@link Node}.
-	 * 
-	 * @param vehicle
-	 *            the {@link Vehicle} to get through the traffic rule
-	 * @param from
-	 *            the {@link Edge} where the {@link Vehicle} is coming from
-	 * @param to
-	 *            the {@link Edge} where the {@link Vehicle} plans to go
-	 * @param callback
-	 *            A {@link TrafficRuleCallback} which methods are invoked on
-	 *            defined events. In these methods the passed {@link Vehicle}
-	 *            can change its position.
-	 * @throws IllegalArgumentException
-	 *             if any of the passed arguments is 'null'
-	 * @throws IllegalStateException
-	 *             some implementations will throw it if the passed arguments
-	 *             are in conflict with the concrete {@link TrafficRule} (i.e.
-	 *             'from' and 'to' are the same {@link Edge} what implies that
-	 *             the {@link Vehicle} wants to turn around and turning around
-	 *             is forbidden on the concrete {@link TrafficRule}).
-	 */
-	@Override
-	public void register(final BaseVehicle<D> vehicle,
-			final DefaultTrafficNode<D> from, final DefaultTrafficNode<D> to, final TrafficRuleCallback callback)
+	public void register(final Vehicle<?> vehicle,
+			final TrafficNode from, final TrafficNode to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException {
 		if (from == null) {
 			throw new IllegalArgumentException(
@@ -138,10 +113,10 @@ TrafficRule<
 		log.debug("to:"+ to.getId());
 		log.debug("this.node:"+ this.node.getId());
 		
-		DefaultTrafficEdge<D> edgeFrom = null;
+		TrafficEdge edgeFrom = null;
 		log.debug("#Edges conntected to node 'from': "
 				+ graph.edgesOf(from).size());
-		for (final DefaultTrafficEdge<D> edge : graph.edgesOf(from)) {
+		for (final TrafficEdge edge : graph.edgesOf(from)) {
 			log.debug("Node conntected with edge: "+edge.getOpposite(from).getId());
 			if (edge.getOpposite(from).getId().equals(this.getNode().getId())) {
 				edgeFrom = edge;
@@ -154,8 +129,8 @@ TrafficRule<
 							+ "'s node trough an edge.");
 		}
 
-		DefaultTrafficEdge<D> edgeTo = null;
-		for (final DefaultTrafficEdge<D> edge : graph.edgesOf(to)) {
+		TrafficEdge edgeTo = null;
+		for (final TrafficEdge edge : graph.edgesOf(to)) {
 			if (edge.getOpposite(to).getId().equals(this.getNode().getId())) {
 				edgeTo = edge;
 			}
@@ -173,18 +148,19 @@ TrafficRule<
 	 * @return the {@link Node} on which this {@link TrafficRule} is applied
 	 */
 	@Override
-	public DefaultTrafficNode<D> getNode() {
+	public TrafficNode getNode() {
 		return this.node;
 	}
 
 	@Override
 	public void setGraph(
-		DefaultTrafficGraph<D>  graph) {
+		TrafficGraph  graph) {
 		this.graph = graph;
 	}
 
 	@Override
-	public DefaultTrafficGraph<D>  getGraph() {
+	public TrafficGraph  getGraph() {
 		return graph;
 	}
+
 }

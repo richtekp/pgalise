@@ -17,6 +17,8 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,8 +30,6 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
-import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
-import de.pgalise.util.cityinfrastructure.impl.OSMCityInfrastructureData;
 
 /**
  * Service to create OSM city infrastructure data.
@@ -106,8 +106,10 @@ public class DefaultOSMCityInfrastructureDataService {
 		if (cityInfrastructuraDataFile.exists()) {
 			cityInfrastructuraDataFile.delete();
 		}
-		CityInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(new FileInputStream(osm),
-				new FileInputStream(busstops), buildingEnergyProfileStrategy);
+		TrafficGraph graph = new DefaultTrafficGraph();
+		CityInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(
+			new FileInputStream(osm),
+				new FileInputStream(busstops), buildingEnergyProfileStrategy, graph);
 
 		FileOutputStream fis = null;
 		ObjectOutputStream oos = null;

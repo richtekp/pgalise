@@ -22,9 +22,10 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
+import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
@@ -35,6 +36,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
+import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 import java.util.List;
 
@@ -49,7 +51,7 @@ import java.util.List;
  * @author marcus
  * @author Lena
  */
-public class VehicleReachedTargetHandler<D extends VehicleData> extends AbstractVehicleEventHandler<VehicleEvent<D>> {
+public class VehicleReachedTargetHandler<D extends VehicleData> extends AbstractVehicleEventHandler<VehicleData,VehicleEvent> {
 
 	@Override
 	public EventType getTargetEventType() {
@@ -57,10 +59,10 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 	}
 
 	@Override
-	public void handleEvent(VehicleEvent<D> event) {
-		for (final Sensor<?> sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
-			if (sensor instanceof StaticTrafficSensor) {
-				((StaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());
+	public void handleEvent(VehicleEvent event) {
+		for (final StaticTrafficSensor sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
+			if (sensor instanceof AbstractStaticTrafficSensor) {
+				((AbstractStaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());
 			}
 		}
 
@@ -114,8 +116,8 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 		}
 	}
 
-	private void modifyVehicleForWayBack(VehicleEvent<D> event, TrafficTrip trip) {
-		List<NavigationEdge<?,?>>  path = event.getResponsibleServer().getShortestPath(
+	private void modifyVehicleForWayBack(VehicleEvent event, TrafficTrip trip) {
+		List<TrafficEdge>  path = event.getResponsibleServer().getShortestPath(
 			trip.getStartNode(),
 			trip.getTargetNode());
 		if (path != null) {
@@ -126,7 +128,7 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 		}
 	}
 
-	private void scheduleVehicle(Vehicle<D> vehicle, long startTime, VehicleEvent<D> event) {
+	private void scheduleVehicle(Vehicle<?> vehicle, long startTime, VehicleEvent event) {
 		if (vehicle != null) {
 			// try {
 			DefaultScheduleItem item = new DefaultScheduleItem(vehicle, startTime, event.getResponsibleServer().getUpdateIntervall());

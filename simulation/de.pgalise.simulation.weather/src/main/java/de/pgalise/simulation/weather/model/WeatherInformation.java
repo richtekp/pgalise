@@ -11,7 +11,7 @@ package de.pgalise.simulation.weather.model;
 public interface WeatherInformation extends TimeSensitive {
 
 	Float getRelativHumidity(); 
-
+	
 	Float getWindDirection() ;
 
 	Float getWindVelocity();

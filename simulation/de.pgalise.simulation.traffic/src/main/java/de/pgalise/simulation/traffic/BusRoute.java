@@ -1,110 +1,222 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
+ 
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.BusAgency;
-import de.pgalise.simulation.traffic.BusTrip;
-import de.pgalise.simulation.shared.persistence.Identifiable;
+import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 /**
- *
- * @author richter
+ * Contains information about a bus route.
+ * The ID, long name, short, name, the route type
+ * and a flag, if it's used or not.
+ * @author Lena
  */
-public interface BusRoute<T extends BusTrip> extends Identifiable {
+@Entity
+public class BusRoute extends BusLineInformation {
+	/**
+	 * Serial
+	 */
+	private static final long serialVersionUID = 3115299698580903433L;
+
+	/**
+	 * Short name
+	 */
+	private String routeShortName;
+
+	/**
+	 * Long name
+	 */
+	private String routeLongName;
+
+	/**
+	 * Route type
+	 */
+	private int routeType;
+	
+	/**
+	 * Used in simulation
+	 */
+	private boolean used;	
+	
+	@Column(name = "AGENCY_ID")
+	private BusAgency agency;
+	
+	@Column(name = "ROUTE_DESC")
+	private String routeDesc;
+	
+	@Column(name = "ROUTE_URL")
+	private String routeUrl;
+	
+	@Column(name = "ROUTE_COLOR")
+	private String routeColor;
+	
+	@Column(name = "ROUTE_TEXT_COLOR")
+	private String routeTextColor;
+	
+	private BusData bus;
+
+	/**
+	 * Default constructor
+	 */
+	protected BusRoute() {
+	}
+
+	public BusRoute(String routeShortName,
+		String routeLongName,
+		int routeType,
+		boolean used,
+		BusAgency agency,
+		String routeDesc,
+		String routeUrl,
+		String routeColor,
+		String routeTextColor) {
+		this.routeShortName = routeShortName;
+		this.routeLongName = routeLongName;
+		this.routeType = routeType;
+		this.used = used;
+		this.agency = agency;
+		this.routeDesc = routeDesc;
+		this.routeUrl = routeUrl;
+		this.routeColor = routeColor;
+		this.routeTextColor = routeTextColor;
+	}
+	
+	
+	public BusRoute(String routeShortName, String routeLongName, int routeType) {
+		this(routeShortName,
+			routeLongName,
+			routeType,
+			true);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param routeShortName
+	 *            Short name
+	 * @param routeLongName
+	 *            Long name
+	 * @param routeType
+	 *            Route type
+	 */
+	public BusRoute(String routeShortName, String routeLongName, int routeType, boolean used) {
+		this.routeShortName = routeShortName;
+		this.routeLongName = routeLongName;
+		this.routeType = routeType;
+		this.used = used;
+	}
 
 	/**
 	 * @return the routeShortName
 	 */
-	String getRouteShortName();
+	public String getRouteShortName() {
+		return routeShortName;
+	}
 
 	/**
 	 * @param routeShortName
 	 *            the routeShortName to set
 	 */
-	void setRouteShortName(String routeShortName);
+	public void setRouteShortName(String routeShortName) {
+		this.routeShortName = routeShortName;
+	}
+
 	/**
 	 * @return the routeLongName
 	 */
-	String getRouteLongName();
+	public String getRouteLongName() {
+		return routeLongName;
+	}
 
 	/**
 	 * @param routeLongName
 	 *            the routeLongName to set
 	 */
-	void setRouteLongName(String routeLongName);
+	public void setRouteLongName(String routeLongName) {
+		this.routeLongName = routeLongName;
+	}
 
 	/**
 	 * @return the routeType
 	 */
-	int getRouteType();
+	public int getRouteType() {
+		return routeType;
+	}
+
 	/**
 	 * @param routeType
 	 *            the routeType to set
 	 */
-	void setRouteType(int routeType);
+	public void setRouteType(int routeType) {
+		this.routeType = routeType;
+	}
 
-	boolean isUsed();
+	public boolean isUsed() {
+		return used;
+	}
 
-	void setUsed(boolean used);
+	public void setUsed(boolean used) {
+		this.used = used;
+	}
 
-	BusAgency getAgency();
-	
-	void setAgency(BusAgency agencyId);
+	public BusAgency getAgency() {
+		return agency;
+	}
 
-	String getRouteDesc();
+	public void setAgency(BusAgency agencyId) {
+		this.agency = agencyId;
+	}
 
-	void setRouteDesc(String routeDesc);
+	public String getRouteDesc() {
+		return routeDesc;
+	}
 
-	String getRouteUrl();
+	public void setRouteDesc(String routeDesc) {
+		this.routeDesc = routeDesc;
+	}
 
-	void setRouteUrl(String routeUrl);
+	public String getRouteUrl() {
+		return routeUrl;
+	}
 
-	String getRouteColor();
+	public void setRouteUrl(String routeUrl) {
+		this.routeUrl = routeUrl;
+	}
 
-	void setRouteColor(String routeColor);
+	public String getRouteColor() {
+		return routeColor;
+	}
 
-	String getRouteTextColor();
+	public void setRouteColor(String routeColor) {
+		this.routeColor = routeColor;
+	}
 
-	void setRouteTextColor(String routeTextColor);
+	public String getRouteTextColor() {
+		return routeTextColor;
+	}
 
-	/**
-	 * @return the weekdayTripWayThere
-	 */
-	List<T> getWeekdayTripWayThere();
-	/**
-	 * @param weekdayTripWayThere the weekdayTripWayThere to set
-	 */
-	void setWeekdayTripWayThere(List<T> weekdayTripWayThere);
-
-	/**
-	 * @return the weekdayTripWayBack
-	 */
-	List<T> getWeekdayTripWayBack();
-
-	/**
-	 * @param weekdayTripWayBack the weekdayTripWayBack to set
-	 */
-	void setWeekdayTripWayBack(List<T> weekdayTripWayBack);
-	/**
-	 * @return the weekendTripWayThere
-	 */
-	List<T> getWeekendTripWayThere();
-
-	/**
-	 * @param weekendTripWayThere the weekendTripWayThere to set
-	 */
-	void setWeekendTripWayThere(List<T> weekendTripWayThere);
-
-	/**
-	 * @return the weekendTripWayBack
-	 */
-	List<T> getWeekendTripWayBack();
-
-	/**
-	 * @param weekendTripWayBack the weekendTripWayBack to set
-	 */
-	void setWeekendTripWayBack(List<T> weekendTripWayBack);
+	public void setRouteTextColor(String routeTextColor) {
+		this.routeTextColor = routeTextColor;
+	}
 }

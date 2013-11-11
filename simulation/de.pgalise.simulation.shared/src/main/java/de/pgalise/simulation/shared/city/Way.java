@@ -20,6 +20,7 @@ import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.LanduseTagEnum;
 import de.pgalise.simulation.shared.city.WayTagEnum;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
@@ -27,7 +28,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Entity;
 import org.jgrapht.DirectedGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  * A way is logical union of {@link NavigationEdge}s, i.e. a highway with a number. Information about oneway limilations or speed limits are encapsulated in {@link NavigationEdge} because these constraints might not apply to the entire way as definded above.
@@ -35,12 +38,13 @@ import org.jgrapht.DirectedGraph;
  * @param <N> 
  * @author Timo
  */
-public class Way<E extends NavigationEdge<N,E>, N extends NavigationNode> implements Serializable {
+@Entity
+public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends AbstractIdentifiable {
 	private static final long serialVersionUID = 2942128399393060939L;
 	private List<E> edgeList;
 	private String streetName;
-	private Set<WayTagEnum> tags;
-	private Set<LanduseTagEnum> landuseTags;
+	private Set<WayTag> tags;
+	private Set<LanduseTag> landuseTags;
 	
 	/**
 	 * Default
@@ -51,13 +55,14 @@ public class Way<E extends NavigationEdge<N,E>, N extends NavigationNode> implem
 	 * Constructor
 	 * @param edgeList 
 	 * @param streetname 
-	 * @param tags 
+	 * @param wayTags 
 	 */
-	public Way(List<E> edgeList, String streetname, Set<WayTagEnum> tags) {
+	public Way(List<E> edgeList, String streetname, Set<WayTag> wayTags) {
 		this(edgeList,
 			streetname);
-		this.tags = tags;
+		this.tags = wayTags;
 		this.landuseTags = new HashSet<>();
+		
 	}
 
 	public Way(
@@ -72,28 +77,28 @@ public class Way<E extends NavigationEdge<N,E>, N extends NavigationNode> implem
 	public Way(
 		List<E> edgeList,
 		String streetname,
-		Set<WayTagEnum> tags,
-		Set<LanduseTagEnum> landuseTags) {
+		Set<WayTag> tags,
+		Set<LanduseTag> landuseTags) {
 		this(edgeList,
 			streetname,
 			tags);
 		this.landuseTags = landuseTags;
 	}
 
-	public Collection<WayTagEnum> getTags() {
+	public Collection<WayTag> getWayTags() {
 		return tags;
 	}
 
 	public void setLanduseTags(
-		Set<LanduseTagEnum> landuseTags) {
+		Set<LanduseTag> landuseTags) {
 		this.landuseTags = landuseTags;
 	}
 
-	public Set<LanduseTagEnum> getLanduseTags() {
+	public Set<LanduseTag> getLanduseTags() {
 		return landuseTags;
 	}
 
-	public void setTags(Set<WayTagEnum> tags) {
+	public void setTags(Set<WayTag> tags) {
 		this.tags = tags;
 	}
 
@@ -121,13 +126,22 @@ public class Way<E extends NavigationEdge<N,E>, N extends NavigationNode> implem
 	public List<N> getNodeList() {
 		List<N> retValue = new LinkedList<>();
 		retValue.add(edgeList.get(0).getSource());
-		for(NavigationEdge<N,E> edge : edgeList) {
+		for(E edge : edgeList) {
 			retValue.add(edge.getTarget());
 		}
 		return retValue;
 	}
 	
-	public void setEdgeList(List<N> nodes, DirectedGraph<N,E> graph) {
+	private class NavigationGraph extends DefaultDirectedGraph<NavigationEdge<NavigationNode>, NavigationNode> {
+
+		public NavigationGraph(
+			Class<? extends NavigationNode> edgeClass) {
+			super(edgeClass);
+		}
+		
+	}
+	
+	public <G extends DirectedGraph<N,E>> void setEdgeList(List<N> nodes, G graph) {
 		List<E> edgeList0 = new LinkedList<>();
 		Iterator<N> it = nodes.iterator();
 		N last = it.next();
@@ -142,9 +156,12 @@ public class Way<E extends NavigationEdge<N,E>, N extends NavigationNode> implem
 		this.edgeList = edgeList0;
 	}
 	
-	public void setOneWay() {
+	public void setOneWay(boolean oneWay) {
 		for(E edge : edgeList) {
-			if(!edge.)
+			if(edge.isOneWay() != null) {
+				throw new IllegalStateException(String.format("oneWay flag of edge %s already set (flags on all edges have to be null before a whole way can be set to one way)", edge));
+			}
+			edge.setOneWay(oneWay);
 		}
 	}
 }

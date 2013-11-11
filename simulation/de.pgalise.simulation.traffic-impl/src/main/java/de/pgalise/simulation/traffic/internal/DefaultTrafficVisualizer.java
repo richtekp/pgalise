@@ -42,27 +42,27 @@ import javax.vecmath.Vector2d;
  * @author Mustafa
  * @author Marina
  */
-public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGraphVisualizer<D> implements TrafficVisualizer<DefaultTrafficNode<D>,DefaultTrafficEdge<D>,D, BaseVehicle<D>> {
+public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGraphVisualizer<D> implements TrafficVisualizer {
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -5898703038599896775L;
 
-	private List<BaseVehicle<D>> vehicles;
+	private List<Vehicle<?>> vehicles;
 
 	private AsyncHandler handler;
 
 	private boolean finished;
 
-	private TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> trafficGraphExtensions;
+	private TrafficGraphExtensions trafficGraphExtensions;
 
-	public DefaultTrafficVisualizer(int width, int height, TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> ee) {
+	public DefaultTrafficVisualizer(int width, int height, TrafficGraphExtensions ee) {
 		super(width, height);
 		this.trafficGraphExtensions = ee;
 		init();
 	}
 
-	public DefaultTrafficVisualizer(int width, int height, DefaultTrafficGraph<D> graph, TrafficGraphExtensions<DefaultTrafficNode<D>, DefaultTrafficEdge<D>, D, BaseVehicle<D>> ee) {
+	public DefaultTrafficVisualizer(int width, int height, DefaultTrafficGraph graph, TrafficGraphExtensions ee) {
 		super(width, height, graph);
 		this.trafficGraphExtensions = ee;
 		init();
@@ -159,7 +159,7 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 		// }
 
 		g2d.setColor(Color.BLACK);
-		for (BaseVehicle<D> v : vehicles) {
+		for (Vehicle<?> v : vehicles) {
 			Vector2d pos = new Vector2d(v.getPosition().x, v.getPosition().y);
 			pos = new Vector2d((pos.x * transform.getScaleX() + transform.getTranslateX()), (pos.y
 					* transform.getScaleX() + transform.getTranslateY()));
@@ -215,12 +215,12 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 	}
 
 	@Override
-	public void setVehicles(List<BaseVehicle<D>> vehicles) {
+	public void setVehicles(List<Vehicle<?>> vehicles) {
 		this.vehicles = vehicles;
 	}
 
 	@Override
-	public List<BaseVehicle<D>> getVehicles() {
+	public List<Vehicle<?>> getVehicles() {
 		return this.vehicles;
 	}
 

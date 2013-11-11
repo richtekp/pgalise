@@ -258,7 +258,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					inductionLoopInterferer = new InductionLoopNoInterferer();
 				}
 
-				return new InductionLoopSensor(this.sensorOutput, 
+				return new InductionLoopSensor(null,this.sensorOutput, 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						inductionLoopInterferer);
 
@@ -282,7 +282,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					toporadarInterferer = new TopoRadarNoInterferer();
 				}
 
-				return new TopoRadarSensor(this.sensorOutput, 
+				return new TopoRadarSensor(null,this.sensorOutput, 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						toporadarInterferer);
 
@@ -405,5 +405,21 @@ public class DefaultSensorFactory implements SensorFactory {
 	@Override
 	public Output getOutput() {
 		return this.sensorOutput;
+	}
+
+	public RandomSeedService getRss() {
+		return rss;
+	}
+
+	protected void setRss(RandomSeedService rss) {
+		this.rss = rss;
+	}
+
+	protected void setWeatherCtrl(WeatherController weatherCtrl) {
+		this.weatherCtrl = weatherCtrl;
+	}
+
+	public WeatherController getWeatherCtrl() {
+		return weatherCtrl;
 	}
 }

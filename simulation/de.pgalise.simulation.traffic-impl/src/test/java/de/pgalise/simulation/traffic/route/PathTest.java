@@ -16,18 +16,18 @@
  
 package de.pgalise.simulation.traffic.route;
 
-import org.graphstream.algorithm.AStar;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-import org.graphstream.graph.implementations.SingleGraph;
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.vecmath.Vector2d;
+import org.jgrapht.traverse.ClosestFirstIterator;
 
 /**
  * @author Mustafa
@@ -41,50 +41,42 @@ public class PathTest {
 
 	@Test
 	public void test() {
-		Graph graph = new SingleGraph("Tutorial 1");
+		TrafficGraph graph = new DefaultTrafficGraph();
 
 		double velocity = 50;
 		double distance = 200;
 
 		// log.debug("velocity = " + velocity);
 		// log.debug("distance 2000m = " + distance);
-		Node a = graph.addNode("a");
-		a.addAttribute("position", new Vector2d(0, 0));
+		TrafficNode a = new TrafficNode(new Coordinate(0,0));
+		TrafficNode b = new TrafficNode(new Coordinate(distance,0));
+		TrafficNode c = new TrafficNode(new Coordinate(distance,distance));
 
-		Node b = graph.addNode("b");
-		b.addAttribute("position", new Vector2d(distance, 0));
+		TrafficEdge ab = graph.addEdge(a,b);
+		ab.setMaxSpeed( velocity);
+		graph.setEdgeWeight(ab,
+			distance/velocity);
+		PathTest.log.debug("Weight of ab: " + distance/velocity);
 
-		Node c = graph.addNode("c");
-		c.addAttribute("position", new Vector2d(distance, distance));
+		TrafficEdge bc = graph.addEdge(b,c);
+		bc.setMaxSpeed( velocity);
+		graph.setEdgeWeight(bc, distance / velocity);
+		PathTest.log.debug("Weight of bc: " + distance/velocity);
 
-		Edge ab = graph.addEdge("ab", "a", "b");
-		ab.addAttribute("distance", distance);
-		ab.addAttribute("maxVelocity", velocity);
-		ab.addAttribute("weight", distance / velocity);
-		PathTest.log.debug("Weight of ab: " + ab.getAttribute("weight"));
-
-		Edge bc = graph.addEdge("bc", "b", "c");
-		bc.addAttribute("distance", distance);
-		bc.addAttribute("maxVelocity", velocity);
-		bc.addAttribute("weight", distance / velocity);
-		PathTest.log.debug("Weight of bc: " + bc.getAttribute("weight"));
-
-		Edge ac = graph.addEdge("ac", "a", "c");
-		Vector2d v = (Vector2d) a.getAttribute("position");
-		v.sub((Vector2d) c.getAttribute("position"));
+		TrafficEdge ac = graph.addEdge(a,c);
+		Vector2d v = new Vector2d(a.getGeoLocation().x, a.getGeoLocation().y);
+		v.sub(new Vector2d(c.getGeoLocation().x, c.getGeoLocation().y));
 		double length = v.length();
 
-		ac.addAttribute("distance", length);
-		ac.addAttribute("maxVelocity", velocity);
-		ac.addAttribute("weight", length / velocity);
-		PathTest.log.debug("Weight of ac: " + ac.getAttribute("weight"));
+		ac.setMaxSpeed( velocity);
+		graph.setEdgeWeight(ac, length / velocity);
+		PathTest.log.debug("Weight of ac: " + length / velocity);
 
-		AStar astar = new AStar(graph);
-		astar.setSource("a");
-		astar.setTarget("c");
-		astar.compute();
-		Path path = astar.getShortestPath();
-		PathTest.log.debug("Path: " + path.toString());
-		Assert.assertEquals(path.toString(), "[a, c]");
+		ClosestFirstIterator astar = new ClosestFirstIterator(graph, a);
+		while(astar.hasNext())  {
+			astar.next();
+		}
+
+		Assert.assertEquals(astar.toString(), "[a, c]"); // @TODO: adjust library to use a method which returns a path
 	}
 }

@@ -35,12 +35,6 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
  * @author mustafa
  *
  */
-public interface VehicleEventHandler<
-	D extends VehicleData, 
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	F extends VehicleEvent<D,N,E,V,F>, 
-	V extends Vehicle<D,N,E,V>
-> extends TrafficEventHandler<F,N,E,D,V> {
+public interface VehicleEventHandler<E extends VehicleEvent> extends TrafficEventHandler<E> {
 	
 }

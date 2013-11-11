@@ -29,11 +29,7 @@ import java.util.Set;
  * 
  * @author Marina, Mustafa
  */
-public interface SurroundingCarsFinder<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>> {
+public interface SurroundingCarsFinder {
 
 	/**
 	 * Returns a list of vehicles which surround the given car.
@@ -41,7 +37,7 @@ public interface SurroundingCarsFinder<
 	 * @param car
 	 * @return list of vehicles
 	 */
-	public V findCars(V car, long time);
+	public Set<Vehicle<?>> findCars(Vehicle<?> car, long time);
 
 	/**
 	 * Returns the closest car to the given car.
@@ -50,5 +46,5 @@ public interface SurroundingCarsFinder<
 	 * @param car
 	 * @return nearest car
 	 */
-	public V findNearestCar(V car, long time);
+	public Vehicle<?> findNearestCar(Vehicle<?> car, long time);
 }

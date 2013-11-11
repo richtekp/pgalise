@@ -17,6 +17,7 @@
 package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.City;
 import java.sql.Date;
 import java.sql.Time;
 import javax.measure.Measure;

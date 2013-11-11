@@ -19,9 +19,8 @@ package de.pgalise.simulation.weather.service;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 
 /**

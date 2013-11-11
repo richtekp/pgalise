@@ -13,8 +13,8 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.CompositeGpsInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsAtmosphereInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsClockInterferer;
@@ -47,11 +47,18 @@ import java.util.concurrent.ExecutionException;
  */
 public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 
+	public DefaultTrafficSensorFactory() {
+		super(null,
+			null,
+			null,
+			null);
+	}
+
 	@Override
 	public Sensor<?> createSensor(
 		SensorHelper<?> sensorHelper,
 		Set<SensorType> allowedTypes
-	) throws InterruptedException, ExecutionException {
+	) {
 		if(sensorHelper.getSensorType().equals(SensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
 				// Can't be returned here, because of missing dependencies
 				return null;
@@ -97,7 +104,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					inductionLoopInterferer = new InductionLoopNoInterferer();
 				}
 
-				return new InductionLoopSensor<>(
+				return new InductionLoopSensor(
 					null,
 					getOutput(), 
 					sensorHelper.getPosition(), 
@@ -124,7 +131,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					toporadarInterferer = new TopoRadarNoInterferer();
 				}
 
-				return new TopoRadarSensor<>(null,getOutput(), 
+				return new TopoRadarSensor(null,getOutput(), 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						toporadarInterferer);
 
@@ -147,7 +154,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case GPS_ATMOSPHERE_INTERFERER:
-								gpsInterferes.add(new GpsAtmosphereInterferer(this.getRss(), this.weatherCtrl));
+								gpsInterferes.add(new GpsAtmosphereInterferer(this.getRss(), this.getWeatherCtrl()));
 								break;
 							case GPS_CLOCK_INTERFERER:
 								gpsInterferes.add(new GpsClockInterferer(this.getRss()));
@@ -167,8 +174,9 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					gpsInterferer = new GpsNoInterferer();
 				}
 
-				return new GpsSensor<VehicleData>(getOutput(), null,
+				return new GpsSensor(getOutput(), null,
 						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), new Coordinate(0, 0), gpsInterferer);
+		}
+		throw new IllegalArgumentException();
 	}
-	
 }

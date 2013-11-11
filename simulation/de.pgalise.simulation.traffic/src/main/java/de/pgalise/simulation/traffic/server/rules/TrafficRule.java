@@ -21,22 +21,26 @@ import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.persistence.Identifiable;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Interface for traffic rules
  * 
  * @author Marcus
  */
-public abstract class TrafficRule implements SimulationComponent {
-	private static final Logger log = LoggerFactory
-			.getLogger(TrafficRule.class);
+public interface TrafficRule extends SimulationComponent<VehicleEvent> {
+	
+	TrafficRuleData getData();
 
-	void checkNode(final NavigationNode node) throws RuntimeException;
+	void checkNode(final TrafficNode node) throws RuntimeException;
 
 	/**
 	 * Registers a {@link Vehicle} with the passed arguments. The arguments
@@ -65,8 +69,8 @@ public abstract class TrafficRule implements SimulationComponent {
 	 *             the {@link Vehicle} wants to turn around and turning around
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
-	public abstract void register(final Vehicle<? extends VehicleData> vehicle,
-			final Edge from, final Edge to, final TrafficRuleCallback callback)
+	public void register(final Vehicle<?> vehicle,
+			final TrafficEdge from, final TrafficEdge to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException;
 
 	/**
@@ -96,8 +100,8 @@ public abstract class TrafficRule implements SimulationComponent {
 	 *             the {@link Vehicle} wants to turn around and turning around
 	 *             is forbidden on the concrete {@link TrafficRule}).
 	 */
-	public void register(final V vehicle,
-			final N from, final N to, final TrafficRuleCallback callback)
+	public void register(final Vehicle<?> vehicle,
+			final TrafficNode from, final TrafficNode to, final TrafficRuleCallback callback)
 			throws IllegalArgumentException, IllegalStateException ;
 
 	/**
@@ -105,11 +109,10 @@ public abstract class TrafficRule implements SimulationComponent {
 	 * 
 	 * @return the {@link Node} on which this {@link TrafficRule} is applied
 	 */
-	public N getNode() ;
+	public TrafficNode getNode() ;
 
 	public void setGraph(
-		TrafficGraph<N,E,D,V>  graph);
+		TrafficGraph  graph);
 
-	public TrafficGraph<N,E,D,V>  getGraph() ;
-	}
+	public TrafficGraph  getGraph();
 }

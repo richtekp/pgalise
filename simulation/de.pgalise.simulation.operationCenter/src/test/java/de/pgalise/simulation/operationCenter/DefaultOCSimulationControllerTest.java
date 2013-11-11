@@ -50,14 +50,17 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * J-Unit tests for {@link DefaultOCSimulationController}
@@ -173,17 +176,32 @@ public class DefaultOCSimulationControllerTest {
 	/**
 	 * List of sensor helper
 	 */
-	private static List<SensorHelper> SENSOR_HELPER_LIST;
+	private static List<SensorHelper<?>> SENSOR_HELPER_LIST;
 
 	@BeforeClass
 	public static void setUp() {
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST = new LinkedList<>();
-		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(2, new Coordinate(),
-				SensorTypeEnum.ANEMOMETER, new LinkedList<SensorInterfererType>(), ""));
-		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(3, new Coordinate(),
-				SensorTypeEnum.BAROMETER, new LinkedList<SensorInterfererType>(), ""));
-		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(4, new Coordinate(),
-				SensorTypeEnum.INDUCTIONLOOP, new LinkedList<SensorInterfererType>(), ""));
+		Sensor sensor = new GpsSensor(null,
+			null,
+			SensorTypeEnum.RAIN,
+			null,
+			null);
+		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(
+			new SensorHelper<>(
+				sensor, 
+				new Coordinate(),
+				SensorTypeEnum.ANEMOMETER, 
+				new LinkedList<SensorInterfererType>()
+			)
+		);
+		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(
+			new SensorHelper(
+				sensor, 
+				new Coordinate(),
+				SensorTypeEnum.BAROMETER, 
+				new LinkedList<SensorInterfererType>()));
+		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(sensor, new Coordinate(),
+				SensorTypeEnum.INDUCTIONLOOP, new LinkedList<SensorInterfererType>()));
 
 		DefaultOCSimulationControllerTest.OC_SENSOR_STREAM_CONTROLLER = EasyMock
 				.createNiceMock(OCSensorStreamController.class);
@@ -223,7 +241,8 @@ public class DefaultOCSimulationControllerTest {
 		DefaultOCSimulationControllerTest.TESTCLASS.stop();
 		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof SimulationStoppedMessage);
 
-		DefaultOCSimulationControllerTest.TESTCLASS.createSensors(DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST);
+		DefaultOCSimulationControllerTest.TESTCLASS.createSensors(
+			DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST);
 		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof NewSensorsMessage);
 
 		for (SensorHelper sensorHelper : DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST) {

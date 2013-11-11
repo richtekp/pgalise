@@ -26,7 +26,7 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
  * 
  * @author Timo
  */
-public class DeleteSensorsMessage extends CCWebSocketMessage<Collection<SensorHelper>> {
+public class DeleteSensorsMessage extends CCWebSocketMessage<Collection<SensorHelper<?>>> {
 	/**
 	 * Constructor
 	 * 
@@ -35,7 +35,7 @@ public class DeleteSensorsMessage extends CCWebSocketMessage<Collection<SensorHe
 	 * @param content
 	 *            List with SensorHelper which shall be deleted
 	 */
-	public DeleteSensorsMessage(int messageID, List<SensorHelper> content) {
+	public DeleteSensorsMessage(int messageID, List<SensorHelper<?>> content) {
 		super(messageID, MessageType.DELETE_SENSORS_MESSAGE, content);
 	}
 }

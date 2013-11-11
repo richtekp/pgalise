@@ -21,6 +21,8 @@ import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
@@ -140,8 +142,8 @@ public class PhotovoltaikSensor extends EnergySensor {
 	}
 
 	@Override
-	public SensorTypeEnum getSensorType() {
-		return SensorTypeEnum.PHOTOVOLTAIK;
+	public SensorType getSensorType() {
+		return EnergySensorTypeEnum.PHOTOVOLTAIK;
 	}
 
 	/**

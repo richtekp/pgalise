@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 
 /**
@@ -41,6 +43,6 @@ public interface OSMCityInfrastructureDataService {
 	 * @throws FileNotFoundException 
 	 * @throws IOException 
 	 */
-	public CityInfrastructureData createCityInfrastructureData(File osm, File busstops, 
-			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws FileNotFoundException, IOException;
+	public TrafficInfrastructureData createCityInfrastructureData(File osm, File busstops, 
+			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy, TrafficGraph graph) throws FileNotFoundException, IOException;
 }

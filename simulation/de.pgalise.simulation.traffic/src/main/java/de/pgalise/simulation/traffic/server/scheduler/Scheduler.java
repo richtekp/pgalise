@@ -39,12 +39,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @see Administration
  * @author mustafa
  */
-public interface Scheduler<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>,
-	I extends ScheduleItem<D,N,E,V>> {
+public interface Scheduler {
 
 	/**
 	 * Changes the access rights to this scheduler
@@ -60,12 +55,10 @@ public interface Scheduler<
 	 * @see ScheduleHandler
 	 * @param handler
 	 *            to add
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void addScheduleHandler(ScheduleHandler<D,N,E,V,I> handler) throws IllegalAccessException ;
-
-	void onAddScheduleHandler(ScheduleHandler<D,N,E,V,I> handler);
+	public void addScheduleHandler(ScheduleHandler handler) throws IllegalStateException ;
 
 	/**
 	 * Removes a schedule handler to this scheduler.
@@ -73,35 +66,29 @@ public interface Scheduler<
 	 * @see ScheduleHandler
 	 * @param handler
 	 *            to remove
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void removeScheduleHandler(ScheduleHandler<D,N,E,V,I> handler) throws IllegalAccessException ;
-
-	void onRemoveScheduleHandler(ScheduleHandler<D,N,E,V,I> handler);
+	public void removeScheduleHandler(ScheduleHandler handler) ;
 
 	/**
 	 * Removes all schedule handler from this scheduler.
 	 * 
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 * @see ScheduleHandler
 	 */
-	public void removeAllHandler() throws IllegalAccessException;
-
-	void onRemoveAllHandler();
+	public void removeAllHandler() throws IllegalStateException;
 
 	/**
 	 * Adds an item to the proper position in the schedule.
 	 * 
 	 * @param item
 	 *            to add to the schedule
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void scheduleItem(I item) throws IllegalAccessException ;
-
-	void onScheduleItem(I item);
+	public void scheduleItem(ScheduleItem item) throws IllegalStateException ;
 
 	/**
 	 * Returns a shallow copy of vehicles should be driving already. Important: Does not remove vehicles that arrived at
@@ -111,53 +98,45 @@ public interface Scheduler<
 	 * @see #removeExpiredItems(List)
 	 * @return a shallow copy of vehicles should be driving already
 	 */
-	List<I> getExpiredItems(long currentTime);
+	List<ScheduleItem> getExpiredItems(long currentTime);
 
 	/**
 	 * @see #removeScheduledItems(List)
 	 * @return a shallow copy of scheduled items
 	 */
-	List<I> getScheduledItems();
+	List<ScheduleItem> getScheduledItems();
 
 	/**
 	 * Searches for the passed vehicles in the expired items list and removes them.
 	 * 
 	 * @param vehicles
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void removeScheduledItems(List<V> vehicles) throws IllegalAccessException ;
-
-	void onRemoveScheduledItems(List<V> vehicles);
+	public void removeScheduledItems(List<Vehicle<?>> vehicles) throws IllegalStateException ;
 
 	/**
 	 * Searches for the passed vehicles in the expired items list and removes them.
 	 * 
 	 * @param vehicles
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void removeExpiredItems(List<V> vehicles) throws IllegalAccessException;
-
-	void onRemoveExpiredItems(List<V> vehicles);
+	public void removeExpiredItems(List<Vehicle<?>> vehicles) throws IllegalStateException;
 
 	/**
 	 * Clears scheduled items.
 	 * 
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void clearScheduledItems() throws IllegalAccessException ;
-
-	void onClearScheduledItems();
+	public void clearScheduledItems() throws IllegalStateException ;
 
 	/**
 	 * Clears expired items.
 	 * 
-	 * @throws IllegalAccessException
+	 * @throws IllegalStateException
 	 *             when access right is not set to {@link Modus#WRITE}
 	 */
-	public void clearExpiredItems() throws IllegalAccessException ;
-
-	void onClearExpiredItems();
+	public void clearExpiredItems() throws IllegalStateException ;
 }

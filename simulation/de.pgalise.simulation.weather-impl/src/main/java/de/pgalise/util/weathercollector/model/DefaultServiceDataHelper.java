@@ -16,6 +16,7 @@
  
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.AbstractTimeSensitive;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import java.sql.Date;
@@ -33,7 +34,7 @@ import javax.persistence.OneToOne;
  * @version 1.0 (Mar 16, 2012)
  */
 @Entity
-public class DefaultServiceDataHelper extends AbstractTimeSensitive implements MutableServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> {
+public class DefaultServiceDataHelper extends AbstractTimeSensitive implements ServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -84,7 +85,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 	 * City
 	 */
 	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private DefaultCity city;
+	private City city;
 
 	/**
 	 * Current condition
@@ -113,7 +114,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 	 * @param apiSource the name of the weather API used to retrieve the date 
 	 * (e.g. Yahoo)
 	 */
-	public DefaultServiceDataHelper(DefaultCity city, String apiSource) {
+	public DefaultServiceDataHelper(City city, String apiSource) {
 		this.source = apiSource;
 		this.city = city;
 		this.apicity = "";
@@ -168,7 +169,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 	}
 
 	@Override
-	public DefaultCity getCity() {
+	public City getCity() {
 		return this.city;
 	}
 
@@ -187,28 +188,23 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements M
 		return this.source;
 	}
 
-	@Override
 	public void setApicity(String apicity) {
 		this.apicity = apicity;
 	}
 
-	@Override
-	public void setCity(DefaultCity city) {
+	public void setCity(City city) {
 		this.city = city;
 	}
 
-	@Override
 	public void setCurrentCondition(MyExtendedServiceDataCurrent currentCondition) {
 		this.currentCondition = currentCondition;
 	}
 
-	@Override
 	public void setForecastConditions(
 		Set<MyExtendedServiceDataForecast> forecastConditions) {
 		this.forecastConditions = forecastConditions;
 	}
 
-	@Override
 	public void setSource(String source) {
 		this.source = source;
 	}

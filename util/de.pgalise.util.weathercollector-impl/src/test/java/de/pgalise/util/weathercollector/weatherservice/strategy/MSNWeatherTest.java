@@ -57,24 +57,8 @@ public class MSNWeatherTest {
 	 */
 	@Test
 	public void testgetWeather() throws ReadServiceDataException {
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
-			new Coordinate(1,
-			1),
-			new Coordinate(1,
-			2),
-			new Coordinate(2,
-			2),
-			new Coordinate(2,
-			1),
-			new Coordinate(1,
-			1)
-		});
-		City city = new DefaultCity("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
+		
+		City city = TestUtils.createDefaultTestCityInstance();
 		MSNWeather instance = new MSNWeather();
 		ServiceDataHelper<?,?,?> result = instance.getWeather(city,
 			baseDatabaseManager);

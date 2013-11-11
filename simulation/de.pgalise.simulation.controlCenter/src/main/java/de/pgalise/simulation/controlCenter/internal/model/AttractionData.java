@@ -19,6 +19,7 @@ package de.pgalise.simulation.controlCenter.internal.model;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficNode;
 
 /**
  * Data to create an attraction event.
@@ -45,7 +46,7 @@ public class AttractionData extends AbstractIdentifiable {
 	/**
 	 * Node id in graph
 	 */
-	private NavigationNode nodeID;
+	private TrafficNode nodeID;
 	
 	/**
 	 * This vehicles will drive to the attraction point.
@@ -64,7 +65,7 @@ public class AttractionData extends AbstractIdentifiable {
 	 */
 	public AttractionData(long attractionStartTimestamp,
 			long attractionEndTimestamp, Coordinate attractionPoint,
-			NavigationNode nodeID, RandomVehicleBundle randomVehicleBundle) {
+			TrafficNode nodeID, RandomVehicleBundle randomVehicleBundle) {
 		this.attractionStartTimestamp = attractionStartTimestamp;
 		this.attractionEndTimestamp = attractionEndTimestamp;
 		this.attractionPoint = attractionPoint;
@@ -96,11 +97,11 @@ public class AttractionData extends AbstractIdentifiable {
 		this.attractionPoint = attractionPoint;
 	}
 
-	public NavigationNode getNodeID() {
+	public TrafficNode getNodeID() {
 		return nodeID;
 	}
 
-	public void setNodeID(NavigationNode nodeID) {
+	public void setNodeID(TrafficNode nodeID) {
 		this.nodeID = nodeID;
 	}
 

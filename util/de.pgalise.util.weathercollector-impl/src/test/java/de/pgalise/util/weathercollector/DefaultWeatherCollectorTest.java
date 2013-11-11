@@ -90,24 +90,8 @@ public class DefaultWeatherCollectorTest {
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
-			new Coordinate(1,
-			1),
-			new Coordinate(1,
-			2),
-			new Coordinate(2,
-			2),
-			new Coordinate(2,
-			1),
-			new Coordinate(1,
-			1)
-		});
-		City city = new DefaultCity("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
+		
+		City city = TestUtils.createDefaultTestCityInstance();
 		entityManager.persist(city);
 //		CONTAINER.getContext().unbind("inject");
 //		baseDatabaseManager = lookupJTADatabaseManagerBean();
@@ -127,24 +111,7 @@ public class DefaultWeatherCollectorTest {
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
-			new Coordinate(1,
-			1),
-			new Coordinate(1,
-			2),
-			new Coordinate(2,
-			2),
-			new Coordinate(2,
-			1),
-			new Coordinate(1,
-			1)
-		});
-		City city = new DefaultCity("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
+		City city = TestUtils.createDefaultTestCityInstance();
 		entityManager.persist(city);
 		userTransaction.commit();
 		weatherCollector.collectStationData(baseDatabaseManager, new HashSet<>(Arrays.asList(stationStrategy)));

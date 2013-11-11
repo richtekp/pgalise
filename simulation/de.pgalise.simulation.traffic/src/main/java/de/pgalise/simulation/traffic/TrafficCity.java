@@ -5,27 +5,26 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import javax.persistence.OneToOne;
 
 /**
  *
  * @param <D> 
- * @param <N> 
- * @param <E> 
- * @param <V> 
- * @param <G> 
  * @author richter
  */
-public interface  TrafficCity<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>,
-	G extends TrafficGraph<N,E,D,V>
-> extends City {
-	
-	G getTrafficGraph();
-	
-	void setTrafficGraph(G graph);
+public class TrafficCity<D extends VehicleData> extends City  {
+	private static final long serialVersionUID = 1L;
+
+	@OneToOne
+	private TrafficGraph graph;
+
+	public void setTrafficGraph(TrafficGraph graph) {
+		this.graph = graph;
+	}
+
+	public TrafficGraph getTrafficGraph() {
+		return graph;
+	}
 }

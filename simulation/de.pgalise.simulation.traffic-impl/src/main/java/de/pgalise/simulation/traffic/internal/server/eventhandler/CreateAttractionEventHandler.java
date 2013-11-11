@@ -24,7 +24,7 @@ import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
+import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
@@ -34,7 +34,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas
  * @version 1.0
  */
-public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandler<AttractionTrafficEvent<?>> {
+public class CreateAttractionEventHandler<D extends VehicleData> extends CreateRandomVehicleEventHandler<D,AttractionTrafficEvent<D>> {
 	/**
 	 * Logger
 	 */
@@ -57,7 +57,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 	}
 
 	@Override
-	public void handleEvent(AttractionTrafficEvent<?> event) {
+	public void handleEvent(AttractionTrafficEvent<D> event) {
 		log.info("Processing ATTRACTION_TRAFFIC_EVENT: Vehicles=" + event.getCreateRandomVehicleDataList().size()
 				+ " ; Target=" + event.getNodeID());
 
@@ -76,7 +76,7 @@ public class CreateAttractionEventHandler extends CreateRandomVehicleEventHandle
 					false);
 
 			// Create vehicle
-			BaseVehicle<D> v = this.createVehicle(data, trip);
+			Vehicle<?> v = this.createVehicle(data, trip);
 
 			if (v == null) {
 				continue;

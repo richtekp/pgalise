@@ -19,6 +19,7 @@ package de.pgalise.simulation.weather.internal.service;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.it.TestUtils;
+import de.pgalise.simulation.shared.city.City;
 import java.sql.Time;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -30,7 +31,6 @@ import javax.ejb.embeddable.EJBContainer;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import de.pgalise.simulation.traffic.internal.DefaultCity;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
@@ -92,7 +92,7 @@ public class DefaultWeatherServiceTest  {
 	 */
 	private WeatherLoader<DefaultWeatherCondition> loader;
 
-	private DefaultCity city;
+	private City city;
 	
 	@Resource
 	private UserTransaction utx;
@@ -106,23 +106,7 @@ public class DefaultWeatherServiceTest  {
 //		utx = (UserTransaction) initialContext.lookup(
 //			"java:comp/UserTransaction");
 		
-		
-		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1),
-				new Coordinate(referencePoint.x-1, referencePoint.y-1)
-			}
-		);
-		city = new DefaultCity("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			referenceArea);
+		city = TestUtils.createDefaultTestCityInstance();
 		
 		// Load EJB for Weather loader
 		loader = new DatabaseWeatherLoader(ENTITY_MANAGER_FACTORY.createEntityManager());

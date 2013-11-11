@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.server.route;
 
+import de.pgalise.simulation.shared.city.LanduseTag;
 import de.pgalise.simulation.shared.city.LanduseTagEnum;
 import de.pgalise.simulation.shared.city.WayTagEnum;
 import java.awt.Polygon;
@@ -26,15 +27,15 @@ import java.util.Set;
  * @author Timo
  */
 public class EnrichedPolygon {
-	private Set<LanduseTagEnum> landuse;
+	private Set<LanduseTag> landuse;
 	private Polygon polygon;
 
-	public EnrichedPolygon(Polygon p, Set<LanduseTagEnum> l) {
+	public EnrichedPolygon(Polygon p, Set<LanduseTag> l) {
 		this.polygon = p;
 		this.landuse = l;
 	}
 
-	public Set<LanduseTagEnum> getLanduse() {
+	public Set<LanduseTag> getLanduse() {
 		return this.landuse;
 	}
 
@@ -42,7 +43,7 @@ public class EnrichedPolygon {
 		return this.polygon;
 	}
 
-	public void setLanduse(Set<LanduseTagEnum> landuse) {
+	public void setLanduse(Set<LanduseTag> landuse) {
 		this.landuse = landuse;
 	}
 

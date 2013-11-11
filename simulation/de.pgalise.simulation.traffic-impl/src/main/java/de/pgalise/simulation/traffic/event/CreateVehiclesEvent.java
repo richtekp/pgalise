@@ -24,6 +24,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * Creates vehicles with given path.
@@ -45,7 +46,7 @@ public class CreateVehiclesEvent<D extends VehicleData> extends AbstractVehicleE
 	private List<CreateRandomVehicleData> vehicles;
 
 	public CreateVehiclesEvent(
-		DefaultTrafficServer<D> server,
+		TrafficServerLocal<VehicleEvent> server,
 		long simulationTime,
 		long elapsedTime,
 		List<CreateRandomVehicleData> vehicles) {

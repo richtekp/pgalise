@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.io.Serializable;
 
 /**
@@ -37,7 +38,7 @@ public class SensorData implements Serializable {
 	/**
 	 * ID of the sensor
 	 */
-	private int id;
+	private Sensor id;
 
 	/**
 	 * Constructor
@@ -47,7 +48,7 @@ public class SensorData implements Serializable {
 	 * @param sensorID
 	 *            ID of the sensor
 	 */
-	public SensorData(int sensorType, int sensorID) {
+	public SensorData(int sensorType, Sensor sensorID) {
 		this.type = sensorType;
 		this.id = sensorID;
 	}
@@ -60,11 +61,11 @@ public class SensorData implements Serializable {
 		this.type = type;
 	}
 
-	public int getId() {
+	public Sensor getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Sensor id) {
 		this.id = id;
 	}
 
@@ -72,7 +73,7 @@ public class SensorData implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + id;
+		result = prime * result + id.hashCode();
 		result = prime * result + type;
 		return result;
 	}

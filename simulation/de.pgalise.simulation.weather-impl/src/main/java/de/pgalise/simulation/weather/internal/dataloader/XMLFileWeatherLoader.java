@@ -85,7 +85,7 @@ public class XMLFileWeatherLoader implements WeatherLoader<DefaultWeatherConditi
 	@Override
 	public boolean checkStationDataForDay(long timestamp) {
 		File file = new File(this.getFilePath(timestamp));
-		return (file.exists()) ? true : false;
+		return (file.exists());
 	}
 
 	/**

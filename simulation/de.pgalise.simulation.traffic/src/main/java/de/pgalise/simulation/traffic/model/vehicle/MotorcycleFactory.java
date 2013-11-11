@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
  * @author Andreas
  * @version 1.0
  */
-public interface MotorcycleFactory<N extends TrafficNode<N,E,MotorcycleData,V>, E extends TrafficEdge<N,E, MotorcycleData,V>, V extends Vehicle<MotorcycleData, N,E,V>> {
+public interface MotorcycleFactory {
 
 	/**
 	 * Method to create a {@link Motorcycle} with the given typeId.
@@ -41,7 +41,7 @@ public interface MotorcycleFactory<N extends TrafficNode<N,E,MotorcycleData,V>, 
 	 *            Color of the {@link Motorcycle}
 	 * @return created {@link Motorcycle}
 	 */
-	public V createMotorcycle( Color color, SensorHelper gpsSensor);
+	public Vehicle<MotorcycleData> createMotorcycle( Color color, SensorHelper gpsSensor);
 
 	/**
 	 * Method to create a random {@link Motorcycle}.
@@ -50,5 +50,5 @@ public interface MotorcycleFactory<N extends TrafficNode<N,E,MotorcycleData,V>, 
 	 *            ID of the {@link Motorcycle}
 	 * @return created {@link Motorcycle}
 	 */
-	public V  createRandomMotorcycle( SensorHelper gpsSensor);
+	public Vehicle<MotorcycleData>  createRandomMotorcycle( SensorHelper gpsSensor);
 }

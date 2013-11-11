@@ -31,10 +31,10 @@ import org.junit.Test;
 
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
-import de.pgalise.simulation.traffic.internal.DefaultBuilding;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Building;
 
 /**
  * Tests the synchronization of the {@link EnergyConsumptionManager}
@@ -75,11 +75,11 @@ public class EnergyConsumptionManagerSyncTest {
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		Map<EnergyProfileEnum, List<DefaultBuilding>> map = new HashMap<>();
-		List<DefaultBuilding> buildingList = new ArrayList<>();
+		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
+		List<Building> buildingList = new ArrayList<>();
 
 		for (int i = 0; i < 100; i++) {
-			buildingList.add(new DefaultBuilding(new Coordinate(), new Coordinate(), new Coordinate(53.136765, 8.216524)));
+			buildingList.add(new Building(new Coordinate(53.136765, 8.216524), null));
 		}
 
 		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);

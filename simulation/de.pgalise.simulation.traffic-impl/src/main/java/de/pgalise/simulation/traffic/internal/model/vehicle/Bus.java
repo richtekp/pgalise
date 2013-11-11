@@ -13,6 +13,7 @@ import de.pgalise.simulation.traffic.model.vehicle.BusData;
  * @author richter
  */
 public class Bus extends BaseVehicle<BusData> {
+	private static final long serialVersionUID = 1L;
 
 	protected Bus() {
 	}

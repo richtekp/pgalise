@@ -30,12 +30,12 @@ import javax.vecmath.Vector2d;
 /**
  * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).
  * 
- * @param <E> 
+ * @param <TrafficEdge> 
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 12, 2012)
  */
-public interface Vehicle<E extends VehicleData> extends Identifiable {
+public interface Vehicle<D extends VehicleData> extends Identifiable {
 
 	/**
 	 * @return the hasGPS
@@ -64,27 +64,27 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	/**
 	 * @return the currentNode
 	 */
-	public N getCurrentNode();
+	public TrafficNode getCurrentNode();
 
 	/**
 	 * @param currentNode
 	 *            the currentNode to set
 	 */
-	public void setCurrentNode(N currentNode);
+	public void setCurrentNode(TrafficNode currentNode);
 
 	/**
 	 * @return the nextNode
 	 */
-	public N getNextNode();
+	public TrafficNode getNextNode();
 
-	public N getPreviousNode();
+	public TrafficNode getPreviousNode();
 
 	/**
 	 * @return the path
 	 */
-	public List<E> getPath();
+	public List<TrafficEdge> getPath();
 	
-	public List<N> getNodePath();
+	public List<TrafficNode> getNodePath();
 
 	/**
 	 * Sets the path of this vehicle. Simultaneously the currentNode and nextNode property will be set to the first and
@@ -93,7 +93,7 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param path
 	 *            the path to set
 	 */
-	public void setPath(List<E> path);
+	public void setPath(List<TrafficEdge> path);
 
 	/**
 	 * @return the position
@@ -166,7 +166,7 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * 
 	 * @return current edge
 	 */
-	public E getCurrentEdge();
+	public TrafficEdge getCurrentEdge();
 
 	/**
 	 * Sets the current edge.
@@ -174,21 +174,21 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * 
 	 * @param edge 
 	 */
-	public void setCurrentEdge(E edge);
+	public void setCurrentEdge(TrafficEdge edge);
 
 	/**
 	 * Returns the next edge.
 	 * 
 	 * @return edge after the current edge
 	 */
-	public E getNextEdge();
+	public TrafficEdge getNextEdge();
 
 	/**
 	 * Return the previous edge.
 	 * 
 	 * @return edge before the current edge
 	 */
-	public E getPreviousEdge();
+	public TrafficEdge getPreviousEdge();
 
 	/**
 	 * Returns the vehicle data
@@ -214,6 +214,6 @@ public interface Vehicle<E extends VehicleData> extends Identifiable {
 	 * @param node
 	 * @return index of the passed node in the path otherwise -1
 	 */
-	public int getIndex(N node);
+	public int getIndex(TrafficNode node);
 
 }

@@ -32,6 +32,8 @@ import de.pgalise.simulation.operationCenter.internal.message.SensorDataMessage;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.IntervalSendSensorDataStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import org.easymock.EasyMock;
 
 /**
  * J-Unit tests for {@link IntervalSendSensorDataStrategy}
@@ -135,9 +137,10 @@ public class IntervalSendSensorDataStrategyTest {
 
 		/* First interval: */
 		long timestampFirstInterval = IntervalSendSensorDataStrategyTest.START_TIMESTAMP;
-		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampFirstInterval, new SensorData(0, 1));
-		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampFirstInterval, new SensorData(0, 2));
-		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampFirstInterval, new SensorData(0, 3));
+		Sensor sensor = EasyMock.createNiceMock(Sensor.class);
+		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampFirstInterval, new SensorData(0, sensor));
+		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampFirstInterval, new SensorData(0, sensor));
+		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampFirstInterval, new SensorData(0, sensor));
 
 		/* Strategy doesn't know that the first interval is over: */
 		Assert.assertEquals(IntervalSendSensorDataStrategyTest.OC_WEBSOCKET_SERVICE_MOCK.getIntervalCounter(), 0);
@@ -145,20 +148,20 @@ public class IntervalSendSensorDataStrategyTest {
 		/* Second interval: */
 		long timestampSecondInterval = IntervalSendSensorDataStrategyTest.START_TIMESTAMP
 				+ IntervalSendSensorDataStrategyTest.INTERVAL;
-		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampSecondInterval, new SensorData(0, 1));
+		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampSecondInterval, new SensorData(0, sensor));
 
 		/* Now the strategy should know that the first interval is over: */
 		Assert.assertEquals(IntervalSendSensorDataStrategyTest.OC_WEBSOCKET_SERVICE_MOCK.getIntervalCounter(), 1);
 
-		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampSecondInterval, new SensorData(0, 2));
-		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampSecondInterval, new SensorData(0, 3));
+		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampSecondInterval, new SensorData(0, sensor));
+		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(timestampSecondInterval, new SensorData(0, sensor));
 
 		/* Strategy doesn't know that the first interval is over: */
 		Assert.assertEquals(IntervalSendSensorDataStrategyTest.OC_WEBSOCKET_SERVICE_MOCK.getIntervalCounter(), 1);
 
 		/* Last interval: */
 		IntervalSendSensorDataStrategyTest.TEST_CLASS.addSensorData(IntervalSendSensorDataStrategyTest.END_TIMESTAMP,
-				new SensorData(0, 1));
+				new SensorData(0, sensor));
 
 		/*
 		 * Now the strategy should know that the second interval is over AND it must send every single sensor data,

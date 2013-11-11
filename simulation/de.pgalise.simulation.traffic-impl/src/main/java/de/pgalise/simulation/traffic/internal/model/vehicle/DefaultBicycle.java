@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -62,7 +62,7 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> {
 	}
 
 	@Override
-	protected void passedNode(DefaultTrafficNode node) {
+	protected void passedNode(TrafficNode node) {
 		if (this.getPreviousEdge() != null) {
 			log.debug("Unregistering bycicle " + this.getName() + " from edge: " + this.getPreviousEdge().getId());
 			this.getTrafficGraphExtensions().unregisterFromEdge(this.getPreviousEdge(), this.getPreviousNode(),
@@ -79,7 +79,7 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> {
 	}
 
 	@Override
-	protected void postUpdate(DefaultTrafficNode node) {
+	protected void postUpdate(TrafficNode node) {
 	}
 
 	@Override

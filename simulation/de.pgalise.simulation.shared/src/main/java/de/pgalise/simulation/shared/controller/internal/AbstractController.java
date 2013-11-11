@@ -165,7 +165,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	 * @see Controller#init(InitParameter)
 	 * @throws InitializationException
 	 */
-	protected abstract void onInit(InitParameter param) throws InitializationException;
+	protected abstract void onInit(I param) throws InitializationException;
 
 	/**
 	 * Implementation specific method. Will be automatically called when resetting this controller.

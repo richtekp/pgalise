@@ -22,6 +22,7 @@ import java.util.List;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficTrip;
 
 /**
@@ -38,21 +39,21 @@ public interface RandomVehicleTripGenerator {
 	 *            Vehicle type
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(List<NavigationNode> startHomeNodes, List<NavigationNode> startWorkNodes, VehicleTypeEnum vehicleType, Date date, int buffer);
+	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes, List<TrafficNode> startWorkNodes, VehicleTypeEnum vehicleType, Date date, int buffer);
 
-	public List<NavigationNode> getHomeNodes();
+	public List<TrafficNode> getHomeNodes();
 
 	public RandomSeedService getRandomSeedService();
 
-	public List<NavigationNode> getWorkNodes();
+	public List<TrafficNode> getWorkNodes();
 
 	public void init();
 
-	public void setHomeNodes(List<NavigationNode> homeNodes);
+	public void setHomeNodes(List<TrafficNode> homeNodes);
 
 	public void setRandomSeedService(RandomSeedService randomSeedService);
 
-	public void setWorkNodes(List<NavigationNode> workNodes);
+	public void setWorkNodes(List<TrafficNode> workNodes);
 
 	/**
 	 * Create a traffic trip with given target node ID and time
@@ -65,7 +66,7 @@ public interface RandomVehicleTripGenerator {
 	 *            startTimeWayThere
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(List<NavigationNode> startHomeNodes, NavigationNode targetNode, long startTimestamp);
+	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes, TrafficNode targetNode, long startTimestamp);
 
 	/**
 	 * Create a traffic trip with given start node ID and time
@@ -78,5 +79,5 @@ public interface RandomVehicleTripGenerator {
 	 *            startTimeWayThere
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(NavigationNode startNode, List<NavigationNode> homeNodes, long startTimestamp);
+	public TrafficTrip createVehicleTrip(TrafficNode startNode, List<TrafficNode> homeNodes, long startTimestamp);
 }

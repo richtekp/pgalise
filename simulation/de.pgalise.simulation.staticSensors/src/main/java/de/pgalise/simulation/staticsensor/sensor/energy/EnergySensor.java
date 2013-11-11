@@ -19,6 +19,7 @@ package de.pgalise.simulation.staticsensor.sensor.energy;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
@@ -31,7 +32,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @author Marcus
  * @version 1.0
  */
-public abstract class EnergySensor extends Sensor<EnergyEvent> {
+public abstract class EnergySensor extends AbstractSensor<EnergyEvent> {
 
 	/**
 	 * The energy controller used by the energy sensor.

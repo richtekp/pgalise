@@ -25,27 +25,21 @@ import java.util.Map;
  * @param <F> 
  * @author richter
  */
-public interface VehicleEvent<
-	D extends VehicleData, 
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>, 
-	F extends TrafficEvent<N,E,D,V,F>
-> {
+public interface VehicleEvent extends TrafficEvent<VehicleEvent> {
 	
-	V getVehicle()  ;
+	Vehicle<?> getVehicle()  ;
 
 	ServiceDictionary getServiceDictionary() ;
 
 	/**
 	 * @return shallow copy of currently driving vehicles
 	 */
-	Scheduler<D, N, E, V, ScheduleItem<D, N, E, V>> getDrivingVehicles() ;
+	Scheduler getDrivingVehicles() ;
 
-	TrafficGraph<N,E,D,V> getGraph()  ;
+	TrafficGraph getGraph()  ;
 
-	TrafficGraphExtensions<N, E, D, V> getTrafficGraphExtensions()  ;
+	TrafficGraphExtensions getTrafficGraphExtensions()  ;
 	
-	Map<Long, F> getEventForVehicleMap()  ;
+	Map<Long, VehicleEvent> getEventForVehicleMap()  ;
 	
 }

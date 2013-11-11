@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.traffic;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -17,12 +18,24 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * @param <F> 
  * @author richter
  */
-public interface OSMNavigationNode<
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	D extends VehicleData, 
-	V extends Vehicle<D, N,E,V>
-> extends TrafficNode<N,E,D,V> {
+public class OSMNavigationNode extends TrafficNode {
+	private static final long serialVersionUID = 1L;
+	private String OSMId;
+
+	protected OSMNavigationNode() {
+	}
+
+	public OSMNavigationNode(String OSMId,
+		Coordinate geoLocation) {
+		super(geoLocation);
+		this.OSMId = OSMId;
+	}
+
+	public void setOSMId(String OSMId) {
+		this.OSMId = OSMId;
+	}
 	
-	String getOSMId();
+	public String getOSMId() {
+		return OSMId;
+	}
 }

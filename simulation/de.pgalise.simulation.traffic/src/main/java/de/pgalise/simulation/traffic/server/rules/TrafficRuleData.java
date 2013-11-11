@@ -6,10 +6,14 @@ package de.pgalise.simulation.traffic.server.rules;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.city.NavigationEdge;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 /**
  * Class that records all relevant data for a traffic rule 'transaction'
@@ -20,18 +24,39 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @param <V> 
  * @author Marcus
  */
-public interface TrafficRuleData<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>> {
+@Entity
+public class TrafficRuleData extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
+	private VehicleData vehicleData;
+	@ManyToOne
+	private TrafficEdge from;
+	@ManyToOne
+	private TrafficEdge to;
+	@Transient
+	//@TODO: how to persist callbacks??
+	private TrafficRuleCallback trafficRuleCallback;
+
+	protected TrafficRuleData() {
+	}
+
+	public TrafficRuleData(VehicleData vehicleData,
+		TrafficEdge from,
+		TrafficEdge to,
+		TrafficRuleCallback trafficRuleCallback) {
+		this.vehicleData = vehicleData;
+		this.from = from;
+		this.to = to;
+		this.trafficRuleCallback = trafficRuleCallback;
+	}
 
 	/**
 	 * Returns the considered {@link Vehicle}.
 	 *
 	 * @return the considered {@link Vehicle}
 	 */
-	public V getVehicle();
+	public VehicleData getVehicleData() {
+		return vehicleData;
+	}
 
 	/**
 	 * Returns the {@link Edge} where the considered {@link Vehicle} is
@@ -40,7 +65,9 @@ public interface TrafficRuleData<
 	 * @return the {@link Edge} where the considered {@link Vehicle} is
 	 *         coming from
 	 */
-	public E getFrom();
+	public TrafficEdge getFrom() {
+		return from;
+	}
 
 	/**
 	 * Returns the {@link Edge} to which the considered {@link Vehicle} is
@@ -49,7 +76,9 @@ public interface TrafficRuleData<
 	 * @return the {@link Edge} to which the considered {@link Vehicle} is
 	 *         planning to go
 	 */
-	public E getTo() ;
+	public TrafficEdge getTo(){
+		return to;
+	}
 
 	/**
 	 * Returns the {@link TrafficRuleCallback} which method are invoked on
@@ -58,6 +87,8 @@ public interface TrafficRuleData<
 	 * @return the {@link TrafficRuleCallback} which method are invoked on
 	 *         certain events
 	 */
-	public TrafficRuleCallback getCallback() ;
+	public TrafficRuleCallback getCallback() {
+		return trafficRuleCallback;
+	}
 	
 }

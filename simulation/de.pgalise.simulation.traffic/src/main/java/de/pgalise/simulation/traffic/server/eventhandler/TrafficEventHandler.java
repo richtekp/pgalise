@@ -37,11 +37,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
  * @version 1.0 (Mar 21, 2013)
  */
 public interface TrafficEventHandler<
-	F extends TrafficEvent<N,E,D,V,F>, 
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	D extends VehicleData, 
-	V extends Vehicle<D,N,E,V>
+	F extends TrafficEvent
 > extends EventHandler<F> {
 
 	/**
@@ -50,7 +46,7 @@ public interface TrafficEventHandler<
 	 * @param server
 	 *            Corresponding {@link TrafficServer}
 	 */
-	void init(TrafficServerLocal<F,N,E,D,V>  server);
+	void init(TrafficServerLocal<F>  server);
 	
-	TrafficServerLocal<F,N,E,D,V>  getResponsibleServer();
+	TrafficServerLocal<F>  getResponsibleServer();
 }

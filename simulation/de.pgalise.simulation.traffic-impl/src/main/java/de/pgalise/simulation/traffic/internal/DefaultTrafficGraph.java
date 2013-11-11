@@ -5,6 +5,8 @@
 package de.pgalise.simulation.traffic.internal;
 
 
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
@@ -33,13 +35,13 @@ import org.jgrapht.graph.DefaultDirectedGraph;
  * - it's a lot of work to implement listening to boundary changes because every add and remove operation to the graph has to be listened to and almost every method has to be extended (edge and vertex sets are backed up by the graph). Therefore boundaries are always calculated and not updated at every add or remove operation.
  * - this is not an Entity for both practical and data redundancy reasons (Graph doesn't have a default constructor) (information is completely managed by nodes and edges), but it's an Identifiable nevertheless
  */
-public class DefaultTrafficGraph<D extends VehicleData> extends DefaultDirectedGraph<DefaultTrafficNode<D>, DefaultTrafficEdge<D>> implements TrafficGraph<DefaultTrafficNode<D>, DefaultTrafficEdge<D>,D, BaseVehicle<D>> {
+public class DefaultTrafficGraph extends TrafficGraph {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
 
 	public DefaultTrafficGraph() {
-		super(new NavigationEdgeFactory<>(DefaultTrafficEdge.class));
+		super(new NavigationEdgeFactory<>(TrafficEdge.class));
 	}
 	
 	/**
@@ -55,9 +57,9 @@ public class DefaultTrafficGraph<D extends VehicleData> extends DefaultDirectedG
 	@Override
 	public Identifiable getElementClosestTo(Coordinate position, double distanceTolerance) {
 		//@TODO: remove brute force search
-		DefaultTrafficNode<D> minDistanceNode = null;
+		TrafficNode minDistanceNode = null;
 		double minDistance = Double.MAX_VALUE;
-		for(DefaultTrafficNode<D> node : this.vertexSet()) {
+		for(TrafficNode node : this.vertexSet()) {
 			double distance = node.getGeoLocation().distance(position);
 			if(distance <= distanceTolerance && distance < minDistance) {
 				minDistanceNode = node;
@@ -67,8 +69,8 @@ public class DefaultTrafficGraph<D extends VehicleData> extends DefaultDirectedG
 			return minDistanceNode;
 		}
 		minDistance = Double.MAX_VALUE;
-		DefaultTrafficEdge<D> minDistanceEdge = null;
-		for(DefaultTrafficEdge<D> edge : this.edgeSet()) {
+		TrafficEdge minDistanceEdge = null;
+		for(TrafficEdge edge : this.edgeSet()) {
 			Coordinate node0Position = edge.getSource().getGeoLocation();
 			Coordinate node1Position = edge.getTarget().getGeoLocation();
 			Coordinate node0Coordinates = new Coordinate(node0Position.x, node0Position.y);
@@ -83,17 +85,17 @@ public class DefaultTrafficGraph<D extends VehicleData> extends DefaultDirectedG
 	}
 	
 	@Override
-	public DefaultTrafficNode<D> getNodeClosestTo(Coordinate position) {
+	public TrafficNode getNodeClosestTo(Coordinate position) {
 		return getNodeClosestTo(position,
 			Integer.MAX_VALUE);
 	}
 	
 	@Override
-	public DefaultTrafficNode<D> getNodeClosestTo(Coordinate position, int distanceTolerance) {
+	public TrafficNode getNodeClosestTo(Coordinate position, int distanceTolerance) {
 		
-		DefaultTrafficNode<D> minDistanceNode = null;
+		TrafficNode minDistanceNode = null;
 		double minDistance = Double.MAX_VALUE;
-		for(DefaultTrafficNode<D> node : this.vertexSet()) {
+		for(TrafficNode node : this.vertexSet()) {
 			double distance = node.getGeoLocation().distance(position);
 			if(distance <= distanceTolerance && distance < minDistance) {
 				minDistanceNode = node;
@@ -113,20 +115,20 @@ public class DefaultTrafficGraph<D extends VehicleData> extends DefaultDirectedG
 	}
 
 	@OneToMany
-	public Set<DefaultTrafficEdge<D>> getEdgeSet() {
+	public Set<TrafficEdge> getEdgeSet() {
 		return super.edgeSet(); 
 	}
 	
-	public void setEdgeSet(Set<DefaultTrafficEdge<D>> edgeSet) {
+	public void setEdgeSet(Set<TrafficEdge> edgeSet) {
 		super.edgeSet().addAll(edgeSet);
 	}
 
 	@OneToMany
-	public Set<DefaultTrafficNode<D>> getVertexSet() {
+	public Set<TrafficNode> getVertexSet() {
 		return super.vertexSet(); 
 	}
 	
-	public void setVertexSet(Set<DefaultTrafficNode<D>> vertexSet) {
+	public void setVertexSet(Set<TrafficNode> vertexSet) {
 		super.vertexSet().addAll(vertexSet);
 	}
 
@@ -139,7 +141,7 @@ public class DefaultTrafficGraph<D extends VehicleData> extends DefaultDirectedG
 		throw new UnsupportedOperationException();
 	}
 	
-	private static class NavigationEdgeFactory<Y extends DefaultTrafficNode<Z>, X extends DefaultTrafficEdge<Z>, Z extends VehicleData> implements EdgeFactory<Y, X> {
+	private static class NavigationEdgeFactory<Y extends TrafficNode, X extends TrafficEdge, D extends VehicleData> implements EdgeFactory<Y, X> {
 		private Class<X> edgeClass;
 
 		NavigationEdgeFactory(Class<X> edgeClass) {

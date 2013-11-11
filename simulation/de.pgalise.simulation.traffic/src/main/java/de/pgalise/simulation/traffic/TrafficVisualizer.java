@@ -33,11 +33,11 @@ import de.pgalise.util.graph.GraphVisualizer;
  * @param <V> 
  * @author Marina, Mustafa
  */
-public interface TrafficVisualizer<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D,N,E,V>> extends GraphVisualizer<TrafficGraph<N,E,D,V>,N,E> {
+public interface TrafficVisualizer extends GraphVisualizer<TrafficGraph> {
 
-	public void setVehicles(List<V> vehicles);
+	public void setVehicles(List<Vehicle<?>> vehicles);
 
-	public List<V> getVehicles();
+	public List<Vehicle<?>> getVehicles();
 
 	/**
 	 * The window of this TrafficVisualizer has to run in the main thread. To provide flowing animations you have to

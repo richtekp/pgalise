@@ -31,7 +31,8 @@ import org.jfree.data.time.TimeSeries;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
@@ -130,16 +131,7 @@ public abstract class AbstractChartTest {
 		Context ctx = container.getContext();
 
 		// City
-		Coordinate referencePoint = new Coordinate(20, 20);
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1)
-			}
-		);
-		DefaultCity city = new DefaultCity("test_city", 200000, 100, true, true, referenceArea);
+		City city = TestUtils.createDefaultTestCityInstance();
 
 		// Load EJB for Weather loader
 		this.loader = (WeatherLoader<DefaultWeatherCondition>) ctx

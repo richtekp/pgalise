@@ -26,7 +26,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 
 /**
  * All parameters to start the simulation. This is an extra version only for the control center,

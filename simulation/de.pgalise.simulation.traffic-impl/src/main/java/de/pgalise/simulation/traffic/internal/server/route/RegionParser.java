@@ -26,10 +26,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.LanduseTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.TrafficWay;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.route.EnrichedPolygon;
 import java.util.Set;
@@ -52,32 +55,32 @@ public class RegionParser<D extends VehicleData> {
 		}
 	}
 
-	private List<DefaultTrafficNode<D>> homeNodes = new ArrayList<>();
+	private List<TrafficNode> homeNodes = new ArrayList<>();
 
-	private CityInfrastructureData trafficInformation;
+	private TrafficInfrastructureData trafficInformation;
 
-	private List<DefaultTrafficNode<D>> workNodes = new ArrayList<>();
+	private List<TrafficNode> workNodes = new ArrayList<>();
 
 	/**
 	 * Constructor
 	 * 
 	 * @param trafficInformation
 	 */
-	public RegionParser(CityInfrastructureData trafficInformation) {
+	public RegionParser(TrafficInfrastructureData trafficInformation) {
 		this.trafficInformation = trafficInformation;
 	}
 
-	public List<DefaultTrafficNode<D>> getHomeNodes() {
+	public List<TrafficNode> getHomeNodes() {
 		return this.homeNodes;
 	}
 
-	public List<DefaultTrafficNode<D>> getWorkNodes() {
+	public List<TrafficNode> getWorkNodes() {
 		return this.workNodes;
 	}
 
 	public void parseLanduse(TrafficGraph graph) {
 		List<EnrichedPolygon> polygons = new ArrayList<>();
-		List<Way<?, ?>> ways = this.trafficInformation.getMotorWays();
+		List<TrafficWay> ways = this.trafficInformation.getMotorWays();
 		List<Way<?,?>> landuses = this.trafficInformation.getLandUseWays();
 
 		for (Way<?,?> landuse : landuses) {
@@ -96,13 +99,13 @@ public class RegionParser<D extends VehicleData> {
 			polygons.add(new EnrichedPolygon(new Polygon(xpoints, ypoints, npoints), landuse.getLanduseTags()));
 		}
 
-		for (Way<?,?> way : ways) {
-			for (DefaultTrafficNode<?> node : way.getNodeList()) {
+		for (TrafficWay way : ways) {
+			for (TrafficNode node : way.getNodeList()) {
 				for (EnrichedPolygon p : polygons) {
 					if (p.getPolygon().contains((int) (node.getGeoLocation().x* 10000000),
 							(int) (node.getGeoLocation().y* 10000000))) {
-						Set<LanduseTagEnum> landuse = p.getLanduse();
-						node.getTags().put(CityNodeTagCategoryEnum.landuse, landuse);
+						Set<LanduseTag> landuse = p.getLanduse();
+						node.getLanduseTags().addAll(landuse);
 
 						if (landuse.contains(LanduseTagEnum.RESIDENTIAL)) {
 							this.homeNodes.add(node);
@@ -121,11 +124,11 @@ public class RegionParser<D extends VehicleData> {
 		log.info("Found #WorkNodes: " + this.workNodes.size());
 	}
 
-	public void setHomeNodes(List<DefaultTrafficNode<D>> homeNodes) {
+	public void setHomeNodes(List<TrafficNode> homeNodes) {
 		this.homeNodes = homeNodes;
 	}
 
-	public void setWorkNodes(List<DefaultTrafficNode<D>> workNodes) {
+	public void setWorkNodes(List<TrafficNode> workNodes) {
 		this.workNodes = workNodes;
 	}
 }

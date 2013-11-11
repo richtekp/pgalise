@@ -23,6 +23,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLMotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
@@ -54,14 +56,15 @@ public class XMLMotorcycleFactoryTest {
 		 * Test case
 		 */
 
+		TrafficGraph graph = new DefaultTrafficGraph();
 		MotorcycleFactory factory = new XMLMotorcycleFactory(random,
 				XMLMotorcycleFactoryTest.class.getResourceAsStream(FILEPATH),
-				new DefaultTrafficGraphExtensions(random));
+				new DefaultTrafficGraphExtensions(random, graph));
 
 		Vehicle<MotorcycleData> vehicle1 = factory.createRandomMotorcycle( null);
 		Assert.assertNotNull(vehicle1);
 
-		Vehicle<MotorcycleData> vehicle2 = factory.createMotorcycle( "motorcycle001", Color.GRAY, null);
+		Vehicle<MotorcycleData> vehicle2 = factory.createMotorcycle( Color.GRAY, null);
 		Assert.assertNotNull(vehicle2);
 		Assert.assertEquals(Color.GRAY, vehicle2.getData().getColor());
 	}

@@ -20,7 +20,10 @@ import java.util.Set;
  * @param <V> 
  * @author richter
  */
-public interface SelfManagingTrafficEdge<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D,N,E,V>> extends TrafficEdge<N,E,D,V> {
+public abstract class SelfManagingTrafficEdge extends TrafficEdge {
+
+	protected SelfManagingTrafficEdge() {
+	}
 	
 	/**
 	 * both indicates whether there's possibilty (i.e. space) to take a vehicle on
@@ -31,7 +34,7 @@ public interface SelfManagingTrafficEdge<N extends TrafficNode<N,E,D,V>, E exten
 	 * @param timestamp 
 	 * @return
 	 */
-	boolean takeVehicle(V vehicle, long timestamp);
+	public abstract boolean takeVehicle(Vehicle vehicle, long timestamp);
 
 	/**
 	 * retrieves vehicles which left the edge on the last simulation step. This is
@@ -40,7 +43,7 @@ public interface SelfManagingTrafficEdge<N extends TrafficNode<N,E,D,V>, E exten
 	 *
 	 * @return
 	 */
-	Set<V> getLeavingVehicles();
+	public abstract Set<Vehicle> getLeavingVehicles();
 	
 	/**
 	 * updates all {@link Vehicle}s on this edge to be in the situation which has 
@@ -48,6 +51,6 @@ public interface SelfManagingTrafficEdge<N extends TrafficNode<N,E,D,V>, E exten
 	 * @param timestamp
 	 * @return a <tt>List</tt> of passed {@link NavigationEdge}s 
 	 */
-	Map<V, List<E>> updateVehicles(long timestamp);
+	public abstract Map<Vehicle, List<TrafficEdge>> updateVehicles(long timestamp);
 	
 }

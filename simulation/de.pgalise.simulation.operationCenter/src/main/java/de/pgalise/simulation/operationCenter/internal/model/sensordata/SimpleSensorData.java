@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
 
 /**
@@ -35,7 +36,7 @@ public class SimpleSensorData extends SensorData {
 	 * @param sensorValue
 	 * 			the measured value
 	 */
-	public SimpleSensorData(int sensorType, int sensorID, double sensorValue) {
+	public SimpleSensorData(int sensorType, Sensor sensorID, double sensorValue) {
 		super(sensorType, sensorID);
 		this.value = sensorValue;
 	}

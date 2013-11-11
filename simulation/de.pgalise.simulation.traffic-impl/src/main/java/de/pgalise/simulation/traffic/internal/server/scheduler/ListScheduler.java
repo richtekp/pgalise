@@ -26,6 +26,8 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
@@ -34,16 +36,16 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
  * @author Mustafa
  * @version 1.0 (Nov 8, 2012)
  */
-public class ListScheduler extends Scheduler {
+public class ListScheduler extends BaseScheduler {
 	/**
 	 * Items of the scheduler
 	 */
-	private List<DefaultScheduleItem> scheduledItems;
+	private List<ScheduleItem> scheduledItems;
 
 	/**
 	 * List of vehicles
 	 */
-	private List<DefaultScheduleItem> vehicles;
+	private List<ScheduleItem> vehicles;
 
 	/**
 	 * List of handler
@@ -69,10 +71,10 @@ public class ListScheduler extends Scheduler {
 	}
 
 	@Override
-	protected void onScheduleItem(DefaultScheduleItem item) {
+	public void onScheduleItem(ScheduleItem item) {
 		int index = 0;
-		for (Iterator<DefaultScheduleItem> it = this.scheduledItems.iterator(); it.hasNext();) {
-			DefaultScheduleItem a = it.next();
+		for (Iterator<ScheduleItem> it = this.scheduledItems.iterator(); it.hasNext();) {
+			ScheduleItem a = it.next();
 			if (item.getDepartureTime() >= a.getDepartureTime()) {
 				index = this.scheduledItems.indexOf(a) + 1;
 			}
@@ -85,9 +87,9 @@ public class ListScheduler extends Scheduler {
 	}
 
 	@Override
-	public List<DefaultScheduleItem> getExpiredItems(long currentTime) {
-		List<DefaultScheduleItem> list = new ArrayList<>();
-		for (DefaultScheduleItem item : this.scheduledItems) {
+	public List<ScheduleItem> getExpiredItems(long currentTime) {
+		List<ScheduleItem> list = new ArrayList<>();
+		for (ScheduleItem item : this.scheduledItems) {
 			// item has been expired
 			if (currentTime >= item.getDepartureTime()) {
 				if (item.getVehicle().getVehicleState() != VehicleStateEnum.DRIVING) {
@@ -119,16 +121,16 @@ public class ListScheduler extends Scheduler {
 	}
 
 	@Override
-	public List<DefaultScheduleItem> getScheduledItems() {
+	public List<ScheduleItem> getScheduledItems() {
 		return new ArrayList<>(this.scheduledItems);
 	}
 
 	@Override
-	protected void onRemoveScheduledItems(List<Vehicle<? extends VehicleData,N,E>> vehicles) {
-		for (Iterator<DefaultScheduleItem> i = scheduledItems.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
-			Vehicle<? extends VehicleData,N,E> a = item.getVehicle();
-			for (Vehicle<? extends VehicleData,N,E> b : vehicles) {
+	public void onRemoveScheduledItems(List<Vehicle<?>> vehicles) {
+		for (Iterator<ScheduleItem> i = scheduledItems.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
+			Vehicle<? extends VehicleData> a = item.getVehicle();
+			for (Vehicle<? extends VehicleData> b : vehicles) {
 				if (a.getId().equals(b.getId())) {
 					i.remove();
 					onRemove(item);
@@ -139,65 +141,64 @@ public class ListScheduler extends Scheduler {
 	}
 
 	@Override
-	protected void onRemoveExpiredItems(List<Vehicle<? extends VehicleData,N,E>> list) {
-		for (Iterator<DefaultScheduleItem> i = vehicles.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
-			Vehicle<? extends VehicleData,N,E> a = item.getVehicle();
-			for (Vehicle<? extends VehicleData,N,E> b : list) {
-				if (a.getId().equals(b.getId())) {
-					i.remove();
-					onRemove(item);
-					break;
-				}
-			}
-		}
-	}
-
-	@Override
-	protected void onClearScheduledItems() {
-		for (Iterator<DefaultScheduleItem> i = this.scheduledItems.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
+	public void onClearScheduledItems() {
+		for (Iterator<ScheduleItem> i = this.scheduledItems.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			i.remove();
 			onRemove(item);
 		}
 	}
 
 	@Override
-	protected void onClearExpiredItems() {
-		for (Iterator<DefaultScheduleItem> i = this.vehicles.iterator(); i.hasNext();) {
-			DefaultScheduleItem item = i.next();
+	public void onClearExpiredItems() {
+		for (Iterator<ScheduleItem> i = this.vehicles.iterator(); i.hasNext();) {
+			ScheduleItem item = i.next();
 			i.remove();
 			onRemove(item);
 		}
 	}
 
 	@Override
-	protected void onAddScheduleHandler(ScheduleHandler handler) {
+	public void onAddScheduleHandler(ScheduleHandler handler) {
 		handlerList.add(handler);
 	}
 
 	@Override
-	protected void onRemoveScheduleHandler(ScheduleHandler handler) {
+	public void onRemoveScheduleHandler(ScheduleHandler handler) {
 		handlerList.remove(handler);
 	}
 
-	private void onRemove(DefaultScheduleItem v) {
+	private void onRemove(ScheduleItem v) {
 		for (ScheduleHandler s : handlerList) {
 			s.onRemove(v);
 		}
 	}
 
-	private void onSchedule(DefaultScheduleItem v) {
+	private void onSchedule(ScheduleItem v) {
 		for (ScheduleHandler s : handlerList) {
 			s.onSchedule(v);
 		}
 	}
 
 	@Override
+	public void changeModus(ScheduleModus modus) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void scheduleItem(ScheduleItem item) throws IllegalStateException {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
 	protected void onRemoveAllHandler() {
-		for (Iterator<ScheduleHandler> i = this.handlerList.iterator(); i.hasNext();) {
-			i.remove();
-		}
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	protected void onRemoveExpiredItems(
+		List<Vehicle<?>> vehicles) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 }

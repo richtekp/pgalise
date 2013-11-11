@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -42,14 +43,15 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 /**
  * Default implementation of a gate message strategy.
  * It will transmit the needed sensor ids to InfoSphere via TCP/IP.
  * The InfoSphere IP and it's ports can be changed in 'properties.props'.
  * @author Timo
  */
-public class DefaultGPSGateStrategy extends AbstractController<Event,InfrastructureStartParameter> implements GPSGateStrategy {
+public class DefaultGPSGateStrategy extends AbstractController<Event,InfrastructureStartParameter, InfrastructureInitParameter> implements GPSGateStrategy {
 
 	private static final Logger log = LoggerFactory.getLogger(DefaultGPSGateStrategy.class);
 	private static final long serialVersionUID = 1L;
@@ -59,17 +61,17 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	 * Contains all sensors
 	 * Map<Integer = sensor type, Set<Integer = Sensor id>>
 	 */
-	private Map<Integer, Set<Integer>> allSensorTypeSensorIDMap;
+	private Map<Integer, Set<Sensor>> allSensorTypeSensorIDMap;
 	/**
 	 * Contains only sensors which are known by InfoSphere
 	 * Map<Integer = sensor type, Set<Integer = Sensor id>>
 	 */
-	private Map<Integer, Set<Integer>> activeSensorTypeSensorIDMap;
+	private Map<Integer, Set<Sensor>> activeSensorTypeSensorIDMap;
 	/**
 	 * Contains only sensors which are not known by InfoSphere
 	 * Map<Integer = sensor type, Set<Integer = Sensor id>>
 	 */
-	private Map<Integer, Set<Integer>> notActiveSensorTypeSensorIDMap;
+	private Map<Integer, Set<Sensor>> notActiveSensorTypeSensorIDMap;
 	/**
 	 * Map<Integer = sensor id, Double = percentage (1.0 == 100%).
 	 */
@@ -106,7 +108,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	}
 
 	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
+	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
 		log.debug("init");
 		this.resetAllAttributes();
 	}
@@ -132,7 +134,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	public void createSensor(SensorHelper sensor) throws SensorException {
 		if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
 			log.debug("create gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
-			Set<Integer> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
+			Set<Sensor> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
 			if(sensorCollection == null) {
 				sensorCollection = new HashSet<>();
 				this.allSensorTypeSensorIDMap.put(sensor.getSensorType().getSensorTypeId(), sensorCollection);
@@ -141,7 +143,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 
 			/* Send to InfoSphere, if we have no percentage limit: */
 			if(this.sensorTypePercentageMap.get(sensor.getSensorType().getSensorTypeId()) == 1.0) {
-				List<Integer> tmpSensorIDList = new LinkedList<>();
+				List<Sensor> tmpSensorIDList = new LinkedList<>();
 				tmpSensorIDList.add(sensor.getSensorID());
 				this.addSensorIDsToInfoSphere(tmpSensorIDList);
 				this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor.getSensorID());
@@ -152,15 +154,15 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors)
+	public void createSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {		
-		Set<Integer> sensorIDSet = new HashSet<>();
+		Set<Sensor> sensorIDSet = new HashSet<>();
 
 		/* Add sensors to map and find out, if we have to send them: */
 		for(SensorHelper sensor : sensors) {
 			if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
 				log.debug("create gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
-				Set<Integer> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
+				Set<Sensor> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
 				if(sensorCollection == null) {
 					sensorCollection = new HashSet<>();
 					this.allSensorTypeSensorIDMap.put(sensor.getSensorType().getSensorTypeId(), sensorCollection);
@@ -201,7 +203,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors)
+	public void deleteSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {
 		/*
 		 * Remove from all maps and find out, if we have to add new sensors to InfoSphere:
@@ -260,9 +262,9 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 		this.notActiveSensorTypeSensorIDMap = new HashMap<>();
 		this.sensorTypePercentageMap = new HashMap<>();
 		for(SensorTypeEnum gpsSensor : SensorTypeEnum.GPS) {
-			this.allSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Integer>());
-			this.activeSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Integer>());
-			this.notActiveSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Integer>());
+			this.allSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Sensor>());
+			this.activeSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Sensor>());
+			this.notActiveSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Sensor>());
 			this.sensorTypePercentageMap.put(gpsSensor.getSensorTypeId(), 1.0);
 		}
 	}
@@ -271,16 +273,16 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	 * Adds new sensor ids to InfoSphere
 	 * @param sensorIDCollection
 	 */
-	private void addSensorIDsToInfoSphere(Collection<Integer> sensorIDCollection) {
+	private void addSensorIDsToInfoSphere(Collection<Sensor> sensorIDCollection) {
 		Socket socket = null;
 		DataOutputStream outStream = null;
 		try {
 			socket = new Socket(this.socketIP, this.socketPortAddKeys);
 			outStream = new DataOutputStream(socket.getOutputStream());
 			
-			for(Integer sensorID : sensorIDCollection) {
+			for(Sensor sensorID : sensorIDCollection) {
 				log.debug("Send sensor with id: " +sensorID +" to InfoSphere.");
-				outStream.writeInt(sensorID);
+				outStream.writeLong(sensorID.getId());
 				outStream.flush();
 			}
 			
@@ -301,15 +303,15 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	 * @param sensorIDCollection
 	 * @throws IOException 
 	 */
-	private void removeSensorIDsFromInfoSphere(Collection<Integer> sensorIDCollection) throws IOException {
+	private void removeSensorIDsFromInfoSphere(Collection<Sensor> sensorIDCollection) throws IOException {
 		Socket socket = null;
 		DataOutputStream outStream = null;
 		try {
 			socket = new Socket(this.socketIP, this.socketPortRemoveKeys);
 			outStream = new DataOutputStream(socket.getOutputStream());
 			
-			for(Integer sensorID : sensorIDCollection) {
-				outStream.writeInt(sensorID);
+			for(Sensor sensorID : sensorIDCollection) {
+				outStream.writeLong(sensorID.getId());
 				outStream.flush();
 			}
 		} catch(IOException e) {
@@ -331,10 +333,10 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	 * @param sensorType
 	 */
 	private void addAmountOfSensorsToInfoSphere(int amount, int sensorType) {
-		Set<Integer> sensorIDs = new HashSet<>();
-		Set<Integer> activeSensorSet = this.activeSensorTypeSensorIDMap.get(sensorType);
-		Set<Integer> notActiveSensorSet = this.notActiveSensorTypeSensorIDMap.get(sensorType);
-		for(Integer sensorID : new HashSet<>(notActiveSensorSet)) {
+		Set<Sensor> sensorIDs = new HashSet<>();
+		Set<Sensor> activeSensorSet = this.activeSensorTypeSensorIDMap.get(sensorType);
+		Set<Sensor> notActiveSensorSet = this.notActiveSensorTypeSensorIDMap.get(sensorType);
+		for(Sensor sensorID : new HashSet<>(notActiveSensorSet)) {
 			sensorIDs.add(sensorID);
 			activeSensorSet.add(sensorID);
 			notActiveSensorSet.remove(sensorID);
@@ -357,10 +359,10 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 
 		log.debug("Remove amount of sensors from infosphere");
 		
-		Set<Integer> sensorIDs = new HashSet<>();
-		Set<Integer> activeSensorSet = this.activeSensorTypeSensorIDMap.get(sensorType);
-		Set<Integer> notActiveSensorSet = this.notActiveSensorTypeSensorIDMap.get(sensorType);
-		for(Integer sensorID : new HashSet<>(activeSensorSet)) {
+		Set<Sensor> sensorIDs = new HashSet<>();
+		Set<Sensor> activeSensorSet = this.activeSensorTypeSensorIDMap.get(sensorType);
+		Set<Sensor> notActiveSensorSet = this.notActiveSensorTypeSensorIDMap.get(sensorType);
+		for(Sensor sensorID : new HashSet<>(activeSensorSet)) {
 			sensorIDs.add(sensorID);
 			activeSensorSet.remove(sensorID);
 			notActiveSensorSet.add(sensorID);

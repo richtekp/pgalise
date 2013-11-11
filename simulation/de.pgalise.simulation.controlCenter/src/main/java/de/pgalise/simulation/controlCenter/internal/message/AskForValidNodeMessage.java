@@ -17,13 +17,14 @@
 package de.pgalise.simulation.controlCenter.internal.message;
 
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficNode;
 
 /**
  * Will answer with a node with a valid position.
  * 
  * @author Timo
  */
-public class AskForValidNodeMessage extends CCWebSocketMessage<NavigationNode> {
+public class AskForValidNodeMessage extends CCWebSocketMessage<TrafficNode> {
 
 	/**
 	 * Constructor
@@ -33,7 +34,7 @@ public class AskForValidNodeMessage extends CCWebSocketMessage<NavigationNode> {
 	 * @param content
 	 *            the node that is asked.
 	 */
-	public AskForValidNodeMessage(int messageID, NavigationNode content) {
+	public AskForValidNodeMessage(int messageID, TrafficNode content) {
 		super(messageID, CCWebSocketMessage.MessageType.ASK_FOR_VALID_NODE, content);
 	}
 }

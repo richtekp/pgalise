@@ -5,7 +5,8 @@
 package de.pgalise.simulation.weather.internal.dataloader;
 
 import de.pgalise.it.TestUtils;
-import de.pgalise.simulation.traffic.internal.DefaultCity;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
@@ -44,7 +45,7 @@ public class DatabaseWeatherLoaderTest {
 	private EntityManagerFactory entityManagerFactory;
 	private static EJBContainer container;
 	
-	private DefaultCity city;
+	private City city;
 	
 	@Resource
 	private UserTransaction userTransaction;

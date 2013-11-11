@@ -29,7 +29,9 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 /**
  * Ignores the gate messages.
  * Only for testing or if you can not use InfoSphere or other DSMS, which
@@ -37,10 +39,10 @@ import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
  * @author Timo
  *
  */
-public class NoGPSGateStrategy implements GPSGateStrategy {
+public class NoGPSGateStrategy extends AbstractIdentifiable implements GPSGateStrategy {
 
 	@Override
-	public void init(InitParameter param) throws InitializationException,
+	public void init(InfrastructureInitParameter param) throws InitializationException,
 			IllegalStateException {}
 
 	@Override
@@ -65,14 +67,14 @@ public class NoGPSGateStrategy implements GPSGateStrategy {
 	public void createSensor(SensorHelper sensor) throws SensorException {}
 
 	@Override
-	public void createSensors(Collection<SensorHelper> sensors)
+	public void createSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {}
 
 	@Override
 	public void deleteSensor(SensorHelper sensor) throws SensorException {}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper> sensors)
+	public void deleteSensors(Collection<SensorHelper<?>> sensors)
 			throws SensorException {}
 
 	@Override

@@ -5,6 +5,7 @@
 package de.pgalise.simulation.weather.model;
 
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.City;
 import java.sql.Date;
 import java.sql.Time;
 import javax.persistence.CascadeType;
@@ -23,7 +24,7 @@ import javax.persistence.OneToOne;
  * the MappedSuperclass (if usage of @Type annotation should be avoided)
  */
 @MappedSuperclass
-public abstract class AbstractServiceData<C extends WeatherCondition> extends AbstractTimeSensitive implements ServiceData<C>, MutableServiceData<C> {
+public abstract class AbstractServiceData<C extends WeatherCondition> extends AbstractTimeSensitive implements ServiceData<C> {
 	
 	/**
 	 * City
@@ -73,7 +74,6 @@ public abstract class AbstractServiceData<C extends WeatherCondition> extends Ab
 	/**
 	 * @param city the city to set
 	 */
-	@Override
 	public void setCity(City city) {
 		this.city = city;
 	}
@@ -93,22 +93,18 @@ public abstract class AbstractServiceData<C extends WeatherCondition> extends Ab
 		return this.windVelocity;
 	}
 
-	@Override
 	public void setRelativHumidity(Float relativHumidity) {
 		this.relativHumidity = relativHumidity;
 	}
 
-	@Override
 	public void setWindDirection(Float windDirection) {
 		this.windDirection = windDirection;
 	}
 
-	@Override
 	public void setWindVelocity(Float windVelocity) {
 		this.windVelocity = windVelocity;
 	}
 
-	@Override
 	public void setCondition(C condition) {
 		this.condition = condition;
 	}

@@ -7,8 +7,8 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
@@ -18,7 +18,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  *
  * @author richter
  */
-public class RandomBusFactory implements BusFactory<DefaultTrafficNode<BusData>,DefaultTrafficEdge<BusData>, BaseVehicle<BusData>> {
+public class RandomBusFactory implements BusFactory {
 
 	@Override
 	public BaseVehicle<BusData> createBus(

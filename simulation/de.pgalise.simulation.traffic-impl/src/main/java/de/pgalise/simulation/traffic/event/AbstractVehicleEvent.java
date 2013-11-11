@@ -23,9 +23,8 @@ import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -45,18 +44,18 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
  * @author mustafa
  *
  */
-public abstract class AbstractVehicleEvent<D extends VehicleData> extends AbstractTrafficEvent<D> implements VehicleEvent<D, DefaultTrafficNode<D>, DefaultTrafficEdge<D>, BaseVehicle<D>, AbstractVehicleEvent<D>> {
+public abstract class AbstractVehicleEvent<D extends VehicleData> extends AbstractTrafficEvent<D, VehicleEvent> implements VehicleEvent {
 	private static final long serialVersionUID = 1L;
-	private final BaseVehicle<D> vehicle;
+	private final Vehicle<D> vehicle;
 
-	public AbstractVehicleEvent(DefaultTrafficServer<D>  server, long simulationTime, long elapsedTime, BaseVehicle<D> vehicles) {
+	public AbstractVehicleEvent(TrafficServerLocal<VehicleEvent>  server, long simulationTime, long elapsedTime, Vehicle<D> vehicles) {
 		super(server, simulationTime,
 			elapsedTime);
 		this.vehicle = vehicles;
 	}
 
 	@Override
-	public BaseVehicle<D> getVehicle() {
+	public Vehicle<D> getVehicle() {
 		return vehicle;
 	}
 
@@ -74,7 +73,7 @@ public abstract class AbstractVehicleEvent<D extends VehicleData> extends Abstra
 	}
 
 	@Override
-	public DefaultTrafficGraph<D> getGraph() {
+	public TrafficGraph getGraph() {
 		return getResponsibleServer().getGraph();
 	}
 
@@ -84,7 +83,7 @@ public abstract class AbstractVehicleEvent<D extends VehicleData> extends Abstra
 	}
 	
 	@Override
-	public Map<Long, AbstractTrafficEvent> getEventForVehicleMap() {
+	public Map<Long, VehicleEvent> getEventForVehicleMap() {
 		return getResponsibleServer().getEventForVehicle();
 	}
 }

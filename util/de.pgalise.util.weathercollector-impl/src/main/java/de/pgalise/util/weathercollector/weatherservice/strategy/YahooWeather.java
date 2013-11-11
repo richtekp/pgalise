@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import de.pgalise.util.weathercollector.model.MutableExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -204,7 +204,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:atmosphere");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				MutableExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				MyExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String humidity = attributes.getNamedItem("humidity").getTextContent();
 				if ((humidity != null) && !humidity.isEmpty()) {
@@ -221,7 +221,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:astronomy");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				MutableExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				MyExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				try {
 					// Sunset
@@ -245,7 +245,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:wind");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				MutableExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				MyExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String direction = attributes.getNamedItem("direction").getTextContent();
 				if ((direction != null) && !direction.isEmpty()) {

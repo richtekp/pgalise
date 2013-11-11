@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.traffic.internal;
 
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import com.vividsolutions.jts.geom.Coordinate;
@@ -54,7 +56,7 @@ import javax.vecmath.Vector2d;
  * @author Mustafa
  * @version 1.0 (Nov 22, 2012)
  */
-public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel implements GraphVisualizer<DefaultTrafficGraph<D>, DefaultTrafficNode<D>, DefaultTrafficEdge<D>>, WindowListener, MouseMotionListener,
+public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel implements GraphVisualizer<TrafficGraph>, WindowListener, MouseMotionListener,
 		MouseListener, MouseWheelListener {
 
 	/**
@@ -63,7 +65,7 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel implem
 	private static final long serialVersionUID = -3410547090601096528L;
 
 	private List<Function> closeListener;
-	protected DefaultTrafficGraph<D> graph;
+	protected TrafficGraph graph;
 	protected Graphics2D g2d;
 	protected AffineTransform transform;
 	protected AffineTransform origin;
@@ -78,12 +80,12 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel implem
 		init(width, height, null);
 	}
 
-	public DefaultGraphVisualizer(int width, int height, DefaultTrafficGraph graph) {
+	public DefaultGraphVisualizer(int width, int height, TrafficGraph graph) {
 		init(width, height, graph);
 		this.nodeExtensions =  new DefaultGraphExtensions(graph);
 	}
 
-	private void init(int width, int height, DefaultTrafficGraph graph) {
+	private void init(int width, int height, TrafficGraph graph) {
 		JFrame window = new JFrame("GraphVisualizer");
 		window.setSize(width, height);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -133,8 +135,8 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel implem
 		transform.translate(translateX, translateY);
 		transform.scale(scaleX, scaleY);
 
-		for (Iterator<DefaultTrafficNode<D>> i = graph.vertexSet().iterator(); i.hasNext();) {
-			DefaultTrafficNode node = i.next();
+		for (Iterator<TrafficNode> i = graph.vertexSet().iterator(); i.hasNext();) {
+			TrafficNode node = i.next();
 			Coordinate vec0 = this.nodeExtensions.getPosition(node);
 			Vector2d vec = new Vector2d((vec0.x * transform.getScaleX() + transform.getTranslateX()), (vec0.y
 					* transform.getScaleY() + transform.getTranslateY()));
@@ -147,7 +149,7 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel implem
 			g2d.drawString(String.valueOf(node.getId()), (int) (vec.x + 5), (int) (vec.y - 5));
 		}
 
-		for (DefaultTrafficEdge<?> edge : graph.edgeSet()) {
+		for (TrafficEdge edge : graph.edgeSet()) {
 			Coordinate a0 = this.nodeExtensions.getPosition(edge.getSource());
 			Vector2d a = new Vector2d(a0.x * transform.getScaleX() + transform.getTranslateX(),
 					a0.y * transform.getScaleY() + transform.getTranslateY());
@@ -158,12 +160,12 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel implem
 		}
 	}
 
-	public void setGraph(DefaultTrafficGraph<D> graph) {
+	public void setGraph(TrafficGraph graph) {
 		this.graph = graph;
 	}
 
 	@Override
-	public DefaultTrafficGraph<D> getGraph() {
+	public TrafficGraph getGraph() {
 		return graph;
 	}
 

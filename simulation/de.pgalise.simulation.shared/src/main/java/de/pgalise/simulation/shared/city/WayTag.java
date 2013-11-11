@@ -10,6 +10,5 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public interface WayTag {
-	
+public interface WayTag extends BaseTag {
 }

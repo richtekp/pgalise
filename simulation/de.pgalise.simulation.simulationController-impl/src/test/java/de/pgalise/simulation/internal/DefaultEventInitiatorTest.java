@@ -46,8 +46,8 @@ import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
@@ -228,6 +228,11 @@ public class DefaultEventInitiatorTest {
 		public String getName() {
 			return "OperationCenterController";
 		}
+
+		@Override
+		public Long getId() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
 	}
 
 	/**
@@ -264,7 +269,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InitParameter param) throws InitializationException, IllegalStateException {
+		public void init(InfrastructureInitParameter param) throws InitializationException, IllegalStateException {
 		}
 
 		@Override
@@ -272,7 +277,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(StartParameter param) throws IllegalStateException {
+		public void start(InfrastructureStartParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -296,6 +301,11 @@ public class DefaultEventInitiatorTest {
 		@Override
 		public String getName() {
 			return "TrafficController";
+		}
+
+		@Override
+		public Long getId() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}
 
@@ -366,6 +376,11 @@ public class DefaultEventInitiatorTest {
 		@Override
 		public String getName() {
 			return "StaticSensorController";
+		}
+
+		@Override
+		public Long getId() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}
 
@@ -569,6 +584,11 @@ public class DefaultEventInitiatorTest {
 		@Override
 		public String getName() {
 			return "SimulationController";
+		}
+
+		@Override
+		public Long getId() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}
 	

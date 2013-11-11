@@ -24,6 +24,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * The create random vehicles event creates the given {@link List} of
@@ -48,7 +49,7 @@ public class CreateRandomVehiclesEvent<D extends VehicleData> extends AbstractVe
 	private List<CreateRandomVehicleData> createRandomVehicleDataList;
 
 	public CreateRandomVehiclesEvent(
-		DefaultTrafficServer<D> responsibleServer, long timestamp, long elapsedTime,
+		TrafficServerLocal<VehicleEvent> responsibleServer, long timestamp, long elapsedTime,
 		List<CreateRandomVehicleData> createRandomVehicleDataList) {
 		super(responsibleServer, timestamp, elapsedTime, null);
 		this.createRandomVehicleDataList = createRandomVehicleDataList;

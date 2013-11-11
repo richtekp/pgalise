@@ -23,6 +23,7 @@ import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import java.util.UUID;
 
 
@@ -38,10 +39,10 @@ public class DeleteVehiclesEvent<D extends VehicleData> extends AbstractVehicleE
 	 */
 	private static final long serialVersionUID = 1533612793042541169L;
 	
-	public DeleteVehiclesEvent(DefaultTrafficServer<D> server,
+	public DeleteVehiclesEvent(TrafficServerLocal<VehicleEvent> server,
 		long simulationTime,
 		long elapsedTime,
-		V deleteVehicle) {
+		Vehicle<D> deleteVehicle) {
 		super(server,
 			simulationTime,
 			elapsedTime, deleteVehicle);

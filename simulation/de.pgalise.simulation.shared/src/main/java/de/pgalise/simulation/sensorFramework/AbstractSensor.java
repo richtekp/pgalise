@@ -168,7 +168,6 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 	 * @param activated
 	 *            determines whether the sensor is activated
 	 */
-	@Override
 	public void setActivated(final boolean activated) {
 		this.activated = activated;
 	}
@@ -179,7 +178,6 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 	 * @param position
 	 *            Position
 	 */
-	@Override
 	public void setPosition(final Coordinate position) {
 		this.position = position;
 	}

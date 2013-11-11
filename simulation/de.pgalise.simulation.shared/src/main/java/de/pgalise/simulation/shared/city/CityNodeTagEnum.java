@@ -9,5 +9,16 @@ package de.pgalise.simulation.shared.city;
  * @author richter
  */
 public enum CityNodeTagEnum implements CityNodeTag {
-	STOP_POSITION;
+	STOP_POSITION("stop_position");
+	
+	private String stringValue;
+
+	private CityNodeTagEnum(String stringValue) {
+		this.stringValue = stringValue;
+	}
+
+	@Override
+	public String getStringValue() {
+		return stringValue;
+	}
 }

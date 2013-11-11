@@ -16,11 +16,12 @@
  
 package de.pgalise.util.graph;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultGraphVisualizer;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.SingleGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -49,7 +50,7 @@ public class VisualizerTest {
 		// });
 		// t.start();
 
-		Graph graph = createGraph();
+		TrafficGraph graph = createGraph();
 
 		GraphVisualizer viz = new DefaultGraphVisualizer(400, 400, graph);
 		viz.addWindowCloseListener(new Function() {
@@ -75,49 +76,24 @@ public class VisualizerTest {
 	 * 
 	 * @return graph
 	 */
-	private Graph createGraph() {
-		Graph graph = new SingleGraph("city");
-		Node a = this.addNode(graph, "a", 1, 1);
-		Node b = this.addNode(graph, "b", 2, 2);
-		Node c = this.addNode(graph, "c", 4, 7);
-		Node d = this.addNode(graph, "d", 9, 4);
-		Node e = this.addNode(graph, "e", 11, 7);
-		Node f = this.addNode(graph, "f", 2, 10);
-
-		Edge ab = null;
-		ab = graph.addEdge("ab", a, b);
-		ab.setAttribute("weight", 1);
-		Edge bc = null;
-		bc = graph.addEdge("bc", b, c);
-		bc.setAttribute("weight", 1);
-		Edge cd = null;
-		cd = graph.addEdge("cd", c, d);
-		cd.setAttribute("weight", 1);
-		Edge de = null;
-		de = graph.addEdge("de", d, e);
-		de.setAttribute("weight", 1);
-		Edge fc = null;
-		fc = graph.addEdge("fc", f, c);
-		fc.setAttribute("weight", 1);
+	private TrafficGraph createGraph() {
+		TrafficGraph graph = new DefaultTrafficGraph();
+		TrafficNode a = new TrafficNode(new Coordinate(1,1));
+		TrafficNode b = new TrafficNode(new Coordinate(2,2));
+		TrafficNode c = new TrafficNode(new Coordinate(4, 7));
+		TrafficNode d = new TrafficNode(new Coordinate(9, 4));
+		TrafficNode e = new TrafficNode(new Coordinate(11, 7));
+		TrafficNode f = new TrafficNode(new Coordinate(2, 10));
+		TrafficEdge e1 = graph.addEdge(a,b);
+		TrafficEdge e2 = graph.addEdge(b,c);
+		TrafficEdge e3 = graph.addEdge(c,d);
+		TrafficEdge e4 = graph.addEdge(d,e);
+		TrafficEdge e5 = graph.addEdge(f,c);
+		graph.setEdgeWeight(e1,1);
+		graph.setEdgeWeight(e2,1);
+		graph.setEdgeWeight(e3,1);
+		graph.setEdgeWeight(e4,1);
+		graph.setEdgeWeight(e5,1);
 		return graph;
-	}
-
-	/**
-	 * Add node to graph
-	 * 
-	 * @param graph
-	 *            graph
-	 * @param id
-	 *            ID
-	 * @param x
-	 *            X
-	 * @param y
-	 *            Y
-	 * @return Node
-	 */
-	private Node addNode(Graph graph, String id, double x, double y) {
-		Node node = graph.addNode(id);
-		node.setAttribute("position", new Vector2d(x, y));
-		return node;
 	}
 }

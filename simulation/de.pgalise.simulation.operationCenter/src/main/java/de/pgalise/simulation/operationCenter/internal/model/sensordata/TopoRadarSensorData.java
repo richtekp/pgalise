@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 
@@ -43,7 +44,7 @@ public class TopoRadarSensorData extends SensorData {
 	 * @param axialDistance2
 	 * 			the distance between axial two and three
 	 */
-	public TopoRadarSensorData(int sensorType, int sensorID, int axleCount, int length, int axialDistance1, int axialDistance2) {
+	public TopoRadarSensorData(int sensorType, Sensor sensorID, int axleCount, int length, int axialDistance1, int axialDistance2) {
 		super(sensorType, sensorID);
 		this.axleCount = axleCount;
 		this.length = length;

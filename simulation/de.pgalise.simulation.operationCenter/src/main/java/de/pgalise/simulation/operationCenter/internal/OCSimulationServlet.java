@@ -43,8 +43,8 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
 /**
@@ -124,13 +124,13 @@ public class OCSimulationServlet extends HttpServlet {
 				/* Add sensors: */
 			} else if(req.getParameter("createsensors") != null && req.getParameter("createsensor").equalsIgnoreCase("true")) {
 				log.debug("create sensors");
-				Collection<SensorHelper> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
+				Collection<SensorHelper<?>> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
 				ocSimulationController.createSensors(sensors);
 
 				/* Remove sensors:: */	
 			} else if(req.getParameter("deletesensors") != null && req.getParameter("createsensor").equalsIgnoreCase("true")) {
 				log.debug("delete sensors");
-				Collection<SensorHelper> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
+				Collection<SensorHelper<?>> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
 				ocSimulationController.deleteSensors(sensors);
 
 				/* simulation update: */	

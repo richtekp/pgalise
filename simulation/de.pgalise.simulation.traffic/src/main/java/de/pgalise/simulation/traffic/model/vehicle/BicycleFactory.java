@@ -27,7 +27,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
  * @author Andreas
  * @version 1.0
  */
-public interface BicycleFactory<N extends TrafficNode<N,E,BicycleData,V>, E extends TrafficEdge<N,E, BicycleData,V>, V extends Vehicle<BicycleData, N,E,V>> {
+public interface BicycleFactory {
 
 	/**
 	 * Method to create a {@link Bike} with the given typeId.
@@ -38,7 +38,7 @@ public interface BicycleFactory<N extends TrafficNode<N,E,BicycleData,V>, E exte
 	 *            ID of the {@link Bike} type
 	 * @return created {@link Bike}
 	 */
-	public V createBicycle( SensorHelper gpsSensor);
+	public Vehicle<BicycleData> createBicycle( SensorHelper gpsSensor);
 
 	/**
 	 * Method to create a random {@link Bike}.
@@ -47,5 +47,5 @@ public interface BicycleFactory<N extends TrafficNode<N,E,BicycleData,V>, E exte
 	 *            ID of the {@link Bike}
 	 * @return created {@link Bike}
 	 */
-	public V createRandomBicycle( SensorHelper gpsSensor);
+	public Vehicle<BicycleData> createRandomBicycle( SensorHelper gpsSensor);
 }

@@ -27,7 +27,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
  * @author Andreas
  * @version 1.0
  */
-public interface BusFactory<N extends TrafficNode<N,E,BusData,V>, E extends TrafficEdge<N,E, BusData,V>, V extends Vehicle<BusData, N,E,V>> {
+public interface BusFactory {
 
 	/**
 	 * Method to create a {@link Bus} with the given typeId.
@@ -38,7 +38,7 @@ public interface BusFactory<N extends TrafficNode<N,E,BusData,V>, E extends Traf
 	 *            ID of the {@link Bus} type
 	 * @return created {@link Bus}
 	 */
-	public V createBus(  SensorHelper gpsSensor, SensorHelper infraredSensor);
+	public Vehicle<BusData> createBus(  SensorHelper gpsSensor, SensorHelper infraredSensor);
 
 	/**
 	 * Method to create a random {@link Bus}.
@@ -47,5 +47,5 @@ public interface BusFactory<N extends TrafficNode<N,E,BusData,V>, E extends Traf
 	 *            ID of the {@link Bus}
 	 * @return created {@link Bus}
 	 */
-	public V createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor);
+	public Vehicle<BusData> createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor);
 }

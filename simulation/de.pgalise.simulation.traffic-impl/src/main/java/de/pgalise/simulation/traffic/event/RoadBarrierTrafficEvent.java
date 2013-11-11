@@ -25,6 +25,7 @@ import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * The road barrier traffic event will block a route during the given time window.
@@ -33,7 +34,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
  * @param <E> 
  * @author Timo
  */
-public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTrafficEvent<D> {
+public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTrafficEvent<D, VehicleEvent> {
 
 	/**
 	 * Serial
@@ -58,15 +59,15 @@ public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTra
 	/**
 	 * node id in graph
 	 */
-	private NavigationNode nodeID;
+	private TrafficNode nodeID;
 
-	public RoadBarrierTrafficEvent(DefaultTrafficServer<D> responsibleServer,
+	public RoadBarrierTrafficEvent(TrafficServerLocal<VehicleEvent> responsibleServer,
 		long simulationTimestamp,
 		long elapsedTime,
 		long roadBarrierStartTimestamp,
 		long roadBarrierEndTimestamp,
 		Coordinate roadBarrierPoint,
-		NavigationNode nodeID
+		TrafficNode nodeID
 		) {
 		super(responsibleServer, simulationTimestamp, elapsedTime);
 		this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
@@ -99,11 +100,11 @@ public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTra
 		this.roadBarrierPoint = roadBarrierPoint;
 	}
 
-	public NavigationNode getNodeID() {
+	public TrafficNode getNodeID() {
 		return nodeID;
 	}
 
-	public void setNodeID(NavigationNode nodeID) {
+	public void setNodeID(TrafficNode nodeID) {
 		this.nodeID = nodeID;
 	}
 

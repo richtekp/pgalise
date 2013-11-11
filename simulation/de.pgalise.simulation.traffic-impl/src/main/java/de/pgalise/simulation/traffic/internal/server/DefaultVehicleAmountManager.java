@@ -36,6 +36,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
@@ -139,22 +140,22 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 	/**
 	 * List of cars which can be scheduled if the percentage of cars increases
 	 */
-	private List<BaseVehicle<?>> spareCars;
+	private List<Vehicle<?>> spareCars;
 
 	/**
 	 * List of trucks which can be scheduled if the percentage of trucks increases
 	 */
-	private List<BaseVehicle<?>> spareTrucks;
+	private List<Vehicle<?>> spareTrucks;
 
 	/**
 	 * List of motorcycles which can be scheduled if the percentage of motorcycles increases
 	 */
-	private List<BaseVehicle<?>> spareMotorcycles;
+	private List<Vehicle<?>> spareMotorcycles;
 
 	/**
 	 * List of bicycles which can be scheduled if the percentage of bicycles increases
 	 */
-	private List<BaseVehicle<?>> spareBicycles;
+	private List<Vehicle<?>> spareBicycles;
 
 	private int maxBikes;
 
@@ -181,7 +182,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 	 *            delivers the amount of each vehicle in percentage, depending on Fuzzy Rules (e.g. depending on weather
 	 *            events)
 	 */
-	public DefaultVehicleAmountManager(DefaultTrafficServer<?> ts, double tolerance, int updateSteps, int timebuffer,
+	public DefaultVehicleAmountManager(TrafficServerLocal ts, double tolerance, int updateSteps, int timebuffer,
 			TrafficGovernor fuzzy) {
 		this.ts = ts;
 		this.scheduler = ts.getScheduler();
@@ -292,11 +293,11 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 		if (addPercentage > 0) {
 			log.debug("changingAmount of bicycles: " + changingAmount);
 			int count = 1;
-			for (Iterator<BaseVehicle<?>> i = this.spareBicycles.iterator(); i.hasNext();) {
+			for (Iterator<Vehicle<?>> i = this.spareBicycles.iterator(); i.hasNext();) {
 				if (count > changingAmount) {
 					break;
 				}
-				BaseVehicle<?> v = i.next();
+				Vehicle<?> v = i.next();
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
 				DefaultScheduleItem item = new DefaultScheduleItem(v, startTime, ts.getUpdateIntervall());
@@ -307,8 +308,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of bicycles: -" + changingAmount);
-			List<DefaultScheduleItem> bicycles = new ArrayList<>();
-			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> bicycles = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(BicycleData.class)) {
 					bicycles.add(item);
 				}
@@ -339,11 +340,11 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 		if (addPercentage > 0) {
 			log.debug("changingAmount of cars: " + changingAmount);
 			int count = 1;
-			for (Iterator<BaseVehicle> i = this.spareCars.iterator(); i.hasNext();) {
+			for (Iterator<Vehicle<?>> i = this.spareCars.iterator(); i.hasNext();) {
 				if (count > changingAmount) {
 					break;
 				}
-				BaseVehicle<?> v = i.next();
+				Vehicle<?> v = i.next();
 
 				long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
@@ -355,8 +356,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of cars: -" + changingAmount);
-			List<DefaultScheduleItem> cars = new ArrayList<>();
-			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> cars = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(CarData.class)) {
 					cars.add(item);
 				}
@@ -387,7 +388,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 		if (addPercentage > 0) {
 			log.debug("changingAmount of motorcycles: " + changingAmount);
 			int count = 1;
-			for (Iterator<Vehicle> i = this.spareMotorcycles.iterator(); i.hasNext();) {
+			for (Iterator<Vehicle<?>> i = this.spareMotorcycles.iterator(); i.hasNext();) {
 				if (count > changingAmount) {
 					break;
 				}
@@ -402,8 +403,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of motorcycles: -" + changingAmount);
-			List<DefaultScheduleItem> motorcycles = new ArrayList<>();
-			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> motorcycles = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(MotorcycleData.class)) {
 					motorcycles.add(item);
 				}
@@ -433,7 +434,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 		if (addPercentage > 0) {
 			log.debug("changingAmount of trucks: " + changingAmount);
 			int count = 1;
-			for (Iterator<Vehicle> i = this.spareTrucks.iterator(); i.hasNext();) {
+			for (Iterator<Vehicle<?>> i = this.spareTrucks.iterator(); i.hasNext();) {
 				if (count > changingAmount) {
 					break;
 				}
@@ -448,8 +449,8 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 			}
 		} else if (addPercentage < 0) {
 			log.debug("changingAmount of trucks: -" + changingAmount);
-			List<DefaultScheduleItem> trucks = new ArrayList<>();
-			for (DefaultScheduleItem item : this.scheduler.getScheduledItems()) {
+			List<ScheduleItem> trucks = new ArrayList<>();
+			for (ScheduleItem item : this.scheduler.getScheduledItems()) {
 				if (item.getVehicle().getData().getClass().equals(TruckData.class)) {
 					trucks.add(item);
 				}

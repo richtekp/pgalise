@@ -17,49 +17,168 @@
 package de.pgalise.simulation.shared.city;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-
+import de.pgalise.simulation.shared.city.City;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import org.hibernate.annotations.Type;
 
 /**
  * Represents the city from the simulation
  * 
- * @author richter
+ * @author Andreas Rehfeldt
+ * @version 1.0 (Sep 11, 2012)
  */
-public interface City extends Shaped {
-
-	public int getAltitude() ;
-
-	public String getName() ;
-
-	public int getPopulation() ;
-
-	public int getRate() ;
-
-	public boolean isNearRiver() ;
-
-	public boolean isNearSea() ;
-
-	public void setAltitude(int altitude) ;
+@Entity
+@NamedQuery(name = "City.getAll", query = "SELECT i FROM City i")
+/*
+ * has identical properties boundaries and centerPoint and Building, but sharing 
+ * code is not possible in this inheritance hierarchy (all NavigationNode would have to be AbstractGeometricObjects
+ */
+public class City extends AbstractIdentifiable {
+	/**
+	 * Serial
+	 */
+	private static final long serialVersionUID = 3576972145732461552L;
 	
-	public void setName(String name) ;
+	/**
+	 * Altitude (in m over normal null)
+	 */
+	@Column(name = "ALTITUDE")
+	private int altitude = 4;
 
-	public void setNearRiver(boolean nearRiver) ;
+	/**
+	 * Name
+	 */
+	@Column(name = "NAME")
+	private String name = "Oldenburg (Oldb)";
 
-	public void setNearSea(boolean nearSea) ;
+	/**
+	 * Option that the city is near a river
+	 */
+	@Column(name = "NEAR_RIVER")
+	private boolean nearRiver = false;
 
-	public void setPopulation(int population) ;
+	/**
+	 * Option that the city is near the sea
+	 */
+	@Column(name = "NEAR_SEA")
+	private boolean nearSea = false;
 
-	public void setRate(int rate) ;
+	/**
+	 * Population
+	 */
+	@Column(name = "POPULATION")
+	private int population = 162481;
 
-	Coordinate getReferencePoint();
+	/**
+	 * Rate for reference evaluation
+	 */
+	@Transient
+	private int rate = 0;
+	private Position position;
+	/**
+	 * a point which is considered the most important in the geometry which is not forcibly always the geographical center of the referenced area
+	 */
+	private Coordinate referencePoint;
 
-	void setReferencePoint(Coordinate referencePoint);
+	/**
+	 * Default constructor
+	 */
+	protected City() {
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param name
+	 *            Name
+	 * @param population
+	 *            Population
+	 * @param altitude
+	 *            Altitude
+	 * @param nearRiver
+	 *            Option that the city is near a river
+	 * @param nearSea
+	 *            Option that the city is near the sea
+	 * @param boundaries 
+	 * @param graph  
+	 */
+	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Position position) {
+		this.position = position;
+		this.name = name;
+		this.population = population;
+		this.altitude = altitude;
+		this.nearRiver = nearRiver;
+		this.nearSea = nearSea;
+	}
+
+	public int getAltitude() {
+		return this.altitude;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public int getPopulation() {
+		return this.population;
+	}
+
+	public int getRate() {
+		return this.rate;
+	}
+
+	public boolean isNearRiver() {
+		return this.nearRiver;
+	}
+
+	public boolean isNearSea() {
+		return this.nearSea;
+	}
+
+	public void setAltitude(int altitude) {
+		this.altitude = altitude;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setNearRiver(boolean nearRiver) {
+		this.nearRiver = nearRiver;
+	}
+
+	public void setNearSea(boolean nearSea) {
+		this.nearSea = nearSea;
+	}
+
+	public void setPopulation(int population) {
+		this.population = population;
+	}
+	
+	public void setRate(int rate) {
+		this.rate = rate;
+	}
+
+	public void setPosition(Position position) {
+		this.position = position;
+	}
+
+	public Position getPosition() {
+		return position;
+	}
+
+	public void setReferencePoint(Coordinate referencePoint) {
+		this.referencePoint = referencePoint;
+	}
+
+	public Coordinate getReferencePoint() {
+		return referencePoint;
+	}
 }

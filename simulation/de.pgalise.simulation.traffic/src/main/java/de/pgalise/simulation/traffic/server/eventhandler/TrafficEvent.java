@@ -20,17 +20,11 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
  * @param <V>
  * @param <F>  
  */
-public interface TrafficEvent<
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>,
-	D extends VehicleData, 
-	V extends Vehicle<D,N,E,V>, 
-	F extends TrafficEvent<N,E,D,V,F>
-> extends Event {
+public interface TrafficEvent<E extends TrafficEvent> extends Event {
 	
-	TrafficServerLocal<F,N,E,D,V> getResponsibleServer() ;
+	TrafficServerLocal<E> getResponsibleServer() ;
 	
-	void setResponsibleServer(TrafficServerLocal<F,N,E,D,V> responsibleServer);
+	void setResponsibleServer(TrafficServerLocal<E> responsibleServer);
 	
 	long getSimulationTime()  ;
 

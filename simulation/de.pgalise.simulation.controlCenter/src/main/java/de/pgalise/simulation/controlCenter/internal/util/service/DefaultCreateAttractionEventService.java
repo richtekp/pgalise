@@ -21,10 +21,11 @@ import com.google.inject.Inject;
 
 import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 /**
  * The default implementation of {@link CreateAttractionEventService}.
@@ -51,7 +52,7 @@ public class DefaultCreateAttractionEventService implements CreateAttractionEven
 			RandomVehicleBundle randomDynamicSensorBundle,
 			RandomSeedService randomSeedService, 
 			boolean withSensorInterferer,
-			NavigationNode nodeID, 
+			TrafficNode nodeID, 
 			Coordinate position, 
 			long startTimestamp, 
 			long endTimestamp) {

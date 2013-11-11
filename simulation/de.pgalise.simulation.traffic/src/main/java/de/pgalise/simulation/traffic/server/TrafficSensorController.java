@@ -21,15 +21,11 @@
 package de.pgalise.simulation.traffic.server;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.city.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.city.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
@@ -39,11 +35,13 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * @author Lena
  * @version 1.0 (Oct 23, 2012)
  */
-public interface TrafficSensorController<N extends TrafficNode<N,E,D,V>, E extends TrafficEdge<N,E,D,V>, D extends VehicleData, V extends Vehicle<D,N,E,V>, F extends TrafficEvent<N,E,D,V,F>> extends SensorManagerController<F, InfrastructureStartParameter, InfrastructureInitParameter> {
+public interface TrafficSensorController<
+	F extends TrafficEvent
+> extends SensorManagerController<F, InfrastructureStartParameter, InfrastructureInitParameter> {
 	
-	public void onSchedule(V v);
+	public void onSchedule(Vehicle<?> v);
 
-	public void onUpdate(V vehicle, EventList<F> eventList);
+	public void onUpdate(Vehicle<?> vehicle, EventList<F> eventList);
 
-	public void onRemove(V vehicle);
+	public void onRemove(Vehicle<?> vehicle);
 }

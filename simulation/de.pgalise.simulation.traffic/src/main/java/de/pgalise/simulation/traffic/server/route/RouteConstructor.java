@@ -23,7 +23,7 @@ import java.util.Map;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.shared.city.BusStop;
+import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -38,44 +38,38 @@ import de.pgalise.simulation.traffic.server.TrafficServer;
  * the nodes.
  * 
  * @param <D> 
- * @param <N> 
  * @param <E> 
  * @param <V> 
  * @param <B> 
  * @author Lena
  * @author mischa
  */
-public interface RouteConstructor<
-	D extends VehicleData,
-	N extends TrafficNode<N,E,D,V>, 
-	E extends TrafficEdge<N,E,D,V>, 
-	V extends Vehicle<D,N,E,V>,
-	B extends BusStop<?>> {
+public interface RouteConstructor {
 	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, VehicleTypeEnum vehicleType);
 
-	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, NavigationNode nodeID, long startTimestamp, boolean isStartNode);
+	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, TrafficNode  nodeID, long startTimestamp, boolean isStartNode);
 
-	public TrafficTrip createTrip(TrafficServer<?> serverId, NavigationNode startNodeID, NavigationNode targetNodeID, long startTimestamp);
+	public TrafficTrip createTrip(TrafficServer<?> serverId, TrafficNode  startNodeID, TrafficNode  targetNodeID, long startTimestamp);
 
 	public TrafficTrip createTimedTrip(TrafficServer<?> serverId, Geometry cityZone, VehicleTypeEnum vehicleType, Date date, int buffer);
 
-	public TrafficGraph<N,E,?,?> getGraph();
+	public TrafficGraph getGraph();
 
-	public List<N> getStartHomeNodes(Geometry cityZone);
+	public List<TrafficNode> getStartHomeNodes(Geometry cityZone);
 
-	public List<N> getStartWorkNodes(Geometry cityZone);
+	public List<TrafficNode> getStartWorkNodes(Geometry cityZone);
 
-	public List<N> getAllHomeNodes();
+	public List<TrafficNode> getAllHomeNodes();
 
-	public List<N> getAllWorkNodes();
+	public List<TrafficNode> getAllWorkNodes();
 
-	public List<B> getBusStops();
+	public List<BusStop> getBusStops();
 
-	public List<E> getShortestPath(N start, N dest);
+	public List<TrafficEdge> getShortestPath(TrafficNode start, TrafficNode dest);
 
 	public GraphExtensions getTrafficGraphExtesions();
 
-	public List<E> getBusRoute(List<B> busStopIds);
+	public List<TrafficEdge> getBusRoute(List<BusStop> busStopIds);
 
-	public Map<String, N> getBusStopNodes(List<B> busStopIds);
+	public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds);
 }

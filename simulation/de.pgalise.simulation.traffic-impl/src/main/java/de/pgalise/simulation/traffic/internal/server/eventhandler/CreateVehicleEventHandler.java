@@ -26,7 +26,7 @@ import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficTrip;
+import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
@@ -40,7 +40,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Andreas
  * @version 1.0
  */
-public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVehicleEventHandler<CreateVehiclesEvent<D>> {
+public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVehicleEventHandler<D,CreateVehiclesEvent<D>> {
 
 	/**
 	 * Logger
@@ -109,7 +109,7 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
 					GEOMETRY_FACTORY.createPoint(
 						trip.getStartNode().getGeoLocation()))) {
 				// Create vehicle
-				Vehicle<? extends VehicleData,N,E> v = this.createVehicle(data, trip);
+				Vehicle<?> v = this.createVehicle(data, trip);
 	
 				// Schedule vehicle
 				this.scheduleVehicle(v, trip.getStartTime());

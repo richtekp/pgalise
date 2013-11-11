@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +98,7 @@ public class OCWebSocketServlet extends WebSocketServlet implements OCWebSocketS
 				try {
 					listener.handleNewUserEvent(user);
 				} catch (IOException e) {
-					Log.error("Exception", e);
+					LOG.error("Exception", e);
 				}
 			}
 		}

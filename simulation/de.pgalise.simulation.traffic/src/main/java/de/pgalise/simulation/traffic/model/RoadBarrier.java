@@ -18,6 +18,7 @@ package de.pgalise.simulation.traffic.model;
 
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import java.util.Set;
 
 /**
@@ -41,7 +42,7 @@ public class RoadBarrier {
 	/**
 	 * List of removed edges
 	 */
-	private Set<NavigationEdge<?,?>> edges;
+	private Set<TrafficEdge> edges;
 
 	/**
 	 * Blocked node
@@ -60,7 +61,7 @@ public class RoadBarrier {
 	 * @param end
 	 *            End timestamp of the road barrier
 	 */
-	public RoadBarrier(NavigationNode node, Set<NavigationEdge<?,?>> edges, long start, long end) {
+	public RoadBarrier(NavigationNode node, Set<TrafficEdge> edges, long start, long end) {
 		this.node = node;
 		this.edges = edges;
 		this.start = start;
@@ -83,11 +84,11 @@ public class RoadBarrier {
 		this.end = end;
 	}
 
-	public Set<NavigationEdge<?,?>> getEdges() {
+	public Set<TrafficEdge> getEdges() {
 		return edges;
 	}
 
-	public void setEdges(Set<NavigationEdge<?,?>> edges) {
+	public void setEdges(Set<TrafficEdge> edges) {
 		this.edges = edges;
 	}
 

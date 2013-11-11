@@ -22,14 +22,16 @@ import java.util.Random;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.AbstractVehicleEvent;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
@@ -52,7 +54,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas
  * @version 1.0
  */
-public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> extends AbstractTrafficEventHandler<E> implements VehicleEventHandler<E> {
+public abstract class AbstractVehicleEventHandler<D extends VehicleData, E extends VehicleEvent> extends AbstractTrafficEventHandler<D,E> implements VehicleEventHandler<E> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(AbstractVehicleEventHandler.class);
 
 	/**
@@ -75,7 +77,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 *            Traffic trip
 	 * @return Vehicle<? extends VehicleData>
 	 */
-	public Vehicle<? extends VehicleData> createVehicle(CreateRandomVehicleData data, TrafficTrip trip) {
+	public Vehicle<?> createVehicle(CreateRandomVehicleData data, TrafficTrip trip) {
 		switch (data.getVehicleInformation().getVehicleType()) {
 			case TRUCK:
 				return this.createTruck(trip, data.getVehicleInformation()
@@ -111,14 +113,9 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 */
 	public void scheduleVehicle(Vehicle<? extends VehicleData> vehicle, long startTime) {
 		if (vehicle != null) {
-			try {
-				ScheduleItem item = new ScheduleItem(vehicle, startTime, this.getResponsibleServer().getUpdateIntervall());
-				// item.setLastUpdate(startTime - this.getServer().getUpdateIntervall());
-				this.getResponsibleServer().getScheduler().scheduleItem(item);
-				// server.getScheduler().scheduleItem(new Item(v, trip.getStartTimeWayBack(), true));
-			} catch (IllegalAccessException e1) {
-				LOGGER.warn("see nested exception", e1);
-			}
+			ScheduleItem item = new DefaultScheduleItem(vehicle, startTime, this.getResponsibleServer().getUpdateIntervall());
+			// item.setLastUpdate(startTime - this.getServer().getUpdateIntervall());
+			this.getResponsibleServer().getScheduler().scheduleItem(item);
 		}
 	}
 
@@ -131,7 +128,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 */
 	private SensorHelper<?> getGPSSensor(List<SensorHelper<?>> sensors) {
 		for (SensorHelper<?> sensorHelper : sensors) {
-			SensorTypeEnum type = sensorHelper.getSensorType();
+			SensorType type = sensorHelper.getSensorType();
 			if (SensorTypeEnum.GPS.contains(type)) {
 				return sensorHelper;
 			}
@@ -158,11 +155,11 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 * @return bicycle
 	 */
 	protected Vehicle<BicycleData> createBike(TrafficTrip trip, String name, double velocity,
-			List<SensorHelper> sensorHelpers, boolean gpsActivated) {
+			List<SensorHelper<?>> sensorHelpers, boolean gpsActivated) {
 		Vehicle<BicycleData> bike = null;
 		TrafficTrip tmpTrip = trip;
 
-		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
+		List<TrafficEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
 
 		// check if path could not be computed between the nodes
 		if (path != null) {
@@ -205,12 +202,12 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 	 * @return Car
 	 */
 	protected Vehicle<CarData> createCar(final TrafficTrip trip, final String name,
-			final double velocity, final List<SensorHelper> sensorHelpers, final boolean gpsActivated) {
+			final double velocity, final List<SensorHelper<?>> sensorHelpers, final boolean gpsActivated) {
 		Vehicle<CarData> car = null;
 		TrafficTrip tmpTrip = trip;
 
 		// log.debug("Calculating route "+trip);
-		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
+		List<TrafficEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
 
 		// check if path could not be computed between the nodes
 		if (path != null) {
@@ -251,7 +248,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 		Vehicle<MotorcycleData> motorcycle = null;
 		TrafficTrip tmpTrip = trip;
 
-		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(
+		List<TrafficEdge> path = this.getResponsibleServer().getShortestPath(
 			tmpTrip.getStartNode(), 
 			tmpTrip.getTargetNode()
 		);
@@ -294,7 +291,7 @@ public abstract class AbstractVehicleEventHandler<E extends VehicleEvent<?>> ext
 		Vehicle<TruckData> truck = null;
 		TrafficTrip tmpTrip = trip;
 
-		List<NavigationEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
+		List<TrafficEdge> path = this.getResponsibleServer().getShortestPath(tmpTrip.getStartNode(), tmpTrip.getTargetNode());
 
 		// check if path could not be computed between the nodes
 		if (path != null) {

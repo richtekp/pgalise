@@ -16,57 +16,150 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.BusStop;
 import de.pgalise.simulation.traffic.BusTrip;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.traffic.BusStopTime;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 
 /**
  * 
  * @author marcus
  *
  */
-public interface BusStopTime {
+@Entity
+//@Table(name = "PGALISE.BUS_STOP_TIMES")
+public class BusStopTime extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 	
 	@JoinColumn(name = "TRIP_ID")
 	@OneToOne
 	private BusTrip busTrip;
 	
-	public T getBusTrip();
+	@JoinColumn(name = "STOP_ID")
+	@OneToOne
+	private BusStop busStop;
 	
-	public void setBusTrip(T busTrip) ;
+	@Column(name = "ARRIVAL_TIME")
+	@Temporal(TemporalType.TIME)
+	private Date arrivalTime;
 	
-	public S getStopId() ;
+	@Column(name = "DEPARTURE_TIME")
+	@Temporal(TemporalType.TIME)
+	private Date departureTime;
 	
-	public void setStopId(S busStop) ;
+	@Column(name = "STOP_SEQUENCE")
+	private int stopSequence;
 	
-	public Date getArrivalTime() ;
+	@Column(name = "PICKUP_TYPE")
+	private String pickupTime;
 	
-	public void setArrivalTime(Date arrivalTime) ;
+	@Column(name = "STOP_HEADSIGN")
+	private String stopHeadsign;
 	
-	public Date getDepartureTime() ;
+	@Column(name = "DROP_OFF_TYPE")
+	private String dropOffType;
 	
-	public void setDepartureTime(Date departureTime) ;
+	@Column(name = "SHAPE_DIST_TRAVELED")
+	private String shapeDistTraveled;
 	
-	public int getStopSequence() ;
+	public BusStopTime() {}
 
-	public void setStopSequence(int stopSequence) ;
+	public BusStopTime(BusTrip trip,
+			BusStop busStop, Date arrivalTime, Date departureTime,
+			int stopSequence, String pickupTime, String stopHeadsign,
+			String dropOffType, String shapeDistTraveled) {
+		this.busTrip = trip;
+		this.busStop = busStop;
+		this.arrivalTime = arrivalTime;
+		this.departureTime = departureTime;
+		this.stopSequence = stopSequence;
+		this.pickupTime = pickupTime;
+		this.stopHeadsign = stopHeadsign;
+		this.dropOffType = dropOffType;
+		this.shapeDistTraveled = shapeDistTraveled;
+	}
 
-	public String getPickupTime() ;
+	public BusTrip getBusTrip() {
+		return busTrip;
+	}
 
-	public void setPickupTime(String pickupTime) ;
+	public void setBusTrip(BusTrip busTrip) {
+		this.busTrip = busTrip
+;	}
 
-	public String getStopHeadsign() ;
+	public BusStop getStopId() {
+		return busStop;
+	}
 
-	public void setStopHeadsign(String stopHeadsign) ;
+	public void setStopId(BusStop busStop) {
+		this.busStop = busStop;
+	}
 
-	public String getDropOffType() ;
+	public Date getArrivalTime() {
+		return arrivalTime;
+	}
 
-	public void setDropOffType(String dropOffType) ;
+	public void setArrivalTime(Date arrivalTime) {
+		this.arrivalTime = arrivalTime;
+	}
 
-	public String getShapeDistTraveled() ;
+	public Date getDepartureTime() {
+		return departureTime;
+	}
 
-	public void setShapeDistTraveled(String shapeDistTraveled) ;	
+	public void setDepartureTime(Date departureTime) {
+		this.departureTime = departureTime;
+	}
+
+	public int getStopSequence() {
+		return stopSequence;
+	}
+
+	public void setStopSequence(int stopSequence) {
+		this.stopSequence = stopSequence;
+	}
+
+	public String getPickupTime() {
+		return pickupTime;
+	}
+
+	public void setPickupTime(String pickupTime) {
+		this.pickupTime = pickupTime;
+	}
+
+	public String getStopHeadsign() {
+		return stopHeadsign;
+	}
+
+	public void setStopHeadsign(String stopHeadsign) {
+		this.stopHeadsign = stopHeadsign;
+	}
+
+	public String getDropOffType() {
+		return dropOffType;
+	}
+
+	public void setDropOffType(String dropOffType) {
+		this.dropOffType = dropOffType;
+	}
+
+	public String getShapeDistTraveled() {
+		return shapeDistTraveled;
+	}
+
+	public void setShapeDistTraveled(String shapeDistTraveled) {
+		this.shapeDistTraveled = shapeDistTraveled;
+	}	
+	
 	
 }

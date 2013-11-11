@@ -22,6 +22,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLBicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
@@ -52,14 +54,14 @@ public class XMLBicycleFactoryTest {
 		/*
 		 * Test case
 		 */
-
+		TrafficGraph graph = new DefaultTrafficGraph();
 		BicycleFactory factory = new XMLBicycleFactory(random, XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH),
-				new DefaultTrafficGraphExtensions(random));
+				new DefaultTrafficGraphExtensions(random, graph));
 
 		Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle( null);
 		Assert.assertNotNull(vehicle1);
 
-		Vehicle<BicycleData> vehicle2 = factory.createBicycle( "bicycle001", null);
+		Vehicle<BicycleData> vehicle2 = factory.createBicycle(null);
 		Assert.assertNotNull(vehicle2);
 	}
 

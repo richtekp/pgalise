@@ -1,4 +1,4 @@
-/* 
+ /* 
  * Copyright 2013 PG Alise (http://www.pg-alise.de/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,7 @@ import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficNode;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -54,7 +54,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	/**
 	 * Last registered node of the graph
 	 */
-	private DefaultTrafficNode lastRegisteredNode;
+	private TrafficNode lastRegisteredNode;
 
 	/**
 	 * Constructor
@@ -86,7 +86,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	}
 
 	@Override
-	protected void passedNode(final DefaultTrafficNode passedNode) {
+	protected void passedNode(final TrafficNode passedNode) {
 
 		if ((this.getPreviousNode() == null) || (this.getNextNode() == null)) {
 			// car eliminates the NPE
@@ -139,7 +139,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	}
 
 	@Override
-	protected void postUpdate(DefaultTrafficNode passedNode) {
+	protected void postUpdate(TrafficNode passedNode) {
 		if (this.getVehicleState() != VehicleStateEnum.REACHED_TARGET) {
 			if (passedNode != null) {
 				if (this.getTrafficGraphExtensions().getPosition(passedNode).equals(this.getPosition())

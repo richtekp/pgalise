@@ -24,7 +24,9 @@ import java.util.List;
 import de.pgalise.simulation.service.Orientation;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
@@ -41,15 +43,15 @@ import javax.vecmath.Vector2d;
  */
 public class AdvancedCarFinder implements SurroundingCarsFinder {
 	@Override
-	public Set<Vehicle<? extends VehicleData>> findCars(Vehicle<? extends VehicleData> car, long time) {
+	public Set<Vehicle<?>> findCars(Vehicle<?> car, long time) {
 		TrafficGraphExtensions trafficGraphExtensions = car.getTrafficGraphExtensions();
 
-		Set<Vehicle<? extends VehicleData>> allCarsOnEdge;
+		Set<Vehicle<?>> allCarsOnEdge;
 		double visibilityRange = 0.075 * (time / 1000d);
-		NavigationNode fromNode = car.getCurrentNode();
-		NavigationNode toNode = car.getNextNode();
-		NavigationEdge<?,?> currentEdge = car.getCurrentEdge();
-		NavigationEdge<?,?> nextEdge = null;
+		TrafficNode fromNode = car.getCurrentNode();
+		TrafficNode toNode = car.getNextNode();
+		TrafficEdge currentEdge = car.getCurrentEdge();
+		TrafficEdge nextEdge = null;
 
 		// Visibility range erhoehen, da der Startpunkt auf der Edge liegt
 		// visibilityRange += car.getPosition().length();
@@ -73,7 +75,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		// AdvancedCarFinder.log.debug("Visibility range: " + visibilityRange);
 
 		// Liste mit Kanten
-		List<NavigationEdge<?,?>> edges = new ArrayList<>();
+		List<TrafficEdge> edges = new ArrayList<>();
 		edges.add(currentEdge);
 
 		double edgesLength = 0;
@@ -125,7 +127,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 	}
 
 	@Override
-	public Vehicle<? extends VehicleData> findNearestCar(Vehicle<? extends VehicleData> car, long time) {
+	public Vehicle<?> findNearestCar(Vehicle<?> car, long time) {
 		Set<Vehicle<? extends VehicleData>> vehicles = this.findCars(car, time);
 		Vector2d carPos = new Vector2d(car.getPosition().x, car.getPosition().y);
 

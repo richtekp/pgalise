@@ -17,6 +17,7 @@
 package de.pgalise.simulation.sensorFramework.internal;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import java.util.ArrayList;
 import java.util.Properties;
 import java.util.UUID;
@@ -93,7 +94,7 @@ public class SensorRegistryTest {
 		// add ten sensors to the SensorDomain
 		final int expected = 10;
 		for (int i = 0; i < expected; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
 		}
 		// assert
 		Assert.assertEquals(expected, this.sensorRegistry.numberOfSensors());
@@ -106,9 +107,9 @@ public class SensorRegistryTest {
 	public void testGetSensor() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
 		}
-		final Sensor sensor = new TestSensor(11, new Coordinate(887, 14));
+		final Sensor sensor = new TestSensor( new Coordinate(887, 14));
 		this.sensorRegistry.addSensor(sensor);
 		Assert.assertEquals(this.sensorRegistry.getSensor(sensor), sensor);
 	}
@@ -120,12 +121,12 @@ public class SensorRegistryTest {
 	public void testNumberOfSensors() {
 		final ArrayList<Sensor> sensors = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
-			sensors.add(this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i))));
+			sensors.add(this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i))));
 		}
 		for (int i = 0; i < (sensors.size() - 2); i++) {
 			this.sensorRegistry.removeSensor(sensors.get(i));
 		}
-		final Sensor sensor = new TestSensor(3, new Coordinate(12, 343));
+		final Sensor sensor = new TestSensor( new Coordinate(12, 343));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 		Assert.assertEquals(2, this.sensorRegistry.numberOfSensors());
@@ -135,9 +136,9 @@ public class SensorRegistryTest {
 	public void testRemoveSensor() {
 		// Remove
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
 		}
-		final Sensor sensor = new TestSensor(11, new Coordinate(23, 8438));
+		final Sensor sensor = new TestSensor( new Coordinate(23, 8438));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 
@@ -149,7 +150,7 @@ public class SensorRegistryTest {
 	public void testSetSensorsActivated() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
 		}
 		this.sensorRegistry.setSensorsActivated(true);
 		for (final Sensor s : this.sensorRegistry) {
@@ -166,7 +167,7 @@ public class SensorRegistryTest {
 	public void testUpdateSensors() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor(i + 1, new Coordinate(i, i)));
+			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
 		}
 		this.sensorRegistry.setSensorsActivated(false);
 		for (int i = 0; i < 100; i++) {
@@ -194,7 +195,7 @@ public class SensorRegistryTest {
  * @author Marcus
  * @version 1.0 (Mar 20, 2013)
  */
-class TestSensor extends Sensor {
+class TestSensor extends AbstractSensor {
 
 	/**
 	 * Sensor output
@@ -210,7 +211,7 @@ class TestSensor extends Sensor {
 	 *            Position as Coordinate
 	 * @throws IllegalArgumentException
 	 */
-	protected TestSensor(long sensorId, Coordinate position) throws IllegalArgumentException {
+	protected TestSensor(Coordinate position) throws IllegalArgumentException {
 		super(TestSensor.SENSOR_OUTPUT, position);
 	}
 

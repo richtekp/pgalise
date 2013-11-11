@@ -31,6 +31,8 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.TopoRadarSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.TrafficLightSensorData;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import javax.persistence.EntityManager;
 
 /**
  * Listens to the infoSphere output stream, collects the sensor data and updates the given
@@ -54,6 +56,8 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 	 * OC simulation controller
 	 */
 	private OCSimulationController ocSimulationController;
+	
+	private EntityManager entityManager;
 
 	/**
 	 * Default constructor
@@ -122,7 +126,9 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 						SensorData sensorData = null;
 
 						long currentTimestamp = Long.valueOf(text[0]);
-						sensorData = new SimpleSensorData(Integer.valueOf(text[2]), Integer.valueOf(text[1]),
+						Sensor sensor = entityManager.find(Sensor.class,
+							Long.valueOf(text[1]));
+						sensorData = new SimpleSensorData(Integer.valueOf(text[2]), sensor,
 								Double.valueOf(text[3]));
 						log.debug(new Date(currentTimestamp) + " SensorId: " + sensorData.getId() + " Sensortype: "
 								+ sensorData.getType());
@@ -195,7 +201,9 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 //							log.debug("Exception", e);
 //						}
 						long currentTimestamp = Long.valueOf(text[0]);
-						sensorData = new GPSSensorData(Integer.valueOf(text[2]), Integer.valueOf(text[1]),
+						Sensor sensor = entityManager.find(Sensor.class,
+							Long.valueOf(text[1]));
+						sensorData = new GPSSensorData(Integer.valueOf(text[2]), sensor,
 								Double.valueOf(text[3]), Double.valueOf(text[4]),
 								0d, 0, 0, 0, 0, 0l);
 //								Double.valueOf(text[5]), Integer.valueOf(text[6]),
@@ -263,7 +271,9 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 						SensorData sensorData = null;
 
 						long currentTimestamp = Long.valueOf(text[0]);
-						sensorData = new TopoRadarSensorData(Integer.valueOf(text[2]), Integer.valueOf(text[1]),
+						Sensor sensor = entityManager.find(Sensor.class,
+							Long.valueOf(text[1]));
+						sensorData = new TopoRadarSensorData(Integer.valueOf(text[2]), sensor,
 								Integer.valueOf(text[3]), Integer.valueOf(text[4]), Integer.valueOf(text[5]),
 								Integer.valueOf(text[6]));
 						log.debug(new Date(currentTimestamp) + " SensorId: " + sensorData.getId() + " Sensortype: "
@@ -328,7 +338,9 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 						SensorData sensorData = null;
 
 						long currentTimestamp = Long.valueOf(text[0]);
-						sensorData = new TrafficLightSensorData(Integer.valueOf(text[6]), Integer.valueOf(text[5]),
+						Sensor sensor = entityManager.find(Sensor.class,
+							Long.valueOf(text[6]));
+						sensorData = new TrafficLightSensorData(sensor, Integer.valueOf(text[5]),
 								Double.valueOf(text[3]), Double.valueOf(text[4]), Integer.valueOf(text[1]));
 						log.info(new Date(currentTimestamp) + " SensorId: " + sensorData.getId() + " Sensortype: "
 								+ sensorData.getType());
