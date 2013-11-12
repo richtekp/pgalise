@@ -16,11 +16,6 @@
  
 package de.pgalise.simulation.traffic.server.scheduler;
 
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-
 
 /**
  * The ScheduleHandler can be used to inform components about scheduling event

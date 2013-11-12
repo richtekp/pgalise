@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.traffic.server.scheduler;
 
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
-
 /**
  * To prohibit other components to manipulate the schedule plan
  * during the iterating through the expired items the Administration class was introduced.

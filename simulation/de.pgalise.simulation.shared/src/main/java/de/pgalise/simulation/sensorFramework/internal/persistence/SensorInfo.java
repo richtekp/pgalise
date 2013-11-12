@@ -17,7 +17,6 @@ import javax.persistence.Table;
  * @version 1.0 (Aug 29, 2012)
  */
 @Entity
-@Table(name = "PGALISE.SENSOR")
 public class SensorInfo extends AbstractIdentifiable {
 	private static final long serialVersionUID = 1L;
 	/**

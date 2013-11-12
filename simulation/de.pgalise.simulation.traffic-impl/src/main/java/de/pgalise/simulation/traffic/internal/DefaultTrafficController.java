@@ -57,6 +57,7 @@ import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
@@ -384,7 +385,7 @@ public class DefaultTrafficController<
 
 			@Override
 			public String getName() {
-				return ServiceDictionary.TRAFFIC_SERVER;
+				return TrafficServiceDictionary.TRAFFIC_SERVER;
 			}
 
 			@Override

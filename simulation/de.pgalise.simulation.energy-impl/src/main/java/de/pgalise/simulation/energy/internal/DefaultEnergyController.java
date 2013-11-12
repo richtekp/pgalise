@@ -183,11 +183,15 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 	private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap;
 	
 	private InfrastructureInitParameter initParameter;
+
+	protected DefaultEnergyController() {
+	}
 	
 	/**
 	 * Default
 	 */
-	public DefaultEnergyController() {
+	public DefaultEnergyController(CityInfrastructureData cityInfrastructureData) {
+		this.cityInfrastructure = cityInfrastructureData;
 		this.buildingsMap = new HashMap<>();
 	}
 

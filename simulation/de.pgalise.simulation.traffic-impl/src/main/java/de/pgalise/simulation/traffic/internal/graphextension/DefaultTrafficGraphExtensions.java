@@ -75,7 +75,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficGraphExtensions")
 @Local(TrafficGraphExtensions.class)
-public class DefaultTrafficGraphExtensions<D extends VehicleData> extends DefaultGraphExtensions<D> implements TrafficGraphExtensions {
+public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implements TrafficGraphExtensions {
 	private static final Logger log = LoggerFactory.getLogger(DefaultTrafficGraphExtensions.class);
 
 	/**

@@ -8,6 +8,6 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public interface AmenityTag {
+public interface AmenityTag extends BaseTag {
 	
 }

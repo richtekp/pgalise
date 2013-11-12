@@ -49,6 +49,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -66,6 +67,7 @@ import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  * JUnit Testcases for WeatherController
@@ -75,6 +77,7 @@ import org.junit.BeforeClass;
  */
 @LocalClient
 @ManagedBean
+@Ignore
 public class DefaultWeatherControllerTest {
 	private static EJBContainer CONTAINER;
 	@PersistenceUnit(unitName = "weather_test")
@@ -153,7 +156,7 @@ public class DefaultWeatherControllerTest {
 		ServerConfiguration conf = new ServerConfiguration();
 		List<ServerConfigurationEntity> entities = new ArrayList<>(2);
 		entities.add(new ServerConfigurationEntity(ServiceDictionary.RANDOM_SEED_SERVICE));
-		entities.add(new ServerConfigurationEntity(ServiceDictionary.WEATHER_CONTROLLER));
+		entities.add(new ServerConfigurationEntity(WeatherServiceDictionary.WEATHER_CONTROLLER));
 		conf.getConfiguration().put("127.0.0.1:8081", entities);
 
 		return conf;

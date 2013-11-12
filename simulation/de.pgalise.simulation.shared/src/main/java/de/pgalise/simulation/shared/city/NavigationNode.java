@@ -5,20 +5,19 @@
 package de.pgalise.simulation.shared.city;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.city.CityNodeTag;
-import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import java.util.Map;
 import java.util.Set;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  *
  * @author richter
  */
+@Entity
 public class NavigationNode extends AbstractIdentifiable {
 	private static final long serialVersionUID = 1L;
 	/**
@@ -28,20 +27,34 @@ public class NavigationNode extends AbstractIdentifiable {
 	
 	@Embedded
 	private Coordinate geoLocation;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<TourismTag> tourismTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<ServiceTag> serviceTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<SportTag> sportTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<SchoolTag> schoolTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<RepairTag> repairTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<AttractionTag> attractionTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<ShopTag> shopTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<EmergencyServiceTag> emergencyServiceTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<CraftTag> craftTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<LeisureTag> leisureTags;
 	private Boolean military = false;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<PublicTransportTag> publicTransportTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<GamblingTag> gamblingTags; 
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<AmenityTag> amenityTags;
+	@ElementCollection(targetClass = BaseTag.class)
 	private Set<LanduseTag> landuseTags;
 	private boolean office = false; // this should be in Building (research OSM specification what office is supposed to mean)
 

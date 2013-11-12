@@ -8,6 +8,6 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public interface RepairTag {
+public interface RepairTag  extends BaseTag {
 	
 }

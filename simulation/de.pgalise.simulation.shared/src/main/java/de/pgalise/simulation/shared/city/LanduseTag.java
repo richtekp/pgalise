@@ -8,6 +8,6 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public interface LanduseTag extends CityNodeTag {
+public interface LanduseTag extends BaseTag {
 	
 }

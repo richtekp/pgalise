@@ -22,6 +22,14 @@
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-spatial</artifactId>
         </dependency>
+				<dependency>
+					<groupId>postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+				</dependency>
+			<dependency>
+				<groupId>org.postgis</groupId>
+				<artifactId>postgis-jdbc</artifactId>
+			</dependency>
         <dependency>
             <groupId>java3d</groupId>
             <artifactId>vecmath</artifactId>
@@ -72,21 +80,32 @@
             <scope>test</scope>
             <type>jar</type>
         </dependency>
-				<dependency>
-					<groupId>org.apache.openejb</groupId>
-					<artifactId>openejb-client</artifactId>
-        <version>4.6.0-SNAPSHOT</version>  
-				</dependency>
-<dependency>
-	<groupId>javax</groupId>
-	<artifactId>javaee-web-api</artifactId>
-	<version>6.0</version>
-	<scope>provided</scope>
-</dependency>
         <dependency>  
         <groupId>org.apache.openejb</groupId>  
         <artifactId>openejb-core</artifactId>  
-        <version>4.6.0-SNAPSHOT</version>  
-    </dependency>  
+        <version>4.5.2</version>  
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.openejb</groupId>
+						<artifactId>javaee-api</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-jdk14</artifactId>
+					</exclusion>
+				</exclusions> 
+    </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
     </dependencies>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-ejb-plugin</artifactId>
+				</plugin>
+			</plugins>
+		</build>
 </project>

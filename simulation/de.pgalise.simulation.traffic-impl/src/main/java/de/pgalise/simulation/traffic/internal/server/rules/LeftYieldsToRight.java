@@ -85,7 +85,7 @@ public class LeftYieldsToRight<D extends VehicleData> extends AbstractTrafficRul
 	/**
 	 * 
 	 */
-	private final DefaultTrafficGraphExtensions<D> trafficGraphExtensions;
+	private final DefaultTrafficGraphExtensions trafficGraphExtensions;
 
 	/**
 	 * Creates a {@link LeftYieldsToRight} with the passed arguments.
@@ -101,7 +101,7 @@ public class LeftYieldsToRight<D extends VehicleData> extends AbstractTrafficRul
 	 *             if the passed {@link Node} doesn't have 3 or 4 {@link Edge}s
 	 */
 	public LeftYieldsToRight(final TrafficNode node, TrafficGraph graph, final RandomSeedService randomSeedService,
-			final DefaultTrafficGraphExtensions<D> trafficGraphExtensions) throws IllegalArgumentException, IllegalStateException {
+			final DefaultTrafficGraphExtensions trafficGraphExtensions) throws IllegalArgumentException, IllegalStateException {
 		super(node, graph,null);
 		if (randomSeedService == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("randomSeedService"));

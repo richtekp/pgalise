@@ -6,16 +6,16 @@
 
 package de.pgalise.simulation.traffic.server.sensor;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.persistence.Identifiable;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  *
  * @author richter
  */
-public interface StaticTrafficSensor extends Identifiable {
+public interface StaticTrafficSensor extends Sensor<TrafficEvent> {
 
 	/**
 	 * Register vehicle on the node

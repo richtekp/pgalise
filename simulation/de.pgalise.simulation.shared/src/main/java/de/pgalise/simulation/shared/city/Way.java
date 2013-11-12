@@ -28,7 +28,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
@@ -41,9 +45,12 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 @Entity
 public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends AbstractIdentifiable {
 	private static final long serialVersionUID = 2942128399393060939L;
+	@OneToMany(targetEntity = NavigationEdge.class)
 	private List<E> edgeList;
 	private String streetName;
+	@ElementCollection
 	private Set<WayTag> tags;
+	@ElementCollection
 	private Set<LanduseTag> landuseTags;
 	
 	/**

@@ -16,12 +16,8 @@
  
 package de.pgalise.simulation.traffic.server.jam;
 
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import java.util.List;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Set;
 
 /**

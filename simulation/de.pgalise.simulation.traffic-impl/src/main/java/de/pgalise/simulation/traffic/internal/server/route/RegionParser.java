@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic.internal.server.route;
 
-import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
 import de.pgalise.simulation.shared.city.LanduseTagEnum;
 import java.awt.Polygon;
 import java.util.ArrayList;

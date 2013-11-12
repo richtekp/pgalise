@@ -34,7 +34,14 @@ import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.it.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
+import javax.annotation.ManagedBean;
+import javax.ejb.embeddable.EJBContainer;
+import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
+import org.junit.Before;
+import org.junit.Ignore;
 
 /**
  * Tests the synchronization of the {@link EnergyConsumptionManager}
@@ -43,7 +50,11 @@ import de.pgalise.simulation.shared.city.Building;
  * @author Timo
  * @version 1.0 (Oct 29, 2012)
  */
+@LocalClient
+@ManagedBean
+@Ignore //@loads EnergyProfileLocal as EJB which doesn't have an implementation which is annotated as EJB (how did this work before?)
 public class EnergyConsumptionManagerSyncTest {
+	private EJBContainer container;
 	/**
 	 * End timestamp
 	 */
@@ -73,8 +84,12 @@ public class EnergyConsumptionManagerSyncTest {
 	 */
 	private static final int testNumberOfThreads = 100;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	@SuppressWarnings("LeakingThisInConstructor")
+	public EnergyConsumptionManagerSyncTest() throws NamingException {
+		container = TestUtils.getContainer();
+		container.getContext().bind("inject", this);
+		
+		
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
 		List<Building> buildingList = new ArrayList<>();
 

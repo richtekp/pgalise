@@ -4,33 +4,18 @@
  */
 package de.pgalise.simulation.traffic;
 
-import com.javadocmd.simplelatlng.LatLng;
-import com.javadocmd.simplelatlng.LatLngTool;
-import com.javadocmd.simplelatlng.util.LengthUnit;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.LineString;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.shared.city.Way;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-import javax.vecmath.Vector2d;
 
 /**
  * represents an immutable edge in the {@link TrafficGraph}. <tt>NavigationNode</tt>s of the edge are obliged to have {@link NavigationNode#NODE_RADIUS} distance.
@@ -46,13 +31,16 @@ public class TrafficEdge extends NavigationEdge<TrafficNode> {
 //		Set<Field> toStringFieldsExcludes = new HashSet<>(AbstractIdentifiable.TO_STRING_FIELDS_EXCLUDES);
 //		TO_STRING_FIELDS_EXCLUDES_ABSTRACT_NAVIGATION_EDGE = toStringFieldsExcludes;
 //	}
+	@Transient
 	private Set<Vehicle<?>> vehicles = new HashSet<>(16);
 	
+	@OneToOne
 	private TrafficEdge oncomingTrafficEdge;
 	
 	private boolean oncomingTrafficEdgeReachable = true;
 	
 	private double maxSpeed;
+	@ManyToOne()
 	private Way<?,?> way;
 	private boolean priorityRoad;
 	private boolean carsAllowed;

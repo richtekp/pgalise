@@ -18,15 +18,10 @@ package de.pgalise.simulation.traffic.server;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**

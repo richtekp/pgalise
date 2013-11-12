@@ -6,7 +6,6 @@ package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.Way;
 import java.util.List;
-import org.jgrapht.DirectedGraph;
 
 /**
  *

@@ -16,9 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 

@@ -4,34 +4,18 @@
  */
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.NavigationNode;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.city.CityNodeTag;
-import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
-import de.pgalise.simulation.shared.city.LanduseTagEnum;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
-import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.MapKey;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 /**
@@ -40,8 +24,7 @@ import javax.persistence.Transient;
  * navigate from one {@link NavigationNode} to another. 
  * <tt>NavigationNode</tt>s are supposed to be of no interest as a navigation target.<br/>
  * <tt>NavigationNode</tt> uses a String {@link Id} which will be initialized with a the return of {@link UUID#randomUUID() } in order to avoid having two properties with the same semantic and still be able to implement {@link Node#getId() }.<br/>
- * A node is considered to be reached if the difference of its location and another point is less or equals than {@link NavigationNode#NODE_RADIUS}. Any <tt>NavigationNode</tt> is obliged to have a distance of {@link #NODE_RADIUS} (exclusive) to any other different node. This constraint will be not checked at creation of <tt>NavigationNode</tt>s, but in {@link NavigationEdge} and possibly other data structures.
- * @param <?> 
+ * A node is considered to be reached if the difference of its location and another point is less or equals than {@link NavigationNode#NODE_RADIUS}. Any <tt>NavigationNode</tt> is obliged to have a distance of {@link #NODE_RADIUS} (exclusive) to any other different node. This constraint will be not checked at creation of <tt>NavigationNode</tt>s, but in {@link NavigationEdge} and possibly other data structures. 
  * @author richter
  */
 /*
@@ -57,9 +40,13 @@ public class TrafficNode extends NavigationNode  {
 	
 	private boolean onStreet;
 	private boolean roundabout;
+	@Transient
 	private Set<StaticTrafficSensor> sensors;
+	@Transient
 	private Set<Vehicle<?>> vehicles;
+	@Transient
 	private TrafficRule trafficRule;
+	@OneToOne
 	private BusStop busStop;
 
 	protected TrafficNode() {
@@ -100,7 +87,6 @@ public class TrafficNode extends NavigationNode  {
 		this.trafficRule = trafficRule;
 	}
 
-	@Transient
 	public TrafficRule getTrafficRule() {
 		return trafficRule;
 	}

@@ -17,16 +17,9 @@
 package de.pgalise.simulation.shared.city;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.AmenityTag;
-import de.pgalise.simulation.shared.city.AmenityTagEnum;
-import de.pgalise.simulation.shared.city.CityNodeTag;
-import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.Position;
-import java.awt.Point;
-import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Transient;

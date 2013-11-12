@@ -122,7 +122,7 @@ public class CSVEnergyConsumptionManager implements EnergyConsumptionManagerLoca
 	/**
 	 * Loaded energy profile
 	 */
-	private Map<EnergyProfileEnum, EnergyProfile> profiles;
+	private final Map<EnergyProfileEnum, EnergyProfile> profiles;
 
 	/**
 	 * Properties

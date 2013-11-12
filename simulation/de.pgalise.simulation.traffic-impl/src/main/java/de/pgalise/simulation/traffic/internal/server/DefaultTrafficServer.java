@@ -95,6 +95,7 @@ import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
@@ -378,7 +379,7 @@ public class DefaultTrafficServer extends AbstractController<
 		this.sensorRegistry = sensorRegistry;
 		this.sensorFactory = sensorFactory;
 
-		this.trafficGraphExtensions = new DefaultTrafficGraphExtensions<>(serviceDictionary.getRandomSeedService(), graph);
+		this.trafficGraphExtensions = new DefaultTrafficGraphExtensions(serviceDictionary.getRandomSeedService(), graph);
 
 		this.trafficEventHandlerManager = eventHandlerManager;
 		this.vehicleEventHandlerManager = new DefaultVehicleEventHandlerManager();
@@ -614,7 +615,7 @@ public class DefaultTrafficServer extends AbstractController<
 
 			@Override
 			public String getName() {
-				return ServiceDictionary.TRAFFIC_SERVER;
+				return TrafficServiceDictionary.TRAFFIC_SERVER;
 			}
 
 			@Override

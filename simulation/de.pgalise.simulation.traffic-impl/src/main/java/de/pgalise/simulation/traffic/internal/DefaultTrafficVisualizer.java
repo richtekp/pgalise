@@ -62,7 +62,7 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 		init();
 	}
 
-	public DefaultTrafficVisualizer(int width, int height, DefaultTrafficGraph graph, TrafficGraphExtensions ee) {
+	public DefaultTrafficVisualizer(int width, int height, TrafficGraph graph, TrafficGraphExtensions ee) {
 		super(width, height, graph);
 		this.trafficGraphExtensions = ee;
 		init();

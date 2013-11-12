@@ -5,7 +5,6 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import javax.persistence.OneToOne;
 

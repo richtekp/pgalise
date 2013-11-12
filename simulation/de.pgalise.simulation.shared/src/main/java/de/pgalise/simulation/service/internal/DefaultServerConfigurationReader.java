@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.service.internal.manager;
+package de.pgalise.simulation.service.internal;
 
 import java.util.List;
 import java.util.Map;
@@ -47,7 +47,7 @@ import java.util.ArrayList;
  */
 @Lock(LockType.READ)
 @Local
-@Singleton(name = "de.pgalise.simulation.service.manager.ServerConfigurationReader")
+@Singleton(mappedName = "de.pgalise.simulation.service.manager.ServerConfigurationReader", name = "de.pgalise.simulation.service.manager.ServerConfigurationReader")
 public class DefaultServerConfigurationReader implements ServerConfigurationReader<Service> {
 
 	/**
@@ -86,8 +86,7 @@ public class DefaultServerConfigurationReader implements ServerConfigurationRead
 			String host = localConfigReader.getProperty(ServerConfigurationIdentifier.SERVER_HOST);
 
 			String ejbdProtocolEnabled = localConfigReader.getProperty(ServerConfigurationIdentifier.EJBD_PROTOCOL_ENABLED);
-			boolean useEjbdProtocol = (ejbdProtocolEnabled != null && ejbdProtocolEnabled.equals("true")) ? true
-					: false;
+			boolean useEjbdProtocol = (ejbdProtocolEnabled != null && ejbdProtocolEnabled.equals("true"));
 
 			String lip = host.split(":")[0];
 			String lport = host.split(":")[1];

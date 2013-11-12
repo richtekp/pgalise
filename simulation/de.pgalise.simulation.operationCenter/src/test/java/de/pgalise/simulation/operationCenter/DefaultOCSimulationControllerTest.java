@@ -55,12 +55,14 @@ import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * J-Unit tests for {@link DefaultOCSimulationController}
@@ -181,11 +183,13 @@ public class DefaultOCSimulationControllerTest {
 	@BeforeClass
 	public static void setUp() {
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST = new LinkedList<>();
-		Sensor sensor = new GpsSensor(null,
+		Output output = EasyMock.createNiceMock(Output.class);
+		GpsInterferer gpsInterferer = EasyMock.createNiceMock(GpsInterferer.class);
+		Sensor sensor = new GpsSensor(output,
 			null,
 			SensorTypeEnum.RAIN,
 			null,
-			null);
+			gpsInterferer);
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(
 			new SensorHelper<>(
 				sensor, 

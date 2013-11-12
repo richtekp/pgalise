@@ -43,7 +43,7 @@ import javax.persistence.Query;
  * @version 1.0
  */
 @Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.sensorFramework.SensorRegistry")
+@Singleton(mappedName = "de.pgalise.simulation.sensorFramework.SensorRegistry", name = "de.pgalise.simulation.sensorFramework.SensorRegistry")
 @Local
 public class DefaultSensorRegistry implements SensorRegistry {
 	private static Set<Long> usedIds = new HashSet<>(16);

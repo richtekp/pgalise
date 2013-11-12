@@ -67,7 +67,7 @@ public class DefaultOSMCityInfrastructureDataService {
 	 * @return CityInfrastructureData
 	 * @throws IOException
 	 */
-	public CityInfrastructureData createCityInfrastructureData(File osm, File busstops,
+	public TrafficInfrastructureData createCityInfrastructureData(File osm, File busstops,
 			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
 
 		Matcher osmNameMatcher = fileNamePattern.matcher(osm.getName());
@@ -86,7 +86,7 @@ public class DefaultOSMCityInfrastructureDataService {
 			try {
 				fis = new FileInputStream(cityInfrastructuraDataFile.getAbsolutePath());
 				ois = new ObjectInputStream(fis);
-				return (CityInfrastructureData) ois.readObject();
+				return (TrafficInfrastructureData) ois.readObject();
 			} catch (Exception e) {
 				log.warn(e.getLocalizedMessage());
 			} finally {
@@ -107,7 +107,7 @@ public class DefaultOSMCityInfrastructureDataService {
 			cityInfrastructuraDataFile.delete();
 		}
 		TrafficGraph graph = new DefaultTrafficGraph();
-		CityInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(
+		TrafficInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(
 			new FileInputStream(osm),
 				new FileInputStream(busstops), buildingEnergyProfileStrategy, graph);
 

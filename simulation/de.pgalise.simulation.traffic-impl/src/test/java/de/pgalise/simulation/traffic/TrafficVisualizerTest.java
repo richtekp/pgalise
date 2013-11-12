@@ -31,6 +31,7 @@
 //
 //import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 //import de.pgalise.simulation.shared.event.EventList;
+//import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 //import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 //import de.pgalise.simulation.traffic.internal.DefaultTrafficVisualizer;
 //import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
@@ -44,6 +45,7 @@
 //import de.pgalise.util.generic.MutableBoolean;
 //import de.pgalise.util.generic.function.Function;
 //import javax.vecmath.Vector2d;
+//import org.jgrapht.alg.DijkstraShortestPath;
 //
 ///**
 // * Test for the Traffic Visualizer. Opens a window and draws a graph with driving vehicles.
@@ -53,6 +55,14 @@
 // */
 //@Ignore
 //public class TrafficVisualizerTest {
+//	private TrafficEdge ab,bc;
+//	private TrafficGraph graph = new DefaultTrafficGraph();
+//	private NavigationNode a = new NavigationNode(new Coordinate( 1, 1));
+//	private NavigationNode b = new NavigationNode(new Coordinate( 2, 2));
+//	private NavigationNode c = new NavigationNode(new Coordinate( 4, 7));
+//	private NavigationNode d = new NavigationNode(new Coordinate( 9, 4));
+//	private NavigationNode e = new NavigationNode(new Coordinate( 11, 7));
+//	private NavigationNode f = new NavigationNode(new Coordinate( 2, 10));
 //
 //	/**
 //	 * CarFactory
@@ -68,7 +78,8 @@
 //	@Before
 //	public void init() {
 //		RandomSeedService rss = new DefaultRandomSeedService();
-//		ee = new DefaultTrafficGraphExtensions(rss);
+//		TrafficGraph graph = new DefaultTrafficGraph();
+//		ee = new DefaultTrafficGraphExtensions(rss, graph);
 //		rss.init(System.currentTimeMillis());
 //
 //		factory = new ExtendedXMLVehicleFactory(rss, BaseVehicle.class.getResourceAsStream("/defaultvehicles.xml"),
@@ -79,9 +90,8 @@
 //	public void vizualizerTest() throws InterruptedException {
 //		final MutableBoolean exit = new MutableBoolean();
 //		exit.setValue(false);
-//		final TrafficGraph<?,?> graph = createGraph();
-//		algo.init(graph);
-//		final List<Vehicle<? extends VehicleData,N,E>> vehicles = createVehicles(graph);
+//		final TrafficGraph graph = createGraph();
+//		final List<Vehicle<?>> vehicles = createVehicles(graph);
 //
 //		RandomSeedService seedService = new DefaultRandomSeedService();
 //		seedService.init(System.currentTimeMillis());
@@ -100,15 +110,15 @@
 //			public void delegate() {
 //				long allTime = 0;
 //				for (int i = 0; i < 200; i++) {
-//					if (vehicles.size() == 0) {
+//					if (vehicles.isEmpty()) {
 //						break;
 //					}
 //					long currentTime = 1000;
 //					allTime += currentTime;
-//					for (Iterator<Vehicle<? extends VehicleData,N,E>> it = vehicles.iterator(); it.hasNext();) {
-//						Vehicle<? extends VehicleData,N,E> v = it.next();
+//					for (Iterator<Vehicle<?>> it = vehicles.iterator(); it.hasNext();) {
+//						Vehicle<?> v = it.next();
 //						nasch.update(v, currentTime, graph, 0.5);
-//						for (final NavigationNode node : graph) {
+//						for (final TrafficNode node : graph.getVertexSet()) {
 //							try {
 //								ee.getTrafficRule(node).update(
 //										new EventList(null, allTime, UUID.randomUUID()));
@@ -148,50 +158,50 @@
 //	 * @return List of vehicles which got positioned on the graph
 //	 * @throws InterruptedException
 //	 */
-//	private List<Vehicle<? extends VehicleData,N,E>> createVehicles(TrafficGraph<?,?> graph) throws InterruptedException {
+//	private List<Vehicle<?>> createVehicles(TrafficGraph graph) throws InterruptedException {
 //
 //		// Sets the max speed of the edges
-//		ee.setMaxSpeed(graph.getEdge("ab"), 50.0);
-//		ee.setMaxSpeed(graph.getEdge("bc"), 120.0);
+//		ab.setMaxSpeed(50.0);
+//		bc.setMaxSpeed(120.0);
 //
 //		// Creates the default car factory
 //
 //		// Creating the cars
-//		Vehicle<? extends VehicleData,N,E> carA = factory.createRandomCar( null);
+//		Vehicle<?> carA = factory.createRandomCar( null);
 //		carA.setTrafficGraphExtensions(ee);
 //		carA.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 //		carA.setVelocity(27);
 //		carA.setName("carA");
 //
-//		Vehicle<? extends VehicleData,N,E> carB = factory.createRandomCar( null);
+//		Vehicle<?> carB = factory.createRandomCar( null);
 //		carB.setTrafficGraphExtensions(ee);
 //		carB.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 //
-//		Vehicle<? extends VehicleData,N,E> carC = factory.createRandomCar( null);
+//		Vehicle<?> carC = factory.createRandomCar( null);
 //		carC.setTrafficGraphExtensions(ee);
 //		carC.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 //
-//		Vehicle<? extends VehicleData,N,E> carD = factory.createRandomCar( null);
+//		Vehicle<?> carD = factory.createRandomCar( null);
 //		carD.setTrafficGraphExtensions(ee);
 //		carD.setPath(getRoute(graph.getNode("a"), graph.getNode("e")));
 //
-//		Vehicle<? extends VehicleData,N,E> carE = factory.createRandomCar( null);
+//		Vehicle<?> carE = factory.createRandomCar( null);
 //		carE.setTrafficGraphExtensions(ee);
 //		carE.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 //
-//		Vehicle<? extends VehicleData,N,E> carF = factory.createRandomCar( null);
+//		Vehicle<?> carF = factory.createRandomCar( null);
 //		carF.setTrafficGraphExtensions(ee);
 //		carF.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 //
-//		Vehicle<? extends VehicleData,N,E> carG = factory.createRandomCar( null);
+//		Vehicle<?> carG = factory.createRandomCar( null);
 //		carG.setTrafficGraphExtensions(ee);
 //		carG.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 //
-//		Vehicle<? extends VehicleData,N,E> carH = factory.createRandomCar( null);
+//		Vehicle<?> carH = factory.createRandomCar( null);
 //		carH.setTrafficGraphExtensions(ee);
 //		carH.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 //
-//		Vehicle<? extends VehicleData,N,E> carI = factory.createRandomCar( null);
+//		Vehicle<?> carI = factory.createRandomCar( null);
 //		carI.setTrafficGraphExtensions(ee);
 //		carI.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 //
@@ -265,7 +275,7 @@
 //		carI.setName("carI");
 //		carI.setVelocity(10);
 //
-//		List<Vehicle<? extends VehicleData,N,E>> vehicles = new LinkedList<>();
+//		List<Vehicle<?>> vehicles = new LinkedList<>();
 //		vehicles.add(carA);
 //		vehicles.add(carB);
 //		vehicles.add(carC);
@@ -284,29 +294,22 @@
 //	 * 
 //	 * @return created graph
 //	 */
-//	private TrafficGraph<?,?> createGraph() {
-//		TrafficGraph<?,?> graph = new TrafficGraph<>(TrafficEdge.class);
-//		NavigationNode a = this.addNode(graph, "a", 1, 1);
-//		NavigationNode b = this.addNode(graph, "b", 2, 2);
-//		NavigationNode c = this.addNode(graph, "c", 4, 7);
-//		NavigationNode d = this.addNode(graph, "d", 9, 4);
-//		NavigationNode e = this.addNode(graph, "e", 11, 7);
-//		NavigationNode f = this.addNode(graph, "f", 2, 10);
+//	private TrafficGraph createGraph() {
 //
-//		NavigationEdge<?.?> ab = null;
+//		NavigationEdge ab = null;
 //		ab = graph.addEdge("ab", a, b);
 //		ab.setAttribute("weight", 1);
-//		NavigationEdge<?.?> bc = null;
+//		NavigationEdge bc = null;
 //		bc = graph.addEdge("bc", b, c);
 //		bc.setAttribute("weight", 1);
-//		NavigationEdge<?.?> cd = null;
+//		NavigationEdge cd = null;
 //		cd = graph.addEdge("cd", c, d);
 //		ee.setPriorityRoad(cd, true);
 //		cd.setAttribute("weight", 1);
-//		NavigationEdge<?.?> de = null;
+//		NavigationEdge de = null;
 //		de = graph.addEdge("de", d, e);
 //		de.setAttribute("weight", 1);
-//		NavigationEdge<?.?> fc = null;
+//		NavigationEdge fc = null;
 //		fc = graph.addEdge("fc", f, c);
 //		ee.setPriorityRoad(fc, true);
 //		fc.setAttribute("weight", 1);
@@ -326,7 +329,7 @@
 //	 *            Y-Position of the node
 //	 * @return The added node
 //	 */
-//	private NavigationNode addNode(TrafficGraph<?,?> graph, String id, double x, double y) {
+//	private NavigationNode addNode(TrafficGraph graph, String id, double x, double y) {
 //		NavigationNode node = graph.addNode(id);
 //		node.setAttribute("position", new Vector2d(x, y));
 //		return node;
@@ -341,7 +344,12 @@
 //	 *            Destination node
 //	 * @return Path
 //	 */
-//	protected Path getRoute(NavigationNode start, NavigationNode dest) {
+//	protected List<NavigationEdge> getRoute(NavigationNode start, NavigationNode dest) {
+//		DijkstraShortestPath algo = new DijkstraShortestPath(null,
+//			start,
+//			dest),
+//			start,
+//			dest)
 //		((Dijkstra) algo).setSource(start);
 //		algo.compute();
 //

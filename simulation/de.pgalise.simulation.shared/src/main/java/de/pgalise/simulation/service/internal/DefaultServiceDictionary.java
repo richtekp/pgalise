@@ -37,7 +37,6 @@ import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.ServerConfiguration;
-import java.util.Set;
 import javax.ejb.Remote;
 
 /**
@@ -46,7 +45,7 @@ import javax.ejb.Remote;
  *
  */
 @Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.service.ServiceDictionary")
+@Singleton(mappedName = "de.pgalise.simulation.service.ServiceDictionary", name = "de.pgalise.simulation.service.ServiceDictionary")
 @Remote
 public class DefaultServiceDictionary implements ServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultServiceDictionary.class);
@@ -70,47 +69,11 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 	public void init(ServerConfiguration serverConfig) {
 		List<ServiceHandler<Service>> list = new ArrayList<>(7);
 		services.clear();
-		list.add(new ServiceHandler<Service>() {
-
-			@Override
-			public String getName() {
-				return ServiceDictionary.WEATHER_CONTROLLER;
-			}
-
-			@Override
-			public void handle(String server,
-				Service service) {
-				log.info(String.format("Using %s on server %s", getName(), server));
-				services.put(getName(), service);
-			}
-		});
-		 list.add(new ServiceHandler<Service>() {
-
-			@Override
-			public String getName() {
-				return ServiceDictionary.ENERGY_CONTROLLER;
-			}
-
-			@Override
-			public void handle(String server,
-				Service service) {
-				log.info(String.format("Using %s on server %s", getName(), server));
-				services.put(getName(), service);
-			}
-		});
-		list.add(new ServiceHandler<Service>() {
-
-			@Override
-			public String getName() {
-				return TRAFFIC_CONTROLLER;
-			}
-
-			@Override
-			public void handle(String server, Service service) {
-				log.info(String.format("Using %s on server %s", getName(), server));
-				services.put(getName(), service);
-			}
-		});
+		initBeforeRead(list);
+		serverConfigReader.read(serverConfig, list);
+	}
+	
+	protected void initBeforeRead(List<ServiceHandler<Service>> list) {
 		list.add(new ServiceHandler<Service>() {
 
 			@Override
@@ -150,21 +113,6 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 				services.put(getName(), service);
 			}
 		});
-		list.add(new ServiceHandler<Service>() {
-
-			@Override
-			public String getName() {
-				return SIMULATION_CONTROLLER;
-			}
-
-			@Override
-			public void handle(String server, Service service) {
-				log.info(String.format("Using %s on server %s", getName(), server));
-				services.put(getName(), service);
-			}
-		});
-
-		serverConfigReader.read(serverConfig, list);
 	}
 
 	@Override
@@ -204,5 +152,13 @@ public class DefaultServiceDictionary implements ServiceDictionary {
 			throw new IllegalStateException(String.format("%s has been mapped to wrong type", ConfigReader.class));
 		}
 		return (ConfigReader) retValue;
+	}
+
+	public Map<String, Service> getServices() {
+		return services;
+	}
+
+	protected void setServices(Map<String, Service> services) {
+		this.services = services;
 	}
 }

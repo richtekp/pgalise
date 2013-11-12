@@ -16,11 +16,8 @@
  
 package de.pgalise.simulation.traffic.server.jam;
 
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
 /**
  * The implementation of the TrafficServer uses a model to simulate a traffic jam. 

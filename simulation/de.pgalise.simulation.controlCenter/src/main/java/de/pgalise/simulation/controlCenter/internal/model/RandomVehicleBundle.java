@@ -17,6 +17,7 @@
 package de.pgalise.simulation.controlCenter.internal.model;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,8 +28,8 @@ import java.util.UUID;
 public class RandomVehicleBundle {
 	private int randomCarAmount, randomBikeAmount, randomTruckAmount, randomMotorcycleAmount;
 	private double gpsCarRatio, gpsBikeRatio, gpsTruckRatio, gpsMotorcycleRatio;
-	private Set<Sensor<?>> usedSensorIDs;
-	private Set<UUID> usedUUIDs;
+	private Set<Sensor<?>> usedSensorIDs = new HashSet<>(1);
+	private Set<UUID> usedUUIDs = new HashSet<UUID>(16);
 	
 	/**
 	 * Constructor
@@ -72,6 +73,12 @@ public class RandomVehicleBundle {
 		}
 		if(gpsMotorcycleRatio < 0.0 || gpsMotorcycleRatio > 1.0) {
 			throw new IllegalArgumentException("gpsMotorcycleRatio must be >= 0.0 && <= 1.0");
+		}
+		if(usedSensorIDs == null) {
+			throw new IllegalArgumentException();
+		}
+		if(usedUUIDs == null) {
+			throw new IllegalArgumentException();
 		}
 		
 		this.randomCarAmount = randomCarAmount;

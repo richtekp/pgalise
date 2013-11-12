@@ -8,6 +8,6 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public interface ServiceTag {
+public interface ServiceTag  extends BaseTag {
 	
 }

@@ -30,6 +30,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
  * @param <E> 
  * @param <S> 
  * @author mustafa
+ * @param <I>
  *
  */
 public interface Controller<E extends Event, S extends StartParameter, I extends InitParameter> extends SimulationComponent<E>, Service {

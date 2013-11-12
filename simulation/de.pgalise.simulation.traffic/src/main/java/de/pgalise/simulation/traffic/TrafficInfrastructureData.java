@@ -5,7 +5,6 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import java.util.List;
 
 /**

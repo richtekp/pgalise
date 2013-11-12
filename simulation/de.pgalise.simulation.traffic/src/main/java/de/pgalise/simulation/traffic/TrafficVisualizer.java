@@ -19,7 +19,6 @@ package de.pgalise.simulation.traffic;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.GraphVisualizer;
 

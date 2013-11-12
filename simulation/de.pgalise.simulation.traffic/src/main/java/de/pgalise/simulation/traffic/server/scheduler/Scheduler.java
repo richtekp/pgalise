@@ -16,13 +16,9 @@
  
 package de.pgalise.simulation.traffic.server.scheduler;
 
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import java.util.EnumSet;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
 /**
  * The Scheduler used by the TrafficServer to schedule vehicles whose departure times lie in the future.

@@ -16,74 +16,23 @@
  
 package de.pgalise.simulation.traffic.internal.graphextension;
 
-import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import javax.vecmath.Vector2d;
 
 /**
  * Extension class which methods interact with edge's attribute hashmap
  * 
- * @param <D> 
  * @author Marcus
  */
-public class DefaultGraphExtensions<D extends VehicleData> implements GraphExtensions {
-
-	/**
-	 * constant value which holds the key for the position
-	 */
-	public final static String POSITION = "position";
-
-	/**
-	 * constant value which holds the key for the length
-	 */
-	private final static String LENGTH = "length";
-
-	/**
-	 * constant value which holds the key for the maximum speed
-	 */
-	private final static String MAX_SPEED = "maxSpeed";
-
-	/**
-	 * constant value which holds the key for the street name
-	 */
-	private final static String STREET_NAME = "streetName";
-
-	/**
-	 * constant value which holds the key for the vector
-	 */
-	private final static String VECTOR = "vector";
-
-	/**
-	 * constant value which holds the key for the is-car-street flag
-	 */
-	private final static String IS_CAR_STREET = "isCarStreet";
-
-	/**
-	 * constant value which holds the key for the is-bicycle-street flag
-	 */
-	private final static String IS_BICYCLE_STREET = "isBicyleStreet";
-
-	/**
-	 * constant value which holds the key for the gross vehicle weight
-	 */
-	private final static String GROSS_VEHICLE_WEIGHT = "grossVehicleWeight";
-
-	/**
-	 * constant value which holds the key for the is-priority-road
-	 */
-	private final static String IS_PRIORITY_ROAD = "isPriorityRoad";
+public class DefaultGraphExtensions implements GraphExtensions {
 	
 	private TrafficGraph graph;
 
@@ -140,8 +89,6 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 	/**
 	 * Checks whether a passed node is null. If so this method throws an exception.
 	 * 
-	 * @param <X> 
-	 * @param <Y> 
 	 * @param node
 	 *            the node that has to be checked
 	 * @throws IllegalArgumentException
@@ -156,8 +103,6 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 	/**
 	 * Checks whether a passed edge is null. If so this method throws an exception.
 	 * 
-	 * @param <X> 
-	 * @param <Y> 
 	 * @param edge
 	 *            the edge that has to be checked
 	 * @throws IllegalArgumentException
@@ -179,6 +124,7 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
+	@Override
 	public Coordinate getPosition(final NavigationNode node) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		return node.getGeoLocation();
@@ -382,6 +328,7 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 	 *            the edge which maximum speed has to be set
 	 * @param maxSpeed
 	 *            the new maximum speed of the edge
+	 * @return 
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null' or argument 'maxSpeed' is negative
 	 */
@@ -399,8 +346,8 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 	 * 
 	 * @param edge
 	 *            the edge which street name has to be set
-	 * @param length
-	 *            the new street name of the edge
+	 * @param streetName
+	 * @return 
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null'
 	 */
@@ -412,7 +359,8 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 		if(edge.getWay().getStreetName() == null) {
 			edge.getWay().setStreetName(streetName);
 		}else {
-			if(edge.getWay().getStreetName() != streetName) {
+			if(edge.getWay().getStreetName() == null ? streetName != null : !edge.getWay().getStreetName().
+				equals(streetName)) {
 				throw new IllegalArgumentException(String.format("if streetName of node.way is already set, the streetName can only be identical"));
 			}
 			edge.getWay().setStreetName(streetName);
@@ -450,7 +398,7 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 	 */
 	@Override
 	public TrafficEdge setBicycleStreet(final TrafficEdge edge, final Boolean isBicycleStreet) throws IllegalArgumentException {
-		this.checkEdge(edge);
+		DefaultGraphExtensions.checkEdge(edge);
 		edge.setBicyclesAllowed(isBicycleStreet);
 		return edge;
 	}
@@ -466,7 +414,7 @@ public class DefaultGraphExtensions<D extends VehicleData> implements GraphExten
 	@Override
 	public TrafficEdge setGrossVehicleWeight(final TrafficEdge edge, final Integer grossVehicleWeight)
 			throws IllegalArgumentException {
-		this.checkEdge(edge);
+		DefaultGraphExtensions.checkEdge(edge);
 		if (grossVehicleWeight == null ||  grossVehicleWeight <= 0) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("grossVehicleWeight", false));
 		}

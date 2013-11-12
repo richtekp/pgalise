@@ -110,7 +110,7 @@
 //		Path shortestPath = algo.getPath(graph.getNode("c"));
 //		log.debug("Shortest path: " + shortestPath.toString());
 //
-//		Vehicle<? extends VehicleData,N,E> car = new BaseVehicle<>(this.ee);
+//		Vehicle<?> car = new BaseVehicle<>(this.ee);
 //
 //		car.setCurrentNode(graph.getNode("a"));
 //		car.setPosition(ee.getPosition(graph.getNode("a")));
@@ -177,7 +177,7 @@
 //
 //		Path shortestPath = algo.getPath(graph.getNode("e"));
 //
-//		Vehicle<? extends VehicleData,N,E> v = new BaseVehicle<BicycleData>(null, "carA", this.ee);
+//		Vehicle<?> v = new BaseVehicle<BicycleData>(null, "carA", this.ee);
 //		v.setVelocity(9.5);
 //		v.setPath(shortestPath);
 //
@@ -211,7 +211,7 @@
 //		 */
 //
 //		// Creating the cars
-//		Vehicle<? extends VehicleData,N,E> carA = factory.createRandomCar( null);
+//		Vehicle<?> carA = factory.createRandomCar( null);
 //		carA.setTrafficGraphExtensions(ee);
 //		carA.setName("carA");
 //		carA.setPath(shortestPath);
@@ -221,7 +221,7 @@
 //		Collections.reverse(revPath.getNodePath());
 //		Collections.reverse(revPath.getEdgePath());
 //
-//		Vehicle<? extends VehicleData,N,E> carB = factory.createRandomCar( null);
+//		Vehicle<?> carB = factory.createRandomCar( null);
 //		carB.setTrafficGraphExtensions(ee);
 //		carB.setName("carB");
 //		carB.setPath(revPath);
@@ -229,10 +229,10 @@
 //
 //		carA.update(1000);
 //		carB.update(1000);
-//		List<Vehicle<? extends VehicleData,N,E>> abList = graph.getEdge("ab").getAttribute("cars_a_b");
-//		List<Vehicle<? extends VehicleData,N,E>> baList = graph.getEdge("ab").getAttribute("cars_b_a");
-//		List<Vehicle<? extends VehicleData,N,E>> bcList = graph.getEdge("bc").getAttribute("cars_b_c");
-//		List<Vehicle<? extends VehicleData,N,E>> cbList = graph.getEdge("bc").getAttribute("cars_c_b");
+//		List<Vehicle<?>> abList = graph.getEdge("ab").getAttribute("cars_a_b");
+//		List<Vehicle<?>> baList = graph.getEdge("ab").getAttribute("cars_b_a");
+//		List<Vehicle<?>> bcList = graph.getEdge("bc").getAttribute("cars_b_c");
+//		List<Vehicle<?>> cbList = graph.getEdge("bc").getAttribute("cars_c_b");
 //		Assert.assertEquals(1, abList.size(), 0);
 //		Assert.assertNull(baList);
 //		Assert.assertNull(bcList);
@@ -296,7 +296,7 @@
 //		car.setPath(path);
 //		saveVehicle(car, FILEPATH);
 //
-//		Vehicle<? extends VehicleData,N,E> car2 = loadVehicle(FILEPATH, graph, car.getPath().getNodePath().get(0).getId(),
+//		Vehicle<?> car2 = loadVehicle(FILEPATH, graph, car.getPath().getNodePath().get(0).getId(),
 //				car.getPath().getNodePath().get(car.getPath().getNodeCount() - 1).getId());
 //
 //		assertEquals(car.getPath().getNodePath().get(0).getId(), car2.getPath().getNodePath().get(0).getId());
@@ -326,7 +326,7 @@
 //	 * @param path
 //	 *            File path
 //	 */
-//	private void saveVehicle(Vehicle<? extends VehicleData,N,E> car, String path) throws FileNotFoundException, IOException {
+//	private void saveVehicle(Vehicle<?> car, String path) throws FileNotFoundException, IOException {
 //		ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path));
 //		out.writeObject(car);
 //		out.close();
@@ -346,12 +346,12 @@
 //	 * @return Vehicle
 //	 */
 //	@SuppressWarnings("unchecked")
-//	private Vehicle<? extends VehicleData,N,E> loadVehicle(String path, Graph graph, String startNodeId, String targetNodeId)
+//	private Vehicle<?> loadVehicle(String path, Graph graph, String startNodeId, String targetNodeId)
 //			throws FileNotFoundException, IOException, ClassNotFoundException {
 //
-//		Vehicle<? extends VehicleData,N,E> vehicle;
+//		Vehicle<?> vehicle;
 //		try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))) {
-//			vehicle = (Vehicle<? extends VehicleData,N,E>) in.readObject();
+//			vehicle = (Vehicle<?>) in.readObject();
 //			vehicle.setTrafficGraphExtensions(ee);
 //			vehicle.setPath(this.getShortestPath(graph.getNode(startNodeId), graph.getNode(targetNodeId)));
 //		}

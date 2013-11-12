@@ -8,6 +8,6 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public interface ShopTag {
+public interface ShopTag extends BaseTag {
 	
 }

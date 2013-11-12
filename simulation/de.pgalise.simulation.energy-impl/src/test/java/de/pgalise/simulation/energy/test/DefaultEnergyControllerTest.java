@@ -44,6 +44,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.it.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;
@@ -51,6 +52,7 @@ import de.pgalise.simulation.shared.city.Position;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
+import org.junit.Ignore;
 
 /**
  * JUnit tests for {@link DefaultEnergyController}
@@ -58,6 +60,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @author Timo
  * @author Andreas
  */
+@Ignore //@TODO: usage of Mapping between coordinate and building is not clear (coordinate can be arbitraryly precise and be on the buildings surface or not
 public class DefaultEnergyControllerTest {
 
 	/**
@@ -86,9 +89,9 @@ public class DefaultEnergyControllerTest {
 	private static WeatherController weather;
 
 	/**
-	 * Geolocation
+	 * Geolocation (should be inside building)
 	 */
-	private static final Coordinate testLocation = new Coordinate(53.136765, 8.216524);
+	private static final Coordinate testLocation = new Coordinate(1.5, 1.5);
 
 	/**
 	 * Init parameters
@@ -131,24 +134,7 @@ public class DefaultEnergyControllerTest {
 
 		
 		// city
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {
-			new Coordinate(1,
-			1),
-			new Coordinate(1,
-			2),
-			new Coordinate(2,
-			2),
-			new Coordinate(2,
-			1),
-			new Coordinate(1,
-			1)
-		});
-		City city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			new Position(referenceArea));
+		City city = TestUtils.createDefaultTestCityInstance();
 
 		// City information
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
@@ -161,8 +147,11 @@ public class DefaultEnergyControllerTest {
 					new Position(
 						GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 							new Coordinate[]{
-								new Coordinate(), 
-								new Coordinate()
+								new Coordinate(1,1), 
+								new Coordinate(1,2), 
+								new Coordinate(2,2), 
+								new Coordinate(2,1), 
+								new Coordinate(1,1)
 							}
 						)
 					)
@@ -209,12 +198,7 @@ public class DefaultEnergyControllerTest {
 				"", null,
 				new Boundary(new Coordinate(), new Coordinate()));
 
-		city = new City("Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			new Position(referenceArea));
+		city = TestUtils.createDefaultTestCityInstance();
 		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(city,
 				true, new ArrayList<WeatherEventHelper>());
 		
@@ -227,7 +211,7 @@ public class DefaultEnergyControllerTest {
 		EasyMock.replay(energyConsumptionManager);
 
 		// Create class
-		DefaultEnergyControllerTest.testClass = new DefaultEnergyController();
+		DefaultEnergyControllerTest.testClass = new DefaultEnergyController(information);
 		DefaultEnergyControllerTest.testClass.setServiceDictionary(DefaultEnergyControllerTest.serviceDictionary);
 		DefaultEnergyControllerTest.testClass.setEnergyConsumptionManager(energyConsumptionManager);
 		DefaultEnergyControllerTest.testClass.setEnergyEventStrategy(energyEventStrategy);

@@ -91,6 +91,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.energy.EnergyControllerServiceDictionary;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
@@ -103,6 +104,7 @@ import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
@@ -110,6 +112,7 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 
@@ -309,7 +312,7 @@ public class CCWebSocketUser extends MessageInbound {
 						tmpEntityList = new LinkedList<>();
 						serverConfiguationMap.put(address, tmpEntityList);
 					}
-					tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.TRAFFIC_SERVER));
+					tmpEntityList.add(new ServerConfigurationEntity(TrafficServiceDictionary.TRAFFIC_SERVER));
 				}
 				
 				/* Add traffic controller: */
@@ -318,7 +321,7 @@ public class CCWebSocketUser extends MessageInbound {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpTrafficController(), tmpEntityList);
 				}
-				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.TRAFFIC_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(TrafficServiceDictionary.TRAFFIC_CONTROLLER));
 				
 				/* Add static sensor controller: */
 				tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.getIpStaticSensorController());
@@ -334,7 +337,7 @@ public class CCWebSocketUser extends MessageInbound {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpWeatherController(), tmpEntityList);
 				}
-				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.WEATHER_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(WeatherServiceDictionary.WEATHER_CONTROLLER));
 				
 				/* Energy controller: */
 				tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.getIpEnergyController());
@@ -342,7 +345,7 @@ public class CCWebSocketUser extends MessageInbound {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpEnergyController(), tmpEntityList);
 				}
-				tmpEntityList.add(new ServerConfigurationEntity(ServiceDictionary.ENERGY_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(EnergyControllerServiceDictionary.ENERGY_CONTROLLER));
 				
 				/* Front controller (on every used ip): */
 				Set<String> frontControllerAddressSet = new HashSet<>();

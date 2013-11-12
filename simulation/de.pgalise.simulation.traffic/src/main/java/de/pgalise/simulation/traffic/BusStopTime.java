@@ -16,11 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.traffic.BusTrip;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.traffic.BusStopTime;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Date;
 
 import javax.persistence.Column;

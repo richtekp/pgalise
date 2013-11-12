@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic.model;
 
-import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import java.util.Set;

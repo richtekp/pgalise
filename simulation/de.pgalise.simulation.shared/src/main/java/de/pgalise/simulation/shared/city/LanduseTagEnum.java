@@ -8,7 +8,7 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public enum LanduseTagEnum implements CityNodeTag, LanduseTag {
+public enum LanduseTagEnum implements LanduseTag {
 	INDUSTRY("industry"), FARMLAND("farmland"), FARMYARD("farmyard"), RETAIL("retail"), MILITARY("military"), RESIDENTIAL("residential"), COMMERCIAL("commercial");
 	
 	private String stringValue;

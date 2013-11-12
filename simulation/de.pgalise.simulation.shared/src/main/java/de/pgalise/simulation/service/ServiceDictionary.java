@@ -19,6 +19,7 @@ package de.pgalise.simulation.service;
 import java.util.Collection;
 
 import de.pgalise.simulation.service.configReader.ConfigReader;
+import de.pgalise.simulation.staticsensor.StaticSensorController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -34,17 +35,12 @@ import java.util.Set;
  */
 public interface ServiceDictionary {
 	public static final String FRONT_CONTROLLER = "de.pgalise.simulation.FrontController";
-	public static final String TRAFFIC_SERVER = "de.pgalise.simulation.traffic.server.TrafficServer";
-	public static final String TRAFFIC_CONTROLLER = "de.pgalise.simulation.traffic.TrafficController";
-	public static final String WEATHER_CONTROLLER = "de.pgalise.simulation.weather.service.WeatherController";
-	public static final String ENERGY_CONTROLLER = "de.pgalise.simulation.energy.EnergyController";
-	public static final String STATIC_SENSOR_CONTROLLER = "de.pgalise.simulation.staticsensor.StaticSensorController";
-	public static final String SIMULATION_CONTROLLER = "de.pgalise.simulation.SimulationController";
+	public static final String STATIC_SENSOR_CONTROLLER = StaticSensorController.class.getName();
 
 	public static final String RANDOM_SEED_SERVICE = RandomSeedService.class.getName();
 	public static final String CONFIG_READER_SERVICE = ConfigReader.class.getName();
 	
-	public static final Set<String> SERVICES = new HashSet<>(Arrays.asList(FRONT_CONTROLLER, TRAFFIC_SERVER, TRAFFIC_CONTROLLER, WEATHER_CONTROLLER, ENERGY_CONTROLLER, STATIC_SENSOR_CONTROLLER, SIMULATION_CONTROLLER, RANDOM_SEED_SERVICE, CONFIG_READER_SERVICE));
+	public static final Set<String> SERVICES = new HashSet<>(Arrays.asList(FRONT_CONTROLLER, STATIC_SENSOR_CONTROLLER, RANDOM_SEED_SERVICE, CONFIG_READER_SERVICE));
 
 	/**
 	 * Initializes this ServiceFactory. Used to determine which service lies on which server.

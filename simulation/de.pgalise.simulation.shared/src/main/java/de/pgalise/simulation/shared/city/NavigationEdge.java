@@ -10,6 +10,7 @@ import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.vecmath.Vector2d;
@@ -20,6 +21,7 @@ import javax.vecmath.Vector2d;
  * @param <E> 
  * @author richter
  */
+@Entity
 public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiable {
 	private static final long serialVersionUID = 1L;
 
@@ -30,10 +32,11 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	@Transient
 	private Double lineAzimuth;
 	private long updateTimestamp;
-	@ManyToOne
+	@ManyToOne(targetEntity = NavigationNode.class)
 	private N source;
-	@ManyToOne
+	@ManyToOne(targetEntity = NavigationNode.class)
 	private N target;
+	@Transient
 	private Vector2d vector = null;
 	private boolean oneWay = false;
 	

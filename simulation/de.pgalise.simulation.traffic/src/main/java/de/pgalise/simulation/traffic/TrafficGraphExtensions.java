@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.traffic;
 
-import java.util.List;
 import java.util.Set;
 
 import de.pgalise.simulation.service.RandomSeedService;
@@ -24,11 +23,8 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
-import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**

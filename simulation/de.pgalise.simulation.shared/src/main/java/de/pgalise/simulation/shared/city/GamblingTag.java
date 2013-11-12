@@ -10,6 +10,6 @@ package de.pgalise.simulation.shared.city;
  *
  * @author richter
  */
-public interface GamblingTag {
+public interface GamblingTag extends BaseTag {
 	
 }

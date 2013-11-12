@@ -20,7 +20,7 @@ public class Bus extends BaseVehicle<BusData> {
 
 	public Bus(String name,
 		BusData data,
-		DefaultTrafficGraphExtensions<BusData> trafficGraphExtensions) {
+		DefaultTrafficGraphExtensions trafficGraphExtensions) {
 		super(name,
 			data,
 			trafficGraphExtensions);

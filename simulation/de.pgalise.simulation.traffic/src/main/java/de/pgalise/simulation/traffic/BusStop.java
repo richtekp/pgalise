@@ -16,20 +16,10 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.traffic.TrafficNode;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.traffic.BusStopInformation;
-import de.pgalise.simulation.shared.city.CityNodeTag;
-import de.pgalise.simulation.shared.city.CityNodeTagCategoryEnum;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
-import java.util.Map;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-import org.hibernate.annotations.Type;
 
 /**
  * Contains all information for a bus stop.

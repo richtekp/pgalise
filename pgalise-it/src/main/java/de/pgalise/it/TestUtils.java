@@ -52,8 +52,8 @@ public class TestUtils {
 			p.setProperty("pgalise", "new://Resource?type=DataSource");
 			p.setProperty("pgalise.JdbcDriver", "org.postgresql.Driver");
 			p.setProperty("pgalise.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
-			p.setProperty("pgalise.UserName", "postgis");
-			p.setProperty("pgalise.Password", "postgis");
+			p.setProperty("pgalise.UserName", "pgalise");
+			p.setProperty("pgalise.Password", "somepw");
 			p.setProperty("pgalise.JtaManaged",	"true");
 			
 //			p.setProperty("pgaliseTest", "new://Resource?type=DataSource");

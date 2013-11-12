@@ -17,6 +17,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
  * @author richter
  */
 public class DefaultFrontController extends AbstractController<Event, StartParameter, InitParameter> implements FrontController {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {

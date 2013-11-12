@@ -5,9 +5,7 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

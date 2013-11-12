@@ -69,7 +69,6 @@ import de.pgalise.simulation.shared.city.LanduseTagCustom;
 import de.pgalise.simulation.shared.city.LanduseTagEnum;
 import de.pgalise.simulation.shared.city.LeisureTag;
 import de.pgalise.simulation.shared.city.LeisureTagCustom;
-import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.Position;
 import de.pgalise.simulation.shared.city.PublicTransportTag;

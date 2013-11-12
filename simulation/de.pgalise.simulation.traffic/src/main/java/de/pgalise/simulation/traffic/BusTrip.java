@@ -22,8 +22,6 @@ import java.util.Map;
 
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.city.BusCalendar;
-import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.BusTrip;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import javax.persistence.Column;
@@ -45,7 +43,6 @@ public class BusTrip extends TrafficTrip {
 	@ManyToOne
 	private BusCalendar busCalendar;
 	
-	@Column(name = "ROUTE_ID")
 	@ManyToOne
 	private BusRoute route;
 	

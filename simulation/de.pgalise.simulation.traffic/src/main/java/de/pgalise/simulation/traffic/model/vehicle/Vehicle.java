@@ -18,8 +18,6 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.persistence.Identifiable;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;

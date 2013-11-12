@@ -32,8 +32,6 @@
 //import java.util.Set;
 //import java.util.UUID;
 //
-//import org.graphstream.graph.Node;
-//import org.graphstream.graph.Path;
 //import org.junit.After;
 //import org.junit.Assert;
 //import org.junit.BeforeClass;
@@ -470,7 +468,7 @@
 //		log.debug("#### STEP 0 ##########################################################################");
 //
 //		List<DefaultScheduleItem> vehicleItems = server0.getScheduler().getExpiredItems(SIMULATION_END);
-//		Vehicle<? extends VehicleData,N,E> bus = vehicleItems.get(0).getVehicle();
+//		Vehicle<?> bus = vehicleItems.get(0).getVehicle();
 //		vehicleItems.get(0).setDepartureTime(SIMULATION_START);
 //		Path path = bus.getPath();
 //
@@ -589,7 +587,7 @@
 //	 * @throws IllegalStateException
 //	 * @throws InitializationException
 //	 */
-//	private TrafficServerLocal<?> createTrafficServer(List<TrafficServerLocal<VehicleEvent<?>>> serverList) throws IllegalStateException,
+//	private TrafficServerLocal<?> createTrafficServer(List<TrafficServerLocal<VehicleEvent>> serverList) throws IllegalStateException,
 //			InitializationException {
 //		// durch einen outputstream am besten ersetzen...
 //		// TrafficSensorFactory sensorFactory = new CSVTrafficSensorFactory(CSV_OUTPUT, sd.getRandomSeedService(),
@@ -599,7 +597,7 @@
 //		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
 //
 //		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
-//		TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent<?>>,VehicleEvent<?>> eventHandlerManager = EasyMock.createNiceMock(TrafficEventHandlerManager.class);
+//		TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>,VehicleEvent> eventHandlerManager = EasyMock.createNiceMock(TrafficEventHandlerManager.class);
 //		TrafficServerLocal<?> server0 = new DefaultTrafficServer(
 //			referencePoint, 
 //			sd, SENSOR_REGISTRY,

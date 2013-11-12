@@ -6,14 +6,20 @@ package de.pgalise.simulation.shared.city;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Embeddable;
 
 /**
  * encapsulates a custom tag value to force efficient handling of otherwise computation intensive string based tags 
  * @author richter
  */
+@Embeddable
 public abstract class AbstractCustomTag implements BaseTag {
+	private static final long serialVersionUID = 1L;
 	private String value;
 	private final static Set<String> VALUES = new HashSet<>();
+
+	protected AbstractCustomTag() {
+	}
 
 	public AbstractCustomTag(String value) {
 		if(VALUES.contains(value)) {

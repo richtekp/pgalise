@@ -17,10 +17,6 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**

@@ -9,6 +9,7 @@ package de.pgalise.simulation.traffic;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 
 /**
  *
@@ -18,9 +19,13 @@ import javax.persistence.Entity;
 public class BusLineInformation extends AbstractIdentifiable{
 	private static final long serialVersionUID = 1L;
 	
+	@OneToMany
 	private List<BusTrip> weekdayTripWayThere;
+	@OneToMany
 	private List<BusTrip> weekdayTripWayBack;
+	@OneToMany
 	private List<BusTrip> weekendTripWayThere;
+	@OneToMany
 	private List<BusTrip> weekendTripWayBack;
 
 	public BusLineInformation() {

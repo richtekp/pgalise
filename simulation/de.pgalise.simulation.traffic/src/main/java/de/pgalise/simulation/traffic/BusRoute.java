@@ -16,13 +16,8 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.city.BusAgency;
-import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 

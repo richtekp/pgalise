@@ -33,6 +33,12 @@
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>energy</artifactId>
-		</dependency> 	
+		</dependency>
+	 <dependency>
+	  <groupId>com.google.guava</groupId>
+	  <artifactId>guava</artifactId>
+	  <version>14.0.1</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 </project>

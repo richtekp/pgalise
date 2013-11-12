@@ -7,8 +7,6 @@ package de.pgalise.simulation.traffic;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 
 

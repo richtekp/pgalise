@@ -32,7 +32,7 @@ import org.junit.Test;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.service.internal.DefaultServiceDictionary;
-import de.pgalise.simulation.service.internal.manager.DefaultServerConfigurationReader;
+import de.pgalise.simulation.service.internal.DefaultServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.ServerConfiguration;
@@ -40,9 +40,12 @@ import de.pgalise.simulation.service.ServerConfigurationEntity;
 import de.pgalise.util.generic.MutableBoolean;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 
 /**
  * Tests the ServerConfigReader
@@ -50,6 +53,9 @@ import org.junit.BeforeClass;
  * @author Mustafa
  * @version 1.0 (Feb 6, 2013)
  */
+@LocalClient
+@ManagedBean
+@Ignore
 public class DefaultServerConfigurationReaderTest {
 	private static EJBContainer CONTAINER;
 	

@@ -71,8 +71,8 @@ public class DefaultRandomDynamicSensorServiceTest {
 	private static final double GPS_TRUCK_RATIO = 1.0;
 	private static final int RANDOM_MOTORCYCLE_AMOUNT = 99;
 	private static final double GPS_MOTORCYCLE_RATIO = 0.5;
-	private static Set<Sensor<?>> usedSensorIDs;
-	private static Set<UUID> usedUUIDs;
+	private static Set<Sensor<?>> usedSensorIDs = new HashSet<Sensor<?>>(1);
+	private static Set<UUID> usedUUIDs = new HashSet<UUID>(1);
 	private static int carAmount = 0;
 	private static int carsWithGPSAmount = 0;
 	private static int truckAmount = 0;
@@ -105,15 +105,18 @@ public class DefaultRandomDynamicSensorServiceTest {
 			DefaultRandomDynamicSensorServiceTest.usedUUIDs.add(UUID.randomUUID());
 		}
 
-		RandomVehicleBundle testData = new RandomVehicleBundle(DefaultRandomDynamicSensorServiceTest.RANDOM_CAR_AMOUNT,
-				DefaultRandomDynamicSensorServiceTest.GPS_CAR_RATIO,
-				DefaultRandomDynamicSensorServiceTest.RANDOM_BIKE_AMOUNT,
-				DefaultRandomDynamicSensorServiceTest.GPS_BIKE_RATIO,
-				DefaultRandomDynamicSensorServiceTest.RANDOM_TRUCK_AMOUNT,
-				DefaultRandomDynamicSensorServiceTest.GPS_TRUCK_RATIO,
-				DefaultRandomDynamicSensorServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
-				DefaultRandomDynamicSensorServiceTest.GPS_MOTORCYCLE_RATIO,
-				DefaultRandomDynamicSensorServiceTest.usedSensorIDs, DefaultRandomDynamicSensorServiceTest.usedUUIDs);
+		RandomVehicleBundle testData = new RandomVehicleBundle(
+			DefaultRandomDynamicSensorServiceTest.RANDOM_CAR_AMOUNT,
+			DefaultRandomDynamicSensorServiceTest.GPS_CAR_RATIO,
+			DefaultRandomDynamicSensorServiceTest.RANDOM_BIKE_AMOUNT,
+			DefaultRandomDynamicSensorServiceTest.GPS_BIKE_RATIO,
+			DefaultRandomDynamicSensorServiceTest.RANDOM_TRUCK_AMOUNT,
+			DefaultRandomDynamicSensorServiceTest.GPS_TRUCK_RATIO,
+			DefaultRandomDynamicSensorServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
+			DefaultRandomDynamicSensorServiceTest.GPS_MOTORCYCLE_RATIO,
+			DefaultRandomDynamicSensorServiceTest.usedSensorIDs, 
+			DefaultRandomDynamicSensorServiceTest.usedUUIDs
+		);
 
 		RandomSeedService randomSeedService = EasyMock.createNiceMock(RandomSeedService.class);
 
