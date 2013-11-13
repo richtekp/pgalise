@@ -31,7 +31,7 @@
       <property name="javax.persistence.jdbc.user" value="pgalise"/>
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
-			<property name="hibernate.dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect</property>
+			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
     </properties>
   </persistence-unit>
 </persistence>

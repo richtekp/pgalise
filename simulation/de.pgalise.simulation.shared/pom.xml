@@ -31,9 +31,8 @@
 				<artifactId>postgis-jdbc</artifactId>
 			</dependency>
         <dependency>
-            <groupId>java3d</groupId>
+            <groupId>javax</groupId>
             <artifactId>vecmath</artifactId>
-            <version>1.3.2</version>
             <type>jar</type>
         </dependency>
         <dependency>

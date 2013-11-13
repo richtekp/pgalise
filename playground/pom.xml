@@ -25,11 +25,11 @@
 			<type>ejb</type>
 		</dependency>
 		
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>services-impl</artifactId>
 			<type>ejb</type>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>

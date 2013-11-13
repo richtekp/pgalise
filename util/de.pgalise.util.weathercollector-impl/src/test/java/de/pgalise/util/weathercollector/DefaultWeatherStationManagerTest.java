@@ -92,7 +92,7 @@ public class DefaultWeatherStationManagerTest {
 		
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
-		userTransaction.begin();
+//		userTransaction.begin();
 		
 		City city = TestUtils.createDefaultTestCityInstance();
 		entityManager.persist(city);

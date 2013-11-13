@@ -95,17 +95,16 @@
 					<groupId>
 				</exclusion>
 			</exclusions>-->
-		 <version>2.0-SNAPSHOT</version>
 		</dependency>		
 	 <dependency>
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt-api</artifactId>
 	 </dependency>
-	 <dependency>
+<!--	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>services-impl</artifactId>
 	  <type>ejb</type>
-	 </dependency>
+	 </dependency>-->
 <!--	 <dependency>
 		 <groupId>ch.qos.logback</groupId>
 		 <artifactId>logback-classic</artifactId>
@@ -123,13 +122,11 @@
 	 <dependency>
 	  <groupId>de.pgalise.util</groupId>
 	  <artifactId>parser</artifactId>
-	  <version>2.0-SNAPSHOT</version>
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>shared</artifactId>
-	  <version>2.0-SNAPSHOT</version>
 	 </dependency>
 	</dependencies>
 

@@ -37,12 +37,12 @@
 			<artifactId>energy-impl</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>services-impl</artifactId>
 			<scope>test</scope>
 			<type>ejb</type>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>traffic-impl</artifactId>
