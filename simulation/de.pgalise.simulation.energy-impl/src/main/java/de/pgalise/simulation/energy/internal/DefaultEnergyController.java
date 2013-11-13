@@ -62,7 +62,6 @@ import de.pgalise.simulation.weather.service.WeatherController;
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.energy.EnergyController")
-@Remote(EnergyController.class)
 @Local(EnergyControllerLocal.class)
 public class DefaultEnergyController extends AbstractController<EnergyEvent, InfrastructureStartParameter, InfrastructureInitParameter> implements
 		EnergyControllerLocal {

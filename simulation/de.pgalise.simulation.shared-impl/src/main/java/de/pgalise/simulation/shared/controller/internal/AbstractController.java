@@ -44,6 +44,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	 * Logger
 	 */
 	private static final Logger log = LoggerFactory.getLogger(AbstractController.class);
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Current status

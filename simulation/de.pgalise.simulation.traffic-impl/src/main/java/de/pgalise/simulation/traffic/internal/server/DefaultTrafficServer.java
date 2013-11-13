@@ -128,7 +128,6 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.traffic.server.TrafficServer")
 @Local(TrafficServerLocal.class)
-@Remote(TrafficServer.class)
 public class DefaultTrafficServer extends AbstractController<
 	VehicleEvent,
 	InfrastructureStartParameter,
@@ -137,6 +136,7 @@ public class DefaultTrafficServer extends AbstractController<
 	TrafficServerLocal<VehicleEvent>, 
 	ScheduleHandler, 
 	VehicleEventHandler<VehicleEvent> {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public TrafficServerLocal<VehicleEvent> getResponsibleServer() {

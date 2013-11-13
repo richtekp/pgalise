@@ -42,7 +42,6 @@ import javax.persistence.EntityManager;
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.FrontController")
-@Remote(Controller.class)
 public class DefaultFrontController extends AbstractController implements Controller {
 	/**
 	 * Logger

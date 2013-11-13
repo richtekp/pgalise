@@ -40,7 +40,6 @@ import javax.ejb.Remote;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.service.RandomSeedService", mappedName = "de.pgalise.simulation.service.RandomSeedService")
 @Local(RandomSeedService.class)
-@Remote(RandomSeedService.class)
 public class DefaultRandomSeedService extends AbstractController<Event, StartParameter, InitParameter> implements RandomSeedService {
 	private static final long serialVersionUID = 1L;
 

@@ -56,7 +56,6 @@ import de.pgalise.simulation.staticsensor.StaticSensorControllerLocal;
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.staticsensor.StaticSensorController")
-@Remote(StaticSensorController.class)
 @Local(StaticSensorControllerLocal.class)
 public class DefaultStaticSensorController extends AbstractController<Event, StartParameter, InitParameter> implements StaticSensorControllerLocal {
 	/**
@@ -68,6 +67,7 @@ public class DefaultStaticSensorController extends AbstractController<Event, Sta
 	 * Controller name
 	 */
 	private static final String NAME = "StaticSensorController";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * EnergyController

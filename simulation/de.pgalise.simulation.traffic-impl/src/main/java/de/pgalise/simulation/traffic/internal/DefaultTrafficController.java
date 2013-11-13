@@ -82,7 +82,6 @@ import java.util.logging.Level;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficController")
 @Local(TrafficControllerLocal.class)
-@Remote(TrafficController.class)
 public class DefaultTrafficController<
 	D extends VehicleData
 > extends AbstractController<VehicleEvent, 

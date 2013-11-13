@@ -71,7 +71,6 @@ import javax.persistence.EntityManager;
  */
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.SimulationController")
-@Remote(SimulationController.class)
 @Local(SimulationControllerLocal.class)
 public class DefaultSimulationController extends AbstractController<Event, StartParameter, InitParameter> implements SimulationControllerLocal {
 
