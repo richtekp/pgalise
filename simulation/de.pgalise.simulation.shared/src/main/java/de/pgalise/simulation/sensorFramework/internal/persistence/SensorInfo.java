@@ -8,7 +8,6 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 /**
  * Info class dor {@link Sensor}s

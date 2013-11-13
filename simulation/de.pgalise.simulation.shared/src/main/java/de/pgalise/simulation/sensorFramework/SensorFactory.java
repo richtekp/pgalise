@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.sensorFramework;
 
-import java.util.EnumSet;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.sensorFramework.output.Output;

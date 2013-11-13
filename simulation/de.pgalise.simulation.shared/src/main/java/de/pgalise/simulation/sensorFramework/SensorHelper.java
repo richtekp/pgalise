@@ -16,7 +16,6 @@
  
 package de.pgalise.simulation.sensorFramework;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

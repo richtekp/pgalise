@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package de.pgalise.simulation.energy;
+package de.pgalise.simulation;
 
 import com.google.common.collect.Sets;
 import de.pgalise.simulation.service.ServiceDictionary;
@@ -16,9 +16,9 @@ import java.util.Set;
  *
  * @author richter
  */
-public interface EnergyControllerServiceDictionary extends ServiceDictionary {
-	String ENERGY_CONTROLLER = EnergyController.class.getName();
-	Set<String> ENERGY_CONTROLLER_SERVICES = Sets.union(ServiceDictionary.SERVICES,
-		new HashSet<>(Arrays.asList(ENERGY_CONTROLLER)));
+public interface SimulationControllerServiceDictionary extends ServiceDictionary {
+	public static final String SIMULATION_CONTROLLER = SimulationController.class.getName();
 	
+	public final static Set<String> SIMULATION_CONTROLLER_SERVICES = Sets.union(ServiceDictionary.SERVICES,
+		new HashSet<>(Arrays.asList(SIMULATION_CONTROLLER)));
 }

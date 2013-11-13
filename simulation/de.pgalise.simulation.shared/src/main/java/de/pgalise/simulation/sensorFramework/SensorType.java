@@ -5,7 +5,6 @@
 package de.pgalise.simulation.sensorFramework;
 
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import java.util.Collections;
 import java.util.Set;
 
 /**

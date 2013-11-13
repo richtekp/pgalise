@@ -8,8 +8,10 @@ package de.pgalise.simulation.internal;
 
 import com.google.common.collect.Sets;
 import de.pgalise.simulation.SimulationController;
+import de.pgalise.simulation.SimulationControllerServiceDictionary;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;
+import de.pgalise.simulation.service.internal.AbstractServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import java.util.Arrays;
@@ -17,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +27,9 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-public class SimulationControllerServiceDictionary extends DefaultServiceDictionary {
-	private static final Logger log = LoggerFactory.getLogger(SimulationControllerServiceDictionary.class);
-	public static final String SIMULATION_CONTROLLER = SimulationController.class.getName();
-	
-	public final static Set<String> SIMULATION_CONTROLLER_SERVICES = Sets.union(ServiceDictionary.SERVICES,
-		new HashSet<>(Arrays.asList(SIMULATION_CONTROLLER)));
+@Singleton(mappedName = "de.pgalise.simulation.service.ServiceDictionary", name = "de.pgalise.simulation.service.ServiceDictionary")
+public class DefaultSimulationControllerServiceDictionary extends AbstractServiceDictionary implements SimulationControllerServiceDictionary {
+	private static final Logger log = LoggerFactory.getLogger(DefaultSimulationControllerServiceDictionary.class);
 
 	@Override
 	protected void initBeforeRead(List<ServiceHandler<Service>> list) {

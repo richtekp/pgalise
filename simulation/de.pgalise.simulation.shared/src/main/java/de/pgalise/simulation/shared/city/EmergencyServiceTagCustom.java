@@ -6,7 +6,6 @@ package de.pgalise.simulation.shared.city;
 
 import de.pgalise.simulation.shared.city.AbstractCustomTag;
 import de.pgalise.simulation.shared.city.EmergencyServiceTag;
-import javax.persistence.Embeddable;
 
 /**
  *

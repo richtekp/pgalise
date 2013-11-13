@@ -5,7 +5,6 @@
 package de.pgalise.simulation.shared.city;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 

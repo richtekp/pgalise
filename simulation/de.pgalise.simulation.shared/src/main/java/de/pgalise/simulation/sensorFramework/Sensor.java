@@ -21,13 +21,7 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.persistence.Identifiable;
-import javax.persistence.Embedded;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Abstract super class of a Sensor. To create a concrete sensor instantiate a SensorDomain and use the add-method to

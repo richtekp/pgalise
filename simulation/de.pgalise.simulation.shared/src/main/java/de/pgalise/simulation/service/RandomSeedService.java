@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.service;
 
-import javax.ejb.Local;
-
 
 /**
  * The random seed services gives different seeds for every class.
