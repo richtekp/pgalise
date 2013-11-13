@@ -34,6 +34,7 @@
 		<module>de.pgalise.simulation.operationCenter</module>
 		<module>de.pgalise.simulation.controlCenter</module>
     <module>de.pgalise.simulation.shared-impl</module>
+    <module>mavenproject1</module>
   </modules>
 
 	<dependencies>

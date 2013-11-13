@@ -43,6 +43,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -160,7 +161,7 @@ public class OCSimulationServlet extends HttpServlet {
 				/* If the simulation is already stopped, than stop if, before start. */
 				try {
 					ocSimulationController.init(gson.fromJson(req.getParameter("json"), InfrastructureInitParameter.class));
-				} catch(Exception e) {
+				} catch(JsonSyntaxException | InitializationException | IllegalStateException e) {
 					ocSimulationController.stop();
 					ocSimulationController.reset();
 					ocSimulationController.init(gson.fromJson(req.getParameter("json"), InfrastructureInitParameter.class));
@@ -178,7 +179,7 @@ public class OCSimulationServlet extends HttpServlet {
 				log.error(exceptionMessage);
 			}
 
-		} catch (Exception e) {
+		} catch (JsonSyntaxException | InitializationException | SensorException | IllegalStateException e) {
 			log.error("Exception", e);
 		}
 	}
