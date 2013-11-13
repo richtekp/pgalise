@@ -23,15 +23,7 @@
 		</dependency>-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>sensorFramework</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>energy</artifactId>
 		</dependency>
 <!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>

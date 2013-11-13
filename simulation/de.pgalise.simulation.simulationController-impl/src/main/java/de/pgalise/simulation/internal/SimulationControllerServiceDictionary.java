@@ -4,9 +4,10 @@
  * and open the template in the editor.
  */
 
-package de.pgalise.simulation;
+package de.pgalise.simulation.internal;
 
 import com.google.common.collect.Sets;
+import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.internal.DefaultServiceDictionary;

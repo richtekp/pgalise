@@ -72,6 +72,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.it.TestUtils;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
@@ -105,10 +106,13 @@ import de.pgalise.util.GTFS.service.DefaultBusService;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import java.util.logging.Level;
+import javax.annotation.ManagedBean;
+import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
+import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.geotools.geometry.jts.JTS;
 
@@ -118,7 +122,10 @@ import org.geotools.geometry.jts.JTS;
  * @author Mustafa
  * @version 1.0 (Feb 20, 2013)
  */
+@ManagedBean
+@LocalClient
 public class TrafficServerTest {
+	private final static EJBContainer container = TestUtils.getContainer();
 	private static DefaultRandomSeedService rss = lookupdepgalisesimulationserviceRandomSeedServiceBean();
 	/**
 	 * Log
@@ -184,6 +191,9 @@ public class TrafficServerTest {
 	 * Implementation of SensorRegistry.
 	 */
 	private static SensorRegistry SENSOR_REGISTRY;
+
+	public TrafficServerTest() {
+	}
 
 	@BeforeClass
 	public static void init() throws IOException {
@@ -885,8 +895,8 @@ public class TrafficServerTest {
 
 	private static DefaultRandomSeedService lookupdepgalisesimulationserviceRandomSeedServiceBean() {
 		try {
-			Context c = new InitialContext();
-			return (DefaultRandomSeedService) c.lookup("java:global/de.pgalise_simulation-ear_ear_2.0-SNAPSHOT/de.pgalise.simulation_traffic-impl_ejb_2.0-SNAPSHOT/de.pgalise.simulation.service.RandomSeedService!de.pgalise.simulation.service.internal.DefaultRandomSeedService");
+			Context c = container.getContext();
+			return (DefaultRandomSeedService) c.lookup("java:global/de.pgalise.simulation.traffic-impl/de.pgalise.simulation.service.RandomSeedService!de.pgalise.simulation.service.internal.DefaultRandomSeedService");
 		} catch (NamingException ne) {
 			log.error(
 				"exception caught",

@@ -123,6 +123,11 @@
 	  <version>4.3.1</version>
 	  <type>jar</type>
 	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>shared-impl</artifactId>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>

@@ -60,11 +60,11 @@
 			<artifactId>sensorFramework</artifactId>
 		</dependency>	
 
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>sensorFramework-impl</artifactId>
 			<type>ejb</type>
-		</dependency>	
+		</dependency>	-->
 
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

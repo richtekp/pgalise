@@ -133,16 +133,21 @@
 				<version>${applicationVersion}</version>
 			</dependency>
 			
-			<dependency>
+<!--			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>sensorFramework-impl</artifactId>
 				<version>${applicationVersion}</version>
 				<type>ejb</type>
-			</dependency>			
+			</dependency>			-->
 
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>shared</artifactId>
+				<version>${applicationVersion}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>shared-impl</artifactId>
 				<version>${applicationVersion}</version>
 			</dependency>
 
@@ -345,7 +350,7 @@
     	<groupId>javax</groupId>
     	<artifactId>javaee-api</artifactId>
     	<version>6.0</version>
-	</dependency>		
+			</dependency>		
 
 			<dependency>
 				<groupId>javax.servlet</groupId>

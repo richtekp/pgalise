@@ -37,7 +37,7 @@
 			</exclusions>
 		 <type>jar</type>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>sensorFramework-impl</artifactId>
 			<type>ejb</type>
@@ -48,7 +48,7 @@
 					<artifactId>jboss-logging</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>	
+		</dependency>	-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>staticSensors</artifactId>
@@ -128,9 +128,19 @@
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>shared</artifactId>
 	 </dependency>
+	 <dependency>
+		 <groupId>de.pgalise</groupId>
+		 <artifactId>pgalise-it</artifactId>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>shared-impl</artifactId>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>
+		<finalName>de.pgalise.simulation.traffic-impl</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-ejb-plugin</artifactId>

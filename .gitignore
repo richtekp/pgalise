@@ -45,3 +45,5 @@ Icon?
 ehthumbs.db
 Thumbs.db
 .directory
+/simulation/de.pgalise.simulation.shared-impl/nbproject/private/
+/simulation/de.pgalise.simulation.controlCenter/src/main/webapp/WEB-INF/glassfish-web.xml
