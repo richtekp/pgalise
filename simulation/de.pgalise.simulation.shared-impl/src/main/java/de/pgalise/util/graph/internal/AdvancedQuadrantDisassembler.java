@@ -22,7 +22,10 @@ import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.util.graph.disassembler.AdvancedDisassembler;
 import de.pgalise.util.graph.disassembler.Disassembler;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
 import org.geotools.geometry.jts.JTS;
 
 /**
@@ -30,7 +33,9 @@ import org.geotools.geometry.jts.JTS;
  * 
  * @author Timo
  */
-public class AdvancedQuadrantDisassembler implements Disassembler {
+@Stateless
+@Local
+public class AdvancedQuadrantDisassembler implements AdvancedDisassembler {
 
 	@Override
 	public List<Geometry> disassemble(Geometry mapper, int numServers) {

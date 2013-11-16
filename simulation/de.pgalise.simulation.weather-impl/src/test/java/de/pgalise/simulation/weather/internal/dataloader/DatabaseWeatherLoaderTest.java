@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.weather.internal.dataloader;
 
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
@@ -19,6 +19,7 @@ import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.service.WeatherService;
+import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.util.Map;
@@ -41,11 +42,11 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class DatabaseWeatherLoaderTest {
-	@PersistenceUnit(unitName = "weather_test")
+	@PersistenceUnit(unitName = "pgalise")
 	private EntityManagerFactory entityManagerFactory;
 	private static EJBContainer container;
 	
-	private City city;
+	private final City city;
 	
 	@Resource
 	private UserTransaction userTransaction;
@@ -81,16 +82,16 @@ public class DatabaseWeatherLoaderTest {
 		
 		WeatherService service = new DefaultWeatherService(city,
 			instance);
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
@@ -123,16 +124,16 @@ public class DatabaseWeatherLoaderTest {
 		
 		WeatherService service = new DefaultWeatherService(city,
 			instance);
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
@@ -145,14 +146,14 @@ public class DatabaseWeatherLoaderTest {
 		ServiceDataCurrent<DefaultWeatherCondition> result = instance.loadCurrentServiceWeatherData(timestamp, city);
 		assertEquals(expResult, result);
 		
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities0,
+		WeatherTestUtils.tearDownWeatherData(entities0,
 			DefaultServiceDataCurrent.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities1,
+		WeatherTestUtils.tearDownWeatherData(entities1,
 			DefaultServiceDataForecast.class,
 			userTransaction,
 			entityManagerFactory);
@@ -176,16 +177,16 @@ public class DatabaseWeatherLoaderTest {
 		
 		WeatherService service = new DefaultWeatherService(city,
 			instance);
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
@@ -196,14 +197,14 @@ public class DatabaseWeatherLoaderTest {
 		ServiceDataForecast<DefaultWeatherCondition> result = instance.loadForecastServiceWeatherData(timestamp, city);
 		assertEquals(expResult, result);
 		
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities0,
+		WeatherTestUtils.tearDownWeatherData(entities0,
 			DefaultServiceDataCurrent.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities1,
+		WeatherTestUtils.tearDownWeatherData(entities1,
 			DefaultServiceDataForecast.class,
 			userTransaction,
 			entityManagerFactory);
@@ -227,16 +228,16 @@ public class DatabaseWeatherLoaderTest {
 	
 		WeatherService service = new DefaultWeatherService(city,
 			instance);
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
@@ -249,14 +250,14 @@ public class DatabaseWeatherLoaderTest {
 		WeatherMap result = instance.loadStationData(timestamp);
 		assertFalse(result.isEmpty());
 		
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities0,
+		WeatherTestUtils.tearDownWeatherData(entities0,
 			DefaultServiceDataCurrent.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities1,
+		WeatherTestUtils.tearDownWeatherData(entities1,
 			DefaultServiceDataForecast.class,
 			userTransaction,
 			entityManagerFactory);

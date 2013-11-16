@@ -49,7 +49,7 @@ public class VWGGTFSCreator {
 	private List<BusTrip> weekdayTripWayBack;
 	private List<BusTrip> weekendTripWayThere;
 	private List<BusTrip> weekendTripWayBack;
-	@PersistenceContext
+	@PersistenceContext(unitName = "pgalise")
 	private EntityManager entityManager;
 
 	public static void main(String[] args) {

@@ -41,7 +41,7 @@ public class JTADatabaseManager implements EntityDatabaseManager {
 	/**
 	 * Name of the persistent unit
 	 */
-	@PersistenceContext(unitName = "weather")
+	@PersistenceContext(unitName = "pgalise")
 	private EntityManager em;
 
 	public JTADatabaseManager() {

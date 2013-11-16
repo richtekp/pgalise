@@ -22,15 +22,26 @@
     <dependencies>
         <dependency>
             <groupId>de.pgalise</groupId>
-            <artifactId>pgalise-it</artifactId>
+            <artifactId>testutils-shared</artifactId>
             <scope>test</scope>
             <type>jar</type>
         </dependency>
         <dependency>
+            <groupId>de.pgalise.util</groupId>
+            <artifactId>generic</artifactId>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+<!--        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
+				<dependency>
+					<groupId>org.apache.openejb</groupId>
+					<artifactId>openejb-core</artifactId>
+					<scope>test</scope>
+				</dependency>
 				<dependency>
 					<groupId>de.pgalise.simulation</groupId>
 					<artifactId>shared</artifactId>

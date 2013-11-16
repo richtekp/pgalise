@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
 import java.sql.Time;
 import java.text.ParseException;
@@ -43,6 +43,7 @@ import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
 import java.sql.Date;
@@ -75,7 +76,7 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherServiceTest  {	
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_test")
+	@PersistenceUnit(unitName = "pgalise")
 	private EntityManagerFactory ENTITY_MANAGER_FACTORY;
 	/**
 	 * End timestamp
@@ -140,7 +141,7 @@ public class DefaultWeatherServiceTest  {
 		} catch (IllegalStateException expected) {
 		}
 		
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(
 			startTimestamp,
 			endTimestamp,
 			utx,
@@ -151,7 +152,7 @@ public class DefaultWeatherServiceTest  {
 		//the acutal test
 		service.addNewNextDayWeather();
 		
-		TestUtils.tearDownWeatherData(entities, StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities, StationDataNormal.class,
 			utx,
 			ENTITY_MANAGER_FACTORY);
 	}
@@ -172,17 +173,17 @@ public class DefaultWeatherServiceTest  {
 		}
 
 		// Test (normal)
-		Map<Date, DefaultServiceDataCurrent> prequisites = TestUtils.setUpWeatherServiceDataCurrent(
+		Map<Date, DefaultServiceDataCurrent> prequisites = WeatherTestUtils.setUpWeatherServiceDataCurrent(
 			startTimestamp,
 			endTimestamp,
 			city,
 			utx,
 			ENTITY_MANAGER_FACTORY);
-		Map<Date, StationDataNormal> prequisites0 = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> prequisites0 = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			utx,
 			ENTITY_MANAGER_FACTORY);
-		Map<Date, DefaultServiceDataForecast> prequisites1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> prequisites1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			utx,
@@ -191,14 +192,14 @@ public class DefaultWeatherServiceTest  {
 		service.addNewWeather(startTimestamp,
 					endTimestamp, true, strategyList);
 		
-		TestUtils.tearDownWeatherData(prequisites,DefaultServiceDataCurrent.class,
+		WeatherTestUtils.tearDownWeatherData(prequisites,DefaultServiceDataCurrent.class,
 			utx,
 			ENTITY_MANAGER_FACTORY);
-		TestUtils.tearDownWeatherData(prequisites0,
+		WeatherTestUtils.tearDownWeatherData(prequisites0,
 			StationDataNormal.class,
 			utx,
 			ENTITY_MANAGER_FACTORY);
-		TestUtils.tearDownWeatherData(prequisites1,
+		WeatherTestUtils.tearDownWeatherData(prequisites1,
 			DefaultServiceDataForecast.class,
 			utx,
 			ENTITY_MANAGER_FACTORY);
@@ -288,7 +289,7 @@ public class DefaultWeatherServiceTest  {
 		/*
 		 * Test preparations
 		 */
-		Map<Date, StationDataNormal> prequisites = TestUtils.setUpWeatherStationData(
+		Map<Date, StationDataNormal> prequisites = WeatherTestUtils.setUpWeatherStationData(
 			startTimestamp,
 			endTimestamp,
 			utx,
@@ -333,7 +334,7 @@ public class DefaultWeatherServiceTest  {
 			//expected
 		}
 		
-		TestUtils.tearDownWeatherData(prequisites,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(prequisites,StationDataNormal.class,
 			utx,
 			ENTITY_MANAGER_FACTORY);
 	}
@@ -352,7 +353,7 @@ public class DefaultWeatherServiceTest  {
 		/*
 		 * Test preparations
 		 */
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(
 			startTimestamp,
 			endTimestamp,
 			utx,
@@ -417,7 +418,7 @@ public class DefaultWeatherServiceTest  {
 		}
 		
 		//keep entities in database until here
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			utx,
 			ENTITY_MANAGER_FACTORY);
 

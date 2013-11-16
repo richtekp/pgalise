@@ -30,11 +30,6 @@
 			<groupId>pcingola</groupId>
 			<artifactId>jfuzzy</artifactId>
 		</dependency>		
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services-impl</artifactId>
-			<scope>test</scope>
-		</dependency>-->
 	 <dependency>
 	  <groupId>com.javadocmd</groupId>
 	  <artifactId>simplelatlng</artifactId>
@@ -47,14 +42,14 @@
 	 </dependency>
 	 <dependency>
 	  <groupId>de.pgalise</groupId>
-	  <artifactId>pgalise-it</artifactId>
+	  <artifactId>testutils-shared</artifactId>
 	  <scope>test</scope>
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared-impl</artifactId>
-	  <type>jar</type>
+	  <groupId>org.apache.openejb</groupId>
+	  <artifactId>openejb-core</artifactId>
+	  <scope>test</scope>
 	 </dependency>
 	</dependencies>
 	

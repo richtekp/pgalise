@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 public class DefaultBusService implements BusService {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultBusService.class);
 	private Connection con;
-	@PersistenceContext(unitName = "traffic-data")
+	@PersistenceContext(unitName = "pgalise")
 	private EntityManager entityManager;
 
 	@Override

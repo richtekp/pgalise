@@ -44,7 +44,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;

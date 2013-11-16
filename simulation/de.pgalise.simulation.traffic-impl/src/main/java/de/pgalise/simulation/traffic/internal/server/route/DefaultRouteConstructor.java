@@ -40,7 +40,6 @@ import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.server.TrafficServer;
-import de.pgalise.simulation.traffic.server.route.BusStopParser;
 import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
 import de.pgalise.simulation.traffic.server.route.RouteConstructor;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
@@ -62,7 +61,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	private final GraphConstructor graphConstructor;
 	private final RandomSeedService randomSeedService;
 	private final RegionParser regionParser;
-	private final BusStopParser busStopParser;
+	private final DefaultBusStopParser busStopParser;
 	private final long time;
 	private final CityInfrastructureData trafficInformation;
 
@@ -103,7 +102,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 		this.trafficInformation = cityInfrastructure;
 		this.graphConstructor = new GraphConstructor(trafficGraphExtensions);
 		this.regionParser = new RegionParser(cityInfrastructure);
-		this.busStopParser = new BusStopParser(cityInfrastructure);
+		this.busStopParser = new DefaultBusStopParser(cityInfrastructure);
 		this.time = time;
 		this.randomSeedService = randomSeedService;
 		this.trafficGraphExtensions = trafficGraphExtensions;
@@ -125,7 +124,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	 * @param time
 	 * @param randomSeedService  
 	 */
-	public DefaultRouteConstructor(RegionParser rp, BusStopParser bsp, CityInfrastructureData trafficInformation,
+	public DefaultRouteConstructor(RegionParser rp, DefaultBusStopParser bsp, CityInfrastructureData trafficInformation,
 			GraphConstructor gc, long time, RandomSeedService randomSeedService) {
 		this.trafficInformation = trafficInformation;
 		this.graphConstructor = gc;

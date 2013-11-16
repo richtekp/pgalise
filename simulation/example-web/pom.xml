@@ -20,11 +20,6 @@
 
 		<!-- Dependency on the EJB module so we can use it's services if needed -->
 		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.0.1</version>

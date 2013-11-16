@@ -11,8 +11,7 @@ import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerServiceDictionary;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.internal.AbstractServiceDictionary;
-import de.pgalise.simulation.service.internal.DefaultServiceDictionary;
+import de.pgalise.simulation.service.AbstractServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,7 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-@Singleton(mappedName = "de.pgalise.simulation.service.ServiceDictionary", name = "de.pgalise.simulation.service.ServiceDictionary")
+@Singleton(mappedName = "de.pgalise.simulation.SimulationControllerServiceDictionary", name = "de.pgalise.simulation.SimulationControllerServiceDictionary")
 public class DefaultSimulationControllerServiceDictionary extends AbstractServiceDictionary implements SimulationControllerServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultSimulationControllerServiceDictionary.class);
 

@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.modifier;
 
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -39,6 +39,7 @@ import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
 import java.sql.Date;
 import java.util.Map;
 import javax.annotation.ManagedBean;
@@ -59,7 +60,7 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class StormDayEventTest {
-	@PersistenceUnit(unitName = "weather_test")
+	@PersistenceUnit(unitName = "pgalise")
 	private EntityManagerFactory entityManagerFactory;
 	private static EJBContainer container;
 
@@ -142,16 +143,16 @@ public class StormDayEventTest {
 		service = new DefaultWeatherService(city, loader);
 		
 		//preparation
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
@@ -183,14 +184,14 @@ public class StormDayEventTest {
 		// Test 2: extrema are as high event
 		Assert.assertEquals(AbstractWeatherMapModifier.round(event.getMaxValue(), 3), AbstractWeatherMapModifier.round(decvalue, 3), 1);
 		
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities0,
+		WeatherTestUtils.tearDownWeatherData(entities0,
 			DefaultServiceDataCurrent.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities1,
+		WeatherTestUtils.tearDownWeatherData(entities1,
 			DefaultServiceDataForecast.class,
 			userTransaction,
 			entityManagerFactory);

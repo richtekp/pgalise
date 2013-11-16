@@ -57,7 +57,6 @@ import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
@@ -70,7 +69,6 @@ import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.disassembler.Disassembler;
-import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import java.util.logging.Level;
 
 /**
@@ -114,6 +112,7 @@ public class DefaultTrafficController<
 	/**
 	 * Current disassembler
 	 */
+	@EJB
 	private Disassembler disassembler;
 
 	private AsyncHandler asyncHandler;
@@ -130,7 +129,6 @@ public class DefaultTrafficController<
 	 * @param area 
 	 */
 	public DefaultTrafficController(Geometry area) {
-		disassembler = new QuadrantDisassembler();
 		asyncHandler = new ThreadPoolHandler();
 		this.area = area;
 	}
@@ -146,7 +144,6 @@ public class DefaultTrafficController<
 		this.serverList = trafficServer;
 		asyncHandler = new ThreadPoolHandler();
 
-		disassembler = new QuadrantDisassembler();
 		this.area = area;
 	}
 
@@ -384,7 +381,7 @@ public class DefaultTrafficController<
 
 			@Override
 			public String getName() {
-				return TrafficServiceDictionary.TRAFFIC_SERVER;
+				return DefaultTrafficServiceDictionary.TRAFFIC_SERVER;
 			}
 
 			@Override

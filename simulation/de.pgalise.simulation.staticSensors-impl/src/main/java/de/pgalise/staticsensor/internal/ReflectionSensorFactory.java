@@ -4,6 +4,7 @@
  */
 package de.pgalise.staticsensor.internal;
 
+import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorHelper;

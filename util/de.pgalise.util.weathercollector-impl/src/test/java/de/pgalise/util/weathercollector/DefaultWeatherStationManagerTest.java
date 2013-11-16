@@ -16,7 +16,7 @@
  
 package de.pgalise.util.weathercollector;
 
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
@@ -63,7 +63,7 @@ import org.junit.BeforeClass;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class DefaultWeatherStationManagerTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceContext(unitName = "weather_test")
+	@PersistenceContext(unitName = "pgalise")
 	private EntityManager entityManager;
 	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 

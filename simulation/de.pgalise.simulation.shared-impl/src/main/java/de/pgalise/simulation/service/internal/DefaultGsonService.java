@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  */
 @Lock(LockType.READ)
 @Local
-@Singleton(name="de.pgalise.simulation.service.GsonService")
+@Singleton(name="de.pgalise.simulation.service.GsonService", mappedName = "de.pgalise.simulation.service.GsonService")
 public class DefaultGsonService extends AbstractController implements GsonService {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultGsonService.class);
 	private static final long serialVersionUID = 1L;

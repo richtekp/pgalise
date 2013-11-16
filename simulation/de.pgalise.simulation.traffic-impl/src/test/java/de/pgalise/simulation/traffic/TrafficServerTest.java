@@ -55,12 +55,10 @@ import de.pgalise.simulation.sensorFramework.FileOutputServer;
 import de.pgalise.simulation.sensorFramework.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.sensorFramework.Server;
-import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
@@ -72,11 +70,12 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
@@ -84,6 +83,7 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
@@ -98,7 +98,6 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.DefaultSensorFactory;
@@ -126,7 +125,7 @@ import org.geotools.geometry.jts.JTS;
 @LocalClient
 public class TrafficServerTest {
 	private final static EJBContainer container = TestUtils.getContainer();
-	private static DefaultRandomSeedService rss = lookupdepgalisesimulationserviceRandomSeedServiceBean();
+	private static RandomSeedService rss = lookupdepgalisesimulationserviceRandomSeedServiceBean();
 	/**
 	 * Log
 	 */
@@ -893,10 +892,10 @@ public class TrafficServerTest {
 			vehicleDataList);
 	}
 
-	private static DefaultRandomSeedService lookupdepgalisesimulationserviceRandomSeedServiceBean() {
+	private static RandomSeedService lookupdepgalisesimulationserviceRandomSeedServiceBean() {
 		try {
 			Context c = container.getContext();
-			return (DefaultRandomSeedService) c.lookup("java:global/de.pgalise.simulation.traffic-impl/de.pgalise.simulation.service.RandomSeedService!de.pgalise.simulation.service.internal.DefaultRandomSeedService");
+			return (RandomSeedService) c.lookup("java:global/de.pgalise.simulation.traffic-impl/de.pgalise.simulation.service.RandomSeedService!de.pgalise.simulation.service.internal.DefaultRandomSeedService");
 		} catch (NamingException ne) {
 			log.error(
 				"exception caught",

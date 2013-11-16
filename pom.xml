@@ -22,7 +22,8 @@
 	  <module>util</module>
 	  <module>simulation</module>
 	  <module>ear</module>
-	</modules>
+    <module>testutils</module>
+  </modules>
 	
 	<repositories>
 	  <repository>
@@ -79,6 +80,22 @@
 	<!-- Allerdings kann hier bestimmt werden, welche Versionen verwendet werden sollen! -->
 	<dependencyManagement>
 		<dependencies>
+			
+	 <dependency>
+	  <groupId>com.google.guava</groupId>
+	  <artifactId>guava</artifactId>
+		<version>14.0.1</version>
+	 </dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-shared</artifactId>
+			<version>${applicationVersion}</version>
+		</dependency>
+				<dependency>
+					<groupId>de.pgalise.simulation</groupId>
+					<artifactId>shared-resources</artifactId>
+					<version>${applicationVersion}</version>
+				</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -105,7 +122,7 @@
 			<dependency>
 				<groupId>de.pgalise</groupId>
 				<artifactId>util</artifactId>
-				<version>1.0.0-SNAPSHOT</version>
+				<version>${applicationVersion}</version>
 			</dependency>
 			
 			<dependency>
@@ -113,32 +130,18 @@
 				<artifactId>staticSensors</artifactId>
 				<version>${applicationVersion}</version>
 			</dependency>
-
-			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>staticSensors-impl</artifactId>
-				<version>${applicationVersion}</version>
-			</dependency>	
-
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>staticSensors-impl</artifactId>
 				<version>${applicationVersion}</version>
 				<type>ejb</type>
-			</dependency>						
-
+			</dependency>		
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>sensorFramework</artifactId>
+				<artifactId>staticSensors-impl</artifactId>
 				<version>${applicationVersion}</version>
-			</dependency>
-			
-<!--			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>sensorFramework-impl</artifactId>
-				<version>${applicationVersion}</version>
-				<type>ejb</type>
-			</dependency>			-->
+				<type>jar</type>
+			</dependency>		
 
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
@@ -148,103 +151,103 @@
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>shared-impl</artifactId>
+				<type>ejb</type>
+				<version>${applicationVersion}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>shared-impl</artifactId>
+				<type>jar</type>
 				<version>${applicationVersion}</version>
 			</dependency>
 
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>weather</artifactId>
-				<version>2.1-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>weather-impl</artifactId>
-				<version>2.1-SNAPSHOT</version>
+				<version>${applicationVersion}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>weather-impl</artifactId>
 				<type>ejb</type>
-				<version>2.1-SNAPSHOT</version>
+				<version>${applicationVersion}</version>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>weather-impl</artifactId>
+				<type>jar</type>
+				<version>${applicationVersion}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.pgalise.util</groupId>
 				<artifactId>weathercollector</artifactId>
-				<version>2.1-SNAPSHOT</version>
+				<version>${applicationVersion}</version>
 			</dependency>
 			<dependency>
 				<groupId>de.pgalise.util</groupId>
 				<artifactId>weathercollector-impl</artifactId>
-				<version>2.1-SNAPSHOT</version>
+				<version>${applicationVersion}</version>
+				<type>ejb</type>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.util</groupId>
+				<artifactId>weathercollector-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>jar</type>
 			</dependency>
 
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>energy</artifactId>
 				<version>${applicationVersion}</version>
-			</dependency>			
-
-			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>energy-impl</artifactId>
-				<version>${applicationVersion}</version>
-			</dependency>			
-
+			</dependency>
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>energy-impl</artifactId>
 				<version>${applicationVersion}</version>
 				<type>ejb</type>
 			</dependency>				
-
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>services</artifactId>
-				<version>2.1-SNAPSHOT</version>
-			</dependency>
-<!--			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>services-impl</artifactId>
-				<version>2.1-SNAPSHOT</version>
-				<type>ejb</type>
-			</dependency>	-->
+				<artifactId>energy-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>jar</type>
+			</dependency>			
 
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>traffic</artifactId>
 				<version>${applicationVersion}</version>
 			</dependency>
-
-			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>traffic-impl</artifactId>
-				<version>${applicationVersion}</version>
-			</dependency>			
-
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>traffic-impl</artifactId>
 				<version>${applicationVersion}</version>
 				<type>ejb</type>
-			</dependency>								
+			</dependency>			
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic-impl</artifactId>
+				<version>${applicationVersion}</version>
+			<type>jar</type>
+		</dependency>					
 
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>simulationController</artifactId>
 				<version>${applicationVersion}</version>
 			</dependency>
-
-			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>simulationController-impl</artifactId>
-				<version>${applicationVersion}</version>
-			</dependency>
-
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>simulationController-impl</artifactId>
 				<version>${applicationVersion}</version>
 				<type>ejb</type>
+			</dependency>
+			<dependency>
+				<groupId>de.pgalise.simulation</groupId>
+				<artifactId>simulationController-impl</artifactId>
+				<version>${applicationVersion}</version>
+				<type>jar</type>
 			</dependency>
 			
 			<dependency>
@@ -275,14 +278,11 @@
 					<artifactId>jgrapht</artifactId>
 					<version>0.8.3</version>
 			</dependency>		
-
 			<dependency>
 				<groupId>org.apache.directory.studio</groupId>
 				<artifactId>org.apache.commons.lang</artifactId>
 				<version>2.6</version>
-			</dependency>				
-
-			
+			</dependency>	
 			<dependency>
 					<groupId>org.hibernate</groupId>
 					<artifactId>hibernate-spatial</artifactId>
@@ -308,7 +308,7 @@
 				<artifactId>postgis-jdbc</artifactId>
 				<version>2.0.1</version>
 			</dependency>
-		
+			
 			<dependency>
 				<groupId>com.vividsolutions</groupId>
 				<artifactId>jts</artifactId>
@@ -339,14 +339,21 @@
 					</exclusion>
 				</exclusions>
 				-->
-				<!--<scope>provided</scope>-->
+				<scope>test</scope>
 			</dependency>
+	 <dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<version>${de.pgalise.openejb.version}</version>
+			<scope>test</scope>
+	 </dependency>
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-client</artifactId>
 				<version>${de.pgalise.openejb.version}</version>
-				<!--<scope>provided</scope>-->
-			</dependency>	<dependency>
+				<scope>test</scope>
+			</dependency>	
+			<dependency>
     	<groupId>javax</groupId>
     	<artifactId>javaee-api</artifactId>
     	<version>6.0</version>
@@ -363,13 +370,13 @@
 				<groupId>org.apache.tomcat</groupId>
 				<artifactId>tomcat-catalina</artifactId>
 				<version>7.0.30</version>
-				<scope>provided</scope>
+				<!--<scope>provided</scope>-->
 			</dependency>
 			<dependency>
 				<groupId>org.apache.tomcat</groupId>
 				<artifactId>tomcat-coyote</artifactId>
 				<version>7.0.30</version>
-				 <scope>provided</scope>
+				 <!--<scope>provided</scope>-->
 			 </dependency>
 	      	
 			<dependency>
@@ -467,13 +474,13 @@
 			</dependency>
 			
 			<dependency>
-				<groupId>de.pgalise</groupId>
-				<artifactId>pgalise-it</artifactId>
-				<version>1.0-SNAPSHOT</version>
-			</dependency>
-			<dependency>
 			 <groupId>org.geotools</groupId>
 			 <artifactId>gt-api</artifactId>
+			 <version>${de.pgalise.geotools.version}</version>
+			</dependency>
+			<dependency>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-main</artifactId>
 			 <version>${de.pgalise.geotools.version}</version>
 			</dependency>
 			<dependency>

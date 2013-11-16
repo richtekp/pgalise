@@ -46,7 +46,6 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
 /**
  * The oc simulation servlet receives simulation updates directly
@@ -62,7 +61,7 @@ public class OCSimulationServlet extends HttpServlet {
 	private static final OCSimulationController ocSimulationController = Guice.createInjector(new OCModule()).getInstance(OCSimulationController.class);
 	private static final TypeToken<Collection<SensorHelper>> sensorCollectionTypeToken = new TypeToken<Collection<SensorHelper>>(){};
 	
-	@PersistenceContext(name="em", unitName = "HQFDATA")
+	@PersistenceContext(unitName = "pgalise")
 	private EntityManager em;
 	
 	@EJB

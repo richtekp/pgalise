@@ -22,51 +22,20 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>simulationController</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weather-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>staticSensors-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>energy-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services-impl</artifactId>
-			<scope>test</scope>
-			<type>ejb</type>
-		</dependency>-->
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>traffic-impl</artifactId>
-			<scope>test</scope>
-		</dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>pgalise-it</artifactId>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>traffic</artifactId>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.util</groupId>
+	  <artifactId>generic</artifactId>
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-		 <groupId>de.pgalise.simulation</groupId>
-		 <artifactId>shared-impl</artifactId>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared-impl</artifactId>
+	  <groupId>javax</groupId>
+	  <artifactId>javaee-api</artifactId>
 	  <type>jar</type>
+		<scope>provided</scope>
 	 </dependency>
 	</dependencies>
 

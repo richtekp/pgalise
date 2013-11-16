@@ -30,10 +30,6 @@
             <artifactId>generic</artifactId>
         </dependency>	
         <dependency>
-            <groupId>de.pgalise.simulation</groupId>
-            <artifactId>sensorFramework</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.vividsolutions</groupId>
             <artifactId>jts</artifactId>
             <type>jar</type>
@@ -45,11 +41,6 @@
         <dependency>
             <groupId>org.ostermiller</groupId>
             <artifactId>utils</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>de.pgalise.util</groupId>
-            <artifactId>parser</artifactId>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -68,10 +59,9 @@
             <version>14.0.1</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>de.pgalise.simulation</groupId>
-            <artifactId>shared-impl</artifactId>
-            <type>jar</type>
-        </dependency>
+				<dependency>
+					<groupId>de.pgalise.simulation</groupId>
+					<artifactId>shared-resources</artifactId>
+				</dependency>
     </dependencies>
 </project>

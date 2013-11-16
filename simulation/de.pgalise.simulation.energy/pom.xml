@@ -35,16 +35,8 @@
 			<artifactId>shared</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>de.pgalise.util</groupId>
 			<artifactId>generic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>sensorFramework</artifactId>
 		</dependency>
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>

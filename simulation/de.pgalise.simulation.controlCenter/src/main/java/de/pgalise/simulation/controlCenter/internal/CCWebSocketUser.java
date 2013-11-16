@@ -91,7 +91,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.energy.internal.DefaultEnergyControllerServiceDictionary;
+import de.pgalise.simulation.energy.EnergyControllerServiceDictionary;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
@@ -346,7 +346,7 @@ public class CCWebSocketUser extends MessageInbound {
 					tmpEntityList = new LinkedList<>();
 					serverConfiguationMap.put(ccSimulationStartParameter.getIpEnergyController(), tmpEntityList);
 				}
-				tmpEntityList.add(new ServerConfigurationEntity(DefaultEnergyControllerServiceDictionary.ENERGY_CONTROLLER));
+				tmpEntityList.add(new ServerConfigurationEntity(EnergyControllerServiceDictionary.ENERGY_CONTROLLER));
 				
 				/* Front controller (on every used ip): */
 				Set<String> frontControllerAddressSet = new HashSet<>();

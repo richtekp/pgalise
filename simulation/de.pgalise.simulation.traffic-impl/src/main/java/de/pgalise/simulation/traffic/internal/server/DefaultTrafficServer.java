@@ -95,7 +95,7 @@ import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficServiceDictionary;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficServiceDictionary;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
@@ -398,8 +398,8 @@ public class DefaultTrafficServer extends AbstractController<
 			final TrafficLightIntersection trafficLightIntersection = new TrafficLightIntersection(
 					node, getGraph(), this.trafficGraphExtensions);
 			this.trafficGraphExtensions.setTrafficRule(node, trafficLightIntersection);
-			this.sensorRegistry.addSensor(new TrafficLightSensor(null,this.sensorFactory.getOutput(), null, trafficLightIntersection.getTrafficLight0()));
-			this.sensorRegistry.addSensor(new TrafficLightSensor(null,this.sensorFactory.getOutput(), null, trafficLightIntersection.getTrafficLight1()));
+			this.sensorRegistry.addSensor(new TrafficLightSensor(null,this.sensorFactory.getSensorOutput(), null, trafficLightIntersection.getTrafficLight0()));
+			this.sensorRegistry.addSensor(new TrafficLightSensor(null,this.sensorFactory.getSensorOutput(), null, trafficLightIntersection.getTrafficLight1()));
 		}
 	}
 
@@ -615,7 +615,7 @@ public class DefaultTrafficServer extends AbstractController<
 
 			@Override
 			public String getName() {
-				return TrafficServiceDictionary.TRAFFIC_SERVER;
+				return DefaultTrafficServiceDictionary.TRAFFIC_SERVER;
 			}
 
 			@Override

@@ -24,6 +24,7 @@ import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import java.util.logging.Level;
 
 import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceManager;
+import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
@@ -50,7 +51,7 @@ public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceD
 	
 	@Override
 	public void collectServiceData(BaseDatabaseManager<DefaultServiceDataHelper, DefaultWeatherCondition> weatherServiceSaver, Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys) {
-		DefaultWeatherServiceManager collector = new DefaultWeatherServiceManager(weatherServiceSaver, serviceStrategys);
+		WeatherServiceManager collector = new DefaultWeatherServiceManager(weatherServiceSaver, serviceStrategys);
 
 		// Get informations and save them
 		LOGGER.debug("### --- Wetterdienste --- ###", Level.INFO);

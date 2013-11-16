@@ -34,7 +34,7 @@ import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;

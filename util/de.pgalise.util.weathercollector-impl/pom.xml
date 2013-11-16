@@ -46,6 +46,7 @@
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-client</artifactId>
+			<scope>test</scope>
 		</dependency>
 	 <dependency>
 		 <groupId>org.apache.openejb</groupId>
@@ -80,19 +81,19 @@
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>pgalise-it</artifactId>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>weather</artifactId>
 	 </dependency>
 	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>weather-impl</artifactId>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>testutils-shared</artifactId>
+	  <scope>test</scope>
 	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+		 <groupId>javax</groupId>
+		 <artifactId>javaee-api</artifactId>
+		 <scope>provided</scope>
 	 </dependency>
 	</dependencies>
 	<build>

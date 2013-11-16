@@ -19,11 +19,9 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 import com.google.inject.AbstractModule;
 
 import de.pgalise.simulation.controlCenter.internal.CCWebSocketUser;
-import de.pgalise.simulation.internal.visualizationcontroller.DefaultControlCenterController;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.GTFS.service.DefaultBusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
-import de.pgalise.util.cityinfrastructure.impl.DefaultBuildingEnergyProfileStrategy;
 
 /**
  * Module for {@link CCWebSocketUser}. It contains all the service bindings. If new implementations
@@ -38,7 +36,7 @@ public class ControlCenterModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(BuildingEnergyProfileStrategy.class).to(DefaultBuildingEnergyProfileStrategy.class);
+		bind(BuildingEnergyProfileStrategy.class).to(BuildingEnergyProfileStrategy.class);
 		bind(OSMCityInfrastructureDataService.class).to(DefaultOSMCityInfrastructureDataService.class);
 		bind(CreateRandomVehicleService.class).to(DefaultCreateRandomVehicleService.class);
 		bind(StartParameterSerializerService.class).to(XMLStartParameterSerializerService.class);

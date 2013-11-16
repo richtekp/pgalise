@@ -16,7 +16,7 @@
  
 package de.pgalise.util.weathercollector;
 
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -66,7 +66,7 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherCollectorTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceContext(unitName = "weather_test")
+	@PersistenceContext(unitName = "pgalise")
 	private EntityManager entityManager;
 	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
 

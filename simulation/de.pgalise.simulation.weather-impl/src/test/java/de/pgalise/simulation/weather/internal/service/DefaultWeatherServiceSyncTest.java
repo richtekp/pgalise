@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +38,7 @@ import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
+import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
 import java.sql.Date;
 import java.util.Map;
 import javax.annotation.ManagedBean;
@@ -64,7 +65,7 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherServiceSyncTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_test")
+	@PersistenceUnit(unitName = "pgalise")
 	private EntityManagerFactory entityManagerFactory;
 	
 	/**
@@ -136,16 +137,16 @@ public class DefaultWeatherServiceSyncTest {
 		// All threads
 		final List<Thread> threads = new ArrayList<>();
 		
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
@@ -196,14 +197,14 @@ public class DefaultWeatherServiceSyncTest {
 			thread.join();
 		}
 		
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities0,
+		WeatherTestUtils.tearDownWeatherData(entities0,
 			DefaultServiceDataCurrent.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities1,
+		WeatherTestUtils.tearDownWeatherData(entities1,
 			DefaultServiceDataForecast.class,
 			userTransaction,
 			entityManagerFactory);

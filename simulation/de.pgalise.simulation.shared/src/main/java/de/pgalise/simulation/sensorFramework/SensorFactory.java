@@ -45,5 +45,5 @@ public interface SensorFactory {
 	 * 
 	 * @return the Output of the {@link SensorFactory}
 	 */
-	public Output getOutput();
+	public Output getSensorOutput();
 }

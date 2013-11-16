@@ -18,15 +18,18 @@
 
 
 	<dependencies>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services</artifactId>
-		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-client</artifactId>
+			<version>4.5.2</version>
 			<scope>compile</scope>
-		</dependency>
+		</dependency>-->
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>shared</artifactId>
+	  <version>${applicationVersion}</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>

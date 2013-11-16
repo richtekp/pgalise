@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

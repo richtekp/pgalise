@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.service.internal;
 
+import de.pgalise.simulation.service.AbstractServiceDictionary;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

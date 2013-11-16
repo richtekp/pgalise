@@ -13,6 +13,7 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.CompositeGpsInterferer;
@@ -35,7 +36,6 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
-import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -45,13 +45,10 @@ import java.util.concurrent.ExecutionException;
  *
  * @author richter
  */
-public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
+public class DefaultTrafficSensorFactory extends AbstractSensorFactory {
 
 	public DefaultTrafficSensorFactory() {
-		super(null,
-			null,
-			null,
-			null);
+		super(null);
 	}
 
 	@Override
@@ -71,7 +68,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case INFRARED_WHITE_NOISE_INTERFERER:
-								infraredInterferers.add(new InfraredWhiteNoiseInterferer(this.getRss()));
+								infraredInterferers.add(new InfraredWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -81,7 +78,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					infraredInterferer = new InfraredNoInterferer();
 				}
 
-				return new InfraredSensor(getOutput(), null,
+				return new InfraredSensor(getSensorOutput(), null,
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						infraredInterferer);
 
@@ -94,7 +91,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
-								inductionLoopInterfers.add(new InductionLoopWhiteNoiseInterferer(this.getRss()));
+								inductionLoopInterfers.add(new InductionLoopWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -106,7 +103,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 
 				return new InductionLoopSensor(
 					null,
-					getOutput(), 
+					getSensorOutput(), 
 					sensorHelper.getPosition(), 
 					sensorHelper.getUpdateSteps(),
 					inductionLoopInterferer
@@ -121,7 +118,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case TOPO_RADAR_WHITE_NOISE_INTERFERER:
-								toporadarInterfers.add(new TopoRadarWhiteNoiseInterferer(this.getRss()));
+								toporadarInterfers.add(new TopoRadarWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -131,7 +128,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					toporadarInterferer = new TopoRadarNoInterferer();
 				}
 
-				return new TopoRadarSensor(null,getOutput(), 
+				return new TopoRadarSensor(null,getSensorOutput(), 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						toporadarInterferer);
 
@@ -154,16 +151,16 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case GPS_ATMOSPHERE_INTERFERER:
-								gpsInterferes.add(new GpsAtmosphereInterferer(this.getRss(), this.getWeatherCtrl()));
+								gpsInterferes.add(new GpsAtmosphereInterferer(this.getRandomSeedService(), this.getWeatherController()));
 								break;
 							case GPS_CLOCK_INTERFERER:
-								gpsInterferes.add(new GpsClockInterferer(this.getRss()));
+								gpsInterferes.add(new GpsClockInterferer(this.getRandomSeedService()));
 								break;
 							case GPS_RECEIVER_INTERFERER:
-								gpsInterferes.add(new GpsReceiverInterferer(this.getRss()));
+								gpsInterferes.add(new GpsReceiverInterferer(this.getRandomSeedService()));
 								break;
 							case GPS_WHITE_NOISE_INTERFERER:
-								gpsInterferes.add(new GpsWhiteNoiseInterferer(this.getRss()));
+								gpsInterferes.add(new GpsWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -174,7 +171,7 @@ public class DefaultTrafficSensorFactory extends DefaultSensorFactory {
 					gpsInterferer = new GpsNoInterferer();
 				}
 
-				return new GpsSensor(getOutput(), null,
+				return new GpsSensor(getSensorOutput(), null,
 						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), new Coordinate(0, 0), gpsInterferer);
 		}
 		throw new IllegalArgumentException();

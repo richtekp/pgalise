@@ -16,7 +16,8 @@
  
 package de.pgalise.simulation.weather.internal.modifier;
 
-import de.pgalise.it.TestUtils;
+import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
+import de.pgalise.testutils.TestUtils;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
@@ -27,7 +28,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
@@ -41,6 +41,7 @@ import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
 import java.sql.Date;
 import java.util.Map;
 import javax.annotation.ManagedBean;
@@ -62,7 +63,7 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class CityClimateTest {
-	@PersistenceUnit(unitName = "weather_test")
+	@PersistenceUnit(unitName = "pgalise")
 	private EntityManagerFactory entityManagerFactory;
 	private static EJBContainer container;
 	
@@ -126,16 +127,16 @@ public class CityClimateTest {
 		Calendar cal = new GregorianCalendar();
 		cal.setTimeInMillis(startTimestamp);
 		cal.add(Calendar.DATE, -1);
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = TestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
+		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
 			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = TestUtils.setUpWeatherServiceDataForecast(startTimestamp,
+		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
 			endTimestamp,
 			city,
 			userTransaction,
@@ -215,14 +216,14 @@ public class CityClimateTest {
 			Assert.assertEquals(refvalue6, decmax.getPrecipitationAmount());
 		}
 
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities0,
+		WeatherTestUtils.tearDownWeatherData(entities0,
 			DefaultServiceDataCurrent.class,
 			userTransaction,
 			entityManagerFactory);
-		TestUtils.tearDownWeatherData(entities1,
+		WeatherTestUtils.tearDownWeatherData(entities1,
 			DefaultServiceDataForecast.class,
 			userTransaction,
 			entityManagerFactory);

@@ -10,7 +10,7 @@
 
 	<groupId>de.pgalise.simulation</groupId>
 	<artifactId>weather</artifactId>
-	<version>2.1-SNAPSHOT</version>
+	<version>${applicationVersion}</version>
 	<packaging>jar</packaging>
 
 	<name>de.pgalise.simulation.weather</name>
@@ -20,10 +20,6 @@
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.util</groupId>
@@ -46,19 +42,12 @@
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>traffic</artifactId>
-	  <version>2.0-SNAPSHOT</version>
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
 	  <groupId>com.google.guava</groupId>
 	  <artifactId>guava</artifactId>
 	  <version>14.0.1</version>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared-impl</artifactId>
-	  <version>2.0-SNAPSHOT</version>
 	  <type>jar</type>
 	 </dependency>
 	</dependencies>

@@ -10,8 +10,7 @@ import com.google.common.collect.Sets;
 import de.pgalise.simulation.energy.EnergyControllerServiceDictionary;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.internal.AbstractServiceDictionary;
-import de.pgalise.simulation.service.internal.DefaultServiceDictionary;
+import de.pgalise.simulation.service.AbstractServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-@Singleton(mappedName = "de.pgalise.simulation.service.EnergyControllerServiceDictionary", name = "de.pgalise.simulation.service.ServiceDictionary")
+@Singleton(mappedName = "de.pgalise.simulation.energy.EnergyControllerServiceDictionary", name = "de.pgalise.simulation.energy.EnergyControllerServiceDictionary")
 public class DefaultEnergyControllerServiceDictionary extends AbstractServiceDictionary implements EnergyControllerServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultEnergyControllerServiceDictionary.class);
 

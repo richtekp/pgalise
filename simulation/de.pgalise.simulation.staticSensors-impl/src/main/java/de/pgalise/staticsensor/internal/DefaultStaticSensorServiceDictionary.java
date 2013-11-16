@@ -7,8 +7,7 @@
 package de.pgalise.staticsensor.internal;
 
 import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.service.internal.AbstractServiceDictionary;
-import de.pgalise.simulation.service.internal.DefaultServiceDictionary;
+import de.pgalise.simulation.service.AbstractServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.staticsensor.StaticSensorServiceDictionary;
 import java.util.List;
@@ -20,7 +19,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-@Singleton(mappedName = "de.pgalise.simulation.service.StaticSensorServiceDictionary", name = "de.pgalise.simulation.service.StaticSensorServiceDictionary")
+@Singleton(mappedName = "de.pgalise.simulation.staticsensor.StaticSensorServiceDictionary", name = "de.pgalise.simulation.staticsensor.StaticSensorServiceDictionary")
 public class DefaultStaticSensorServiceDictionary extends AbstractServiceDictionary implements StaticSensorServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(DefaultStaticSensorServiceDictionary.class);
 

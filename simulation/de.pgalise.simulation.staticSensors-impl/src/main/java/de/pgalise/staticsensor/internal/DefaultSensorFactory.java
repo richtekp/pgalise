@@ -37,6 +37,7 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
 import de.pgalise.simulation.staticsensor.sensor.energy.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -97,27 +98,7 @@ import java.util.Set;
  * @author Marcus
  * @version 1.0 (Apr 5, 2013)
  */
-public class DefaultSensorFactory implements SensorFactory {
-
-	/**
-	 * Sensor output
-	 */
-	private Output sensorOutput;
-
-	/**
-	 * Random seed service
-	 */
-	private RandomSeedService rss;
-
-	/**
-	 * Weather controller
-	 */
-	private WeatherController weatherCtrl;
-
-	/**
-	 * Energy controller
-	 */
-	private EnergyController energyCtrl;
+public class DefaultSensorFactory extends AbstractSensorFactory<Sensor<?>> {
 
 	/**
 	 * Constructor
@@ -133,10 +114,10 @@ public class DefaultSensorFactory implements SensorFactory {
 	 */
 	public DefaultSensorFactory(RandomSeedService rss, WeatherController wctrl, EnergyController ectrl,
 			Output sensorOutput) {
-		this.rss = rss;
-		this.weatherCtrl = wctrl;
-		this.energyCtrl = ectrl;
-		this.sensorOutput = sensorOutput;
+		super(sensorOutput,
+			rss,
+			wctrl,
+			ectrl);
 	}
 
 	@Override
@@ -152,8 +133,8 @@ public class DefaultSensorFactory implements SensorFactory {
 		}
 		if (sensorHelper.getSensorType().equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
 				if (sensorHelper instanceof SensorHelperPhotovoltaik) {
-					return new PhotovoltaikSensor(this.sensorOutput, position,
-							this.weatherCtrl, this.energyCtrl, this.rss,
+					return new PhotovoltaikSensor(this.getSensorOutput(), position,
+							this.getWeatherController(), this.getEnergyController(), this.getRandomSeedService(),
 							((SensorHelperPhotovoltaik) sensorHelper).getArea(), sensorHelper.getUpdateSteps(),
 							this.createEnergyInterferer(sensorHelper.getSensorInterfererType()));
 				} else {
@@ -163,8 +144,8 @@ public class DefaultSensorFactory implements SensorFactory {
 			 } else if(sensorHelper.getSensorType().equals(EnergySensorTypeEnum.WINDPOWERSENSOR)) {
 				if (sensorHelper instanceof SensorHelperWindPower) {
 					SensorHelperWindPower sensorHelperWindPower = (SensorHelperWindPower) sensorHelper;
-					return new WindPowerSensor(this.sensorOutput, position,
-							this.weatherCtrl, this.energyCtrl, this.rss, sensorHelperWindPower.getRotorLength(),
+					return new WindPowerSensor(this.getSensorOutput(), position,
+							this.getWeatherController(), this.getEnergyController(), this.getRandomSeedService(), sensorHelperWindPower.getRotorLength(),
 							sensorHelperWindPower.getActivityValue(), sensorHelper.getUpdateSteps(),
 							this.createEnergyInterferer(sensorHelper.getSensorInterfererType()));
 				} else {
@@ -172,41 +153,41 @@ public class DefaultSensorFactory implements SensorFactory {
 				}
 
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.THERMOMETER)) {
-				return new Thermometer(this.sensorOutput, position, this.weatherCtrl,
+				return new Thermometer(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.WINDFLAG)) {
-				return new WindFlagSensor(this.sensorOutput, position, this.weatherCtrl,
+				return new WindFlagSensor(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.BAROMETER)) {
-				return new Barometer(this.sensorOutput, position, this.weatherCtrl,
+				return new Barometer(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.HYGROMETER)) {
-				return new Hygrometer(this.sensorOutput, position, this.weatherCtrl,
+				return new Hygrometer(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.PYRANOMETER)) {
-				return new Pyranometer(this.sensorOutput, position, this.weatherCtrl,
+				return new Pyranometer(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.RAIN)) {
-				return new RainSensor(this.sensorOutput, position, this.weatherCtrl,
+				return new RainSensor(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.ANEMOMETER)) {
-				return new Anemometer(this.sensorOutput, position, this.weatherCtrl,
+				return new Anemometer(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.LUXMETER)) {
-				return new Luxmeter(this.sensorOutput, position, this.weatherCtrl,
+				return new Luxmeter(this.getSensorOutput(), position, this.getWeatherController(),
 						sensorHelper.getUpdateSteps(), this.createWeatherInterferer(sensorHelper
 								.getSensorInterfererType()));
 			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.SMARTMETER)) {
 				if (sensorHelper instanceof SensorHelperSmartMeter) {
-					return new SmartMeterSensor(this.sensorOutput, position,
-							this.weatherCtrl, this.energyCtrl, this.rss,
+					return new SmartMeterSensor(this.getSensorOutput(), position,
+							this.getWeatherController(), this.getEnergyController(), this.getRandomSeedService(),
 							((SensorHelperSmartMeter) sensorHelper).getMeasureRadiusInMeter(),
 							sensorHelper.getUpdateSteps(), this.createEnergyInterferer(sensorHelper
 									.getSensorInterfererType()));
@@ -225,7 +206,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case INFRARED_WHITE_NOISE_INTERFERER:
-								infraredInterferers.add(new InfraredWhiteNoiseInterferer(this.rss));
+								infraredInterferers.add(new InfraredWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -235,7 +216,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					infraredInterferer = new InfraredNoInterferer();
 				}
 
-				return new InfraredSensor(this.sensorOutput, null,
+				return new InfraredSensor(this.getSensorOutput(), null,
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						infraredInterferer);
 
@@ -248,7 +229,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
-								inductionLoopInterfers.add(new InductionLoopWhiteNoiseInterferer(this.rss));
+								inductionLoopInterfers.add(new InductionLoopWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -258,7 +239,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					inductionLoopInterferer = new InductionLoopNoInterferer();
 				}
 
-				return new InductionLoopSensor(null,this.sensorOutput, 
+				return new InductionLoopSensor(null,this.getSensorOutput(), 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						inductionLoopInterferer);
 
@@ -272,7 +253,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case TOPO_RADAR_WHITE_NOISE_INTERFERER:
-								toporadarInterfers.add(new TopoRadarWhiteNoiseInterferer(this.rss));
+								toporadarInterfers.add(new TopoRadarWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -282,7 +263,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					toporadarInterferer = new TopoRadarNoInterferer();
 				}
 
-				return new TopoRadarSensor(null,this.sensorOutput, 
+				return new TopoRadarSensor(null,this.getSensorOutput(), 
 						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
 						toporadarInterferer);
 
@@ -305,16 +286,16 @@ public class DefaultSensorFactory implements SensorFactory {
 					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
 						switch (sensorInterfererType) {
 							case GPS_ATMOSPHERE_INTERFERER:
-								gpsInterferes.add(new GpsAtmosphereInterferer(this.rss, this.weatherCtrl));
+								gpsInterferes.add(new GpsAtmosphereInterferer(this.getRandomSeedService(), this.getWeatherController()));
 								break;
 							case GPS_CLOCK_INTERFERER:
-								gpsInterferes.add(new GpsClockInterferer(this.rss));
+								gpsInterferes.add(new GpsClockInterferer(this.getRandomSeedService()));
 								break;
 							case GPS_RECEIVER_INTERFERER:
-								gpsInterferes.add(new GpsReceiverInterferer(this.rss));
+								gpsInterferes.add(new GpsReceiverInterferer(this.getRandomSeedService()));
 								break;
 							case GPS_WHITE_NOISE_INTERFERER:
-								gpsInterferes.add(new GpsWhiteNoiseInterferer(this.rss));
+								gpsInterferes.add(new GpsWhiteNoiseInterferer(this.getRandomSeedService()));
 								break;
 							default:
 								break;
@@ -325,7 +306,7 @@ public class DefaultSensorFactory implements SensorFactory {
 					gpsInterferer = new GpsNoInterferer();
 				}
 
-				return new GpsSensor(this.sensorOutput, null,
+				return new GpsSensor(this.getSensorOutput(), null,
 						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), new Coordinate(0, 0), gpsInterferer);
 			 }else {
 				throw new NoValidControllerForSensorException(String.format("%s is not a known SensorType!",
@@ -371,55 +352,35 @@ public class DefaultSensorFactory implements SensorFactory {
 	 */
 	private SensorInterferer createSensorInterferer(SensorInterfererType sensorInterfererType) {
 		if(sensorInterfererType.equals(SensorInterfererType.ANEMOMETER_WHITE_NOISE_INTERFERER)) {
-		 return new AnemometerWhiteNoiseInterferer(this.rss);
+		 return new AnemometerWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.BAROMETER_WHITE_NOISE_INTERFERER)) {
-		 return new BarometerWhiteNoiseInterferer(this.rss);
+		 return new BarometerWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.HYGROMETER_WHITE_NOISE_INTERFERER)) {
-		 return new HygrometerWhiteNoiseInterferer(this.rss);
+		 return new HygrometerWhiteNoiseInterferer(this.getRandomSeedService());
 		 // case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
-		 // return new InductionLoopWhiteNoiseInterferer(this.rss);
+		 // return new InductionLoopWhiteNoiseInterferer(this.getRandomSeedService());
 		 // case INFRARED_WHITE_NOISE_INTERFERER:
-		 // return new InfraredWhiteNoiseInterferer(this.rss);
+		 // return new InfraredWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.LUXMETER_WHITE_NOISE_INTERFERER)) {
-		 return new LuxmeterWhiteNoiseInterferer(this.rss);
+		 return new LuxmeterWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.PHOTOVOLTAIK_WHITE_NOISE_INTERFERER)) {
-		 return new PhotovoltaikWhiteNoiseInterferer(this.rss);
+		 return new PhotovoltaikWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.PYRANOMETER_WHITE_NOISE_INTERFERER)) {
-		 return new PyranometerWhiteNoiseInterferer(this.rss);
+		 return new PyranometerWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.RAINSENSOR_WHITE_NOISE_INTERFERER)) {
-		 return new RainsensorWhiteNoiseInterferer(this.rss);
+		 return new RainsensorWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.SMART_METER_WHITE_NOISE_INTERFERER)) {
-		 return new SmartMeterWhiteNoiseInterferer(this.rss);
+		 return new SmartMeterWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.THERMOMETER_WHITE_NOISE_INTERFERER)) {
-		 return new ThermometerWhiteNoiseInterferer(this.rss);
+		 return new ThermometerWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.WIND_FLAG_WHITE_NOISE_INTERFERER)) {
-		 return new WindFlagWhiteNoiseInterferer(this.rss);
+		 return new WindFlagWhiteNoiseInterferer(this.getRandomSeedService());
 		} else if(sensorInterfererType.equals(SensorInterfererType.WIND_POWER_WHITE_NOISE_INTERFERER)) {
-		 return new WindPowerWhiteNoiseInterferer(this.rss);
+		 return new WindPowerWhiteNoiseInterferer(this.getRandomSeedService());
 		}else {
 			throw new RuntimeException();
 		}
 		
 	}
 
-	@Override
-	public Output getOutput() {
-		return this.sensorOutput;
-	}
-
-	public RandomSeedService getRss() {
-		return rss;
-	}
-
-	protected void setRss(RandomSeedService rss) {
-		this.rss = rss;
-	}
-
-	protected void setWeatherCtrl(WeatherController weatherCtrl) {
-		this.weatherCtrl = weatherCtrl;
-	}
-
-	public WeatherController getWeatherCtrl() {
-		return weatherCtrl;
-	}
 }

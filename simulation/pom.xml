@@ -17,37 +17,42 @@
 
 	<!-- Reihenfolge muss beachtet werden, wenn die Packages voneinander abhängigen -->
 	<modules>
+		<module>de.pgalise.simulation.shared-resources</module>
 		<module>de.pgalise.simulation.shared</module>
-		<!--<module>de.pgalise.simulation.services-impl</module>-->
+    <module>de.pgalise.simulation.shared-impl</module>
 		<module>de.pgalise.simulation.weather</module>
 		<module>de.pgalise.simulation.weather-impl</module>
 		<module>de.pgalise.simulation.energy</module>
 		<module>de.pgalise.simulation.energy-impl</module>
 		<module>de.pgalise.simulation.traffic</module>
+		<module>de.pgalise.simulation.traffic-impl</module>
 		<module>de.pgalise.simulation.staticSensors</module>
 		<module>de.pgalise.simulation.staticSensors-impl</module>
-		<module>de.pgalise.simulation.traffic-impl</module>
 		<module>de.pgalise.simulation.simulationController</module>
 		<module>de.pgalise.simulation.simulationController-impl</module>
 		<!-- Implementierungen -->
 		<!-- Web Module -->
 		<module>de.pgalise.simulation.operationCenter</module>
 		<module>de.pgalise.simulation.controlCenter</module>
-    <module>de.pgalise.simulation.shared-impl</module>
-    <module>mavenproject1</module>
   </modules>
 
 	<dependencies>
 		<dependency>
             <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-client</artifactId>
-						
+				<scope>test</scope>
 				<exclusions>
 					<exclusion>
 						<groupId>org.apache.openejb</groupId>
 						<artifactId>javaee-api</artifactId>
 					</exclusion>
 				</exclusions> 
-        </dependency>  
+        </dependency>
+	 <dependency>
+	  <groupId>javax</groupId>
+	  <artifactId>javaee-api</artifactId>
+	  <type>jar</type>
+		<scope>provided</scope>
+	 </dependency>
 	</dependencies>
 </project>

@@ -33,28 +33,10 @@
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>simulationController</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>com.ibm.db2</groupId>
-			<artifactId>driver</artifactId>
-		</dependency>
-		 -->
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.ostermiller</groupId>
@@ -73,29 +55,30 @@
 	 <dependency>
 	  <groupId>com.vividsolutions</groupId>
 	  <artifactId>jts</artifactId>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>pgalise-it</artifactId>
-	  <scope>test</scope>
-	  <type>jar</type>
 	 </dependency>
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>traffic</artifactId>
 	 </dependency>
+				<dependency>
+					<groupId>de.pgalise.simulation</groupId>
+					<artifactId>shared-resources</artifactId>
+				</dependency>
 	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>traffic-impl</artifactId>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>testutils-shared</artifactId>
+	  <scope>test</scope>
+	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared-impl</artifactId>
+	  <groupId>org.springframework</groupId>
+	  <artifactId>spring</artifactId>
+	  <version>2.5.6</version>
 	  <type>jar</type>
 	 </dependency>
 	</dependencies>
 	<build>
+		<finalName>de.pgalise.simulation.operationCenter</finalName>
 		<plugins>
 			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-dependency-plugin</artifactId> 
 				<executions> <execution> <phase>install</phase> <goals> <goal>copy-dependencies</goal> 

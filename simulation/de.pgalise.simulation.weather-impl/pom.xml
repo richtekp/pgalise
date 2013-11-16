@@ -10,7 +10,7 @@
 
 	<groupId>de.pgalise.simulation</groupId>
 	<artifactId>weather-impl</artifactId>
-	<version>2.1-SNAPSHOT</version>
+	<version>${applicationVersion}</version>
 
 	<packaging>ejb</packaging>
 
@@ -21,6 +21,7 @@
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-client</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
@@ -43,6 +44,7 @@
 					<artifactId>hsqldb</artifactId>
 				</exclusion>
 			</exclusions>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -85,11 +87,6 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>weather</artifactId>
 		</dependency>
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>services-impl</artifactId>
-			<type>ejb</type>
-		</dependency>-->
 	 <dependency>
 	  <groupId>com.vividsolutions</groupId>
 	  <artifactId>jts</artifactId>
@@ -98,21 +95,6 @@
 			<groupId>com.javadocmd</groupId>
 			<artifactId>simplelatlng</artifactId>
 		</dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>pgalise-it</artifactId>
-	  <scope>test</scope>
-		<exclusions>
-			<exclusion>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>weather-impl</artifactId>
-			</exclusion>
-		</exclusions>
-	 </dependency>
-<!--	 <dependency>
-	  <groupId>de.pgalise.util</groupId>
-	  <artifactId>weathercollector</artifactId>
-	 </dependency>-->
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>shared</artifactId>
@@ -123,9 +105,25 @@
 	  <version>4.3.1</version>
 	  <type>jar</type>
 	 </dependency>
+				<dependency>
+					<groupId>de.pgalise.simulation</groupId>
+					<artifactId>shared-resources</artifactId>
+				</dependency>
+	 <dependency>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>testutils-shared</artifactId>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>traffic</artifactId>
+	  <type>jar</type>
+	 </dependency>
 	 <dependency>
 	  <groupId>de.pgalise.simulation</groupId>
 	  <artifactId>shared-impl</artifactId>
+	  <scope>test</scope>
 	  <type>jar</type>
 	 </dependency>
 	</dependencies>

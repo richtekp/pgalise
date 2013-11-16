@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.service.internal.manager;
 
-import de.pgalise.it.TestUtils;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;

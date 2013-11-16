@@ -24,6 +24,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.util.btree.BNode;
 import de.pgalise.util.btree.BTree;
 import de.pgalise.util.graph.disassembler.Disassembler;
+import javax.ejb.Local;
+import javax.ejb.Stateless;
 import org.geotools.geometry.jts.JTS;
 
 /**
@@ -32,6 +34,8 @@ import org.geotools.geometry.jts.JTS;
  * @author Mustafa
  * @version 1.0 (Mar 20, 2013)
  */
+@Stateless
+@Local
 public class QuadrantDisassembler implements Disassembler {
 	@Override
 	public List<Geometry> disassemble(Geometry geometry, int numServers) {

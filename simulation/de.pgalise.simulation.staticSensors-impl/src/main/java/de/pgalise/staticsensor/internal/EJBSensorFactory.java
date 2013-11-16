@@ -114,7 +114,7 @@ public class EJBSensorFactory implements SensorFactory {
 	}
 
 	@Override
-	public Output getOutput() {
-		return this.factory.getOutput();
+	public Output getSensorOutput() {
+		return this.factory.getSensorOutput();
 	}
 }

@@ -7,10 +7,11 @@
 package de.pgalise.simulation.weather.internal;
 
 import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.service.internal.AbstractServiceDictionary;
+import de.pgalise.simulation.service.AbstractServiceDictionary;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import java.util.List;
+import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-//@Singleton(name = "de.pgalise.simulation.staticsensor.WeatherServiceDictionary")
+@Singleton(name = "de.pgalise.simulation.weather.WeatherServiceDictionary")
 public class DefaultWeatherServiceDictionary extends AbstractServiceDictionary implements WeatherServiceDictionary {
 	private static final Logger log = LoggerFactory.getLogger(WeatherServiceDictionary.class);
 

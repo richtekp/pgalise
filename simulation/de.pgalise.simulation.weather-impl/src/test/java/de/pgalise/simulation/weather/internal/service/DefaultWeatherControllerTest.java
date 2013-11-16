@@ -17,7 +17,6 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.it.TestUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -53,6 +52,8 @@ import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
+import de.pgalise.testutils.TestUtils;
 import java.sql.Date;
 import java.util.Map;
 import javax.annotation.ManagedBean;
@@ -80,7 +81,7 @@ import org.junit.Ignore;
 @Ignore
 public class DefaultWeatherControllerTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "weather_test")
+	@PersistenceUnit(unitName = "pgalise")
 	private EntityManagerFactory entityManagerFactory;
 	/**
 	 * Logger
@@ -197,7 +198,7 @@ public class DefaultWeatherControllerTest {
 
 		// Test (normal) -> call onSuccess
 		log.debug("Testmethod: start()");
-		Map<Date, StationDataNormal> entities = TestUtils.setUpWeatherStationData(startTimestamp,
+		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
 			endTimestamp,
 			userTransaction,
 			entityManagerFactory);
@@ -278,7 +279,7 @@ public class DefaultWeatherControllerTest {
 		ctrl.reset();
 		Assert.assertEquals(StatusEnum.INIT, ctrl.getStatus());
 		
-		TestUtils.tearDownWeatherData(entities,StationDataNormal.class,
+		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
 			userTransaction,
 			entityManagerFactory);
 	}
