@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:form styleClass="jsfcrud_list_form">
+				<h:panelGroup id="messagePanel" layout="block">
+					<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+				</h:panelGroup>
+				<h:outputText escape="false" value="#{bundle.ListMyExtendedServiceDataForecastEmpty}" rendered="#{myExtendedServiceDataForecastController.items.rowCount == 0}"/>
+				<h:panelGroup rendered="#{myExtendedServiceDataForecastController.items.rowCount > 0}">
+					<h:outputText value="#{myExtendedServiceDataForecastController.pagination.pageFirstItem + 1}..#{myExtendedServiceDataForecastController.pagination.pageLastItem + 1}/#{myExtendedServiceDataForecastController.pagination.itemsCount}"/>&nbsp;
+					<h:commandLink action="#{myExtendedServiceDataForecastController.previous}" value="#{bundle.Previous} #{myExtendedServiceDataForecastController.pagination.pageSize}" rendered="#{myExtendedServiceDataForecastController.pagination.hasPreviousPage}"/>&nbsp;
+					<h:commandLink action="#{myExtendedServiceDataForecastController.next}" value="#{bundle.Next} #{myExtendedServiceDataForecastController.pagination.pageSize}" rendered="#{myExtendedServiceDataForecastController.pagination.hasNextPage}"/>&nbsp;
+					<h:dataTable value="#{myExtendedServiceDataForecastController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_temperatureHigh}"/>
+							</f:facet>
+							<h:outputText value="#{item.temperatureHigh}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_temperatureLow}"/>
+							</f:facet>
+							<h:outputText value="#{item.temperatureLow}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_city}"/>
+							</f:facet>
+							<h:outputText value="#{item.city}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_relativHumidity}"/>
+							</f:facet>
+							<h:outputText value="#{item.relativHumidity}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_windDirection}"/>
+							</f:facet>
+							<h:outputText value="#{item.windDirection}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_windVelocity}"/>
+							</f:facet>
+							<h:outputText value="#{item.windVelocity}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_condition}"/>
+							</f:facet>
+							<h:outputText value="#{item.condition}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_measureTime}"/>
+							</f:facet>
+							<h:outputText value="#{item.measureTime}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_measureDate}"/>
+							</f:facet>
+							<h:outputText value="#{item.measureDate}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListMyExtendedServiceDataForecastTitle_id}"/>
+							</f:facet>
+							<h:outputText value="#{item.id}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="&nbsp;"/>
+							</f:facet>
+							<h:commandLink action="#{myExtendedServiceDataForecastController.prepareView}" value="#{bundle.ListMyExtendedServiceDataForecastViewLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{myExtendedServiceDataForecastController.prepareEdit}" value="#{bundle.ListMyExtendedServiceDataForecastEditLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{myExtendedServiceDataForecastController.destroy}" value="#{bundle.ListMyExtendedServiceDataForecastDestroyLink}"/>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<br />
+				<h:commandLink action="#{myExtendedServiceDataForecastController.prepareCreate}" value="#{bundle.ListMyExtendedServiceDataForecastCreateLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ListMyExtendedServiceDataForecastIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

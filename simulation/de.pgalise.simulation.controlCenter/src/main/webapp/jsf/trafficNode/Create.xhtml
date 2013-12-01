@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateTrafficNodeTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_sensors}" for="sensors" />
+					<h:inputText id="sensors" value="#{trafficNodeController.selected.sensors}" title="#{bundle.CreateTrafficNodeTitle_sensors}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_vehicles}" for="vehicles" />
+					<h:inputText id="vehicles" value="#{trafficNodeController.selected.vehicles}" title="#{bundle.CreateTrafficNodeTitle_vehicles}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_trafficRule}" for="trafficRule" />
+					<h:inputText id="trafficRule" value="#{trafficNodeController.selected.trafficRule}" title="#{bundle.CreateTrafficNodeTitle_trafficRule}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_busStop}" for="busStop" />
+					<h:selectOneMenu id="busStop" value="#{trafficNodeController.selected.busStop}" title="#{bundle.CreateTrafficNodeTitle_busStop}" >
+						<f:selectItems value="#{busStopController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_geoLocation}" for="geoLocation" />
+					<h:inputText id="geoLocation" value="#{trafficNodeController.selected.geoLocation}" title="#{bundle.CreateTrafficNodeTitle_geoLocation}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_tourismTags}" for="tourismTags" />
+					<h:inputText id="tourismTags" value="#{trafficNodeController.selected.tourismTags}" title="#{bundle.CreateTrafficNodeTitle_tourismTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_serviceTags}" for="serviceTags" />
+					<h:inputText id="serviceTags" value="#{trafficNodeController.selected.serviceTags}" title="#{bundle.CreateTrafficNodeTitle_serviceTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_sportTags}" for="sportTags" />
+					<h:inputText id="sportTags" value="#{trafficNodeController.selected.sportTags}" title="#{bundle.CreateTrafficNodeTitle_sportTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_schoolTags}" for="schoolTags" />
+					<h:inputText id="schoolTags" value="#{trafficNodeController.selected.schoolTags}" title="#{bundle.CreateTrafficNodeTitle_schoolTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_repairTags}" for="repairTags" />
+					<h:inputText id="repairTags" value="#{trafficNodeController.selected.repairTags}" title="#{bundle.CreateTrafficNodeTitle_repairTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_attractionTags}" for="attractionTags" />
+					<h:inputText id="attractionTags" value="#{trafficNodeController.selected.attractionTags}" title="#{bundle.CreateTrafficNodeTitle_attractionTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_shopTags}" for="shopTags" />
+					<h:inputText id="shopTags" value="#{trafficNodeController.selected.shopTags}" title="#{bundle.CreateTrafficNodeTitle_shopTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_emergencyServiceTags}" for="emergencyServiceTags" />
+					<h:inputText id="emergencyServiceTags" value="#{trafficNodeController.selected.emergencyServiceTags}" title="#{bundle.CreateTrafficNodeTitle_emergencyServiceTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_craftTags}" for="craftTags" />
+					<h:inputText id="craftTags" value="#{trafficNodeController.selected.craftTags}" title="#{bundle.CreateTrafficNodeTitle_craftTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_leisureTags}" for="leisureTags" />
+					<h:inputText id="leisureTags" value="#{trafficNodeController.selected.leisureTags}" title="#{bundle.CreateTrafficNodeTitle_leisureTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_publicTransportTags}" for="publicTransportTags" />
+					<h:inputText id="publicTransportTags" value="#{trafficNodeController.selected.publicTransportTags}" title="#{bundle.CreateTrafficNodeTitle_publicTransportTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_gamblingTags}" for="gamblingTags" />
+					<h:inputText id="gamblingTags" value="#{trafficNodeController.selected.gamblingTags}" title="#{bundle.CreateTrafficNodeTitle_gamblingTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_amenityTags}" for="amenityTags" />
+					<h:inputText id="amenityTags" value="#{trafficNodeController.selected.amenityTags}" title="#{bundle.CreateTrafficNodeTitle_amenityTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_landuseTags}" for="landuseTags" />
+					<h:inputText id="landuseTags" value="#{trafficNodeController.selected.landuseTags}" title="#{bundle.CreateTrafficNodeTitle_landuseTags}" />
+					<h:outputLabel value="#{bundle.CreateTrafficNodeLabel_id}" for="id" />
+					<h:inputText id="id" value="#{trafficNodeController.selected.id}" title="#{bundle.CreateTrafficNodeTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{trafficNodeController.create}" value="#{bundle.CreateTrafficNodeSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{trafficNodeController.prepareList}" value="#{bundle.CreateTrafficNodeShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateTrafficNodeIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

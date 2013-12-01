@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateWayTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateWayLabel_wayTags}" for="wayTags" />
+					<h:inputText id="wayTags" value="#{wayController.selected.wayTags}" title="#{bundle.CreateWayTitle_wayTags}" />
+					<h:outputLabel value="#{bundle.CreateWayLabel_landuseTags}" for="landuseTags" />
+					<h:inputText id="landuseTags" value="#{wayController.selected.landuseTags}" title="#{bundle.CreateWayTitle_landuseTags}" />
+					<h:outputLabel value="#{bundle.CreateWayLabel_streetName}" for="streetName" />
+					<h:inputText id="streetName" value="#{wayController.selected.streetName}" title="#{bundle.CreateWayTitle_streetName}" />
+					<h:outputLabel value="#{bundle.CreateWayLabel_nodeList}" for="nodeList" />
+					<h:inputText id="nodeList" value="#{wayController.selected.nodeList}" title="#{bundle.CreateWayTitle_nodeList}" />
+					<h:outputLabel value="#{bundle.CreateWayLabel_id}" for="id" />
+					<h:inputText id="id" value="#{wayController.selected.id}" title="#{bundle.CreateWayTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{wayController.create}" value="#{bundle.CreateWaySaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{wayController.prepareList}" value="#{bundle.CreateWayShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateWayIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

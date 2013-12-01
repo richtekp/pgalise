@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateDefaultServiceDataCurrentTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_temperature}" for="temperature" />
+					<h:inputText id="temperature" value="#{defaultServiceDataCurrentController.selected.temperature}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_temperature}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_city}" for="city" />
+					<h:selectOneMenu id="city" value="#{defaultServiceDataCurrentController.selected.city}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_city}" >
+						<f:selectItems value="#{cityController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_relativHumidity}" for="relativHumidity" />
+					<h:inputText id="relativHumidity" value="#{defaultServiceDataCurrentController.selected.relativHumidity}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_relativHumidity}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_windDirection}" for="windDirection" />
+					<h:inputText id="windDirection" value="#{defaultServiceDataCurrentController.selected.windDirection}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_windDirection}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_windVelocity}" for="windVelocity" />
+					<h:inputText id="windVelocity" value="#{defaultServiceDataCurrentController.selected.windVelocity}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_windVelocity}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_condition}" for="condition" />
+					<h:selectOneMenu id="condition" value="#{defaultServiceDataCurrentController.selected.condition}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_condition}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_measureTime}" for="measureTime" />
+					<h:inputText id="measureTime" value="#{defaultServiceDataCurrentController.selected.measureTime}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_measureTime}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_measureDate}" for="measureDate" />
+					<h:inputText id="measureDate" value="#{defaultServiceDataCurrentController.selected.measureDate}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_measureDate}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataCurrentLabel_id}" for="id" />
+					<h:inputText id="id" value="#{defaultServiceDataCurrentController.selected.id}" title="#{bundle.CreateDefaultServiceDataCurrentTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{defaultServiceDataCurrentController.create}" value="#{bundle.CreateDefaultServiceDataCurrentSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{defaultServiceDataCurrentController.prepareList}" value="#{bundle.CreateDefaultServiceDataCurrentShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateDefaultServiceDataCurrentIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

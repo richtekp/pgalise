@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:form styleClass="jsfcrud_list_form">
+				<h:panelGroup id="messagePanel" layout="block">
+					<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+				</h:panelGroup>
+				<h:outputText escape="false" value="#{bundle.ListDefaultServiceDataCurrentEmpty}" rendered="#{defaultServiceDataCurrentController.items.rowCount == 0}"/>
+				<h:panelGroup rendered="#{defaultServiceDataCurrentController.items.rowCount > 0}">
+					<h:outputText value="#{defaultServiceDataCurrentController.pagination.pageFirstItem + 1}..#{defaultServiceDataCurrentController.pagination.pageLastItem + 1}/#{defaultServiceDataCurrentController.pagination.itemsCount}"/>&nbsp;
+					<h:commandLink action="#{defaultServiceDataCurrentController.previous}" value="#{bundle.Previous} #{defaultServiceDataCurrentController.pagination.pageSize}" rendered="#{defaultServiceDataCurrentController.pagination.hasPreviousPage}"/>&nbsp;
+					<h:commandLink action="#{defaultServiceDataCurrentController.next}" value="#{bundle.Next} #{defaultServiceDataCurrentController.pagination.pageSize}" rendered="#{defaultServiceDataCurrentController.pagination.hasNextPage}"/>&nbsp;
+					<h:dataTable value="#{defaultServiceDataCurrentController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_temperature}"/>
+							</f:facet>
+							<h:outputText value="#{item.temperature}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_city}"/>
+							</f:facet>
+							<h:outputText value="#{item.city}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_relativHumidity}"/>
+							</f:facet>
+							<h:outputText value="#{item.relativHumidity}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_windDirection}"/>
+							</f:facet>
+							<h:outputText value="#{item.windDirection}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_windVelocity}"/>
+							</f:facet>
+							<h:outputText value="#{item.windVelocity}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_condition}"/>
+							</f:facet>
+							<h:outputText value="#{item.condition}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_measureTime}"/>
+							</f:facet>
+							<h:outputText value="#{item.measureTime}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_measureDate}"/>
+							</f:facet>
+							<h:outputText value="#{item.measureDate}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListDefaultServiceDataCurrentTitle_id}"/>
+							</f:facet>
+							<h:outputText value="#{item.id}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="&nbsp;"/>
+							</f:facet>
+							<h:commandLink action="#{defaultServiceDataCurrentController.prepareView}" value="#{bundle.ListDefaultServiceDataCurrentViewLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{defaultServiceDataCurrentController.prepareEdit}" value="#{bundle.ListDefaultServiceDataCurrentEditLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{defaultServiceDataCurrentController.destroy}" value="#{bundle.ListDefaultServiceDataCurrentDestroyLink}"/>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<br />
+				<h:commandLink action="#{defaultServiceDataCurrentController.prepareCreate}" value="#{bundle.ListDefaultServiceDataCurrentCreateLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ListDefaultServiceDataCurrentIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

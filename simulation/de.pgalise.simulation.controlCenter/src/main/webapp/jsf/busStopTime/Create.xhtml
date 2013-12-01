@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateBusStopTimeTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_busTrip}" for="busTrip" />
+					<h:selectOneMenu id="busTrip" value="#{busStopTimeController.selected.busTrip}" title="#{bundle.CreateBusStopTimeTitle_busTrip}" >
+						<f:selectItems value="#{busTripController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_stopId}" for="stopId" />
+					<h:inputText id="stopId" value="#{busStopTimeController.selected.stopId}" title="#{bundle.CreateBusStopTimeTitle_stopId}" />
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_arrivalTime}" for="arrivalTime" />
+					<h:inputText id="arrivalTime" value="#{busStopTimeController.selected.arrivalTime}" title="#{bundle.CreateBusStopTimeTitle_arrivalTime}" >
+						<f:convertDateTime pattern="HH:mm:ss" />
+					</h:inputText>
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_departureTime}" for="departureTime" />
+					<h:inputText id="departureTime" value="#{busStopTimeController.selected.departureTime}" title="#{bundle.CreateBusStopTimeTitle_departureTime}" >
+						<f:convertDateTime pattern="HH:mm:ss" />
+					</h:inputText>
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_stopSequence}" for="stopSequence" />
+					<h:inputText id="stopSequence" value="#{busStopTimeController.selected.stopSequence}" title="#{bundle.CreateBusStopTimeTitle_stopSequence}" />
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_pickupTime}" for="pickupTime" />
+					<h:inputText id="pickupTime" value="#{busStopTimeController.selected.pickupTime}" title="#{bundle.CreateBusStopTimeTitle_pickupTime}" />
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_stopHeadsign}" for="stopHeadsign" />
+					<h:inputText id="stopHeadsign" value="#{busStopTimeController.selected.stopHeadsign}" title="#{bundle.CreateBusStopTimeTitle_stopHeadsign}" />
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_dropOffType}" for="dropOffType" />
+					<h:inputText id="dropOffType" value="#{busStopTimeController.selected.dropOffType}" title="#{bundle.CreateBusStopTimeTitle_dropOffType}" />
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_shapeDistTraveled}" for="shapeDistTraveled" />
+					<h:inputText id="shapeDistTraveled" value="#{busStopTimeController.selected.shapeDistTraveled}" title="#{bundle.CreateBusStopTimeTitle_shapeDistTraveled}" />
+					<h:outputLabel value="#{bundle.CreateBusStopTimeLabel_id}" for="id" />
+					<h:inputText id="id" value="#{busStopTimeController.selected.id}" title="#{bundle.CreateBusStopTimeTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{busStopTimeController.create}" value="#{bundle.CreateBusStopTimeSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{busStopTimeController.prepareList}" value="#{bundle.CreateBusStopTimeShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateBusStopTimeIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

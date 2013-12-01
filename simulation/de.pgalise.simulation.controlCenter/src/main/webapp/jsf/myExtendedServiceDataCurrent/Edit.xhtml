@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.EditMyExtendedServiceDataCurrentTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_sunrise}" for="sunrise" />
+					<h:inputText id="sunrise" value="#{myExtendedServiceDataCurrentController.selected.sunrise}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_sunrise}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_sunset}" for="sunset" />
+					<h:inputText id="sunset" value="#{myExtendedServiceDataCurrentController.selected.sunset}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_sunset}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_visibility}" for="visibility" />
+					<h:inputText id="visibility" value="#{myExtendedServiceDataCurrentController.selected.visibility}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_visibility}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_temperature}" for="temperature" />
+					<h:inputText id="temperature" value="#{myExtendedServiceDataCurrentController.selected.temperature}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_temperature}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_city}" for="city" />
+					<h:selectOneMenu id="city" value="#{myExtendedServiceDataCurrentController.selected.city}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_city}" >
+						<f:selectItems value="#{cityController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_relativHumidity}" for="relativHumidity" />
+					<h:inputText id="relativHumidity" value="#{myExtendedServiceDataCurrentController.selected.relativHumidity}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_relativHumidity}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_windDirection}" for="windDirection" />
+					<h:inputText id="windDirection" value="#{myExtendedServiceDataCurrentController.selected.windDirection}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_windDirection}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_windVelocity}" for="windVelocity" />
+					<h:inputText id="windVelocity" value="#{myExtendedServiceDataCurrentController.selected.windVelocity}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_windVelocity}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_condition}" for="condition" />
+					<h:selectOneMenu id="condition" value="#{myExtendedServiceDataCurrentController.selected.condition}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_condition}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_measureTime}" for="measureTime" />
+					<h:inputText id="measureTime" value="#{myExtendedServiceDataCurrentController.selected.measureTime}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_measureTime}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_measureDate}" for="measureDate" />
+					<h:inputText id="measureDate" value="#{myExtendedServiceDataCurrentController.selected.measureDate}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_measureDate}" />
+					<h:outputLabel value="#{bundle.EditMyExtendedServiceDataCurrentLabel_id}" for="id" />
+					<h:inputText id="id" value="#{myExtendedServiceDataCurrentController.selected.id}" title="#{bundle.EditMyExtendedServiceDataCurrentTitle_id}" />
+				</h:panelGrid>
+				<h:commandLink action="#{myExtendedServiceDataCurrentController.update}" value="#{bundle.EditMyExtendedServiceDataCurrentSaveLink}"/>
+				<br />
+				<br />
+				<h:link outcome="View" value="#{bundle.EditMyExtendedServiceDataCurrentViewLink}"/>
+				<br />
+				<h:commandLink action="#{myExtendedServiceDataCurrentController.prepareList}" value="#{bundle.EditMyExtendedServiceDataCurrentShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.EditMyExtendedServiceDataCurrentIndexLink}" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

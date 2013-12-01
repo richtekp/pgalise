@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateBusRouteTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_routeShortName}" for="routeShortName" />
+					<h:inputText id="routeShortName" value="#{busRouteController.selected.routeShortName}" title="#{bundle.CreateBusRouteTitle_routeShortName}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_routeLongName}" for="routeLongName" />
+					<h:inputText id="routeLongName" value="#{busRouteController.selected.routeLongName}" title="#{bundle.CreateBusRouteTitle_routeLongName}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_routeType}" for="routeType" />
+					<h:inputText id="routeType" value="#{busRouteController.selected.routeType}" title="#{bundle.CreateBusRouteTitle_routeType}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_agency}" for="agency" />
+					<h:inputText id="agency" value="#{busRouteController.selected.agency}" title="#{bundle.CreateBusRouteTitle_agency}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_routeDesc}" for="routeDesc" />
+					<h:inputText id="routeDesc" value="#{busRouteController.selected.routeDesc}" title="#{bundle.CreateBusRouteTitle_routeDesc}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_routeUrl}" for="routeUrl" />
+					<h:inputText id="routeUrl" value="#{busRouteController.selected.routeUrl}" title="#{bundle.CreateBusRouteTitle_routeUrl}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_routeColor}" for="routeColor" />
+					<h:inputText id="routeColor" value="#{busRouteController.selected.routeColor}" title="#{bundle.CreateBusRouteTitle_routeColor}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_routeTextColor}" for="routeTextColor" />
+					<h:inputText id="routeTextColor" value="#{busRouteController.selected.routeTextColor}" title="#{bundle.CreateBusRouteTitle_routeTextColor}" />
+					<h:outputLabel value="#{bundle.CreateBusRouteLabel_id}" for="id" />
+					<h:inputText id="id" value="#{busRouteController.selected.id}" title="#{bundle.CreateBusRouteTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{busRouteController.create}" value="#{bundle.CreateBusRouteSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{busRouteController.prepareList}" value="#{bundle.CreateBusRouteShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateBusRouteIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateBusAgencyTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateBusAgencyLabel_agencyName}" for="agencyName" />
+					<h:inputText id="agencyName" value="#{busAgencyController.selected.agencyName}" title="#{bundle.CreateBusAgencyTitle_agencyName}" />
+					<h:outputLabel value="#{bundle.CreateBusAgencyLabel_agencyUrl}" for="agencyUrl" />
+					<h:inputText id="agencyUrl" value="#{busAgencyController.selected.agencyUrl}" title="#{bundle.CreateBusAgencyTitle_agencyUrl}" />
+					<h:outputLabel value="#{bundle.CreateBusAgencyLabel_agencyTimezone}" for="agencyTimezone" />
+					<h:inputText id="agencyTimezone" value="#{busAgencyController.selected.agencyTimezone}" title="#{bundle.CreateBusAgencyTitle_agencyTimezone}" />
+					<h:outputLabel value="#{bundle.CreateBusAgencyLabel_agencyLang}" for="agencyLang" />
+					<h:inputText id="agencyLang" value="#{busAgencyController.selected.agencyLang}" title="#{bundle.CreateBusAgencyTitle_agencyLang}" />
+					<h:outputLabel value="#{bundle.CreateBusAgencyLabel_agencyPhone}" for="agencyPhone" />
+					<h:inputText id="agencyPhone" value="#{busAgencyController.selected.agencyPhone}" title="#{bundle.CreateBusAgencyTitle_agencyPhone}" />
+					<h:outputLabel value="#{bundle.CreateBusAgencyLabel_agencyFareUrl}" for="agencyFareUrl" />
+					<h:inputText id="agencyFareUrl" value="#{busAgencyController.selected.agencyFareUrl}" title="#{bundle.CreateBusAgencyTitle_agencyFareUrl}" />
+					<h:outputLabel value="#{bundle.CreateBusAgencyLabel_id}" for="id" />
+					<h:inputText id="id" value="#{busAgencyController.selected.id}" title="#{bundle.CreateBusAgencyTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{busAgencyController.create}" value="#{bundle.CreateBusAgencySaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{busAgencyController.prepareList}" value="#{bundle.CreateBusAgencyShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateBusAgencyIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

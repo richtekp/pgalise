@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ListBusRouteTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:form styleClass="jsfcrud_list_form">
+				<h:panelGroup id="messagePanel" layout="block">
+					<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+				</h:panelGroup>
+				<h:outputText escape="false" value="#{bundle.ListBusRouteEmpty}" rendered="#{busRouteController.items.rowCount == 0}"/>
+				<h:panelGroup rendered="#{busRouteController.items.rowCount > 0}">
+					<h:outputText value="#{busRouteController.pagination.pageFirstItem + 1}..#{busRouteController.pagination.pageLastItem + 1}/#{busRouteController.pagination.itemsCount}"/>&nbsp;
+					<h:commandLink action="#{busRouteController.previous}" value="#{bundle.Previous} #{busRouteController.pagination.pageSize}" rendered="#{busRouteController.pagination.hasPreviousPage}"/>&nbsp;
+					<h:commandLink action="#{busRouteController.next}" value="#{bundle.Next} #{busRouteController.pagination.pageSize}" rendered="#{busRouteController.pagination.hasNextPage}"/>&nbsp;
+					<h:dataTable value="#{busRouteController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_routeShortName}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeShortName}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_routeLongName}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeLongName}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_routeType}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeType}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_agency}"/>
+							</f:facet>
+							<h:outputText value="#{item.agency}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_routeDesc}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeDesc}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_routeUrl}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeUrl}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_routeColor}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeColor}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_routeTextColor}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeTextColor}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusRouteTitle_id}"/>
+							</f:facet>
+							<h:outputText value="#{item.id}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="&nbsp;"/>
+							</f:facet>
+							<h:commandLink action="#{busRouteController.prepareView}" value="#{bundle.ListBusRouteViewLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{busRouteController.prepareEdit}" value="#{bundle.ListBusRouteEditLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{busRouteController.destroy}" value="#{bundle.ListBusRouteDestroyLink}"/>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<br />
+				<h:commandLink action="#{busRouteController.prepareCreate}" value="#{bundle.ListBusRouteCreateLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ListBusRouteIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

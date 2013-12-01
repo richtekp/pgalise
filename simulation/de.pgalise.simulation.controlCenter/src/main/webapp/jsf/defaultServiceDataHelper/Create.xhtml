@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateDefaultServiceDataHelperTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_forecastFromDate}" for="forecastFromDate" />
+					<h:inputText id="forecastFromDate" value="#{defaultServiceDataHelperController.selected.forecastFromDate}" title="#{bundle.CreateDefaultServiceDataHelperTitle_forecastFromDate}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_apicity}" for="apicity" />
+					<h:inputText id="apicity" value="#{defaultServiceDataHelperController.selected.apicity}" title="#{bundle.CreateDefaultServiceDataHelperTitle_apicity}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_city}" for="city" />
+					<h:selectOneMenu id="city" value="#{defaultServiceDataHelperController.selected.city}" title="#{bundle.CreateDefaultServiceDataHelperTitle_city}" >
+						<f:selectItems value="#{cityController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_currentCondition}" for="currentCondition" />
+					<h:selectOneMenu id="currentCondition" value="#{defaultServiceDataHelperController.selected.currentCondition}" title="#{bundle.CreateDefaultServiceDataHelperTitle_currentCondition}" >
+						<f:selectItems value="#{myExtendedServiceDataCurrentController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_source}" for="source" />
+					<h:inputText id="source" value="#{defaultServiceDataHelperController.selected.source}" title="#{bundle.CreateDefaultServiceDataHelperTitle_source}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_measureTime}" for="measureTime" />
+					<h:inputText id="measureTime" value="#{defaultServiceDataHelperController.selected.measureTime}" title="#{bundle.CreateDefaultServiceDataHelperTitle_measureTime}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_measureDate}" for="measureDate" />
+					<h:inputText id="measureDate" value="#{defaultServiceDataHelperController.selected.measureDate}" title="#{bundle.CreateDefaultServiceDataHelperTitle_measureDate}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataHelperLabel_id}" for="id" />
+					<h:inputText id="id" value="#{defaultServiceDataHelperController.selected.id}" title="#{bundle.CreateDefaultServiceDataHelperTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{defaultServiceDataHelperController.create}" value="#{bundle.CreateDefaultServiceDataHelperSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{defaultServiceDataHelperController.prepareList}" value="#{bundle.CreateDefaultServiceDataHelperShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateDefaultServiceDataHelperIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

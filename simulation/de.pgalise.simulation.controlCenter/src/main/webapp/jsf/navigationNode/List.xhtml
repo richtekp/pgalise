@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ListNavigationNodeTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:form styleClass="jsfcrud_list_form">
+				<h:panelGroup id="messagePanel" layout="block">
+					<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+				</h:panelGroup>
+				<h:outputText escape="false" value="#{bundle.ListNavigationNodeEmpty}" rendered="#{navigationNodeController.items.rowCount == 0}"/>
+				<h:panelGroup rendered="#{navigationNodeController.items.rowCount > 0}">
+					<h:outputText value="#{navigationNodeController.pagination.pageFirstItem + 1}..#{navigationNodeController.pagination.pageLastItem + 1}/#{navigationNodeController.pagination.itemsCount}"/>&nbsp;
+					<h:commandLink action="#{navigationNodeController.previous}" value="#{bundle.Previous} #{navigationNodeController.pagination.pageSize}" rendered="#{navigationNodeController.pagination.hasPreviousPage}"/>&nbsp;
+					<h:commandLink action="#{navigationNodeController.next}" value="#{bundle.Next} #{navigationNodeController.pagination.pageSize}" rendered="#{navigationNodeController.pagination.hasNextPage}"/>&nbsp;
+					<h:dataTable value="#{navigationNodeController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_geoLocation}"/>
+							</f:facet>
+							<h:outputText value="#{item.geoLocation}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_tourismTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.tourismTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_serviceTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.serviceTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_sportTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.sportTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_schoolTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.schoolTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_repairTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.repairTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_attractionTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.attractionTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_shopTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.shopTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_emergencyServiceTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.emergencyServiceTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_craftTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.craftTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_leisureTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.leisureTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_publicTransportTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.publicTransportTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_gamblingTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.gamblingTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_amenityTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.amenityTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_landuseTags}"/>
+							</f:facet>
+							<h:outputText value="#{item.landuseTags}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListNavigationNodeTitle_id}"/>
+							</f:facet>
+							<h:outputText value="#{item.id}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="&nbsp;"/>
+							</f:facet>
+							<h:commandLink action="#{navigationNodeController.prepareView}" value="#{bundle.ListNavigationNodeViewLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{navigationNodeController.prepareEdit}" value="#{bundle.ListNavigationNodeEditLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{navigationNodeController.destroy}" value="#{bundle.ListNavigationNodeDestroyLink}"/>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<br />
+				<h:commandLink action="#{navigationNodeController.prepareCreate}" value="#{bundle.ListNavigationNodeCreateLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ListNavigationNodeIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

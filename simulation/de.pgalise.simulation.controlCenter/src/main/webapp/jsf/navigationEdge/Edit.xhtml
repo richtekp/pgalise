@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.EditNavigationEdgeTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_edgeLine}" for="edgeLine" />
+					<h:inputText id="edgeLine" value="#{navigationEdgeController.selected.edgeLine}" title="#{bundle.EditNavigationEdgeTitle_edgeLine}" />
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_edgeLength}" for="edgeLength" />
+					<h:inputText id="edgeLength" value="#{navigationEdgeController.selected.edgeLength}" title="#{bundle.EditNavigationEdgeTitle_edgeLength}" />
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_lineAzimuth}" for="lineAzimuth" />
+					<h:inputText id="lineAzimuth" value="#{navigationEdgeController.selected.lineAzimuth}" title="#{bundle.EditNavigationEdgeTitle_lineAzimuth}" />
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_source}" for="source" />
+					<h:selectOneMenu id="source" value="#{navigationEdgeController.selected.source}" title="#{bundle.EditNavigationEdgeTitle_source}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_target}" for="target" />
+					<h:selectOneMenu id="target" value="#{navigationEdgeController.selected.target}" title="#{bundle.EditNavigationEdgeTitle_target}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_updateTimestamp}" for="updateTimestamp" />
+					<h:inputText id="updateTimestamp" value="#{navigationEdgeController.selected.updateTimestamp}" title="#{bundle.EditNavigationEdgeTitle_updateTimestamp}" />
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_vector}" for="vector" />
+					<h:inputText id="vector" value="#{navigationEdgeController.selected.vector}" title="#{bundle.EditNavigationEdgeTitle_vector}" />
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_opposite}" for="opposite" />
+					<h:inputText id="opposite" value="#{navigationEdgeController.selected.opposite}" title="#{bundle.EditNavigationEdgeTitle_opposite}" />
+					<h:outputLabel value="#{bundle.EditNavigationEdgeLabel_id}" for="id" />
+					<h:inputText id="id" value="#{navigationEdgeController.selected.id}" title="#{bundle.EditNavigationEdgeTitle_id}" />
+				</h:panelGrid>
+				<h:commandLink action="#{navigationEdgeController.update}" value="#{bundle.EditNavigationEdgeSaveLink}"/>
+				<br />
+				<br />
+				<h:link outcome="View" value="#{bundle.EditNavigationEdgeViewLink}"/>
+				<br />
+				<h:commandLink action="#{navigationEdgeController.prepareList}" value="#{bundle.EditNavigationEdgeShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.EditNavigationEdgeIndexLink}" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

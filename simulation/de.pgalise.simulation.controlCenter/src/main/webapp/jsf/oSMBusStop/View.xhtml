@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ViewOSMBusStopTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_osmId}"/>
+					<h:outputText value="#{oSMBusStopController.selected.osmId}" title="#{bundle.ViewOSMBusStopTitle_osmId}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_stopName}"/>
+					<h:outputText value="#{oSMBusStopController.selected.stopName}" title="#{bundle.ViewOSMBusStopTitle_stopName}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_stopCode}"/>
+					<h:outputText value="#{oSMBusStopController.selected.stopCode}" title="#{bundle.ViewOSMBusStopTitle_stopCode}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_zoneId}"/>
+					<h:outputText value="#{oSMBusStopController.selected.zoneId}" title="#{bundle.ViewOSMBusStopTitle_zoneId}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_stopUrl}"/>
+					<h:outputText value="#{oSMBusStopController.selected.stopUrl}" title="#{bundle.ViewOSMBusStopTitle_stopUrl}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_locationType}"/>
+					<h:outputText value="#{oSMBusStopController.selected.locationType}" title="#{bundle.ViewOSMBusStopTitle_locationType}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_parentStation}"/>
+					<h:outputText value="#{oSMBusStopController.selected.parentStation}" title="#{bundle.ViewOSMBusStopTitle_parentStation}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_stopTimezone}"/>
+					<h:outputText value="#{oSMBusStopController.selected.stopTimezone}" title="#{bundle.ViewOSMBusStopTitle_stopTimezone}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_wheelchairBoarding}"/>
+					<h:outputText value="#{oSMBusStopController.selected.wheelchairBoarding}" title="#{bundle.ViewOSMBusStopTitle_wheelchairBoarding}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_sensors}"/>
+					<h:outputText value="#{oSMBusStopController.selected.sensors}" title="#{bundle.ViewOSMBusStopTitle_sensors}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_vehicles}"/>
+					<h:outputText value="#{oSMBusStopController.selected.vehicles}" title="#{bundle.ViewOSMBusStopTitle_vehicles}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_trafficRule}"/>
+					<h:outputText value="#{oSMBusStopController.selected.trafficRule}" title="#{bundle.ViewOSMBusStopTitle_trafficRule}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_busStop}"/>
+					<h:outputText value="#{oSMBusStopController.selected.busStop}" title="#{bundle.ViewOSMBusStopTitle_busStop}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_geoLocation}"/>
+					<h:outputText value="#{oSMBusStopController.selected.geoLocation}" title="#{bundle.ViewOSMBusStopTitle_geoLocation}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_tourismTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.tourismTags}" title="#{bundle.ViewOSMBusStopTitle_tourismTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_serviceTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.serviceTags}" title="#{bundle.ViewOSMBusStopTitle_serviceTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_sportTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.sportTags}" title="#{bundle.ViewOSMBusStopTitle_sportTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_schoolTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.schoolTags}" title="#{bundle.ViewOSMBusStopTitle_schoolTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_repairTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.repairTags}" title="#{bundle.ViewOSMBusStopTitle_repairTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_attractionTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.attractionTags}" title="#{bundle.ViewOSMBusStopTitle_attractionTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_shopTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.shopTags}" title="#{bundle.ViewOSMBusStopTitle_shopTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_emergencyServiceTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.emergencyServiceTags}" title="#{bundle.ViewOSMBusStopTitle_emergencyServiceTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_craftTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.craftTags}" title="#{bundle.ViewOSMBusStopTitle_craftTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_leisureTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.leisureTags}" title="#{bundle.ViewOSMBusStopTitle_leisureTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_publicTransportTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.publicTransportTags}" title="#{bundle.ViewOSMBusStopTitle_publicTransportTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_gamblingTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.gamblingTags}" title="#{bundle.ViewOSMBusStopTitle_gamblingTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_amenityTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.amenityTags}" title="#{bundle.ViewOSMBusStopTitle_amenityTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_landuseTags}"/>
+					<h:outputText value="#{oSMBusStopController.selected.landuseTags}" title="#{bundle.ViewOSMBusStopTitle_landuseTags}"/>
+					<h:outputText value="#{bundle.ViewOSMBusStopLabel_id}"/>
+					<h:outputText value="#{oSMBusStopController.selected.id}" title="#{bundle.ViewOSMBusStopTitle_id}"/>
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{oSMBusStopController.destroyAndView}" value="#{bundle.ViewOSMBusStopDestroyLink}"/>
+				<br />
+				<br />
+				<h:link outcome="Edit" value="#{bundle.ViewOSMBusStopEditLink}"/>
+				<br />
+				<h:commandLink action="#{oSMBusStopController.prepareCreate}" value="#{bundle.ViewOSMBusStopCreateLink}" />
+				<br />
+				<h:commandLink action="#{oSMBusStopController.prepareList}" value="#{bundle.ViewOSMBusStopShowAllLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ViewOSMBusStopIndexLink}"/>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

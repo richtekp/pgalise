@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ListBusTripTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:form styleClass="jsfcrud_list_form">
+				<h:panelGroup id="messagePanel" layout="block">
+					<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+				</h:panelGroup>
+				<h:outputText escape="false" value="#{bundle.ListBusTripEmpty}" rendered="#{busTripController.items.rowCount == 0}"/>
+				<h:panelGroup rendered="#{busTripController.items.rowCount > 0}">
+					<h:outputText value="#{busTripController.pagination.pageFirstItem + 1}..#{busTripController.pagination.pageLastItem + 1}/#{busTripController.pagination.itemsCount}"/>&nbsp;
+					<h:commandLink action="#{busTripController.previous}" value="#{bundle.Previous} #{busTripController.pagination.pageSize}" rendered="#{busTripController.pagination.hasPreviousPage}"/>&nbsp;
+					<h:commandLink action="#{busTripController.next}" value="#{bundle.Next} #{busTripController.pagination.pageSize}" rendered="#{busTripController.pagination.hasNextPage}"/>&nbsp;
+					<h:dataTable value="#{busTripController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_routeShortName}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeShortName}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_routeLongName}"/>
+							</f:facet>
+							<h:outputText value="#{item.routeLongName}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_bus}"/>
+							</f:facet>
+							<h:outputText value="#{item.bus}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_gpsSensor}"/>
+							</f:facet>
+							<h:outputText value="#{item.gpsSensor}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_infraredSensor}"/>
+							</f:facet>
+							<h:outputText value="#{item.infraredSensor}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_serviceId}"/>
+							</f:facet>
+							<h:outputText value="#{item.serviceId}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_tripHeadsign}"/>
+							</f:facet>
+							<h:outputText value="#{item.tripHeadsign}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_tripShortName}"/>
+							</f:facet>
+							<h:outputText value="#{item.tripShortName}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_directionId}"/>
+							</f:facet>
+							<h:outputText value="#{item.directionId}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_blockId}"/>
+							</f:facet>
+							<h:outputText value="#{item.blockId}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_shapeId}"/>
+							</f:facet>
+							<h:outputText value="#{item.shapeId}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_wheelchairAccessible}"/>
+							</f:facet>
+							<h:outputText value="#{item.wheelchairAccessible}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_route}"/>
+							</f:facet>
+							<h:outputText value="#{item.route}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_startNode}"/>
+							</f:facet>
+							<h:outputText value="#{item.startNode}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_targetNode}"/>
+							</f:facet>
+							<h:outputText value="#{item.targetNode}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_startTime}"/>
+							</f:facet>
+							<h:outputText value="#{item.startTime}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusTripTitle_id}"/>
+							</f:facet>
+							<h:outputText value="#{item.id}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="&nbsp;"/>
+							</f:facet>
+							<h:commandLink action="#{busTripController.prepareView}" value="#{bundle.ListBusTripViewLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{busTripController.prepareEdit}" value="#{bundle.ListBusTripEditLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{busTripController.destroy}" value="#{bundle.ListBusTripDestroyLink}"/>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<br />
+				<h:commandLink action="#{busTripController.prepareCreate}" value="#{bundle.ListBusTripCreateLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ListBusTripIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

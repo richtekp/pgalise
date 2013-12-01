@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateBuildingTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_squareMeter}" for="squareMeter" />
+					<h:inputText id="squareMeter" value="#{buildingController.selected.squareMeter}" title="#{bundle.CreateBuildingTitle_squareMeter}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_position}" for="position" />
+					<h:inputText id="position" value="#{buildingController.selected.position}" title="#{bundle.CreateBuildingTitle_position}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_geoLocation}" for="geoLocation" />
+					<h:inputText id="geoLocation" value="#{buildingController.selected.geoLocation}" title="#{bundle.CreateBuildingTitle_geoLocation}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_tourismTags}" for="tourismTags" />
+					<h:inputText id="tourismTags" value="#{buildingController.selected.tourismTags}" title="#{bundle.CreateBuildingTitle_tourismTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_serviceTags}" for="serviceTags" />
+					<h:inputText id="serviceTags" value="#{buildingController.selected.serviceTags}" title="#{bundle.CreateBuildingTitle_serviceTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_sportTags}" for="sportTags" />
+					<h:inputText id="sportTags" value="#{buildingController.selected.sportTags}" title="#{bundle.CreateBuildingTitle_sportTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_schoolTags}" for="schoolTags" />
+					<h:inputText id="schoolTags" value="#{buildingController.selected.schoolTags}" title="#{bundle.CreateBuildingTitle_schoolTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_repairTags}" for="repairTags" />
+					<h:inputText id="repairTags" value="#{buildingController.selected.repairTags}" title="#{bundle.CreateBuildingTitle_repairTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_attractionTags}" for="attractionTags" />
+					<h:inputText id="attractionTags" value="#{buildingController.selected.attractionTags}" title="#{bundle.CreateBuildingTitle_attractionTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_shopTags}" for="shopTags" />
+					<h:inputText id="shopTags" value="#{buildingController.selected.shopTags}" title="#{bundle.CreateBuildingTitle_shopTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_emergencyServiceTags}" for="emergencyServiceTags" />
+					<h:inputText id="emergencyServiceTags" value="#{buildingController.selected.emergencyServiceTags}" title="#{bundle.CreateBuildingTitle_emergencyServiceTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_craftTags}" for="craftTags" />
+					<h:inputText id="craftTags" value="#{buildingController.selected.craftTags}" title="#{bundle.CreateBuildingTitle_craftTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_leisureTags}" for="leisureTags" />
+					<h:inputText id="leisureTags" value="#{buildingController.selected.leisureTags}" title="#{bundle.CreateBuildingTitle_leisureTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_publicTransportTags}" for="publicTransportTags" />
+					<h:inputText id="publicTransportTags" value="#{buildingController.selected.publicTransportTags}" title="#{bundle.CreateBuildingTitle_publicTransportTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_gamblingTags}" for="gamblingTags" />
+					<h:inputText id="gamblingTags" value="#{buildingController.selected.gamblingTags}" title="#{bundle.CreateBuildingTitle_gamblingTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_amenityTags}" for="amenityTags" />
+					<h:inputText id="amenityTags" value="#{buildingController.selected.amenityTags}" title="#{bundle.CreateBuildingTitle_amenityTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_landuseTags}" for="landuseTags" />
+					<h:inputText id="landuseTags" value="#{buildingController.selected.landuseTags}" title="#{bundle.CreateBuildingTitle_landuseTags}" />
+					<h:outputLabel value="#{bundle.CreateBuildingLabel_id}" for="id" />
+					<h:inputText id="id" value="#{buildingController.selected.id}" title="#{bundle.CreateBuildingTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{buildingController.create}" value="#{bundle.CreateBuildingSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{buildingController.prepareList}" value="#{bundle.CreateBuildingShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateBuildingIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

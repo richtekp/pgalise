@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateTrafficEdgeTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_vehicles}" for="vehicles" />
+					<h:inputText id="vehicles" value="#{trafficEdgeController.selected.vehicles}" title="#{bundle.CreateTrafficEdgeTitle_vehicles}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_oncomingTrafficEdge}" for="oncomingTrafficEdge" />
+					<h:selectOneMenu id="oncomingTrafficEdge" value="#{trafficEdgeController.selected.oncomingTrafficEdge}" title="#{bundle.CreateTrafficEdgeTitle_oncomingTrafficEdge}" >
+						<f:selectItems value="#{trafficEdgeController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_maxSpeed}" for="maxSpeed" />
+					<h:inputText id="maxSpeed" value="#{trafficEdgeController.selected.maxSpeed}" title="#{bundle.CreateTrafficEdgeTitle_maxSpeed}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_way}" for="way" />
+					<h:selectOneMenu id="way" value="#{trafficEdgeController.selected.way}" title="#{bundle.CreateTrafficEdgeTitle_way}" >
+						<f:selectItems value="#{wayController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_grossVehicleWeight}" for="grossVehicleWeight" />
+					<h:inputText id="grossVehicleWeight" value="#{trafficEdgeController.selected.grossVehicleWeight}" title="#{bundle.CreateTrafficEdgeTitle_grossVehicleWeight}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_source}" for="source" />
+					<h:inputText id="source" value="#{trafficEdgeController.selected.source}" title="#{bundle.CreateTrafficEdgeTitle_source}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_target}" for="target" />
+					<h:inputText id="target" value="#{trafficEdgeController.selected.target}" title="#{bundle.CreateTrafficEdgeTitle_target}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_edgeLine}" for="edgeLine" />
+					<h:inputText id="edgeLine" value="#{trafficEdgeController.selected.edgeLine}" title="#{bundle.CreateTrafficEdgeTitle_edgeLine}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_edgeLength}" for="edgeLength" />
+					<h:inputText id="edgeLength" value="#{trafficEdgeController.selected.edgeLength}" title="#{bundle.CreateTrafficEdgeTitle_edgeLength}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_lineAzimuth}" for="lineAzimuth" />
+					<h:inputText id="lineAzimuth" value="#{trafficEdgeController.selected.lineAzimuth}" title="#{bundle.CreateTrafficEdgeTitle_lineAzimuth}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_source}" for="source" />
+					<h:selectOneMenu id="source" value="#{trafficEdgeController.selected.source}" title="#{bundle.CreateTrafficEdgeTitle_source}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_target}" for="target" />
+					<h:selectOneMenu id="target" value="#{trafficEdgeController.selected.target}" title="#{bundle.CreateTrafficEdgeTitle_target}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_updateTimestamp}" for="updateTimestamp" />
+					<h:inputText id="updateTimestamp" value="#{trafficEdgeController.selected.updateTimestamp}" title="#{bundle.CreateTrafficEdgeTitle_updateTimestamp}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_vector}" for="vector" />
+					<h:inputText id="vector" value="#{trafficEdgeController.selected.vector}" title="#{bundle.CreateTrafficEdgeTitle_vector}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_opposite}" for="opposite" />
+					<h:inputText id="opposite" value="#{trafficEdgeController.selected.opposite}" title="#{bundle.CreateTrafficEdgeTitle_opposite}" />
+					<h:outputLabel value="#{bundle.CreateTrafficEdgeLabel_id}" for="id" />
+					<h:inputText id="id" value="#{trafficEdgeController.selected.id}" title="#{bundle.CreateTrafficEdgeTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{trafficEdgeController.create}" value="#{bundle.CreateTrafficEdgeSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{trafficEdgeController.prepareList}" value="#{bundle.CreateTrafficEdgeShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateTrafficEdgeIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

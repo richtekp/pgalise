@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateCityTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateCityLabel_altitude}" for="altitude" />
+					<h:inputText id="altitude" value="#{cityController.selected.altitude}" title="#{bundle.CreateCityTitle_altitude}" />
+					<h:outputLabel value="#{bundle.CreateCityLabel_name}" for="name" />
+					<h:inputText id="name" value="#{cityController.selected.name}" title="#{bundle.CreateCityTitle_name}" />
+					<h:outputLabel value="#{bundle.CreateCityLabel_population}" for="population" />
+					<h:inputText id="population" value="#{cityController.selected.population}" title="#{bundle.CreateCityTitle_population}" />
+					<h:outputLabel value="#{bundle.CreateCityLabel_rate}" for="rate" />
+					<h:inputText id="rate" value="#{cityController.selected.rate}" title="#{bundle.CreateCityTitle_rate}" />
+					<h:outputLabel value="#{bundle.CreateCityLabel_position}" for="position" />
+					<h:inputText id="position" value="#{cityController.selected.position}" title="#{bundle.CreateCityTitle_position}" />
+					<h:outputLabel value="#{bundle.CreateCityLabel_referencePoint}" for="referencePoint" />
+					<h:inputText id="referencePoint" value="#{cityController.selected.referencePoint}" title="#{bundle.CreateCityTitle_referencePoint}" />
+					<h:outputLabel value="#{bundle.CreateCityLabel_id}" for="id" />
+					<h:inputText id="id" value="#{cityController.selected.id}" title="#{bundle.CreateCityTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{cityController.create}" value="#{bundle.CreateCitySaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{cityController.prepareList}" value="#{bundle.CreateCityShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateCityIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

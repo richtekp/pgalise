@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ViewNavigationEdgeTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_edgeLine}"/>
+					<h:outputText value="#{navigationEdgeController.selected.edgeLine}" title="#{bundle.ViewNavigationEdgeTitle_edgeLine}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_edgeLength}"/>
+					<h:outputText value="#{navigationEdgeController.selected.edgeLength}" title="#{bundle.ViewNavigationEdgeTitle_edgeLength}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_lineAzimuth}"/>
+					<h:outputText value="#{navigationEdgeController.selected.lineAzimuth}" title="#{bundle.ViewNavigationEdgeTitle_lineAzimuth}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_source}"/>
+					<h:outputText value="#{navigationEdgeController.selected.source}" title="#{bundle.ViewNavigationEdgeTitle_source}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_target}"/>
+					<h:outputText value="#{navigationEdgeController.selected.target}" title="#{bundle.ViewNavigationEdgeTitle_target}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_updateTimestamp}"/>
+					<h:outputText value="#{navigationEdgeController.selected.updateTimestamp}" title="#{bundle.ViewNavigationEdgeTitle_updateTimestamp}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_vector}"/>
+					<h:outputText value="#{navigationEdgeController.selected.vector}" title="#{bundle.ViewNavigationEdgeTitle_vector}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_opposite}"/>
+					<h:outputText value="#{navigationEdgeController.selected.opposite}" title="#{bundle.ViewNavigationEdgeTitle_opposite}"/>
+					<h:outputText value="#{bundle.ViewNavigationEdgeLabel_id}"/>
+					<h:outputText value="#{navigationEdgeController.selected.id}" title="#{bundle.ViewNavigationEdgeTitle_id}"/>
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{navigationEdgeController.destroyAndView}" value="#{bundle.ViewNavigationEdgeDestroyLink}"/>
+				<br />
+				<br />
+				<h:link outcome="Edit" value="#{bundle.ViewNavigationEdgeEditLink}"/>
+				<br />
+				<h:commandLink action="#{navigationEdgeController.prepareCreate}" value="#{bundle.ViewNavigationEdgeCreateLink}" />
+				<br />
+				<h:commandLink action="#{navigationEdgeController.prepareList}" value="#{bundle.ViewNavigationEdgeShowAllLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ViewNavigationEdgeIndexLink}"/>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

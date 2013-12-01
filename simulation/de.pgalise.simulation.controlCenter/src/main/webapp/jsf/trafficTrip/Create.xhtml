@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateTrafficTripTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateTrafficTripLabel_startNode}" for="startNode" />
+					<h:selectOneMenu id="startNode" value="#{trafficTripController.selected.startNode}" title="#{bundle.CreateTrafficTripTitle_startNode}" >
+						<f:selectItems value="#{trafficNodeController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateTrafficTripLabel_targetNode}" for="targetNode" />
+					<h:selectOneMenu id="targetNode" value="#{trafficTripController.selected.targetNode}" title="#{bundle.CreateTrafficTripTitle_targetNode}" >
+						<f:selectItems value="#{trafficNodeController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateTrafficTripLabel_startTime}" for="startTime" />
+					<h:inputText id="startTime" value="#{trafficTripController.selected.startTime}" title="#{bundle.CreateTrafficTripTitle_startTime}" />
+					<h:outputLabel value="#{bundle.CreateTrafficTripLabel_id}" for="id" />
+					<h:inputText id="id" value="#{trafficTripController.selected.id}" title="#{bundle.CreateTrafficTripTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{trafficTripController.create}" value="#{bundle.CreateTrafficTripSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{trafficTripController.prepareList}" value="#{bundle.CreateTrafficTripShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateTrafficTripIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

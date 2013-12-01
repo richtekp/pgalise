@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateBusCalendarTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_monday}" for="monday" />
+					<h:inputText id="monday" value="#{busCalendarController.selected.monday}" title="#{bundle.CreateBusCalendarTitle_monday}" />
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_thuesday}" for="thuesday" />
+					<h:inputText id="thuesday" value="#{busCalendarController.selected.thuesday}" title="#{bundle.CreateBusCalendarTitle_thuesday}" />
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_wednesday}" for="wednesday" />
+					<h:inputText id="wednesday" value="#{busCalendarController.selected.wednesday}" title="#{bundle.CreateBusCalendarTitle_wednesday}" />
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_thursday}" for="thursday" />
+					<h:inputText id="thursday" value="#{busCalendarController.selected.thursday}" title="#{bundle.CreateBusCalendarTitle_thursday}" />
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_friday}" for="friday" />
+					<h:inputText id="friday" value="#{busCalendarController.selected.friday}" title="#{bundle.CreateBusCalendarTitle_friday}" />
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_saturday}" for="saturday" />
+					<h:inputText id="saturday" value="#{busCalendarController.selected.saturday}" title="#{bundle.CreateBusCalendarTitle_saturday}" />
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_sunday}" for="sunday" />
+					<h:inputText id="sunday" value="#{busCalendarController.selected.sunday}" title="#{bundle.CreateBusCalendarTitle_sunday}" />
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_startDate}" for="startDate" />
+					<h:inputText id="startDate" value="#{busCalendarController.selected.startDate}" title="#{bundle.CreateBusCalendarTitle_startDate}" >
+						<f:convertDateTime pattern="MM/dd/yyyy" />
+					</h:inputText>
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_endDate}" for="endDate" />
+					<h:inputText id="endDate" value="#{busCalendarController.selected.endDate}" title="#{bundle.CreateBusCalendarTitle_endDate}" >
+						<f:convertDateTime pattern="MM/dd/yyyy" />
+					</h:inputText>
+					<h:outputLabel value="#{bundle.CreateBusCalendarLabel_id}" for="id" />
+					<h:inputText id="id" value="#{busCalendarController.selected.id}" title="#{bundle.CreateBusCalendarTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{busCalendarController.create}" value="#{bundle.CreateBusCalendarSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{busCalendarController.prepareList}" value="#{bundle.CreateBusCalendarShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateBusCalendarIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.EditStationDataAggregateTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_airPressure}" for="airPressure" />
+					<h:inputText id="airPressure" value="#{stationDataAggregateController.selected.airPressure}" title="#{bundle.EditStationDataAggregateTitle_airPressure}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_lightIntensity}" for="lightIntensity" />
+					<h:inputText id="lightIntensity" value="#{stationDataAggregateController.selected.lightIntensity}" title="#{bundle.EditStationDataAggregateTitle_lightIntensity}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_perceivedTemperature}" for="perceivedTemperature" />
+					<h:inputText id="perceivedTemperature" value="#{stationDataAggregateController.selected.perceivedTemperature}" title="#{bundle.EditStationDataAggregateTitle_perceivedTemperature}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_precipitationAmount}" for="precipitationAmount" />
+					<h:inputText id="precipitationAmount" value="#{stationDataAggregateController.selected.precipitationAmount}" title="#{bundle.EditStationDataAggregateTitle_precipitationAmount}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_radiation}" for="radiation" />
+					<h:inputText id="radiation" value="#{stationDataAggregateController.selected.radiation}" title="#{bundle.EditStationDataAggregateTitle_radiation}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_relativHumidity}" for="relativHumidity" />
+					<h:inputText id="relativHumidity" value="#{stationDataAggregateController.selected.relativHumidity}" title="#{bundle.EditStationDataAggregateTitle_relativHumidity}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_temperature}" for="temperature" />
+					<h:inputText id="temperature" value="#{stationDataAggregateController.selected.temperature}" title="#{bundle.EditStationDataAggregateTitle_temperature}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_windDirection}" for="windDirection" />
+					<h:inputText id="windDirection" value="#{stationDataAggregateController.selected.windDirection}" title="#{bundle.EditStationDataAggregateTitle_windDirection}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_windVelocity}" for="windVelocity" />
+					<h:inputText id="windVelocity" value="#{stationDataAggregateController.selected.windVelocity}" title="#{bundle.EditStationDataAggregateTitle_windVelocity}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_measureTime}" for="measureTime" />
+					<h:inputText id="measureTime" value="#{stationDataAggregateController.selected.measureTime}" title="#{bundle.EditStationDataAggregateTitle_measureTime}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_measureDate}" for="measureDate" />
+					<h:inputText id="measureDate" value="#{stationDataAggregateController.selected.measureDate}" title="#{bundle.EditStationDataAggregateTitle_measureDate}" />
+					<h:outputLabel value="#{bundle.EditStationDataAggregateLabel_id}" for="id" />
+					<h:inputText id="id" value="#{stationDataAggregateController.selected.id}" title="#{bundle.EditStationDataAggregateTitle_id}" />
+				</h:panelGrid>
+				<h:commandLink action="#{stationDataAggregateController.update}" value="#{bundle.EditStationDataAggregateSaveLink}"/>
+				<br />
+				<br />
+				<h:link outcome="View" value="#{bundle.EditStationDataAggregateViewLink}"/>
+				<br />
+				<h:commandLink action="#{stationDataAggregateController.prepareList}" value="#{bundle.EditStationDataAggregateShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.EditStationDataAggregateIndexLink}" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

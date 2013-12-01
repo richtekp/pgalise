@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.EditTrafficRuleDataTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.EditTrafficRuleDataLabel_vehicleData}" for="vehicleData" />
+					<h:inputText id="vehicleData" value="#{trafficRuleDataController.selected.vehicleData}" title="#{bundle.EditTrafficRuleDataTitle_vehicleData}" />
+					<h:outputLabel value="#{bundle.EditTrafficRuleDataLabel_from}" for="from" />
+					<h:selectOneMenu id="from" value="#{trafficRuleDataController.selected.from}" title="#{bundle.EditTrafficRuleDataTitle_from}" >
+						<f:selectItems value="#{trafficEdgeController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.EditTrafficRuleDataLabel_to}" for="to" />
+					<h:selectOneMenu id="to" value="#{trafficRuleDataController.selected.to}" title="#{bundle.EditTrafficRuleDataTitle_to}" >
+						<f:selectItems value="#{trafficEdgeController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.EditTrafficRuleDataLabel_callback}" for="callback" />
+					<h:inputText id="callback" value="#{trafficRuleDataController.selected.callback}" title="#{bundle.EditTrafficRuleDataTitle_callback}" />
+					<h:outputLabel value="#{bundle.EditTrafficRuleDataLabel_id}" for="id" />
+					<h:inputText id="id" value="#{trafficRuleDataController.selected.id}" title="#{bundle.EditTrafficRuleDataTitle_id}" />
+				</h:panelGrid>
+				<h:commandLink action="#{trafficRuleDataController.update}" value="#{bundle.EditTrafficRuleDataSaveLink}"/>
+				<br />
+				<br />
+				<h:link outcome="View" value="#{bundle.EditTrafficRuleDataViewLink}"/>
+				<br />
+				<h:commandLink action="#{trafficRuleDataController.prepareList}" value="#{bundle.EditTrafficRuleDataShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.EditTrafficRuleDataIndexLink}" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

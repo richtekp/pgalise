@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateMyExtendedServiceDataForecastTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_temperatureHigh}" for="temperatureHigh" />
+					<h:inputText id="temperatureHigh" value="#{myExtendedServiceDataForecastController.selected.temperatureHigh}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_temperatureHigh}" />
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_temperatureLow}" for="temperatureLow" />
+					<h:inputText id="temperatureLow" value="#{myExtendedServiceDataForecastController.selected.temperatureLow}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_temperatureLow}" />
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_city}" for="city" />
+					<h:selectOneMenu id="city" value="#{myExtendedServiceDataForecastController.selected.city}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_city}" >
+						<f:selectItems value="#{cityController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_relativHumidity}" for="relativHumidity" />
+					<h:inputText id="relativHumidity" value="#{myExtendedServiceDataForecastController.selected.relativHumidity}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_relativHumidity}" />
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_windDirection}" for="windDirection" />
+					<h:inputText id="windDirection" value="#{myExtendedServiceDataForecastController.selected.windDirection}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_windDirection}" />
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_windVelocity}" for="windVelocity" />
+					<h:inputText id="windVelocity" value="#{myExtendedServiceDataForecastController.selected.windVelocity}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_windVelocity}" />
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_condition}" for="condition" />
+					<h:selectOneMenu id="condition" value="#{myExtendedServiceDataForecastController.selected.condition}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_condition}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_measureTime}" for="measureTime" />
+					<h:inputText id="measureTime" value="#{myExtendedServiceDataForecastController.selected.measureTime}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_measureTime}" />
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_measureDate}" for="measureDate" />
+					<h:inputText id="measureDate" value="#{myExtendedServiceDataForecastController.selected.measureDate}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_measureDate}" />
+					<h:outputLabel value="#{bundle.CreateMyExtendedServiceDataForecastLabel_id}" for="id" />
+					<h:inputText id="id" value="#{myExtendedServiceDataForecastController.selected.id}" title="#{bundle.CreateMyExtendedServiceDataForecastTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{myExtendedServiceDataForecastController.create}" value="#{bundle.CreateMyExtendedServiceDataForecastSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{myExtendedServiceDataForecastController.prepareList}" value="#{bundle.CreateMyExtendedServiceDataForecastShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateMyExtendedServiceDataForecastIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

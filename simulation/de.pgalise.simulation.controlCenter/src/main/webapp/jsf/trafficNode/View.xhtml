@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ViewTrafficNodeTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_sensors}"/>
+					<h:outputText value="#{trafficNodeController.selected.sensors}" title="#{bundle.ViewTrafficNodeTitle_sensors}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_vehicles}"/>
+					<h:outputText value="#{trafficNodeController.selected.vehicles}" title="#{bundle.ViewTrafficNodeTitle_vehicles}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_trafficRule}"/>
+					<h:outputText value="#{trafficNodeController.selected.trafficRule}" title="#{bundle.ViewTrafficNodeTitle_trafficRule}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_busStop}"/>
+					<h:outputText value="#{trafficNodeController.selected.busStop}" title="#{bundle.ViewTrafficNodeTitle_busStop}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_geoLocation}"/>
+					<h:outputText value="#{trafficNodeController.selected.geoLocation}" title="#{bundle.ViewTrafficNodeTitle_geoLocation}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_tourismTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.tourismTags}" title="#{bundle.ViewTrafficNodeTitle_tourismTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_serviceTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.serviceTags}" title="#{bundle.ViewTrafficNodeTitle_serviceTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_sportTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.sportTags}" title="#{bundle.ViewTrafficNodeTitle_sportTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_schoolTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.schoolTags}" title="#{bundle.ViewTrafficNodeTitle_schoolTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_repairTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.repairTags}" title="#{bundle.ViewTrafficNodeTitle_repairTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_attractionTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.attractionTags}" title="#{bundle.ViewTrafficNodeTitle_attractionTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_shopTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.shopTags}" title="#{bundle.ViewTrafficNodeTitle_shopTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_emergencyServiceTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.emergencyServiceTags}" title="#{bundle.ViewTrafficNodeTitle_emergencyServiceTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_craftTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.craftTags}" title="#{bundle.ViewTrafficNodeTitle_craftTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_leisureTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.leisureTags}" title="#{bundle.ViewTrafficNodeTitle_leisureTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_publicTransportTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.publicTransportTags}" title="#{bundle.ViewTrafficNodeTitle_publicTransportTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_gamblingTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.gamblingTags}" title="#{bundle.ViewTrafficNodeTitle_gamblingTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_amenityTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.amenityTags}" title="#{bundle.ViewTrafficNodeTitle_amenityTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_landuseTags}"/>
+					<h:outputText value="#{trafficNodeController.selected.landuseTags}" title="#{bundle.ViewTrafficNodeTitle_landuseTags}"/>
+					<h:outputText value="#{bundle.ViewTrafficNodeLabel_id}"/>
+					<h:outputText value="#{trafficNodeController.selected.id}" title="#{bundle.ViewTrafficNodeTitle_id}"/>
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{trafficNodeController.destroyAndView}" value="#{bundle.ViewTrafficNodeDestroyLink}"/>
+				<br />
+				<br />
+				<h:link outcome="Edit" value="#{bundle.ViewTrafficNodeEditLink}"/>
+				<br />
+				<h:commandLink action="#{trafficNodeController.prepareCreate}" value="#{bundle.ViewTrafficNodeCreateLink}" />
+				<br />
+				<h:commandLink action="#{trafficNodeController.prepareList}" value="#{bundle.ViewTrafficNodeShowAllLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ViewTrafficNodeIndexLink}"/>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.CreateDefaultServiceDataForecastTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_temperatureHigh}" for="temperatureHigh" />
+					<h:inputText id="temperatureHigh" value="#{defaultServiceDataForecastController.selected.temperatureHigh}" title="#{bundle.CreateDefaultServiceDataForecastTitle_temperatureHigh}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_temperatureLow}" for="temperatureLow" />
+					<h:inputText id="temperatureLow" value="#{defaultServiceDataForecastController.selected.temperatureLow}" title="#{bundle.CreateDefaultServiceDataForecastTitle_temperatureLow}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_city}" for="city" />
+					<h:selectOneMenu id="city" value="#{defaultServiceDataForecastController.selected.city}" title="#{bundle.CreateDefaultServiceDataForecastTitle_city}" >
+						<f:selectItems value="#{cityController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_relativHumidity}" for="relativHumidity" />
+					<h:inputText id="relativHumidity" value="#{defaultServiceDataForecastController.selected.relativHumidity}" title="#{bundle.CreateDefaultServiceDataForecastTitle_relativHumidity}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_windDirection}" for="windDirection" />
+					<h:inputText id="windDirection" value="#{defaultServiceDataForecastController.selected.windDirection}" title="#{bundle.CreateDefaultServiceDataForecastTitle_windDirection}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_windVelocity}" for="windVelocity" />
+					<h:inputText id="windVelocity" value="#{defaultServiceDataForecastController.selected.windVelocity}" title="#{bundle.CreateDefaultServiceDataForecastTitle_windVelocity}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_condition}" for="condition" />
+					<h:selectOneMenu id="condition" value="#{defaultServiceDataForecastController.selected.condition}" title="#{bundle.CreateDefaultServiceDataForecastTitle_condition}" >
+						<f:selectItems value="#{x}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_measureTime}" for="measureTime" />
+					<h:inputText id="measureTime" value="#{defaultServiceDataForecastController.selected.measureTime}" title="#{bundle.CreateDefaultServiceDataForecastTitle_measureTime}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_measureDate}" for="measureDate" />
+					<h:inputText id="measureDate" value="#{defaultServiceDataForecastController.selected.measureDate}" title="#{bundle.CreateDefaultServiceDataForecastTitle_measureDate}" />
+					<h:outputLabel value="#{bundle.CreateDefaultServiceDataForecastLabel_id}" for="id" />
+					<h:inputText id="id" value="#{defaultServiceDataForecastController.selected.id}" title="#{bundle.CreateDefaultServiceDataForecastTitle_id}" />
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{defaultServiceDataForecastController.create}" value="#{bundle.CreateDefaultServiceDataForecastSaveLink}" />
+				<br />
+				<br />
+				<h:commandLink action="#{defaultServiceDataForecastController.prepareList}" value="#{bundle.CreateDefaultServiceDataForecastShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.CreateDefaultServiceDataForecastIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

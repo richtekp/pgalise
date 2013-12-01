@@ -46,7 +46,7 @@ public class SensorInfo extends AbstractIdentifiable {
 	 * @throws IllegalArgumentException
 	 *             if argument 'sensor' is 'null'
 	 */
-	private SensorInfo(final Sensor<?> sensor) throws IllegalArgumentException {
+	public SensorInfo(final Sensor<?> sensor) throws IllegalArgumentException {
 		super(sensor.getId());
 //		this.sensorTypeId = sensor.getSensorType().ordinal();
 		this.longitude = sensor.getPosition().x;

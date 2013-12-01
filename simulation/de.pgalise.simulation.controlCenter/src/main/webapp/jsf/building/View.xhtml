@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ViewBuildingTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputText value="#{bundle.ViewBuildingLabel_squareMeter}"/>
+					<h:outputText value="#{buildingController.selected.squareMeter}" title="#{bundle.ViewBuildingTitle_squareMeter}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_position}"/>
+					<h:outputText value="#{buildingController.selected.position}" title="#{bundle.ViewBuildingTitle_position}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_geoLocation}"/>
+					<h:outputText value="#{buildingController.selected.geoLocation}" title="#{bundle.ViewBuildingTitle_geoLocation}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_tourismTags}"/>
+					<h:outputText value="#{buildingController.selected.tourismTags}" title="#{bundle.ViewBuildingTitle_tourismTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_serviceTags}"/>
+					<h:outputText value="#{buildingController.selected.serviceTags}" title="#{bundle.ViewBuildingTitle_serviceTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_sportTags}"/>
+					<h:outputText value="#{buildingController.selected.sportTags}" title="#{bundle.ViewBuildingTitle_sportTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_schoolTags}"/>
+					<h:outputText value="#{buildingController.selected.schoolTags}" title="#{bundle.ViewBuildingTitle_schoolTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_repairTags}"/>
+					<h:outputText value="#{buildingController.selected.repairTags}" title="#{bundle.ViewBuildingTitle_repairTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_attractionTags}"/>
+					<h:outputText value="#{buildingController.selected.attractionTags}" title="#{bundle.ViewBuildingTitle_attractionTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_shopTags}"/>
+					<h:outputText value="#{buildingController.selected.shopTags}" title="#{bundle.ViewBuildingTitle_shopTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_emergencyServiceTags}"/>
+					<h:outputText value="#{buildingController.selected.emergencyServiceTags}" title="#{bundle.ViewBuildingTitle_emergencyServiceTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_craftTags}"/>
+					<h:outputText value="#{buildingController.selected.craftTags}" title="#{bundle.ViewBuildingTitle_craftTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_leisureTags}"/>
+					<h:outputText value="#{buildingController.selected.leisureTags}" title="#{bundle.ViewBuildingTitle_leisureTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_publicTransportTags}"/>
+					<h:outputText value="#{buildingController.selected.publicTransportTags}" title="#{bundle.ViewBuildingTitle_publicTransportTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_gamblingTags}"/>
+					<h:outputText value="#{buildingController.selected.gamblingTags}" title="#{bundle.ViewBuildingTitle_gamblingTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_amenityTags}"/>
+					<h:outputText value="#{buildingController.selected.amenityTags}" title="#{bundle.ViewBuildingTitle_amenityTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_landuseTags}"/>
+					<h:outputText value="#{buildingController.selected.landuseTags}" title="#{bundle.ViewBuildingTitle_landuseTags}"/>
+					<h:outputText value="#{bundle.ViewBuildingLabel_id}"/>
+					<h:outputText value="#{buildingController.selected.id}" title="#{bundle.ViewBuildingTitle_id}"/>
+				</h:panelGrid>
+				<br />
+				<h:commandLink action="#{buildingController.destroyAndView}" value="#{bundle.ViewBuildingDestroyLink}"/>
+				<br />
+				<br />
+				<h:link outcome="Edit" value="#{bundle.ViewBuildingEditLink}"/>
+				<br />
+				<h:commandLink action="#{buildingController.prepareCreate}" value="#{bundle.ViewBuildingCreateLink}" />
+				<br />
+				<h:commandLink action="#{buildingController.prepareList}" value="#{bundle.ViewBuildingShowAllLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ViewBuildingIndexLink}"/>
+
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

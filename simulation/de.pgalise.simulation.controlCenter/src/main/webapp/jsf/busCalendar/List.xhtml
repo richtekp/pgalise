@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.ListBusCalendarTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:form styleClass="jsfcrud_list_form">
+				<h:panelGroup id="messagePanel" layout="block">
+					<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+				</h:panelGroup>
+				<h:outputText escape="false" value="#{bundle.ListBusCalendarEmpty}" rendered="#{busCalendarController.items.rowCount == 0}"/>
+				<h:panelGroup rendered="#{busCalendarController.items.rowCount > 0}">
+					<h:outputText value="#{busCalendarController.pagination.pageFirstItem + 1}..#{busCalendarController.pagination.pageLastItem + 1}/#{busCalendarController.pagination.itemsCount}"/>&nbsp;
+					<h:commandLink action="#{busCalendarController.previous}" value="#{bundle.Previous} #{busCalendarController.pagination.pageSize}" rendered="#{busCalendarController.pagination.hasPreviousPage}"/>&nbsp;
+					<h:commandLink action="#{busCalendarController.next}" value="#{bundle.Next} #{busCalendarController.pagination.pageSize}" rendered="#{busCalendarController.pagination.hasNextPage}"/>&nbsp;
+					<h:dataTable value="#{busCalendarController.items}" var="item" border="0" cellpadding="2" cellspacing="0" rowClasses="jsfcrud_odd_row,jsfcrud_even_row" rules="all" style="border:solid 1px">
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_monday}"/>
+							</f:facet>
+							<h:outputText value="#{item.monday}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_thuesday}"/>
+							</f:facet>
+							<h:outputText value="#{item.thuesday}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_wednesday}"/>
+							</f:facet>
+							<h:outputText value="#{item.wednesday}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_thursday}"/>
+							</f:facet>
+							<h:outputText value="#{item.thursday}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_friday}"/>
+							</f:facet>
+							<h:outputText value="#{item.friday}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_saturday}"/>
+							</f:facet>
+							<h:outputText value="#{item.saturday}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_sunday}"/>
+							</f:facet>
+							<h:outputText value="#{item.sunday}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_startDate}"/>
+							</f:facet>
+							<h:outputText value="#{item.startDate}">
+								<f:convertDateTime pattern="MM/dd/yyyy" />
+							</h:outputText>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_endDate}"/>
+							</f:facet>
+							<h:outputText value="#{item.endDate}">
+								<f:convertDateTime pattern="MM/dd/yyyy" />
+							</h:outputText>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="#{bundle.ListBusCalendarTitle_id}"/>
+							</f:facet>
+							<h:outputText value="#{item.id}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="&nbsp;"/>
+							</f:facet>
+							<h:commandLink action="#{busCalendarController.prepareView}" value="#{bundle.ListBusCalendarViewLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{busCalendarController.prepareEdit}" value="#{bundle.ListBusCalendarEditLink}"/>
+							<h:outputText value=" "/>
+							<h:commandLink action="#{busCalendarController.destroy}" value="#{bundle.ListBusCalendarDestroyLink}"/>
+						</h:column>
+					</h:dataTable>
+				</h:panelGroup>
+				<br />
+				<h:commandLink action="#{busCalendarController.prepareCreate}" value="#{bundle.ListBusCalendarCreateLink}"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.ListBusCalendarIndexLink}"/>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+	<ui:composition template="/template.xhtml">
+		<ui:define name="title">
+			<h:outputText value="#{bundle.EditBusStopTitle}"></h:outputText>
+		</ui:define>
+		<ui:define name="body">
+			<h:panelGroup id="messagePanel" layout="block">
+				<h:messages errorStyle="color: red" infoStyle="color: green" layout="table"/>
+			</h:panelGroup>
+			<h:form>
+				<h:panelGrid columns="2">
+					<h:outputLabel value="#{bundle.EditBusStopLabel_stopName}" for="stopName" />
+					<h:inputText id="stopName" value="#{busStopController.selected.stopName}" title="#{bundle.EditBusStopTitle_stopName}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_stopCode}" for="stopCode" />
+					<h:inputText id="stopCode" value="#{busStopController.selected.stopCode}" title="#{bundle.EditBusStopTitle_stopCode}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_zoneId}" for="zoneId" />
+					<h:inputText id="zoneId" value="#{busStopController.selected.zoneId}" title="#{bundle.EditBusStopTitle_zoneId}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_stopUrl}" for="stopUrl" />
+					<h:inputText id="stopUrl" value="#{busStopController.selected.stopUrl}" title="#{bundle.EditBusStopTitle_stopUrl}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_locationType}" for="locationType" />
+					<h:inputText id="locationType" value="#{busStopController.selected.locationType}" title="#{bundle.EditBusStopTitle_locationType}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_parentStation}" for="parentStation" />
+					<h:inputText id="parentStation" value="#{busStopController.selected.parentStation}" title="#{bundle.EditBusStopTitle_parentStation}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_stopTimezone}" for="stopTimezone" />
+					<h:inputText id="stopTimezone" value="#{busStopController.selected.stopTimezone}" title="#{bundle.EditBusStopTitle_stopTimezone}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_wheelchairBoarding}" for="wheelchairBoarding" />
+					<h:inputText id="wheelchairBoarding" value="#{busStopController.selected.wheelchairBoarding}" title="#{bundle.EditBusStopTitle_wheelchairBoarding}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_sensors}" for="sensors" />
+					<h:inputText id="sensors" value="#{busStopController.selected.sensors}" title="#{bundle.EditBusStopTitle_sensors}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_vehicles}" for="vehicles" />
+					<h:inputText id="vehicles" value="#{busStopController.selected.vehicles}" title="#{bundle.EditBusStopTitle_vehicles}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_trafficRule}" for="trafficRule" />
+					<h:inputText id="trafficRule" value="#{busStopController.selected.trafficRule}" title="#{bundle.EditBusStopTitle_trafficRule}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_busStop}" for="busStop" />
+					<h:selectOneMenu id="busStop" value="#{busStopController.selected.busStop}" title="#{bundle.EditBusStopTitle_busStop}" >
+						<f:selectItems value="#{busStopController.itemsAvailableSelectOne}"/>
+					</h:selectOneMenu>
+					<h:outputLabel value="#{bundle.EditBusStopLabel_geoLocation}" for="geoLocation" />
+					<h:inputText id="geoLocation" value="#{busStopController.selected.geoLocation}" title="#{bundle.EditBusStopTitle_geoLocation}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_tourismTags}" for="tourismTags" />
+					<h:inputText id="tourismTags" value="#{busStopController.selected.tourismTags}" title="#{bundle.EditBusStopTitle_tourismTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_serviceTags}" for="serviceTags" />
+					<h:inputText id="serviceTags" value="#{busStopController.selected.serviceTags}" title="#{bundle.EditBusStopTitle_serviceTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_sportTags}" for="sportTags" />
+					<h:inputText id="sportTags" value="#{busStopController.selected.sportTags}" title="#{bundle.EditBusStopTitle_sportTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_schoolTags}" for="schoolTags" />
+					<h:inputText id="schoolTags" value="#{busStopController.selected.schoolTags}" title="#{bundle.EditBusStopTitle_schoolTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_repairTags}" for="repairTags" />
+					<h:inputText id="repairTags" value="#{busStopController.selected.repairTags}" title="#{bundle.EditBusStopTitle_repairTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_attractionTags}" for="attractionTags" />
+					<h:inputText id="attractionTags" value="#{busStopController.selected.attractionTags}" title="#{bundle.EditBusStopTitle_attractionTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_shopTags}" for="shopTags" />
+					<h:inputText id="shopTags" value="#{busStopController.selected.shopTags}" title="#{bundle.EditBusStopTitle_shopTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_emergencyServiceTags}" for="emergencyServiceTags" />
+					<h:inputText id="emergencyServiceTags" value="#{busStopController.selected.emergencyServiceTags}" title="#{bundle.EditBusStopTitle_emergencyServiceTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_craftTags}" for="craftTags" />
+					<h:inputText id="craftTags" value="#{busStopController.selected.craftTags}" title="#{bundle.EditBusStopTitle_craftTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_leisureTags}" for="leisureTags" />
+					<h:inputText id="leisureTags" value="#{busStopController.selected.leisureTags}" title="#{bundle.EditBusStopTitle_leisureTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_publicTransportTags}" for="publicTransportTags" />
+					<h:inputText id="publicTransportTags" value="#{busStopController.selected.publicTransportTags}" title="#{bundle.EditBusStopTitle_publicTransportTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_gamblingTags}" for="gamblingTags" />
+					<h:inputText id="gamblingTags" value="#{busStopController.selected.gamblingTags}" title="#{bundle.EditBusStopTitle_gamblingTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_amenityTags}" for="amenityTags" />
+					<h:inputText id="amenityTags" value="#{busStopController.selected.amenityTags}" title="#{bundle.EditBusStopTitle_amenityTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_landuseTags}" for="landuseTags" />
+					<h:inputText id="landuseTags" value="#{busStopController.selected.landuseTags}" title="#{bundle.EditBusStopTitle_landuseTags}" />
+					<h:outputLabel value="#{bundle.EditBusStopLabel_id}" for="id" />
+					<h:inputText id="id" value="#{busStopController.selected.id}" title="#{bundle.EditBusStopTitle_id}" />
+				</h:panelGrid>
+				<h:commandLink action="#{busStopController.update}" value="#{bundle.EditBusStopSaveLink}"/>
+				<br />
+				<br />
+				<h:link outcome="View" value="#{bundle.EditBusStopViewLink}"/>
+				<br />
+				<h:commandLink action="#{busStopController.prepareList}" value="#{bundle.EditBusStopShowAllLink}" immediate="true"/>
+				<br />
+				<br />
+				<h:link outcome="/index" value="#{bundle.EditBusStopIndexLink}" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>
