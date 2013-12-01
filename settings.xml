@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <profiles>
+    <profile>
+      <id>pgalise_external_repos</id>
+      <repositories>
+        <repository>
+					<snapshots>
+						<updatePolicy>daily</updatePolicy>
+					</snapshots>
+					<releases>
+						<updatePolicy>daily</updatePolicy>
+					</releases>
+          <id>download.osgeo.org</id>
+          <url>http://download.osgeo.org/webdav/geotools/</url>
+        </repository>
+        <repository>
+					<snapshots>
+						<updatePolicy>daily</updatePolicy>
+					</snapshots>
+					<releases>
+						<updatePolicy>daily</updatePolicy>
+					</releases>
+          <id>repo.opengeo.org</id>
+          <url>http://repo.opengeo.org</url>
+        </repository>
+        <repository>
+					<snapshots>
+						<updatePolicy>daily</updatePolicy>
+					</snapshots>
+					<releases>
+						<updatePolicy>daily</updatePolicy>
+					</releases>
+          <id>www.hibernatespatial.org</id>
+          <url>http://www.hibernatespatial.org/repository</url>
+        </repository>
+        <repository>
+					<snapshots>
+						<updatePolicy>daily</updatePolicy>
+					</snapshots>
+					<releases>
+						<updatePolicy>daily</updatePolicy>
+					</releases>
+          <id>dev.mapfish.org</id>
+          <url>http://dev.mapfish.org/maven/repository</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>pgalise_external_repos</activeProfile>
+  </activeProfiles>
+</settings>
+
