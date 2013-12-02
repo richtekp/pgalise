@@ -30,6 +30,7 @@
 		<module>de.pgalise.simulation.staticSensors-impl</module>
 		<module>de.pgalise.simulation.simulationController</module>
 		<module>de.pgalise.simulation.simulationController-impl</module>
+		<module>de.pgalise.simulation.jsf</module>
 		<!-- Implementierungen -->
 		<!-- Web Module -->
 		<module>de.pgalise.simulation.operationCenter</module>
