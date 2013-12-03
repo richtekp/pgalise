@@ -1,17 +1,22 @@
-<!DOCTYPE html>
-<html ng-app="app">
-	<head>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core">
+	<h:head>
 		<title>Simulation Control Center</title>
-		<meta name="author" content="Dennis Höting">
+		<meta name="author" content="Dennis Höting"></meta>
 		
 		<!-- Styles -->
-		<link rel="stylesheet" type="text/css" href="css/style.css">
+<!--		<link rel="stylesheet" type="text/css" href="css/style.css">
         <link rel="stylesheet" type="text/css" href="css//olStyle.css">
 		<link rel="stylesheet" href="lib/jquery.ui/jquery-ui.css" />
 		<link rel="stylesheet" href="lib/jquery.ui/custom-theme/jquery-ui-1.8.23.custom.css" />
         <link rel="stylesheet" href="lib/jquery.treeview/jquery.treeview.css" />
 		
-		<!-- Libraries -->
+		 Libraries 
         <script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>  
 		
 		<script type="text/javascript" src="lib/jquery/jquery-1.8.3.js"></script>
@@ -21,7 +26,7 @@
         <script type="text/javascript" src="lib/jquery.treeview/jquery.treeview.js"></script>
         <script type="text/javascript" src="lib/angular/angular.js"></script>
 		
-		<!-- Own Scripts -->
+		 Own Scripts 
         <script type="text/javascript" src="js/global.js"></script>
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/model/enums.js"></script>
@@ -71,19 +76,18 @@
         <script type="text/javascript" src="js/ctrl/navigationCtrl/initialNavCtrl.js"></script>
         <script type="text/javascript" src="js/ctrl/navigationCtrl/runtimeNavCtrl.js"></script>
         <script type="text/javascript" src="js/ctrl/headCtrl.js"></script>
-        <script type="text/javascript" src="js/ctrl/mainCtrl.js"></script>  
-	</head>
+        <script type="text/javascript" src="js/ctrl/mainCtrl.js"></script>  -->
+	</h:head>
 	<!-- 
 		MainView using MainCtrl
 		The MainCtrl's scope encapsulates all controller's scopes.
 		-->
-	<body ng-controller="MainCtrl">
-		<!-- IconDiv, will be appended to cursor when pushing sensor to map -->
-		<div id="icon_div">
-		</div>
-		<!-- Actual web site -->
+<!--	<h:body ng-controller="MainCtrl">
+		 IconDiv, will be appended to cursor when pushing sensor to map 
+		<div id="icon_div"></div>
+		 Actual web site 
 		<div id="div_all" ng-hide="accessDenied">
-			<!-- Header -->
+			 Header 
 			<div id="div_top" ng-controller="HeadCtrl">
                 <img src="img/wrench.png" id="wrenchImg" ng-click="openSettings()" />
 			    <img src="img/console.png" id="consoleImg" ng-click="openConsole()" />
@@ -108,11 +112,11 @@
                 
 			</div>
 			
-			<!-- Navigation -->
+			 Navigation 
 			<div id="div_navigation" >
 				<ng:include src="navigationURL"></ng:include>
 			</div>
-			<!-- Content -->
+			 Content 
 			<div id="div_content">
 				<ng:include src="contentURL"></ng:include>
 			</div>
@@ -120,5 +124,21 @@
                 <div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
             </div>
 		</div>
-	</body>
+	</h:body>-->
+	<h:body>
+		<div>fdsakjlf1</div>
+			<h:form>  
+                              
+    
+        <h:outputLabel value="Name:" />  
+		
+			</h:form>
+<!--		<p:dialog id="basicDialog" header="Basic Dialog" widgetVar="dlg1">  
+			<h:selectOneListbox>
+				<f:selectItems
+						 value="#{startParameter.ipSimulationController}"/>
+			</h:selectOneListbox>  
+			<h:outputText value="#{startParameter.ipSimulationController}" />  
+		</p:dialog>  -->
+	</h:body>
 </html>

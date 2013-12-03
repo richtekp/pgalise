@@ -36,12 +36,13 @@ import com.google.gson.JsonSerializer;
 
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

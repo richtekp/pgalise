@@ -18,7 +18,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
 
 import java.util.Collection;
 
-import de.pgalise.simulation.controlCenter.internal.model.AttractionData;
+import de.pgalise.simulation.controlCenter.model.AttractionData;
 
 /**
  * Message to create attraction events.

@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.internal.model;
+package de.pgalise.simulation.controlCenter.model;
 
 import de.pgalise.simulation.traffic.BusRoute;
 import java.util.List;

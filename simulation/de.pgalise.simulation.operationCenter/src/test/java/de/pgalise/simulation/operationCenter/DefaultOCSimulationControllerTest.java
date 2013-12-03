@@ -60,6 +60,7 @@ import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
@@ -223,7 +224,7 @@ public class DefaultOCSimulationControllerTest {
 
 		/* Create start parameter: */
 		City city = TestUtils.createDefaultTestCityInstance();
-		DefaultOCSimulationControllerTest.START_PARAMTER = new InfrastructureStartParameter(city, true, null);
+		DefaultOCSimulationControllerTest.START_PARAMTER = new DefaultInfrastructureStartParameter(city, true, null);
 
 		DefaultOCSimulationControllerTest.TESTCLASS = new DefaultOCSimulationController(
 				DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE,

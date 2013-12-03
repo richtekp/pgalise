@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.internal.model;
+package de.pgalise.simulation.controlCenter.model;
 /**
  * Needed data to save the start parameter.
  * This is used, if the client invokes the saving of the start parameter. E.g. via export.

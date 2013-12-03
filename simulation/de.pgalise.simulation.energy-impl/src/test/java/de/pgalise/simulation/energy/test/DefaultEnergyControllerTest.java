@@ -51,6 +51,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.Position;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
 import org.junit.Ignore;
 
@@ -199,7 +200,7 @@ public class DefaultEnergyControllerTest {
 				new Boundary(new Coordinate(), new Coordinate()));
 
 		city = TestUtils.createDefaultTestCityInstance();
-		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(city,
+		DefaultEnergyControllerTest.startParameter = new DefaultInfrastructureStartParameter(city,
 				true, new ArrayList<WeatherEventHelper>());
 		
 		// EnergyEventStrategy

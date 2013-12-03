@@ -1,35 +1,22 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
-import java.util.List;
 
+/**
+ *
+ * @author richter
+ */
+public interface InfrastructureStartParameter extends StartParameter {
 
-public class InfrastructureStartParameter extends StartParameter {
-	private City city;
-
-	public InfrastructureStartParameter() {
-	}
-
-	public InfrastructureStartParameter(City city,
-		boolean aggregatedWeatherDataEnabled,
-		List<WeatherEventHelper> weatherEventHelperList) {
-		super(aggregatedWeatherDataEnabled,
-			weatherEventHelperList);
-		this.city = city;
-	}
-
-	public City getCity() {
-		return city;
-	}
-
-	public void setCity(City city) {
-		this.city = city;
-	}
+	City getCity();
+	
+	void setCity(City city);
 	
 }

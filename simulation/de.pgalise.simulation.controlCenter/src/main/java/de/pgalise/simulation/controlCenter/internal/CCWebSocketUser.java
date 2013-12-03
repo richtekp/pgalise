@@ -71,11 +71,11 @@ import de.pgalise.simulation.controlCenter.internal.message.SimulationStartParam
 import de.pgalise.simulation.controlCenter.internal.message.SimulationStartedMessage;
 import de.pgalise.simulation.controlCenter.internal.message.UsedIDsMessage;
 import de.pgalise.simulation.controlCenter.internal.message.ValidNodeMessage;
-import de.pgalise.simulation.controlCenter.internal.model.AttractionData;
-import de.pgalise.simulation.controlCenter.internal.model.CCSimulationStartParameter;
-import de.pgalise.simulation.controlCenter.internal.model.ErrorMessageData;
-import de.pgalise.simulation.controlCenter.internal.model.IDWrapper;
-import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
+import de.pgalise.simulation.controlCenter.model.AttractionData;
+import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
+import de.pgalise.simulation.controlCenter.model.ErrorMessageData;
+import de.pgalise.simulation.controlCenter.model.IDWrapper;
+import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.controlCenter.internal.util.service.ControlCenterModule;
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateAttractionEventService;
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
@@ -102,6 +102,7 @@ import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.staticsensor.StaticSensorServiceDictionary;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
@@ -116,6 +117,9 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
+import java.util.logging.Level;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * The control center user. An object will be created if a new user joins the control center. It's only possible
@@ -414,9 +418,10 @@ public class CCWebSocketUser extends MessageInbound {
 				this.simulationController.createSensors(ccSimulationStartParameter.getSensorHelperList());
 				
 				/* Create start parameters: */
-				StartParameter startParameter = new InfrastructureStartParameter(ccSimulationStartParameter.getCity(),
-						ccSimulationStartParameter.isAggregatedWeatherDataEnabled(), 
-						ccSimulationStartParameter.getWeatherEventList());
+				InfrastructureStartParameter startParameter = lookupStartParameter();
+				startParameter.setCity(ccSimulationStartParameter.getCity());
+				startParameter.setAggregatedWeatherDataEnabled(ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
+				startParameter.setWeatherEventHelperList(ccSimulationStartParameter.getWeatherEventList());
 				
 				List<Sensor<?>> newIntegerIDs = new LinkedList<>();
 				List<UUID> newUUIDs = new LinkedList<>();
@@ -690,5 +695,18 @@ public class CCWebSocketUser extends MessageInbound {
 			id = UUID.randomUUID();
 		}
 		return id;
+	}
+	
+	private InfrastructureStartParameter lookupStartParameter() {
+		try {
+			InfrastructureStartParameter retValue = (InfrastructureStartParameter) new InitialContext().lookup("global:/de.pgalise.simulation/controlCenter/model/CCSimulationStartParameter");
+			return retValue;
+		} catch (NamingException ex) {
+			java.util.logging.Logger.getLogger(CCWebSocketUser.class.getName()).
+				log(Level.SEVERE,
+				null,
+				ex);
+			throw new RuntimeException(ex);
+		}
 	}
 }

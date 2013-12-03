@@ -20,7 +20,7 @@ import java.io.InputStream;
 
 import com.google.gson.Gson;
 
-import de.pgalise.simulation.controlCenter.internal.model.CCSimulationStartParameter;
+import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 
 /**
  * Interface for all start parameter serializer services.

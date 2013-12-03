@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
-import de.pgalise.simulation.controlCenter.internal.model.CCSimulationStartParameter;
+import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 
 /**
  * A XML control center startParameter serializer service.

@@ -126,6 +126,12 @@
 	  <scope>test</scope>
 	  <type>jar</type>
 	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>traffic-impl</artifactId>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>

@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.CCSimulationStartParameter;
+import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 
 /**
  * Message to fill {@link CCSimulationStartParameter}

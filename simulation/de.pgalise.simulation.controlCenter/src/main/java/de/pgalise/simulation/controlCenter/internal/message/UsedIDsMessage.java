@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.IDWrapper;
+import de.pgalise.simulation.controlCenter.model.IDWrapper;
 
 /**
  * Send to the client if new random ids are in use.

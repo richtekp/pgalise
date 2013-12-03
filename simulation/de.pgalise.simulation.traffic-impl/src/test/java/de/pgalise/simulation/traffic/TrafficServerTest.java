@@ -76,12 +76,14 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
+import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
+import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -265,7 +267,7 @@ public class TrafficServerTest {
 
 		List<TrafficEdge> path = getNodes(server1, server2, 1, gs);
 
-		InfrastructureStartParameter startParam = new InfrastructureStartParameter();
+		InfrastructureStartParameter startParam = new DefaultInfrastructureStartParameter();
 
 		server1.start(startParam);
 		server2.start(startParam);
@@ -423,7 +425,7 @@ public class TrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		StartParameter startParam = new StartParameter();
+		StartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 
 		server0.update(eventList);
@@ -448,7 +450,7 @@ public class TrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		StartParameter startParam = new StartParameter();
+		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 
 		server0.update(eventList);
@@ -498,7 +500,7 @@ public class TrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		StartParameter startParam = new StartParameter();
+		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 
 		server0.update(eventList);
@@ -541,7 +543,7 @@ public class TrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		StartParameter startParam = new StartParameter();
+		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 		Coordinate location;
 		NavigationNode nodeForStaticSensor = null;
@@ -684,7 +686,7 @@ public class TrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		StartParameter startParam = new StartParameter();
+		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 
 		Sensor<?> sensor = new GpsSensor(null,
@@ -755,7 +757,7 @@ public class TrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		StartParameter startParam = new StartParameter();
+		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 
 		Sensor<?> sensor = new GpsSensor(null,

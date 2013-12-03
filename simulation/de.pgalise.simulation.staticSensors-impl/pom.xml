@@ -25,13 +25,7 @@
 		<dependency>
 			<groupId>de.pgalise.util</groupId>
 			<artifactId>graph</artifactId>
-		</dependency>				
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weather-impl</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
+		</dependency>		
 	 <dependency>
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt-api</artifactId>

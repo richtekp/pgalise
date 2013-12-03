@@ -45,6 +45,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
@@ -89,7 +90,7 @@ public class DefaultEventInitiatorTest {
 		initParameter = new InitParameter( null, startTimestamp, endTimestamp, INTERVAL, CLOCK_GENERATOR_INTERVAL,
 				"", "", null, null);
 
-		startParameter = new StartParameter( true, null);
+		startParameter = new DefaultStartParameter( true, null);
 
 		energyController = new EnergyControllerMock();
 		weatherController = new WeatherControllerMock();

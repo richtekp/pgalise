@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.IDWrapper;
+import de.pgalise.simulation.controlCenter.model.IDWrapper;
 
 /**
  * If the simulation could be started.

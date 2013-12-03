@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
+import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 
 /**
  * Message to create random vehicles.

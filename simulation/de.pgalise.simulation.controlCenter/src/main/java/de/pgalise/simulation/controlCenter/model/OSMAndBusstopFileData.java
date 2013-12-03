@@ -14,21 +14,30 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.internal.model;
+package de.pgalise.simulation.controlCenter.model;
+
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+
 /**
  * Holds the name for open street map and bus stop file.
  * This is used, when the client selects an openstreetmap and bus stop file to load them.
  * @author Timo
  */
+@ManagedBean
+@ApplicationScoped
 public class OSMAndBusstopFileData {
 	/**
 	 * This OSM-File will be parsed and used for the street-graph.
 	 */
+	@ManagedProperty(value = "/oldenburg_pg.osm")
 	private String osmFileName;
 	
 	/**
 	 * This busstop file will be used for the busstops on the street-graph.
 	 */
+	@ManagedProperty(value = "/stops.gtfs")
 	private String busStopFileName;
 
 	/**

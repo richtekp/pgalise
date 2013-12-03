@@ -14,11 +14,10 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.internal.model;
+package de.pgalise.simulation.controlCenter.model;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficNode;
 
 /**

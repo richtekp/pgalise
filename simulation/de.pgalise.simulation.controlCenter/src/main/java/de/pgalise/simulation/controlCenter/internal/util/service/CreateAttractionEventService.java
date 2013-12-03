@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.util.service;
 
-import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
+import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.city.NavigationNode;

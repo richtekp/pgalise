@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.internal.model;
+package de.pgalise.simulation.controlCenter.model;
 
 /**
  * Data for error messages. This is useful to send the received message type.

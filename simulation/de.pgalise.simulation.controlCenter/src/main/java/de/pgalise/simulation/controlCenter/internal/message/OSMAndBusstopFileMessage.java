@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.OSMAndBusstopFileData;
+import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
 
 /**
  * Holds information about osm and busstop file. The user can select between several files

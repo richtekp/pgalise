@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.SaveStartParameterData;
+import de.pgalise.simulation.controlCenter.model.SaveStartParameterData;
 
 /**
  * Message to save the start parameters.

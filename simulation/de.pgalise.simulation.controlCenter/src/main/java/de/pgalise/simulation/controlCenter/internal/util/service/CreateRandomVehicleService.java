@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.util.service;
 
-import de.pgalise.simulation.controlCenter.internal.model.RandomVehicleBundle;
+import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 

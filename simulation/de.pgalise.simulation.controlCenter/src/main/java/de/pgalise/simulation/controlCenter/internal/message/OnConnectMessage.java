@@ -30,8 +30,8 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.controlCenter.internal.model.OnConnectParameter;
-import de.pgalise.simulation.controlCenter.internal.model.SavedStartParameterData;
+import de.pgalise.simulation.controlCenter.model.OnConnectParameter;
+import de.pgalise.simulation.controlCenter.model.SavedStartParameterData;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;

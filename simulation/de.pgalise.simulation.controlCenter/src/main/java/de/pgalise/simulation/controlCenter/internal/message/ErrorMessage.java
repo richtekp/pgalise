@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.internal.model.ErrorMessageData;
+import de.pgalise.simulation.controlCenter.model.ErrorMessageData;
 
 /**
  * An Error Message for the Control Center.

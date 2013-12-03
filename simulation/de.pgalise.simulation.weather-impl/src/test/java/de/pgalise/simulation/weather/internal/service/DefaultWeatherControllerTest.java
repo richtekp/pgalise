@@ -39,7 +39,7 @@ import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.service.ServerConfigurationEntity;
-import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
@@ -48,6 +48,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -182,10 +183,9 @@ public class DefaultWeatherControllerTest {
 		initParameter.setStartTimestamp(startTimestamp);
 		initParameter.setEndTimestamp(endTimestamp);
 		
-		InfrastructureStartParameter parameter = new InfrastructureStartParameter();
-		parameter.setCity(city);
-		parameter.setWeatherEventHelperList(null);
-		parameter.setAggregatedWeatherDataEnabled(true);
+		InfrastructureStartParameter parameter = new DefaultInfrastructureStartParameter(city,
+			true,
+			null);
 
 		// Create controller
 		Context ctx = CONTAINER.getContext();

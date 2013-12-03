@@ -14,30 +14,38 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.internal.model;
+package de.pgalise.simulation.controlCenter.model;
 
 import java.util.Collection;
 import java.util.List;
 
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.AbstractInfrastructureStartParameter;
+import java.util.LinkedList;
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 
 /**
  * All parameters to start the simulation. This is an extra version only for the control center,
  * because not everything can be done on the client side and is not needed by the client.
  * @author Timo
  */
-public class CCSimulationStartParameter extends InfrastructureStartParameter { 
+@ManagedBean(name="startParameter")
+@ApplicationScoped
+public class CCSimulationStartParameter extends AbstractInfrastructureStartParameter { 
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Option to start with sensor interferes.
 	 * If true, all sensor interferes will be activated.
 	 */
+	
 	private boolean withSensorInterferes = false;
 	
 	/**
@@ -58,7 +66,12 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 	/**
 	 * IPs for all the controllers.
 	 */
-	private String ipSimulationController, ipTrafficController, ipWeatherController, ipStaticSensorController, ipEnergyController;
+	@ManagedProperty(value="127.0.0.1")
+	private String ipSimulationController;
+	private String ipTrafficController;
+	private String ipWeatherController;
+	private String ipStaticSensorController;
+	private String  ipEnergyController;
 	
 	/**
 	 * IPs for all the traffic servers.
@@ -88,7 +101,8 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 	/**
 	 * OSM and BusStop file
 	 */
-	private OSMAndBusstopFileData osmAndBusstopFileData;
+	@ManagedProperty(value="#{osmAndBusstopFileDatas}")
+	private List<OSMAndBusstopFileData> osmAndBusstopFileDatas;
 	
 	/**
 	 * To create random vehicles.
@@ -137,7 +151,7 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 	 * @param sensorHelperList
 	 * @param simulationEventLists
 	 * @param weatherEventList
-	 * @param osmAndBusstopFileData 
+	 * @param osmAndBusstopFileDatas 
 	 * @param randomDynamicSensorBundle
 	 * 			contains all vehicles which will be created on start
 	 * @param withSensorInterferes
@@ -162,7 +176,7 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 			List<SensorHelper<?>> sensorHelperList,
 			List<EventList<?>> simulationEventLists,
 			List<WeatherEventHelper> weatherEventList,
-			OSMAndBusstopFileData osmAndBusstopFileData,
+			List<OSMAndBusstopFileData> osmAndBusstopFileDatas,
 			RandomVehicleBundle randomDynamicSensorBundle, 
 			boolean withSensorInterferes,
 			long sensorUpdateSteps,
@@ -185,7 +199,7 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 		this.sensorHelperList = sensorHelperList;
 		this.simulationEventLists = simulationEventLists;
 		this.weatherEventList = weatherEventList;
-		this.osmAndBusstopFileData = osmAndBusstopFileData;
+		this.osmAndBusstopFileDatas = osmAndBusstopFileDatas;
 		this.randomDynamicSensorBundle = randomDynamicSensorBundle;
 		this.withSensorInterferes = withSensorInterferes;
 		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
@@ -208,6 +222,7 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 		this.sensorUpdateSteps = sensorUpdateSteps;
 	}
 
+	@Override
 	public boolean isAggregatedWeatherDataEnabled() {
 		return aggregatedWeatherDataEnabled;
 	}
@@ -363,12 +378,12 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 		this.ipEnergyController = ipEnergyController;
 	}
 
-	public OSMAndBusstopFileData getOsmAndBusstopFileData() {
-		return osmAndBusstopFileData;
+	public List<OSMAndBusstopFileData> getOsmAndBusstopFileData() {
+		return osmAndBusstopFileDatas;
 	}
 
-	public void setOsmAndBusstopFileData(OSMAndBusstopFileData osmAndBusstopFileData) {
-		this.osmAndBusstopFileData = osmAndBusstopFileData;
+	public void setOsmAndBusstopFileData(List<OSMAndBusstopFileData> osmAndBusstopFileData) {
+		this.osmAndBusstopFileDatas = osmAndBusstopFileData;
 	}
 
 	public Collection<AttractionData> getAttractionCollection() {
@@ -390,5 +405,10 @@ public class CCSimulationStartParameter extends InfrastructureStartParameter {
 
 	public void setControlCenterAddress(String controlCenterAddress) {
 		this.controlCenterAddress = controlCenterAddress;
+	}
+	
+	@PostConstruct
+	private void initOSMAndBusstopFileDatas() {
+		this.osmAndBusstopFileDatas = new LinkedList<>();
 	}
 }

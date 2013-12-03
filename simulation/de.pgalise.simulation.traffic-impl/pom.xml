@@ -62,18 +62,6 @@
 			<artifactId>utils</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weather-impl</artifactId>
-			<scope>test</scope>
-			<type>jar</type>
-			<exclusions>
-				<exclusion>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-classic</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 	 <dependency>
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt-api</artifactId>
