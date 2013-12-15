@@ -39,6 +39,6 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  */
 public interface TrafficController<
 	F extends TrafficEvent
-> extends SensorManagerController<F, InfrastructureStartParameter, InfrastructureInitParameter,StaticSensor> {
+> extends SensorManagerController<F, InfrastructureStartParameter, TrafficInitParameter,StaticSensor> {
 
 }

@@ -44,11 +44,11 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServer;
@@ -72,7 +72,7 @@ public class DefaultTrafficController<
 	D extends VehicleData
 > extends AbstractController<VehicleEvent, 
 	InfrastructureStartParameter, 
-	InfrastructureInitParameter
+	TrafficInitParameter
 > implements TrafficControllerLocal<VehicleEvent> {
 	/**
 	 * Logger
@@ -136,7 +136,7 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	protected void onInit(final InfrastructureInitParameter param) throws InitializationException {
+	protected void onInit(final TrafficInitParameter param) throws InitializationException {
 		serverList = getTrafficServer(param.getServerConfiguration());
 
 		// stadt in gleichgroße teile aufteilen

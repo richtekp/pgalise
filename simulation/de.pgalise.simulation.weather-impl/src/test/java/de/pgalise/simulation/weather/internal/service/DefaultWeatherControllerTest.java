@@ -47,7 +47,6 @@ import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
@@ -180,7 +179,7 @@ public class DefaultWeatherControllerTest {
 				eventTimestamp, 6.0f));
 		EventList<WeatherEvent> testEvent = new EventList<>(testEventList, valueTime, UUID.randomUUID());
 
-		InfrastructureInitParameter initParameter = new InfrastructureInitParameter(null,
+		InitParameter initParameter = new InitParameter(
 			ServerConfiguration.DEFAULT_SERVER_CONFIGURATION,
 			startTimestamp,
 			endTimestamp,

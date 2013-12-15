@@ -32,6 +32,10 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 	public AbstractSensorFactory() {
 	}
 
+	public AbstractSensorFactory(Output output) {
+		this.sensorOutput = output;
+	}
+
 	public AbstractSensorFactory(Output sensorOutput,
 		RandomSeedService rss,
 		int updateLimit) {
@@ -48,14 +52,11 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 		return updateLimit;
 	}
 
-	public AbstractSensorFactory(Output output) {
-		this.sensorOutput = output;
-	}
-
 	protected void setOutput(Output output) {
 		this.sensorOutput = output;
 	}
 
+	@Override
 	public Output getSensorOutput() {
 		return sensorOutput;
 	}

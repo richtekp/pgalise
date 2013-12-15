@@ -22,7 +22,7 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 
 /**
@@ -31,7 +31,7 @@ import de.pgalise.simulation.traffic.InfrastructureStartParameter;
  * 
  * @author Timo
  */
-public interface EnergyController extends Controller<EnergyEvent, InfrastructureStartParameter, InfrastructureInitParameter> {
+public interface EnergyController extends Controller<EnergyEvent, InfrastructureStartParameter, TrafficInitParameter> {
 
 	/**
 	 * Returns the current energy consumption on the given point.

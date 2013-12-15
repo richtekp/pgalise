@@ -24,14 +24,14 @@ import java.util.Map;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 
 /**
  * Interface to handle gate messages.
  * @author Timo
  */
-public interface GPSGateStrategy extends Controller<Event, InfrastructureStartParameter, InfrastructureInitParameter>, SensorManagerController<Event, InfrastructureStartParameter, InfrastructureInitParameter,Sensor<?,?>> {
+public interface GPSGateStrategy extends Controller<Event, InfrastructureStartParameter, TrafficInitParameter>, SensorManagerController<Event, InfrastructureStartParameter, TrafficInitParameter,Sensor<?,?>> {
 	/**
 	 * Handles a gate message.
 	 * @param gateInformationMap <Integer = sensor type, Double = percentage> e.g. 1, 0.8 means 80% of sensors from type 1.

@@ -63,7 +63,7 @@ import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensorServiceDictionary;
 import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficServiceDictionary;
@@ -458,7 +458,7 @@ public class DefaultCCWebSocketUser extends Endpoint implements CCWebSocketUser 
 
 					/* Created server configuration */
 					/* Create init parameters: */
-					InfrastructureInitParameter initParameter = new InfrastructureInitParameter(
+					TrafficInitParameter initParameter = new TrafficInitParameter(
 						this.cityInfrastructureData,
 						serverConfiguration,
 						ccSimulationStartParameter.getStartTimestamp(),

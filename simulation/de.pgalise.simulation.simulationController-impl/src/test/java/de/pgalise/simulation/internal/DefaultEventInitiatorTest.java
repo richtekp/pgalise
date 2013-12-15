@@ -47,9 +47,9 @@ import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.staticsensor.StaticSensor;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -264,7 +264,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InfrastructureInitParameter param) throws InitializationException, IllegalStateException {
+		public void init(TrafficInitParameter param) throws InitializationException, IllegalStateException {
 		}
 
 		@Override
@@ -318,7 +318,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InfrastructureInitParameter param) throws InitializationException, IllegalStateException {
+		public void init(InitParameter param) throws InitializationException, IllegalStateException {
 		}
 
 		@Override
@@ -381,7 +381,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InfrastructureInitParameter param) throws InitializationException, IllegalStateException {
+		public void init(TrafficInitParameter param) throws InitializationException, IllegalStateException {
 		}
 
 		@Override

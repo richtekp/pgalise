@@ -48,7 +48,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensor;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
@@ -77,7 +77,7 @@ public class DefaultSimulationControllerTest {
 	private static final long INTERVAL = 1000;
 	private static final long CLOCK_GENERATOR_INTERVAL = 1000;
 	private static DefaultSimulationController testClass;
-	private static InfrastructureInitParameter initParameter;
+	private static TrafficInitParameter initParameter;
 	private static InfrastructureStartParameter startParameter;
 //	private static EventInitiatorMock eventInitiator;
 	private static ServiceDictionary serviceDictionary;
@@ -141,7 +141,7 @@ public class DefaultSimulationControllerTest {
 
 		serverConfiguration = new ServerConfiguration();
 
-		initParameter = new InfrastructureInitParameter(cityInfrastructureData,
+		initParameter = new TrafficInitParameter(cityInfrastructureData,
 			serverConfiguration,
 			START_TIMESTAMP,
 			END_TIMESTAMP,

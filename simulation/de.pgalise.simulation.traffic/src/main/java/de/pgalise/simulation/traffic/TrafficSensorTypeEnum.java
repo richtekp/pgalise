@@ -10,20 +10,12 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensor;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensor;
-import de.pgalise.staticsensor.internal.sensor.energy.SmartMeterSensor;
-import de.pgalise.staticsensor.internal.sensor.weather.Luxmeter;
-import de.pgalise.staticsensor.internal.sensor.weather.Pyranometer;
-import de.pgalise.staticsensor.internal.sensor.weather.RainSensor;
-import de.pgalise.staticsensor.internal.sensor.weather.Thermometer;
-import de.pgalise.staticsensor.internal.sensor.weather.WeatherStation;
-import de.pgalise.staticsensor.internal.sensor.weather.WindFlagSensor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -53,42 +45,6 @@ public enum TrafficSensorTypeEnum implements TrafficSensorType {
 			SensorInterfererType.GPS_CLOCK_INTERFERER, 
 			SensorInterfererType.GPS_RECEIVER_INTERFERER, 
 			SensorInterfererType.GPS_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for luxmeters
-	 */
-	LUXMETER(8, Luxmeter.class, "Lux", SensorInterfererType.LUXMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for pyranometers
-	 */
-	PYRANOMETER(10, Pyranometer.class, "W/qm", SensorInterfererType.PYRANOMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for rain sensors
-	 */
-	RAIN(11, RainSensor.class, "mm", SensorInterfererType.RAINSENSOR_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for smartmeters
-	 */
-	SMARTMETER(12, SmartMeterSensor.class, "kWh", SensorInterfererType.SMART_METER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for thermometers
-	 */
-	THERMOMETER(13, Thermometer.class, "°C", SensorInterfererType.THERMOMETER_WHITE_NOISE_INTERFERER),
-
-
-	/**
-	 * {@link SensorType} for wind flags
-	 */
-	WINDFLAG(15, WindFlagSensor.class, "°", SensorInterfererType.WIND_FLAG_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for weather stations
-	 */
-	WEATHER_STATION(17, WeatherStation.class, ""),
 
 	/**
 	 * {@link SensorType} for topo radars

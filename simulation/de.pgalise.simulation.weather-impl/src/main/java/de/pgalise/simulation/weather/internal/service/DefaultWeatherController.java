@@ -50,7 +50,6 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
@@ -95,7 +94,7 @@ import java.util.HashSet;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
 @Local
-public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter, InfrastructureInitParameter>
+public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter, InitParameter>
 	implements WeatherController {
 
 	/**
@@ -366,7 +365,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	}
 
 	@Override
-	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
+	protected void onInit(InitParameter param) throws InitializationException {
 		// Set random seed service
 		ServerConfiguration serverConfiguration = new ServerConfiguration(
 			new HashSet<>(Arrays.asList(ServiceDictionary.RANDOM_SEED_SERVICE)));

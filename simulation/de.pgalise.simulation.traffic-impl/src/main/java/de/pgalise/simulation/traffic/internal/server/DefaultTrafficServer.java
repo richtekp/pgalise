@@ -60,7 +60,6 @@ import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.BusStop;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
@@ -88,6 +87,7 @@ import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficServiceDictionary;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
@@ -123,7 +123,7 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 @Singleton(name = "de.pgalise.simulation.traffic.server.TrafficServer")
 @Local(TrafficServerLocal.class)
 public class DefaultTrafficServer extends AbstractController<
-	VehicleEvent, InfrastructureStartParameter, InfrastructureInitParameter>
+	VehicleEvent, InfrastructureStartParameter, TrafficInitParameter>
 	implements
 	TrafficServerLocal<VehicleEvent>,
 	ScheduleHandler,
@@ -889,7 +889,7 @@ public class DefaultTrafficServer extends AbstractController<
 	}
 
 	@Override
-	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
+	protected void onInit(TrafficInitParameter param) throws InitializationException {
 		try {
 			this.serverList = this.getTrafficServer(param.getServerConfiguration());
 			this.loadSensorDependencies(param);

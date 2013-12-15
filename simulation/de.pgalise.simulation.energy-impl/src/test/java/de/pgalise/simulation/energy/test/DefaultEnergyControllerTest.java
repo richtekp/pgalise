@@ -49,7 +49,7 @@ import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.Position;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -97,7 +97,7 @@ public class DefaultEnergyControllerTest {
 	/**
 	 * Init parameters
 	 */
-	private static InfrastructureInitParameter initParameter;
+	private static TrafficInitParameter initParameter;
 
 	/**
 	 * Start parameters
@@ -191,7 +191,7 @@ public class DefaultEnergyControllerTest {
 				.andStubReturn(DefaultEnergyControllerTest.weather);
 		EasyMock.replay(DefaultEnergyControllerTest.serviceDictionary);
 
-		DefaultEnergyControllerTest.initParameter = new InfrastructureInitParameter(
+		DefaultEnergyControllerTest.initParameter = new TrafficInitParameter(
 			null,
 			EasyMock.createNiceMock(ServerConfiguration.class), 
 			DefaultEnergyControllerTest.startTime,

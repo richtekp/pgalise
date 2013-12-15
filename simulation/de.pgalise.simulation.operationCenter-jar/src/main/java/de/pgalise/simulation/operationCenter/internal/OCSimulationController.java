@@ -25,7 +25,7 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.visualizationcontroller.VisualizationController;
 
@@ -36,7 +36,7 @@ import de.pgalise.simulation.visualizationcontroller.VisualizationController;
  * 
  * @author Timo
  */
-public interface OCSimulationController extends SensorManagerController<Event,InfrastructureStartParameter, InfrastructureInitParameter,Sensor<?,?>>, NewUserEventListener, VisualizationController {
+public interface OCSimulationController extends SensorManagerController<Event,InfrastructureStartParameter, TrafficInitParameter,Sensor<?,?>>, NewUserEventListener, VisualizationController {
 
 	/**
 	 * Updates the clients.

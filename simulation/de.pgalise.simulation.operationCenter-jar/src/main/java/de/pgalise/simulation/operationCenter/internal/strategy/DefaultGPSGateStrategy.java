@@ -42,7 +42,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 /**
@@ -51,7 +51,7 @@ import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
  * The InfoSphere IP and it's ports can be changed in 'properties.props'.
  * @author Timo
  */
-public class DefaultGPSGateStrategy extends AbstractController<Event,InfrastructureStartParameter, InfrastructureInitParameter> implements GPSGateStrategy {
+public class DefaultGPSGateStrategy extends AbstractController<Event,InfrastructureStartParameter, TrafficInitParameter> implements GPSGateStrategy {
 
 	private static final Logger log = LoggerFactory.getLogger(DefaultGPSGateStrategy.class);
 	private static final long serialVersionUID = 1L;
@@ -108,7 +108,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	}
 
 	@Override
-	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
+	protected void onInit(TrafficInitParameter param) throws InitializationException {
 		log.debug("init");
 		this.resetAllAttributes();
 	}

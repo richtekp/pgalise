@@ -42,7 +42,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
@@ -85,7 +85,7 @@ import org.slf4j.LoggerFactory;
  * @author Timo
  */
 @Singleton
-public class DefaultOCSimulationController extends AbstractController<Event, InfrastructureStartParameter, InfrastructureInitParameter>
+public class DefaultOCSimulationController extends AbstractController<Event, InfrastructureStartParameter, TrafficInitParameter>
 				implements
 				OCSimulationController
 {
@@ -98,7 +98,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	private OCSensorStreamController ocSensorStreamController;
 	private OCHQFDataStreamController ocHqfDataStreamController;
 	private SendSensorDataStrategy sendSensorDataStrategy;
-	private InfrastructureInitParameter initParameter;
+	private TrafficInitParameter initParameter;
 	private InfrastructureStartParameter startParameter;
 	private long currentTimestamp;
 	private Set<GpsSensor> currentGPSSensors;
@@ -278,11 +278,11 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 		}
 	}
 
-	public InfrastructureInitParameter getInitParameter() {
+	public TrafficInitParameter getInitParameter() {
 		return initParameter;
 	}
 
-	public void setInitParameter(InfrastructureInitParameter initParameter) {
+	public void setInitParameter(TrafficInitParameter initParameter) {
 		this.initParameter = initParameter;
 	}
 
@@ -304,7 +304,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	@Override
-	protected void onInit(InfrastructureInitParameter param) throws
+	protected void onInit(TrafficInitParameter param) throws
 					InitializationException {
 		this.currentTimestamp = param.getStartTimestamp();
 		this.setInitParameter(param);

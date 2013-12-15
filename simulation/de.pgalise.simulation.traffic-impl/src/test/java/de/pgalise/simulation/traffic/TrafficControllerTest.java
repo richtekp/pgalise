@@ -68,7 +68,7 @@ public class TrafficControllerTest {
 	 * @throws InitializationException
 	 */
 	public void initAndStartTest() throws IllegalStateException, InitializationException {
-		InfrastructureInitParameter initParam = createNiceMock(InfrastructureInitParameter.class);
+		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
 		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
@@ -121,7 +121,7 @@ public class TrafficControllerTest {
 	 * @throws InitializationException
 	 */
 	public void stopAndResumeTest() throws IllegalStateException, InitializationException {
-		InfrastructureInitParameter initParam = createNiceMock(InfrastructureInitParameter.class);
+		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
 		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
@@ -154,7 +154,7 @@ public class TrafficControllerTest {
 
 	@Test
 	public void resetTest() throws IllegalStateException, InitializationException {
-		InfrastructureInitParameter initParam = createNiceMock(InfrastructureInitParameter.class);
+		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
 		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
@@ -187,7 +187,7 @@ public class TrafficControllerTest {
 
 	@Test
 	public void updateTest() throws IllegalStateException, InitializationException {
-		InfrastructureInitParameter initParam = createNiceMock(InfrastructureInitParameter.class);
+		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
 		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
@@ -225,7 +225,7 @@ public class TrafficControllerTest {
 	 * @throws InitializationException
 	 */
 	public void sensorTests() throws IllegalStateException, SensorException, InitializationException {
-		InfrastructureInitParameter initParam = createNiceMock(InfrastructureInitParameter.class);
+		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
 		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
 
 		// create sensors

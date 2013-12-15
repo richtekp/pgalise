@@ -59,7 +59,7 @@
 				</dependency>
         <dependency>
             <groupId>de.pgalise.simulation</groupId>
-            <artifactId>staticSensors</artifactId>
+            <artifactId>weather</artifactId>
             <type>jar</type>
         </dependency>
     </dependencies>

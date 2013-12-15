@@ -10,14 +10,14 @@ import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 
 
-public class InfrastructureInitParameter extends InitParameter {
+public class TrafficInitParameter extends InitParameter {
 	private static final long serialVersionUID = 1L;
-	private TrafficInfrastructureData cityInfrastructureData;
+	private TrafficInfrastructureData trafficInfrastructureData;
 	
-	protected InfrastructureInitParameter() {
+	protected TrafficInitParameter() {
 	}
 
-	public InfrastructureInitParameter(
+	public TrafficInitParameter(
 		TrafficInfrastructureData cityInfrastructureData,
 		ServerConfiguration serverConfiguration,
 		long startTimestamp,
@@ -38,16 +38,16 @@ public class InfrastructureInitParameter extends InitParameter {
 			controlCenterURL,
 			trafficFuzzyData,
 			cityBoundary);
-		this.cityInfrastructureData = cityInfrastructureData;
+		this.trafficInfrastructureData = cityInfrastructureData;
 	}
 
 	protected void setCityInfrastructureData(
 		TrafficInfrastructureData cityInfrastructureData) {
-		this.cityInfrastructureData = cityInfrastructureData;
+		this.trafficInfrastructureData = cityInfrastructureData;
 	}
 
 	public TrafficInfrastructureData getCityInfrastructureData() {
-		return cityInfrastructureData;
+		return trafficInfrastructureData;
 	}
 	
 }

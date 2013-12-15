@@ -10,7 +10,6 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensor;
 import de.pgalise.staticsensor.internal.sensor.weather.Hygrometer;
 import de.pgalise.staticsensor.internal.sensor.weather.Luxmeter;
 import de.pgalise.staticsensor.internal.sensor.weather.Pyranometer;
@@ -74,12 +73,7 @@ public enum WeatherSensorTypeEnum implements WeatherSensorType {
 	/**
 	 * {@link SensorType} for weather stations
 	 */
-	WEATHER_STATION(17, WeatherStation.class, ""),
-
-	/**
-	 * {@link SensorType} for topo radars
-	 */
-	TOPORADAR(18, TopoRadarSensor.class, "amount")
+	WEATHER_STATION(17, WeatherStation.class, "")
 	;
 	
 	

@@ -48,7 +48,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -63,7 +63,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.energy.EnergyController")
 @Local(EnergyControllerLocal.class)
-public class DefaultEnergyController extends AbstractController<EnergyEvent, InfrastructureStartParameter, InfrastructureInitParameter> implements
+public class DefaultEnergyController extends AbstractController<EnergyEvent, InfrastructureStartParameter, TrafficInitParameter> implements
 		EnergyControllerLocal {
 	private static final long serialVersionUID = 1L;
 
@@ -181,7 +181,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 
 	private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap;
 	
-	private InfrastructureInitParameter initParameter;
+	private TrafficInitParameter initParameter;
 
 	protected DefaultEnergyController() {
 	}
@@ -254,7 +254,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 	}
 
 	@Override
-	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
+	protected void onInit(TrafficInitParameter param) throws InitializationException {
 		this.buildingsMap.clear();
 		this.initParameter = param;
 	}

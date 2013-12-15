@@ -40,7 +40,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -161,7 +161,7 @@ public class DefaultOCSimulationControllerTest {
 	/**
 	 * Init parameter
 	 */
-	private static InfrastructureInitParameter INIT_PARAMETER;
+	private static TrafficInitParameter INIT_PARAMETER;
 
 	/**
 	 * Start parameter
@@ -201,7 +201,7 @@ public class DefaultOCSimulationControllerTest {
 			createNiceMock(GPSGateStrategy.class);
 
 		/* Create init paramter: */
-		DefaultOCSimulationControllerTest.INIT_PARAMETER = new InfrastructureInitParameter(
+		DefaultOCSimulationControllerTest.INIT_PARAMETER = new TrafficInitParameter(
 			null,
 			null,
 			0,

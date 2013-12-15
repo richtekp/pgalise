@@ -9,7 +9,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
@@ -226,26 +225,6 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
 		}
 		throw new IllegalArgumentException();
-	}
-
-	@Override
-	public PhotovoltaikSensor createPhotovoltaikSensor(Coordinate position,
-		List<SensorInterfererType> sensorInterfererTypes,
-		int area) throws InterruptedException, ExecutionException {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public PhotovoltaikSensor createPhotovoltaikSensor(
-		List<SensorInterfererType> sensorInterfererTypes,
-		int area) throws InterruptedException, ExecutionException {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public Coordinate createEnergySensor(Coordinate position,
-		List<SensorInterfererType> sensorInterfererTypes) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override

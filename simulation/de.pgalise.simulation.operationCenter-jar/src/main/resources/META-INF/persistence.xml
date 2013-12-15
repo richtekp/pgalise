@@ -3,7 +3,6 @@
   <persistence-unit name="pgalise" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>jdbc/pgalise</jta-data-source>
-		<class>de.pgalise.simulation.sensorFramework.internal.persistence.SensorInfo</class>
 		<class>de.pgalise.simulation.shared.city.Building</class>
 		<class>de.pgalise.simulation.shared.city.BusAgency</class>
 		<class>de.pgalise.simulation.shared.city.BusCalendar</class>

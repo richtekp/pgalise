@@ -34,10 +34,10 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.staticsensor.StaticSensor;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -54,7 +54,7 @@ import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
  * @author Lena
  * @version 1.0
  */
-public class DefaultSensorController extends AbstractController<TrafficEvent, InfrastructureStartParameter, InfrastructureInitParameter> implements TrafficSensorController<TrafficEvent> {
+public class DefaultSensorController extends AbstractController<TrafficEvent, InfrastructureStartParameter, TrafficInitParameter> implements TrafficSensorController<TrafficEvent> {
 	/**
 	 * Logger
 	 */
@@ -153,7 +153,7 @@ public class DefaultSensorController extends AbstractController<TrafficEvent, In
 	}
 
 	@Override
-	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
+	protected void onInit(TrafficInitParameter param) throws InitializationException {
 		/* Nothing to do here: */
 	}
 

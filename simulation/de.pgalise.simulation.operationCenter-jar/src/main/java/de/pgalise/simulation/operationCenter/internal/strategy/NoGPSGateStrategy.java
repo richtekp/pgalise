@@ -31,7 +31,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.staticsensor.StaticSensor;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 /**
  * Ignores the gate messages.
@@ -43,7 +43,7 @@ import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 public class NoGPSGateStrategy extends AbstractIdentifiable implements GPSGateStrategy {
 
 	@Override
-	public void init(InfrastructureInitParameter param) throws InitializationException,
+	public void init(TrafficInitParameter param) throws InitializationException,
 			IllegalStateException {}
 
 	@Override

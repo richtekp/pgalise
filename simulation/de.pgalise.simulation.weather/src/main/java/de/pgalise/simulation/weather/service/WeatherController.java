@@ -21,7 +21,6 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 
@@ -36,7 +35,7 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 24, 2012)
  */
-public interface WeatherController extends Controller<WeatherEvent, InfrastructureStartParameter, InfrastructureInitParameter> {
+public interface WeatherController extends Controller<WeatherEvent, InfrastructureStartParameter, InitParameter> {
 
 	/**
 	 * Checks if the weather data can be loaded for the given date.

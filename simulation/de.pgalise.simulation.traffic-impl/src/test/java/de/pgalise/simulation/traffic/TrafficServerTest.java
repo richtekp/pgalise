@@ -102,7 +102,6 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerMana
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.staticsensor.internal.DefaultSensorFactory;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import java.util.logging.Level;
@@ -963,7 +962,7 @@ public class TrafficServerTest {
 			100,
 			200)));
 
-		InfrastructureInitParameter initParam = new InfrastructureInitParameter();
+		TrafficInitParameter initParam = new TrafficInitParameter();
 		initParam.setCityInfrastructureData(city);
 		initParam.setStartTimestamp(SIMULATION_START);
 		initParam.setEndTimestamp(SIMULATION_END);
