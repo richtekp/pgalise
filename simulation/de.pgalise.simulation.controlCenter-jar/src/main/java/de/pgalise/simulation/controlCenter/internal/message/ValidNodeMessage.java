@@ -23,7 +23,7 @@ import de.pgalise.simulation.shared.city.NavigationNode;
  * 
  * @author Timo
  */
-public class ValidNodeMessage extends CCWebSocketMessage<NavigationNode> {
+public class ValidNodeMessage extends AbstractIdentifiableCCWebSocketMessage<NavigationNode> {
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ public class ValidNodeMessage extends CCWebSocketMessage<NavigationNode> {
 	 * @param content
 	 *            new valid node on the graph
 	 */
-	public ValidNodeMessage(int messageID, NavigationNode content) {
-		super(messageID, CCWebSocketMessage.MessageType.VALID_NODE, content);
+	public ValidNodeMessage(Long messageID, NavigationNode content) {
+		super(messageID, MessageTypeEnum.VALID_NODE, content);
 	}
 }

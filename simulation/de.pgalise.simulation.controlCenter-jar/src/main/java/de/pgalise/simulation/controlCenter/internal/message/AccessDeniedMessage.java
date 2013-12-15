@@ -21,13 +21,13 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author dhoeting
  */
-public class AccessDeniedMessage extends CCWebSocketMessage<String> {
+public class AccessDeniedMessage extends AbstractCCWebSocketMessage<String> {
 	/**
 	 * Default
 	 * @param content
 	 *            Message string
 	 */
 	public AccessDeniedMessage(String content) {
-		super(MessageType.ACCESS_DENIED, content);
+		super(MessageTypeEnum.ACCESS_DENIED, content);
 	}
 }

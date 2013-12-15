@@ -23,8 +23,9 @@ import com.google.gson.Gson;
  * Message to be passed over web socket after being parsed to JSON by GSON.
  * @author dhoeting
  * @author Timo
+ * @param <T>
  */
-public class OCWebSocketMessage<T extends Object> {
+public class OCWebSocketMessage<T> {
 	private int messageType, messageID;
 	private T content;
 

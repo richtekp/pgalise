@@ -4,8 +4,8 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  *
@@ -18,7 +18,7 @@ public class MotorizedVehicleData extends VehicleData {
 		int wheelbase2,
 		int axleCount,
 		VehicleTypeEnum type,
-		SensorHelper gpsSensor) {
+		GpsSensor gpsSensor) {
 		super(length,
 			wheelbase1,
 			wheelbase2,

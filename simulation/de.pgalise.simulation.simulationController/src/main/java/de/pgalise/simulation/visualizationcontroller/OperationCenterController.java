@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.visualizationcontroller;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -27,6 +28,6 @@ import de.pgalise.simulation.shared.event.Event;
  * 
  * @author Timo
  */
-public interface OperationCenterController extends VisualizationController, SensorManagerController<Event, StartParameter, InitParameter> {
+public interface OperationCenterController extends VisualizationController, SensorManagerController<Event, StartParameter, InitParameter,Sensor<?,?>> {
 
 }

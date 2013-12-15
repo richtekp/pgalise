@@ -22,12 +22,12 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * @author dhoeting
  * @author Timo
  */
-public class SimulationStopMessage extends CCWebSocketMessage<Void> {
+public class SimulationStopMessage extends AbstractIdentifiableCCWebSocketMessage<Void> {
 	/**
 	 * Default
 	 */
 	public SimulationStopMessage() {
-		super(MessageType.SIMULATION_STOP, null);
+		super(null,MessageTypeEnum.SIMULATION_STOP, null);
 	}
 
 	/**
@@ -36,8 +36,9 @@ public class SimulationStopMessage extends CCWebSocketMessage<Void> {
 	 * @param messageID
 	 *            ID
 	 */
-	public SimulationStopMessage(int messageID) {
-		this();
-		super.setMessageID(messageID);
+	public SimulationStopMessage(Long messageID) {
+		super(messageID,
+			MessageTypeEnum.SIMULATION_STOP,
+			null);
 	}
 }

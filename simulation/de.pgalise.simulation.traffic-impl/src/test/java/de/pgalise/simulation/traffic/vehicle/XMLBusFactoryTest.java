@@ -17,18 +17,22 @@
 package de.pgalise.simulation.traffic.vehicle;
 
 
+import de.pgalise.simulation.service.IdGenerator;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLBusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import static de.pgalise.simulation.traffic.vehicle.XMLBicycleFactoryTest.FILEPATH;
 
 /**
  * Tests the {@link XMLBusFactoryTest}
@@ -56,13 +60,14 @@ public class XMLBusFactoryTest {
 		 */
 
 		TrafficGraph graph = new DefaultTrafficGraph();
-		BusFactory factory = new XMLBusFactory(random, XMLBusFactoryTest.class.getResourceAsStream(FILEPATH),
-				new DefaultTrafficGraphExtensions(random, graph));
+		IdGenerator idGenerator = new DefaultIdGenerator();
+		TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(TrafficGraphExtensions.class);
+		BusFactory factory = new XMLBusFactory(idGenerator,trafficGraphExtensions,random, XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-		Vehicle<BusData> vehicle1 = factory.createRandomBus( null, null);
+		Vehicle<BusData> vehicle1 = factory.createRandomBus(  null);
 		Assert.assertNotNull(vehicle1);
 
-		Vehicle<BusData> vehicle2 = factory.createBus( null, null);
+		Vehicle<BusData> vehicle2 = factory.createBus( null);
 		Assert.assertNotNull(vehicle2);
 	}
 

@@ -34,15 +34,13 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.google.inject.Guice;
+import de.pgalise.simulation.sensorFramework.Sensor;
 
-import de.pgalise.simulation.operationCenter.internal.strategy.OCModule;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
@@ -58,8 +56,9 @@ import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 public class OCSimulationServlet extends HttpServlet {
 	private static final long serialVersionUID = -2330660894525825600L;
 	private static final Logger log = LoggerFactory.getLogger(OCSimulationServlet.class);
-	private static final OCSimulationController ocSimulationController = Guice.createInjector(new OCModule()).getInstance(OCSimulationController.class);
-	private static final TypeToken<Collection<SensorHelper>> sensorCollectionTypeToken = new TypeToken<Collection<SensorHelper>>(){};
+	@EJB
+	private OCSimulationController ocSimulationController ;
+	private static final TypeToken<Collection<Sensor>> sensorCollectionTypeToken = new TypeToken<Collection<Sensor>>(){};
 	
 	@PersistenceContext(unitName = "pgalise")
 	private EntityManager em;
@@ -78,7 +77,7 @@ public class OCSimulationServlet extends HttpServlet {
 		
 	}
 	
-	public static OCSimulationController getOCSimulationController() {
+	public OCSimulationController getOCSimulationController() {
 		return ocSimulationController;
 	}
 	
@@ -112,25 +111,25 @@ public class OCSimulationServlet extends HttpServlet {
 			if(req.getParameter("deletesensor") != null && req.getParameter("deletesensor").equalsIgnoreCase("true")) {
 
 				log.debug("deletesensor");
-				ocSimulationController.deleteSensor(gson.fromJson(req.getParameter("json"), SensorHelper.class));
+				ocSimulationController.deleteSensor(gson.fromJson(req.getParameter("json"), Sensor.class));
 
 
 				/* Add sensor: */
 			} else if(req.getParameter("createsensor") != null && req.getParameter("createsensor").equalsIgnoreCase("true")) {
 				log.debug("create sensor");
-				SensorHelper sensor = gson.fromJson(req.getParameter("json"), SensorHelper.class);
+				Sensor<?,?> sensor = gson.fromJson(req.getParameter("json"), Sensor.class);
 				ocSimulationController.createSensor(sensor);
 
 				/* Add sensors: */
 			} else if(req.getParameter("createsensors") != null && req.getParameter("createsensor").equalsIgnoreCase("true")) {
 				log.debug("create sensors");
-				Collection<SensorHelper<?>> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
+				Collection<Sensor<?,?>> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
 				ocSimulationController.createSensors(sensors);
 
 				/* Remove sensors:: */	
 			} else if(req.getParameter("deletesensors") != null && req.getParameter("createsensor").equalsIgnoreCase("true")) {
 				log.debug("delete sensors");
-				Collection<SensorHelper<?>> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
+				Collection<Sensor<?,?>> sensors = gson.fromJson(req.getParameter("json"), sensorCollectionTypeToken.getType());
 				ocSimulationController.deleteSensors(sensors);
 
 				/* simulation update: */	

@@ -13,37 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.model.vehicle;
 
-
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.output.Output;
 
 /**
  * Interface to provide methods to create different types of {@link Bus}.
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
-public interface BusFactory {
+public interface BusFactory extends VehicleFactory {
 
 	/**
-	 * Method to create a {@link Bus} with the given typeId.
-	 * 
-	 * @param id
-	 *            ID of the {@link Bus}
-	 * @param typeId
-	 *            ID of the {@link Bus} type
+	 * Method to create a {@link Bus} with the given typeId.All position related
+	 * data is <code>null</code>
+	 *
+	 * @param id ID of the {@link Bus}
+	 * @param typeId ID of the {@link Bus} type
 	 * @return created {@link Bus}
 	 */
-	public Vehicle<BusData> createBus(  SensorHelper gpsSensor, SensorHelper infraredSensor);
+	public Vehicle<BusData> createBus(Output output);
 
 	/**
-	 * Method to create a random {@link Bus}.
-	 * 
-	 * @param id
-	 *            ID of the {@link Bus}
+	 * Method to create a random {@link Bus}.All position related data is
+	 * <code>null</code>
+	 *
+	 * @param id ID of the {@link Bus}
 	 * @return created {@link Bus}
 	 */
-	public Vehicle<BusData> createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor);
+	public Vehicle<BusData> createRandomBus(Output output);
 }

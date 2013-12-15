@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.StatusEnum;
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -28,8 +29,8 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 /**
@@ -64,21 +65,21 @@ public class NoGPSGateStrategy extends AbstractIdentifiable implements GPSGateSt
 	}
 
 	@Override
-	public void createSensor(SensorHelper sensor) throws SensorException {}
+	public void createSensor(Sensor<?,?> sensor) throws SensorException {}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors)
+	public void createSensors(Collection<Sensor<?,?>> sensors)
 			throws SensorException {}
 
 	@Override
-	public void deleteSensor(SensorHelper sensor) throws SensorException {}
+	public void deleteSensor(Sensor<?,?> sensor) throws SensorException {}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors)
+	public void deleteSensors(Collection<Sensor<?,?>> sensors)
 			throws SensorException {}
 
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor<?,?> sensor) throws SensorException {
 		return false;
 	}
 

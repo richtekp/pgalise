@@ -23,9 +23,11 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -39,7 +41,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  * @author Mischa
  * @version 1.1
  */
-public class GpsSensor extends AbstractSensor<TrafficEvent> {
+public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 
 	/**
 	 * Search signal time for GPS connection
@@ -56,11 +58,6 @@ public class GpsSensor extends AbstractSensor<TrafficEvent> {
 	 * GPS interferer
 	 */
 	private GpsInterferer interferer;
-
-	/**
-	 * Sensor type
-	 */
-	private SensorType type;
 
 	/**
 	 * Vehicle
@@ -96,14 +93,13 @@ public class GpsSensor extends AbstractSensor<TrafficEvent> {
 	 *            GPS interferer
 	 */
 	public GpsSensor(final Output output, final Vehicle<? extends VehicleData> vehicle,
-			final int updateLimit, final SensorType sensor, Coordinate position, final GpsInterferer interferer) {
+			final int updateLimit,  final GpsInterferer interferer) {
 
-		super(output, position, updateLimit);
+		super(output,  TrafficSensorTypeEnum.GPS, updateLimit,new GPSSensorData());
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
 		this.interferer = interferer;
-		this.setSensorType(sensor);
 	}
 
 	/**
@@ -121,48 +117,13 @@ public class GpsSensor extends AbstractSensor<TrafficEvent> {
 	 * @param interferer
 	 *            GPS interferer
 	 */
-	public GpsSensor(Output output, Vehicle<? extends VehicleData> vehicle, SensorTypeEnum sensor,
-			final Coordinate position, final GpsInterferer interferer) {
-		this(output, vehicle, 1, sensor, position, interferer);
-	}
-
-	/**
-	 * Checks the type of vehicle and sets the corresponding type
-	 */
-	public void checkAndSetType() {
-		if (this.getVehicle() != null) {
-			/*
-			 * INFO: You have to add new traffic vehicles in that section
-			 */
-
-			switch (this.vehicle.getData().getType()) {
-				case TRUCK:
-					this.setSensorType(SensorTypeEnum.GPS_TRUCK);
-					break;
-				case CAR:
-					this.setSensorType(SensorTypeEnum.GPS_CAR);
-					break;
-				case BUS:
-					this.setSensorType(SensorTypeEnum.GPS_BUS);
-					break;
-				case MOTORCYCLE:
-					this.setSensorType(SensorTypeEnum.GPS_MOTORCYCLE);
-					break;
-				case BIKE:
-					this.setSensorType(SensorTypeEnum.GPS_BIKE);
-				default:
-					break;
-			}
-		}
+	public GpsSensor(Output output, Vehicle<? extends VehicleData> vehicle, 
+			 final GpsInterferer interferer) {
+		this(output, vehicle, 1,  interferer);
 	}
 
 	public GpsInterferer getInterferer() {
 		return this.interferer;
-	}
-
-	@Override
-	public SensorType getSensorType() {
-		return this.type;
 	}
 
 	public Vehicle<? extends VehicleData> getVehicle() {
@@ -189,16 +150,11 @@ public class GpsSensor extends AbstractSensor<TrafficEvent> {
 		this.interferer = interferer;
 	}
 
-	public void setSensorType(SensorType sensor) {
-		this.type = sensor;
-	}
-
 	public void setVehicle(Vehicle<? extends VehicleData> vehicle) {
 		if (vehicle == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("vehicle"));
 		}
 		this.vehicle = vehicle;
-		this.checkAndSetType();
 	}
 
 	/**
@@ -250,7 +206,7 @@ public class GpsSensor extends AbstractSensor<TrafficEvent> {
 		}
 
 		if (this.vehicle.getPosition() != null) {
-			this.setPosition(this.vehicle.getPosition());
+			this.getSensorData().setPosition(this.vehicle.getPosition());
 
 			if ((VehicleStateEnum.UPDATEABLE_VEHICLES.contains(vehicle.getVehicleState()) && vehicle.getVehicleState() != VehicleStateEnum.NOT_STARTED)
 					|| vehicle.getVehicleState() == VehicleStateEnum.IN_TRAFFIC_RULE) {

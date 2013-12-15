@@ -24,7 +24,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
  * 
  * @author Timo
  */
-public class AskForValidNodeMessage extends CCWebSocketMessage<TrafficNode> {
+public class AskForValidNodeMessage extends AbstractIdentifiableCCWebSocketMessage<TrafficNode> {
 
 	/**
 	 * Constructor
@@ -34,7 +34,7 @@ public class AskForValidNodeMessage extends CCWebSocketMessage<TrafficNode> {
 	 * @param content
 	 *            the node that is asked.
 	 */
-	public AskForValidNodeMessage(int messageID, TrafficNode content) {
-		super(messageID, CCWebSocketMessage.MessageType.ASK_FOR_VALID_NODE, content);
+	public AskForValidNodeMessage(Long messageID, TrafficNode content) {
+		super(messageID, MessageTypeEnum.ASK_FOR_VALID_NODE, content);
 	}
 }

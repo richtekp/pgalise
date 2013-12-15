@@ -31,35 +31,36 @@ import java.util.Collection;
  * @param <S> 
  * @param <I> 
  * @author Timo
+ * @param <Y>
  */
-public interface SensorManagerController<E extends Event, S extends StartParameter, I extends InitParameter> extends Controller<E,S,I>, Identifiable {
+public interface SensorManagerController<E extends Event, S extends StartParameter, I extends InitParameter,Y extends Sensor> extends Controller<E,S,I>, Identifiable {
 	/**
 	 * Creates a new sensor.
 	 * @param sensor
 	 * @throws SensorException
 	 */
-	public void createSensor(SensorHelper<?> sensor) throws SensorException;
+	public void createSensor(Y sensor) throws SensorException;
 	
 	/**
 	 * Creates a collection of new sensors.
 	 * @param sensors
 	 * @throws SensorException
 	 */
-	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException;
+	public void createSensors(Collection<Y> sensors) throws SensorException;
 	
 	/**
 	 * Deletes a sensor.
 	 * @param sensor
 	 * @throws SensorException
 	 */
-	public void deleteSensor(SensorHelper<?> sensor) throws SensorException;
+	public void deleteSensor(Y sensor) throws SensorException;
 	
 	/**
 	 * Removes a collection of sensors.
 	 * @param sensors
 	 * @throws SensorException
 	 */
-	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException;
+	public void deleteSensors(Collection<Y> sensors) throws SensorException;
 	
 	/**
 	 * Is the sensor activated or not
@@ -67,5 +68,5 @@ public interface SensorManagerController<E extends Event, S extends StartParamet
 	 * @return
 	 * @throws SensorException
 	 */
-	public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException;
+	public boolean statusOfSensor(Y sensor) throws SensorException;
 }

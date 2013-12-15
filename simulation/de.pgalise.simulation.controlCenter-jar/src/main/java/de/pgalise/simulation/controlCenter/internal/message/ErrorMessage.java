@@ -23,7 +23,7 @@ import de.pgalise.simulation.controlCenter.model.ErrorMessageData;
  * 
  * @author Timo
  */
-public class ErrorMessage extends CCWebSocketMessage<ErrorMessageData> {
+public class ErrorMessage extends AbstractIdentifiableCCWebSocketMessage<ErrorMessageData> {
 	/**
 	 * Constructor
 	 * 
@@ -31,7 +31,7 @@ public class ErrorMessage extends CCWebSocketMessage<ErrorMessageData> {
 	 * @param content
 	 * 			ErrorMessage which will be send to the user. E.g. an exception message
 	 */
-	public ErrorMessage(int messageID, ErrorMessageData content) {
-		super(messageID, MessageType.ERROR, content);
+	public ErrorMessage(Long messageID, ErrorMessageData content) {
+		super(messageID, MessageTypeEnum.ERROR, content);
 	}
 }

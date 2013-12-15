@@ -6,7 +6,6 @@
 
 package de.pgalise.simulation.weather;
 
-import com.google.common.collect.Sets;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.weather.service.WeatherController;
 import java.util.Arrays;
@@ -20,7 +19,8 @@ import java.util.Set;
 public interface WeatherServiceDictionary extends ServiceDictionary {
 	
 	public static final String WEATHER_CONTROLLER = WeatherController.class.getName();
-	public final static Set<String> WEATHER_SERVICES = Sets.union(
-		ServiceDictionary.SERVICES,
-		new HashSet<>(Arrays.asList(WEATHER_CONTROLLER)));
+	public final static Set<String> WEATHER_SERVICES = new HashSet<String>(
+		ServiceDictionary.SERVICES){{
+			add(WEATHER_CONTROLLER);
+		}};
 }

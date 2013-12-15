@@ -18,7 +18,7 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.awt.Color;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.output.Output;
 
 /**
  * Interface to provide methods to create different types of {@link Motorcycle}.
@@ -26,7 +26,7 @@ import de.pgalise.simulation.sensorFramework.SensorHelper;
  * @author Andreas
  * @version 1.0
  */
-public interface MotorcycleFactory {
+public interface MotorcycleFactory extends VehicleFactory {
 
 	/**
 	 * Method to create a {@link Motorcycle} with the given typeId.
@@ -39,7 +39,7 @@ public interface MotorcycleFactory {
 	 *            Color of the {@link Motorcycle}
 	 * @return created {@link Motorcycle}
 	 */
-	public Vehicle<MotorcycleData> createMotorcycle( Color color, SensorHelper gpsSensor);
+	public Vehicle<MotorcycleData> createMotorcycle(  Output output);
 
 	/**
 	 * Method to create a random {@link Motorcycle}.
@@ -48,5 +48,5 @@ public interface MotorcycleFactory {
 	 *            ID of the {@link Motorcycle}
 	 * @return created {@link Motorcycle}
 	 */
-	public Vehicle<MotorcycleData>  createRandomMotorcycle( SensorHelper gpsSensor);
+	public Vehicle<MotorcycleData>  createRandomMotorcycle( Output output);
 }

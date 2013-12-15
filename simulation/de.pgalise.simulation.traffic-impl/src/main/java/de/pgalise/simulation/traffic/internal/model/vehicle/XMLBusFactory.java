@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import java.io.InputStream;
@@ -25,7 +24,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -34,40 +34,52 @@ import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
+import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Implements a factory for {@link Bus}. The vehicles are loaded by a XML file.
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFactory {
+public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
+	implements BusFactory {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param randomSeedService
-	 *            Random Seed Service
-	 * @param document
-	 *            Document of the XML data
-	 */
-	public XMLBusFactory(RandomSeedService randomSeedService, Document document,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, document, trafficGraphExtensions);
+	public XMLBusFactory() {
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param stream
-	 *            Input stream of the XML data
-	 * @param randomSeedService
-	 *            Random Seed Service
+	 *
+	 * @param stream Input stream of the XML data
+	 * @param randomSeedService Random Seed Service
 	 */
-	public XMLBusFactory(RandomSeedService randomSeedService, InputStream stream,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, stream, trafficGraphExtensions);
+	public XMLBusFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		InputStream stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param stream Input stream of the XML data
+	 * @param randomSeedService Random Seed Service
+	 */
+	public XMLBusFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		Document stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
 	}
 
 	/**
@@ -81,17 +93,17 @@ public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFac
 	}
 
 	@Override
-	public BaseVehicle<BusData> createRandomBus( SensorHelper helper, SensorHelper infraredSensor) {
+	public BaseVehicle<BusData> createRandomBus(Output output) {
 		BusData data = getRandomVehicleData();
-		data.setGpsSensorHelper(helper);
-		data.setInfraredSensorHelper(infraredSensor);
-		return new DefaultMotorizedVehicle<>( "bus" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new Bus(getIdGenerator().getNextId(),
+			"bus" + getNextCounter(),
+			data,
+			this.getTrafficGraphExtensions());
 	}
 
 	@Override
-	public BaseVehicle<BusData> createBus(  SensorHelper helper, SensorHelper infraredSensor) {
-		return createRandomBus(helper,
-			infraredSensor);
+	public BaseVehicle<BusData> createBus(Output output) {
+		return createRandomBus(output);
 	}
 
 	@Override
@@ -148,8 +160,21 @@ public class XMLBusFactory extends XMLAbstractFactory<BusData> implements BusFac
 			}
 
 			// Add new vehicle
-			vehicles.put(typeid, new BusData(wheelbase1, wheelbase2, length, width, height, weight, power, maxSpeed,
-					description, maxPassengerCount, 0, axleCount, null, null));
+			vehicles.put(typeid,
+				new BusData(wheelbase1,
+					wheelbase2,
+					length,
+					width,
+					height,
+					weight,
+					power,
+					maxSpeed,
+					description,
+					maxPassengerCount,
+					0,
+					axleCount,
+					null,
+					null));
 		}
 
 		// Returns

@@ -97,7 +97,7 @@ public class SchedulerScaleTest {
 		List<Vehicle<?>> vehicles = new ArrayList<>();
 
 		for (int i = 0; i < numberOfCars; i++) {
-			Vehicle<? > a = new BaseVehicle<>(ee);
+			Vehicle<? > a = new BaseVehicle<>(89324L, ee);
 			a.setName("" + i);
 			a.setPath(shortestPath);
 			vehicles.add(a);

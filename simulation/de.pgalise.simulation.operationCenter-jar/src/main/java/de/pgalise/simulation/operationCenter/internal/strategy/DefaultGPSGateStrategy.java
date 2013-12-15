@@ -41,10 +41,10 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 /**
  * Default implementation of a gate message strategy.
  * It will transmit the needed sensor ids to InfoSphere via TCP/IP.
@@ -87,7 +87,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	public void handleGateMessage(Map<Integer, Double> gateInformationMap) throws UnknownHostException, IOException {
 		log.debug("Handle gate message");
 		for(Entry<Integer, Double> entry : gateInformationMap.entrySet()) {
-			if(SensorTypeEnum.GPS.contains(SensorTypeEnum.getForSensorTypeId(entry.getKey()))) {
+			if(SensorTypeEnum.getForSensorTypeId(entry.getKey()).equals(TrafficSensorTypeEnum.GPS)) {
 				int activeSensorsForType = this.activeSensorTypeSensorIDMap.get(entry.getKey()).size();
 				int notActiveSensorsForType = this.notActiveSensorTypeSensorIDMap.get(entry.getKey()).size();
 				int allSensors = activeSensorsForType + notActiveSensorsForType;
@@ -131,50 +131,50 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	protected void onUpdate(EventList<Event> simulationEventList) {}
 
 	@Override
-	public void createSensor(SensorHelper sensor) throws SensorException {
-		if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
-			log.debug("create gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
+	public void createSensor(Sensor<?,?> sensor) throws SensorException {
+		if(sensor.getSensorType().equals(TrafficSensorTypeEnum.GPS)) {
+			log.debug("create gps sensor. ID: " +sensor.getId() +" type: " +sensor.getSensorType());
 			Set<Sensor> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
 			if(sensorCollection == null) {
 				sensorCollection = new HashSet<>();
 				this.allSensorTypeSensorIDMap.put(sensor.getSensorType().getSensorTypeId(), sensorCollection);
 			}
-			sensorCollection.add(sensor.getSensorID());
+			sensorCollection.add(sensor);
 
 			/* Send to InfoSphere, if we have no percentage limit: */
 			if(this.sensorTypePercentageMap.get(sensor.getSensorType().getSensorTypeId()) == 1.0) {
 				List<Sensor> tmpSensorIDList = new LinkedList<>();
-				tmpSensorIDList.add(sensor.getSensorID());
+				tmpSensorIDList.add(sensor);
 				this.addSensorIDsToInfoSphere(tmpSensorIDList);
-				this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor.getSensorID());
+				this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor);
 			} else {
-				this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor.getSensorID());
+				this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor);
 			}
 		}
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors)
+	public void createSensors(Collection<Sensor<?,?>> sensors)
 			throws SensorException {		
 		Set<Sensor> sensorIDSet = new HashSet<>();
 
 		/* Add sensors to map and find out, if we have to send them: */
-		for(SensorHelper sensor : sensors) {
-			if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
-				log.debug("create gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
+		for(Sensor sensor : sensors) {
+			if(sensor.getSensorType().equals(TrafficSensorTypeEnum.GPS)) {
+				log.debug("create gps sensor. ID: " +sensor.getId() +" type: " +sensor.getSensorType());
 				Set<Sensor> sensorCollection = this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId());
 				if(sensorCollection == null) {
 					sensorCollection = new HashSet<>();
 					this.allSensorTypeSensorIDMap.put(sensor.getSensorType().getSensorTypeId(), sensorCollection);
 				}
-				sensorCollection.add(sensor.getSensorID());
+				sensorCollection.add(sensor);
 				
 				/* Send only to server if we have no percentage limit: */
 				if(this.sensorTypePercentageMap.get(sensor.getSensorType().getSensorTypeId()) == 1.0) {
-					sensorIDSet.add(sensor.getSensorID());
-					this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor.getSensorID());
+					sensorIDSet.add(sensor);
+					this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor);
 				} else {					
-					this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor.getSensorID());
+					this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).add(sensor);
 				}
 			}
 		}
@@ -185,35 +185,35 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	}
 
 	@Override
-	public void deleteSensor(SensorHelper sensor) throws SensorException {
+	public void deleteSensor(Sensor sensor) throws SensorException {
 		/*
 		 * Remove from all maps and find out, if we have to add a new sensor to InfoSphere:
 		 */
-		if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
-			log.debug("delete gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
-			this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID());
-			if(this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID())) {
+		if(sensor.getSensorType().equals(TrafficSensorTypeEnum.GPS)) {
+			log.debug("delete gps sensor. ID: " +sensor.getId() +" type: " +sensor.getSensorType());
+			this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getId());
+			if(this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getId())) {
 				if(this.sensorTypePercentageMap.get(sensor.getSensorType()) < 1.0) {
 					this.addAmountOfSensorsToInfoSphere(1, sensor.getSensorType().getSensorTypeId());
 				}
 			} else {
-				this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID());	
+				this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getId());	
 			}	
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors)
+	public void deleteSensors(Collection<Sensor<?,?>> sensors)
 			throws SensorException {
 		/*
 		 * Remove from all maps and find out, if we have to add new sensors to InfoSphere:
 		 */
 		Map<Integer, Integer> sensorTypeAddNewMap = new HashMap<>();
-		for(SensorHelper sensor : sensors) {
-			if(SensorTypeEnum.GPS.contains(sensor.getSensorType())) {
-				log.debug("delete gps sensor. ID: " +sensor.getSensorID() +" type: " +sensor.getSensorType());
-				this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID());
-				if(this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID())) {
+		for(Sensor sensor : sensors) {
+			if(sensor.getSensorType().equals(TrafficSensorTypeEnum.GPS)) {
+				log.debug("delete gps sensor. ID: " +sensor.getId() +" type: " +sensor.getSensorType());
+				this.allSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getId());
+				if(this.activeSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getId())) {
 					if(this.sensorTypePercentageMap.get(sensor.getSensorType().getSensorTypeId()) < 1.0) {
 						Integer amount = sensorTypeAddNewMap.get(sensor.getSensorType().getSensorTypeId());
 						if(amount == null) {
@@ -222,7 +222,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 						sensorTypeAddNewMap.put(sensor.getSensorType().getSensorTypeId(), amount + 1);
 					}
 				} else {
-					this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID());
+					this.notActiveSensorTypeSensorIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getId());
 				}
 			}
 		}
@@ -233,7 +233,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 	}
 
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor sensor) throws SensorException {
 		return false;
 	}
 	
@@ -261,12 +261,10 @@ public class DefaultGPSGateStrategy extends AbstractController<Event,Infrastruct
 		this.activeSensorTypeSensorIDMap = new HashMap<>();
 		this.notActiveSensorTypeSensorIDMap = new HashMap<>();
 		this.sensorTypePercentageMap = new HashMap<>();
-		for(SensorTypeEnum gpsSensor : SensorTypeEnum.GPS) {
-			this.allSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Sensor>());
-			this.activeSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Sensor>());
-			this.notActiveSensorTypeSensorIDMap.put(gpsSensor.getSensorTypeId(), new HashSet<Sensor>());
-			this.sensorTypePercentageMap.put(gpsSensor.getSensorTypeId(), 1.0);
-		}
+		this.allSensorTypeSensorIDMap.put(TrafficSensorTypeEnum.GPS.getSensorTypeId(), new HashSet<Sensor>());
+		this.activeSensorTypeSensorIDMap.put(TrafficSensorTypeEnum.GPS.getSensorTypeId(), new HashSet<Sensor>());
+		this.notActiveSensorTypeSensorIDMap.put(TrafficSensorTypeEnum.GPS.getSensorTypeId(), new HashSet<Sensor>());
+		this.sensorTypePercentageMap.put(TrafficSensorTypeEnum.GPS.getSensorTypeId(), 1.0);
 	}
 	
 	/**

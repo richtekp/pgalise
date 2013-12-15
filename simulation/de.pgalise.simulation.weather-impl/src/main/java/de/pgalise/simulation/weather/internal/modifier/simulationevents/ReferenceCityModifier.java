@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.internal.modifier.simulationevents;
 
 import java.util.Properties;
 
-import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.util.comparator.RelativHumidityComparator;
@@ -48,7 +48,7 @@ public class ReferenceCityModifier extends WeatherSimulationEventModifier<Defaul
 	/**
 	 * Event type
 	 */
-	public static final WeatherEventEnum TYPE = WeatherEventEnum.REFERENCECITY;
+	public static final WeatherEventTypeEnum TYPE = WeatherEventTypeEnum.REFERENCECITY;
 
 	/**
 	 * Order id
@@ -126,7 +126,7 @@ public class ReferenceCityModifier extends WeatherSimulationEventModifier<Defaul
 	}
 
 	@Override
-	public WeatherEventEnum getType() {
+	public WeatherEventTypeEnum getType() {
 		return ReferenceCityModifier.TYPE;
 	}
 

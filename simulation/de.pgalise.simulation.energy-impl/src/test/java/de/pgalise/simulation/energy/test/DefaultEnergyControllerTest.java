@@ -40,7 +40,6 @@ import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
@@ -49,6 +48,7 @@ import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.Position;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
@@ -201,7 +201,7 @@ public class DefaultEnergyControllerTest {
 
 		city = TestUtils.createDefaultTestCityInstance();
 		DefaultEnergyControllerTest.startParameter = new DefaultInfrastructureStartParameter(city,
-				true, new ArrayList<WeatherEventHelper>());
+				true, new ArrayList<WeatherEvent>());
 		
 		// EnergyEventStrategy
 		energyEventStrategy = EasyMock.createNiceMock(EnergyEventStrategy.class);

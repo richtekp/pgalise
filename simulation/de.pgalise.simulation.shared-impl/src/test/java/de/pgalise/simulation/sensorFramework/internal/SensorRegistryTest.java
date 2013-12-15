@@ -17,6 +17,8 @@
 package de.pgalise.simulation.sensorFramework.internal;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
+import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -32,6 +34,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
@@ -39,6 +42,9 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import org.easymock.EasyMock;
 
@@ -212,16 +218,47 @@ class TestSensor extends AbstractSensor {
 	 * @throws IllegalArgumentException
 	 */
 	protected TestSensor(Coordinate position) throws IllegalArgumentException {
-		super(TestSensor.SENSOR_OUTPUT, position);
-	}
+		super(TestSensor.SENSOR_OUTPUT, new SensorType() {
 
-	@Override
-	public SensorTypeEnum getSensorType() {
-		return SensorTypeEnum.GPS_BUS;
+			@Override
+			public int getSensorTypeId() {
+				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+			}
+
+			@Override
+			public Class<?> getSensorTypeClass() {
+				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+			}
+
+			@Override
+			public String getUnit() {
+				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+			}
+
+			@Override
+			public Set<SensorInterfererType> getSensorInterfererTypeSet() {
+				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+			}
+		}, new GPSSensorData());
 	}
 
 	@Override
 	public void transmitUsageData(EventList eventList) {
+	}
+
+	@Override
+	public int getUpdateSteps() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public List getSensorInterfererTypes() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setSensorInterfererTypes(List sensorInterferers) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 }

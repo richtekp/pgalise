@@ -63,8 +63,8 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	 *            Information of the car
 	 * @param trafficGraphExtensions  
 	 */
-	public DefaultMotorizedVehicle(String name, T carData, TrafficGraphExtensions trafficGraphExtensions) {
-		super( name, trafficGraphExtensions);
+	public DefaultMotorizedVehicle(Long id, String name, T carData, TrafficGraphExtensions trafficGraphExtensions) {
+		super(id, name, trafficGraphExtensions);
 		this.setData(carData);
 	}
 
@@ -75,8 +75,11 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	 * @param carData
 	 *            Information of the car
 	 */
-	public DefaultMotorizedVehicle(T carData, TrafficGraphExtensions trafficGraphExtensions) {
-		super( trafficGraphExtensions);
+	public DefaultMotorizedVehicle(Long id,T carData, TrafficGraphExtensions trafficGraphExtensions) {
+		super(id,
+			null,
+			carData,
+			trafficGraphExtensions); 
 		if (carData == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("carData"));
 		}

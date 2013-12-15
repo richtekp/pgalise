@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class GenericNotificationMessage extends CCWebSocketMessage<String> {
+public class GenericNotificationMessage extends AbstractIdentifiableCCWebSocketMessage<String> {
 
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ public class GenericNotificationMessage extends CCWebSocketMessage<String> {
 	 * @param content
 	 *            Message. Most times empty, because it's only to inform the user.
 	 */
-	public GenericNotificationMessage(int messageID, String content) {
-		super(messageID, MessageType.GENERIC_NOTIFICATION_MESSAGE, content);
+	public GenericNotificationMessage(Long messageID, String content) {
+		super(messageID, MessageTypeEnum.GENERIC_NOTIFICATION_MESSAGE, content);
 	}
 }

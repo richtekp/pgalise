@@ -19,7 +19,7 @@ package de.pgalise.simulation.weather.internal.modifier.simulationevents;
 import java.util.Properties;
 
 import de.pgalise.simulation.shared.city.CityLocationEnum;
-import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.MutableStationData;
@@ -44,7 +44,7 @@ public class CityClimateModifier extends WeatherSimulationEventModifier {
 	/**
 	 * Event type
 	 */
-	public static final WeatherEventEnum TYPE = WeatherEventEnum.CITYCLIMATE;
+	public static final WeatherEventTypeEnum TYPE = WeatherEventTypeEnum.CITYCLIMATE;
 
 	/**
 	 * Order id
@@ -238,7 +238,7 @@ public class CityClimateModifier extends WeatherSimulationEventModifier {
 	}
 
 	@Override
-	public WeatherEventEnum getType() {
+	public WeatherEventTypeEnum getType() {
 		return CityClimateModifier.TYPE;
 	}
 

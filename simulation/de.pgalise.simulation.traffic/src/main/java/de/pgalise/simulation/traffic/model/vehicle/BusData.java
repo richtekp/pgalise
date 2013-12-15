@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.util.ArrayList;
@@ -21,14 +20,15 @@ import java.util.List;
 import java.util.Map;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 
 /**
  * Class with data, which define a bus.
- * 
+ *
  * @author Marina
  * @author Marcus
  */
@@ -85,9 +85,7 @@ public class BusData extends VehicleData {
 	/**
 	 * Sensor helper of the infrared sensor
 	 */
-	private SensorHelper infraredSensorHelper;
-
-	private Sensor infraredSensor;
+	private InfraredSensor infraredSensor;
 
 	/**
 	 * List of busstops
@@ -96,36 +94,40 @@ public class BusData extends VehicleData {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param axisDistance
-	 *            Distance of the axes in m.
-	 * @param length
-	 *            Length of the bus in m.
-	 * @param width
-	 *            Width of the bus in m.
-	 * @param height
-	 *            Height of the bus in m.
-	 * @param weight
-	 *            Weight of the bus in kg.
-	 * @param power
-	 *            Power of the bus in kW.
-	 * @param maxSpeed
-	 *            Maximal speed of the bus.
-	 * @param description
-	 *            Description of the bus.
-	 * @param maxPassengerCount
-	 *            Maximal passenger count.
-	 * @param currentPassengerCount
-	 *            Current passenger count
-	 * @param gpsSensor
-	 *            Sensorhelper for gps sensor
-	 * @param infraredSensor
-	 *            Sensorhelper for infrared sensor
+	 *
+	 * @param axisDistance Distance of the axes in m.
+	 * @param length Length of the bus in m.
+	 * @param width Width of the bus in m.
+	 * @param height Height of the bus in m.
+	 * @param weight Weight of the bus in kg.
+	 * @param power Power of the bus in kW.
+	 * @param maxSpeed Maximal speed of the bus.
+	 * @param description Description of the bus.
+	 * @param maxPassengerCount Maximal passenger count.
+	 * @param currentPassengerCount Current passenger count
+	 * @param gpsSensor Sensorhelper for gps sensor
+	 * @param infraredSensor Sensorhelper for infrared sensor
 	 */
-	public BusData(int wheelbase1, int wheelbase2, int length, int width, int height, int weight, double power,
-			int maxSpeed, String description, int maxPassengerCount, int currentPassengerCount, int axleCount,
-			SensorHelper gpsSensor, SensorHelper infraredSensorHelper) {
-		super(length, wheelbase1, wheelbase2, axleCount, VehicleTypeEnum.BUS, gpsSensor);
+	public BusData(int wheelbase1,
+		int wheelbase2,
+		int length,
+		int width,
+		int height,
+		int weight,
+		double power,
+		int maxSpeed,
+		String description,
+		int maxPassengerCount,
+		int currentPassengerCount,
+		int axleCount,
+		GpsSensor gpsSensor,
+		InfraredSensor infraredSensorHelper) {
+		super(length,
+			wheelbase1,
+			wheelbase2,
+			axleCount,
+			VehicleTypeEnum.BUS,
+			gpsSensor);
 		this.width = width;
 		this.height = height;
 		this.weight = weight;
@@ -134,23 +136,33 @@ public class BusData extends VehicleData {
 		this.maxSpeed = maxSpeed;
 		this.description = description;
 		this.currentPassengerCount = currentPassengerCount;
-		this.infraredSensorHelper = infraredSensorHelper;
+		this.infraredSensor = infraredSensorHelper;
 		this.lastBusStop = 0;
 		this.busStopOrder = new ArrayList<>();
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param referenceData
-	 *            BusData
+	 *
+	 * @param referenceData BusData
 	 */
 	public BusData(BusData referenceData) {
-		this(referenceData.getWheelbase1(), referenceData.getWheelbase2(), referenceData.getLength(), referenceData
-				.getWidth(), referenceData.getHeight(), referenceData.getWeight(), referenceData.getPower(),
-				referenceData.getMaxSpeed(), referenceData.getDescription(), referenceData.getMaxPassengerCount(),
-				referenceData.getCurrentPassengerCount(), referenceData.getAxleCount(), referenceData
-						.getGpsSensorHelper(), referenceData.getInfraredSensorHelper());
+		this(referenceData.getWheelbase1(),
+			referenceData.getWheelbase2(),
+			referenceData.getVehicleLength(),
+			referenceData
+			.getWidth(),
+			referenceData.getHeight(),
+			referenceData.getWeight(),
+			referenceData.getPower(),
+			referenceData.getMaxSpeed(),
+			referenceData.getDescription(),
+			referenceData.getMaxPassengerCount(),
+			referenceData.getCurrentPassengerCount(),
+			referenceData.getAxleCount(),
+			referenceData
+			.getGpsSensor(),
+			referenceData.getInfraredSensor());
 	}
 
 	public String getDescription() {
@@ -185,19 +197,11 @@ public class BusData extends VehicleData {
 		return currentPassengerCount;
 	}
 
-	public SensorHelper getInfraredSensorHelper() {
-		return infraredSensorHelper;
-	}
-
-	public void setInfraredSensorHelper(SensorHelper infraredSensor) {
-		this.infraredSensorHelper = infraredSensor;
-	}
-
-	public Sensor getInfraredSensor() {
+	public InfraredSensor getInfraredSensor() {
 		return infraredSensor;
 	}
 
-	public void setInfraredSensor(Sensor infraredSensor) {
+	public void setInfraredSensor(InfraredSensor infraredSensor) {
 		this.infraredSensor = infraredSensor;
 	}
 
@@ -216,9 +220,9 @@ public class BusData extends VehicleData {
 	@Override
 	public String toString() {
 		return "BusData [description=" + description + ", height=" + height + ", maxPassengerCount="
-				+ maxPassengerCount + ", maxSpeed=" + maxSpeed + ", power=" + power + ", weight=" + weight + ", width="
-				+ width + ", currentPassengerCount=" + currentPassengerCount + ", infraredSensor="
-				+ infraredSensorHelper + ", busStops=" + busStops + "]";
+			+ maxPassengerCount + ", maxSpeed=" + maxSpeed + ", power=" + power + ", weight=" + weight + ", width="
+			+ width + ", currentPassengerCount=" + currentPassengerCount + ", infraredSensor="
+			+ infraredSensor + ", busStops=" + busStops + "]";
 	}
 
 	public List<BusStop> getBusStopOrder() {

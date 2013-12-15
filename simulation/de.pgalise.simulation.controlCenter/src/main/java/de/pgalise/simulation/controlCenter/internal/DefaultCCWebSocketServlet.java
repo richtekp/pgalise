@@ -28,8 +28,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.catalina.websocket.StreamInbound;
-import org.apache.catalina.websocket.WebSocketServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +40,7 @@ import de.pgalise.simulation.controlCenter.internal.message.SimulationUpdateMess
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.event.EventList;
+import javax.servlet.http.HttpServlet;
 
 /**
  * Servlet for Control Center. It creates one user, which can create and control the simulation. It's not possible to
@@ -50,7 +49,7 @@ import de.pgalise.simulation.shared.event.EventList;
  * 
  * @author Timo
  */
-public class CCWebSocketServlet extends WebSocketServlet {
+public class DefaultCCWebSocketServlet extends HttpServlet {
 	private static final long serialVersionUID = 3385629233339378162L;
 	private static final Logger log = LoggerFactory.getLogger(CCWebSocketServlet.class);
 	/**
@@ -102,17 +101,6 @@ public class CCWebSocketServlet extends WebSocketServlet {
 		} else {
 			throw new RuntimeException("No user online!");
 		}
-	}
-
-	@Override
-	protected StreamInbound createWebSocketInbound(String protocol, HttpServletRequest reqeast) {
-
-		CCWebSocketUser webSocketUser = new CCWebSocketUser(this, this.gsonService.getGson(), this.serviceDictionary);
-		if (CCWebSocketServlet.user == null) {
-			CCWebSocketServlet.user = webSocketUser;
-		}
-
-		return webSocketUser;
 	}
 
 	/**

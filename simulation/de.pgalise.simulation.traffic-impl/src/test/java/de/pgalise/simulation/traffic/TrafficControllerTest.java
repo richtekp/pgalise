@@ -42,9 +42,9 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -229,44 +229,38 @@ public class TrafficControllerTest {
 		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
 
 		// create sensors
-		Sensor<?> sensor = new InductionLoopSensor(null,null,
-			null,
+		StaticSensor sensor = new InductionLoopSensor(null,null,
+			null);	
+		StaticSensor sensor2 = new InductionLoopSensor(null,null,
 			null);
-		SensorHelper sensorHelper = new SensorHelper(sensor, new Coordinate(100, 100),
-				SensorTypeEnum.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>());
-		Sensor<?> sensor2 = new InductionLoopSensor(null,null,
-			null,
-			null);
-		SensorHelper sensorHelper2 = new SensorHelper(sensor2, new Coordinate(100, 600),
-				SensorTypeEnum.INDUCTIONLOOP, 1, new ArrayList<SensorInterfererType>());
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
 		s1.init(initParam);
 		s1.setCityZone(anyObject(Geometry.class));
 		s1.start(startParam);
-		s1.createSensor(sensorHelper);
-		expect(s1.statusOfSensor(sensorHelper)).andReturn(true);
-		s1.deleteSensor(sensorHelper);
+		s1.createSensor(sensor);
+		expect(s1.statusOfSensor(sensor)).andReturn(true);
+		s1.deleteSensor(sensor);
 		replay(s1);
 
 		TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
 		s2.init(initParam);
 		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
-		s2.createSensor(sensorHelper);
-		expect(s2.statusOfSensor(sensorHelper2)).andReturn(false);
-		s2.deleteSensor(sensorHelper);
+		s2.createSensor(sensor);
+		expect(s2.statusOfSensor(sensor2)).andReturn(false);
+		s2.deleteSensor(sensor);
 		replay(s2);
 
 		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
-		ctrl.createSensor(sensorHelper);
-		assertTrue(ctrl.statusOfSensor(sensorHelper));
-		assertFalse(ctrl.statusOfSensor(sensorHelper2));
-		ctrl.deleteSensor(sensorHelper);
+		ctrl.createSensor(sensor);
+		assertTrue(ctrl.statusOfSensor(sensor));
+		assertFalse(ctrl.statusOfSensor(sensor2));
+		ctrl.deleteSensor(sensor);
 
 		verify(s1);
 		verify(s2);

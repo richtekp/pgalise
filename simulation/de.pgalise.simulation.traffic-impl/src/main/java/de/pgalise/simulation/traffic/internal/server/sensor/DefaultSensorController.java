@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorFactory;
+import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -33,7 +33,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficEdge;
@@ -100,60 +100,52 @@ public class DefaultSensorController extends AbstractController<TrafficEvent, In
 	}
 
 	@Override
-	public void createSensor(SensorHelper sensor) throws SensorException {
-		try {
-			// Add sensor
-			final Sensor<?> newSensor = sensorFactory
-					.createSensor(sensor, TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
-			if (newSensor != null) {
-				if (newSensor instanceof InductionLoopSensor) {
-					newSensor.setPosition(sensor.getPosition());
-					newSensor.setActivated(true);
-				}
-				// else if(newSensor instanceof GpsSensor) {
-				// return newSensor.getSensorId();
-				// }
-				// else if (newSensor instanceof InfraredSensor) {
-				//
-				// }
-
-				// log.debug("Add sensor to Registry " + sensorRegistry.hashCode());
-				sensorRegistry.addSensor(newSensor);
-				if (newSensor instanceof AbstractStaticTrafficSensor) {
-					trafficGraphExtensions.addSensor(null,
-							(AbstractStaticTrafficSensor) newSensor);
-					log.info("Sensor " + sensor.getSensorID() + " added to node " + sensor);
-				}
+	public void createSensor(Sensor<?,?> sensor) throws SensorException {
+		final Sensor<?,?> newSensor = sensor;
+		if (newSensor != null) {
+			if (newSensor instanceof InductionLoopSensor) {
+				newSensor.setActivated(true);
 			}
-		} catch (InterruptedException | ExecutionException ex) {
-			log.error("Failed to create sensor " + sensor.getSensorID(), ex);
-			throw new SensorException("Not responsible for creating sensor: " + sensor.getSensorID());
+			// else if(newSensor instanceof GpsSensor) {
+			// return newSensor.getSensorId();
+			// }
+			// else if (newSensor instanceof InfraredSensor) {
+			//
+			// }
+			
+			// log.debug("Add sensor to Registry " + sensorRegistry.hashCode());
+			sensorRegistry.addSensor(newSensor);
+			if (newSensor instanceof AbstractStaticTrafficSensor) {
+				trafficGraphExtensions.addSensor(null,
+					(AbstractStaticTrafficSensor) newSensor);
+				log.info("Sensor " + sensor+ " added to node " + sensor);
+			}
 		}
 	}
 
 	@Override
-	public void deleteSensor(SensorHelper sensor) throws SensorException {
+	public void deleteSensor(Sensor<?,?> sensor) throws SensorException {
 		// Check sensor
 		boolean isRemoved = false;
-		Sensor<?> newSensor = sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor<?,?> newSensor = sensorRegistry.getSensor(sensor);
 		if (newSensor != null) {
 			if (newSensor instanceof GpsSensor) {
-				((GpsSensor) newSensor).getVehicle().setHasGPS(false);
+				((GpsSensor) newSensor).setActivated(false);
 			}
 			sensorRegistry.removeSensor(newSensor);
 			isRemoved = true;
 		}
 
 		if (!isRemoved) {
-			throw new SensorException("Can't remove sensor: " + sensor.getSensorID());
+			throw new SensorException("Can't remove sensor: " + sensor);
 		}
 	}
 
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor<?,?> sensor) throws SensorException {
 		boolean state = false;
 		// Check sensor
-		Sensor newSensor = sensorRegistry.getSensor(sensor.getSensorID());
+		Sensor newSensor = sensorRegistry.getSensor(sensor);
 		if (newSensor != null) {
 			state = newSensor.isActivated();
 		}
@@ -201,19 +193,13 @@ public class DefaultSensorController extends AbstractController<TrafficEvent, In
 		VehicleData data = vehicle.getData();
 
 		// Prepare GPS sensor
-		Sensor<?> sensorId = data.getGpsSensorHelper().getSensorID();
-		Sensor<?> sensor = sensorRegistry.getSensor(sensorId);
+		Sensor<?,?> sensor = data.getGpsSensor();
 		if (sensor == null) {
 			GpsSensor newSensor;
-			try {
-				newSensor = (GpsSensor) this.sensorFactory.createSensor(data.getGpsSensorHelper(),
-						TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
-				newSensor.setVehicle(vehicle);
-				vehicle.getData().setGpsSensor(newSensor);
-				sensorRegistry.addSensor(newSensor);
-			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
-			}
+			newSensor = data.getGpsSensor();
+			newSensor.setVehicle(vehicle);
+			vehicle.getData().setGpsSensor(newSensor);
+			sensorRegistry.addSensor(newSensor);
 		}
 		// log.debug("sending gps sensor data for vehicle " + vehicle.getId());
 		// sensor.update(eventList); //auskommentiert lassen, sonst werden die Werte doppelt gesendet
@@ -221,22 +207,16 @@ public class DefaultSensorController extends AbstractController<TrafficEvent, In
 		// Prepare infrared sensor (only for busses)
 		if (data instanceof BusData) {
 			BusData busdata = (BusData) data;
-			if (busdata.getInfraredSensorHelper() != null) {
-				sensorId = busdata.getInfraredSensorHelper().getSensorID();
-				sensor = sensorRegistry.getSensor(sensorId);
+			if (busdata.getInfraredSensor() != null) {
+				sensor = busdata.getInfraredSensor();
 				if (sensor == null) {
 					InfraredSensor newSensor;
-					try {
-						newSensor = (InfraredSensor) this.sensorFactory.createSensor(busdata.getInfraredSensorHelper(),
-								TrafficServerLocal.RESPONSIBLE_FOR_SENSOR_TYPES);
-						newSensor.setVehicle((Vehicle<BusData>) vehicle);
-						((Vehicle<BusData>) vehicle).getData().setInfraredSensor(newSensor);
-						log.debug("InfraredSensor " + newSensor.getId()+ " registered for vehicle "
-								+ vehicle.getName());
-						sensorRegistry.addSensor(newSensor);
-					} catch (InterruptedException | ExecutionException e) {
-						e.printStackTrace();
-					}
+					newSensor = busdata.getInfraredSensor();
+					newSensor.setVehicle((Vehicle<BusData>) vehicle);
+					((Vehicle<BusData>) vehicle).getData().setInfraredSensor(newSensor);
+					log.debug("InfraredSensor " + newSensor.getId()+ " registered for vehicle "
+						+ vehicle.getName());
+					sensorRegistry.addSensor(newSensor);
 				} else {
 					// workaround (warum auch immer ist in der registry sonst ein falsches fahrzeug gespeichert)
 					// evtl. sensorregistry beim start clearen?
@@ -252,9 +232,9 @@ public class DefaultSensorController extends AbstractController<TrafficEvent, In
 	@Override
 	public void onRemove(Vehicle<?> vehicle) {
 		// Check sensor
-		Sensor<?> newSensor = sensorRegistry.getSensor(vehicle.getData().getGpsSensorHelper().getSensorID());
+		Sensor<?,?> newSensor = sensorRegistry.getSensor(vehicle.getData().getGpsSensor());
 		if (newSensor != null) {
-			vehicle.setHasGPS(false);
+			vehicle.getData().getGpsSensor().setActivated(false);
 			sensorRegistry.removeSensor(newSensor);
 		}
 	}
@@ -265,15 +245,15 @@ public class DefaultSensorController extends AbstractController<TrafficEvent, In
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void createSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		for (Sensor<?,?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		for (SensorHelper sensor : sensors) {
+	public void deleteSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		for (Sensor<?,?> sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}

@@ -17,12 +17,15 @@
 package de.pgalise.simulation.traffic.vehicle;
 
 
+import de.pgalise.simulation.service.IdGenerator;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLBicycleFactory;
@@ -50,13 +53,15 @@ public class XMLBicycleFactoryTest {
 		 */
 		RandomSeedService random = EasyMock.createMock(RandomSeedService.class);
 		EasyMock.expect(random.getSeed("XMLAbstractFactory")).andReturn(1000L);
+		IdGenerator idGenerator = new DefaultIdGenerator();
+		TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(TrafficGraphExtensions.class);
 
 		/*
 		 * Test case
 		 */
 		TrafficGraph graph = new DefaultTrafficGraph();
-		BicycleFactory factory = new XMLBicycleFactory(random, XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH),
-				new DefaultTrafficGraphExtensions(random, graph));
+		BicycleFactory factory = new XMLBicycleFactory(idGenerator,trafficGraphExtensions,random, XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH)
+				);
 
 		Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle( null);
 		Assert.assertNotNull(vehicle1);

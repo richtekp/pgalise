@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.vehicle;
 
+import de.pgalise.simulation.service.IdGenerator;
 import java.awt.Color;
 
 import org.easymock.EasyMock;
@@ -23,13 +24,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLTruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import static de.pgalise.simulation.traffic.vehicle.XMLCarFactoryTest.FILEPATH;
 
 /**
  * Tests the {@link XMLTruckFactoryTest}
@@ -57,8 +61,9 @@ public class XMLTruckFactoryTest {
 		 */
 
 		TrafficGraph graph = new DefaultTrafficGraph();
-		TruckFactory factory = new XMLTruckFactory(random, XMLTruckFactoryTest.class.getResourceAsStream(FILEPATH),
-				new DefaultTrafficGraphExtensions(random, graph));
+		IdGenerator idGenerator = new DefaultIdGenerator();
+		TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(TrafficGraphExtensions.class);
+		TruckFactory factory = new XMLTruckFactory(idGenerator,trafficGraphExtensions,random, XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
 		Vehicle<TruckData> vehicle1 = factory.createRandomTruck( null);
 		Assert.assertNotNull(vehicle1);

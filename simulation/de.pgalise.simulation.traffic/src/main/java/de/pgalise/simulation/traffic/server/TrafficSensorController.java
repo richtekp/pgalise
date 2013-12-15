@@ -20,6 +20,7 @@
  */
 package de.pgalise.simulation.traffic.server;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
@@ -36,7 +37,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  */
 public interface TrafficSensorController<
 	F extends TrafficEvent
-> extends SensorManagerController<F, InfrastructureStartParameter, InfrastructureInitParameter> {
+> extends SensorManagerController<F, InfrastructureStartParameter, InfrastructureInitParameter,Sensor<?,?>> {
 	
 	public void onSchedule(Vehicle<?> v);
 

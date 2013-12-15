@@ -44,9 +44,10 @@ import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
@@ -82,7 +83,7 @@ import org.junit.Ignore;
 @Ignore
 public class DefaultWeatherControllerTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "pgalise")
+	@PersistenceUnit(unitName = "pgalise-weather")
 	private EntityManagerFactory entityManagerFactory;
 	/**
 	 * Logger
@@ -175,11 +176,20 @@ public class DefaultWeatherControllerTest {
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
 		Coordinate testPosition = new Coordinate(2, 3);
 		List<WeatherEvent> testEventList = new ArrayList<>(1);
-		testEventList.add(new ChangeWeatherEvent( WeatherEventEnum.HOTDAY, 30.0f,
+		testEventList.add(new ChangeWeatherEvent( WeatherEventTypeEnum.HOTDAY, 30.0f,
 				eventTimestamp, 6.0f));
 		EventList<WeatherEvent> testEvent = new EventList<>(testEventList, valueTime, UUID.randomUUID());
 
-		InitParameter initParameter = new InitParameter();
+		InfrastructureInitParameter initParameter = new InfrastructureInitParameter(null,
+			ServerConfiguration.DEFAULT_SERVER_CONFIGURATION,
+			startTimestamp,
+			endTimestamp,
+			valueTime,
+			eventTimestamp,
+			null,
+			null,
+			null,
+			null);
 		initParameter.setStartTimestamp(startTimestamp);
 		initParameter.setEndTimestamp(endTimestamp);
 		

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.internal.visualizationcontroller;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.Collection;
 
 import javax.ejb.Local;
@@ -30,7 +31,6 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 /**
  * Mock for {@link OperationCenterController}. It does not send anything to the operation center.
@@ -51,21 +51,21 @@ public class DefaultOperationCenterControllerMock extends AbstractController<Eve
 			throws IllegalStateException {}
 
 	@Override
-	public void createSensor(SensorHelper<?> sensor) throws SensorException {}
+	public void createSensor(Sensor sensor) throws SensorException {}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors)
+	public void createSensors(Collection<Sensor<?,?>> sensors)
 			throws SensorException {}
 
 	@Override
-	public void deleteSensor(SensorHelper<?> sensor) throws SensorException {}
+	public void deleteSensor(Sensor sensor) throws SensorException {}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors)
+	public void deleteSensors(Collection<Sensor<?,?>> sensors)
 			throws SensorException {}
 
 	@Override
-	public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor sensor) throws SensorException {
 		return false;
 	}
 

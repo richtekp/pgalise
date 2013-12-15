@@ -19,20 +19,22 @@ package de.pgalise.simulation.operationCenter.internal.message;
 import java.util.Collection;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  * This message will be send, if the last update from a dynamic
  * sensor is older than (current time - (updateSteps * interval)).
  * @author Timo
  */
-public class GPSSensorTimeoutMessage extends OCWebSocketMessage<Collection<SensorData>>{
+public class GPSSensorTimeoutMessage extends OCWebSocketMessage<Collection<Sensor<?,?>>>{
 
 	/**
 	 * Constructor
 	 * @param sensorData
 	 * 			the gps sensors with a time out
 	 */
-	public GPSSensorTimeoutMessage(Collection<SensorData> sensorData) {
+	public GPSSensorTimeoutMessage(Collection<Sensor<?,?>> sensorData) {
 		super(OCWebSocketMessage.MessageType.GPS_SENSOR_TIMEOUT, sensorData);
 	}
 }

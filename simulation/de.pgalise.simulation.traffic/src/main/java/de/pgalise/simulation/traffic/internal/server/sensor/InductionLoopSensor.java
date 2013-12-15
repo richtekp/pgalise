@@ -26,6 +26,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
@@ -37,7 +38,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInter
  * @author Lena
  * @version 1.0
  */
-public class InductionLoopSensor extends AbstractStaticTrafficSensor {
+public class InductionLoopSensor extends AbstractStaticTrafficSensor<InductionLoopSensorData> {
 
 	/**
 	 * Logger
@@ -72,8 +73,8 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(TrafficNode node, final Output output, final Coordinate position, final InductionLoopInterferer interferer) {
-		this(node, output, position, 1, interferer);
+	public InductionLoopSensor( final Output output, final TrafficNode node, final InductionLoopInterferer interferer) {
+		this( output, node,1, interferer);
 	}
 
 	/**
@@ -90,8 +91,8 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor {
 	 * @param interferer
 	 *            InductionLoopInterferer
 	 */
-	public InductionLoopSensor(TrafficNode node, Output output, Coordinate position, int updateLimit, final InductionLoopInterferer interferer) {
-		super(node, output, position, updateLimit);
+	public InductionLoopSensor(  Output output, TrafficNode node, int updateLimit, final InductionLoopInterferer interferer) {
+		super(output, node, updateLimit, TrafficSensorTypeEnum.INDUCTIONLOOP, new InductionLoopSensorData());
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
@@ -100,11 +101,6 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor {
 
 	public InductionLoopInterferer getInterferer() {
 		return this.interferer;
-	}
-
-	@Override
-	public SensorTypeEnum getSensorType() {
-		return SensorTypeEnum.INDUCTIONLOOP;
 	}
 
 	public void setInterferer(final InductionLoopInterferer interferer) throws IllegalArgumentException {
@@ -155,7 +151,7 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor {
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicle.getData().getType())) {
 			this.realVehicleCount++;
 
-			this.vehicleCount += this.interferer.interfere(vehicle.getData().getLength(), this.realVehicleCount,
+			this.vehicleCount += this.interferer.interfere(vehicle.getData().getVehicleLength(), this.realVehicleCount,
 					vehicle.getVelocity());
 
 			log.debug(this.getId()+" registered a vehicle");

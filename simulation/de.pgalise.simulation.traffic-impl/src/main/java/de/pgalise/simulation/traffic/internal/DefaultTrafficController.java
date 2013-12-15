@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,18 +25,14 @@ import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
-import javax.ejb.Remote;
 import javax.ejb.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
@@ -47,20 +42,14 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
-import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -69,7 +58,6 @@ import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.disassembler.Disassembler;
-import java.util.logging.Level;
 
 /**
  * Implementation of the traffic controller
@@ -97,7 +85,7 @@ public class DefaultTrafficController<
 	 * Server configuration
 	 */
 	@EJB
-	private ServerConfigurationReader<TrafficServerLocal<VehicleEvent>> serverConfigReader;
+	private ServerConfigurationReader serverConfigReader;
 
 	/**
 	 * List with all traffic servers
@@ -342,14 +330,14 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	public void createSensor(SensorHelper<?> sensor) throws SensorException {
+	public void createSensor(StaticSensor sensor) throws SensorException {
 		for (TrafficServer<?> server : serverList) {
 			server.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensor(SensorHelper<?> sensor) throws SensorException {
+	public void deleteSensor(StaticSensor sensor) throws SensorException {
 		for (TrafficServer<?> server : serverList) {
 			server.deleteSensor(sensor);
 		}
@@ -358,7 +346,7 @@ public class DefaultTrafficController<
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
-	public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
+	public boolean statusOfSensor(StaticSensor sensor) throws SensorException {
 		for (int i = 0; i < cityZones.size(); i++) {
 			Coordinate pos = sensor.getPosition();
 			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos))) {
@@ -405,15 +393,15 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		for (SensorHelper<?> sensor : sensors) {
+	public void createSensors(Collection<StaticSensor> sensors) throws SensorException {
+		for (StaticSensor sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		for (SensorHelper<?> sensor : sensors) {
+	public void deleteSensors(Collection<StaticSensor> sensors) throws SensorException {
+		for (StaticSensor sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}

@@ -6,18 +6,11 @@
 
 package de.pgalise.simulation.internal;
 
-import com.google.common.collect.Sets;
-import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerServiceDictionary;
 import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.AbstractServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

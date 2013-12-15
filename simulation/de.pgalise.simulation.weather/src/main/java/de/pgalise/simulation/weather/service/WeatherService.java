@@ -83,6 +83,7 @@ public interface WeatherService {
 	 * 
 	 * @param timestamp
 	 *            Timestamp
+	 * @return 
 	 */
 	public boolean checkDate(long timestamp);
 
@@ -122,6 +123,7 @@ public interface WeatherService {
 	 * parameters. The weather values are stored with a specific time interval (see {@link Weather#INTERPOLATE_INTERVAL}
 	 * ). If you want to get a value between this interval, you will get the value to the next reference timestamp.
 	 * 
+	 * @param <T>
 	 * @param key
 	 *            WeatherParameterEnum
 	 * @param time
@@ -138,6 +140,7 @@ public interface WeatherService {
 	 * {@link Weather#INTERPOLATE_INTERVAL}). If you want to get a value between this interval, you will get the value
 	 * to the next reference timestamp.
 	 * 
+	 * @param <T>
 	 * @param key
 	 *            WeatherParameterEnum
 	 * @param time

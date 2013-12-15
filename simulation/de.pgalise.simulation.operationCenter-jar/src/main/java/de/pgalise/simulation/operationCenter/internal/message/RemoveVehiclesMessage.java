@@ -16,21 +16,22 @@
  
 package de.pgalise.simulation.operationCenter.internal.message;
 
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Collection;
 
-import de.pgalise.simulation.operationCenter.internal.model.VehicleData;
 /**
  * Message to remove vehicles.
  * @author Timo
  */
-public class RemoveVehiclesMessage extends OCWebSocketMessage<Collection<VehicleData>>{
+public class RemoveVehiclesMessage extends OCWebSocketMessage<Collection<Vehicle<?>>>{
 
 	/**
 	 * Constructor
 	 * @param content
 	 * 			all vehicles, which shall be removed
 	 */
-	public RemoveVehiclesMessage(Collection<VehicleData> content) {
+	public RemoveVehiclesMessage(Collection<Vehicle<?>> content) {
 		super(OCWebSocketMessage.MessageType.REMOVE_VEHICLES_MESSAGE, content);
 	}
 }

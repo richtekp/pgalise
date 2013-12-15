@@ -16,22 +16,23 @@
  
 package de.pgalise.simulation.operationCenter.internal.message;
 
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Collection;
 
-import de.pgalise.simulation.operationCenter.internal.model.VehicleData;
 /**
  * This message will be send, if new vehicles are created.
  * Notice: Vehicles can not be instantiated with {@link NewSensorsMessage}.
  * @author Timo
  */
-public class NewVehiclesMessage extends OCWebSocketMessage<Collection<VehicleData>> {
+public class NewVehiclesMessage extends OCWebSocketMessage<Collection<Vehicle<?>>> {
 
 	/**
 	 * Constructor
 	 * @param content
 	 * 			the vehicles, which shall be created
 	 */
-	public NewVehiclesMessage(Collection<VehicleData> content) {
+	public NewVehiclesMessage(Collection<Vehicle<?>> content) {
 		super(OCWebSocketMessage.MessageType.NEW_VEHICLES_MESSAGE, content);
 	}
 }

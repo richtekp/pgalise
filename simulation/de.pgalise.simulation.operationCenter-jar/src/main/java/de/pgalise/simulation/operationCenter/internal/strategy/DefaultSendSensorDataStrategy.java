@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
-import com.google.inject.Inject;
-
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketService;
 /**
  * The default implementation of a send sensor data strategy sends every single sensor data.
@@ -29,7 +27,6 @@ public class DefaultSendSensorDataStrategy extends SendSensorDataStrategy {
 	 * Contructor
 	 * @param webSocketService
 	 */
-	@Inject
 	public DefaultSendSensorDataStrategy(OCWebSocketService webSocketService) {
 		super(webSocketService);
 	}

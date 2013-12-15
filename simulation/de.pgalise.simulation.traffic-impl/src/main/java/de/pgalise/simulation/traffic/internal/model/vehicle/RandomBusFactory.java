@@ -4,48 +4,64 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsAtmosphereInterferer;
+import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
+import javax.ejb.Stateful;
 
 /**
  *
  * @author richter
  */
-public class RandomBusFactory implements BusFactory {
+@Stateful
+public class RandomBusFactory extends AbstractVehicleFactory implements
+				BusFactory
+{
+	private InfraredInterferer infraredInterferer;
 
-	@Override
-	public BaseVehicle<BusData> createBus(
-		SensorHelper gpsSensor,
-		SensorHelper infraredSensor) {
-		return createRandomBus(gpsSensor,
-			infraredSensor);
+	public RandomBusFactory() {
+	}
+
+	public RandomBusFactory(InfraredInterferer infraredInterferer) {
+		this.infraredInterferer = infraredInterferer;
 	}
 
 	@Override
-	public BaseVehicle<BusData> createRandomBus(SensorHelper gpsSensor,
-		SensorHelper infraredSensor) {
-		BusData busData = new BusData(1,
-			2,
-			3,
-			4,
-			5,
-			6,
-			7,
-			8,
+	public BaseVehicle<BusData> createBus(Output output) {
+		return createRandomBus(output);
+	}
+
+	@Override
+	public BaseVehicle<BusData> createRandomBus(Output output) {
+		GpsSensor gpsSensor = new GpsSensor(
+			output,
 			null,
-			9,
-			10,
-			11,
-			gpsSensor,
-			infraredSensor);
-		return new DefaultMotorizedVehicle<>(busData, null);
+			retrieveGpsInterferer());
+		InfraredSensor infraredSensor = new InfraredSensor(output,
+			null,
+			null,
+			infraredInterferer);
+		BusData busData = new BusData(1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						null,
+						9,
+						10,
+						11,
+						gpsSensor,
+						infraredSensor);
+		return new DefaultMotorizedVehicle<>(getIdGenerator().getNextId(),busData, null);
 	}
-	
+
 }

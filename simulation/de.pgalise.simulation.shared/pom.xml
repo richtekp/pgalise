@@ -10,18 +10,14 @@
 
     <groupId>de.pgalise.simulation</groupId>
     <artifactId>shared</artifactId>
-    <version>${applicationVersion}</version>
+    <version>2.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
 	
     <name>de.pgalise.simulation.shared</name>
 	
     <!-- Hier die Abh??ngigkeiten definieren -->
-    <dependencies>					
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-spatial</artifactId>
-        </dependency>
+    <dependencies>
 				<dependency>
 					<groupId>postgresql</groupId>
 					<artifactId>postgresql</artifactId>

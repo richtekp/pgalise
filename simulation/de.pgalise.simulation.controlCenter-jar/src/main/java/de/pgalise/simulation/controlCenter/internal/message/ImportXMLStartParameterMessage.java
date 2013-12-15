@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class ImportXMLStartParameterMessage extends CCWebSocketMessage<String> {
+public class ImportXMLStartParameterMessage extends AbstractIdentifiableCCWebSocketMessage<String> {
 	/**
 	 * Constructor
 	 * 
@@ -30,7 +30,7 @@ public class ImportXMLStartParameterMessage extends CCWebSocketMessage<String> {
 	 * @param content
 	 *            the startparameter as XML.
 	 */
-	public ImportXMLStartParameterMessage(int messageID, String content) {
-		super(messageID, MessageType.IMPORT_XML_START_PARAMETER, content);
+	public ImportXMLStartParameterMessage(Long messageID, String content) {
+		super(messageID, MessageTypeEnum.IMPORT_XML_START_PARAMETER, content);
 	}
 }

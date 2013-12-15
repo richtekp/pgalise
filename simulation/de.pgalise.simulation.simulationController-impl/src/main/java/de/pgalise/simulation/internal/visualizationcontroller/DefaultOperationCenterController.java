@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import de.pgalise.simulation.sensorFramework.Sensor;
 
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.InitParameter;
@@ -45,7 +46,6 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 
@@ -61,7 +61,7 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 public class DefaultOperationCenterController extends AbstractController<Event, StartParameter, InitParameter> implements OperationCenterController {
 	private static final Logger log = LoggerFactory.getLogger(DefaultOperationCenterController.class);
 	private static final String NAME = "OperationCenterController";
-	private static final TypeToken<Collection<SensorHelper>> sensorCollectionTypeToken = new TypeToken<Collection<SensorHelper>>() {
+	private static final TypeToken<Collection<Sensor>> sensorCollectionTypeToken = new TypeToken<Collection<Sensor>>() {
 	};
 	private static final long serialVersionUID = 1L;
 	private int connectionTimeout;
@@ -88,7 +88,7 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 	}
 
 	@Override
-	public void createSensor(SensorHelper sensor) throws IllegalStateException {
+	public void createSensor(Sensor sensor) throws IllegalStateException {
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("createsensor", "true");
 		requestParameterMap.put("json", gson.toJson(sensor));
@@ -96,7 +96,7 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 	}
 
 	@Override
-	public void deleteSensor(SensorHelper sensor) throws IllegalStateException {
+	public void deleteSensor(Sensor sensor) throws IllegalStateException {
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("deletesensor", "true");
 		requestParameterMap.put("json", gson.toJson(sensor));
@@ -168,7 +168,7 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 	}
 
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException, IllegalStateException {
+	public boolean statusOfSensor(Sensor sensor) throws SensorException, IllegalStateException {
 		return false;
 	}
 
@@ -197,7 +197,7 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 		log.debug("start");
 		StartParameter startParameterCopy = new DefaultStartParameter(
 				param.isAggregatedWeatherDataEnabled(),
-				param.getWeatherEventHelperList());
+				param.getWeatherEventList());
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("start", "true");
 		requestParameterMap.put("json", this.gson.toJson(startParameterCopy));
@@ -226,7 +226,7 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+	public void createSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("createsensors", "true");
 		requestParameterMap.put("json", gson.toJson(sensors, sensorCollectionTypeToken.getType()));
@@ -234,7 +234,7 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+	public void deleteSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("deletesensors", "true");
 		requestParameterMap.put("json", gson.toJson(sensors, sensorCollectionTypeToken.getType()));

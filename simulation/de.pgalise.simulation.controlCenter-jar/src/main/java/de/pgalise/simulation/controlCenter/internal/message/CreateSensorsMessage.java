@@ -16,17 +16,17 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.Collection;
 import java.util.List;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Message to create a sensor.
  * 
  * @author Timo
  */
-public class CreateSensorsMessage extends CCWebSocketMessage<Collection<SensorHelper<?>>> {
+public class CreateSensorsMessage extends AbstractIdentifiableCCWebSocketMessage<Collection<Sensor<?,?>>> {
 	/**
 	 * Constructor
 	 * 
@@ -35,7 +35,7 @@ public class CreateSensorsMessage extends CCWebSocketMessage<Collection<SensorHe
 	 * @param content
 	 *            List with SensorHelper which shall be created
 	 */
-	public CreateSensorsMessage(int messageID, List<SensorHelper<?>> content) {
-		super(messageID, MessageType.CREATE_SENSORS_MESSAGE, content);
+	public CreateSensorsMessage(Long messageID, List<Sensor<?,?>> content) {
+		super(messageID, MessageTypeEnum.CREATE_SENSORS_MESSAGE, content);
 	}
 }

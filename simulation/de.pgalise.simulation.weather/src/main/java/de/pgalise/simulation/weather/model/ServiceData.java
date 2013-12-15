@@ -9,6 +9,7 @@ import de.pgalise.simulation.shared.city.City;
 /**
  *
  * @author richter
+ * @param <C>
  */
 public interface ServiceData<C extends WeatherCondition> extends WeatherInformation {
 	

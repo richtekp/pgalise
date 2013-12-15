@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class SimulationExportedMessage extends CCWebSocketMessage<String> {
+public class SimulationExportedMessage extends AbstractIdentifiableCCWebSocketMessage<String> {
 	/**
 	 * Constructor
 	 * 
@@ -30,7 +30,7 @@ public class SimulationExportedMessage extends CCWebSocketMessage<String> {
 	 * @param content
 	 *            the file name of the exportet start parameters
 	 */
-	public SimulationExportedMessage(int messageID, String content) {
-		super(messageID, MessageType.SIMULATION_EXPORTET, content);
+	public SimulationExportedMessage(Long messageID, String content) {
+		super(messageID, MessageTypeEnum.SIMULATION_EXPORTET, content);
 	}
 }

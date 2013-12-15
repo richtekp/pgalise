@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.TrafficEdge;
@@ -27,6 +28,16 @@ public class AbstractTrafficEventHandler<D extends VehicleData,E extends Traffic
 	 * Traffic server
 	 */
 	private TrafficServerLocal<E> responsibleServer;
+	
+	private Output output;
+
+	public Output getOutput() {
+		return output;
+	}
+
+	public void setOutput(Output output) {
+		this.output = output;
+	}
 
 	@Override
 	public void init(TrafficServerLocal<E>  server) {

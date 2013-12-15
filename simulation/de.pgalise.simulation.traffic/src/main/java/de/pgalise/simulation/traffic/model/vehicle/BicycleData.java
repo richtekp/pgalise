@@ -16,8 +16,8 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  * Attributes of bicycles
@@ -73,7 +73,7 @@ public class BicycleData extends VehicleData {
 	 * @param
 	 */
 	public BicycleData(double weight, int maxSpeed, String material, int length, int wheelbase, String description,
-			SensorHelper gpsSensor) {
+			GpsSensor gpsSensor) {
 		super(length, wheelbase, 0, 2, VehicleTypeEnum.BIKE, gpsSensor);
 		this.weight = weight;
 		this.maxSpeed = maxSpeed;
@@ -90,8 +90,8 @@ public class BicycleData extends VehicleData {
 	 */
 	public BicycleData(BicycleData referenceData) {
 		this(referenceData.getWeight(), referenceData.getMaxSpeed(), referenceData.getMaterial(), (int) referenceData
-				.getLength(), referenceData.getWheelbase(), referenceData.getDescription(), referenceData
-				.getGpsSensorHelper());
+				.getVehicleLength(), referenceData.getWheelbase(), referenceData.getDescription(), referenceData
+				.getGpsSensor());
 	}
 
 	public String getDescription() {

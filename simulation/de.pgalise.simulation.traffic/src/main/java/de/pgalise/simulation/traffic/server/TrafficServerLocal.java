@@ -31,6 +31,7 @@ import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
@@ -52,19 +53,16 @@ import java.util.HashSet;
  * 
  * @author mustafa
  * @author Lena
+ * @param <F>
  */
 public interface TrafficServerLocal<F extends TrafficEvent> extends TrafficServer<F> {
 	public static Set<SensorType> RESPONSIBLE_FOR_SENSOR_TYPES = new HashSet<SensorType>(
 		Arrays.asList(
-			SensorTypeEnum.TRAFFICLIGHT_SENSOR,
-			SensorTypeEnum.INFRARED, 
-			SensorTypeEnum.INDUCTIONLOOP, 
-			SensorTypeEnum.TOPORADAR, 
-			SensorTypeEnum.GPS_BIKE,
-			SensorTypeEnum.GPS_BUS, 
-			SensorTypeEnum.GPS_CAR, 
-			SensorTypeEnum.GPS_TRUCK, 
-			SensorTypeEnum.GPS_MOTORCYCLE
+			TrafficSensorTypeEnum.TRAFFICLIGHT_SENSOR,
+			TrafficSensorTypeEnum.INFRARED, 
+			TrafficSensorTypeEnum.INDUCTIONLOOP, 
+			TrafficSensorTypeEnum.TOPORADAR, 
+			TrafficSensorTypeEnum.GPS
 		)
 	);
 

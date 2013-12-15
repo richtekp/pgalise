@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="pgalise-controlcenter" transaction-type="JTA">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jdbc/pgalise</jta-data-source>
+		<class>de.pgalise.simulation.sensorFramework.internal.persistence.SensorInfo</class>
+		<class>de.pgalise.simulation.shared.city.Building</class>
+		<class>de.pgalise.simulation.shared.city.BusAgency</class>
+		<class>de.pgalise.simulation.shared.city.BusCalendar</class>
+		<class>de.pgalise.simulation.shared.city.City</class>
+		<class>de.pgalise.simulation.shared.city.NavigationEdge</class>
+		<class>de.pgalise.simulation.shared.city.NavigationNode</class>
+		<class>de.pgalise.simulation.shared.city.Position</class>
+		<class>de.pgalise.simulation.shared.city.Way</class>
+		<class>de.pgalise.simulation.traffic.BusLineInformation</class>
+		<class>de.pgalise.simulation.traffic.BusRoute</class>
+		<class>de.pgalise.simulation.traffic.BusStop</class>
+		<class>de.pgalise.simulation.traffic.BusStopInformation</class>
+		<class>de.pgalise.simulation.traffic.BusStopTime</class>
+		<class>de.pgalise.simulation.traffic.BusTrip</class>
+		<class>de.pgalise.simulation.traffic.OSMBusStop</class>
+		<class>de.pgalise.simulation.traffic.TrafficEdge</class>
+		<class>de.pgalise.simulation.traffic.TrafficNode</class>
+		<class>de.pgalise.simulation.traffic.TrafficTrip</class>
+		<class>de.pgalise.simulation.traffic.server.rules.TrafficRuleData</class>
+		<class>de.pgalise.simulation.operationCenter.internal.hqf.persistence.HQFData</class>
+    <class>de.pgalise.simulation.shared.city.City</class>
+    <class>de.pgalise.simulation.weather.model.DefaultServiceDataCurrent</class>
+    <class>de.pgalise.simulation.weather.model.DefaultServiceDataForecast</class>
+    <class>de.pgalise.simulation.weather.model.DefaultWeatherCondition</class>
+    <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
+    <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
+		<class>de.pgalise.util.weathercollector.model.DefaultServiceDataHelper</class>
+		<class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent</class>
+		<class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>
+      <property name="javax.persistence.jdbc.password" value="somepw"/>
+      <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="pgalise"/>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
+      <property name="hibernate.hbm2ddl.auto" value="update"/>
+			<property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect"/>
+    </properties>
+  </persistence-unit>
+</persistence>

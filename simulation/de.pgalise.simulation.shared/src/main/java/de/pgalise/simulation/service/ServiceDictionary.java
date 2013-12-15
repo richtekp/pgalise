@@ -67,4 +67,6 @@ public interface ServiceDictionary {
 	 * @return the ConfigReader
 	 */
 	public ConfigReader getGlobalConfigReader();
+	
+	public IdGenerator getIdGenerator();
 }

@@ -24,7 +24,7 @@ import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
  * 
  * @author Timo
  */
-public class OSMAndBusstopFileMessage extends CCWebSocketMessage<OSMAndBusstopFileData> {
+public class OSMAndBusstopFileMessage extends AbstractIdentifiableCCWebSocketMessage<OSMAndBusstopFileData> {
 
 	/**
 	 * Constructor
@@ -34,7 +34,7 @@ public class OSMAndBusstopFileMessage extends CCWebSocketMessage<OSMAndBusstopFi
 	 * @param content
 	 *            Holds information about osm and busstop file.
 	 */
-	public OSMAndBusstopFileMessage(int messageID, OSMAndBusstopFileData content) {
-		super(messageID, CCWebSocketMessage.MessageType.OSM_AND_BUSSTOP_FILE_MESSAGE, content);
+	public OSMAndBusstopFileMessage(Long messageID, OSMAndBusstopFileData content) {
+		super(messageID, MessageTypeEnum.OSM_AND_BUSSTOP_FILE_MESSAGE, content);
 	}
 }

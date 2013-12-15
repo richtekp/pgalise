@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.operationCenter;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.operationCenter.internal.DefaultOCSimulationController;
 import de.pgalise.simulation.operationCenter.internal.OCSensorStreamController;
 import de.pgalise.simulation.operationCenter.internal.OCSimulationController;
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketService;
-import de.pgalise.simulation.operationCenter.internal.OCWebSocketUser;
 import de.pgalise.simulation.operationCenter.internal.hqf.OCHQFDataStreamController;
 import de.pgalise.simulation.operationCenter.internal.message.NewSensorsMessage;
 import de.pgalise.simulation.operationCenter.internal.message.OCWebSocketMessage;
@@ -43,37 +32,39 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.SensorException;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.testutils.TestUtils;
+import de.pgalise.simulation.operationcenter.OCWebSocketUser;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.exception.SensorException;
+import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import de.pgalise.testutils.TestUtils;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import org.easymock.EasyMock;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * J-Unit tests for {@link DefaultOCSimulationController}
- * 
+ *
  * @author Timo
  */
 public class DefaultOCSimulationControllerTest {
+
 	/**
 	 * OCSimulationController mock for this test.
-	 * 
+	 *
 	 * @author Timo
 	 */
 	private static class OCSimulationControllerMock implements OCWebSocketService {
@@ -103,23 +94,24 @@ public class DefaultOCSimulationControllerTest {
 		}
 
 		@Override
-		public void sendMessageToAllUsers(OCWebSocketMessage<?> message) throws IOException {
+		public void sendMessageToAllUsers(OCWebSocketMessage<?> message) throws
+			IOException {
 			this.lastMessage = message;
 		}
 	}
 
 	/**
-	 * Mock for send sensor data strategy. It will directly send every sensor data to the websocket service.
-	 * 
+	 * Mock for send sensor data strategy. It will directly send every sensor data
+	 * to the websocket service.
+	 *
 	 * @author Timo
 	 */
 	private static class SendSensorDataStrategyMock extends SendSensorDataStrategy {
 
 		/**
 		 * Constructor
-		 * 
-		 * @param webSocketService
-		 *            OCWebSocketService
+		 *
+		 * @param webSocketService OCWebSocketService
 		 */
 		public SendSensorDataStrategyMock(OCWebSocketService webSocketService) {
 			super(webSocketService);
@@ -179,7 +171,7 @@ public class DefaultOCSimulationControllerTest {
 	/**
 	 * List of sensor helper
 	 */
-	private static List<SensorHelper<?>> SENSOR_HELPER_LIST;
+	private static List<Sensor<?, ?>> SENSOR_HELPER_LIST;
 
 	@BeforeClass
 	public static void setUp() {
@@ -188,75 +180,88 @@ public class DefaultOCSimulationControllerTest {
 		GpsInterferer gpsInterferer = EasyMock.createNiceMock(GpsInterferer.class);
 		Sensor sensor = new GpsSensor(output,
 			null,
-			SensorTypeEnum.RAIN,
-			null,
 			gpsInterferer);
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(
-			new SensorHelper<>(
-				sensor, 
-				new Coordinate(),
-				SensorTypeEnum.ANEMOMETER, 
-				new LinkedList<SensorInterfererType>()
-			)
+			sensor
 		);
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(
-			new SensorHelper(
-				sensor, 
-				new Coordinate(),
-				SensorTypeEnum.BAROMETER, 
-				new LinkedList<SensorInterfererType>()));
-		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(new SensorHelper(sensor, new Coordinate(),
-				SensorTypeEnum.INDUCTIONLOOP, new LinkedList<SensorInterfererType>()));
+			sensor);
+		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(sensor);
 
 		DefaultOCSimulationControllerTest.OC_SENSOR_STREAM_CONTROLLER = EasyMock
-				.createNiceMock(OCSensorStreamController.class);
+			.createNiceMock(OCSensorStreamController.class);
 		DefaultOCSimulationControllerTest.GPS_SENSOR_TIMEOUT_STRATEGY = EasyMock
-				.createNiceMock(GPSSensorTimeoutStrategy.class);
+			.createNiceMock(GPSSensorTimeoutStrategy.class);
 		DefaultOCSimulationControllerTest.OC_HQFDATA_STREAM_CONTROLLER = EasyMock
-				.createNiceMock(OCHQFDataStreamController.class);
+			.createNiceMock(OCHQFDataStreamController.class);
 		DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE = new OCSimulationControllerMock();
 		DefaultOCSimulationControllerTest.SEND_SENSOR_DATA_STRATEGY = new SendSensorDataStrategyMock(
-				DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE);
-		DefaultOCSimulationControllerTest.GATE_MESSAGE_STRATEGY = EasyMock.createNiceMock(GPSGateStrategy.class);
+			DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE);
+		DefaultOCSimulationControllerTest.GATE_MESSAGE_STRATEGY = EasyMock.
+			createNiceMock(GPSGateStrategy.class);
 
 		/* Create init paramter: */
-		DefaultOCSimulationControllerTest.INIT_PARAMETER = new InfrastructureInitParameter(null, null, 0, 0, 0, 0, "", "", null, null);
+		DefaultOCSimulationControllerTest.INIT_PARAMETER = new InfrastructureInitParameter(
+			null,
+			null,
+			0,
+			0,
+			0,
+			0,
+			"",
+			"",
+			null,
+			null);
 
 		/* Create start parameter: */
 		City city = TestUtils.createDefaultTestCityInstance();
-		DefaultOCSimulationControllerTest.START_PARAMTER = new DefaultInfrastructureStartParameter(city, true, null);
+		DefaultOCSimulationControllerTest.START_PARAMTER = new DefaultInfrastructureStartParameter(
+			city,
+			true,
+			null);
 
 		DefaultOCSimulationControllerTest.TESTCLASS = new DefaultOCSimulationController(
-				DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE,
-				DefaultOCSimulationControllerTest.OC_SENSOR_STREAM_CONTROLLER,
-				DefaultOCSimulationControllerTest.GPS_SENSOR_TIMEOUT_STRATEGY,
-				DefaultOCSimulationControllerTest.SEND_SENSOR_DATA_STRATEGY,
-				DefaultOCSimulationControllerTest.OC_HQFDATA_STREAM_CONTROLLER,
-				DefaultOCSimulationControllerTest.GATE_MESSAGE_STRATEGY);
+			DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE,
+			DefaultOCSimulationControllerTest.OC_SENSOR_STREAM_CONTROLLER,
+			DefaultOCSimulationControllerTest.GPS_SENSOR_TIMEOUT_STRATEGY,
+			DefaultOCSimulationControllerTest.SEND_SENSOR_DATA_STRATEGY,
+			DefaultOCSimulationControllerTest.OC_HQFDATA_STREAM_CONTROLLER,
+			DefaultOCSimulationControllerTest.GATE_MESSAGE_STRATEGY);
 	}
 
 	@Test
-	public void test() throws SensorException, IllegalStateException, InitializationException {
-		DefaultOCSimulationControllerTest.TESTCLASS.init(DefaultOCSimulationControllerTest.INIT_PARAMETER);
-		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof SimulationInitMessage);
+	public void test() throws SensorException, IllegalStateException,
+		InitializationException {
+		DefaultOCSimulationControllerTest.TESTCLASS.init(
+			DefaultOCSimulationControllerTest.INIT_PARAMETER);
+		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.
+			getLastMessage() instanceof SimulationInitMessage);
 
-		DefaultOCSimulationControllerTest.TESTCLASS.start(DefaultOCSimulationControllerTest.START_PARAMTER);
-		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof SimulationStartMessage);
+		DefaultOCSimulationControllerTest.TESTCLASS.start(
+			DefaultOCSimulationControllerTest.START_PARAMTER);
+		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.
+			getLastMessage() instanceof SimulationStartMessage);
 
 		DefaultOCSimulationControllerTest.TESTCLASS.stop();
-		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof SimulationStoppedMessage);
+		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.
+			getLastMessage() instanceof SimulationStoppedMessage);
 
 		DefaultOCSimulationControllerTest.TESTCLASS.createSensors(
 			DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST);
-		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof NewSensorsMessage);
+		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.
+			getLastMessage() instanceof NewSensorsMessage);
 
-		for (SensorHelper sensorHelper : DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST) {
-			DefaultOCSimulationControllerTest.TESTCLASS.update(0, new SensorData(sensorHelper.getSensorType()
-					.getSensorTypeId(), sensorHelper.getSensorID()));
-			Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof SensorDataMessage);
+		for (Sensor<?,?> sensorHelper
+			: DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST) {
+			DefaultOCSimulationControllerTest.TESTCLASS.update(0,
+				sensorHelper);
+			Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.
+				getLastMessage() instanceof SensorDataMessage);
 		}
 
-		DefaultOCSimulationControllerTest.TESTCLASS.deleteSensors(DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST);
-		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.getLastMessage() instanceof RemoveSensorsMessage);
+		DefaultOCSimulationControllerTest.TESTCLASS.deleteSensors(
+			DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST);
+		Assert.assertTrue(DefaultOCSimulationControllerTest.OC_WEB_SOCKET_SERVICE.
+			getLastMessage() instanceof RemoveSensorsMessage);
 	}
 }

@@ -16,8 +16,6 @@
  
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
-import com.google.inject.Inject;
-
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketService;
 
 /**
@@ -32,7 +30,6 @@ public class IntervalSendSensorDataStrategy extends SendSensorDataStrategy {
 	 * Constructor
 	 * @param webSocketService
 	 */
-	@Inject
 	public IntervalSendSensorDataStrategy(OCWebSocketService webSocketService) {
 		super(webSocketService);
 	}

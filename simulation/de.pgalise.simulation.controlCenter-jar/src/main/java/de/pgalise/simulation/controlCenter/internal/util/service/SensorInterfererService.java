@@ -21,6 +21,7 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**
  * Provides the correct sensor interferer.
@@ -34,5 +35,5 @@ public interface SensorInterfererService {
 	 * 			if false: create sensor no interferes.
 	 * @return
 	 */
-	public List<SensorInterfererType> getSensorInterferes(SensorType sensorType, boolean isWithSensorInterferer);
+	public List<SensorInterfererType> getSensorInterfererTypes(SensorType sensorType, boolean isWithSensorInterferer);
 }

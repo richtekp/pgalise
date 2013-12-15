@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.vehicle;
 
+import de.pgalise.simulation.service.IdGenerator;
 import java.awt.Color;
 
 import org.easymock.EasyMock;
@@ -23,13 +24,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLMotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import static de.pgalise.simulation.traffic.vehicle.XMLCarFactoryTest.FILEPATH;
 
 /**
  * Tests the {@link XMLMotorcycleFactoryTest}
@@ -57,14 +61,14 @@ public class XMLMotorcycleFactoryTest {
 		 */
 
 		TrafficGraph graph = new DefaultTrafficGraph();
-		MotorcycleFactory factory = new XMLMotorcycleFactory(random,
-				XMLMotorcycleFactoryTest.class.getResourceAsStream(FILEPATH),
-				new DefaultTrafficGraphExtensions(random, graph));
+		IdGenerator idGenerator = new DefaultIdGenerator();
+		TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(TrafficGraphExtensions.class);
+		MotorcycleFactory factory = new XMLMotorcycleFactory(idGenerator,trafficGraphExtensions,random, XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
 		Vehicle<MotorcycleData> vehicle1 = factory.createRandomMotorcycle( null);
 		Assert.assertNotNull(vehicle1);
 
-		Vehicle<MotorcycleData> vehicle2 = factory.createMotorcycle( Color.GRAY, null);
+		Vehicle<MotorcycleData> vehicle2 = factory.createMotorcycle(  null);
 		Assert.assertNotNull(vehicle2);
 		Assert.assertEquals(Color.GRAY, vehicle2.getData().getColor());
 	}

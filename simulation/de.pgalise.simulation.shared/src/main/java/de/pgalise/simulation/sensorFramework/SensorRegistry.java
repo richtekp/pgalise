@@ -26,7 +26,7 @@ import de.pgalise.simulation.shared.event.Event;
  * 
  * @author Marcus
  */
-public interface SensorRegistry extends Iterable<Sensor<Event>>, SimulationComponent<Event> {
+public interface SensorRegistry extends Iterable<Sensor<Event,?>>, SimulationComponent<Event> {
 
 	/**
 	 * Adds a sensor to the sensor domain
@@ -35,7 +35,7 @@ public interface SensorRegistry extends Iterable<Sensor<Event>>, SimulationCompo
 	 *            Sensor
 	 * @return Sensor
 	 */
-	public Sensor<?> addSensor(Sensor<?> sensor);
+	public Sensor<?,?> addSensor(Sensor<?,?> sensor);
 
 	/**
 	 * Adds a set of sensors to the sensor domain
@@ -43,7 +43,7 @@ public interface SensorRegistry extends Iterable<Sensor<Event>>, SimulationCompo
 	 * @param sensors
 	 *            Set with sensors
 	 */
-	public void addSensors(Set<Sensor<?>> sensors);
+	public void addSensors(Set<Sensor<?,?>> sensors);
 
 	/**
 	 * Returns the sensor with the sensorID
@@ -51,7 +51,7 @@ public interface SensorRegistry extends Iterable<Sensor<Event>>, SimulationCompo
 	 * @param sensorId
 	 * @return sensor
 	 */
-	public Sensor<?> getSensor(Sensor<?> sensorId);
+	public Sensor<?,?> getSensor(Sensor<?,?> sensorId);
 
 	/**
 	 * Returns the next available id for a Sensor
@@ -79,7 +79,7 @@ public interface SensorRegistry extends Iterable<Sensor<Event>>, SimulationCompo
 	 *            Sensor
 	 * @return Removed sensor
 	 */
-	public Sensor<?> removeSensor(Sensor<?> sensor);
+	public Sensor<?,?> removeSensor(Sensor<?,?> sensor);
 
 	/**
 	 * Sets the activation state of all the sensors in the SensorDomain.

@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import java.io.Serializable;
-
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 
 /**
  * General information about a vehicle.
- * 
+ *
  * @author Marcus
  * @version 1.0 (Nov 7, 2012)
  */
-public class VehicleData implements Serializable {
+@MappedSuperclass
+public abstract class VehicleData extends AbstractIdentifiable
+{
 
 	/**
 	 * Serial
@@ -38,57 +40,64 @@ public class VehicleData implements Serializable {
 	/**
 	 * Length in mm
 	 */
-	private final int length; // MM
+	/*
+	 length is a reserved SQL keyword
+	 */
+	private int vehicleLength; // MM
 
 	/**
 	 * Number of axle
 	 */
-	private final int axleCount;
+	private int axleCount;
 
 	/**
 	 * Wheelbase in mm (Distance between axe 1 and 2)
 	 */
-	private final int wheelbase1; // MM
+	private int wheelbase1; // MM
 
 	/**
 	 * Wheelbase in mm (Distance between axe 2 and 3)
 	 */
-	private final int wheelbase2; // MM
+	private int wheelbase2; // MM
 
 	/**
 	 * Vehicle type
 	 */
-	private final VehicleTypeEnum type;
+	private VehicleTypeEnum type;
 
 	/**
 	 * SensorHelper of the GPS sensor
 	 */
-	private SensorHelper gpsSensorHelper;
-	
-	private transient Sensor gpsSensor;
+	private GpsSensor gpsSensor;
+
+	protected VehicleData() {
+	}
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param length
-	 *            Length in mm
-	 * @param wheelbase
-	 *            Wheelbase in mm
+	 *                   Length in mm
+	 * @param wheelbase1
+	 * @param wheelbase2
+	 * @param type
 	 * @param axleCount
-	 *            Number of axle
+	 *                   Number of axle
+	 * @param gpsSensor
 	 */
-	protected VehicleData(int length, int wheelbase1, int wheelbase2, int axleCount, VehicleTypeEnum type,
-			SensorHelper gpsSensor) {
-		this.length = length;
+	public VehicleData(int length, int wheelbase1, int wheelbase2,
+					int axleCount, VehicleTypeEnum type,
+					GpsSensor gpsSensor) {
+		this.vehicleLength = length;
 		this.wheelbase1 = wheelbase1;
 		this.wheelbase2 = wheelbase2;
 		this.axleCount = axleCount;
 		this.type = type;
-		this.gpsSensorHelper = gpsSensor;
+		this.gpsSensor = gpsSensor;
 	}
 
-	public int getLength() {
-		return this.length;
+	public int getVehicleLength() {
+		return this.vehicleLength;
 	}
 
 	public int getWheelbase1() {
@@ -107,25 +116,19 @@ public class VehicleData implements Serializable {
 		return this.type;
 	}
 
-	public SensorHelper getGpsSensorHelper() {
-		return gpsSensorHelper;
-	}
-
-	public void setGpsSensorHelper(SensorHelper gpsSensor) {
-		this.gpsSensorHelper = gpsSensor;
-	}
-
-	public Sensor getGpsSensor() {
+	public GpsSensor getGpsSensor() {
 		return gpsSensor;
 	}
 
-	public void setGpsSensor(Sensor gpsSensor) {
+	public void setGpsSensor(GpsSensor gpsSensor) {
 		this.gpsSensor = gpsSensor;
 	}
 
 	@Override
 	public String toString() {
-		return "VehicleData [length=" + length + ", axleCount=" + axleCount + ", wheelbase1=" + wheelbase1
-				+ ", wheelbase2=" + wheelbase2 + ", type=" + type + ", gpsSensor=" + gpsSensorHelper + "]";
+		return "VehicleData [length=" + vehicleLength + ", axleCount=" + axleCount
+					 + ", wheelbase1=" + wheelbase1
+									 + ", wheelbase2=" + wheelbase2 + ", type=" + type
+					 + ", gpsSensor=" + gpsSensor + "]";
 	}
 }

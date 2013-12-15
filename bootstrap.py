@@ -10,16 +10,26 @@
 import os
 import subprocess as sp
 import time
+import re
 
 base_path= os.path.realpath(os.path.dirname(__file__))
-tmp_path = "/tmp"
 external_dir = os.path.join(base_path, "external")
+tmp_path = os.path.join(external_dir, "tmp") # "/tmp"
 external_bin_dir = os.path.join(external_dir, "bin")
 external_src_dir = os.path.join(external_dir, "src")
 postgresql_jdbc_name = "postgresql-9.2-1004.jdbc4.jar"
+postgresql_jdbc_md5 = "23494e0c770cb03045a93d07a8ed2a9f"
 postgresql_jdbc_url = "http://jdbc.postgresql.org/download/postgresql-9.2-1004.jdbc4.jar"
+postgresql_deb_url = "http://oscg-downloads.s3.amazonaws.com/packages/postgres_9.3.1-1.amd64.openscg.deb"
+postgresql_deb_name = "postgres_9.3.1-1.amd64.openscg.deb"
+postgresql_deb_md5 = "9a4f6c6be47a5ea594c3bececc8e82a6"
+geotools_url = "http://downloads.sourceforge.net/project/geotools/GeoTools%209%20Releases/9.2/geotools-9.2-project.zip"
+geotools_md5 = "18cc0f21557b2187a89eebd965cbe409"
 geotools_src_dir_name = "geotools-9.2"
+geotools_src_archive_name = "geotools-9.2-project.zip"
 postgis_src_dir_name="postgis-2.1.1"
+postgis_url = "http://download.osgeo.org/postgis/source/postgis-2.1.1.tar.gz"
+postgis_archive_name = "postgis-2.1.1.tar.gz"
 commons_src_dir_name = "commons-collections4-4.0-src"
 
 # necessary build tools and helpers <ul>
@@ -35,7 +45,10 @@ su = "su"
 psql = "/usr/lib/postgresql/9.1/bin/psql"
 initdb = "/usr/lib/postgresql/9.1/bin/initdb"
 createdb = "/usr/lib/postgresql/9.1/bin/createdb"
+postgres = "/usr/lib/postgresql/9.1/bin/postgres"
 apt_get = "apt-get"
+md5sum = "md5sum"
+dpkg = "dpkg"
 # </ul>
 
 # some variables to be changed at will (would be more elegant to enable controll as options of this script)
@@ -56,12 +69,14 @@ def bootstrap(skip_build=False):
         os.makedirs(external_bin_dir)
     if not os.path.exists(external_src_dir):
         os.makedirs(external_src_dir)
+    if not os.path.exists(tmp_path):
+        os.makedirs(tmp_path)
     sp.check_call([sudo, apt_get, "install", "maven", "openjdk-7-jdk"])
         
     # install postgresql jdbc driver
     postgresql_jdbc_file = os.path.join(external_bin_dir, postgresql_jdbc_name)
     if not os.path.exists(postgresql_jdbc_file):
-        sp.check_call(["wget", postgresql_jdbc_url], cwd=external_bin_dir)
+        sp.check_call([wget, postgresql_jdbc_url], cwd=external_bin_dir)
     sp.check_call([mvn, "install:install-file", \
         "-Dfile=%s" % postgresql_jdbc_file, "-DartifactId=postgresql",  \
         "-DgroupId=postgresql", "-Dversion=9.2-1004.jdbc4", "-Dpackaging=jar"], cwd=external_bin_dir)
@@ -69,19 +84,20 @@ def bootstrap(skip_build=False):
     # install geotools
     geotools_src_dir = os.path.join(external_src_dir, geotools_src_dir_name)
     if not os.path.exists(geotools_src_dir) or len(os.listdir(geotools_src_dir)) == 0:
-        sp.check_call([wget, "http://downloads.sourceforge.net/project/geotools/GeoTools%209%20Releases/9.2/geotools-9.2-project.zip"], cwd=tmp_path)
-        sp.check_call([unzip, os.path.join(tmp_path, "geotools-9.2-project.zip")], cwd=external_src_dir)
+        if not os.path.exists(os.path.join(external_src_dir, geotools_src_archive_name)) or retrieve_md5sum(os.path.join(external_src_dir, geotools_src_archive_name)) != geotools_md5:
+            sp.check_call([wget, geotools_url], cwd=tmp_path)
+        sp.check_call([unzip, os.path.join(tmp_path, geotools_src_archive_name)], cwd=external_src_dir)
     if not skip_build:
         mvn_settings_file_path = os.path.join(base_path, "settings.xml")
         sp.check_call([mvn, "--global-settings", mvn_settings_file_path, "install", "-Dall", "-DskipTests=true"], cwd=geotools_src_dir)
-        
+
     # install postgis
     postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
     if not os.path.exists(postgis_src_dir) or len(os.listdir(postgis_src_dir)) == 0:
-        sp.check_call([wget, "http://download.osgeo.org/postgis/source/postgis-2.1.1.tar.gz"], cwd=tmp_path)
-        sp.check_call([tar, "xf", os.path.join(tmp_path, "postgis-2.1.1.tar.gz")], cwd=external_src_dir)
+        sp.check_call([wget, postgis_url], cwd=tmp_path)
+        sp.check_call([tar, "xf", os.path.join(tmp_path, postgis_archive_name)], cwd=external_src_dir)
     if not skip_build:
-        sp.check_call([sudo, apt_get, "build-dep", "postgis"]) # might not be sufficient because Ubuntu 13.10's version of postgis is 1.5.x (we're using 2.x)
+        sp.check_call([sudo, apt_get, "build-dep", "--assume-yes", "postgis"]) # might not be sufficient because Ubuntu 13.10's version of postgis is 1.5.x (we're using 2.x)
         sp.check_call([sudo, apt_get, "install", "--assume-yes", "libgdal-dev"]) # not covered by 1.5.x requirements (see above)
         sp.check_call([bash, "autogen.sh"], cwd=postgis_src_dir)
         sp.check_call([bash, "configure"], cwd=postgis_src_dir)
@@ -92,19 +108,42 @@ def bootstrap(skip_build=False):
         sp.check_call([mvn, "install"], cwd=postgis_jdbc_src_dir)
         
     # setup postgis datadir and configuration
-    sp.check_call([sudo, apt_get, "install", "--assume-yes", "postgresql", "postgresql-common"])
+    try:
+        sp.check_call([sudo, apt_get, "install", "--assume-yes", "postgresql", "postgresql-common"])
+    except sp.CalledProcessError:
+        print("postgresql installation failed (which is possible due to broken package in Ubuntu 13.10")
+        print("Do you want to install postgres 9.3 from alternative package provider http://community.openscg.com/se/?")
+        input0 = None
+        while(input0 != "yes" and input0 != "no"):
+            input0 = raw_input("(yes/no) ")
+        if input0 == "yes":
+            sp.check_call([sudo, apt_get, "remove", "--assume-yes", "postgresql", "postgresql-common"]) 
+            postgresql_deb_path = os.path.join(tmp_path, postgresql_deb_name)
+            if not os.path.exists(postgresql_deb_path) or retrieve_md5sum(postgresql_deb_path) != postgresql_deb_md5:
+                sp.check_call([wget, postgresql_deb_url], cwd=tmp_path)
+                sp.check_call([sudo, dpkg, "-i", postgresql_deb_path])
+            psql = "/opt/postgres/9.3/bin/psql"
+            initdb = "/opt/postgres/9.3/bin/initdb"
+            createdb = "/opt/postgres/9.3/bin/createdb"
+            postgres = "/opt/postgres/9.3/bin/postgres"
+        else:
+            print("fix postgresql installation so that apt-get install postgresql postgresql-common returns 0 to continue")
+            return
     if not os.path.exists(postgres_datadir_path) or len(os.listdir(postgres_datadir_path)) == 0:
         # os.mkdir(postgres_datadir_path) # unnecessary
         sp.check_call([initdb, "-D", postgres_datadir_path])
-        postgres_process = sp.Popen(["/usr/lib/postgresql/9.1/bin/postgres", "-D", postgres_datadir_path, "-p", postgres_port, "-h", postgres_host, "-k", postgres_socket_dir])
+        postgres_process = sp.Popen([postgres, "-D", postgres_datadir_path, "-p", postgres_port, "-h", postgres_host, "-k", postgres_socket_dir])
         try:
             print("sleeping to ensure postgres server started")
             time.sleep(10) # not nice (should poll connection until success instead)
             sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, postgres_user])
             sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, pgalise_user])
-            os.system("echo '%s' | psql -p %s -h %s" % ("create role pgalise;", postgres_port, postgres_host)) # specifying command using --command parameter of psql doesn't seem to work
+            os.system("echo '%s' | psql -p %s -h %s" % ("create role pgalise login;", postgres_port, postgres_host)) # specifying command using --command parameter of psql doesn't seem to work
+            os.system("echo '%s' | psql -p %s -h %s" % ("grant all on database pgalise to pgalise", postgres_port, postgres_host))
             os.system("echo '%s' | psql -p %s -h %s" % ("grant all on database pgalise to pgalise", postgres_port, postgres_host))
             os.system("echo '%s' | psql -p %s -h %s" % ("create extension postgis; create extension postgis_topology;", postgres_port, postgres_host))
+        except Exception as ex:
+            raise ex
         finally:
             postgres_process.terminate()
         
@@ -115,6 +154,11 @@ def bootstrap(skip_build=False):
         sp.check_call([tar, "xf", os.path.join(tmp_path, "commons-collections4-4.0-src.tar.gz")], cwd=external_src_dir)
     if not skip_build:
         sp.check_call([mvn, "install"], cwd=commons_src_dir)
+        
+def retrieve_md5sum(path):
+    md5sum_output = sp.check_output([md5sum, path]).strip().decode('utf-8') # subprocess.check_output returns byte string which has to be decoded
+    ret_value = str(re.split("[\\s]+", md5sum_output) [0])
+    return ret_value
         
 if __name__ == "__main__":
     bootstrap()

@@ -41,12 +41,12 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.controller.DefaultStartParameter;
-import de.pgalise.simulation.staticsensor.StaticSensorController;
+import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
@@ -68,7 +68,6 @@ public class DefaultEventInitiatorTest {
 	private static DefaultEventInitiator testClass;
 	private static EnergyControllerMock energyController;
 	private static WeatherControllerMock weatherController;
-	private static StaticSensorControllerMock staticSensorController;
 	private static TrafficControllerMock trafficController;
 	private static ServiceDictionary serviceDictionary;
 	private static OperationCenterControllerMock operationCenterController;
@@ -94,7 +93,6 @@ public class DefaultEventInitiatorTest {
 
 		energyController = new EnergyControllerMock();
 		weatherController = new WeatherControllerMock();
-		staticSensorController = new StaticSensorControllerMock();
 		trafficController = new TrafficControllerMock();
 		operationCenterController = new OperationCenterControllerMock();
 		simulationController = new SimulationControllerMock();
@@ -103,8 +101,6 @@ public class DefaultEventInitiatorTest {
 		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
 		EasyMock.expect(serviceDictionary.getController(EnergyController.class)).andStubReturn(energyController);
 		EasyMock.expect(serviceDictionary.getController(WeatherController.class)).andStubReturn(weatherController);
-		EasyMock.expect(serviceDictionary.getController(StaticSensorController.class)).andStubReturn(
-				staticSensorController);
 		EasyMock.expect(serviceDictionary.getController(TrafficController.class)).andStubReturn(trafficController);
 		EasyMock.expect(serviceDictionary.getController(SimulationController.class))
 				.andStubReturn(simulationController);
@@ -114,7 +110,6 @@ public class DefaultEventInitiatorTest {
 		testClass._setServiceDictionary(serviceDictionary);
 		testClass.setOperationCenterController(operationCenterController);
 		List<Controller<?,?,?>> controllerCollection = new LinkedList<>();
-		controllerCollection.add(staticSensorController);
 		testClass.setFrontController(controllerCollection);
 		testClass.setControlCenterController(controlCenterController);
 	}
@@ -142,7 +137,6 @@ public class DefaultEventInitiatorTest {
 		assertEquals(updateIntervals, energyController.getUpdateCounter());
 		assertEquals(updateIntervals, weatherController.getUpdateCounter());
 		assertEquals(updateIntervals, trafficController.getUpdateCounter());
-		assertEquals(updateIntervals, staticSensorController.getUpdateCounter());
 		assertEquals(updateIntervals, operationCenterController.getUpdateCounter());
 		assertEquals(updateIntervals, controlCenterController.getUpdateCount());
 		
@@ -171,23 +165,23 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensor(SensorHelper sensor) throws SensorException {
+		public void createSensor(Sensor sensor) throws SensorException {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		public void createSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensor(SensorHelper sensor) throws SensorException {
+		public void deleteSensor(Sensor sensor) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		public void deleteSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
+		public boolean statusOfSensor(Sensor sensor) throws SensorException {
 			return false;
 		}
 
@@ -249,23 +243,23 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensor(SensorHelper sensor) throws SensorException {
+		public void createSensor(StaticSensor sensor) throws SensorException {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		public void createSensors(Collection<StaticSensor> sensors) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensor(SensorHelper<?> sensor) throws SensorException {
+		public void deleteSensor(StaticSensor sensor) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		public void deleteSensors(Collection<StaticSensor> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
+		public boolean statusOfSensor(StaticSensor sensor) throws SensorException {
 			return false;
 		}
 
@@ -311,81 +305,6 @@ public class DefaultEventInitiatorTest {
 	}
 
 	/**
-	 * StaticSensorController mock which can count the update steps.
-	 * 
-	 * @author Timo
-	 */
-	private static class StaticSensorControllerMock implements StaticSensorController {
-
-		private int updateCounter;
-
-		StaticSensorControllerMock() {
-			this.updateCounter = 0;
-		}
-
-		@Override
-		public void createSensor(SensorHelper<?> sensor) throws SensorException {
-		}
-
-		@Override
-		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		}
-
-		@Override
-		public void deleteSensor(SensorHelper<?> sensor) throws SensorException {
-		}
-
-		@Override
-		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		}
-
-		@Override
-		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
-			return false;
-		}
-
-		@Override
-		public void init(InitParameter param) throws InitializationException, IllegalStateException {
-		}
-
-		@Override
-		public void reset() throws IllegalStateException {
-		}
-
-		@Override
-		public void start(StartParameter param) throws IllegalStateException {
-		}
-
-		@Override
-		public void stop() throws IllegalStateException {
-		}
-
-		@Override
-		public void update(EventList<Event> simulationEventList) throws IllegalStateException {
-			this.updateCounter++;
-		}
-
-		@Override
-		public StatusEnum getStatus() {
-			return null;
-		}
-
-		public int getUpdateCounter() {
-			return updateCounter;
-		}
-
-		@Override
-		public String getName() {
-			return "StaticSensorController";
-		}
-
-		@Override
-		public Long getId() {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-	}
-
-	/**
 	 * WeatherController mock which can count the update steps.
 	 * 
 	 * @author Timo
@@ -399,7 +318,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InitParameter param) throws InitializationException, IllegalStateException {
+		public void init(InfrastructureInitParameter param) throws InitializationException, IllegalStateException {
 		}
 
 		@Override
@@ -514,23 +433,23 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensor(SensorHelper<?> sensor) throws SensorException {
+		public void createSensor(Sensor sensor) throws SensorException {
 		}
 
 		@Override
-		public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		public void createSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensor(SensorHelper<?> sensor) throws SensorException {
+		public void deleteSensor(Sensor sensor) throws SensorException {
 		}
 
 		@Override
-		public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
+		public void deleteSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
 		}
 
 		@Override
-		public boolean statusOfSensor(SensorHelper<?> sensor) throws SensorException {
+		public boolean statusOfSensor(Sensor sensor) throws SensorException {
 			return false;
 		}
 

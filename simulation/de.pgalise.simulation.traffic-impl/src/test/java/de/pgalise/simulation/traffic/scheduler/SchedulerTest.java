@@ -83,22 +83,22 @@ public class SchedulerTest {
 
 		List<Vehicle<?>> vehicles = new ArrayList<>();
 
-		Vehicle<?> a = new BaseVehicle<>(ee);
+		Vehicle<?> a = new BaseVehicle<>(1L,ee);
 		a.setName("a");
 		a.setPath(shortestPath);
 		vehicles.add(a);
 
-		Vehicle<?> b = new BaseVehicle<>(ee);
+		Vehicle<?> b = new BaseVehicle<>(2L,ee);
 		b.setName("b");
 		b.setPath(shortestPath);
 		vehicles.add(b);
 
-		Vehicle<?> c = new BaseVehicle<>(ee);
+		Vehicle<?> c = new BaseVehicle<>(3L,ee);
 		c.setName("c");
 		c.setPath(shortestPath);
 		vehicles.add(c);
 
-		Vehicle<?> d = new BaseVehicle<>(ee);
+		Vehicle<?> d = new BaseVehicle<>(4L,ee);
 		d.setName("d");
 		d.setPath(shortestPath);
 		vehicles.add(d);

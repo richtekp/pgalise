@@ -21,7 +21,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import java.io.Serializable;
 import java.util.List;
 
-import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import javax.ejb.Stateless;
 
 /**
@@ -34,7 +34,7 @@ import javax.ejb.Stateless;
 public class DefaultStartParameter extends AbstractStartParameter implements StartParameter {
 	private static final long serialVersionUID = -292240397372883199L;
 	private boolean aggregatedWeatherDataEnabled;
-	private List<WeatherEventHelper> weatherEventHelperList;
+	private List<WeatherEvent> weatherEventHelperList;
 	
 	/**
 	 * Default
@@ -50,19 +50,19 @@ public class DefaultStartParameter extends AbstractStartParameter implements Sta
 	 */
 	public DefaultStartParameter(
 			boolean aggregatedWeatherDataEnabled,
-			List<WeatherEventHelper> weatherEventHelperList) {
+			List<WeatherEvent> weatherEventHelperList) {
 		super();
 		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
 		this.weatherEventHelperList = weatherEventHelperList;
 	}
 
 	@Override
-	public List<WeatherEventHelper> getWeatherEventHelperList() {
+	public List<WeatherEvent> getWeatherEventList() {
 		return weatherEventHelperList;
 	}
 
-	public void setWeatherEventHelperList(
-			List<WeatherEventHelper> weatherEventHelperList) {
+	public void setWeatherEventList(
+			List<WeatherEvent> weatherEventHelperList) {
 		this.weatherEventHelperList = weatherEventHelperList;
 	}
 

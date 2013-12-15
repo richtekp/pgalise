@@ -33,26 +33,6 @@ public class ChangeWeatherEvent extends WeatherEvent {
 	private static final long serialVersionUID = 2452503673933039973L;
 
 	/**
-	 * Timestamp of the max/min
-	 */
-	private long timestamp;
-
-	/**
-	 * Weather event to modify weather data
-	 */
-	private final WeatherEventEnum event;
-
-	/**
-	 * Specified value
-	 */
-	private Float value;
-
-	/**
-	 * Specified duration
-	 */
-	private Float duration;
-
-	/**
 	 * Constructor
 	 * 
 	 * @param strategy
@@ -63,44 +43,10 @@ public class ChangeWeatherEvent extends WeatherEvent {
 	 * @param duration
 	 *            Specified duration
 	 */
-	public ChangeWeatherEvent(WeatherEventEnum strategy, Float value, long eventTime, Float duration) {
-		this.event = strategy;
-		this.value = value;
-		this.timestamp = eventTime;
-		this.duration = duration;
-	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public Float getValue() {
-		return value;
-	}
-
-	public void setValue(Float value) {
-		this.value = value;
-	}
-
-	public Float getDuration() {
-		return duration;
-	}
-
-	public void setDuration(Float duration) {
-		this.duration = duration;
-	}
-
-	public WeatherEventEnum getEvent() {
-		return event;
-	}
-
-	@Override
-	public EventType getType() {
-		return EventTypeEnum.CHANGE_WEATHER_EVENT;
+	public ChangeWeatherEvent(WeatherEventType eventType, float value, long timestamp, Float duration) {
+		super(eventType,
+			timestamp,
+			duration,value);
 	}
 
 }

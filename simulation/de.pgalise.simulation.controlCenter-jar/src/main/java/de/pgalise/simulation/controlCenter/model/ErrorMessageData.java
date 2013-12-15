@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.model;
+
+import de.pgalise.simulation.controlCenter.internal.message.MessageTypeEnum;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.RequestScoped;
 
 /**
  * Data for error messages. This is useful to send the received message type.
- * 
+ *
  * @author Timo
  */
-public class ErrorMessageData {
+@ManagedBean
+@RequestScoped
+public class ErrorMessageData
+{
+
 	/**
 	 * Message
 	 */
@@ -30,17 +37,20 @@ public class ErrorMessageData {
 	/**
 	 * Message type
 	 */
-	private int recievedMessageType;
+	private MessageTypeEnum recievedMessageType;
+
+	public ErrorMessageData() {
+	}
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param errorMessage
-	 *            Message
+	 *                            Message
 	 * @param recievedMessageType
-	 *            Message type
+	 *                            Message type
 	 */
-	public ErrorMessageData(String errorMessage, int recievedMessageType) {
+	public ErrorMessageData(String errorMessage, MessageTypeEnum recievedMessageType) {
 		this.errorMessage = errorMessage;
 		this.recievedMessageType = recievedMessageType;
 	}
@@ -53,11 +63,11 @@ public class ErrorMessageData {
 		this.errorMessage = errorMessage;
 	}
 
-	public int getReceivedMessageType() {
+	public MessageTypeEnum getReceivedMessageType() {
 		return recievedMessageType;
 	}
 
-	public void setReceivedMessageType(int recievedMessageType) {
+	public void setReceivedMessageType(MessageTypeEnum recievedMessageType) {
 		this.recievedMessageType = recievedMessageType;
 	}
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.internal.message;
 
 import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
@@ -21,19 +20,23 @@ import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 /**
  * Message to fill {@link CCSimulationStartParameter}
  * If this message will be received, the server starts the simulation.
- * 
+ *
  * @author Timo
  */
-public class SimulationStartParameterMessage extends CCWebSocketMessage<CCSimulationStartParameter> {
+public class SimulationStartParameterMessage extends AbstractIdentifiableCCWebSocketMessage<CCSimulationStartParameter>
+{
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param messageID
-	 *            ID
+	 *                                   ID
 	 * @param ccSimulationStartParameter
-	 *            CC Start parameter
+	 *                                   CC Start parameter
 	 */
-	public SimulationStartParameterMessage(int messageID, CCSimulationStartParameter ccSimulationStartParameter) {
-		super(messageID, MessageType.SIMULATION_START_PARAMETER, ccSimulationStartParameter);
+	public SimulationStartParameterMessage(Long messageID,
+					CCSimulationStartParameter ccSimulationStartParameter) {
+		super(messageID, MessageTypeEnum.SIMULATION_START_PARAMETER,
+						ccSimulationStartParameter);
 	}
 }

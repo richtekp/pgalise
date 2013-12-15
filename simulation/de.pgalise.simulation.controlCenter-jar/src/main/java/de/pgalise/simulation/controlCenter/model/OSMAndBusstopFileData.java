@@ -40,6 +40,9 @@ public class OSMAndBusstopFileData {
 	@ManagedProperty(value = "/stops.gtfs")
 	private String busStopFileName;
 
+	public OSMAndBusstopFileData() {
+	}
+
 	/**
 	 * Constructor
 	 * @param osmFileName

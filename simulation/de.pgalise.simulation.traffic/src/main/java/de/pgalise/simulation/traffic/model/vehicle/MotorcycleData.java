@@ -18,8 +18,8 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.awt.Color;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  * Informations about the motorcycle
@@ -79,7 +79,7 @@ public class MotorcycleData extends VehicleData {
 	 *            Description of the motorcycle
 	 */
 	public MotorcycleData(Color color, int weight, double horsePower, int length, int maxSpeed, int wheelbase,
-			int axleCount, String description, SensorHelper gpsSensor) {
+			int axleCount, String description, GpsSensor gpsSensor) {
 		super(length, wheelbase, 0, axleCount, VehicleTypeEnum.MOTORCYCLE, gpsSensor);
 		this.color = color;
 		this.weight = weight;
@@ -95,8 +95,8 @@ public class MotorcycleData extends VehicleData {
 	 *            MotorcycleData
 	 */
 	public MotorcycleData(MotorcycleData referenceData) {
-		super(referenceData.getLength(), referenceData.getWheelbase1(), referenceData.getWheelbase2(), referenceData
-				.getAxleCount(), referenceData.getType(), referenceData.getGpsSensorHelper());
+		super(referenceData.getVehicleLength(), referenceData.getWheelbase1(), referenceData.getWheelbase2(), referenceData
+				.getAxleCount(), referenceData.getType(), referenceData.getGpsSensor());
 		this.color = referenceData.getColor();
 		this.weight = referenceData.getWeight();
 		this.maxSpeed = referenceData.getMaxSpeed();

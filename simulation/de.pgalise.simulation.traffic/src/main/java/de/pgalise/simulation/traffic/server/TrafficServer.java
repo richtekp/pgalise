@@ -18,9 +18,12 @@ package de.pgalise.simulation.traffic.server;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import com.vividsolutions.jts.geom.Geometry;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
@@ -35,7 +38,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * @see de.pgalise.simulation.traffic.TrafficController
  * @author mustafa
  */
-public interface TrafficServer<E extends TrafficEvent> extends SensorManagerController<E, InfrastructureStartParameter, InfrastructureInitParameter> {
+public interface TrafficServer<E extends TrafficEvent> extends SensorManagerController<E, InfrastructureStartParameter, InfrastructureInitParameter,StaticSensor> {
 	/**
 	 * Sets the city zone this server is responsible for.
 	 * 

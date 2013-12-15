@@ -34,8 +34,9 @@ import de.pgalise.simulation.controlCenter.model.OnConnectParameter;
 import de.pgalise.simulation.controlCenter.model.SavedStartParameterData;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.event.EventTypeEnum;
-import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.BusRoute;
@@ -45,7 +46,7 @@ import de.pgalise.simulation.traffic.BusRoute;
  * 
  * @author Timo
  */
-public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
+public class OnConnectMessage extends AbstractCCWebSocketMessage<OnConnectParameter> {
 
 	/**
 	 * Logger
@@ -59,7 +60,7 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 * 			bus routes that are available for the city.
 	 */
 	public OnConnectMessage(List<BusRoute> busRouteList) {
-		super(CCWebSocketMessage.MessageType.ON_CONNECT, new OnConnectParameter(getOSMResources(),
+		super(MessageTypeEnum.ON_CONNECT, new OnConnectParameter(getOSMResources(),
 				getBusstopResources(), getSensorTypesMap(), getSavedStartParameterResource(),
 				getWeatherEventEnumTypeMap(), getSimulationEventEnumTypeMap(), getVehicleTypeEnumTypeMap(),
 				getVehicleModelEnumTypeMap(), getVehicleTypeRandomModelMap(), busRouteList));
@@ -172,8 +173,8 @@ public class OnConnectMessage extends CCWebSocketMessage<OnConnectParameter> {
 	 */
 	private static Map<Integer, String> getWeatherEventEnumTypeMap() {
 		Map<Integer, String> weatherEventEnumTypeMap = new HashMap<>();
-		Map<Integer, WeatherEventEnum> weatherEventEnumMap = WeatherEventEnum.getWeatherEventEnumIdsAsUnmodifiable();
-		for (Entry<Integer, WeatherEventEnum> entry : weatherEventEnumMap.entrySet()) {
+		Map<Integer, WeatherEventType> weatherEventEnumMap = WeatherEventTypeEnum.getWeatherEventEnumIdsAsUnmodifiable();
+		for (Entry<Integer, WeatherEventType> entry : weatherEventEnumMap.entrySet()) {
 			weatherEventEnumTypeMap.put(entry.getKey(), entry.getValue().toString());
 		}
 		return weatherEventEnumTypeMap;

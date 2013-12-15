@@ -16,14 +16,13 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.model.IDWrapper;
 
 /**
  * If the simulation could be started.
  * 
  * @author Timo
  */
-public class SimulationStartedMessage extends CCWebSocketMessage<IDWrapper> {
+public class SimulationStartedMessage extends AbstractIdentifiableCCWebSocketMessage<Void> {
 
 	/**
 	 * Constructor
@@ -34,7 +33,7 @@ public class SimulationStartedMessage extends CCWebSocketMessage<IDWrapper> {
 	 *            Wrapps integer ids and UUIDs which are used. This is useful,
 	 *            because the client can update its own used ids with this.
 	 */
-	public SimulationStartedMessage(int messageID, IDWrapper content) {
-		super(messageID, CCWebSocketMessage.MessageType.SIMULATION_RUNNING, content);
+	public SimulationStartedMessage(Long messageID) {
+		super(messageID, MessageTypeEnum.SIMULATION_RUNNING, null);
 	}
 }

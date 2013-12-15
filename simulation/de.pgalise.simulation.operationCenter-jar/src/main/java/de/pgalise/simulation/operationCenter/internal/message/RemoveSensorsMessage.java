@@ -22,12 +22,12 @@ import java.util.Collection;
  * If you want to remove more than one sensor at the same time.
  * @author Timo
  */
-public class RemoveSensorsMessage extends OCWebSocketMessage<Collection<Sensor<?>>> {
+public class RemoveSensorsMessage extends OCWebSocketMessage<Collection<Sensor<?,?>>> {
 	/**
 	 * Constructor
 	 * @param content a list with all sensor ids that will be removed.
 	 */
-	public RemoveSensorsMessage(Collection<Sensor<?>> content) {
+	public RemoveSensorsMessage(Collection<Sensor<?,?>> content) {
 		super(OCWebSocketMessage.MessageType.REMOVE_SENSORS, content);
 	}
 }

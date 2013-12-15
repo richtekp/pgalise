@@ -19,10 +19,9 @@ package de.pgalise.simulation.energy;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 

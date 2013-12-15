@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.shared.controller;
 
-import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,9 +16,9 @@ import java.util.List;
  */
 public interface StartParameter extends Serializable {
 
-	List<WeatherEventHelper> getWeatherEventHelperList();
+	List<WeatherEvent> getWeatherEventList();
 	
-	void setWeatherEventHelperList(List<WeatherEventHelper> eventHelpers);
+	void setWeatherEventList(List<WeatherEvent> eventHelpers);
 
 	boolean isAggregatedWeatherDataEnabled();
 	

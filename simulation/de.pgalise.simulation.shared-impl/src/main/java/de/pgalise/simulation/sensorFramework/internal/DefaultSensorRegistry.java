@@ -72,7 +72,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	 *            Service for saving the sensors.
 	 */
 	public DefaultSensorRegistry(final EntityManager persistenceService) {
-		this(persistenceService, new HashSet<Sensor<?>>());
+		this(persistenceService, new HashSet<Sensor<?,?>>());
 	}
 
 	/**
@@ -83,7 +83,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	 * @param sensors
 	 *            Set of sensors
 	 */
-	public DefaultSensorRegistry(final EntityManager persistenceService, final Set<Sensor<?>> sensors) {
+	public DefaultSensorRegistry(final EntityManager persistenceService, final Set<Sensor<?,?>> sensors) {
 		if (persistenceService == null) {
 			throw new IllegalArgumentException("persistenceService");
 		}
@@ -94,7 +94,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	}
 
 	@Override
-	public synchronized Sensor<?> addSensor(final Sensor<?> sensor) {
+	public synchronized Sensor<?,?> addSensor(final Sensor<?,?> sensor) {
 		if (sensor == null) {
 			throw new IllegalArgumentException("sensor must not be NULL");
 		}
@@ -104,14 +104,14 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	}
 
 	@Override
-	public synchronized void addSensors(final Set<Sensor<?>> sensors) {
-		for (final Sensor<?> sensor : sensors) {
+	public synchronized void addSensors(final Set<Sensor<?,?>> sensors) {
+		for (final Sensor<?,?> sensor : sensors) {
 			this.addSensor(sensor);
 		}
 	}
 
 	@Override
-	public Iterator<Sensor<Event>> iterator() {
+	public Iterator<Sensor<Event,?>> iterator() {
 		Query query = this.persistenceService.createQuery(String.format("SELECT * FROM %s s", Sensor.class.getName()));
 		return query.getResultList().iterator();
 	}
@@ -137,15 +137,15 @@ public class DefaultSensorRegistry implements SensorRegistry {
 		Set<Long> sensorIds = new HashSet<>();
 
 		// Save all IDs
-		for (final Sensor<Event> sensor : this) {
+		for (final Sensor<?,?> sensor : this) {
 			this.removeSensor(sensor);
 		}
 	}
 
 	@Override
-	public synchronized Sensor<?> removeSensor(final Sensor<?> sensor) {
+	public synchronized Sensor<?,?> removeSensor(final Sensor<?,?> sensor) {
 		// Delete the Sensor from RAM
-		final Sensor<Event> result = this.persistenceService.find(Sensor.class, sensor.getId());
+		final Sensor<?,?> result = this.persistenceService.find(Sensor.class, sensor.getId());
 		if (result != null) {
 			log.debug("Sensor is to be removed from Database (id:" + sensor.getId() + ")");
 			this.persistenceService.remove(result);
@@ -159,7 +159,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 
 	@Override
 	public synchronized void setSensorsActivated(final boolean activated) {
-		for (final Sensor<Event> sensor : this) {
+		for (final Sensor<?,?> sensor : this) {
 			sensor.setActivated(activated);
 		}
 	}
@@ -172,7 +172,7 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	 */
 	@Override
 	public synchronized void update(final EventList<Event> eventList) {
-		for (final Sensor<Event> sensor : this) {
+		for (final Sensor<Event,?> sensor : this) {
 			sensor.update(eventList);
 		}
 	}
@@ -182,8 +182,8 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	}
 
 	@Override
-	public Sensor<?> getSensor(
-		Sensor<?> sensorId) {
+	public Sensor<?,?> getSensor(
+		Sensor<?,?> sensorId) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

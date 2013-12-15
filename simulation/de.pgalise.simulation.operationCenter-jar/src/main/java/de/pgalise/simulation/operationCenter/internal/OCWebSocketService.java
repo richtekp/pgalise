@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Set;
 
 import de.pgalise.simulation.operationCenter.internal.message.OCWebSocketMessage;
+import de.pgalise.simulation.operationcenter.OCWebSocketUser;
 
 /**
  * An oc web socket service needs to handle all online users

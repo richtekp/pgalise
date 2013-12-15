@@ -21,17 +21,16 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class LoadSimulationStartParameterMessage extends CCWebSocketMessage<String> {
+public class LoadSimulationStartParameterMessage extends AbstractIdentifiableCCWebSocketMessage<String> {
 
 	/**
 	 * Constructor
 	 * 
 	 * @param messageID
 	 *            ID
-	 * @param content
-	 *            the needed file name.
+	 * @param fileName path to the serialized start parameter on disk
 	 */
-	public LoadSimulationStartParameterMessage(int messageID, String content) {
-		super(messageID, CCWebSocketMessage.MessageType.LOAD_SIMULATION_START_PARAMETER, content);
+	public LoadSimulationStartParameterMessage(Long messageID, String fileName) {
+		super(messageID, MessageTypeEnum.LOAD_SIMULATION_START_PARAMETER, fileName);
 	}
 }

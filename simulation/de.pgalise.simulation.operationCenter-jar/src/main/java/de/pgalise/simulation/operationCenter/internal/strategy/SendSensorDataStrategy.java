@@ -23,11 +23,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketService;
 import de.pgalise.simulation.operationCenter.internal.message.SensorDataMessage;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
+import de.pgalise.simulation.sensorFramework.Sensor;
 
 /**
  * The SendSensorDataStrategy is thread save and decides when it's time to send the sensor data to the user.
@@ -37,14 +36,13 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 public abstract class SendSensorDataStrategy {
 	private static final Logger logger = LoggerFactory.getLogger(SendSensorDataStrategy.class);
 	private OCWebSocketService webSocketService;
-	private List<SensorData> sensorDataList;
+	private List<Sensor<?,?>> sensorDataList;
 	protected long startTimestamp, endTimestamp, interval;
 	
 	/**
 	 * Constructor
 	 * @param webSocketServlet
 	 */
-	@Inject
 	public SendSensorDataStrategy(OCWebSocketService webSocketService) {
 		this.webSocketService = webSocketService;
 		this.sensorDataList = new ArrayList<>();
@@ -86,7 +84,7 @@ public abstract class SendSensorDataStrategy {
 		this.interval = interval;
 	}
 	
-	protected List<SensorData> getSensorDataList() {
+	protected List<Sensor<?,?>> getSensorDataList() {
 		return sensorDataList;
 	}
 
@@ -105,7 +103,7 @@ public abstract class SendSensorDataStrategy {
 	 * @param sensorData
 	 * @throws IOException
 	 */
-	public synchronized void addSensorData(long timestamp, SensorData sensorData) throws IOException {
+	public synchronized void addSensorData(long timestamp, Sensor sensorData) throws IOException {
 		logger.debug("AddSensorData");
 		if(this.isItTimeToSend(timestamp)) {
 			logger.debug("SendSensorData");

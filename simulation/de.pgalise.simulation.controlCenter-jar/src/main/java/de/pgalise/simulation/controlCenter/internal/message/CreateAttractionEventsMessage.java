@@ -25,7 +25,7 @@ import de.pgalise.simulation.controlCenter.model.AttractionData;
  * 
  * @author Timo
  */
-public class CreateAttractionEventsMessage extends CCWebSocketMessage<Collection<AttractionData>> {
+public class CreateAttractionEventsMessage extends AbstractIdentifiableCCWebSocketMessage<Collection<AttractionData>> {
 
 	/**
 	 * Constructor
@@ -35,7 +35,7 @@ public class CreateAttractionEventsMessage extends CCWebSocketMessage<Collection
 	 * @param content
 	 *            List of Attraction data
 	 */
-	public CreateAttractionEventsMessage(int messageID, Collection<AttractionData> content) {
-		super(messageID, CCWebSocketMessage.MessageType.CREATE_ATTRACTION_EVENTS_MESSAGE, content);
+	public CreateAttractionEventsMessage(Long messageID, Collection<AttractionData> content) {
+		super(messageID, MessageTypeEnum.CREATE_ATTRACTION_EVENTS_MESSAGE, content);
 	}
 }

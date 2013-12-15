@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.event.EventInitiator;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
@@ -51,7 +52,6 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
@@ -61,7 +61,7 @@ import javax.persistence.EntityManager;
 
 /**
  * The default implementation of the simulation controller inits, starts, stops
- * and resets all the other {@link Controller}. The {@link SensorManagerController#createSensor(SensorHelper)} methods
+ * and resets all the other {@link Controller}. The {@link SensorManagerController#createSensor(Sensor)} methods
  * are called for every known {@link SensorManagerController} until one of them does not response with an {@link SensorException}.
  * To update the simulation, it uses the set {@link EventInitiator}. New events can be added via {@link SimulationController#addSimulationEventList(SimulationEventList)}
  * and will be handled by the {@link EventInitiator}.
@@ -103,7 +103,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 	private ServiceDictionary serviceDictionary;
 
 	@EJB
-	private ServerConfigurationReader<Controller<?,?,?>> serverConfigReader;
+	private ServerConfigurationReader serverConfigReader;
 	
 	@EJB
 	private ConfigReader configReader;
@@ -132,7 +132,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 	}
 
 	@Override
-	public void createSensor(SensorHelper sensor) throws SensorException {
+	public void createSensor(Sensor<?,?> sensor) throws SensorException {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
@@ -157,11 +157,11 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 		
 		throw new NoValidControllerForSensorException(String.format(
 				"Can't create sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
-				sensor.getSensorID(), sensor.getSensorType().toString()));
+				sensor.getId(), sensor.getSensorType().toString()));
 	}
 
 	@Override
-	public void deleteSensor(SensorHelper sensor) throws SensorException {
+	public void deleteSensor(Sensor sensor) throws SensorException {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
@@ -180,7 +180,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 		
 		throw new NoValidControllerForSensorException(String.format(
 				"Can't delete sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
-				sensor.getSensorID(), sensor.getSensorType().toString()));
+				sensor.getId(), sensor.getSensorType().toString()));
 	}
 
 	public OperationCenterController getOperationCenterController() {
@@ -196,7 +196,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 	 * @throws SensorException
 	 */
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor sensor) throws SensorException {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("sensor"));
 		}
@@ -214,7 +214,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 		throw new NoValidControllerForSensorException(
 				String.format(
 						"Can't find status of sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
-						sensor.getSensorID(), sensor.getSensorType().toString()));
+						sensor.getId(), sensor.getSensorType().toString()));
 	}
 
 	@Override
@@ -233,7 +233,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 		
 		serverConfigReader.read(
 			param.getServerConfiguration(), 
-				new ServiceHandler<Controller<?,?,?>>() {
+				new ServiceHandler<Controller<Event,StartParameter,InitParameter>>() {
 					@Override
 					public String getName() {
 						return ServiceDictionary.FRONT_CONTROLLER;
@@ -418,15 +418,15 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		for (SensorHelper<?> sensor : sensors) {
+	public void createSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		for (Sensor<?,?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors) throws SensorException {
-		for (SensorHelper<?> sensor : sensors) {
+	public void deleteSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		for (Sensor<?,?> sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}
@@ -463,7 +463,7 @@ public class DefaultSimulationController extends AbstractController<Event, Start
 	 * 
 	 * @param serverConfigurationReader
 	 */
-	public void _setServerConfigurationReader(ServerConfigurationReader<Controller<?,?,?>> serverConfigurationReader) {
+	public void _setServerConfigurationReader(ServerConfigurationReader serverConfigurationReader) {
 		this.serverConfigReader = serverConfigurationReader;
 	}
 

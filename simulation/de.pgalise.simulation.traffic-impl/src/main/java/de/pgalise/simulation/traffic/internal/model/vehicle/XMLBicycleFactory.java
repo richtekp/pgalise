@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,65 +24,84 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
 
 /**
  * Implements a factory for {@link Bike}. The vehicles are loaded by a XML file.
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLBicycleFactory extends XMLAbstractFactory<BicycleData> implements BicycleFactory {
+@Stateful
+public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
+	implements BicycleFactory {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param randomSeedService
-	 *            Random Seed Service
-	 * @param document
-	 *            Document of the XML data
-	 */
-	public XMLBicycleFactory(RandomSeedService randomSeedService, Document document,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, document, trafficGraphExtensions);
+	public XMLBicycleFactory() {
 	}
 
 	/**
 	 * Constructor
-	 * 
+	 *
+	 * @param idGenerator
+	 * @param randomSeedService Random Seed Service
+	 * @param gpsInterferer
+	 * @param trafficGraphExtensions
 	 * @param stream
-	 *            Input stream of the XML data
-	 * @param randomSeedService
-	 *            Random Seed Service
 	 */
-	public XMLBicycleFactory(RandomSeedService randomSeedService, InputStream stream,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, stream, trafficGraphExtensions);
+	public XMLBicycleFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		InputStream stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param idGenerator
+	 * @param randomSeedService Random Seed Service
+	 * @param gpsInterferer
+	 * @param trafficGraphExtensions
+	 * @param stream
+	 */
+	public XMLBicycleFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		Document stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
 	}
 
 	@Override
-	public BaseVehicle<BicycleData> createRandomBicycle( SensorHelper helper) {
+	public BaseVehicle<BicycleData> createRandomBicycle(Output helper) {
 		BicycleData data = getRandomVehicleData();
-		data.setGpsSensorHelper(helper);
-		return new DefaultBicycle( "bicycle" + getNextCounter(), data, this.trafficGraphExtensions);
+		return new Bicycle(getIdGenerator().getNextId(),
+			"bicycle" + getNextCounter(),
+			data,
+			this.getTrafficGraphExtensions());
 	}
 
 	@Override
-	public BaseVehicle<BicycleData> createBicycle(  SensorHelper helper) {
+	public BaseVehicle<BicycleData> createBicycle(Output helper) {
 		return createRandomBicycle(helper);
 	}
 
 	/**
 	 * Create new BicycleData
+	 *
+	 * @return
 	 */
 	@Override
 	public BicycleData getRandomVehicleData() {
@@ -123,7 +142,7 @@ public class XMLBicycleFactory extends XMLAbstractFactory<BicycleData> implement
 					description = propertyItem.getTextContent();
 				} else if (nodeName.equals("wheelbase")) {
 					wheelbase = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("length")) {
+				} else if (nodeName.equals("size")) {
 					size = Integer.parseInt(propertyItem.getTextContent());
 				} else if (nodeName.equals("weight")) {
 					weight = Double.parseDouble(propertyItem.getTextContent());
@@ -135,7 +154,14 @@ public class XMLBicycleFactory extends XMLAbstractFactory<BicycleData> implement
 			}
 
 			// Add new vehicle
-			vehicles.put(typeid, new BicycleData(weight, maxSpeed, material, size, wheelbase, description, null));
+			vehicles.put(typeid,
+				new BicycleData(weight,
+					maxSpeed,
+					material,
+					size,
+					wheelbase,
+					description,
+					null));
 		}
 
 		// Returns

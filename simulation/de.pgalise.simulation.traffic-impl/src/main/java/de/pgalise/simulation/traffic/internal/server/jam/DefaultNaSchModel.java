@@ -90,7 +90,7 @@ public class DefaultNaSchModel implements TrafficJamModel {
 		// log.debug("\n\n--- Calculating update behavior of vehicle " + v.getName() + " ---");
 
 		// car length in mm
-		double carLength = v.getData().getLength();
+		double carLength = v.getData().getVehicleLength();
 		if (carLength != 0) {
 			carLength /= 1000;
 			this.bias += (carLength / 2) ;

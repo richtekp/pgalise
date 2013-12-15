@@ -22,6 +22,7 @@ import java.net.UnknownHostException;
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketService.NewUserEventListener;
 import de.pgalise.simulation.operationCenter.internal.message.GateMessage;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
@@ -35,7 +36,7 @@ import de.pgalise.simulation.visualizationcontroller.VisualizationController;
  * 
  * @author Timo
  */
-public interface OCSimulationController extends SensorManagerController<Event,InfrastructureStartParameter, InfrastructureInitParameter>, NewUserEventListener, VisualizationController {
+public interface OCSimulationController extends SensorManagerController<Event,InfrastructureStartParameter, InfrastructureInitParameter,Sensor<?,?>>, NewUserEventListener, VisualizationController {
 
 	/**
 	 * Updates the clients.
@@ -46,7 +47,7 @@ public interface OCSimulationController extends SensorManagerController<Event,In
 	 *            Sensor helper
 	 * @throws IllegalStateException
 	 */
-	public void update(long timestamp, SensorData sensorData) throws IllegalStateException;
+	public void update(long timestamp, Sensor<?,?> sensorData) throws IllegalStateException;
 
 	/**
 	 * Handles a gate message.

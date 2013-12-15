@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -30,7 +31,7 @@ import de.pgalise.simulation.traffic.InfrastructureStartParameter;
  * Interface to handle gate messages.
  * @author Timo
  */
-public interface GPSGateStrategy extends Controller<Event, InfrastructureStartParameter, InfrastructureInitParameter>, SensorManagerController<Event, InfrastructureStartParameter, InfrastructureInitParameter> {
+public interface GPSGateStrategy extends Controller<Event, InfrastructureStartParameter, InfrastructureInitParameter>, SensorManagerController<Event, InfrastructureStartParameter, InfrastructureInitParameter,Sensor<?,?>> {
 	/**
 	 * Handles a gate message.
 	 * @param gateInformationMap <Integer = sensor type, Double = percentage> e.g. 1, 0.8 means 80% of sensors from type 1.

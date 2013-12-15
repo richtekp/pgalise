@@ -22,29 +22,19 @@ import de.pgalise.simulation.traffic.TrafficEdge;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.List;
 import javax.vecmath.Vector2d;
 
 /**
  * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).
  * 
- * @param <TrafficEdge> 
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 12, 2012)
+ * @param <D>
  */
 public interface Vehicle<D extends VehicleData> extends Identifiable {
-
-	/**
-	 * @return the hasGPS
-	 */
-	public boolean hasGPS();
-
-	/**
-	 * @param hasGPS
-	 *            the hasGPS to set
-	 */
-	public void setHasGPS(boolean hasGPS);
 
 	/**
 	 * @return the velocity
@@ -213,5 +203,7 @@ public interface Vehicle<D extends VehicleData> extends Identifiable {
 	 * @return index of the passed node in the path otherwise -1
 	 */
 	public int getIndex(TrafficNode node);
+	
+	GpsSensor getGpsSensor();
 
 }

@@ -23,14 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.Orientation;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -38,19 +32,16 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
-import java.util.UUID;
-import javax.persistence.Entity;
 import javax.vecmath.Vector2d;
 
 /**
  * Superclass for vehicles
  * 
- * @param <E> 
+ * @param <D> 
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 1, 2012)
  */
-@Entity
 public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable implements Vehicle<D> {
 	/**
 	 * Serial
@@ -61,11 +52,6 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 	 * Logger
 	 */
 	private static transient Logger log = LoggerFactory.getLogger(BaseVehicle.class);
-
-	/**
-	 * Option to add GPS to the vehicle
-	 */
-	private boolean hasGPS;
 
 	/**
 	 * GPS sensor of the car
@@ -137,43 +123,41 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 	private D vehicleData;
 
 	private boolean isVirgin = false;
+	
+	private VehicleStateEnum state;
 
 	private transient TrafficGraphExtensions trafficGraphExtensions;
 
-	public BaseVehicle() {
+	protected BaseVehicle() {
 	}
 
-	public BaseVehicle(TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseVehicle(Long id,TrafficGraphExtensions trafficGraphExtensions) {
 		this.trafficGraphExtensions = trafficGraphExtensions;
 		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
 	}
 
-	public BaseVehicle( String name, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseVehicle(Long id, String name, TrafficGraphExtensions trafficGraphExtensions) {
+		super(id);
 		this.name = name;
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
+		this.state = VehicleStateEnum.NOT_STARTED;
 	}
 
-	public BaseVehicle(UUID id, String name, TrafficGraphExtensions trafficGraphExtensions) {
-		throw new UnsupportedOperationException("clearify the purpose of passing of id");
-//		this.name = name;
-//		this.trafficGraphExtensions = trafficGraphExtensions;
-//		this.state = (State.NOT_STARTED);
-	}
-
-	public BaseVehicle(String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseVehicle(Long id, String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
+		super(id);
 		this.name = name;
 		this.vehicleData = data;
 		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
+		this.state = VehicleStateEnum.NOT_STARTED;
 	}
 
-	public BaseVehicle(UUID id, String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
-		throw new UnsupportedOperationException("clearify the purpose of passing of id");
-//		this.name = name;
-//		this.data = data;
-//		this.trafficGraphExtensions = trafficGraphExtensions;
-//		this.state = (State.NOT_STARTED);
+	public void setGpsSensor(GpsSensor gpsSensor) {
+		this.gpsSensor = gpsSensor;
+	}
+
+	@Override
+	public GpsSensor getGpsSensor() {
+		return gpsSensor;
 	}
 
 	@Override
@@ -256,11 +240,6 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	@Override
-	public boolean hasGPS() {
-		return this.hasGPS;
-	}
-
-	@Override
 	public void setCurrentEdge(TrafficEdge edge) {
 		this.currentEdge = edge;
 	}
@@ -278,11 +257,6 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 	@Override
 	public void setDirection(Vector2d direction) {
 		this.direction = direction;
-	}
-
-	@Override
-	public void setHasGPS(boolean hasGPS) {
-		this.hasGPS = hasGPS;
 	}
 
 	@Override

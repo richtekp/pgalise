@@ -6,7 +6,6 @@
 
 package de.pgalise.simulation.traffic.internal;
 
-import com.google.common.collect.Sets;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.AbstractServiceDictionary;

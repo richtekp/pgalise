@@ -13,25 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.operationCenter.internal;
-
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Inject;
 
 import de.pgalise.simulation.operationCenter.internal.hqf.OCHQFDataStreamController;
 import de.pgalise.simulation.operationCenter.internal.message.ErrorMessage;
@@ -46,22 +28,20 @@ import de.pgalise.simulation.operationCenter.internal.message.SimulationStartMes
 import de.pgalise.simulation.operationCenter.internal.message.SimulationStoppedMessage;
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationInitParameter;
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationStartParameter;
-import de.pgalise.simulation.operationCenter.internal.model.SensorHelperTypeWrapper;
-import de.pgalise.simulation.operationCenter.internal.model.VehicleData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
+import de.pgalise.simulation.operationcenter.OCWebSocketUser;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
@@ -71,7 +51,26 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default implementation of {@link OCSimulationController}.
@@ -82,13 +81,17 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * {@link OCWebSocketService}, {@link OCSensorStreamController}, {@link OCHQFDataStreamController}
  * and {@link SendSensorDataStrategy} for its purposes.
  * All the settings can be done in 'properties.props'.
- * 
+ *
  * @author Timo
  */
-public class DefaultOCSimulationController extends AbstractController<Event, InfrastructureStartParameter, InfrastructureInitParameter> implements
-		OCSimulationController {
+@Singleton
+public class DefaultOCSimulationController extends AbstractController<Event, InfrastructureStartParameter, InfrastructureInitParameter>
+				implements
+				OCSimulationController
+{
+
 	private static final Logger log = LoggerFactory
-			.getLogger(DefaultOCSimulationController.class);
+					.getLogger(DefaultOCSimulationController.class);
 	private static final long serialVersionUID = 1L;
 	private GPSSensorTimeoutStrategy gpsTimeoutStrategy;
 	private OCWebSocketService ocWebSocketService;
@@ -98,63 +101,72 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	private InfrastructureInitParameter initParameter;
 	private InfrastructureStartParameter startParameter;
 	private long currentTimestamp;
-	private Set<SensorHelper> currentGPSSensorHelpers;
+	private Set<GpsSensor> currentGPSSensors;
 	/**
 	 * Holds all current sensor ids.
 	 * <Integer = sensor type, Set<Integer = sensor id>>
 	 */
-	private Map<Integer, Set<Sensor<?>>> sensorTypeIDMap;
+	private Map<Class<? extends Sensor>, Set<Sensor<?,?>>> sensorTypeIDMap;
 	private Properties properties;
 	private GPSGateStrategy gateMessageStrategy;
 
 	/**
 	 * A map with marker as entry and sensor id as key.
 	 */
-	private Map<Sensor<?>, SensorHelperTypeWrapper> sensorMap;
+	private Set<Sensor<?,?>> sensorMap;
 	/**
-	 * Map<UUID = vehicle id, 
+	 * Map<UUID = vehicle id,
 	 */
-	private Map<Vehicle<?>, VehicleData> vehicleDataMap;
+	private Set<Vehicle<?>> vehicleDataMap;
+	
+	@EJB
+	private InformationBasedVehicleFactory vehicleFactory;
+	
+	private Output output;
+
+	public DefaultOCSimulationController() {
+	}
 
 	/**
 	 * Contructor
+	 *
 	 * @param ocWebSocketService
-	 * 			this instance will receive messages for init, start, stop, new sensors and new sensor data.
+	 *                                  this instance will receive messages for init, start, stop, new sensors and
+	 *                                  new sensor data.
 	 * @param ocSensorStreamController
-	 * 			this controller must inform the default oc simulation controller about sensor updates
+	 *                                  this controller must inform the default oc simulation controller about
+	 *                                  sensor updates
 	 * @param gpsTimeoutStrategy
-	 * 			this strategy has to find gps time outs
+	 *                                  this strategy has to find gps time outs
 	 * @param sendSensorDataStrategy
-	 * 			this strategy defines when the sensor data will be sent to the user
+	 *                                  this strategy defines when the sensor data will be sent to the user
 	 * @param ocHqfDataStreamController
-	 * 			this controller will save the received sensor data into a database
+	 *                                  this controller will save the received sensor data into a database
 	 * @param gateMessageStrategy
-	 * 			this steategy handles the gate messages for IBM InfoSphere
+	 *                                  this steategy handles the gate messages for IBM InfoSphere
 	 */
-	@Inject
 	public DefaultOCSimulationController(OCWebSocketService ocWebSocketService,
-			OCSensorStreamController ocSensorStreamController,
-			GPSSensorTimeoutStrategy gpsTimeoutStrategy,
-			SendSensorDataStrategy sendSensorDataStrategy,
-			OCHQFDataStreamController ocHqfDataStreamController,
-			GPSGateStrategy gateMessageStrategy) {
+					OCSensorStreamController ocSensorStreamController,
+					GPSSensorTimeoutStrategy gpsTimeoutStrategy,
+					SendSensorDataStrategy sendSensorDataStrategy,
+					OCHQFDataStreamController ocHqfDataStreamController,
+					GPSGateStrategy gateMessageStrategy) {
 		this.ocWebSocketService = ocWebSocketService;
 		this.ocSensorStreamController = ocSensorStreamController;
 		this.ocHqfDataStreamController = ocHqfDataStreamController;
 		this.gateMessageStrategy = gateMessageStrategy;
 		this.gpsTimeoutStrategy = gpsTimeoutStrategy;
 		this.sendSensorDataStrategy = sendSensorDataStrategy;
-		this.sensorMap = new HashMap<>();
-		this.currentGPSSensorHelpers = new HashSet<>();
-		this.vehicleDataMap = new HashMap<>();
+		this.currentGPSSensors = new HashSet<>();
+		this.vehicleDataMap = new HashSet<>();
 		this.properties = new Properties();
 		try {
 			properties.load(Thread.currentThread().getContextClassLoader()
-					.getResourceAsStream("/properties.props"));
+							.getResourceAsStream("/properties.props"));
 		} catch (Exception e) {
 			try {
 				properties.load(DefaultOCSimulationController.class
-						.getResourceAsStream("/properties.props"));
+								.getResourceAsStream("/properties.props"));
 			} catch (IOException e1) {
 				throw new RuntimeException("Can not load properties!");
 			}
@@ -163,11 +175,10 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 		this.ocWebSocketService.registerNewUserEventListener(this);
 	}
 
-	@Override
 	public void displayException(Exception exeption) {
 		try {
 			this.ocWebSocketService.sendMessageToAllUsers(new ErrorMessage(
-					exeption.getMessage()));
+							exeption.getMessage()));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -178,7 +189,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	public void setOcSensorStreamController(
-			OCSensorStreamController ocSensorStreamController) {
+					OCSensorStreamController ocSensorStreamController) {
 		this.ocSensorStreamController = ocSensorStreamController;
 	}
 
@@ -195,91 +206,76 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	public void setOcHqfDataStreamController(
-			OCHQFDataStreamController ocHqfDataStreamController) {
+					OCHQFDataStreamController ocHqfDataStreamController) {
 		this.ocHqfDataStreamController = ocHqfDataStreamController;
 	}
 
 	@Override
-	public void createSensor(SensorHelper<?> sensor) throws SensorException,
-			IllegalStateException {
-		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
+	public void createSensor(Sensor<?,?> sensor) throws SensorException,
+					IllegalStateException {
+		List<Sensor<?,?>> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensor);
 		this.createSensors(sensorHelperList);
 		this.gateMessageStrategy.createSensor(sensor);
 	}
 
 	@Override
-	public void deleteSensor(SensorHelper sensor) throws SensorException,
-			IllegalStateException {
-		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
+	public void deleteSensor(Sensor sensor) throws SensorException,
+					IllegalStateException {
+		List<Sensor<?,?>> sensorHelperList = new LinkedList<>();
 		sensorHelperList.add(sensor);
 		this.deleteSensors(sensorHelperList);
 		this.gateMessageStrategy.deleteSensor(sensor);
 	}
 
-	public Map<Sensor<?>, SensorHelperTypeWrapper> getSensorMap() {
-		return sensorMap;
-	}
-
-	public void setSensorMap(Map<Sensor<?>, SensorHelperTypeWrapper> sensorMap) {
-		this.sensorMap = sensorMap;
-	}
-
 	@Override
-	public void update(long timestamp, SensorData sensorData)
-			throws IllegalStateException {
+	public void update(long timestamp, Sensor sensor)
+					throws IllegalStateException {
 		log.debug("Updating: " + new Date(timestamp) + " sensorid: "
-				+ sensorData.getId() + " sensortype: " + sensorData.getType());
+											+ sensor + " sensortype: " + sensor.
+						getSensorType());
 
 		if (timestamp > this.currentTimestamp) {
-			
-			log.debug("Look for timeouts. Current gps sensors: " +this.currentGPSSensorHelpers.size());
-			
+
+			log.debug("Look for timeouts. Current gps sensors: "
+												+ this.currentGPSSensors.size());
+
 			this.currentTimestamp = timestamp;
-			Collection<SensorData> gpsSensorsWithTimeout = this.gpsTimeoutStrategy
-					.processUpdateStep(timestamp, this.currentGPSSensorHelpers);
-			this.currentGPSSensorHelpers = new HashSet<>();
-						
+			Collection<Sensor<?,?>> gpsSensorsWithTimeout = this.gpsTimeoutStrategy
+							.processUpdateStep(timestamp, this.currentGPSSensors);
+			this.currentGPSSensors = new HashSet<>();
+
 			if (gpsSensorsWithTimeout != null
-					&& !gpsSensorsWithTimeout.isEmpty()) {
-				log.debug("Found: " +gpsSensorsWithTimeout.size() +" timeouts. ");
+									&& !gpsSensorsWithTimeout.isEmpty()) {
+				log.debug("Found: " + gpsSensorsWithTimeout.size() + " timeouts. ");
 				try {
 					this.ocWebSocketService
-							.sendMessageToAllUsers(new GPSSensorTimeoutMessage(
-									gpsSensorsWithTimeout));
+									.sendMessageToAllUsers(new GPSSensorTimeoutMessage(
+																	gpsSensorsWithTimeout));
 				} catch (IOException e) {
 					log.error("Exception", e);
 				}
-			}else {
+			} else {
 				log.debug("Found: no timeouts. ");
 			}
 		}
 
-		SensorHelperTypeWrapper sensorHelperTypeWrapper = this.sensorMap
-				.get(sensorData.getId());
-		if (sensorHelperTypeWrapper != null) {
+		if (sensor != null) {
 			try {
 				this.sendSensorDataStrategy
-						.addSensorData(timestamp, sensorData);
+								.addSensorData(timestamp, sensor);
 			} catch (IOException e) {
 				log.error("Exception", e);
 			}
 
-			if (sensorData instanceof GPSSensorData) {
-				log.debug("Add sensor: " +sensorData.getId() +" to current gps sensors");
-				this.currentGPSSensorHelpers.add(sensorHelperTypeWrapper
-						.getSensorHelper());
+			if (sensor instanceof GPSSensorData) {
+				log.debug("Add sensor: " + sensor
+													+ " to current gps sensors");
+				this.currentGPSSensors.add((GpsSensor) sensor);
 			}
 		} else {
-			log.warn("Sensorid: " +sensorData.getId() +" unknown!");
+			log.warn("Sensorid: " + sensor + " unknown!");
 		}
-	}
-
-	/**
-	 * Resets the sensor map.
-	 */
-	public void resetSensorMap() {
-		this.sensorMap = new HashMap<>();
 	}
 
 	public InfrastructureInitParameter getInitParameter() {
@@ -302,26 +298,27 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	 * @return returns always false.
 	 */
 	@Override
-	public boolean statusOfSensor(SensorHelper sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor sensor) throws SensorException {
 		/* Nothing to do */
 		return false;
 	}
 
 	@Override
-	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
+	protected void onInit(InfrastructureInitParameter param) throws
+					InitializationException {
 		this.currentTimestamp = param.getStartTimestamp();
 		this.setInitParameter(param);
 		try {
 			this.gpsTimeoutStrategy.init(param.getInterval(), Integer
-					.valueOf(this.properties
-							.getProperty("MissedGPSUpdateStepsBeforeTimeout")));
+							.valueOf(this.properties
+											.getProperty("MissedGPSUpdateStepsBeforeTimeout")));
 			this.ocWebSocketService
-					.sendMessageToAllUsers(new SimulationInitMessage(
-							new OCSimulationInitParameter(param
-									.getStartTimestamp(), param
-									.getEndTimestamp(), param.getInterval(),
-									param.getClockGeneratorInterval(), param
-											.getCityBoundary())));
+							.sendMessageToAllUsers(new SimulationInitMessage(
+															new OCSimulationInitParameter(param
+																			.getStartTimestamp(), param
+																			.getEndTimestamp(), param.getInterval(),
+																			param.getClockGeneratorInterval(), param
+																			.getCityBoundary())));
 		} catch (IOException e) {
 			log.error("Exception", e);
 		}
@@ -338,24 +335,32 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	protected void onStart(InfrastructureStartParameter param) {
 		this.setStartParameter(param);
 		try {
-			
-			this.ocWebSocketService.sendMessageToAllUsers(new SimulationStartMessage(new OCSimulationStartParameter(
-					param.getCity().getName(), param.getCity().getPopulation())));			
-			this.ocSensorStreamController.listenStream(this, 
-					this.properties.getProperty("InfoSphereIPStaticSensors"),  
-						Integer.valueOf(this.properties.getProperty("InfoSpherePortStaticSensor")), 
-					this.properties.getProperty("InfoSphereIPDynamicSensors"), 
-						Integer.valueOf(this.properties.getProperty("InfoSpherePortDynamicSensor")), 
-					this.properties.getProperty("InfoSphereIPTopoRadarSensors"), 
-						Integer.valueOf(this.properties.getProperty("InfoSpherePortTopoRadarSensor")),
-					this.properties.getProperty("InfoSphereIPTrafficLightSensors"),
-						Integer.valueOf(this.properties.getProperty("InfoSpherePortTrafficLightSensor")));
-					this.ocHqfDataStreamController.listenStream(this.properties.getProperty("InfoSphereIPStaticSensors"), 
-						Integer.valueOf(this.properties.getProperty("InfoSpherePortHQFData")));
+
+			this.ocWebSocketService.sendMessageToAllUsers(new SimulationStartMessage(
+							new OCSimulationStartParameter(
+											param.getCity().getName(), param.getCity().getPopulation())));
+			this.ocSensorStreamController.listenStream(this,
+							this.properties.getProperty("InfoSphereIPStaticSensors"),
+							Integer.valueOf(this.properties.getProperty(
+															"InfoSpherePortStaticSensor")),
+							this.properties.getProperty("InfoSphereIPDynamicSensors"),
+							Integer.valueOf(this.properties.getProperty(
+															"InfoSpherePortDynamicSensor")),
+							this.properties.getProperty("InfoSphereIPTopoRadarSensors"),
+							Integer.valueOf(this.properties.getProperty(
+															"InfoSpherePortTopoRadarSensor")),
+							this.properties.getProperty("InfoSphereIPTrafficLightSensors"),
+							Integer.valueOf(this.properties.getProperty(
+															"InfoSpherePortTrafficLightSensor")));
+			this.ocHqfDataStreamController.listenStream(this.properties.getProperty(
+							"InfoSphereIPStaticSensors"),
+							Integer.valueOf(this.properties.getProperty(
+															"InfoSpherePortHQFData")));
 		} catch (IOException e) {
 			log.error("Exception", e);
 			try {
-				this.ocWebSocketService.sendMessageToAllUsers(new ErrorMessage(e.getLocalizedMessage()));
+				this.ocWebSocketService.sendMessageToAllUsers(new ErrorMessage(e.
+								getLocalizedMessage()));
 			} catch (IOException e1) {
 				log.error("Exception", e1);
 			}
@@ -367,14 +372,14 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	protected void onStop() {
 		try {
 			this.getOcWebSocketService().sendMessageToAllUsers(
-					new SimulationStoppedMessage());
+							new SimulationStoppedMessage());
 			this.ocSensorStreamController.unlistenStream();
 			this.ocHqfDataStreamController.unlistenStream();
 		} catch (IOException e) {
 			log.error("Exception", e);
 			try {
 				this.ocWebSocketService.sendMessageToAllUsers(new ErrorMessage(
-						e.getLocalizedMessage()));
+								e.getLocalizedMessage()));
 			} catch (IOException e1) {
 				log.error("Exception", e1);
 			}
@@ -390,7 +395,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 			log.warn("see nested exception", e);
 			try {
 				this.ocWebSocketService.sendMessageToAllUsers(new ErrorMessage(
-						e.getLocalizedMessage()));
+								e.getLocalizedMessage()));
 			} catch (IOException e1) {
 				log.error("Exception", e1);
 			}
@@ -400,83 +405,86 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 
 	/**
 	 * Creates a vehicle data from a create random vehicle data.
+	 *
 	 * @param data
 	 * @return
 	 */
-	private VehicleData createRandomVehicleDataToVehicleData(CreateRandomVehicleData data) {
-		Collection<SensorHelperTypeWrapper> sensors = new LinkedList<>();
-		for(SensorHelper sensor : data.getSensorHelpers()) {
-			sensors.add(new SensorHelperTypeWrapper(sensor));
-		}
-		return new VehicleData(sensors,  null,
-				data.getVehicleInformation().getVehicleType().getVehicleTypeId(), 
-				data.getVehicleInformation().getVehicleModel().getVehicleModelId());
+	private Vehicle<?> createRandomVehicleDataToVehicleData(
+					CreateRandomVehicleData data) {
+		return vehicleFactory.createVehicle(data.getVehicleInformation(),
+			output);
 	}
-	
+
 	@Override
 	protected void onUpdate(EventList<Event> simulationEventList) {
 		/* Add new events here: */
 		for (Event event : simulationEventList.getEventList()) {
 			try {
-				if(event.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
-					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
+				if (event.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
+					Collection<Vehicle<?>> vehicleDataCollection = new LinkedList<>();
 					log.warn("Create new vehicles");
 					for (CreateRandomVehicleData data : ((CreateVehiclesEvent<?>) event)
-							.getVehicles()) {
-						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
+									.getVehicles()) {
+						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(
+										data));
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-				}
-
-				else if(event.getType().equals(TrafficEventTypeEnum. CREATE_RANDOM_VEHICLES_EVENT)) {
-					log.warn("Create new random vehicles: " +((CreateRandomVehiclesEvent) event)
-							.getCreateRandomVehicleDataList().size());
-					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					for (CreateRandomVehicleData data : ((CreateRandomVehiclesEvent<?>) event)
-							.getCreateRandomVehicleDataList()) {
-						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
+				} else if (event.getType().equals(
+								TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
+					log.warn("Create new random vehicles: "
+													 + ((CreateRandomVehiclesEvent) event)
+									.getCreateRandomVehicleDataList().size());
+					Collection<Vehicle<?>> vehicleDataCollection = new LinkedList<>();
+					for (CreateRandomVehicleData data
+											 : ((CreateRandomVehiclesEvent<?>) event)
+									.getCreateRandomVehicleDataList()) {
+						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(
+										data));
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-				}
-
-				else if(event.getType().equals(TrafficEventTypeEnum. CREATE_BUSSES_EVENT)) {
-					log.warn("Create new random vehicles: " +((CreateBussesEvent) event)
-							.getCreateRandomVehicleDataList().size());
-					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
+				} else if (event.getType().equals(
+								TrafficEventTypeEnum.CREATE_BUSSES_EVENT)) {
+					log.warn("Create new random vehicles: " + ((CreateBussesEvent) event)
+									.getCreateRandomVehicleDataList().size());
+					Collection<Vehicle<?>> vehicleDataCollection = new LinkedList<>();
 					for (CreateRandomVehicleData data : ((CreateBussesEvent<?>) event)
-							.getCreateRandomVehicleDataList()) {
-						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
+									.getCreateRandomVehicleDataList()) {
+						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(
+										data));
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-				}
-				else if(event.getType().equals(TrafficEventTypeEnum. DELETE_VEHICLES_EVENT)) {
-					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					vehicleDataCollection.add(this.vehicleDataMap.get(((DeleteVehiclesEvent<?>)event).getVehicle()));
+				} else if (event.getType().equals(
+								TrafficEventTypeEnum.DELETE_VEHICLES_EVENT)) {
+					Collection<Vehicle<?>> vehicleDataCollection = new LinkedList<>();
+					vehicleDataCollection.add(
+									((DeleteVehiclesEvent<?>) event).getVehicle());
 					this.removeVehicleSensors(vehicleDataCollection);
-				}
-				else if(event.getType().equals(TrafficEventTypeEnum. ATTRACTION_TRAFFIC_EVENT)) {
-					log.warn("Create new random vehicles: " +((AttractionTrafficEvent) event)
-							.getCreateRandomVehicleDataList().size());
-					Collection<VehicleData> vehicleDataCollection = new LinkedList<>();
-					for (CreateRandomVehicleData data : ((AttractionTrafficEvent<?>) event)
-							.getCreateRandomVehicleDataList()) {
-						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(data));
+				} else if (event.getType().equals(
+								TrafficEventTypeEnum.ATTRACTION_TRAFFIC_EVENT)) {
+					log.warn("Create new random vehicles: "
+													 + ((AttractionTrafficEvent) event)
+									.getCreateRandomVehicleDataList().size());
+					Collection<Vehicle<?>> vehicleDataCollection = new LinkedList<>();
+					for (CreateRandomVehicleData data
+											 : ((AttractionTrafficEvent<?>) event)
+									.getCreateRandomVehicleDataList()) {
+						vehicleDataCollection.add(this.createRandomVehicleDataToVehicleData(
+										data));
 					}
 					this.createsVehicleSensors(vehicleDataCollection);
 
-				}
-				else {
+				} else {
 					log.warn(event.getType().toString());
 				}
 			} catch (Exception e) {
 				log.error("Exception", e);
 				try {
 					this.ocWebSocketService
-					.sendMessageToAllUsers(new ErrorMessage(e
-							.getLocalizedMessage()));
+									.sendMessageToAllUsers(new ErrorMessage(e
+																	.getLocalizedMessage()));
 				} catch (IOException e1) {
 				}
 			}
@@ -485,51 +493,51 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	@Override
-	public void createSensors(Collection<SensorHelper<?>> sensors)
-			throws SensorException {
-
-		List<SensorHelperTypeWrapper> sensorHelperTypeWrapperList = new LinkedList<>();
-		for (SensorHelper sensor : sensors) {
-			SensorHelperTypeWrapper tmpSensorHelperTypeWrapper = new SensorHelperTypeWrapper(
-					sensor);
-			this.sensorMap.put(sensor.getSensorID(), tmpSensorHelperTypeWrapper);
-			sensorHelperTypeWrapperList.add(tmpSensorHelperTypeWrapper);
-			Set<Sensor<?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorType().getSensorTypeId());
-			if(sensorIDSet == null) {
+	public void createSensors(Collection<Sensor<?,?>> sensors)
+					throws SensorException {
+		List<Sensor<?,?>> newSensors = new LinkedList<>();
+		for (Sensor sensor : sensors) {
+			this.sensorMap.add(sensor);
+			newSensors.add(sensor);
+			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.
+							getSensorType().getSensorTypeId());
+			if (sensorIDSet == null) {
 				sensorIDSet = new HashSet<>();
-				this.sensorTypeIDMap.put(sensor.getSensorType().getSensorTypeId(), sensorIDSet);
+				this.sensorTypeIDMap.put(sensor.getClass(),
+								sensorIDSet);
 			}
-			sensorIDSet.add(sensor.getSensorID());
+			sensorIDSet.add(sensor);
 			log.debug("create sensor: " + sensor.getSensorType() + " with id: "
-					+ sensor.getSensorID());
+												+ sensor);
 		}
 
 		try {
 			this.getOcWebSocketService().sendMessageToAllUsers(
-					new NewSensorsMessage(sensorHelperTypeWrapperList));
+							new NewSensorsMessage(newSensors));
 		} catch (IOException e) {
 			log.error("Exception", e);
 		}
-		
+
 		this.gateMessageStrategy.createSensors(sensors);
 
 	}
 
 	@Override
-	public void deleteSensors(Collection<SensorHelper<?>> sensors)
-			throws SensorException {
-		List<Sensor<?>> sensorIDList = new LinkedList<>();
-		for (SensorHelper sensor : sensors) {
-			sensorIDList.add(sensor.getSensorID());
-			sensorMap.remove(sensor.getSensorID());
-			sensorTypeIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(sensor.getSensorID());
+	public void deleteSensors(Collection<Sensor<?,?>> sensors)
+					throws SensorException {
+		List<Sensor<?,?>> sensorIDList = new LinkedList<>();
+		for (Sensor sensor : sensors) {
+			sensorIDList.add(sensor);
+			sensorMap.remove(sensor);
+			sensorTypeIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(
+							sensor);
 			log.debug("remove sensor: " + sensor.getSensorType() + " with id: "
-					+ sensor.getSensorID());
+												+ sensor);
 		}
 
 		try {
 			this.getOcWebSocketService().sendMessageToAllUsers(
-					new RemoveSensorsMessage(sensorIDList));
+							new RemoveSensorsMessage(sensorIDList));
 		} catch (IOException e) {
 			log.error("Exception", e);
 		}
@@ -537,109 +545,115 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	@Override
-	public void handleGateMessage(GateMessage gateMessage) throws UnknownHostException, IOException {
+	public void handleGateMessage(GateMessage gateMessage) throws
+					UnknownHostException, IOException {
 		this.gateMessageStrategy.handleGateMessage(gateMessage.getContent());
 	}
 
 	@Override
 	public void handleNewUserEvent(OCWebSocketUser user) throws IOException {
-		log.debug("handle new user event. Current state is: " +this.getStatus());
-		
+		log.debug("handle new user event. Current state is: " + this.getStatus());
+
 		switch (this.getStatus()) {
-		case INITIALIZED:
-			/* Send init: */
-			user.sendMessage(new SimulationInitMessage(
-					new OCSimulationInitParameter(this.initParameter.getStartTimestamp(), 
-							this.initParameter.getEndTimestamp(),
-							this.initParameter.getInterval(),
-							this.initParameter.getClockGeneratorInterval(), 
-							this.initParameter.getCityBoundary())));
-			/* Send sensors: */
-			user.sendMessage(new NewSensorsMessage(sensorMap.values()));
-			break;
-		case STARTED:
-			/* Send init: */
-			user.sendMessage(new SimulationInitMessage(
-					new OCSimulationInitParameter(this.initParameter.getStartTimestamp(), 
-							this.initParameter.getEndTimestamp(),
-							this.initParameter.getInterval(),
-							this.initParameter.getClockGeneratorInterval(), 
-							this.initParameter.getCityBoundary())));
-			/* Send sensors */
-			user.sendMessage(new NewSensorsMessage(sensorMap.values()));
-			
-			/* Send vehicles */
-			user.sendMessage(new NewVehiclesMessage(vehicleDataMap.values()));
-			
-			/* Send start */
-			user.sendMessage(new SimulationStartMessage(new OCSimulationStartParameter(
-					this.startParameter.getCity().getName(), 
-					this.startParameter.getCity().getPopulation())));
-			break;
-		default:
-			break;
+			case INITIALIZED:
+				/* Send init: */
+				user.sendMessage(new SimulationInitMessage(
+								new OCSimulationInitParameter(this.initParameter.
+												getStartTimestamp(),
+												this.initParameter.getEndTimestamp(),
+												this.initParameter.getInterval(),
+												this.initParameter.getClockGeneratorInterval(),
+												this.initParameter.getCityBoundary())));
+				/* Send sensors: */
+				user.sendMessage(new NewSensorsMessage(sensorMap));
+				break;
+			case STARTED:
+				/* Send init: */
+				user.sendMessage(new SimulationInitMessage(
+								new OCSimulationInitParameter(this.initParameter.
+												getStartTimestamp(),
+												this.initParameter.getEndTimestamp(),
+												this.initParameter.getInterval(),
+												this.initParameter.getClockGeneratorInterval(),
+												this.initParameter.getCityBoundary())));
+				/* Send sensors */
+				user.sendMessage(new NewSensorsMessage(sensorMap));
+
+				/* Send vehicles */
+				user.sendMessage(new NewVehiclesMessage(vehicleDataMap));
+
+				/* Send start */
+				user.sendMessage(new SimulationStartMessage(
+								new OCSimulationStartParameter(
+												this.startParameter.getCity().getName(),
+												this.startParameter.getCity().getPopulation())));
+				break;
+			default:
+				break;
 		}
 	}
-	
-	private void removeVehicleSensors(Collection<VehicleData> vehicleDataCollection) {
-		Collection<SensorHelper<?>> sensorHelperCollection = new LinkedList<>();
-		
-		for(VehicleData vehicleData : vehicleDataCollection) {
-			for(SensorHelperTypeWrapper sensor : vehicleData.getSensors()) {
-				this.sensorMap.put(sensor.getSensorHelper().getSensorID(), sensor);
-				Set<Sensor<?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorHelper().getSensorType().getSensorTypeId());
-				if(sensorIDSet != null) {
-					sensorIDSet.remove(sensor.getSensorHelper().getSensorID());
-				}
-				sensorHelperCollection.add(sensor.getSensorHelper());
-				log.debug("Remove sensor: " + sensor.getSensorType() + " with id: "
-						+ sensor.getSensorHelper().getSensorID());
+
+	private void removeVehicleSensors(
+					Collection<Vehicle<?>> vehicleDataCollection) {
+		Collection<Sensor<?,?>> sensorHelperCollection = new LinkedList<>();
+
+		for (Vehicle vehicleData : vehicleDataCollection) {
+			Sensor sensor = vehicleData.getGpsSensor();
+			sensorMap.add(sensor);
+			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getClass());
+			if (sensorIDSet != null) {
+				sensorIDSet.remove(sensor);
 			}
+			sensorHelperCollection.add(sensor);
+			log.debug("Remove sensor: " + sensor.getSensorType() + " with id: "
+													+ sensor);
 		}
 
 		try {
-			this.getOcWebSocketService().sendMessageToAllUsers(new RemoveVehiclesMessage(vehicleDataCollection));
+			this.getOcWebSocketService().sendMessageToAllUsers(
+							new RemoveVehiclesMessage(vehicleDataCollection));
 		} catch (IOException e) {
 			log.error("Exception", e);
 		}
-		
+
 		try {
 			this.gateMessageStrategy.deleteSensors(sensorHelperCollection);
 		} catch (SensorException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	/**
 	 * Creates the sensors for vehicles and sends them to the user.
+	 *
 	 * @param vehicleDataCollection
 	 */
-	private void createsVehicleSensors(Collection<VehicleData> vehicleDataCollection) {
-		Collection<SensorHelper<?>> sensorHelperCollection = new LinkedList<>();
-		
-		for(VehicleData vehicleData : vehicleDataCollection) {
-			for(SensorHelperTypeWrapper sensor : vehicleData.getSensors()) {
-				this.sensorMap.put(sensor.getSensorHelper().getSensorID(), sensor);
-				Set<Sensor<?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getSensorHelper().getSensorType().getSensorTypeId());
-				if(sensorIDSet == null) {
-					sensorIDSet = new HashSet<>();
-					this.sensorTypeIDMap.put(sensor.getSensorHelper().getSensorType().getSensorTypeId(), sensorIDSet);
-				}
-				sensorIDSet.add(sensor.getSensorHelper().getSensorID());
-				sensorHelperCollection.add(sensor.getSensorHelper());
-				log.debug("create sensor: " + sensor.getSensorType() + " with id: "
-						+ sensor.getSensorHelper().getSensorID());
+	private void createsVehicleSensors(
+					Collection<Vehicle<?>> vehicleDataCollection) {
+		Collection<Sensor<?,?>> sensorHelperCollection = new LinkedList<>();
+
+		for (Vehicle<?> vehicleData : vehicleDataCollection) {
+			Sensor sensor = vehicleData.getGpsSensor();
+			this.sensorMap.add(sensor);
+			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor);
+			if (sensorIDSet == null) {
+				sensorIDSet = new HashSet<>();
+				this.sensorTypeIDMap.put(sensor.getClass(), sensorIDSet);
 			}
-			
-			this.vehicleDataMap.put(vehicleData.getVehicleID(), vehicleData);
+			sensorIDSet.add(sensor);
+			sensorHelperCollection.add(sensor);
+			log.debug("create sensor: " + sensor.getSensorType() + " with id: "
+													+ sensor);
+			this.vehicleDataMap.add(vehicleData);
 		}
 
 		try {
-			this.getOcWebSocketService().sendMessageToAllUsers(new NewVehiclesMessage(vehicleDataCollection));
+			this.getOcWebSocketService().sendMessageToAllUsers(new NewVehiclesMessage(
+							vehicleDataCollection));
 		} catch (IOException e) {
 			log.error("Exception", e);
 		}
-		
+
 		try {
 			this.gateMessageStrategy.createSensors(sensorHelperCollection);
 		} catch (SensorException e) {

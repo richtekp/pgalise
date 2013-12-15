@@ -37,7 +37,7 @@ public class NewDayEvent extends WeatherEvent {
 	/**
 	 * List with Strategies to modify weather data
 	 */
-	private final List<WeatherEventEnum> strategyList;
+	private final List<WeatherEventTypeEnum> strategyList;
 
 	/**
 	 * Constructor
@@ -47,17 +47,14 @@ public class NewDayEvent extends WeatherEvent {
 	 * @param list
 	 *            List with Strategies to modify weather data
 	 */
-	public NewDayEvent(List<WeatherEventEnum> list) {
-		super();
+	public NewDayEvent(List<WeatherEventTypeEnum> list, long timestamp) {
+		super(WeatherEventTypeEnum.NEW_DAY_EVENT,
+			timestamp,
+			0, -1);
 		this.strategyList = list;
 	}
 
-	public List<WeatherEventEnum> getStrategyList() {
+	public List<WeatherEventTypeEnum> getStrategyList() {
 		return this.strategyList;
-	}
-
-	@Override
-	public EventType getType() {
-		return EventTypeEnum.NEW_DAY_EVENT;
 	}
 }

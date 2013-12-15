@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.service;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -45,11 +44,13 @@ import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
-import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.event.weather.WeatherEventType;
+import de.pgalise.simulation.traffic.InfrastructureInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
@@ -69,18 +70,23 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 /**
- * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the
- * weather environment controller of the simulation. Its public methods can be called by other components. Therefore,
- * the controller is implemented as an EJB. For one thing the controller sends all requests to the interface
- * {@link WeatherService} and the responses back to the other components, for another thing it inherits from the generic
- * {@link Controller} interface and implements its state transitions. So this controller acts as intermediary between
- * components of the simulation and the {@link WeatherService}. The interface {@link WeatherControllerLocal} can be used
- * for local communication.<br />
+ * The main interaction point of the component Weather is the interface
+ * {@link WeatherController} that represents the weather environment controller
+ * of the simulation. Its public methods can be called by other components.
+ * Therefore, the controller is implemented as an EJB. For one thing the
+ * controller sends all requests to the interface {@link WeatherService} and the
+ * responses back to the other components, for another thing it inherits from
+ * the generic {@link Controller} interface and implements its state
+ * transitions. So this controller acts as intermediary between components of
+ * the simulation and the {@link WeatherService}. The interface
+ * {@link WeatherControllerLocal} can be used for local communication.<br />
  * <br />
- * If the {@link DefaultWeatherController} tries to start, it checks the availability of weather information regarding
- * the start date of the simulation. An exception will occur if the component cannot connect to the database or found
- * any information. It is mandatory that there is weather data to the first simulation day.
- * 
+ * If the {@link DefaultWeatherController} tries to start, it checks the
+ * availability of weather information regarding the start date of the
+ * simulation. An exception will occur if the component cannot connect to the
+ * database or found any information. It is mandatory that there is weather data
+ * to the first simulation day.
+ *
  * @author Andreas Rehfeldt
  * @author Timo
  * @author Mustafa
@@ -89,12 +95,14 @@ import java.util.HashSet;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
 @Local
-public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter, InitParameter> implements WeatherController {
+public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter, InfrastructureInitParameter>
+	implements WeatherController {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(DefaultWeatherController.class);
+	private static final Logger log = LoggerFactory.getLogger(
+		DefaultWeatherController.class);
 	private static final String NAME = "WeatherController";
 
 	/**
@@ -106,7 +114,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	 * File path for property file
 	 */
 	private static final String PROPERTIES_FILE_PATH = "/weather_decorators.properties";
-	
+
 	private final static String JNDI_PROPERTIES_FILE_PATH = "/META-INF/jndi.properties";
 
 	/**
@@ -139,7 +147,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	 * Random Seed Service
 	 */
 	private RandomSeedService randomSeedService;
-	
+
 	private InitParameter initParameter;
 
 	/**
@@ -148,7 +156,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	public DefaultWeatherController() {
 		// Read propsInputStream propInFile
 		try (InputStream propInFile = WeatherLoader.class
-				.getResourceAsStream(DefaultWeatherController.PROPERTIES_FILE_PATH)) {
+			.getResourceAsStream(DefaultWeatherController.PROPERTIES_FILE_PATH)) {
 			this.decorator_props = new Properties();
 			this.decorator_props.loadFromXML(propInFile);
 		} catch (IOException e) {
@@ -166,77 +174,100 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 
 	/**
 	 * Creates a weather strategy from the given enum element
-	 * 
-	 * @param enumElement
-	 *            WeatherEventEnum
-	 * @param timestamp
-	 *            Timestamp
-	 * @param value
-	 *            Specified value for event
-	 * @param duration
-	 *            Duration of the event
+	 *
+	 * @param enumElement WeatherEventTypeEnum
+	 * @param timestamp Timestamp
+	 * @param value Specified value for event
+	 * @param duration Duration of the event
 	 * @return weather strategy
-	 * @throws IllegalArgumentException
-	 *             enumElement is null or weather strategy is not implemented
+	 * @throws IllegalArgumentException enumElement is null or weather strategy is
+	 * not implemented
 	 */
-	public WeatherStrategy createStrategyFromEnum(WeatherEventEnum enumElement, long timestamp, Float value,
-			Float duration) throws IllegalArgumentException {
+	public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
+		long timestamp,
+		Float value,
+		Float duration) throws IllegalArgumentException {
 		if (enumElement == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("enumElement"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"enumElement"));
 		}
 
 		/*
 		 * INFO: You have to add new weather strategies here!
 		 */
-		switch (enumElement) {
-			case RAINDAY:
-				return new RainDayEvent(this.randomSeedService.getSeed(RainDayEvent.class.getName()), timestamp,
-						this.decorator_props, value, duration, this.weatherLoader);
-			case COLDDAY:
-				return new ColdDayEvent(this.randomSeedService.getSeed(ColdDayEvent.class.getName()), timestamp,
-						this.decorator_props, value, duration, this.weatherLoader);
-			case HOTDAY:
-				return new HotDayEvent(this.randomSeedService.getSeed(HotDayEvent.class.getName()), timestamp,
-						this.decorator_props, value, duration, this.weatherLoader);
-			case STORMDAY:
-				return new StormDayEvent(this.randomSeedService.getSeed(StormDayEvent.class.getName()), timestamp,
-						this.decorator_props, value, duration, this.weatherLoader);
-			case CITYCLIMATE:
-				// Events with -1 are not considered
-				return ((value != null) && (value < 0)) ? null : new CityClimateModifier(
-						this.randomSeedService.getSeed(CityClimateModifier.class.getName()), this.decorator_props,
-						this.weatherLoader);
-			case REFERENCECITY:
-				// Events with -1 are not considered
-				return ((value != null) && (value < 0)) ? null : new ReferenceCityModifier(
-						this.randomSeedService.getSeed(ReferenceCityModifier.class.getName()), this.decorator_props,
-						this.weatherLoader);
-			default:
-				throw new IllegalArgumentException("No weather strategy found!");
+		if (enumElement.equals(WeatherEventTypeEnum.RAINDAY)) {
+			return new RainDayEvent(this.randomSeedService.getSeed(RainDayEvent.class.
+				getName()),
+				timestamp,
+				this.decorator_props,
+				value,
+				duration,
+				this.weatherLoader);
+		} else if (enumElement.equals(WeatherEventTypeEnum.COLDDAY)) {
+			return new ColdDayEvent(this.randomSeedService.getSeed(ColdDayEvent.class.
+				getName()),
+				timestamp,
+				this.decorator_props,
+				value,
+				duration,
+				this.weatherLoader);
+		} else if (enumElement.equals(WeatherEventTypeEnum.HOTDAY)) {
+			return new HotDayEvent(this.randomSeedService.getSeed(HotDayEvent.class.
+				getName()),
+				timestamp,
+				this.decorator_props,
+				value,
+				duration,
+				this.weatherLoader);
+		} else if (enumElement.equals(WeatherEventTypeEnum.STORMDAY)) {
+			return new StormDayEvent(this.randomSeedService.getSeed(
+				StormDayEvent.class.getName()),
+				timestamp,
+				this.decorator_props,
+				value,
+				duration,
+				this.weatherLoader);
+		} else if (enumElement.equals(WeatherEventTypeEnum.CITYCLIMATE)) {
+			// Events with -1 are not considered
+			return ((value != null) && (value < 0)) ? null : new CityClimateModifier(
+				this.randomSeedService.getSeed(CityClimateModifier.class.getName()),
+				this.decorator_props,
+				this.weatherLoader);
+		} else if (enumElement.equals(WeatherEventTypeEnum.REFERENCECITY)) {
+			// Events with -1 are not considered
+			return ((value != null) && (value < 0)) ? null : new ReferenceCityModifier(
+				this.randomSeedService.getSeed(ReferenceCityModifier.class.getName()),
+				this.decorator_props,
+				this.weatherLoader);
+		} else {
+			throw new IllegalArgumentException("No weather strategy found!");
 		}
 	}
 
 	/**
 	 * Creates a list of weather strategies from the given enum list
-	 * 
-	 * @param eventList
-	 *            List of WeatherEventHelper
+	 *
+	 * @param eventList List of WeatherEvent
 	 * @return list of weather strategies
 	 * @throws IllegalArgumentException
 	 */
-	public List<WeatherStrategyHelper> createStrategyList(List<WeatherEventHelper> eventList)
-			throws IllegalArgumentException {
+	public List<WeatherStrategyHelper> createStrategyList(
+		List<WeatherEvent> eventList)
+		throws IllegalArgumentException {
 		if (eventList == null) {
 			return null;
 		}
 
 		// Create strategies
 		List<WeatherStrategyHelper> strategies = new ArrayList<>(eventList.size());
-		for (WeatherEventHelper event : eventList) {
-			WeatherStrategy strategy = this.createStrategyFromEnum(event.getEvent(), event.getTimestamp(),
-					event.getValue(), event.getDuration());
+		for (WeatherEvent event : eventList) {
+			WeatherStrategy strategy = this.createStrategyFromEnum(event.getType(),
+				event.getTimestamp(),
+				event.getValue(),
+				event.getDuration());
 			if (strategy != null) {
-				strategies.add(new WeatherStrategyHelper(strategy, event.getTimestamp()));
+				strategies.add(new WeatherStrategyHelper(strategy,
+					event.getTimestamp()));
 			}
 		}
 
@@ -253,8 +284,12 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	}
 
 	@Override
-	public Number getValue(final WeatherParameterEnum key, final long timestamp, final Coordinate position) {
-		return DefaultWeatherController.this.weatherservice.getValue(key, timestamp, position);
+	public Number getValue(final WeatherParameterEnum key,
+		final long timestamp,
+		final Coordinate position) {
+		return DefaultWeatherController.this.weatherservice.getValue(key,
+			timestamp,
+			position);
 	}
 
 	public WeatherService getWeatherservice() {
@@ -271,13 +306,13 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 
 	/**
 	 * Start the weather service or initialize this service
-	 * 
-	 * @param city
-	 *            City
+	 *
+	 * @param city City
 	 */
 	public void startWeatherService(City city) {
 		if (this.weatherservice == null) {
-			this.weatherservice = new DefaultWeatherService(city, this.weatherLoader);
+			this.weatherservice = new DefaultWeatherService(city,
+				this.weatherLoader);
 		} else {
 			this.weatherservice.initValues();
 			this.weatherservice.setCity(city);
@@ -285,17 +320,16 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	}
 
 	/**
-	 * Returns the first new date after the timestamp. e.g. for 2012-11-09 14:44:00.0 and interval of 7 seconds it will
-	 * return 2012-11-10 00:00:02.0
-	 * 
-	 * @param timestamp
-	 *            in millis
-	 * @param interval
-	 *            in millis
+	 * Returns the first new date after the timestamp. e.g. for 2012-11-09
+	 * 14:44:00.0 and interval of 7 seconds it will return 2012-11-10 00:00:02.0
+	 *
+	 * @param timestamp in millis
+	 * @param interval in millis
 	 * @return Timestamp of the next date
 	 */
 	@SuppressWarnings("unused")
-	private long getNextNewDateTimestamp(long timestamp, long interval) {
+	private long getNextNewDateTimestamp(long timestamp,
+		long interval) {
 		long timestamp0 = timestamp;
 		if (timestamp0 == this.startTimestamp) {
 			GregorianCalendar calendar = new GregorianCalendar();
@@ -316,7 +350,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 				int tmpMillis = calendar.get(Calendar.MILLISECOND);
 
 				if ((tmpHour <= currentHour) && (tmpMin <= currentMin) && (tmpSec <= currentSec)
-						&& (tmpMillis <= currentMillis)) {
+					&& (tmpMillis <= currentMillis)) {
 					return calendar.getTimeInMillis();
 
 				} else {
@@ -332,9 +366,10 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	}
 
 	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
+	protected void onInit(InfrastructureInitParameter param) throws InitializationException {
 		// Set random seed service
-		ServerConfiguration serverConfiguration = new ServerConfiguration(new HashSet<>(Arrays.asList(ServiceDictionary.RANDOM_SEED_SERVICE)));
+		ServerConfiguration serverConfiguration = new ServerConfiguration(
+			new HashSet<>(Arrays.asList(ServiceDictionary.RANDOM_SEED_SERVICE)));
 		serviceDictionary.init(serverConfiguration);
 		this.randomSeedService = this.serviceDictionary.getRandomSeedService();
 		this.initParameter = param;
@@ -357,11 +392,15 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 
 		// Log
 		DefaultWeatherController.log
-				.debug("Start: " + this.initParameter.getStartTimestamp() + " - End: " + this.initParameter.getEndTimestamp());
+			.debug(
+				"Start: " + this.initParameter.getStartTimestamp() + " - End: " + this.initParameter.
+				getEndTimestamp());
 
 		// Add new weather data
-		this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp(), this.initParameter.getEndTimestamp(),
-				!param.isAggregatedWeatherDataEnabled(), this.createStrategyList(param.getWeatherEventHelperList()));
+		this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp(),
+			this.initParameter.getEndTimestamp(),
+			!param.isAggregatedWeatherDataEnabled(),
+			this.createStrategyList(param.getWeatherEventList()));
 
 		// Set start date
 		this.setStartTimestamp(this.initParameter.getStartTimestamp());
@@ -382,16 +421,23 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 				// Change the current weather data
 				try {
 					ChangeWeatherEvent cevent = (ChangeWeatherEvent) event;
-					WeatherStrategy strategy = DefaultWeatherController.this.createStrategyFromEnum(cevent.getEvent(),
-							cevent.getTimestamp(), cevent.getValue(), cevent.getDuration());
-					DefaultWeatherController.log.debug("Prepare modifier: " + cevent.getEvent());
+					WeatherStrategy strategy = DefaultWeatherController.this.
+						createStrategyFromEnum(cevent.getType(),
+							cevent.getTimestamp(),
+							cevent.getValue(),
+							cevent.getDuration());
+					DefaultWeatherController.log.debug("Prepare modifier: " + cevent.
+						getType());
 					if (strategy != null) {
 						// Log
-						DefaultWeatherController.log.debug("Deploy modifier: " + cevent.getEvent());
-						DefaultWeatherController.this.weatherservice.deployStrategy(strategy);
+						DefaultWeatherController.log.debug("Deploy modifier: " + cevent.
+							getType());
+						DefaultWeatherController.this.weatherservice.
+							deployStrategy(strategy);
 					}
 				} catch (IllegalArgumentException e) {
-					log.warn("see nested exception", e);
+					log.warn("see nested exception",
+						e);
 					throw new RuntimeException(e);
 				}
 			}

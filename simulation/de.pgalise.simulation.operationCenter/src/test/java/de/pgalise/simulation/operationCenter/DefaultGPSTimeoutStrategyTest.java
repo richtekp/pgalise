@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.operationCenter;
 
 import java.util.Collection;
@@ -29,18 +28,20 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.operationCenter.internal.strategy.DefaultGPSTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import org.easymock.EasyMock;
 
 /**
  * J-Unit tests for {@link DefaultGPSTimeoutStrategy}
- * 
+ *
  * @author Timo
  */
 public class DefaultGPSTimeoutStrategyTest {
+
 	/**
 	 * Simulation interval:
 	 */
@@ -67,30 +68,35 @@ public class DefaultGPSTimeoutStrategyTest {
 	private static final double SENSOR_HELPER_WITH_TIMEOUT_PERCENTAGE = 0.5;
 
 	/**
-	 * Contains all the sensor helpers (SENSOR_HELPER_LIST_WITH + SENSOR_HELPER_LIST_WITHOUT_TIMEOUT):
+	 * Contains all the sensor helpers (SENSOR_HELPER_LIST_WITH +
+	 * SENSOR_HELPER_LIST_WITHOUT_TIMEOUT):
 	 */
-	private static List<SensorHelper> SENSOR_HELPER_LIST_ALL;
+	private static List<GpsSensor> SENSOR_HELPER_LIST_ALL;
 
 	/**
-	 * Contains only sensor helpers with a timeout (SENSOR_HELPER_LIST_ALL - SENSOR_HELPER_LIST_WITHOUT_TIMESTAMP):
+	 * Contains only sensor helpers with a timeout (SENSOR_HELPER_LIST_ALL -
+	 * SENSOR_HELPER_LIST_WITHOUT_TIMESTAMP):
 	 */
-	private static List<SensorHelper> SENSOR_HELPER_LIST_WITH_TIMEOUT;
+	private static List<Sensor<?, ?>> SENSOR_HELPER_LIST_WITH_TIMEOUT;
 
 	/**
-	 * Contains only sensor helpers without a timeout (SENSOR_HELPER_LIST_ALL - SENSOR_HELPER_LIST_WITH_TIMEOUT):
+	 * Contains only sensor helpers without a timeout (SENSOR_HELPER_LIST_ALL -
+	 * SENSOR_HELPER_LIST_WITH_TIMEOUT):
 	 */
-	private static List<SensorHelper> SENSOR_HELPER_LIST_WITHOUT_TIMEOUT;
+	private static List<GpsSensor> SENSOR_HELPER_LIST_WITHOUT_TIMEOUT;
 
 	/**
-	 * SENSOR_HELPER_LIST_WITH_TIMEOUT but with SensorData instead of SensorHelper.
+	 * SENSOR_HELPER_LIST_WITH_TIMEOUT but with SensorData instead of
+	 * SensorHelper.
 	 */
-	private static List<SensorData> SENSOR_DATA_LIST_WITH_TIMEOUT;
+	private static List<Sensor<?,?>> SENSOR_DATA_LIST_WITH_TIMEOUT;
 
 	@BeforeClass
 	public static void setUp() {
 		DefaultGPSTimeoutStrategyTest.TEST_CLASS = new DefaultGPSTimeoutStrategy();
-		DefaultGPSTimeoutStrategyTest.TEST_CLASS.init(DefaultGPSTimeoutStrategyTest.INTERVAL,
-				DefaultGPSTimeoutStrategyTest.MISSED_GPS_UPDATE_STEPS_BEFORE_TIMEOUT);
+		DefaultGPSTimeoutStrategyTest.TEST_CLASS.init(
+			DefaultGPSTimeoutStrategyTest.INTERVAL,
+			DefaultGPSTimeoutStrategyTest.MISSED_GPS_UPDATE_STEPS_BEFORE_TIMEOUT);
 
 		DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL = new LinkedList<>();
 		DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITH_TIMEOUT = new LinkedList<>();
@@ -100,39 +106,41 @@ public class DefaultGPSTimeoutStrategyTest {
 		/* Create sensors: */
 		for (int i = 0; i < DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL_SIZE; i++) {
 
-			Sensor sensor = EasyMock.createNiceMock(Sensor.class);
-			SensorHelper tmpSensorHelper = new SensorHelper(sensor, new Coordinate(), SensorTypeEnum.GPS_CAR,
-					new LinkedList<SensorInterfererType>());
-			DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL.add(tmpSensorHelper);
+			GpsSensor sensor = EasyMock.createNiceMock(GpsSensor.class);
+			DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL.add(sensor);
 
 			if (((double) i / DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL_SIZE) > DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_WITH_TIMEOUT_PERCENTAGE) {
-				DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITHOUT_TIMEOUT.add(tmpSensorHelper);
+				DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITHOUT_TIMEOUT.add(
+					sensor);
 			} else {
-				DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITH_TIMEOUT.add(tmpSensorHelper);
-				DefaultGPSTimeoutStrategyTest.SENSOR_DATA_LIST_WITH_TIMEOUT.add(new SensorData(tmpSensorHelper
-						.getSensorType().getSensorTypeId(), tmpSensorHelper.getSensorID()));
+				DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITH_TIMEOUT.
+					add(sensor);
+				Sensor<?,?> s = EasyMock.createNiceMock(Sensor.class);
+				DefaultGPSTimeoutStrategyTest.SENSOR_DATA_LIST_WITH_TIMEOUT.add(
+					(s));
 			}
 		}
 	}
 
 	/**
-	 * Compares two sensor data collections. The order of the collections doesn't matter.
-	 * 
-	 * @param collection1
-	 *            Data 1
-	 * @param collection2
-	 *            Data 2
+	 * Compares two sensor data collections. The order of the collections doesn't
+	 * matter.
+	 *
+	 * @param collection1 Data 1
+	 * @param collection2 Data 2
 	 * @return true if the collections are equals
 	 */
-	private static boolean compareSensorHelperCollections(Collection<SensorData> collection1,
-			Collection<SensorData> collection2) {
+	private static boolean compareSensorHelperCollections(
+		Collection<Sensor<?, ?>> collection1,
+		Collection<Sensor<?, ?>> collection2) {
 
 		if (collection1.size() != collection2.size()) {
 			return false;
 		}
 
-		collection1Loop: for (SensorData sensorData1 : collection1) {
-			for (SensorData sensorData2 : collection2) {
+		collection1Loop:
+		for (Sensor<?, ?> sensorData1 : collection1) {
+			for (Sensor<?, ?> sensorData2 : collection2) {
 				if (sensorData1.equals(sensorData2)) {
 					continue collection1Loop;
 				}
@@ -148,9 +156,12 @@ public class DefaultGPSTimeoutStrategyTest {
 		long currentTimestamp = new Date().getTime();
 
 		/* Start all sensors: */
-		Assert.assertEquals(true, DefaultGPSTimeoutStrategyTest.compareSensorHelperCollections(
-				new LinkedList<SensorData>(), DefaultGPSTimeoutStrategyTest.TEST_CLASS.processUpdateStep(
-						currentTimestamp, DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL)));
+		Assert.assertEquals(true,
+			DefaultGPSTimeoutStrategyTest.compareSensorHelperCollections(
+				new LinkedList<Sensor<?, ?>>(),
+				DefaultGPSTimeoutStrategyTest.TEST_CLASS.processUpdateStep(
+					currentTimestamp,
+					DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_ALL)));
 
 		/* Then use sensor helper list without timeouts : */
 		for (int i = 0; i < 1000; i++) {
@@ -159,16 +170,21 @@ public class DefaultGPSTimeoutStrategyTest {
 
 			/* If timestamp is before or after missed gps updates constant, than no sensor will get a timeout. */
 			if (i != DefaultGPSTimeoutStrategyTest.MISSED_GPS_UPDATE_STEPS_BEFORE_TIMEOUT) {
-				Assert.assertEquals(true, DefaultGPSTimeoutStrategyTest.compareSensorHelperCollections(
-						new LinkedList<SensorData>(), DefaultGPSTimeoutStrategyTest.TEST_CLASS.processUpdateStep(
-								currentTimestamp, DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITHOUT_TIMEOUT)));
+				Assert.assertEquals(true,
+					DefaultGPSTimeoutStrategyTest.compareSensorHelperCollections(
+						new LinkedList<Sensor<?,?>>(),
+						DefaultGPSTimeoutStrategyTest.TEST_CLASS.processUpdateStep(
+							currentTimestamp,
+							DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITHOUT_TIMEOUT)));
 
 				/* All sensors with timeout will be found in this step: */
 			} else {
-				Assert.assertEquals(true, DefaultGPSTimeoutStrategyTest.compareSensorHelperCollections(
+				Assert.assertEquals(true,
+					DefaultGPSTimeoutStrategyTest.compareSensorHelperCollections(
 						DefaultGPSTimeoutStrategyTest.SENSOR_DATA_LIST_WITH_TIMEOUT,
-						DefaultGPSTimeoutStrategyTest.TEST_CLASS.processUpdateStep(currentTimestamp,
-								DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITHOUT_TIMEOUT)));
+						DefaultGPSTimeoutStrategyTest.TEST_CLASS.processUpdateStep(
+							currentTimestamp,
+							DefaultGPSTimeoutStrategyTest.SENSOR_HELPER_LIST_WITHOUT_TIMEOUT)));
 			}
 		}
 	}

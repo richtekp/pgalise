@@ -26,6 +26,7 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
@@ -39,7 +40,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  * @author Andreas
  * @version 1.0
  */
-public class InfraredSensor extends AbstractSensor<TrafficEvent> {
+public class InfraredSensor extends AbstractSensor<TrafficEvent, InfraredSensorData> {
 	/**
 	 * Logger
 	 */
@@ -75,7 +76,7 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent> {
 	 */
 	public InfraredSensor(final Output output, final Vehicle<? extends BusData> vehicle,
 			final Coordinate position, final int updateLimit, final InfraredInterferer interferer) {
-		super(output, position, updateLimit);
+		super(output, TrafficSensorTypeEnum.INFRARED, updateLimit, new InfraredSensorData());
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
 		}
@@ -106,11 +107,6 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent> {
 		return this.interferer;
 	}
 
-	@Override
-	public SensorType getSensorType() {
-		return SensorTypeEnum.INFRARED;
-	}
-
 	public void setInterferer(final InfraredInterferer interferer) throws IllegalArgumentException {
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
@@ -124,9 +120,6 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent> {
 	 */
 	@Override
 	public void transmitUsageData(EventList<TrafficEvent> eventList) {
-		if (this.vehicle.getPosition() != null) {
-			this.setPosition(this.vehicle.getPosition());
-		}
 
 		// Get random passengers
 		int passengers = this.vehicle.getData().getCurrentPassengerCount();
@@ -186,7 +179,6 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent> {
 		}
 
 		if (this.vehicle.getPosition() != null) {
-			this.setPosition(this.vehicle.getPosition());
 
 			if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.vehicle.getVehicleState()) && this.vehicle.getVehicleState() != VehicleStateEnum.NOT_STARTED) {
 				if (sendData) {

@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.StationDataMap;
@@ -239,7 +240,7 @@ public class DefaultWeatherService implements WeatherService {
 			throw new IllegalStateException("No weather data has been added so far");
 		}
 
-		if (WeatherEventEnum.SIMULATION_EVENTS.contains(strategy.getType())) {
+		if (WeatherEventTypeEnum.SIMULATION_EVENTS.contains(strategy.getType())) {
 			// Remember simulation Event?
 			if (!this.isPlannedEventType(strategy.getType())) {
 				// Execute
@@ -515,7 +516,7 @@ public class DefaultWeatherService implements WeatherService {
 	 *            WeatherEventEnum
 	 * @return true if the event type is planned for further events else false
 	 */
-	private boolean isPlannedEventType(WeatherEventEnum type) {
+	private boolean isPlannedEventType(WeatherEventType type) {
 		for (WeatherStrategyHelper helper : this.plannedEventModifiers) {
 			if (helper.getStrategy().getType().equals(type)) {
 				return true;
@@ -565,7 +566,7 @@ public class DefaultWeatherService implements WeatherService {
 			while (iterator.hasNext()) {
 				WeatherStrategyHelper strategyHelper = iterator.next();
 				if (strategyHelper != null) {
-					if (WeatherEventEnum.SIMULATION_EVENTS.contains(strategyHelper.getStrategy().getType())) {
+					if (WeatherEventTypeEnum.SIMULATION_EVENTS.contains(strategyHelper.getStrategy().getType())) {
 						dayStrategies.add(strategyHelper.getStrategy());
 					} else if (DateConverter.isTheSameDay(strategyHelper.getTimestamp(), timestamp)) {
 						dayStrategies.add(strategyHelper.getStrategy());

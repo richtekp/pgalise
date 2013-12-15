@@ -20,8 +20,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.city.BusCalendar;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import javax.persistence.Column;
@@ -73,12 +74,12 @@ public class BusTrip extends TrafficTrip {
 	/**
 	 * SensorHelper of the GPS sensor
 	 */
-	private SensorHelper<?> gpsSensor;
+	private GpsSensor gpsSensor;
 
 	/**
 	 * SensorHelper of the infrared sensor
 	 */
-	private SensorHelper<?> infraredSensor;
+	private InfraredSensor infraredSensor;
 
 	/**
 	 * Short name
@@ -171,14 +172,6 @@ public class BusTrip extends TrafficTrip {
 		return bus;
 	}
 
-	public SensorHelper getGpsSensor() {
-		return gpsSensor;
-	}
-
-	public void setGpsSensor(SensorHelper gpsSensor) {
-		this.gpsSensor = gpsSensor;
-	}
-
 	public List<BusStop> getBusStops() {
 		return busStops;
 	}
@@ -187,12 +180,20 @@ public class BusTrip extends TrafficTrip {
 		this.busStops = busStops;
 	}
 
-	public SensorHelper getInfraredSensor() {
+	public InfraredSensor getInfraredSensor() {
 		return infraredSensor;
 	}
 
-	public void setInfraredSensor(SensorHelper infraredSensor) {
+	public GpsSensor getGpsSensor() {
+		return gpsSensor;
+	}
+
+	public void setInfraredSensor(InfraredSensor infraredSensor) {
 		this.infraredSensor = infraredSensor;
+	}
+
+	public void setGpsSensor(GpsSensor gpsSensor) {
+		this.gpsSensor = gpsSensor;
 	}
 
 	public BusCalendar getServiceId() {

@@ -28,8 +28,6 @@ import java.util.UUID;
 public class RandomVehicleBundle {
 	private int randomCarAmount, randomBikeAmount, randomTruckAmount, randomMotorcycleAmount;
 	private double gpsCarRatio, gpsBikeRatio, gpsTruckRatio, gpsMotorcycleRatio;
-	private Set<Sensor<?>> usedSensorIDs = new HashSet<>(1);
-	private Set<UUID> usedUUIDs = new HashSet<UUID>(16);
 	
 	/**
 	 * Constructor
@@ -47,8 +45,8 @@ public class RandomVehicleBundle {
 	public RandomVehicleBundle(int randomCarAmount, double gpsCarRatio,
 			int randomBikeAmount, double gpsBikeRatio,
 			int randomTruckAmount, double gpsTruckRatio,
-			int randomMotorcycleAmount, double gpsMotorcycleRatio, 
-			Set<Sensor<?>> usedSensorIDs, Set<UUID> usedUUIDs) {
+			int randomMotorcycleAmount, double gpsMotorcycleRatio
+			) {
 		super();
 		if(randomCarAmount < 0) {
 			throw new IllegalArgumentException("randomCarAmount must be >= 0!");
@@ -74,12 +72,6 @@ public class RandomVehicleBundle {
 		if(gpsMotorcycleRatio < 0.0 || gpsMotorcycleRatio > 1.0) {
 			throw new IllegalArgumentException("gpsMotorcycleRatio must be >= 0.0 && <= 1.0");
 		}
-		if(usedSensorIDs == null) {
-			throw new IllegalArgumentException();
-		}
-		if(usedUUIDs == null) {
-			throw new IllegalArgumentException();
-		}
 		
 		this.randomCarAmount = randomCarAmount;
 		this.randomBikeAmount = randomBikeAmount;
@@ -89,8 +81,6 @@ public class RandomVehicleBundle {
 		this.gpsBikeRatio = gpsBikeRatio;
 		this.gpsTruckRatio = gpsTruckRatio;
 		this.gpsMotorcycleRatio = gpsMotorcycleRatio;
-		this.usedSensorIDs = usedSensorIDs;
-		this.usedUUIDs = usedUUIDs;
 	}
 
 	public int getRandomCarAmount() {
@@ -163,21 +153,5 @@ public class RandomVehicleBundle {
 
 	public void setGpsMotorcycleRatio(double gpsMotorcycleRatio) {
 		this.gpsMotorcycleRatio = gpsMotorcycleRatio;
-	}
-
-	public Set<Sensor<?>> getUsedSensorIDs() {
-		return usedSensorIDs;
-	}
-
-	public void setUsedSensorIDs(Set<Sensor<?>> usedSensorIDs) {
-		this.usedSensorIDs = usedSensorIDs;
-	}
-
-	public Set<UUID> getUsedUUIDs() {
-		return usedUUIDs;
-	}
-
-	public void setUsedUUIDs(Set<UUID> usedUUIDs) {
-		this.usedUUIDs = usedUUIDs;
 	}
 }

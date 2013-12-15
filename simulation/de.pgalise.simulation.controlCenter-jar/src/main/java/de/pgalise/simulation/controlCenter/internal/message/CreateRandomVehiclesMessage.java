@@ -23,7 +23,7 @@ import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
  * 
  * @author Timo
  */
-public class CreateRandomVehiclesMessage extends CCWebSocketMessage<RandomVehicleBundle> {
+public class CreateRandomVehiclesMessage extends AbstractIdentifiableCCWebSocketMessage<RandomVehicleBundle> {
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ public class CreateRandomVehiclesMessage extends CCWebSocketMessage<RandomVehicl
 	 * @param content
 	 *            RandomVehicleBundle with information about which vehicles shall be created.
 	 */
-	public CreateRandomVehiclesMessage(int messageID, RandomVehicleBundle content) {
-		super(messageID, CCWebSocketMessage.MessageType.CREATE_RANDOM_VEHICLES, content);
+	public CreateRandomVehiclesMessage(Long messageID, RandomVehicleBundle content) {
+		super(messageID, MessageTypeEnum.CREATE_RANDOM_VEHICLES, content);
 	}
 }

@@ -26,13 +26,13 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.ejb.EJB;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.catalina.websocket.StreamInbound;
-import org.apache.catalina.websocket.WebSocketServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.operationCenter.internal.message.OCWebSocketMessage;
+import de.pgalise.simulation.operationcenter.OCWebSocketUser;
 import de.pgalise.simulation.service.GsonService;
+import javax.servlet.http.HttpServlet;
 
 /**
  * This servlet is the default implementation of an {@link OCWebSocketService}
@@ -41,7 +41,7 @@ import de.pgalise.simulation.service.GsonService;
  * 
  * @author Timo
  */
-public class OCWebSocketServlet extends WebSocketServlet implements OCWebSocketService {
+public class OCWebSocketServlet extends HttpServlet implements OCWebSocketService {
 	private static final Logger LOG = LoggerFactory.getLogger(OCWebSocketServlet.class);
 	private static final long serialVersionUID = 3385629233339378162L;
 	/**
@@ -84,11 +84,6 @@ public class OCWebSocketServlet extends WebSocketServlet implements OCWebSocketS
 		for (OCWebSocketUser user : webSocketUsers) {
 			user.sendMessage(message);
 		}
-	}
-
-	@Override
-	protected StreamInbound createWebSocketInbound(String protocol, HttpServletRequest request) {
-		return new OCWebSocketUser(this.gsonService.getGson(), this);
 	}
 	
 	@Override

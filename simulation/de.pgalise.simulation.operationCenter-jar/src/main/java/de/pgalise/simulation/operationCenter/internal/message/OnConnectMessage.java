@@ -40,7 +40,7 @@ public class OnConnectMessage extends OCWebSocketMessage<OCOnConnectData>{
 	private static Map<Integer, String> getSensorTypeIds() {
 		Map<Integer, String> sensorIdMap = new HashMap<>();
 		
-		for(Entry<Integer, SensorType> entry : SensorTypeEnum.getSensorTypeIdsAsUnmodifiable().entrySet()) {
+		for(Entry<Integer, SensorType> entry : SensorTypeEnum.getSensorTypeIds().entrySet()) {
 			sensorIdMap.put(entry.getKey(), entry.getValue().toString());
 		}
 		

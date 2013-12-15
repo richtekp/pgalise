@@ -19,12 +19,13 @@ package de.pgalise.simulation.operationCenter.internal.message;
 import java.util.Collection;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
+import de.pgalise.simulation.sensorFramework.Sensor;
 
 /**
  * Sensor data message.
  * @author Timo
  */
-public class SensorDataMessage extends OCWebSocketMessage<Collection<SensorData>> {
+public class SensorDataMessage extends OCWebSocketMessage<Collection<Sensor<?,?>>> {
 	private long time;
 	
 	/**
@@ -34,7 +35,7 @@ public class SensorDataMessage extends OCWebSocketMessage<Collection<SensorData>
 	 * @param timestamp
 	 * 			the current time stamp of the moment of measuring the value
 	 */
-	public SensorDataMessage(Collection<SensorData> sensorData, long timestamp) {
+	public SensorDataMessage(Collection<Sensor<?,?>> sensorData, long timestamp) {
 		super(MessageType.SENSOR_DATA, sensorData);
 		this.setContent(sensorData);
 		this.time = timestamp;

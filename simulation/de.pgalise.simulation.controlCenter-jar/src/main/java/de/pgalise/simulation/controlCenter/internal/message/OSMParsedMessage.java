@@ -23,7 +23,7 @@ import de.pgalise.simulation.shared.city.Boundary;
  * 
  * @author Timo
  */
-public class OSMParsedMessage extends CCWebSocketMessage<Boundary> {
+public class OSMParsedMessage extends AbstractIdentifiableCCWebSocketMessage<Boundary> {
 	/**
 	 * Constructor
 	 * 
@@ -32,7 +32,7 @@ public class OSMParsedMessage extends CCWebSocketMessage<Boundary> {
 	 * @param content
 	 *            Boundary for the city. This is useful to set the map boundary.
 	 */
-	public OSMParsedMessage(int messageID, Boundary content) {
-		super(messageID, MessageType.OSM_PARSED, content);
+	public OSMParsedMessage(Long messageID, Boundary content) {
+		super(messageID, MessageTypeEnum.OSM_PARSED, content);
 	}
 }

@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class SimulationUpdateMessage extends CCWebSocketMessage<Long> {
+public class SimulationUpdateMessage extends AbstractCCWebSocketMessage<Long> {
 
 	/**
 	 * Constructor
@@ -30,6 +30,6 @@ public class SimulationUpdateMessage extends CCWebSocketMessage<Long> {
 	 *            current timestamp
 	 */
 	public SimulationUpdateMessage(Long content) {
-		super(CCWebSocketMessage.MessageType.SIMULATION_UPDATE, content);
+		super(MessageTypeEnum.SIMULATION_UPDATE, content);
 	}
 }

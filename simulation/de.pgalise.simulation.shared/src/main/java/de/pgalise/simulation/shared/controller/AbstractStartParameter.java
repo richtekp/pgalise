@@ -6,25 +6,27 @@
 
 package de.pgalise.simulation.shared.controller;
 
-import de.pgalise.simulation.shared.event.weather.WeatherEventHelper;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.util.List;
 
 
 public class AbstractStartParameter implements StartParameter {
-	private List<WeatherEventHelper> weatherEventHelperList;
+	private static final long serialVersionUID = 1L;
+	private List<WeatherEvent> weatherEventHelperList;
 	private boolean aggregatedWeatherDataEnabled;
 
 	public AbstractStartParameter() {
 	}
 
-	public AbstractStartParameter(List<WeatherEventHelper> weatherEventHelperList,
+	public AbstractStartParameter(List<WeatherEvent> weatherEventHelperList,
 		boolean aggregatedWeatherDataEnabled) {
 		this.weatherEventHelperList = weatherEventHelperList;
 		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
 	}
 
-	public void setWeatherEventHelperList(
-		List<WeatherEventHelper> weatherEventHelperList) {
+	@Override
+	public void setWeatherEventList(
+		List<WeatherEvent> weatherEventHelperList) {
 		this.weatherEventHelperList = weatherEventHelperList;
 	}
 
@@ -39,7 +41,7 @@ public class AbstractStartParameter implements StartParameter {
 	}
 
 	@Override
-	public List<WeatherEventHelper> getWeatherEventHelperList() {
+	public List<WeatherEvent> getWeatherEventList() {
 		return weatherEventHelperList;
 	}
 	

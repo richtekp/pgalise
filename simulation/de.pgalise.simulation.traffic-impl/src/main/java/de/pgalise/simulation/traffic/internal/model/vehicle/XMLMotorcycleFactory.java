@@ -26,7 +26,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -36,6 +37,7 @@ import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Implements a factory for {@link Motorcycle}. The vehicles are loaded by a XML file.
@@ -43,7 +45,10 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> implements MotorcycleFactory {
+public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleData> implements MotorcycleFactory {
+
+	public XMLMotorcycleFactory() {
+	}
 
 	/**
 	 * Constructor
@@ -52,10 +57,16 @@ public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> imp
 	 *            Random Seed Service
 	 * @param document
 	 *            Document of the XML data
+	 * @param trafficGraphExtensions
 	 */
-	public XMLMotorcycleFactory(RandomSeedService randomSeedService, Document document,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, document, trafficGraphExtensions);
+	public XMLMotorcycleFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		InputStream stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
 	}
 
 	/**
@@ -65,22 +76,30 @@ public class XMLMotorcycleFactory extends XMLAbstractFactory<MotorcycleData> imp
 	 *            Input stream of the XML data
 	 * @param randomSeedService
 	 *            Random Seed Service
+	 * @param trafficGraphExtensions
 	 */
-	public XMLMotorcycleFactory(RandomSeedService randomSeedService, InputStream stream,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, stream, trafficGraphExtensions);
+	public XMLMotorcycleFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		Document stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
 	}
 
 	@Override
-	public BaseVehicle<MotorcycleData> createRandomMotorcycle( SensorHelper helper) {
+	public BaseVehicle<MotorcycleData> createRandomMotorcycle( Output output) {
 		MotorcycleData data = getRandomVehicleData();
-		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>( updateMotorcycleData(data, Color.BLACK), trafficGraphExtensions);
+		return new Motorcycle(getIdGenerator().getNextId(),
+			null,
+			data,
+			getTrafficGraphExtensions());
 	}
 
 	@Override
-	public BaseVehicle<MotorcycleData> createMotorcycle(  Color color, SensorHelper helper) {
-		return createRandomMotorcycle(helper);
+	public BaseVehicle<MotorcycleData> createMotorcycle( Output output) {
+		return createRandomMotorcycle(output);
 	}
 
 	/**

@@ -23,7 +23,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.event.weather.WeatherEventEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
@@ -53,7 +53,7 @@ public class HotDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition
 	/**
 	 * Event type
 	 */
-	public static final WeatherEventEnum TYPE = WeatherEventEnum.HOTDAY;
+	public static final WeatherEventTypeEnum TYPE = WeatherEventTypeEnum.HOTDAY;
 
 	/**
 	 * Parameter which will be changed
@@ -237,7 +237,7 @@ public class HotDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition
 	}
 
 	@Override
-	public WeatherEventEnum getType() {
+	public WeatherEventTypeEnum getType() {
 		return HotDayEvent.TYPE;
 	}
 

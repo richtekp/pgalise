@@ -18,8 +18,8 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.awt.Color;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  * Information about a truck
@@ -83,7 +83,7 @@ public class TruckData extends CarData {
 	 */
 	public TruckData(Color color, int wheelDistanceWidth, int wheelbase1, int wheelbase2, int length, int width,
 			int height, int weight, double power, int maxSpeed, int axleCount, String description, int trailerCount,
-			int trailerDistance, int trailerLength, SensorHelper gpsSensor) {
+			int trailerDistance, int trailerLength, GpsSensor gpsSensor) {
 		super(color, wheelDistanceWidth, wheelbase1, wheelbase2, length, width, height, weight, power, maxSpeed,
 				axleCount, description, gpsSensor, VehicleTypeEnum.TRUCK);
 		this.trailerCount = trailerCount;
@@ -99,10 +99,10 @@ public class TruckData extends CarData {
 	 */
 	public TruckData(TruckData referenceData) {
 		this(referenceData.getColor(), referenceData.getWheelDistanceWidth(), referenceData.getWheelbase1(),
-				referenceData.getWheelbase2(), referenceData.getLength(), referenceData.getWidth(), referenceData
+				referenceData.getWheelbase2(), referenceData.getVehicleLength(), referenceData.getWidth(), referenceData
 						.getHeight(), referenceData.getWeight(), referenceData.getPower(), referenceData.getMaxSpeed(),
 				referenceData.getAxleCount(), referenceData.getDescription(), referenceData.getTrailerCount(),
-				referenceData.getTrailerDistance(), referenceData.getTrailerLength(), referenceData.getGpsSensorHelper());
+				referenceData.getTrailerDistance(), referenceData.getTrailerLength(), referenceData.getGpsSensor());
 	}
 
 	public int getTrailerCount() {
@@ -133,8 +133,8 @@ public class TruckData extends CarData {
 	 * Overrides the length of the vehicle with the length of vehicle plus the trailers
 	 */
 	@Override
-	public int getLength() {
-		return (super.getLength() + (this.trailerCount * (this.trailerDistance + this.trailerLength)));
+	public int getVehicleLength() {
+		return (super.getVehicleLength() + (this.trailerCount * (this.trailerDistance + this.trailerLength)));
 	}
 
 	@Override

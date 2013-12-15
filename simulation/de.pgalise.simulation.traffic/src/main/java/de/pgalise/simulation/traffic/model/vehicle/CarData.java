@@ -18,8 +18,8 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.awt.Color;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  * Information about the car
@@ -101,7 +101,7 @@ public class CarData extends VehicleData {
 	 */
 	public CarData(Color color, int wheelDistanceWidth, int wheelbase1, int wheelbase2, int length, int width,
 			int height, int weight, double power, int maxSpeed, int axleCount, String description,
-			SensorHelper gpsSensor, VehicleTypeEnum type) {
+			GpsSensor gpsSensor, VehicleTypeEnum type) {
 		super(length, wheelbase1, wheelbase2, axleCount, type, gpsSensor);
 		this.color = color;
 		this.wheelDistanceWidth = wheelDistanceWidth;
@@ -122,9 +122,9 @@ public class CarData extends VehicleData {
 	 */
 	public CarData(CarData referenceData) {
 		this(referenceData.getColor(), referenceData.getWheelDistanceWidth(), referenceData.getWheelbase1(),
-				referenceData.getWheelbase2(), referenceData.getLength(), referenceData.getWidth(), referenceData
+				referenceData.getWheelbase2(), referenceData.getVehicleLength(), referenceData.getWidth(), referenceData
 						.getHeight(), referenceData.getWeight(), referenceData.getPower(), referenceData.getMaxSpeed(),
-				referenceData.getAxleCount(), referenceData.getDescription(), referenceData.getGpsSensorHelper(), referenceData.getType());
+				referenceData.getAxleCount(), referenceData.getDescription(), referenceData.getGpsSensor(), referenceData.getType());
 	}
 
 	public Color getColor() {

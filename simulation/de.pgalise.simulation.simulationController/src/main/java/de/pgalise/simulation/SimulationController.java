@@ -17,6 +17,7 @@
 package de.pgalise.simulation;
 
 import de.pgalise.simulation.event.EventInitiator;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -32,7 +33,7 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
  * @auther Jens
  * @auther Timo
  */
-public interface SimulationController extends SensorManagerController<Event, StartParameter, InitParameter> {
+public interface SimulationController extends SensorManagerController<Event, StartParameter, InitParameter,Sensor<?,?>> {
 
 	/**
 	 * Adds an event list. The other controllers will be updated with the given events.

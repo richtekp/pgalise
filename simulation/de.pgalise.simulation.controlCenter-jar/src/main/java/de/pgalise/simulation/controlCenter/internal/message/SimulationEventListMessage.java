@@ -24,7 +24,7 @@ import de.pgalise.simulation.shared.event.EventList;
  * @author dhoeting
  * @author Timo
  */
-public class SimulationEventListMessage extends CCWebSocketMessage<EventList> {
+public class SimulationEventListMessage extends AbstractIdentifiableCCWebSocketMessage<EventList> {
 	/**
 	 * Constructor
 	 * 
@@ -33,7 +33,7 @@ public class SimulationEventListMessage extends CCWebSocketMessage<EventList> {
 	 * @param content
 	 *            Simulation events that will be created.
 	 */
-	public SimulationEventListMessage(int messageID, EventList content) {
-		super(messageID, MessageType.SIMULATION_EVENT_LIST, content);
+	public SimulationEventListMessage(Long messageID, EventList content) {
+		super(messageID, MessageTypeEnum.SIMULATION_EVENT_LIST, content);
 	}
 }

@@ -26,17 +26,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Implements a factory for {@link Car}. The vehicles are loaded by a XML file.
@@ -44,18 +40,23 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFactory {
+public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements CarFactory {
 
 	@Override
-	public BaseVehicle<CarData> createCar(  Color color, SensorHelper helper) {
-		return createRandomCar(helper);
+	public BaseVehicle<CarData> createCar( Output output) {
+		return createRandomCar(output);
 	}
 
 	@Override
-	public BaseVehicle<CarData> createRandomCar( SensorHelper helper) {
+	public BaseVehicle<CarData> createRandomCar( Output output) {
 		CarData data = getRandomVehicleData();
-		data.setGpsSensorHelper(helper);
-		return new DefaultMotorizedVehicle<>( updateCarData(data, Color.BLACK), trafficGraphExtensions);
+		return new Car(getIdGenerator().getNextId(),
+			null,
+			data,
+			getTrafficGraphExtensions());
+	}
+
+	public XMLCarFactory() {
 	}
 
 	/**
@@ -65,10 +66,16 @@ public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFac
 	 *            Random Seed Service
 	 * @param document
 	 *            Document of the XML data
+	 * @param trafficGraphExtensions
 	 */
-	public XMLCarFactory(RandomSeedService randomSeedService, Document document,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, document, trafficGraphExtensions);
+	public XMLCarFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		InputStream stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
 	}
 
 	/**
@@ -78,10 +85,16 @@ public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFac
 	 *            Input stream of the XML data
 	 * @param randomSeedService
 	 *            Random Seed Service
+	 * @param trafficGraphExtensions
 	 */
-	public XMLCarFactory(RandomSeedService randomSeedService, InputStream stream,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		super(randomSeedService, stream, trafficGraphExtensions);
+	public XMLCarFactory(IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		RandomSeedService randomSeedService,
+		Document stream) {
+		super(trafficGraphExtensions,
+			idGenerator,
+			randomSeedService,
+			stream);
 	}
 
 	/**
@@ -100,6 +113,7 @@ public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFac
 
 	/**
 	 * Create new CarData
+	 * @return 
 	 */
 	@Override
 	public CarData getRandomVehicleData() {
@@ -169,11 +183,6 @@ public class XMLCarFactory extends XMLAbstractFactory<CarData> implements CarFac
 
 		// Returns
 		return vehicles;
-	}
-
-	@Override
-	public RandomSeedService getRandomSeedService() {
-		return this.randomSeedService;
 	}
 
 }

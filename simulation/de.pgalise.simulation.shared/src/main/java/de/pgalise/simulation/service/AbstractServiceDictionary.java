@@ -126,6 +126,16 @@ public abstract class AbstractServiceDictionary implements ServiceDictionary {
 		return (ConfigReader) retValue;
 	}
 
+	@Override
+	public IdGenerator getIdGenerator() {
+		Service retValue = services.get(IdGenerator.class.getName());
+		if (!(retValue instanceof IdGenerator)) {
+			throw new IllegalStateException(String.format("%s has been mapped to wrong type",
+				ConfigReader.class));
+		}
+		return (IdGenerator) retValue;
+	}
+
 	public Map<String, Service> getServices() {
 		return services;
 	}

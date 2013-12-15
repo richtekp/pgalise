@@ -16,17 +16,17 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.Collection;
 import java.util.List;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Message to delete a sensor.
  * 
  * @author Timo
  */
-public class DeleteSensorsMessage extends CCWebSocketMessage<Collection<SensorHelper<?>>> {
+public class DeleteSensorsMessage extends AbstractIdentifiableCCWebSocketMessage<Collection<Sensor<?,?>>> {
 	/**
 	 * Constructor
 	 * 
@@ -35,7 +35,7 @@ public class DeleteSensorsMessage extends CCWebSocketMessage<Collection<SensorHe
 	 * @param content
 	 *            List with SensorHelper which shall be deleted
 	 */
-	public DeleteSensorsMessage(int messageID, List<SensorHelper<?>> content) {
-		super(messageID, MessageType.DELETE_SENSORS_MESSAGE, content);
+	public DeleteSensorsMessage(Long messageID, List<Sensor<?,?>> content) {
+		super(messageID, MessageTypeEnum.DELETE_SENSORS_MESSAGE, content);
 	}
 }

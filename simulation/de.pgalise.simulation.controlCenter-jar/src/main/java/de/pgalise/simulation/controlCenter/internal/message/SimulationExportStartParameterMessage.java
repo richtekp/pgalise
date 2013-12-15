@@ -23,7 +23,7 @@ import de.pgalise.simulation.controlCenter.model.SaveStartParameterData;
  * 
  * @author Timo
  */
-public class SimulationExportStartParameterMessage extends CCWebSocketMessage<SaveStartParameterData> {
+public class SimulationExportStartParameterMessage extends AbstractIdentifiableCCWebSocketMessage<SaveStartParameterData> {
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ public class SimulationExportStartParameterMessage extends CCWebSocketMessage<Sa
 	 * @param saveStartParameterData
 	 *            Start parameter shall shall be exported
 	 */
-	public SimulationExportStartParameterMessage(int messageID, SaveStartParameterData saveStartParameterData) {
-		super(messageID, MessageType.SIMULATION_EXPORT_PARAMETER, saveStartParameterData);
+	public SimulationExportStartParameterMessage(Long messageID, SaveStartParameterData saveStartParameterData) {
+		super(messageID, MessageTypeEnum.SIMULATION_EXPORT_PARAMETER, saveStartParameterData);
 	}
 }

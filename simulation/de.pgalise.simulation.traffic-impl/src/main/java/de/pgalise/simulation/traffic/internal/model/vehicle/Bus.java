@@ -18,12 +18,14 @@ public class Bus extends BaseVehicle<BusData> {
 	protected Bus() {
 	}
 
-	public Bus(String name,
+	public Bus(Long id,
+		String name,
 		BusData data,
-		DefaultTrafficGraphExtensions trafficGraphExtensions) {
-		super(name,
+		TrafficGraphExtensions trafficGraphExtensions) {
+		super(id,
+			name,
 			data,
 			trafficGraphExtensions);
 	}
-	
+
 }

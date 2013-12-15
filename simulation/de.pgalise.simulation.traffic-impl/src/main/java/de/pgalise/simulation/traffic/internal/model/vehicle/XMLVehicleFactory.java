@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
 import java.awt.Color;
 import java.io.InputStream;
 
@@ -23,12 +24,12 @@ import org.w3c.dom.Document;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
@@ -40,16 +41,18 @@ import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
- * Factory for all vehicles in the simulation. Reads a given XML file and gives the individual root nodes to the
- * specific vehicle factories.
- * 
+ * Factory for all vehicles in the simulation. Reads a given XML file and gives
+ * the individual root nodes to the specific vehicle factories.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLVehicleFactory implements CarFactory,BusFactory,
-	TruckFactory, MotorcycleFactory, BicycleFactory {
+public class XMLVehicleFactory extends AbstractVehicleFactory implements
+	CarFactory, BusFactory, TruckFactory, MotorcycleFactory, BicycleFactory {
 
 	/**
 	 * Car factory
@@ -79,89 +82,110 @@ public class XMLVehicleFactory implements CarFactory,BusFactory,
 	/**
 	 * XML File
 	 */
-	private final InputStream xmlFile;
-
-	/**
-	 * {@link RandomSeedService}
-	 */
-	private final RandomSeedService randomSeedService;
+	private final InputStream xmlInputStream;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param randomSeedService
-	 *            Random Seed Service
-	 * @param input
-	 *            Input stream to the XML file
+	 *
+	 * @param randomSeedService Random Seed Service
+	 * @param gpsInterferer
+	 * @param idGenerator
+	 * @param xmlInputStream Input stream to the XML file
+	 * @param trafficGraphExtensions
 	 */
-	public XMLVehicleFactory(RandomSeedService randomSeedService, InputStream input,
-			TrafficGraphExtensions trafficGraphExtensions) {
-		if (input == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("input"));
+	public XMLVehicleFactory(RandomSeedService randomSeedService,  IdGenerator idGenerator,
+		TrafficGraphExtensions trafficGraphExtensions,
+		InputStream xmlInputStream) {
+		super(
+			trafficGraphExtensions,
+			idGenerator,
+			randomSeedService);
+		if (xmlInputStream == null) {
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"input"));
 		}
-
-		this.randomSeedService = randomSeedService;
-		this.xmlFile = input;
+		this.xmlInputStream = xmlInputStream;
 
 		// read XML
-		Document doc = XMLAbstractFactory.readXMLInputstream(input);
+		Document doc = AbstractXMLVehicleFactory.readXMLInputstream(xmlInputStream);
 
 		// create factories
-		this.bicycleFactory = new XMLBicycleFactory(randomSeedService, doc, trafficGraphExtensions);
-		this.busFactory = new XMLBusFactory(randomSeedService, doc, trafficGraphExtensions);
-		this.truckFactory = new XMLTruckFactory(randomSeedService, doc, trafficGraphExtensions);
-		this.motorcycleFactory = new XMLMotorcycleFactory(randomSeedService, doc, trafficGraphExtensions);
-		this.carFactory = new ExtendedXMLCarFactory(randomSeedService, doc, trafficGraphExtensions);
+		this.bicycleFactory = new XMLBicycleFactory(idGenerator,
+			trafficGraphExtensions,
+			randomSeedService,
+			doc);
+		this.busFactory = new XMLBusFactory(idGenerator,
+			trafficGraphExtensions,
+			randomSeedService,
+			doc);
+		this.truckFactory = new XMLTruckFactory(idGenerator,
+			trafficGraphExtensions,
+			randomSeedService,
+			doc);
+		this.motorcycleFactory = new XMLMotorcycleFactory(idGenerator,
+			trafficGraphExtensions,
+			randomSeedService,
+			doc);
+		this.carFactory = new XMLCarFactory(idGenerator,
+			trafficGraphExtensions,
+			randomSeedService,
+			doc);
 	}
 
 	@Override
-	public Vehicle<BicycleData> createBicycle(  SensorHelper gpsSensor) {
-		return this.bicycleFactory.createRandomBicycle(  gpsSensor);
+	public Vehicle<BicycleData> createBicycle(Output output) {
+		return this.bicycleFactory.createBicycle(output);
 	}
 
 	@Override
-	public Vehicle<BusData> createBus(  SensorHelper gpsSensor, SensorHelper infraredSensor) {
-		return this.busFactory.createRandomBus(  gpsSensor, infraredSensor);
+	public Vehicle<BusData> createBus(Output output) {
+		return this.busFactory.createBus(output);
 	}
 
 	@Override
-	public Vehicle<CarData> createCar(  Color color, SensorHelper gpsSensor) {
-		return this.carFactory.createCar(  color, gpsSensor);
+	public Vehicle<CarData> createCar(Output output) {
+		return this.carFactory.createCar(output);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createMotorcycle(  Color color, SensorHelper gpsSensor) {
-		return this.motorcycleFactory.createMotorcycle(  color, gpsSensor);
+	public Vehicle<MotorcycleData> createMotorcycle(
+		Output output) {
+		return this.motorcycleFactory.createMotorcycle(
+			output);
 	}
 
 	@Override
-	public Vehicle<BicycleData> createRandomBicycle( SensorHelper gpsSensor) {
-		return this.bicycleFactory.createRandomBicycle( gpsSensor);
+	public Vehicle<BicycleData> createRandomBicycle(Output output) {
+		return this.bicycleFactory.createRandomBicycle(output);
 	}
 
 	@Override
-	public Vehicle<BusData> createRandomBus( SensorHelper gpsSensor, SensorHelper infraredSensor) {
-		return this.busFactory.createRandomBus( gpsSensor, infraredSensor);
+	public Vehicle<BusData> createRandomBus(Output output) {
+		return this.busFactory.createRandomBus(output);
 	}
 
 	@Override
-	public Vehicle<CarData> createRandomCar( SensorHelper gpsSensor) {
-		return this.carFactory.createRandomCar( gpsSensor);
+	public Vehicle<CarData> createRandomCar(Output output) {
+		return this.carFactory.createRandomCar(output);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createRandomMotorcycle( SensorHelper gpsSensor) {
-		return this.motorcycleFactory.createRandomMotorcycle( gpsSensor);
+	public Vehicle<MotorcycleData> createRandomMotorcycle(Output output) {
+		return this.motorcycleFactory.createRandomMotorcycle(output);
 	}
 
 	@Override
-	public Vehicle<TruckData> createRandomTruck( SensorHelper gpsSensor) {
-		return this.truckFactory.createRandomTruck( gpsSensor);
+	public Vehicle<TruckData> createRandomTruck(Output output) {
+		return this.truckFactory.createRandomTruck(output);
 	}
 
 	@Override
-	public Vehicle<TruckData> createTruck(  Color color, int trailercount, SensorHelper gpsSensor) {
-		return this.truckFactory.createTruck(  color, trailercount, gpsSensor);
+	public Vehicle<TruckData> createTruck(Color color,
+		int trailercount,
+		Output output) {
+		return this.truckFactory.createTruck(color,
+			trailercount,
+			output);
 	}
 
 	public BicycleFactory getBicycleFactory() {
@@ -185,11 +209,7 @@ public class XMLVehicleFactory implements CarFactory,BusFactory,
 	}
 
 	public InputStream getXmlFile() {
-		return this.xmlFile;
-	}
-
-	public RandomSeedService getRandomSeedService() {
-		return randomSeedService;
+		return this.xmlInputStream;
 	}
 
 }
