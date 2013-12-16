@@ -5,13 +5,23 @@
  */
 package de.pgalise.simulation.controlCenter.internal;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
+import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -34,8 +44,84 @@ public class InitDialogBean {
 	private OSMAndBusstopFileData oSMAndBusstopFileData;
 	private CCSimulationStartParameter importedStartParameter;
 	private InformationBasedVehicleFactory vehicleFactory;
-	private Output output;
-	private List<VehicleData> uiVehicles;
+	private Output output = new Output() {
+
+		@Override
+		public void beginTransmit() throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void endTransmit() throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public OutputStateEnum getState() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitBoolean(boolean value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitByte(byte value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitShort(short value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitInt(int value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitLong(long value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitFloat(float value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitDouble(double value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitString(String value) throws IllegalArgumentException, IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public void transmitByteArray(byte[] value) throws IllegalStateException {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+	};
+	private Queue<VehicleData> uiVehicles = new LinkedList<VehicleData>(Arrays.asList(new CarData(Color.yellow,
+				2000,
+				500,
+				3500,
+				4000,
+				2000,
+				1000,
+				1300,
+				100,
+				200,
+				2,
+				"name",
+				new GpsSensor(output,
+					null,
+					new GpsNoInterferer()),
+				VehicleTypeEnum.CAR)));
 
 	public InitDialogBean() {
 	}
@@ -179,15 +265,6 @@ public class InitDialogBean {
 		this.vehicleFactory = vehicleFactory;
 	}
 
-	public List<VehicleData> getUiVehicles() {
-		return uiVehicles;
-	}
-
-	public void setUiVehicles(
-		List<VehicleData> uIVehicles) {
-		this.uiVehicles = uIVehicles;
-	}
-
 	/**
 	 * @return the output
 	 */
@@ -201,6 +278,13 @@ public class InitDialogBean {
 	public void setOutput(
 		Output output) {
 		this.output = output;
+	}
+	
+	public String getNextGpsSensor() {
+		Coordinate peekCoordinate = uiVehicles.peek().getGpsSensor().getSensorData().getPosition();
+		peekCoordinate = new Coordinate(45,
+			55);
+		return String.format("[%f,%f]", peekCoordinate.x, peekCoordinate.y);
 	}
 
 //	public void confirmInitialDialog(StartParameterOriginEnum chosenInitialType) {

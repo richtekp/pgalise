@@ -18,6 +18,7 @@ package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 
 /**
  * Super class for all sensor data.<tt>SensorData</tt>encapsulates information
@@ -28,6 +29,7 @@ import java.io.Serializable;
 /*
 SensorData doesn't know it's owning sensor because this just complicates garbage collection
 */
+@ManagedBean
 public abstract class SensorData extends AbstractIdentifiable {
 
 	/**

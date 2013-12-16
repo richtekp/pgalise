@@ -19,7 +19,7 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import javax.annotation.ManagedBean;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
@@ -146,11 +146,11 @@ public class VehicleData extends AbstractIdentifiable
 		this.gpsSensor = gpsSensor;
 	}
 
-	@Override
-	public String toString() {
-		return "VehicleData [length=" + vehicleLength + ", axleCount=" + axleCount
-					 + ", wheelbase1=" + wheelbase1
-									 + ", wheelbase2=" + wheelbase2 + ", type=" + type
-					 + ", gpsSensor=" + gpsSensor + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "VehicleData [length=" + vehicleLength + ", axleCount=" + axleCount
+//					 + ", wheelbase1=" + wheelbase1
+//									 + ", wheelbase2=" + wheelbase2 + ", type=" + type
+//					 + ", gpsSensor=" + gpsSensor + "]";
+//	}
 }

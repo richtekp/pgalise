@@ -40,7 +40,7 @@ import javax.faces.bean.ManagedBean;
  * @version 1.1
  */
 @ManagedBean
-public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
+public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 
 	/**
 	 * Search signal time for GPS connection
@@ -73,7 +73,7 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 	 */
 	private int searchSignalCounter = 0;
 
-	public GpsSensor() throws IllegalArgumentException {
+	public GpsSensor() {
 		super();
 	}
 
@@ -131,14 +131,6 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 
 	public void setHasSignal(boolean hasSignal) {
 		this.hasSignal = hasSignal;
-	}
-
-	public void setSearchSignalCounter(int searchSignalCounter) {
-		this.searchSignalCounter = searchSignalCounter;
-	}
-
-	public int getSearchSignalCounter() {
-		return searchSignalCounter;
 	}
 
 	@Override

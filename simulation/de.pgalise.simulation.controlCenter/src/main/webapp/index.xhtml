@@ -128,73 +128,70 @@
 							</div>
 			</div>
 		</h:body>-->
-	<c:forEach items="#{initDialogBean.uiVehicles}" var="uIVehicle">
-		<script>
-							var x = func() {
-			var a = #{idGeneratorWrapper.nextId};
-							window.alert(a);
-			}
-		</script>
-	</c:forEach>
+
 	<h:head>
 		<title>JSF 2.0 Hello World</title>
 		<script>
-			var performStartParameter2UI = function(startParameter) {
+			function performStartParameter2UI (startParameter) {
+				window.alert('1kdkd');
 				var objectIdStart = #{idGeneratorWrapper.nextId};
-				var lat = #{initDialogBean.uiVehicles[0].gpsSensor};
-							var start = new model.PathStart(objectIdStart, oneVehicle.trip.startPosition.latitude.degree, oneVehicle.trip.startPosition.longitude.degree, 'PathStart' + objectIdStart);
-							start.nodeId = startNode;
-							MapService.addEvent(start);
-							var objectIdEnd = EventObjectIDService.get();
-							var end = new model.PathEnd(objectIdEnd, oneVehicle.trip.targetPosition.latitude.degree, oneVehicle.trip.targetPosition.longitude.degree, 'PathEnd' + objectIdEnd, start);
-							MapService.addEvent(end);
-							var path = new model.Path(start.getPathId(), start, end, UUIDService);
-							path.vehicles = vehicles;
-							MapService.eventObjects[path.id] = path;
-							MapService.drawDistanceLine(start, end);
-							break;
-							/* STREET BLOCK */
-							case ctrl.mainCtrl.simulationEventTypeMap[model.SimulationEvents.ROAD_BARRIER_TRAFFIC_EVENT]:
-							var objectId = simulationEvent.id;
-							markerName = 'Street block' + objectId;
-							markerObject = new model.StreetBlock(objectId, roadBarrierPoint.latitude.degree, roadBarrierPoint.longitude.degree, markerName);
-							markerObject.startTimestamp = simulationEvent.roadBarrierStartTimestamp;
-							markerObject.durationMillis = simulationEvent.roadBarrierEndTimestamp - simulationEvent.roadBarrierStartTimestamp;
-							markerObject.nodeId = simulationEvent.nodeID;
-							MapService.addEvent(markerObject);
-							break;
-							/* ENERGY EVENT */
-							case ctrl.mainCtrl.simulationEventTypeMap[model.SimulationEvents.PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT]:
-							var objectId = simulationEvent.id;
-							markerName = 'Energy event' + objectId;
-							markerObject = new model.EnergyEvent(objectId, roadBarrierPoint.latitude.degree, roadBarrierPoint.longitude.degree, markerName);
-							markerObject.startTimestamp = simulationEvent.startTimestamp;
-							markerObject.durationMillis = simulationEvent.endTimestamp - simulationEvent.startTimestamp;
-							markerObject.value = simulationEvent.percentage * 100;
-							markerObject.ratio = simulationEvent.measureRadiusInMeter;
-							MapService.drawRadius(markerObject);
-							MapService.addEvent(markerObject);
-							break;
-			}
-			});
-			});
-							/*
-							 * Attraction
-							 */
-							angular.forEach(startParameter.attractionCollection, function(attraction) {
-							var objectId = attraction.id;
-											markerName = 'Attraction' + objectId;
-											markerObject = new model.Attraction(objectId, attraction.attractionPoint.latitude.degree, attraction.attractionPoint.longitude.degree, markerName);
-							});
-			};
+				var lat = #{initDialogBean.nextGpsSensor};
+				window.alert(lat[0]);
+				
+}
+//							var start = new model.PathStart(objectIdStart, oneVehicle.trip.startPosition.latitude.degree, oneVehicle.trip.startPosition.longitude.degree, 'PathStart' + objectIdStart);
+//							start.nodeId = startNode;
+//							MapService.addEvent(start);
+//							var objectIdEnd = EventObjectIDService.get();
+//							var end = new model.PathEnd(objectIdEnd, oneVehicle.trip.targetPosition.latitude.degree, oneVehicle.trip.targetPosition.longitude.degree, 'PathEnd' + objectIdEnd, start);
+//							MapService.addEvent(end);
+//							var path = new model.Path(start.getPathId(), start, end, UUIDService);
+//							path.vehicles = vehicles;
+//							MapService.eventObjects[path.id] = path;
+//							MapService.drawDistanceLine(start, end);
+//							break;
+//							/* STREET BLOCK */
+//							case ctrl.mainCtrl.simulationEventTypeMap[model.SimulationEvents.ROAD_BARRIER_TRAFFIC_EVENT]:
+//							var objectId = simulationEvent.id;
+//							markerName = 'Street block' + objectId;
+//							markerObject = new model.StreetBlock(objectId, roadBarrierPoint.latitude.degree, roadBarrierPoint.longitude.degree, markerName);
+//							markerObject.startTimestamp = simulationEvent.roadBarrierStartTimestamp;
+//							markerObject.durationMillis = simulationEvent.roadBarrierEndTimestamp - simulationEvent.roadBarrierStartTimestamp;
+//							markerObject.nodeId = simulationEvent.nodeID;
+//							MapService.addEvent(markerObject);
+//							break;
+//							/* ENERGY EVENT */
+//							case ctrl.mainCtrl.simulationEventTypeMap[model.SimulationEvents.PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT]:
+//							var objectId = simulationEvent.id;
+//							markerName = 'Energy event' + objectId;
+//							markerObject = new model.EnergyEvent(objectId, roadBarrierPoint.latitude.degree, roadBarrierPoint.longitude.degree, markerName);
+//							markerObject.startTimestamp = simulationEvent.startTimestamp;
+//							markerObject.durationMillis = simulationEvent.endTimestamp - simulationEvent.startTimestamp;
+//							markerObject.value = simulationEvent.percentage * 100;
+//							markerObject.ratio = simulationEvent.measureRadiusInMeter;
+//							MapService.drawRadius(markerObject);
+//							MapService.addEvent(markerObject);
+//							break;
+//			}
+//			});
+//			});
+//							/*
+//							 * Attraction
+//							 */
+//							angular.forEach(startParameter.attractionCollection, function(attraction) {
+//							var objectId = attraction.id;
+//											markerName = 'Attraction' + objectId;
+//											markerObject = new model.Attraction(objectId, attraction.attractionPoint.latitude.degree, attraction.attractionPoint.longitude.degree, markerName);
+//							});
+//			};
 		</script>
 	</h:head>
-	<h:body onload="initDialog.show(); x();">
+	<h:body onload="initDialog.show(); ">
 		<!--	<f:view>-->
 		<h3>JSF 2.0 Hello World Example - hello.xhtml</h3>
 		<h:form>
 			<h:inputText value="fdsfdsf"></h:inputText>
-			<h:commandButton value="Welcome Me" onclick="initDialog.show();
+			<h:commandButton value="Welcome Me" onclick="performStartParameter2UI();
 												return false;"></h:commandButton>
 
 		</h:form>
