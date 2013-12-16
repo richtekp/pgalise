@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-			xmlns:h="http://java.sun.com/jsf/html"
-			xmlns:p="http://primefaces.org/ui"
-			xmlns:f="http://java.sun.com/jsf/core"
-			xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-			xmlns:c="http://java.sun.com/jsp/jstl/core"
-			>
-	<h:head>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html ng-app="app" xmlns="http://www.w3.org/1999/xhtml" xmlns:ng="http://angularjs.org">
+	<head>
 		<title>Simulation Control Center</title>
 		<meta name="author" content="Dennis Höting"></meta>
 
@@ -19,7 +17,7 @@
 		<link rel="stylesheet" href="lib/jquery.ui/custom-theme/jquery-ui-1.8.23.custom.css" />
 		<link rel="stylesheet" href="lib/jquery.treeview/jquery.treeview.css" />
 
-		<!--Libraries--> 
+		<!-- Libraries -->
 		<script type="text/javascript" src="http://openlayers.org/api/OpenLayers.js"></script>  
 
 		<script type="text/javascript" src="lib/jquery/jquery-1.8.3.js"></script>
@@ -29,9 +27,7 @@
 		<script type="text/javascript" src="lib/jquery.treeview/jquery.treeview.js"></script>
 		<script type="text/javascript" src="lib/angular/angular.js"></script>
 
-		<!--Own Scripts-->
-		<!--<script type="text/javascript" src="js/help.jspf"></script>-->
-		<ui:include src="/js/help.xhtml" />
+		<!-- Own Scripts -->
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/util.js"></script>
 		<script type="text/javascript" src="js/model/enums.js"></script>
@@ -82,243 +78,53 @@
 		<script type="text/javascript" src="js/ctrl/navigationCtrl/runtimeNavCtrl.js"></script>
 		<script type="text/javascript" src="js/ctrl/headCtrl.js"></script>
 		<script type="text/javascript" src="js/ctrl/mainCtrl.js"></script>  
-	</h:head>
+	</head>
 	<!-- 
 		MainView using MainCtrl
 		The MainCtrl's scope encapsulates all controller's scopes.
 	-->
-	<!--	<h:body ng-controller="MainCtrl">
-			 IconDiv, will be appended to cursor when pushing sensor to map 
-			<div id="icon_div"></div>
-			 Actual web site 
-			<div id="div_all" ng-hide="accessDenied">
-				 Header 
-				<div id="div_top" ng-controller="HeadCtrl">
-									<img src="img/wrench.png" id="wrenchImg" ng-click="openSettings()" />
-						<img src="img/console.png" id="consoleImg" ng-click="openConsole()" />
-						<div id="layout_top">
-											<span>Connection: <span class="{{connection.connectionStateColor()}}">{{connection.connectionState}}</span></span>
-											<span>Simulation: <span class="{{simulation.simulationStateColor()}}">{{simulation.simulationState}}</span></span>
-											<span>Simulation Time: {{simulation.simulationTime | date:'dd.MM.yyyy @ H:mm:ss'}}</span>
-											<span>OSM: <span class="{{osm.osmParsedStateColor()}}">{{osm.osmParsedState}}</span></span>
-											<span ng-show="keypressMockEnabled">Keypress-Mock enabled</span>
-									</div>
-									<div id="loadingArea" ng-class="loadingStatus"></div>
-									<div id="div_logo">
-											<img src="img/logo.png" ng-click="km()"/>
-									</div>
-									<div id="div_heading">
-											<div id="headline">Simulation Control Center</div>
-											<div id="runtimePopups" ng-show="ui.state == 'runtime'">
-													<input type="button" button value="Show unsent messages ({{unsentMessages.length}})" ng-click="openUnsentMessagesDialog()" />
-													<input type="button" button value="Show event list ({{uncommittedEvents.length}})" ng-click="openUncommitedEventsDialog()" />
-											</div>
-									</div>
-									
+	<body ng-controller="MainCtrl">
+		<!-- IconDiv, will be appended to cursor when pushing sensor to map -->
+		<div id="icon_div">
+		</div>
+		<!-- Actual web site -->
+		<div id="div_all" ng-hide="accessDenied">
+			<!-- Header -->
+			<div id="div_top" ng-controller="HeadCtrl">
+				<img src="img/wrench.png" id="wrenchImg" ng-click="openSettings()" />
+				<img src="img/console.png" id="consoleImg" ng-click="openConsole()" />
+				<div id="layout_top">
+					<span>Connection: <span class="{{connection.connectionStateColor()}}">{{connection.connectionState}}</span></span>
+					<span>Simulation: <span class="{{simulation.simulationStateColor()}}">{{simulation.simulationState}}</span></span>
+					<span>Simulation Time: {{simulation.simulationTime | date:'dd.MM.yyyy @ H:mm:ss'}}</span>
+					<span>OSM: <span class="{{osm.osmParsedStateColor()}}">{{osm.osmParsedState}}</span></span>
+					<span ng-show="keypressMockEnabled">Keypress-Mock enabled</span>
 				</div>
-				
-				 Navigation 
-				<div id="div_navigation" >
-					<ng:include src="navigationURL"></ng:include>
+				<div id="loadingArea" ng-class="loadingStatus"></div>
+				<div id="div_logo">
+					<img src="img/logo.png" ng-click="km()"/>
 				</div>
-				 Content 
-				<div id="div_content">
-					<ng:include src="contentURL"></ng:include>
+				<div id="div_heading">
+					<div id="headline">Simulation Control Center</div>
+					<div id="runtimePopups" ng-show="ui.state == 'runtime'">
+						<input type="button" value="Show unsent messages ({{unsentMessages.length}})" ng-click="openUnsentMessagesDialog()" />
+						<input type="button" value="Show event list ({{uncommittedEvents.length}})" ng-click="openUncommitedEventsDialog()" />
+					</div>
 				</div>
-							<div id="div_map">
-									<div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
-							</div>
+
 			</div>
-		</h:body>-->
 
-	<h:head>
-		<title>JSF 2.0 Hello World</title>
-		<script>
-			function performStartParameter2UI (startParameter) {
-				window.alert('1kdkd');
-				var objectIdStart = #{idGeneratorWrapper.nextId};
-				var lat = #{initDialogBean.nextGpsSensor};
-				window.alert(lat[0]);
-				
-}
-//							var start = new model.PathStart(objectIdStart, oneVehicle.trip.startPosition.latitude.degree, oneVehicle.trip.startPosition.longitude.degree, 'PathStart' + objectIdStart);
-//							start.nodeId = startNode;
-//							MapService.addEvent(start);
-//							var objectIdEnd = EventObjectIDService.get();
-//							var end = new model.PathEnd(objectIdEnd, oneVehicle.trip.targetPosition.latitude.degree, oneVehicle.trip.targetPosition.longitude.degree, 'PathEnd' + objectIdEnd, start);
-//							MapService.addEvent(end);
-//							var path = new model.Path(start.getPathId(), start, end, UUIDService);
-//							path.vehicles = vehicles;
-//							MapService.eventObjects[path.id] = path;
-//							MapService.drawDistanceLine(start, end);
-//							break;
-//							/* STREET BLOCK */
-//							case ctrl.mainCtrl.simulationEventTypeMap[model.SimulationEvents.ROAD_BARRIER_TRAFFIC_EVENT]:
-//							var objectId = simulationEvent.id;
-//							markerName = 'Street block' + objectId;
-//							markerObject = new model.StreetBlock(objectId, roadBarrierPoint.latitude.degree, roadBarrierPoint.longitude.degree, markerName);
-//							markerObject.startTimestamp = simulationEvent.roadBarrierStartTimestamp;
-//							markerObject.durationMillis = simulationEvent.roadBarrierEndTimestamp - simulationEvent.roadBarrierStartTimestamp;
-//							markerObject.nodeId = simulationEvent.nodeID;
-//							MapService.addEvent(markerObject);
-//							break;
-//							/* ENERGY EVENT */
-//							case ctrl.mainCtrl.simulationEventTypeMap[model.SimulationEvents.PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT]:
-//							var objectId = simulationEvent.id;
-//							markerName = 'Energy event' + objectId;
-//							markerObject = new model.EnergyEvent(objectId, roadBarrierPoint.latitude.degree, roadBarrierPoint.longitude.degree, markerName);
-//							markerObject.startTimestamp = simulationEvent.startTimestamp;
-//							markerObject.durationMillis = simulationEvent.endTimestamp - simulationEvent.startTimestamp;
-//							markerObject.value = simulationEvent.percentage * 100;
-//							markerObject.ratio = simulationEvent.measureRadiusInMeter;
-//							MapService.drawRadius(markerObject);
-//							MapService.addEvent(markerObject);
-//							break;
-//			}
-//			});
-//			});
-//							/*
-//							 * Attraction
-//							 */
-//							angular.forEach(startParameter.attractionCollection, function(attraction) {
-//							var objectId = attraction.id;
-//											markerName = 'Attraction' + objectId;
-//											markerObject = new model.Attraction(objectId, attraction.attractionPoint.latitude.degree, attraction.attractionPoint.longitude.degree, markerName);
-//							});
-//			};
-		</script>
-	</h:head>
-	<h:body onload="initDialog.show(); ">
-		<!--	<f:view>-->
-		<h3>JSF 2.0 Hello World Example - hello.xhtml</h3>
-		<h:form>
-			<h:inputText value="fdsfdsf"></h:inputText>
-			<h:commandButton value="Welcome Me" onclick="performStartParameter2UI();
-												return false;"></h:commandButton>
-
-		</h:form>
-			<!--	<h:panelGrid columns="1" cellpadding="5">  
-					<p:commandButton id="basic" value="Basic" onclick="dlg1.show();" type="button" />  
-				
-					<p:commandButton id="modalDialogButton" value="Modal" onclick="dlg2.show();" type="button"/>  
-				
-					<p:commandButton id="effectsDialogButton" value="Effects" onclick="dlg3.show();" type="button" />  
-			</h:panelGrid>  
-				
-			<p:dialog id="basicDialog" header="Basic Dialog" widgetVar="dlg1">  
-					<h:outputText value="Resistance to PrimeFaces is futile!" />  
-			</p:dialog>  
-				
-			<p:dialog id="modalDialog" header="Modal Dialog" widgetVar="dlg2" modal="true" height="100">  
-					<h:outputText value="This is a Modal Dialog." />  
-			</p:dialog>  
-				
-			-->
-
-
-
-
-
-
-			<p:dialog header="Initial dialog" widgetVar="initDialog" height="100">
-				<!--load default values from StartParameter which encapsulates the setup for a scenario-->
-				<h:form>
-					<div>
-
-						<table>
-							<tr>
-								<td colspan="2">
-									<input type="radio" name="group2" value="Create new szenario"><b>Create new szenario</b></input>
-								</td>
-							</tr>
-							<tr>
-								<td>Scenario name</td>
-								<td>
-									<h:inputText value="#{startParameter.name}"  />
-								</td>
-							</tr>
-							<tr>
-								<td>Bus system</td>
-								<td>
-									<div>predefined systems:</div>
-									<h:selectOneListbox value="#{startParameter.getoSMAndBusstopFileData().busStopFileName}">
-										<f:selectItems
-											value="#{startParameterConstants.getoSMAndBusstopFileDataList()}" var="fileData" itemLabel="#{fileData.busStopFileName}" itemValue="#{fileData.busStopFileName}"/>
-									</h:selectOneListbox>
-									<div>custom systems:</div>
-									<h:form id="customBusstopFileUploadForm" enctype="multipart/form-data">
-										<h:inputFile id="customBusstopFileUpload" value="#{startParameter.getoSMAndBusstopFileData().busStopFileName}"/>
-										<h:commandButton value="Upload"/>
-									</h:form>
-								</td>
-							</tr>
-							<tr>
-								<td>Street map</td>
-								<td>
-									<h:selectOneListbox value="#{startParameter.getoSMAndBusstopFileData().osmFileName}" >
-										<f:selectItems
-											value="#{startParameterConstants.getoSMAndBusstopFileDataList()}" var="fileData" itemLabel="#{fileData.osmFileName}" itemValue="#{fileData.osmFileName}" />
-									</h:selectOneListbox>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div class="block">
-
-						<table>
-							<tr class="head">
-								<td>
-									<input type="radio" name="group2" value="Load recently started scenario"><b>Load recently started scenario</b></input>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b>Recent scenarios:</b>
-									<div>
-										<h:selectOneListbox>
-											<f:selectItems
-												value="#{startParameterStore.recentlyStartedSimulations}" var="recentlyStarted" itemLabel="#{recentlyStarted.name}" itemValue="#{recentlyStarted.name}" />
-										</h:selectOneListbox>  
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div><b>Current:</b></div>
-									<div>Name: #{startParameterStore.recentlyStartedSimulations[0].name}</div>
-									<!--<div>File name: </div>--><!--which file name?-->
-									<div>Date: 
-										<h:outputText value="#{startParameterStore.recentlyStartedSimulations[0].startTimestamp}" >
-											<f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
-										</h:outputText>
-									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<div class="block">
-						<table>
-							<tr class="head">
-								<td>
-									<input type="radio" name="group2" value="Import existing scenario"><b>Import existing scenario</b></input>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b>Load XML:</b>
-									<div>
-										<h:form id="form" enctype="multipart/form-data">
-											<h:inputFile id="file" value="#{startParameter.importedInstanceFileContent}"/>
-											<h:commandButton value="Upload"
-																			 action="#{startParameter.overwriteWithImportedInstanceProperties()}"/>
-										</h:form>
-									</div>
-								</td>
-							</tr>
-						</table>
-					</div>
-					<h:button value="Start simulation" onclick="confirmInitialDialog(); initDialog.hide();"></h:button>
-				</h:form>
-			</p:dialog>
-	</h:body>
+			<!-- Navigation -->
+			<div id="div_navigation" >
+				<ng:include src="navigationURL"></ng:include>
+			</div>
+			<!-- Content -->
+			<div id="div_content">
+				<ng:include src="contentURL"></ng:include>
+			</div>
+			<div id="div_map">
+				<div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
+			</div>
+		</div>
+	</body>
 </html>
