@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.model;
 
+import java.io.Serializable;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -27,7 +28,8 @@ import javax.faces.bean.ManagedProperty;
  */
 @ManagedBean
 @ApplicationScoped
-public class OSMAndBusstopFileData {
+public class OSMAndBusstopFileData implements Serializable {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * This OSM-File will be parsed and used for the street-graph.
 	 */

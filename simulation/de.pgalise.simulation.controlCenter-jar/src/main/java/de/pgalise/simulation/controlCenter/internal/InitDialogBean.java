@@ -695,4 +695,8 @@ public class InitDialogBean {
 //		});
 //	}
 //;
+	
+	public String test() {
+		return "lslslsl";
+	}
 }

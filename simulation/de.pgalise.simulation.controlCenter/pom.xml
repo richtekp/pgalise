@@ -227,6 +227,18 @@
 			<artifactId>testutils-shared</artifactId>
 			<type>jar</type>
 		</dependency>
+		
+		<dependency>
+	<groupId>org.glassfish.web</groupId>
+	<artifactId>javax.servlet.jsp</artifactId>
+	<version>2.3.2</version>
+</dependency>
+		<dependency>
+	<groupId>org.glassfish.web</groupId>
+	<artifactId>javax.servlet.jsp.jstl</artifactId>
+	<version>1.2.2</version>
+		</dependency>
+            
 	</dependencies>
 	<build>
 		<finalName>de.pgalise.simulation.controlCenter</finalName>
@@ -284,6 +296,30 @@
 						</archive>
 					</configuration>
 				</plugin>
+				
+         <plugin>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.6</version>
+            <executions>
+               <execution>
+                  <id>copy-resources</id>
+                  <phase>validate</phase>
+                  <goals>
+                     <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                     <outputDirectory>${basedir}/target/helloworld/resources
+                        </outputDirectory>
+                     <resources>          
+                        <resource>
+                           <directory>src/main/resources</directory>
+                           <filtering>true</filtering>
+                        </resource>
+                     </resources>              
+                  </configuration>            
+               </execution>
+            </executions>
+         </plugin>
 			</plugins>
 		</pluginManagement>
 	</build>

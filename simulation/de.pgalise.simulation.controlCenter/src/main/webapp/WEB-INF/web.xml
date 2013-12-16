@@ -16,6 +16,11 @@
 			<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 			<load-on-startup>1</load-on-startup>
 		</servlet>
+		<servlet>
+			<servlet-name>jsp</servlet-name>
+			<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+			<load-on-startup>1</load-on-startup>
+		</servlet>
 		
 <!--    <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
@@ -36,6 +41,10 @@
 		<servlet-mapping>
 			<servlet-name>Faces Servlet</servlet-name>
 			<url-pattern>*.jspf</url-pattern>
+		</servlet-mapping>
+		<servlet-mapping>
+			<servlet-name>jsp</servlet-name>
+			<url-pattern>/js/*</url-pattern>
 		</servlet-mapping>
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
