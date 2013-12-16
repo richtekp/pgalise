@@ -37,6 +37,8 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.Controller;
@@ -206,7 +208,7 @@ class TestSensor extends AbstractSensor {
 	/**
 	 * Sensor output
 	 */
-	private static Output SENSOR_OUTPUT = new TcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
+	private static Output SENSOR_OUTPUT = new AbstractTcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
 
 	/**
 	 * Constructor

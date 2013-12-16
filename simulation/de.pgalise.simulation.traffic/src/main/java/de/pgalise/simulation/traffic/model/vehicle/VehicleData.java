@@ -19,6 +19,7 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import javax.annotation.ManagedBean;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
 
@@ -29,7 +30,8 @@ import javax.persistence.MappedSuperclass;
  * @version 1.0 (Nov 7, 2012)
  */
 @MappedSuperclass
-public abstract class VehicleData extends AbstractIdentifiable
+@ManagedBean
+public class VehicleData extends AbstractIdentifiable
 {
 
 	/**
@@ -70,7 +72,7 @@ public abstract class VehicleData extends AbstractIdentifiable
 	 */
 	private GpsSensor gpsSensor;
 
-	protected VehicleData() {
+	public VehicleData() {
 	}
 
 	/**
@@ -114,6 +116,26 @@ public abstract class VehicleData extends AbstractIdentifiable
 
 	public VehicleTypeEnum getType() {
 		return this.type;
+	}
+
+	public void setVehicleLength(int vehicleLength) {
+		this.vehicleLength = vehicleLength;
+	}
+
+	public void setWheelbase2(int wheelbase2) {
+		this.wheelbase2 = wheelbase2;
+	}
+
+	public void setWheelbase1(int wheelbase1) {
+		this.wheelbase1 = wheelbase1;
+	}
+
+	public void setType(VehicleTypeEnum type) {
+		this.type = type;
+	}
+
+	public void setAxleCount(int axleCount) {
+		this.axleCount = axleCount;
 	}
 
 	public GpsSensor getGpsSensor() {

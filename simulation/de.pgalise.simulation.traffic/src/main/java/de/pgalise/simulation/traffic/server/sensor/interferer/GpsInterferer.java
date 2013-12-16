@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.server.sensor.interferer;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -21,7 +20,7 @@ import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**
  * Interface for an interferer which manipulates the {@link GpsSensor}'s input
- * 
+ *
  * @author Marcus
  * @author Andreas
  * @version 1.0
@@ -30,16 +29,13 @@ public interface GpsInterferer extends SensorInterferer {
 
 	/**
 	 * Interferes the GPS position
-	 * 
-	 * @param mutablePosition
-	 *            Position to change
-	 * @param realPosition
-	 *            Fixed position (e.g. for the weather controller)
-	 * @param simTime
-	 *            Simulation timestamp
-	 * @param vectorUnit
-	 *            Vector unit of the gps mapper
+	 *
+	 * @param mutablePosition Position to change
+	 * @param realPosition Fixed position (e.g. for the weather controller)
+	 * @param simTime Simulation timestamp
 	 * @return new position as Vector2d
 	 */
-	Coordinate interfere(final Coordinate mutablePosition, final Coordinate realPosition, final long simTime);
+	Coordinate interfere(final Coordinate mutablePosition,
+		final Coordinate realPosition,
+		final long simTime);
 }

@@ -42,6 +42,8 @@ import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.ServerConfigurationIdentifier;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -105,7 +107,7 @@ public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory impl
 
 		Output sensorOutput = null;
 
-		sensorOutput = new TcpIpOutput(serverAddress[0], Integer.valueOf(serverAddress[1]), new TcpIpKeepOpenStrategy());
+		sensorOutput = new AbstractTcpIpOutput(serverAddress[0], Integer.valueOf(serverAddress[1]), new TcpIpKeepOpenStrategy());
 
 		final String outputDecorator = configReader.getProperty(ServerConfigurationIdentifier.OUTPUT_DECORATOR);
 		if (outputDecorator != null && output.length() > 0 && outputDecorator.length() != 0) {

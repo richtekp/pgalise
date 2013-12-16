@@ -17,14 +17,12 @@ package de.pgalise.staticsensor.internal;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergySensorFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
@@ -32,7 +30,6 @@ import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
@@ -88,7 +85,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
-import java.util.Set;
+import javax.ejb.EJB;
 
 /**
  * Default implementation of the SensorFactory.
@@ -96,8 +93,12 @@ import java.util.Set;
  * @author Marcus
  * @version 1.0 (Apr 5, 2013)
  */
-public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,?>> implements EnergySensorFactory {
+public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?, ?>>
+	implements EnergySensorFactory {
+
+	@EJB
 	private WeatherController weatherController;
+	@EJB
 	private EnergyController energyController;
 
 	public AbstractEnergySensorFactory() {
@@ -111,6 +112,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 	 * @param wctrl Weather controller
 	 * @param ectrl Energy controller
 	 * @param sensorOutput Sensor output
+	 * @param updateLimit
 	 */
 	public AbstractEnergySensorFactory(RandomSeedService rss,
 		WeatherController wctrl,
@@ -179,7 +181,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 	}
 
 	@Override
-	public Sensor<?,?> createSensor(SensorType sensorType,
+	public Sensor<?, ?> createSensor(SensorType sensorType,
 		List<SensorInterfererType> sensorInterfererTypes)
 		throws InterruptedException, ExecutionException {
 		if (sensorType.equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {

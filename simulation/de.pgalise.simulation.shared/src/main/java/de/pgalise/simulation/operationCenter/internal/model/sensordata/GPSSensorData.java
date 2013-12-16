@@ -20,6 +20,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.Entity;
 
 /**
@@ -27,6 +28,7 @@ import javax.persistence.Entity;
  * @author Timo
  */
 @Entity
+@ManagedBean
 public class GPSSensorData extends SensorData {
 
 	/**

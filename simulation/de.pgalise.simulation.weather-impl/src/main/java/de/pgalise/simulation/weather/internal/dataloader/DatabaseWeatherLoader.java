@@ -90,7 +90,7 @@ import javax.persistence.TemporalType;
 @Singleton(name = "de.pgalise.simulation.weather.dataloader.WeatherLoader", mappedName = "de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader")
 public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondition> {
 
-	@PersistenceContext(unitName = "pgalise")
+	@PersistenceContext(unitName = "pgalise-weather")
 	private EntityManager entityManager;
 
 	/**

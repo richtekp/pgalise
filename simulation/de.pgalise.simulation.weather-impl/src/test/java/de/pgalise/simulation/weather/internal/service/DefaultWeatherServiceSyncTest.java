@@ -65,7 +65,7 @@ import org.junit.BeforeClass;
 @ManagedBean
 public class DefaultWeatherServiceSyncTest {
 	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "pgalise")
+	@PersistenceUnit(unitName = "pgalise-weather")
 	private EntityManagerFactory entityManagerFactory;
 	
 	/**

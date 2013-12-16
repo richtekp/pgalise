@@ -39,7 +39,7 @@ public class DefaultBusStopParser implements BusStopParser {
 
 	private CityInfrastructureData trafficInformation;
 	private List<BusStop> busStops;
-	@PersistenceContext(unitName = "pgalise")
+	@PersistenceContext(unitName = "pgalise-traffic")
 	private EntityManager entityManager;
 
 	protected DefaultBusStopParser() {

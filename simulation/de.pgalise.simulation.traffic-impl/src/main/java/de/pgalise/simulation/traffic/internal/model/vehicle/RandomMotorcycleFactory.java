@@ -12,6 +12,7 @@ import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import javax.ejb.Stateful;
 
 /**
  *

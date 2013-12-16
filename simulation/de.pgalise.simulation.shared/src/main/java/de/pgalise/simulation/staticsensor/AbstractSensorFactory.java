@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
+import javax.ejb.EJB;
 
 /**
  *
@@ -20,11 +21,13 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 	/**
 	 * Sensor output
 	 */
+	@EJB
 	private Output sensorOutput;
 
 	/**
 	 * Random seed service
 	 */
+	@EJB
 	private RandomSeedService randomSeedService;
 
 	private int updateLimit = 1;
@@ -39,7 +42,13 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 	public AbstractSensorFactory(Output sensorOutput,
 		RandomSeedService rss,
 		int updateLimit) {
+		if(sensorOutput == null) {
+			throw new IllegalArgumentException("output null");
+		}
 		this.sensorOutput = sensorOutput;
+		if(randomSeedService == null) {
+			throw new IllegalArgumentException("randomSeedService null");
+		}
 		this.randomSeedService = rss;
 		this.updateLimit = updateLimit;
 	}
@@ -52,7 +61,7 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 		return updateLimit;
 	}
 
-	protected void setOutput(Output output) {
+	protected void setSensorOutput(Output output) {
 		this.sensorOutput = output;
 	}
 

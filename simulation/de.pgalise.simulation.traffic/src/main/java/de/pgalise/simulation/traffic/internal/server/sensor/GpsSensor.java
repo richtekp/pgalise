@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
 import org.slf4j.Logger;
@@ -25,22 +24,22 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
-import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import javax.faces.bean.ManagedBean;
 
 /**
  * Class to generate a GPS sensor
- * 
+ *
  * @author Marcus
  * @author Mischa
  * @version 1.1
  */
+@ManagedBean
 public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 
 	/**
@@ -51,7 +50,7 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 	/**
 	 * Logger
 	 */
-	private static Logger log = LoggerFactory.getLogger(GpsSensor.class);
+	private static final Logger log = LoggerFactory.getLogger(GpsSensor.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -73,53 +72,49 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 	 * Counter for the search signal
 	 */
 	private int searchSignalCounter = 0;
-	
+
+	public GpsSensor() throws IllegalArgumentException {
+		super();
+	}
+
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param vehicle
-	 *            According vehicle
-	 * @param sensor
-	 *            Type of the sensor
-	 * @param mapper
-	 *            GPS mapper of the graph
-	 * @param updateLimit
-	 *            Update limit
-	 * @param interferer
-	 *            GPS interferer
+	 *
+	 * @param output Output of the sensor
+	 * @param vehicle According vehicle
+	 * @param updateLimit Update limit
+	 * @param interferer GPS interferer
 	 */
-	public GpsSensor(final Output output, final Vehicle<? extends VehicleData> vehicle,
-			final int updateLimit,  final GpsInterferer interferer) {
+	public GpsSensor(final Output output,
+		final Vehicle<? extends VehicleData> vehicle,
+		final int updateLimit,
+		final GpsInterferer interferer) {
 
-		super(output,  TrafficSensorTypeEnum.GPS, updateLimit,new GPSSensorData());
+		super(output,
+			TrafficSensorTypeEnum.GPS,
+			updateLimit,
+			new GPSSensorData());
 		if (interferer == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"interferer"));
 		}
 		this.interferer = interferer;
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param vehicle
-	 *            According vehicle
-	 * @param sensor
-	 *            Type of the sensor
-	 * @param position 
-	 * @param interferer
-	 *            GPS interferer
+	 *
+	 * @param output Output of the sensor
+	 * @param vehicle According vehicle
+	 * @param interferer GPS interferer
 	 */
-	public GpsSensor(Output output, Vehicle<? extends VehicleData> vehicle, 
-			 final GpsInterferer interferer) {
-		this(output, vehicle, 1,  interferer);
+	public GpsSensor(Output output,
+		Vehicle<? extends VehicleData> vehicle,
+		final GpsInterferer interferer) {
+		this(output,
+			vehicle,
+			1,
+			interferer);
 	}
 
 	public GpsInterferer getInterferer() {
@@ -130,8 +125,20 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 		return this.vehicle;
 	}
 
-	public boolean hasSignal() {
+	public boolean isHasSignal() {
 		return this.hasSignal;
+	}
+
+	public void setHasSignal(boolean hasSignal) {
+		this.hasSignal = hasSignal;
+	}
+
+	public void setSearchSignalCounter(int searchSignalCounter) {
+		this.searchSignalCounter = searchSignalCounter;
+	}
+
+	public int getSearchSignalCounter() {
+		return searchSignalCounter;
 	}
 
 	@Override
@@ -145,23 +152,25 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 
 	public void setInterferer(final GpsInterferer interferer) throws IllegalArgumentException {
 		if (interferer == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"interferer"));
 		}
 		this.interferer = interferer;
 	}
 
 	public void setVehicle(Vehicle<? extends VehicleData> vehicle) {
 		if (vehicle == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("vehicle"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"vehicle"));
 		}
 		this.vehicle = vehicle;
 	}
 
 	/**
-	 * GPS data are transmitted by sending 2 double values depending on the State of the car.
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvents
+	 * GPS data are transmitted by sending 2 double values depending on the State
+	 * of the car.
+	 *
+	 * @param eventList List of SimulationEvents
 	 */
 	@Override
 	public void transmitUsageData(EventList eventList) {
@@ -171,16 +180,18 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 		}
 
 		/* Send data if the vehicle is driving */
-
 		// Use interferer
-		final Coordinate interferedPos = this.interferer.interfere(this.vehicle.getPosition(),
-				this.vehicle.getPosition(), eventList.getTimestamp());
+		final Coordinate interferedPos = this.interferer.interfere(this.vehicle.
+			getPosition(),
+			this.vehicle.getPosition(),
+			eventList.getTimestamp());
 
 		// convert to geo location
 		final Coordinate geoLocation = interferedPos;
 
-		log.debug("Send position of sensor " + this.getId()+ ": " + geoLocation.x + ", "
-				+ geoLocation.y);
+		log.debug(
+			"Send position of sensor " + this.getId() + ": " + geoLocation.x + ", "
+			+ geoLocation.y);
 
 		// Send data
 		this.getOutput().transmitDouble(geoLocation.x);
@@ -192,24 +203,25 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 	}
 
 	/**
-	 * Transmits the data if the car is not null and when the vehicle has a position.
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvents
-	 * @exception IllegalStateException
-	 *                if the getVehicle returns null
+	 * Transmits the data if the car is not null and when the vehicle has a
+	 * position.
+	 *
+	 * @param eventList List of SimulationEvents
+	 * @exception IllegalStateException if the getVehicle returns null
 	 */
 	@Override
 	protected void transmitData(EventList eventList) {
 		if (this.vehicle == null) {
-			throw new IllegalStateException(ExceptionMessages.getMessageForNotNull("vehicle"));
+			throw new IllegalStateException(ExceptionMessages.getMessageForNotNull(
+				"vehicle"));
 		}
 
 		if (this.vehicle.getPosition() != null) {
 			this.getSensorData().setPosition(this.vehicle.getPosition());
 
-			if ((VehicleStateEnum.UPDATEABLE_VEHICLES.contains(vehicle.getVehicleState()) && vehicle.getVehicleState() != VehicleStateEnum.NOT_STARTED)
-					|| vehicle.getVehicleState() == VehicleStateEnum.IN_TRAFFIC_RULE) {
+			if ((VehicleStateEnum.UPDATEABLE_VEHICLES.contains(vehicle.
+				getVehicleState()) && vehicle.getVehicleState() != VehicleStateEnum.NOT_STARTED)
+				|| vehicle.getVehicleState() == VehicleStateEnum.IN_TRAFFIC_RULE) {
 				super.transmitData(eventList);
 			}
 		}
@@ -222,16 +234,17 @@ public class GpsSensor extends AbstractSensor<TrafficEvent, GPSSensorData> {
 			// log
 			// GpsSensor.log.debug("Send: x: " + this.vehicle.getPosition().getX() + " y:"
 			// + this.vehicle.getPosition().getY());
-
 			// Use interferer
-			final Coordinate interferedPos = this.interferer.interfere(this.vehicle.getPosition(),
-					this.vehicle.getPosition(), eventList.getTimestamp());
+			final Coordinate interferedPos = this.interferer.interfere(this.vehicle.
+				getPosition(),
+				this.vehicle.getPosition(),
+				eventList.getTimestamp());
 
 			// convert to geolocation
 			final Coordinate geoLocation = interferedPos;
 
 			GpsSensor.log.debug("Send lat: " + geoLocation.x + " long: "
-					+ geoLocation.y + " of vehicle " + vehicle.getId());
+				+ geoLocation.y + " of vehicle " + vehicle.getId());
 		}
 	}
 }

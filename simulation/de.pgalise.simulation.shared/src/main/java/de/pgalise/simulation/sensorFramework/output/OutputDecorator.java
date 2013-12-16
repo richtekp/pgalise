@@ -24,7 +24,10 @@ package de.pgalise.simulation.sensorFramework.output;
 public abstract class OutputDecorator implements Output {
 	
 	/** the Output to decorate **/
-	private final Output sensorOutput;
+	private Output sensorOutput;
+
+	public OutputDecorator() {
+	}
 	
 	/**
 	 * Constructor
@@ -44,7 +47,11 @@ public abstract class OutputDecorator implements Output {
 	 * Returns the Output of {@link OutputDecorator}
 	 * @return
 	 */
-	protected Output getOutput() {
+	protected Output getSensorOutput() {
 		return sensorOutput;
+	}
+
+	protected void setSensorOutput(Output sensorOutput) {
+		this.sensorOutput = sensorOutput;
 	}
 }

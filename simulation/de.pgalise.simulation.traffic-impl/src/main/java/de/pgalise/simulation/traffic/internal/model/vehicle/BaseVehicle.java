@@ -32,6 +32,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
+import javax.annotation.ManagedBean;
 import javax.vecmath.Vector2d;
 
 /**

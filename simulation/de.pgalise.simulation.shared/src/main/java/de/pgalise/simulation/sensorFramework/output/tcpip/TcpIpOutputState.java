@@ -25,7 +25,7 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * 
  * @author Marcus
  */
-abstract class TcpIpOutputState {
+public abstract class TcpIpOutputState {
 
 	/**
 	 * holds the passed instance of the passed {@link TcpIpOutput} that

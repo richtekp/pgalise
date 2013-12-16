@@ -63,7 +63,7 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class CityClimateTest {
-	@PersistenceUnit(unitName = "pgalise")
+	@PersistenceUnit(unitName = "pgalise-weather")
 	private EntityManagerFactory entityManagerFactory;
 	private static EJBContainer container;
 	

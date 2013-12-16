@@ -5,43 +5,17 @@
  */
 package de.pgalise.simulation.controlCenter.internal;
 
-import de.pgalise.simulation.controlCenter.internal.message.CCWebSocketMessage;
-import de.pgalise.simulation.controlCenter.internal.message.ImportXMLStartParameterMessage;
-import de.pgalise.simulation.controlCenter.internal.message.LoadSimulationStartParameterMessage;
-import de.pgalise.simulation.controlCenter.internal.message.MessageTypeEnum;
-import de.pgalise.simulation.controlCenter.internal.message.OSMAndBusstopFileMessage;
-import de.pgalise.simulation.controlCenter.internal.message.SimulationStartParameterMessage;
 import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
-import de.pgalise.simulation.controlCenter.model.StartParameterOriginEnum;
-import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
-import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
-import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.VehicleInformation;
-import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import java.util.HashSet;
-import java.util.LinkedList;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
 
 /**
  *
@@ -61,7 +35,7 @@ public class InitDialogBean {
 	private CCSimulationStartParameter importedStartParameter;
 	private InformationBasedVehicleFactory vehicleFactory;
 	private Output output;
-	private Set<Vehicle<?>> uIVehicles;
+	private List<VehicleData> uiVehicles;
 
 	public InitDialogBean() {
 	}
@@ -205,13 +179,13 @@ public class InitDialogBean {
 		this.vehicleFactory = vehicleFactory;
 	}
 
-	public Set<Vehicle<?>> getuIVehicles() {
-		return uIVehicles;
+	public List<VehicleData> getUiVehicles() {
+		return uiVehicles;
 	}
 
-	public void setuIVehicles(
-		Set<Vehicle<?>> uIVehicles) {
-		this.uIVehicles = uIVehicles;
+	public void setUiVehicles(
+		List<VehicleData> uIVehicles) {
+		this.uiVehicles = uIVehicles;
 	}
 
 	/**
@@ -423,7 +397,7 @@ public class InitDialogBean {
 //
 //	private List<BusRoute> allBusRoutes;
 //	private WeatherEventViewData currentWeatherEventViewData;
-//	private Set<Vehicle<?>> uIVehicles = new HashSet<>();
+//	private Set<Vehicle<?>> uiVehicles = new HashSet<>();
 //
 //	/**
 //	 *

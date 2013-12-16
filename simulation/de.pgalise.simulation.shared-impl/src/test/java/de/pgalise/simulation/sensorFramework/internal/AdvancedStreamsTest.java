@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.sensorFramework.internal;
 
+import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import java.net.ConnectException;
 
 import org.junit.Assert;
@@ -45,12 +47,12 @@ public class AdvancedStreamsTest {
 	/**
 	 * Output
 	 */
-	private final TcpIpOutput outputKeepOpen = new TcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
+	private final TcpIpOutput outputKeepOpen = new AbstractTcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
 
 	/**
 	 * Output
 	 */
-	private final TcpIpOutput outputForceClose = new TcpIpOutput("127.0.0.1", 6666, new TcpIpForceCloseStrategy());
+	private final TcpIpOutput outputForceClose = new AbstractTcpIpOutput("127.0.0.1", 6666, new TcpIpForceCloseStrategy());
 
 	/**
 	 * Tests if it is possible to send all data to the streams instance in one stream

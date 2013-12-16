@@ -55,7 +55,6 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensor;
@@ -88,7 +87,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.TrafficServiceDictionary;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficServiceDictionary;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
@@ -104,7 +103,6 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SchedulerComposite;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 
 /**
@@ -234,8 +232,8 @@ public class DefaultTrafficServer extends AbstractController<
 	/**
 	 * Event handler manager
 	 */
-	@EJB
-	private TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> trafficEventHandlerManager;
+//	@EJB
+//	private TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> trafficEventHandlerManager;
 
 	/**
 	 * Vehicle event handler manager
@@ -253,7 +251,7 @@ public class DefaultTrafficServer extends AbstractController<
 	 * Sensor factory
 	 */
 	@EJB
-	private SensorFactory sensorFactory;
+	private TrafficSensorFactory sensorFactory;
 
 	/**
 	 * Server configurations
@@ -366,7 +364,7 @@ public class DefaultTrafficServer extends AbstractController<
 		SensorRegistry sensorRegistry,
 		TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager,
 		List<TrafficServerLocal<VehicleEvent>> slist,
-		SensorFactory sensorFactory,
+		TrafficSensorFactory sensorFactory,
 		TrafficGraph graph) {
 		this.coordinate = coordinate;
 		this.serviceDictionary = serviceDictionary;
@@ -377,7 +375,7 @@ public class DefaultTrafficServer extends AbstractController<
 			serviceDictionary.getRandomSeedService(),
 			graph);
 
-		this.trafficEventHandlerManager = eventHandlerManager;
+//		this.trafficEventHandlerManager = eventHandlerManager;
 		this.vehicleEventHandlerManager = new DefaultVehicleEventHandlerManager();
 		// this.vehicleFuzzyManager = new DefaultVehicleFuzzyManager(this, tolerance, checkSteps, timebuffer,
 		// trafficGovernor);
@@ -743,9 +741,9 @@ public class DefaultTrafficServer extends AbstractController<
 		// Load event handlers
 		try (InputStream stream = DefaultTrafficServer.class.getResourceAsStream(
 			"/eventhandler.conf")) {
-			this.trafficEventHandlerManager.init(stream,
+			this.vehicleEventHandlerManager.init(stream,
 				DefaultTrafficServer.class);
-			for (TrafficEventHandler<VehicleEvent> a : this.trafficEventHandlerManager) {
+			for (TrafficEventHandler<VehicleEvent> a : this.vehicleEventHandlerManager) {
 				a.init(this);
 			}
 		}
@@ -942,7 +940,7 @@ public class DefaultTrafficServer extends AbstractController<
 		this.trafficGraphExtensions.reset();
 		this.cityZones.clear();
 		this.serverList.clear();
-		this.trafficEventHandlerManager.clear();
+//		this.trafficEventHandlerManager.clear();
 		this.vehicleEventHandlerManager.clear();
 		this.sensorController.reset();
 	}
@@ -980,7 +978,7 @@ public class DefaultTrafficServer extends AbstractController<
 		 * Handle incoming events
 		 */
 		for (VehicleEvent event : simulationEventList.getEventList()) {
-			this.trafficEventHandlerManager.handleEvent(event);
+			this.vehicleEventHandlerManager.handleEvent(event);
 		}
 
 		this.scheduler.changeModus(ScheduleModus.READ);
@@ -1023,10 +1021,10 @@ public class DefaultTrafficServer extends AbstractController<
 		this.updateRoadBarriers(simulationEventList.getTimestamp());
 	}
 
-	@Override
-	public TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> getTrafficEventHandlerManager() {
-		return trafficEventHandlerManager;
-	}
+//	@Override
+//	public TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> getTrafficEventHandlerManager() {
+//		return vehicleEventHandlerManager;
+//	}
 
 	@Override
 	public int getServerListSize() {

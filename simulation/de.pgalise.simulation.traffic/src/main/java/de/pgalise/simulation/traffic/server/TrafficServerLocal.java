@@ -192,11 +192,11 @@ public interface TrafficServerLocal<F extends TrafficEvent> extends TrafficServe
 	 */
 	public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds);
 	
-	/**
-	 * 
-	 * @return {@link SimulationEventHandlerManager}
-	 */
-	public TrafficEventHandlerManager<TrafficEventHandler<F>,F> getTrafficEventHandlerManager();
+//	/**
+//	 * 
+//	 * @return {@link SimulationEventHandlerManager}
+//	 */
+//	public TrafficEventHandlerManager<TrafficEventHandler<F>,F> getTrafficEventHandlerManager();
 	
 	/**
 	 * 

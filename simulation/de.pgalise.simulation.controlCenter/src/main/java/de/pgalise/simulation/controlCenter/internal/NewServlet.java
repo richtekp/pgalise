@@ -12,6 +12,7 @@ import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.GsonService;
@@ -87,7 +88,7 @@ public class NewServlet extends HttpServlet {
 //		City city = new TrafficCity(graph, "Berlin", 3400000, 100, true,
 //						true, new po);
 		City city = TestUtils.createDefaultTestCityInstance();
-		Output output = new TcpIpOutput("127.0.0.1",
+		Output output = new AbstractTcpIpOutput("127.0.0.1",
 			22000,
 			new TcpIpKeepOpenStrategy());
 		WeatherInterferer weatherInterferer = new RainsensorWhiteNoiseInterferer(

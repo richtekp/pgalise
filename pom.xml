@@ -384,11 +384,6 @@
 				<version>${de.pgalise.openejb.version}</version>
 				<scope>test</scope>
 			</dependency>	
-			<dependency>
-    	<groupId>javax</groupId>
-    	<artifactId>javaee-api</artifactId>
-    	<version>7.0</version>
-			</dependency>		
 
 			<dependency>
 				<groupId>javax.servlet</groupId>

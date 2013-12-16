@@ -15,30 +15,26 @@
  */
 package de.pgalise.simulation.controlCenter.model;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.VehicleInformation;
-import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.Stateful;
 
 /**
  * Default implementation of random dynamic sensor service.
@@ -54,10 +50,8 @@ public class DefaultCreateRandomVehicleService implements
 {
 
 	private SensorInterfererService sensorInterfererService;
-	private TrafficServerLocal trafficServerLocal;
+	private TrafficServerLocal<?> trafficServerLocal;
 	private Output output;
-	@EJB
-	private VehicleFactory vehicleFactory;
 	@EJB
 	private TrafficSensorFactory sensorFactory;
 
@@ -71,13 +65,13 @@ public class DefaultCreateRandomVehicleService implements
 	 */
 	public DefaultCreateRandomVehicleService(
 					SensorInterfererService sensorInterfererService,
-					TrafficServerLocal trafficServerLocal) {
+					TrafficServerLocal<?> trafficServerLocal) {
 		this.sensorInterfererService = sensorInterfererService;
 		this.trafficServerLocal = trafficServerLocal;
 	}
 
 	@Override
-	public AbstractTrafficEvent createRandomDynamicSensors(
+	public TrafficEvent<?> createRandomDynamicSensors(
 					RandomVehicleBundle randomDynamicSensorBundle,
 					RandomSeedService randomSeedService,
 					boolean withSensorInterferer) {
@@ -113,7 +107,7 @@ public class DefaultCreateRandomVehicleService implements
 			if (i < randomDynamicSensorBundle.getRandomBikeAmount()
 											* randomDynamicSensorBundle.getGpsBikeRatio()) {
 				gpsActivated = true;
-				Sensor<?,?> sensorID = sensorFactory.createGpsSensor(withSensorInterferer);;
+				Sensor<?,?> sensorID = sensorFactory.createGpsSensor(withSensorInterferer);
 				NavigationNode sensorNode = null;
 				sensorHelperList.add(sensorID);
 			}

@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.staticsensor.internal.grid.LinearGridDeployer;
 import javax.vecmath.Vector2d;
+import org.junit.Ignore;
 
 /**
  * Tests the class {@link LinearGridDeployer}
@@ -34,6 +35,7 @@ import javax.vecmath.Vector2d;
  * @author Marina
  * @version 1.0 (Nov 22, 2012)
  */
+@Ignore
 public class LinearGridDeployerTest {
 	/**
 	 * Logger

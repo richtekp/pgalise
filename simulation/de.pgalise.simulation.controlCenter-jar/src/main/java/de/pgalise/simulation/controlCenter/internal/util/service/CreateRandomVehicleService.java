@@ -35,6 +35,6 @@ public interface CreateRandomVehicleService {
 	 * 			sensors with interferer or not
 	 * @return
 	 */
-	public TrafficEvent createRandomDynamicSensors(RandomVehicleBundle randomDynamicSensorBundle, 
+	public TrafficEvent<?> createRandomDynamicSensors(RandomVehicleBundle randomDynamicSensorBundle, 
 			RandomSeedService randomSeedService, boolean withSensorInterferer);
 }

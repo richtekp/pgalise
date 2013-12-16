@@ -49,6 +49,7 @@ postgres = "/usr/lib/postgresql/9.1/bin/postgres"
 apt_get = "apt-get"
 md5sum = "md5sum"
 dpkg = "dpkg"
+add_apt_repo = "add-apt-repository"
 # </ul>
 
 # some variables to be changed at will (would be more elegant to enable controll as options of this script)
@@ -111,12 +112,24 @@ def bootstrap(skip_build=False):
     try:
         sp.check_call([sudo, apt_get, "install", "--assume-yes", "postgresql", "postgresql-common"])
     except sp.CalledProcessError:
-        print("postgresql installation failed (which is possible due to broken package in Ubuntu 13.10")
-        print("Do you want to install postgres 9.3 from alternative package provider http://community.openscg.com/se/?")
-        input0 = None
-        while(input0 != "yes" and input0 != "no"):
-            input0 = raw_input("(yes/no) ")
-        if input0 == "yes":
+        apt_repo_url = "http://apt.postgresql.org/pub/repos/apt/"
+        print("standard postgresql installation failed. Trying new repository %s" % apt_repo_url)
+        try:
+            sp.check_call([sudo, add_apt_repo, "--yes", apt_repo_url])
+            sp.check_call([sudo, apt_get, "update"])
+            sp.check_call([sudo, apt_get, "--assume-yes", "install", "postgresql", "postgresql-client-common", "postgresql-9.3-postgis-2.1", "postgresql-9.3-postgis-2.1-scripts"])
+            prefix =  "/usr/lib/postgresql/9.1/bin/"
+            psql = os.path.join(prefix, "psql")
+            initdb = os.path.join(prefix, "initdb")
+            createdb = os.path.join(prefix, "createdb")
+            postgres = os.path.join(prefix, "postgres")
+        except:
+            print("postgresql installation failed (which is possible due to broken package in Ubuntu 13.10")
+            #print("Do you want to install postgres 9.3 from alternative package provider http://community.openscg.com/se/?")
+            #input0 = None
+            #while(input0 != "yes" and input0 != "no"):
+            #    input0 = raw_input("(yes/no) ")
+            #if input0 == "yes":
             sp.check_call([sudo, apt_get, "remove", "--assume-yes", "postgresql", "postgresql-common"]) 
             postgresql_deb_path = os.path.join(tmp_path, postgresql_deb_name)
             if not os.path.exists(postgresql_deb_path) or retrieve_md5sum(postgresql_deb_path) != postgresql_deb_md5:
@@ -126,22 +139,25 @@ def bootstrap(skip_build=False):
             initdb = "/opt/postgres/9.3/bin/initdb"
             createdb = "/opt/postgres/9.3/bin/createdb"
             postgres = "/opt/postgres/9.3/bin/postgres"
-        else:
-            print("fix postgresql installation so that apt-get install postgresql postgresql-common returns 0 to continue")
-            return
+            #else:
+            #    print("fix postgresql installation so that apt-get install postgresql postgresql-common returns 0 to continue")
+            #    return
     if not os.path.exists(postgres_datadir_path) or len(os.listdir(postgres_datadir_path)) == 0:
         # os.mkdir(postgres_datadir_path) # unnecessary
         sp.check_call([initdb, "-D", postgres_datadir_path])
         postgres_process = sp.Popen([postgres, "-D", postgres_datadir_path, "-p", postgres_port, "-h", postgres_host, "-k", postgres_socket_dir])
         try:
-            print("sleeping to ensure postgres server started")
+            print("sleeping 10 s to ensure postgres server started")
             time.sleep(10) # not nice (should poll connection until success instead)
             sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, postgres_user])
             sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, pgalise_user])
+            sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, "pgalise_test"]) # database name in TestUtils class of de.pgalise.shared-testutils
             os.system("echo '%s' | psql -p %s -h %s" % ("create role pgalise login;", postgres_port, postgres_host)) # specifying command using --command parameter of psql doesn't seem to work
             os.system("echo '%s' | psql -p %s -h %s" % ("grant all on database pgalise to pgalise", postgres_port, postgres_host))
-            os.system("echo '%s' | psql -p %s -h %s" % ("grant all on database pgalise to pgalise", postgres_port, postgres_host))
-            os.system("echo '%s' | psql -p %s -h %s" % ("create extension postgis; create extension postgis_topology;", postgres_port, postgres_host))
+            os.system("echo '%s' | psql -p %s -h %s" % ("grant all on database pgalise_test to pgalise", postgres_port, postgres_host))
+            # postgis extension(s) has(ve) to be created on every database
+            os.system("echo '%s' | psql -p %s -h %s -d pgalise" % ("create extension postgis; create extension postgis_topology;", postgres_port, postgres_host))
+            os.system("echo '%s' | psql -p %s -h %s -d pgalise_test" % ("create extension postgis; create extension postgis_topology;", postgres_port, postgres_host))
         except Exception as ex:
             raise ex
         finally:

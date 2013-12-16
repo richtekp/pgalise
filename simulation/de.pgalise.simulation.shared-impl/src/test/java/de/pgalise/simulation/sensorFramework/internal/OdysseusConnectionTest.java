@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.decorator.OdysseusOutput;
+import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 
@@ -52,7 +54,7 @@ public class OdysseusConnectionTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		try {
-			OdysseusConnectionTest.output = new OdysseusOutput(new TcpIpOutput("127.0.0.1", 6666,
+			OdysseusConnectionTest.output = new OdysseusOutput(new AbstractTcpIpOutput("127.0.0.1", 6666,
 					new TcpIpKeepOpenStrategy()));
 		} catch (Exception e) {
 			// If there is no connection than all is fine, else error!

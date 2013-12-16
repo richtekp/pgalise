@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.sensorFramework.internal;
 
+import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,7 +36,7 @@ public class TcpIpSensorOutputTest {
 	/**
 	 * Test class
 	 */
-	private final TcpIpOutput output = new TcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
+	private final TcpIpOutput output = new AbstractTcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
 
 	@Test
 	public void testTransmit_forceClose() {

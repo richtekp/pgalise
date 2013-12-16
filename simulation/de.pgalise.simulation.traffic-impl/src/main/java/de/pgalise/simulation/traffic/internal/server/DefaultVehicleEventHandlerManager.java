@@ -36,7 +36,8 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHan
  * @version 1.0 (Feb 17, 2013)
  */
 @Local(VehicleEventHandlerManager.class)
-@Stateless(name = "de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager")
+@Stateless
+	//(name = "de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager")
 public class DefaultVehicleEventHandlerManager extends
 AbstractEventHandlerManager<
 	VehicleEventHandler<VehicleEvent>, 

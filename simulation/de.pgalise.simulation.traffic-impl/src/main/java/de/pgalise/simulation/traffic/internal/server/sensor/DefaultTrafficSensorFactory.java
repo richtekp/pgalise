@@ -12,7 +12,6 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.CompositeGpsInterferer;
@@ -36,16 +35,17 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
 import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.AbstractEnergySensorFactory;
-import de.pgalise.staticsensor.internal.sensor.energy.PhotovoltaikSensor;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import javax.ejb.Stateful;
 
 /**
  *
  * @author richter
  */
+@Stateful
 public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 	implements TrafficSensorFactory {
 

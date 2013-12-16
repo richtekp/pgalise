@@ -24,6 +24,7 @@ import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.List;
+import javax.annotation.ManagedBean;
 import javax.vecmath.Vector2d;
 
 /**

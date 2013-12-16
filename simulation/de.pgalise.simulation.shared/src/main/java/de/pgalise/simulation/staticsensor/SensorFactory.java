@@ -46,13 +46,13 @@ public interface SensorFactory {
 	 * Creates a sensor of a specific type with random values (use other methods
 	 * of this class to create sensors with values of specific bounds)
 	 *
-	 * @param sensorHelper
-	 * @param allowedTypes
+	 * @param sensorType
+	 * @param sensorInterfererTypes
 	 * @return sensor Returns the created sensor
 	 * @throws InterruptedException
 	 * @throws ExecutionException
 	 */
-	public Sensor<?,?> createSensor(SensorType sensorType,
+	public Sensor<?, ?> createSensor(SensorType sensorType,
 		List<SensorInterfererType> sensorInterfererTypes)
 		throws InterruptedException, ExecutionException;
 
