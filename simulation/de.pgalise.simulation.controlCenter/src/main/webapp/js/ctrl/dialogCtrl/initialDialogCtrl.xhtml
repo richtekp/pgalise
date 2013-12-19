@@ -64,8 +64,8 @@ function InitialDialogCtrl($scope, PopupService, MapService, MessageIDService) {
 			 * New Scenario is to be created
 			 */
 			case 'create':
-				if (typeof _this.$scope.startParameter.osmAndBusstopFileData.osmFileName === 'undefined'
-								|| typeof _this.$scope.startParameter.osmAndBusstopFileData.busStopFileName === 'undefined')
+						if (#{startParameter.getoSMAndBusstopFileData().osmFileName eq null}
+										|| #{startParameter.getoSMAndBusstopFileData().busStopFileName eq null})
 					return;
 				_this.sendOsmAndBusstop(_this.$scope.startParameter.osmAndBusstopFileData);
 				PopupService.close('initial');
