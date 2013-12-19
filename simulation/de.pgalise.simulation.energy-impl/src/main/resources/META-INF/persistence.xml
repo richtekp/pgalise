@@ -11,7 +11,6 @@
 		<class>de.pgalise.simulation.shared.city.NavigationNode</class>
 		<class>de.pgalise.simulation.shared.city.Position</class>
 		<class>de.pgalise.simulation.shared.city.Way</class>
-		<class>de.pgalise.simulation.traffic.BusLineInformation</class>
 		<class>de.pgalise.simulation.traffic.BusRoute</class>
 		<class>de.pgalise.simulation.traffic.BusStop</class>
 		<class>de.pgalise.simulation.traffic.BusStopInformation</class>

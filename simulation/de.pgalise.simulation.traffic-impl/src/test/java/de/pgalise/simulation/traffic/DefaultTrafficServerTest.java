@@ -507,9 +507,8 @@ public class DefaultTrafficServerTest {
 
 		List<AbstractTrafficEvent> trafficEventList = new ArrayList<>();
 		List<BusRoute> busRoutes = new ArrayList<>();
-		BusRoute b301a = new BusRoute("301",
-			"Eversten",
-			3);
+		BusRoute b301a = new BusRoute(1L,"301",
+			"Eversten");
 		busRoutes.add(b301a);
 		List<CreateRandomVehicleData> busDataList = new ArrayList<>();
 		int tnbt = 

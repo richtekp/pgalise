@@ -30,11 +30,11 @@
 	    <url>http://134.106.56.230:18081/nexus/content/groups/public</url>
 	    <releases>
 		<enabled>true</enabled>
-		<updatePolicy>daily</updatePolicy>
+		<updatePolicy>never</updatePolicy>
 	    </releases>
 	    <snapshots>
 	      <enabled>true</enabled>
-	      <updatePolicy>daily</updatePolicy>
+	      <updatePolicy>never</updatePolicy>
 	      </snapshots>
 	  </repository>
 		<repository>
@@ -42,11 +42,11 @@
 	    <url>http://dev.mapfish.org/maven/repository</url>
 	    <releases>
 				<enabled>true</enabled>
-				<updatePolicy>interval:10080</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 	    </releases>
 	    <snapshots>
 	      <enabled>true</enabled>
-	      <updatePolicy>interval:10080</updatePolicy>
+	      <updatePolicy>never</updatePolicy>
 	      </snapshots>
 	  </repository>
 		<repository>
@@ -54,11 +54,11 @@
 	    <url>http://www.hibernatespatial.org/repository</url>
 	    <releases>
 				<enabled>true</enabled>
-				<updatePolicy>interval:10080</updatePolicy>
+				<updatePolicy>never</updatePolicy>
 	    </releases>
 	    <snapshots>
 	      <enabled>true</enabled>
-	      <updatePolicy>interval:10080</updatePolicy>
+	      <updatePolicy>never</updatePolicy>
 	      </snapshots>
 	  </repository>
 	</repositories>
@@ -68,11 +68,11 @@
 	    <url>http://134.106.56.230:18081/nexus/content/groups/public</url>
 	    <releases>
 	    <enabled>true</enabled>
-	    <updatePolicy>interval:10080</updatePolicy>
+	    <updatePolicy>never</updatePolicy>
 	    </releases>
 	    <snapshots>
 	      <enabled>true</enabled>
-	      <updatePolicy>interval:10080</updatePolicy>
+	      <updatePolicy>never</updatePolicy>
 	    </snapshots>
 	  </pluginRepository>
 	</pluginRepositories>	

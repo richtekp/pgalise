@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.BusAgency;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**
- * Contains information about a bus route.
- * The ID, long name, short, name, the route type
- * and a flag, if it's used or not.
+ * Contains information about a bus route. The ID, long name, short, name, the
+ * route type and a flag, if it's used or not.
+ *
  * @author Lena
  */
 @Entity
-public class BusRoute extends BusLineInformation {
+public class BusRoute extends TransportLineInformation {
+
 	/**
 	 * Serial
 	 */
@@ -45,30 +46,25 @@ public class BusRoute extends BusLineInformation {
 	private String routeLongName;
 
 	/**
-	 * Route type
-	 */
-	private int routeType;
-	
-	/**
 	 * Used in simulation
 	 */
-	private boolean used;	
-	
-	@Column(name = "AGENCY_ID")
+	private boolean used;
+
+	@ManyToOne
 	private BusAgency agency;
-	
+
 	@Column(name = "ROUTE_DESC")
 	private String routeDesc;
-	
+
 	@Column(name = "ROUTE_URL")
 	private String routeUrl;
-	
+
 	@Column(name = "ROUTE_COLOR")
 	private String routeColor;
-	
+
 	@Column(name = "ROUTE_TEXT_COLOR")
 	private String routeTextColor;
-	
+
 	private BusData bus;
 
 	/**
@@ -77,18 +73,19 @@ public class BusRoute extends BusLineInformation {
 	protected BusRoute() {
 	}
 
-	public BusRoute(String routeShortName,
+	public BusRoute(Long id,
+		String routeShortName,
 		String routeLongName,
-		int routeType,
 		boolean used,
 		BusAgency agency,
 		String routeDesc,
 		String routeUrl,
 		String routeColor,
 		String routeTextColor) {
+		super(id,
+			TransportLineTypeEnum.BUS);
 		this.routeShortName = routeShortName;
 		this.routeLongName = routeLongName;
-		this.routeType = routeType;
 		this.used = used;
 		this.agency = agency;
 		this.routeDesc = routeDesc;
@@ -96,29 +93,32 @@ public class BusRoute extends BusLineInformation {
 		this.routeColor = routeColor;
 		this.routeTextColor = routeTextColor;
 	}
-	
-	
-	public BusRoute(String routeShortName, String routeLongName, int routeType) {
-		this(routeShortName,
+
+	public BusRoute(Long id,
+		String routeShortName,
+		String routeLongName) {
+		this(id,
+			routeShortName,
 			routeLongName,
-			routeType,
 			true);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param routeShortName
-	 *            Short name
-	 * @param routeLongName
-	 *            Long name
-	 * @param routeType
-	 *            Route type
+	 *
+	 * @param id
+	 * @param routeShortName Short name
+	 * @param routeLongName Long name
+	 * @param used
 	 */
-	public BusRoute(String routeShortName, String routeLongName, int routeType, boolean used) {
+	public BusRoute(Long id,
+		String routeShortName,
+		String routeLongName,
+		boolean used) {
+		super(id,
+			TransportLineTypeEnum.BUS);
 		this.routeShortName = routeShortName;
 		this.routeLongName = routeLongName;
-		this.routeType = routeType;
 		this.used = used;
 	}
 
@@ -130,8 +130,7 @@ public class BusRoute extends BusLineInformation {
 	}
 
 	/**
-	 * @param routeShortName
-	 *            the routeShortName to set
+	 * @param routeShortName the routeShortName to set
 	 */
 	public void setRouteShortName(String routeShortName) {
 		this.routeShortName = routeShortName;
@@ -145,26 +144,10 @@ public class BusRoute extends BusLineInformation {
 	}
 
 	/**
-	 * @param routeLongName
-	 *            the routeLongName to set
+	 * @param routeLongName the routeLongName to set
 	 */
 	public void setRouteLongName(String routeLongName) {
 		this.routeLongName = routeLongName;
-	}
-
-	/**
-	 * @return the routeType
-	 */
-	public int getRouteType() {
-		return routeType;
-	}
-
-	/**
-	 * @param routeType
-	 *            the routeType to set
-	 */
-	public void setRouteType(int routeType) {
-		this.routeType = routeType;
 	}
 
 	public boolean isUsed() {

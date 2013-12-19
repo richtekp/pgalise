@@ -7,12 +7,13 @@
 package de.pgalise.simulation.shared.controller;
 
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
+import java.util.LinkedList;
 import java.util.List;
 
 
 public class AbstractStartParameter implements StartParameter {
 	private static final long serialVersionUID = 1L;
-	private List<WeatherEvent> weatherEventHelperList;
+	private List<WeatherEvent> weatherEventHelperList = new LinkedList<WeatherEvent>();
 	private boolean aggregatedWeatherDataEnabled;
 
 	public AbstractStartParameter() {

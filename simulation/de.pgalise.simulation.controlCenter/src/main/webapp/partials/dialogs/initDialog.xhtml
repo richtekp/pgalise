@@ -1,0 +1,63 @@
+<div ng-controller="InitialDialogCtrl">
+	<div id="initialDialog">
+		<div class="block">
+			<table>
+				<tr class="head">
+					<td colspan="2"><h3><input type="radio" value="create" ng-model="chosenInitialType" ng-disabled="chosenInitialType == 'confirmed'" /> Create new szenario</h3></td>
+				</tr>
+				<tr>
+					<td>City name</td>
+					<td>
+						<input class="normalWidth" type="text" title="enter the cities name" ng-model="#{startParameter.city.name}" ng-disabled="chosenInitialType != 'create'" />
+					</td>
+				</tr>
+				<tr>
+					<td>Bus system</td>
+					<td><select class="normalWidth" ng-model="#{startParameter.getoSMAndBusstopFileData().busStopFileName}" ng-options="b for b in busSystems" ng-disabled="chosenInitialType != 'create' || !onConnectMessageReceived"></select></td>
+				</tr>
+				<tr>
+					<td>Street map</td>
+					<td><select class="normalWidth" ng-model="#{startParameter.getoSMAndBusstopFileData().osmFileName}" ng-options="s for s in streetMaps" ng-disabled="chosenInitialType != 'create' || !onConnectMessageReceived"></select></td>
+				</tr>
+			</table>
+		</div>
+		<div class="block">
+			<table>
+				<tr class="head">
+					<td><h3><input type="radio" value="recent" ng-model="chosenInitialType" ng-disabled="chosenInitialType == 'confirmed'" /> Load recently started scenario</h3></td>
+				</tr>
+				<tr>
+					<td>
+						<b>Recent scenarios:</b>
+						<div>
+							<select class="largeWidth" ng-model="chosenRecentScenario" ng-options="s.name for s in recentScenarios" ng-disabled="chosenInitialType != 'recent' || !onConnectMessageReceived"></select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div><b>Current:</b></div>
+						<div>File name: {{chosenRecentScenario.path}}</div>
+						<div>Date: {{chosenRecentScenario.timestamp| date:'dd.MM.yyyy @ H:mm:ss'}}</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="block">
+			<table>
+				<tr class="head">
+					<td><h3><input type="radio" value="import" ng-model="chosenInitialType" ng-disabled="chosenInitialType == 'confirmed'" /> Import existing scenario</h3></td>
+				</tr>
+				<tr>
+					<td>
+						<b>Load XML:</b>
+						<div>
+							<input class="largeWidth" type="file" id="fileUpload" ng-disabled="chosenInitialType != 'import'" accept="text/xml" />​
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<input type="button" class="fullWidth" value="Confirm" ng-click="confirmInitialDialog()" ng-disabled="chosenInitialType == 'confirmed'" />
+</div>

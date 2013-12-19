@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.simulation.traffic.BusLineInformation;
+import de.pgalise.simulation.traffic.TransportLineInformation;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author richter
  */
 @Stateless
-public class BusLineInformationFacade extends AbstractFacade<BusLineInformation> {
+public class BusLineInformationFacade extends AbstractFacade<TransportLineInformation> {
 	@PersistenceContext(unitName = "pgalise-jsf")
 	private EntityManager em;
 
@@ -26,7 +26,7 @@ public class BusLineInformationFacade extends AbstractFacade<BusLineInformation>
 	}
 
 	public BusLineInformationFacade() {
-		super(BusLineInformation.class);
+		super(TransportLineInformation.class);
 	}
 	
 }

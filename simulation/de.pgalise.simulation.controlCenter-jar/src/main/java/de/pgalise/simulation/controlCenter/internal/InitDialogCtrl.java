@@ -7,10 +7,7 @@ package de.pgalise.simulation.controlCenter.internal;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
-import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
-import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
@@ -18,13 +15,13 @@ import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 /**
@@ -33,79 +30,21 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean
 @SessionScoped
-public class InitDialogBean {
+/*
+- use IdGenerator of MainCtrl
+- interact with CCSimulationParamter singleton
+*/
+public class InitDialogCtrl implements Serializable{
+	private static final long serialVersionUID = 1L;
 
-	@EJB
-	private IdGenerator idGenerator;
 	private InitDialogEnum chosenInitialType;
 	private String chosenRecentScenarioPath;
 	private String importedXML;
-	private OSMParsedStateEnum oSMParsedStateEnum;
-	private OSMAndBusstopFileData oSMAndBusstopFileData;
-	private CCSimulationStartParameter importedStartParameter;
 	private InformationBasedVehicleFactory vehicleFactory;
-	private Output output = new Output() {
-
-		@Override
-		public void beginTransmit() throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void endTransmit() throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public OutputStateEnum getState() {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitBoolean(boolean value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitByte(byte value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitShort(short value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitInt(int value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitLong(long value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitFloat(float value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitDouble(double value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitString(String value) throws IllegalArgumentException, IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
-		public void transmitByteArray(byte[] value) throws IllegalStateException {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-	};
+	@ManagedProperty(value = "#{mainCtrl}")
+	private MainCtrl mainCtrl;
+	@EJB
+	private Output output;
 	private Queue<VehicleData> uiVehicles = new LinkedList<VehicleData>(Arrays.asList(new CarData(Color.yellow,
 				2000,
 				500,
@@ -123,42 +62,20 @@ public class InitDialogBean {
 					new GpsNoInterferer()),
 				VehicleTypeEnum.CAR)));
 
-	public InitDialogBean() {
+	public InitDialogCtrl() {
 	}
 
-	public InitDialogBean(IdGenerator idGenerator,
+	public InitDialogCtrl(
 		InitDialogEnum chosenInitialType,
 		String chosenRecentScenarioPath,
 		String importedXML,
-		OSMParsedStateEnum oSMParsedStateEnum,
-		OSMAndBusstopFileData oSMAndBusstopFileData,
-		CCSimulationStartParameter importedStartParameter,
 		InformationBasedVehicleFactory vehicleFactory,
 		Output output) {
-		this.idGenerator = idGenerator;
 		this.chosenInitialType = chosenInitialType;
 		this.chosenRecentScenarioPath = chosenRecentScenarioPath;
 		this.importedXML = importedXML;
-		this.oSMParsedStateEnum = oSMParsedStateEnum;
-		this.oSMAndBusstopFileData = oSMAndBusstopFileData;
-		this.importedStartParameter = importedStartParameter;
 		this.vehicleFactory = vehicleFactory;
 		this.output = output;
-	}
-
-	/**
-	 * @return the idGenerator
-	 */
-	public IdGenerator getIdGenerator() {
-		return idGenerator;
-	}
-
-	/**
-	 * @param idGenerator the idGenerator to set
-	 */
-	public void setIdGenerator(
-		IdGenerator idGenerator) {
-		this.idGenerator = idGenerator;
 	}
 
 	/**
@@ -203,51 +120,6 @@ public class InitDialogBean {
 	 */
 	public void setImportedXML(String importedXML) {
 		this.importedXML = importedXML;
-	}
-
-	/**
-	 * @return the oSMParsedStateEnum
-	 */
-	public OSMParsedStateEnum getoSMParsedStateEnum() {
-		return oSMParsedStateEnum;
-	}
-
-	/**
-	 * @param oSMParsedStateEnum the oSMParsedStateEnum to set
-	 */
-	public void setoSMParsedStateEnum(
-		OSMParsedStateEnum oSMParsedStateEnum) {
-		this.oSMParsedStateEnum = oSMParsedStateEnum;
-	}
-
-	/**
-	 * @return the oSMAndBusstopFileData
-	 */
-	public OSMAndBusstopFileData getoSMAndBusstopFileData() {
-		return oSMAndBusstopFileData;
-	}
-
-	/**
-	 * @param oSMAndBusstopFileData the oSMAndBusstopFileData to set
-	 */
-	public void setoSMAndBusstopFileData(
-		OSMAndBusstopFileData oSMAndBusstopFileData) {
-		this.oSMAndBusstopFileData = oSMAndBusstopFileData;
-	}
-
-	/**
-	 * @return the importedStartParameter
-	 */
-	public CCSimulationStartParameter getImportedStartParameter() {
-		return importedStartParameter;
-	}
-
-	/**
-	 * @param importedStartParameter the importedStartParameter to set
-	 */
-	public void setImportedStartParameter(
-		CCSimulationStartParameter importedStartParameter) {
-		this.importedStartParameter = importedStartParameter;
 	}
 
 	/**
@@ -695,8 +567,4 @@ public class InitDialogBean {
 //		});
 //	}
 //;
-	
-	public String test() {
-		return "lslslsl";
-	}
 }

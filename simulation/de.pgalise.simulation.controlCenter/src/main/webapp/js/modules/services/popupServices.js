@@ -27,7 +27,7 @@ popupServices.factory('SimplePopupService', function($http, $compile) {
         var scope = ctrl.mainCtrl.$scope;
         var popup = getPopup('initial', true);
 
-        $http.get('partials/dialogs/initDialog.html').success(function(data) {
+        $http.get('partials/dialogs/initDialog.xhtml').success(function(data) {
             popup.html(data);
             popup.dialog({
                 autoOpen : true,

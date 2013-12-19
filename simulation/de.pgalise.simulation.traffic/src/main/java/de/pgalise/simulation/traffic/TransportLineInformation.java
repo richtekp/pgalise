@@ -9,14 +9,15 @@ package de.pgalise.simulation.traffic;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 
 /**
  *
  * @author richter
  */
-@Entity
-public class BusLineInformation extends AbstractIdentifiable{
+@MappedSuperclass
+public abstract class TransportLineInformation extends AbstractIdentifiable{
 	private static final long serialVersionUID = 1L;
 	
 	@OneToMany
@@ -27,9 +28,24 @@ public class BusLineInformation extends AbstractIdentifiable{
 	private List<BusTrip> weekendTripWayThere;
 	@OneToMany
 	private List<BusTrip> weekendTripWayBack;
+	private TransportLineType transportLineType;
 
-	public BusLineInformation() {
+	public TransportLineInformation() {
 		super();
+	}
+
+	public TransportLineInformation(Long id,
+		TransportLineType transportLineType) {
+		super(id);
+		this.transportLineType = transportLineType;
+	}
+
+	public void setTransportLineType(TransportLineType transportLineType) {
+		this.transportLineType = transportLineType;
+	}
+
+	public TransportLineType getTransportLineType() {
+		return transportLineType;
 	}
 
 	/**
