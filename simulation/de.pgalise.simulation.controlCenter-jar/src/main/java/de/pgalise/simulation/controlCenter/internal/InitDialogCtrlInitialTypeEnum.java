@@ -3,14 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package de.pgalise.simulation.controlCenter.internal;
 
 /**
  *
  * @author richter
  */
-public enum InitDialogEnum
-{
-
-	CONFIRMED, RECENTLY_STARTED, IMPORT
+public enum InitDialogCtrlInitialTypeEnum {
+	CREATE, RECENT,IMPORT
 }

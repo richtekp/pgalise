@@ -34,13 +34,13 @@ public class OSMAndBusstopFileData implements Serializable {
 	 * This OSM-File will be parsed and used for the street-graph.
 	 */
 	@ManagedProperty(value = "/oldenburg_pg.osm")
-	private String osmFileName;
+	private String osmFileName = "/oldenburg_pg.osm";
 	
 	/**
 	 * This busstop file will be used for the busstops on the street-graph.
 	 */
 	@ManagedProperty(value = "/stops.gtfs")
-	private String busStopFileName;
+	private String busStopFileName = "/stops.gtfs";
 
 	public OSMAndBusstopFileData() {
 	}

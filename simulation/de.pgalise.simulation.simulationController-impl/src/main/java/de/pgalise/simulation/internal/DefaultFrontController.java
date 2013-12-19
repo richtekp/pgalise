@@ -48,6 +48,7 @@ public class DefaultFrontController extends AbstractController implements Contro
 	 */
 	private static final Logger log = LoggerFactory.getLogger(DefaultFrontController.class);
 	private static final String NAME = "FrontController";
+	private static final long serialVersionUID = 1L;
 	
 	@EJB
 	private SensorRegistry sensorRegistry;

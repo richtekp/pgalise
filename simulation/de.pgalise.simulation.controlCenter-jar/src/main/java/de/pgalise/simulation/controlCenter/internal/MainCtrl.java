@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
 /**
@@ -31,7 +32,7 @@ import javax.faces.context.FacesContext;
  * @author richter
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class MainCtrl implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EJB
@@ -43,6 +44,7 @@ public class MainCtrl implements Serializable {
 	private OSMAndBusstopFileData oSMAndBusstopFileData;
 	private WeatherEventViewData currentWeatherEventViewData = new WeatherEventViewData();
 	private CCSimulationStartParameter importedStartParameter;
+	private InitDialogMessageTypeEnum chosenInitialType = InitDialogMessageTypeEnum.SIMULATION_START_PARAMETER;
 
 	/**
 	 * Creates a new instance of MainCtrl

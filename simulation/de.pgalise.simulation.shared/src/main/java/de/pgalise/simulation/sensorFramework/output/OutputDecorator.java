@@ -22,6 +22,7 @@ package de.pgalise.simulation.sensorFramework.output;
  *
  */
 public abstract class OutputDecorator implements Output {
+	private static final long serialVersionUID = 1L;
 	
 	/** the Output to decorate **/
 	private Output sensorOutput;

@@ -15,13 +15,6 @@
  */
 package de.pgalise.simulation.sensorFramework.output.tcpip;
 
-import java.io.DataOutputStream;
-import java.net.InetSocketAddress;
-import java.nio.channels.SocketChannel;
-import java.util.concurrent.Semaphore;
-
-import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
-import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import javax.ejb.Stateful;
 
 /**
@@ -33,7 +26,7 @@ import javax.ejb.Stateful;
  * @version 1.2 (Oct 16, 2012) Added transmission strategies
  */
 @Stateful
-public class DefaultTcpIpOutput extends AbstractTcpIpOutput {
+public class DefaultTcpIpOutput extends AbstractTcpIpOutput implements TcpIpOutput {
 	private static final long serialVersionUID = 1L;
 
 }

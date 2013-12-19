@@ -8,6 +8,7 @@ package de.pgalise.simulation.controlCenter.internal;
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
@@ -19,6 +20,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -37,40 +39,29 @@ import javax.faces.bean.SessionScoped;
 public class InitDialogCtrl implements Serializable{
 	private static final long serialVersionUID = 1L;
 
-	private InitDialogEnum chosenInitialType;
+	public final static String INITIAL_TYPE_CONFIRMED = "confirmed", INITIAL_TYPE_RECENTLY_STARTED="recently", INITIAL_TYPE_IMPORT="initial";
+	
+	private String chosenInitialType;
 	private String chosenRecentScenarioPath;
 	private String importedXML;
 	private InformationBasedVehicleFactory vehicleFactory;
-	@ManagedProperty(value = "#{mainCtrl}")
-	private MainCtrl mainCtrl;
+//	@ManagedProperty(value = "#{mainCtrl}")
+//	private MainCtrl mainCtrl;
 	@EJB
-	private Output output;
-	private Queue<VehicleData> uiVehicles = new LinkedList<VehicleData>(Arrays.asList(new CarData(Color.yellow,
-				2000,
-				500,
-				3500,
-				4000,
-				2000,
-				1000,
-				1300,
-				100,
-				200,
-				2,
-				"name",
-				new GpsSensor(output,
-					null,
-					new GpsNoInterferer()),
-				VehicleTypeEnum.CAR)));
+	private TcpIpOutput output;
+	private Queue<VehicleData> uiVehicles;
+	
+	private InitDialogCtrlInitialTypeEnum initialTypeEnum;
 
 	public InitDialogCtrl() {
 	}
 
 	public InitDialogCtrl(
-		InitDialogEnum chosenInitialType,
+		String chosenInitialType,
 		String chosenRecentScenarioPath,
 		String importedXML,
 		InformationBasedVehicleFactory vehicleFactory,
-		Output output) {
+		TcpIpOutput output) {
 		this.chosenInitialType = chosenInitialType;
 		this.chosenRecentScenarioPath = chosenRecentScenarioPath;
 		this.importedXML = importedXML;
@@ -81,15 +72,23 @@ public class InitDialogCtrl implements Serializable{
 	/**
 	 * @return the chosenInitialType
 	 */
-	public InitDialogEnum getChosenInitialType() {
+	public String getChosenInitialType() {
 		return chosenInitialType;
+	}
+
+	public void setInitialTypeEnum(InitDialogCtrlInitialTypeEnum initialTypeEnum) {
+		this.initialTypeEnum = initialTypeEnum;
+	}
+
+	public InitDialogCtrlInitialTypeEnum getInitialTypeEnum() {
+		return initialTypeEnum;
 	}
 
 	/**
 	 * @param chosenInitialType the chosenInitialType to set
 	 */
 	public void setChosenInitialType(
-		InitDialogEnum chosenInitialType) {
+		String chosenInitialType) {
 		this.chosenInitialType = chosenInitialType;
 	}
 
@@ -140,7 +139,7 @@ public class InitDialogCtrl implements Serializable{
 	/**
 	 * @return the output
 	 */
-	public Output getOutput() {
+	public TcpIpOutput getOutput() {
 		return output;
 	}
 
@@ -148,8 +147,28 @@ public class InitDialogCtrl implements Serializable{
 	 * @param output the output to set
 	 */
 	public void setOutput(
-		Output output) {
+		TcpIpOutput output) {
 		this.output = output;
+	}
+	
+	@PostConstruct
+	public void init() {
+		 uiVehicles= new LinkedList<VehicleData>(Arrays.asList(new CarData(Color.yellow,
+				2000,
+				500,
+				3500,
+				4000,
+				2000,
+				1000,
+				1300,
+				100,
+				200,
+				2,
+				"name",
+				new GpsSensor(output,
+					null,
+					new GpsNoInterferer()),
+				VehicleTypeEnum.CAR)));
 	}
 	
 	public String getNextGpsSensor() {

@@ -1,3 +1,8 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:ng="http://angularjs.org"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
 <div ng-controller="InitialDialogCtrl">
 	<div id="initialDialog">
 		<div class="block">
@@ -13,11 +18,17 @@
 				</tr>
 				<tr>
 					<td>Bus system</td>
-					<td><select class="normalWidth" ng-model="#{startParameter.getoSMAndBusstopFileData().busStopFileName}" ng-options="b for b in busSystems" ng-disabled="chosenInitialType != 'create' || !onConnectMessageReceived"></select></td>
+					<td>
+						<h:selectOneMenu class="normalWidth" value="#{startParameter.getoSMAndBusstopFileData().busStopFileName}" >
+							<f:selectItem itemLabel="#{startParameter.getoSMAndBusstopFileData().busStopFileName}" itemValue="#{startParameter.getoSMAndBusstopFileData().busStopFileName}"/>
+						</h:selectOneMenu></td>
 				</tr>
 				<tr>
 					<td>Street map</td>
-					<td><select class="normalWidth" ng-model="#{startParameter.getoSMAndBusstopFileData().osmFileName}" ng-options="s for s in streetMaps" ng-disabled="chosenInitialType != 'create' || !onConnectMessageReceived"></select></td>
+					<td>
+						<h:selectOneMenu class="normalWidth" value="#{startParameter.getoSMAndBusstopFileData().osmFileName}" disabled="#{initDialogCtrl.chosenInitialType eq 'create'}">
+							<f:selectItem itemLabel="#{startParameter.getoSMAndBusstopFileData().osmFileName}" itemValue="#{startParameter.getoSMAndBusstopFileData().osmFileName}"/>
+						</h:selectOneMenu></td>
 				</tr>
 			</table>
 		</div>
@@ -61,3 +72,4 @@
 	</div>
 	<input type="button" class="fullWidth" value="Confirm" ng-click="confirmInitialDialog()" ng-disabled="chosenInitialType == 'confirmed'" />
 </div>
+</ui:composition>
