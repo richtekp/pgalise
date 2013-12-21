@@ -49,7 +49,7 @@ function InitialDialogCtrl($scope, PopupService, MapService, MessageIDService) {
 		}
 
 		// Temporarily save start paraneters
-		#{mainCtrl.parseImportedOSMAndBusstop()}
+		parseOSMAndBusstop();
 		// Import into UI
 		ctrl.mainCtrl.performStartParameter2UI(importedStartParameter);
 		// Close Dialog
