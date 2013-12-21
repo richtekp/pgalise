@@ -31,6 +31,7 @@ import de.pgalise.simulation.energy.sensor.EnergyInterferer;
  * @version 1.0
  */
 public class CompositeEnergyInterferer implements EnergyInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * the composite {@link EnergyInterferer}s

@@ -31,6 +31,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @version 1.0
  */
 public class CompositeWeatherInterferer implements WeatherInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * the composite {@link WeatherInterferer}s

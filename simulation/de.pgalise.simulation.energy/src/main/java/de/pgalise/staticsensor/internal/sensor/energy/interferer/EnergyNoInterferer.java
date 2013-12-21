@@ -27,6 +27,7 @@ import de.pgalise.simulation.energy.sensor.EnergyInterferer;
  * @version 1.0 (Nov 12, 2012)
  */
 public class EnergyNoInterferer implements EnergyInterferer {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public double interfere(double mutableValue, Coordinate position, long simTime) {

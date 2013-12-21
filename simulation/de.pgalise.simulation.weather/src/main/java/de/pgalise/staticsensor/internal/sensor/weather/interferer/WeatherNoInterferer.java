@@ -27,6 +27,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @version 1.0 (Nov 12, 2012)
  */
 public class WeatherNoInterferer implements WeatherInterferer {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public double interfere(double mutableValue, Coordinate position, long simTime) {

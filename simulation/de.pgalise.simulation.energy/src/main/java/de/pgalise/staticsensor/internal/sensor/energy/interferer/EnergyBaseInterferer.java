@@ -32,6 +32,7 @@ import de.pgalise.simulation.energy.sensor.EnergyInterferer;
  * @version 1.0 (Nov 14, 2012)
  */
 public abstract class EnergyBaseInterferer implements EnergyInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Random Seed Service

@@ -32,6 +32,7 @@ import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
  * @version 1.0 (Nov 14, 2012)
  */
 public abstract class WeatherBaseInterferer implements WeatherInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Random Seed Service

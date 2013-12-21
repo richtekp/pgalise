@@ -32,6 +32,7 @@ public class AnemometerWhiteNoiseInterferer extends WeatherBaseInterferer {
 	 * File path for property file
 	 */
 	public static final String PROPERTIES_FILE_PATH = "/interferer_anemometer_whitenoise.properties";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor
