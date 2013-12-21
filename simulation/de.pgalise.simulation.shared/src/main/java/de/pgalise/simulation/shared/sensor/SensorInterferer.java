@@ -16,10 +16,12 @@
  
 package de.pgalise.simulation.shared.sensor;
 
+import java.io.Serializable;
+
 /**
  * Generell interface for sensor interferers
  * 
  * @author Andreas
  * @author Marcus
  */
-public interface SensorInterferer {}
+public interface SensorInterferer extends Serializable {}
