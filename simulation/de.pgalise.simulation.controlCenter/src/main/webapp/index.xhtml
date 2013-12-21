@@ -5,7 +5,7 @@ To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ng="http://angularjs.org" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" ng-app="app">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" ng-app="app">
 	<head>
 		<title>Simulation Control Center</title>
 		<meta name="author" content="Dennis Höting"></meta>
@@ -115,11 +115,11 @@ and open the template in the editor.
 
 			<!-- Navigation -->
 			<div id="div_navigation" >
-				<ng:include src="navigationURL"></ng:include>
+				<ng-include src="navigationURL"></ng-include>
 			</div>
 			<!-- Content -->
 			<div id="div_content">
-				<ng:include src="contentURL"></ng:include>
+				<ng-include src="contentURL"></ng-include>
 			</div>
 			<div id="div_map">
 				<div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
