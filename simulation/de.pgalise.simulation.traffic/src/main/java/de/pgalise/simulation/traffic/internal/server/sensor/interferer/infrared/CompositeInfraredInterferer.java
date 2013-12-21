@@ -29,6 +29,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  * @version 1.0
  */
 public class CompositeInfraredInterferer implements InfraredInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * the composite {@link InfraredInterferer}s

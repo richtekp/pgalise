@@ -25,6 +25,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInter
  * @version 1.0 (Nov 12, 2012)
  */
 public class InductionLoopNoInterferer implements InductionLoopInterferer {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public int interfere(final int vehicleLength, final int vehicleCount, final double vehicleVelocity) {

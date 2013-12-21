@@ -34,6 +34,7 @@ public class GpsClockInterferer extends GpsBaseInterferer {
 	
 	// @TODO GPSMapper als abhängigkeit hinzufügen um die VECTOR_UNIT zu bestimmen
 	private static final double VECTOR_UNIT = 100.0;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor

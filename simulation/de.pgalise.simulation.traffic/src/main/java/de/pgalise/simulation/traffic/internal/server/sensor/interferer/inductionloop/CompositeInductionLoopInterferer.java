@@ -29,6 +29,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInter
  * @version 1.0
  */
 public class CompositeInductionLoopInterferer implements InductionLoopInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * the composite {@link InductionLoopInterferer}s

@@ -30,6 +30,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  * @version 1.0
  */
 public class CompositeGpsInterferer implements GpsInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * the composite {@link GpsInterferer}s

@@ -31,6 +31,7 @@ public class InfraredWhiteNoiseInterferer extends InfraredBaseInterferer {
 	 * File path for property file
 	 */
 	public static final String PROPERTIES_FILE_PATH = "/interferer_infrared_whitenoise.properties";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor

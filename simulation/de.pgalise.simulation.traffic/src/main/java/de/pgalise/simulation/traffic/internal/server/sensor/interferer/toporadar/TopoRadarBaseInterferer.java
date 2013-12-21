@@ -32,6 +32,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterfere
  * @version 1.0 (Nov 14, 2012)
  */
 public abstract class TopoRadarBaseInterferer implements TopoRadarInterferer {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Random Seed Service

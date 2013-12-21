@@ -34,6 +34,7 @@ public class GpsAtmosphereInterferer extends GpsBaseInterferer {
 	 * File path for property file
 	 */
 	public static final String PROPERTIES_FILE_PATH = "/interferer_gps_atmosphere.properties";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Weather controller

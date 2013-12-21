@@ -25,6 +25,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterfere
  * @version 1.0 (Nov 12, 2012)
  */
 public class TopoRadarNoInterferer implements TopoRadarInterferer {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public int[] interfere(final int mutableAxleCount, final int mutableLength, final int mutableWheelbase1,

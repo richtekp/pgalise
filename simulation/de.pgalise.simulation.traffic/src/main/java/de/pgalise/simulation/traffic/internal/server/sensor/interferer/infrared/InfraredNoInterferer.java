@@ -25,6 +25,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  * @version 1.0 (Nov 12, 2012)
  */
 public class InfraredNoInterferer implements InfraredInterferer {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public int interfere(final int passengersCount) {

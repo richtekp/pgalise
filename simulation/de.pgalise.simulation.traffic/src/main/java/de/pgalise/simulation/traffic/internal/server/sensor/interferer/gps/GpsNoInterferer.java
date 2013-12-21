@@ -26,6 +26,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  * @version 1.0 (Nov 12, 2012)
  */
 public class GpsNoInterferer implements GpsInterferer {
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public Coordinate interfere(Coordinate mutablePosition, Coordinate realPosition, long simTime) {
