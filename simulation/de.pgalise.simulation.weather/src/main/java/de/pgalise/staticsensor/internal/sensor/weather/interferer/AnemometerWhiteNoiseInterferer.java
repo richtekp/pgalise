@@ -17,7 +17,7 @@
 package de.pgalise.staticsensor.internal.sensor.weather.interferer;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 
 /**
  * Represents an interferer that creates generally low errors

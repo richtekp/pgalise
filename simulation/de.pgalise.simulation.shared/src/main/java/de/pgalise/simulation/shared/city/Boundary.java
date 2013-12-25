@@ -18,7 +18,7 @@ package de.pgalise.simulation.shared.city;
 
 import java.io.Serializable;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 
 /**
  * A boundary is a rectangle with instances of {@link GeoLocation} for north-east (biggest lat/lng values) and south-west (smallest lat/lng values).
@@ -60,10 +60,10 @@ public class Boundary implements Serializable {
 	 * @return	true, if it is inside this boundary.
 	 */
 	public boolean isLocationInBoundary(Coordinate location) {
-		if(location.x <= this.northEast.x
-				&& location.x >= this.southWest.x
-				&& location.y <= this.northEast.y
-				&& location.y >= this.southWest.y) {
+		if(location.getX() <= this.northEast.getX()
+				&& location.getX() >= this.southWest.getX()
+				&& location.getY() <= this.northEast.getY()
+				&& location.getY() >= this.southWest.getY()) {
 			return true;
 		}
 		

@@ -41,7 +41,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 import javax.vecmath.Vector3d;
 
 /**
@@ -214,9 +214,9 @@ public class LeftYieldsToRight<D extends VehicleData> extends AbstractTrafficRul
 		final Vector2d posNodeFrom = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom);
 		final Vector2d posNodeTo = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo);
 
-		final Vector3d vector3dCross = new Vector3d(posNodeFrom.x, posNodeFrom.y, 0);
+		final Vector3d vector3dCross = new Vector3d(posNodeFrom.getX(), posNodeFrom.getY(), 0);
 		vector3dCross.cross(vector3dCross,
-				new Vector3d(posNodeTo.x, posNodeTo.y, 0));
+				new Vector3d(posNodeTo.getX(), posNodeTo.getY(), 0));
 
 		if (vector3dCross.z >= 0) {
 			angle = 360 - angle;

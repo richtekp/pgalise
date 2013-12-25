@@ -33,7 +33,7 @@ import de.pgalise.simulation.energy.internal.profile.CSVProfileLoader;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.city.Building;
 
 /**

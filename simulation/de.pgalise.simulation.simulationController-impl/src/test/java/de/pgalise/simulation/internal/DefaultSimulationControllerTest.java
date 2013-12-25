@@ -40,7 +40,7 @@ import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.Service;

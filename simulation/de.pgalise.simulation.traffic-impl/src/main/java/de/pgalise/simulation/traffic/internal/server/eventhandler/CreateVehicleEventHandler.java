@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -19,7 +19,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 
 /**
@@ -54,7 +54,7 @@ public class GpsReceiverInterferer extends GpsBaseInterferer {
 		// Should be changed?
 		if (this.random.nextDouble() <= this.changeProbability) {
 			double changeValue = (this.changeAmplitude / VECTOR_UNIT) * this.random.nextGaussian();
-			return new Coordinate(mutablePosition.x + changeValue, mutablePosition.y + changeValue);
+			return new Coordinate(mutablePosition.getX() + changeValue, mutablePosition.getY() + changeValue);
 		}
 
 		// Returns with no change

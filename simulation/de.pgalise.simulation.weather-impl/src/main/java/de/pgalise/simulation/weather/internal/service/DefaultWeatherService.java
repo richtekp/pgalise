@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -120,7 +120,7 @@ public class DefaultWeatherService implements WeatherService {
 	private HashMap<WeatherParameterEnum, WeatherParameter> parameters;
 
 	/**
-	 * Position of the reference point
+	 * BaseGeoInfo of the reference point
 	 */
 	private Coordinate referencePosition;
 
@@ -346,7 +346,7 @@ public class DefaultWeatherService implements WeatherService {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("key"));
 		} else if ((position == null)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("position"));
-		} else if ((position.x < 0) || (position.y < 0)) {
+		} else if ((position.getX() < 0) || (position.getY() < 0)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotPositive("position (x or y)", true));
 		} else if (time <= 0) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotPositive("time", false));

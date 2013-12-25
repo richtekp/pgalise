@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.route;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 import org.jgrapht.traverse.ClosestFirstIterator;
 
 /**
@@ -64,8 +64,8 @@ public class PathTest {
 		PathTest.log.debug("Weight of bc: " + distance/velocity);
 
 		TrafficEdge ac = graph.addEdge(a,c);
-		Vector2d v = new Vector2d(a.getGeoLocation().x, a.getGeoLocation().y);
-		v.sub(new Vector2d(c.getGeoLocation().x, c.getGeoLocation().y));
+		Vector2d v = new Vector2d(a.getGeoLocation().getX(), a.getGeoLocation().getY());
+		v.sub(new Vector2d(c.getGeoLocation().getX(), c.getGeoLocation().getY()));
 		double length = v.length();
 
 		ac.setMaxSpeed( velocity);

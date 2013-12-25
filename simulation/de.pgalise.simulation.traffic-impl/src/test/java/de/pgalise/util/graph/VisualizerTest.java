@@ -16,7 +16,7 @@
  
 package de.pgalise.util.graph;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -27,7 +27,7 @@ import org.junit.Test;
 
 import de.pgalise.util.generic.MutableBoolean;
 import de.pgalise.util.generic.function.Function;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  * Tests the {@link GraphVisualizer}

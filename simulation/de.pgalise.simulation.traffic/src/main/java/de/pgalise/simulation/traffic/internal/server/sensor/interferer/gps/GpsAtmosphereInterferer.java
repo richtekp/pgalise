@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -64,7 +64,7 @@ public class GpsAtmosphereInterferer extends GpsBaseInterferer {
 		if (this.getRandom().nextDouble() <= this.changeProbability) {
 			double radiation = this.weatherController.getValue(WeatherParameterEnum.RADIATION, simTime, realPosition)
 					.doubleValue();
-			return new Coordinate(mutablePosition.x + radiation, mutablePosition.y + radiation);
+			return new Coordinate(mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
 		}
 		// Returns with no change
 		return mutablePosition;

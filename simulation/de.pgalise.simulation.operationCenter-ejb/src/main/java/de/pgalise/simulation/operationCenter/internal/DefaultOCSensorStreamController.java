@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.operationCenter.internal;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.operationCenter.internal.InputStreamDecoder;
 import de.pgalise.simulation.operationCenter.internal.OCSensorStreamController;
 import de.pgalise.simulation.operationCenter.internal.OCSimulationController;

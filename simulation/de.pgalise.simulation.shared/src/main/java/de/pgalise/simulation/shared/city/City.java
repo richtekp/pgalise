@@ -16,11 +16,11 @@
  
 package de.pgalise.simulation.shared.city;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 /**
@@ -76,7 +76,8 @@ public class City extends AbstractIdentifiable {
 	 */
 	@Transient
 	private int rate = 0;
-	private Position position;
+	@OneToOne
+	private BaseGeoInfo position;
 	/**
 	 * a point which is considered the most important in the geometry which is not forcibly always the geographical center of the referenced area
 	 */
@@ -101,10 +102,9 @@ public class City extends AbstractIdentifiable {
 	 *            Option that the city is near a river
 	 * @param nearSea
 	 *            Option that the city is near the sea
-	 * @param boundaries 
-	 * @param graph  
+	 * @param position  
 	 */
-	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, Position position) {
+	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, BaseGeoInfo position) {
 		this.position = position;
 		this.name = name;
 		this.population = population;
@@ -161,11 +161,11 @@ public class City extends AbstractIdentifiable {
 		this.rate = rate;
 	}
 
-	public void setPosition(Position position) {
+	public void setPosition(BaseGeoInfo position) {
 		this.position = position;
 	}
 
-	public Position getPosition() {
+	public BaseGeoInfo getPosition() {
 		return position;
 	}
 

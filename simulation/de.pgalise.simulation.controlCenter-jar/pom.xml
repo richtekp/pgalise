@@ -13,6 +13,36 @@
   <version>2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
+  <dependencies>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>shared</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>traffic</artifactId>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>simulationController</artifactId>
+      <type>jar</type>
+    </dependency>
+		
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vividsolutions</groupId>
+      <artifactId>jts</artifactId>
+      <type>jar</type>
+    </dependency>
+  </dependencies>
+
   <name>de.pgalise.simulation.controlCenter-jar</name>
   <url>http://maven.apache.org</url>
     <build>
@@ -31,37 +61,4 @@
     <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.vividsolutions</groupId>
-      <artifactId>jts</artifactId>
-      <version>1.13</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>de.pgalise.simulation</groupId>
-      <artifactId>shared</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>de.pgalise.simulation</groupId>
-      <artifactId>traffic</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>de.pgalise.simulation</groupId>
-      <artifactId>simulationController</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-  </dependencies>
 </project>

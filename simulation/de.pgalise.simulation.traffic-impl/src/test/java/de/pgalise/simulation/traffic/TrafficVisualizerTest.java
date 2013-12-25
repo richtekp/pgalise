@@ -18,7 +18,7 @@
 //
 //import de.pgalise.simulation.shared.city.NavigationEdge;
 //import de.pgalise.simulation.shared.city.NavigationNode;
-//import com.vividsolutions.jts.geom.Coordinate;
+//import de.pgalise.simulation.shared.city.Coordinate;
 //import de.pgalise.simulation.service.RandomSeedService;
 //import java.util.Iterator;
 //import java.util.LinkedList;
@@ -44,7 +44,7 @@
 //import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
 //import de.pgalise.util.generic.MutableBoolean;
 //import de.pgalise.util.generic.function.Function;
-//import javax.vecmath.Vector2d;
+//import de.pgalise.simulation.shared.city.Vector2d;
 //import org.jgrapht.alg.DijkstraShortestPath;
 //
 ///**
@@ -206,32 +206,32 @@
 //		carI.setPath(getRoute(graph.getNode("f"), graph.getNode("e")));
 //
 //		// CAR B
-//		Vector2d apos = new Vector2d(carA.getPosition().x, carA.getPosition().y);
+//		Vector2d apos = new Vector2d(carA.getPosition().getX(), carA.getPosition().getY());
 //		Vector2d adir = carA.getDirection();
 //		adir.scale(0.15);
 //		apos.add(adir);
 //
-//		carB.setPosition(new Coordinate(apos.x, apos.y));
+//		carB.setPosition(new Coordinate(apos.getX(), apos.getY()));
 //		carB.setName("carB");
 //		carB.setVelocity(60);
 //
 //		// CAR C
-//		apos = new Vector2d(carA.getPosition().x, carA.getPosition().y);
+//		apos = new Vector2d(carA.getPosition().getX(), carA.getPosition().getY());
 //		adir = carA.getDirection();
 //		adir.scale(0.3);
 //		apos.add(adir);
 //
-//		carC.setPosition(new Coordinate(apos.x, apos.y));
+//		carC.setPosition(new Coordinate(apos.getX(), apos.getY()));
 //		carC.setName("carC");
 //		carC.setVelocity(50);
 //
 //		// CAR D
-//		apos = new Vector2d(carA.getPosition().x, carA.getPosition().y);
+//		apos = new Vector2d(carA.getPosition().getX(), carA.getPosition().getY());
 //		adir = carA.getDirection();
 //		adir.scale(0.7);
 //		apos.add(adir);
 //
-//		carD.setPosition(new Coordinate(apos.x, apos.y));
+//		carD.setPosition(new Coordinate(apos.getX(), apos.getY()));
 //		carD.setName("carD");
 //		carD.setVelocity(10);
 //
@@ -239,39 +239,39 @@
 //		carE.setName("carE");
 //		carE.setVelocity(60);
 //
-//		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
+//		apos = new Vector2d(carE.getPosition().getX(), carE.getPosition().getY());
 //		adir = carE.getDirection();
 //		adir.scale(0.12);
 //		apos.add(adir);
 //
-//		carF.setPosition(new Coordinate(apos.x, apos.y));
+//		carF.setPosition(new Coordinate(apos.getX(), apos.getY()));
 //		carF.setName("carF");
 //		carF.setVelocity(50);
 //
-//		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
+//		apos = new Vector2d(carE.getPosition().getX(), carE.getPosition().getY());
 //		adir = carE.getDirection();
 //		adir.scale(0.32);
 //		apos.add(adir);
 //
-//		carG.setPosition(new Coordinate(apos.x, apos.y));
+//		carG.setPosition(new Coordinate(apos.getX(), apos.getY()));
 //		carG.setName("carG");
 //		carG.setVelocity(10);
 //
-//		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
+//		apos = new Vector2d(carE.getPosition().getX(), carE.getPosition().getY());
 //		adir = carE.getDirection();
 //		adir.scale(0.52);
 //		apos.add(adir);
 //
-//		carH.setPosition(new Coordinate(apos.x, apos.y));
+//		carH.setPosition(new Coordinate(apos.getX(), apos.getY()));
 //		carH.setName("carH");
 //		carH.setVelocity(10);
 //
-//		apos = new Vector2d(carE.getPosition().x, carE.getPosition().y);
+//		apos = new Vector2d(carE.getPosition().getX(), carE.getPosition().getY());
 //		adir = carE.getDirection();
 //		adir.scale(0.82);
 //		apos.add(adir);
 //
-//		carI.setPosition(new Coordinate(apos.x, apos.y));
+//		carI.setPosition(new Coordinate(apos.getX(), apos.getY()));
 //		carI.setName("carI");
 //		carI.setVelocity(10);
 //

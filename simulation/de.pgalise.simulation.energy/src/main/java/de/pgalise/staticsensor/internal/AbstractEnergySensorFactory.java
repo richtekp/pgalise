@@ -15,7 +15,7 @@
  */
 package de.pgalise.staticsensor.internal;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;

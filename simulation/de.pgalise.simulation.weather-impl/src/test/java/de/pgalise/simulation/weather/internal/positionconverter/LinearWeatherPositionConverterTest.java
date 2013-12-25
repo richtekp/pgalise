@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.positionconverter;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.sql.Timestamp;
@@ -53,11 +53,11 @@ public class LinearWeatherPositionConverterTest {
 		Coordinate referencePoint = new Coordinate(20, 20);
 		Geometry referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1),
-				new Coordinate(referencePoint.x-1, referencePoint.y-1)
+				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1), 
+				new Coordinate(referencePoint.getX()-1, referencePoint.getY()), 
+				new Coordinate(referencePoint.getX(), referencePoint.getY()), 
+				new Coordinate(referencePoint.getX(), referencePoint.getY()-1),
+				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1)
 			}
 		);
 		LinearWeatherPositionConverter instance = new LinearWeatherPositionConverter(referenceArea);

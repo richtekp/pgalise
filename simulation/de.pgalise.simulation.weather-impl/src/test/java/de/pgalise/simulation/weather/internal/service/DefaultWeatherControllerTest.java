@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;

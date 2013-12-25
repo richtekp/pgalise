@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.cityinfrastructure;
 
 import static org.junit.Assert.assertTrue;
@@ -25,7 +24,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.Way;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.BusStop;
@@ -36,7 +35,7 @@ import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 
 /**
  * Several JUnit test cases for the OSMParser.
- * 
+ *
  * @author Timo
  */
 public class OSMCityInfrastructureDataTest {
@@ -51,9 +50,10 @@ public class OSMCityInfrastructureDataTest {
 	public static void setUpBeforeClass() throws Exception {
 		try {
 			osmParser = new OSMCityInfrastructureData(
-					OSMCityInfrastructureData.class.getResourceAsStream("/oldenburg_pg.osm"),
-					OSMCityInfrastructureData.class.getResourceAsStream("/stops.txt"),
-					new DefaultBuildingEnergyProfileStrategy(), graph);
+				OSMCityInfrastructureData.class.getResourceAsStream("/oldenburg_pg.osm"),
+				OSMCityInfrastructureData.class.getResourceAsStream("/stops.txt"),
+				new DefaultBuildingEnergyProfileStrategy(),
+				graph);
 		} catch (IOException e) {
 			assertTrue(false);
 			e.printStackTrace();
@@ -66,10 +66,15 @@ public class OSMCityInfrastructureDataTest {
 	@Test
 	public void getNearestNodeTest() {
 		/* Take one node and test, if it will be returned: */
-		NavigationNode givenNode = osmParser.getNodes().get((int) (Math.random() * osmParser.getNodes().size()));
-		NavigationNode returnedNode = osmParser.getNearestNode(givenNode.getGeoLocation().x, givenNode.getGeoLocation().y);
-		assertTrue(givenNode.getGeoLocation().x == returnedNode.getGeoLocation().x
-				&& givenNode.getGeoLocation().y == returnedNode.getGeoLocation().y);
+		NavigationNode givenNode = osmParser.getNodes().get(
+			(int) (Math.random() * osmParser.getNodes().size()));
+		NavigationNode returnedNode = osmParser.getNearestNode(givenNode.
+			getGeoLocation().getX(),
+			givenNode.getGeoLocation().getY());
+		assertTrue(givenNode.getGeoLocation().getX() == returnedNode.
+			getGeoLocation().getX()
+			&& givenNode.getGeoLocation().getY() == returnedNode.getGeoLocation().
+			getY());
 	}
 
 	/**
@@ -78,8 +83,8 @@ public class OSMCityInfrastructureDataTest {
 	@Test
 	public void boundaryTest() {
 		Boundary boundary = osmParser.getBoundary();
-		assertTrue(boundary.getNorthEast().x > boundary.getSouthWest().x
-				&& boundary.getNorthEast().y > boundary.getSouthWest().y);
+		assertTrue(boundary.getNorthEast().getX() > boundary.getSouthWest().getX()
+			&& boundary.getNorthEast().getY() > boundary.getSouthWest().getY());
 	}
 
 	/**
@@ -91,7 +96,8 @@ public class OSMCityInfrastructureDataTest {
 		if (osmParser == null) {
 			System.out.println("osmParser == null");
 		}
-		outerLoop: for (Way<?,?> way : osmParser.getMotorWaysWithBusstops()) {
+		outerLoop:
+		for (Way<?, ?> way : osmParser.getMotorWaysWithBusstops()) {
 			for (NavigationNode node : way.getNodeList()) {
 				if (node instanceof BusStop) {
 					foundBusstop = true;
@@ -106,10 +112,14 @@ public class OSMCityInfrastructureDataTest {
 	@Test
 	public void getBuildingsInRadiusTest() {
 		int radiusInMeter = 500;
-		NavigationNode tmpNode = osmParser.getNodes().get((int) (Math.random() * osmParser.getNodes().size()));
-		Coordinate centerPoint = new Coordinate(tmpNode.getGeoLocation().x, tmpNode.getGeoLocation().y);
-		for (Building building : osmParser.getBuildingsInRadius(centerPoint, radiusInMeter)) {
-			assertTrue(this.getDistanceInMeter(centerPoint, building.getPosition().getCenterPoint()) <= radiusInMeter);
+		NavigationNode tmpNode = osmParser.getNodes().get(
+			(int) (Math.random() * osmParser.getNodes().size()));
+		Coordinate centerPoint = new Coordinate(tmpNode.getGeoLocation().getX(),
+			tmpNode.getGeoLocation().getY());
+		for (Building building : osmParser.getBuildingsInRadius(centerPoint,
+			radiusInMeter)) {
+			assertTrue(this.getDistanceInMeter(centerPoint,
+				building.getPosition().getCenterPoint()) <= radiusInMeter);
 		}
 	}
 
@@ -120,7 +130,9 @@ public class OSMCityInfrastructureDataTest {
 	public void getNearestStreetNode() {
 		boolean isDifferent = false;
 		for (NavigationNode node : osmParser.getNodes()) {
-			if (!node.equals(osmParser.getNearestStreetNode(node.getGeoLocation().x, node.getGeoLocation().y))) {
+			if (!node.equals(osmParser.getNearestStreetNode(node.getGeoLocation().
+				getX(),
+				node.getGeoLocation().getY()))) {
 				isDifferent = true;
 				break;
 			}
@@ -130,29 +142,36 @@ public class OSMCityInfrastructureDataTest {
 
 	/**
 	 * Gives the distance in meter between start and target.
-	 * 
-	 * @param start
-	 *            Position
-	 * @param target
-	 *            Position
+	 *
+	 * @param start BaseGeoInfo
+	 * @param target BaseGeoInfo
 	 * @return distance
 	 */
-	private double getDistanceInMeter(Coordinate start, Coordinate target) {
+	private double getDistanceInMeter(Coordinate start,
+		Coordinate target) {
 
-		if ((start.x == target.x)
-				&& (start.y == target.y)) {
+		if ((start.getX() == target.getX())
+			&& (start.getY() == target.getY())) {
 			return 0.0;
 		}
 
 		double f = 1 / 298.257223563;
 		double a = 6378.137;
-		double F = ((start.x + target.x) / 2) * (Math.PI / 180);
-		double G = ((start.x - target.x) / 2) * (Math.PI / 180);
-		double l = ((start.y - target.y) / 2) * (Math.PI / 180);
-		double S = Math.pow(Math.sin(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.cos(F), 2)
-				* Math.pow(Math.sin(l), 2);
-		double C = Math.pow(Math.cos(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.sin(F), 2)
-				* Math.pow(Math.sin(l), 2);
+		double F = ((start.getX() + target.getX()) / 2) * (Math.PI / 180);
+		double G = ((start.getX() - target.getX()) / 2) * (Math.PI / 180);
+		double l = ((start.getY() - target.getY()) / 2) * (Math.PI / 180);
+		double S = Math.pow(Math.sin(G),
+			2) * Math.pow(Math.cos(l),
+				2) + Math.pow(Math.cos(F),
+				2)
+			* Math.pow(Math.sin(l),
+				2);
+		double C = Math.pow(Math.cos(G),
+			2) * Math.pow(Math.cos(l),
+				2) + Math.pow(Math.sin(F),
+				2)
+			* Math.pow(Math.sin(l),
+				2);
 		double w = Math.atan(Math.sqrt(S / C));
 		double D = 2 * w * a;
 		double R = Math.sqrt(S * C) / w;
@@ -160,8 +179,12 @@ public class OSMCityInfrastructureDataTest {
 		double H2 = (3 * R + 1) / (2 * S);
 
 		double distance = D
-				* (1 + f * H1 * Math.pow(Math.sin(F), 2) * Math.pow(Math.cos(G), 2) - f * H2 * Math.pow(Math.cos(F), 2)
-						* Math.pow(Math.sin(G), 2));
+			* (1 + f * H1 * Math.pow(Math.sin(F),
+				2) * Math.pow(Math.cos(G),
+				2) - f * H2 * Math.pow(Math.cos(F),
+				2)
+			* Math.pow(Math.sin(G),
+				2));
 
 		return distance * 1000.0;
 	}

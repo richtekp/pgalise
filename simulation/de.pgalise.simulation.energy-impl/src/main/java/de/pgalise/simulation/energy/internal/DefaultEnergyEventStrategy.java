@@ -34,7 +34,7 @@ import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.ChangeEnergyConsumptionEvent;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 
 /**
  * Default implementation of energy event strategy.
@@ -124,7 +124,7 @@ public class DefaultEnergyEventStrategy implements EnergyEventStrategyLocal {
 			double consumptionWithoutEvents) {
 		
 		List<DistanceResult<ChangeEnergyConsumptionEvent>> results = this.changeEnergyConsumptionEventDataTree.nearestNeighbour(this.PR_TREE_DISTANCE_CALCULATOR,
-				this.PR_EVENT_FILTER, 1, new SimplePointND(geoLocation.x, geoLocation.y));
+				this.PR_EVENT_FILTER, 1, new SimplePointND(geoLocation.getX(), geoLocation.getY()));
 
 		for(DistanceResult<ChangeEnergyConsumptionEvent> result : results) {
 			/* Result distance is in KM */
@@ -151,12 +151,12 @@ public class DefaultEnergyEventStrategy implements EnergyEventStrategyLocal {
 
 		@Override
 		public double getMax(int arg0, ChangeEnergyConsumptionEvent arg1) {
-			return arg0 == 0 ? arg1.getPosition().x : arg1.getPosition().y;
+			return arg0 == 0 ? arg1.getPosition().getX() : arg1.getPosition().getY();
 		}
 
 		@Override
 		public double getMin(int arg0, ChangeEnergyConsumptionEvent arg1) {
-			return arg0 == 0 ? arg1.getPosition().x : arg1.getPosition().y;
+			return arg0 == 0 ? arg1.getPosition().getX() : arg1.getPosition().getY();
 		}
 	}
 	
@@ -169,7 +169,7 @@ public class DefaultEnergyEventStrategy implements EnergyEventStrategyLocal {
 
 		@Override
 		public double distanceTo(ChangeEnergyConsumptionEvent e, PointND p) {
-			double retValue = LatLngTool.distance(new LatLng(p.getOrd(0), p.getOrd(1)), new LatLng(e.getPosition().x, e.getPosition().y), LengthUnit.METER);
+			double retValue = LatLngTool.distance(new LatLng(p.getOrd(0), p.getOrd(1)), new LatLng(e.getPosition().getX(), e.getPosition().getY()), LengthUnit.METER);
 			return retValue;
 		}
 	}

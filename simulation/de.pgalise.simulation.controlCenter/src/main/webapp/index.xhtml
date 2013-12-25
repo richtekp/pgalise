@@ -7,8 +7,9 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" ng-app="app"
 			xmlns:p="http://primefaces.org/ui"
-			xmlns:h="http://xmlns.jcp.org/jsf/html">
-	<head>
+			xmlns:h="http://xmlns.jcp.org/jsf/html"
+			xmlns:f="http://xmlns.jcp.org/jsf/core">
+	<h:head>
 		<title>Simulation Control Center</title>
 		<meta name="author" content="Dennis Höting"></meta>
 
@@ -20,6 +21,7 @@ and open the template in the editor.
 		<link rel="stylesheet" href="lib/jquery.treeview/jquery.treeview.css" />
 
 		<!-- Libraries -->
+		<h:outputScript name="jsf.js" library="javax.faces" target="head"/>
 		<script type="text/javascript" src="lib/openlayers/OpenLayers-2.13.1.js"></script>  
 		<script type="text/javascript" src="lib/jquery/jquery-1.8.3.js"></script>
 		<script type="text/javascript" src="lib/jquery.ui/jquery-ui-1.9.2.custom.min.js"></script>
@@ -29,6 +31,11 @@ and open the template in the editor.
 		<script type="text/javascript" src="lib/angular/angular.js"></script>
 
 		<!-- Own Scripts -->
+		<script type="text/javascript">
+			var parseOSMAndBusstopSuccessCallback;
+		</script>
+		<script type="text/javascript" src="seam/remoting/resource/remote.js"></script>
+		<script type="text/javascript" src="seam/remoting/interface.js?mainCtrl"></script>
 		<script type="text/javascript" src="js/global.js"></script>
 		<script type="text/javascript" src="js/util.js"></script>
 		<script type="text/javascript" src="js/model/enums.js"></script>
@@ -53,7 +60,7 @@ and open the template in the editor.
 		<script type="text/javascript" src="js/ctrl/dialogCtrl/consoleDialogCtrl.js"></script>
 		<script type="text/javascript" src="js/ctrl/dialogCtrl/settingsDialogCtrl.js"></script>
 		<script type="text/javascript" src="js/ctrl/dialogCtrl/energyEventDialogCtrl.js"></script>
-		
+
 		<ui:include src="/js/ctrl/dialogCtrl/initialDialogCtrl.xhtml" />
 		<script type="text/javascript" src="js/ctrl/dialogCtrl/linkDialogCtrl.js"></script>
 		<script type="text/javascript" src="js/ctrl/dialogCtrl/messageDialogCtrl.js"></script>
@@ -79,56 +86,55 @@ and open the template in the editor.
 		<script type="text/javascript" src="js/ctrl/navigationCtrl/runtimeNavCtrl.js"></script>
 		<script type="text/javascript" src="js/ctrl/headCtrl.js"></script>
 		<ui:include src="/js/ctrl/mainCtrl.xhtml" />
-	</head>
+	</h:head>
 	<!-- 
 		MainView using MainCtrl
 		The MainCtrl's scope encapsulates all controller's scopes.
 	-->
-	<body ng-controller="MainCtrl">
-		<!-- IconDiv, will be appended to cursor when pushing sensor to map -->
-		<div id="icon_div">
-		</div>
-		<!-- Actual web site -->
-		<div id="div_all" ng-hide="accessDenied">
-			<!-- Header -->
-			<div id="div_top" ng-controller="HeadCtrl">
-				<img src="img/wrench.png" id="wrenchImg" ng-click="openSettings()" />
-				<img src="img/console.png" id="consoleImg" ng-click="openConsole()" />
-				<div id="layout_top">
-					<span>Connection: <span class="{{connection.connectionStateColor()}}">{{connection.connectionState}}</span></span>
-					<span>Simulation: <span class="{{simulation.simulationStateColor()}}">{{simulation.simulationState}}</span></span>
-					<span>Simulation Time: {{simulation.simulationTime| date:'dd.MM.yyyy @ H:mm:ss'}}</span>
-					<span>OSM: <span class="{{osm.osmParsedStateColor()}}">{{osm.osmParsedState}}</span></span>
-					<span ng-show="keypressMockEnabled">Keypress-Mock enabled</span>
-				</div>
-				<div id="loadingArea" ng-class="loadingStatus"></div>
-				<div id="div_logo">
-					<img src="img/logo.png" ng-click="km()"/>
-				</div>
-				<div id="div_heading">
-					<div id="headline">Simulation Control Center</div>
-					<div id="runtimePopups" ng-show="ui.state == 'runtime'">
-						<input type="button" value="Show unsent messages ({{unsentMessages.length}})" ng-click="openUnsentMessagesDialog()" />
-						<input type="button" value="Show event list ({{uncommittedEvents.length}})" ng-click="openUncommitedEventsDialog()" />
+	<h:body>
+		<div ng-controller="MainCtrl">
+			<!-- IconDiv, will be appended to cursor when pushing sensor to map -->
+			<div id="icon_div">
+			</div>
+			<!-- Actual web site -->
+			<div id="div_all" ng-hide="accessDenied">
+				<!-- Header -->
+				<div id="div_top" ng-controller="HeadCtrl">
+					<img src="img/wrench.png" id="wrenchImg" ng-click="openSettings()" />
+					<img src="img/console.png" id="consoleImg" ng-click="openConsole()" />
+					<div id="layout_top">
+						<span>Connection: <span class="{{connection.connectionStateColor()}}">{{connection.connectionState}}</span></span>
+						<span>Simulation: <span class="{{simulation.simulationStateColor()}}">{{simulation.simulationState}}</span></span>
+						<span>Simulation Time: {{simulation.simulationTime| date:'dd.MM.yyyy @ H:mm:ss'}}</span>
+						<span>OSM: <span class="{{osm.osmParsedStateColor()}}">{{osm.osmParsedState}}</span></span>
+						<span ng-show="keypressMockEnabled">Keypress-Mock enabled</span>
 					</div>
+					<div id="loadingArea" ng-class="loadingStatus"></div>
+					<div id="div_logo">
+						<img src="img/logo.png" ng-click="km()"/>
+					</div>
+					<div id="div_heading">
+						<div id="headline">Simulation Control Center</div>
+						<div id="runtimePopups" ng-show="ui.state == 'runtime'">
+							<input type="button" value="Show unsent messages ({{unsentMessages.length}})" ng-click="openUnsentMessagesDialog()" />
+							<input type="button" value="Show event list ({{uncommittedEvents.length}})" ng-click="openUncommitedEventsDialog()" />
+						</div>
+					</div>
+
 				</div>
 
-			</div>
-
-			<!-- Navigation -->
-			<div id="div_navigation" >
-				<ng-include src="navigationURL"></ng-include>
-			</div>
-			<!-- Content -->
-			<div id="div_content">
-				<ng-include src="contentURL"></ng-include>
-			</div>
-			<div id="div_map">
-				<div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
+				<!-- Navigation -->
+				<div id="div_navigation" >
+					<ng-include src="navigationURL"></ng-include>
+				</div>
+				<!-- Content -->
+				<div id="div_content">
+					<ng-include src="contentURL"></ng-include>
+				</div>
+				<div id="div_map">
+					<div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
+				</div>
 			</div>
 		</div>
-		<h:form>
-			<p:remoteCommand id="parseOSMAndBusstop" name="parseOSMAndBusstop" action="#{mainCtrl.parseOSMAndBusstop(null)}"/>
-		</h:form>
-	</body>
+	</h:body>
 </html>

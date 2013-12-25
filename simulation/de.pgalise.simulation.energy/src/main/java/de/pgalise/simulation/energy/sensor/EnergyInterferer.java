@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.energy.sensor;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**

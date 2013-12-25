@@ -16,7 +16,7 @@
  
 package de.pgalise.staticsensor.sensors;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;

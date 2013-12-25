@@ -43,6 +43,12 @@
 	 <dependency>
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt-api</artifactId>
+		<exclusions>
+			<exclusion>
+				<groupId>java3d</groupId>
+				<artifactId>vecmath</artifactId>
+			</exclusion>
+		</exclusions>
 	  <type>jar</type>
 	 </dependency>
 <!--	 <dependency>

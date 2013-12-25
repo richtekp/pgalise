@@ -16,7 +16,7 @@
 // 
 //package de.pgalise.simulation.traffic.sensors.interferer;
 //
-//import com.vividsolutions.jts.geom.Coordinate;
+//import de.pgalise.simulation.shared.city.Coordinate;
 //import static org.junit.Assert.assertTrue;
 //
 //import java.util.ArrayList;
@@ -114,11 +114,11 @@
 //		 */
 //		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 //
-//		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
-//		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
+//		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
+//		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
 //
-//		assertTrue(testPosition.x != result.x);
-//		assertTrue(testPosition.y != result.y);
+//		assertTrue(testPosition.getX() != result.getX());
+//		assertTrue(testPosition.getY() != result.getY());
 //	}
 //
 //	@Test
@@ -130,11 +130,11 @@
 //		 */
 //		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 //
-//		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
-//		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
+//		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
+//		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
 //
-//		assertTrue(testPosition.x == result.x);
-//		assertTrue(testPosition.y == result.y);
+//		assertTrue(testPosition.getX() == result.getX());
+//		assertTrue(testPosition.getY() == result.getY());
 //	}
 //
 //	@Test
@@ -147,11 +147,11 @@
 //		 */
 //		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 //
-//		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
-//		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
+//		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
+//		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
 //
-//		assertTrue(testPosition.x != result.x);
-//		assertTrue(testPosition.y != result.y);
+//		assertTrue(testPosition.getX() != result.getX());
+//		assertTrue(testPosition.getY() != result.getY());
 //	}
 //
 //	@Test
@@ -164,11 +164,11 @@
 //		 */
 //		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 //
-//		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x);
-//		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y);
+//		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX());
+//		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY());
 //
-//		assertTrue(testPosition.x != result.x);
-//		assertTrue(testPosition.y != result.y);
+//		assertTrue(testPosition.getX() != result.getX());
+//		assertTrue(testPosition.getY() != result.getY());
 //	}
 //
 //	@Test
@@ -184,16 +184,16 @@
 //		for (int i = 0; i < 20; i++) {
 //			result = testclass.interfere(testPosition, testPosition, testTimestamp);
 //
-//			log.debug("Reference: " + testPosition.x + " - Changed: " + result.x + " - Difference:"
-//					+ (testPosition.x - result.x) + " - Changed Meters:"
-//					+ (testPosition.x - result.x) * vectorUnit);
-//			log.debug("Reference: " + testPosition.y + " - Changed: " + result.y + " - Difference:"
-//					+ (testPosition.y - result.y) + " - Changed Meters:"
-//					+ (testPosition.y - result.y) * vectorUnit);
+//			log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX() + " - Difference:"
+//					+ (testPosition.getX() - result.getX()) + " - Changed Meters:"
+//					+ (testPosition.getX() - result.getX()) * vectorUnit);
+//			log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY() + " - Difference:"
+//					+ (testPosition.getY() - result.getY()) + " - Changed Meters:"
+//					+ (testPosition.getY() - result.getY()) * vectorUnit);
 //		}
 //
-//		assertTrue(testPosition.x != result.x);
-//		assertTrue(testPosition.y != result.y);
+//		assertTrue(testPosition.getX() != result.getX());
+//		assertTrue(testPosition.getY() != result.getY());
 //	}
 //
 //	@Test
@@ -212,12 +212,12 @@
 //		 */
 //		Coordinate result = testclass.interfere(testPosition, testPosition, testTimestamp);
 //
-//		log.debug("Reference: " + testPosition.x + " - Changed: " + result.x + " - Difference:"
-//				+ (testPosition.x - result.x));
-//		log.debug("Reference: " + testPosition.y + " - Changed: " + result.y + " - Difference:"
-//				+ (testPosition.x - result.x));
+//		log.debug("Reference: " + testPosition.getX() + " - Changed: " + result.getX() + " - Difference:"
+//				+ (testPosition.getX() - result.getX()));
+//		log.debug("Reference: " + testPosition.getY() + " - Changed: " + result.getY() + " - Difference:"
+//				+ (testPosition.getX() - result.getX()));
 //
-//		assertTrue(testPosition.x != result.x);
-//		assertTrue(testPosition.y != result.y);
+//		assertTrue(testPosition.getX() != result.getX());
+//		assertTrue(testPosition.getY() != result.getY());
 //	}
 //}

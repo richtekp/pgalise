@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.graphextension;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -25,7 +25,7 @@ import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.traffic.TrafficEdge;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  * Extension class which methods interact with edge's attribute hashmap
@@ -64,9 +64,9 @@ public class DefaultGraphExtensions implements GraphExtensions {
 			return null;
 		}
 		return Math
-				.sqrt(Math.pow(this.getPosition(edge.getSource()).x - this.getPosition(edge.getTarget()).x, 2)
+				.sqrt(Math.pow(this.getPosition(edge.getSource()).getX() - this.getPosition(edge.getTarget()).getX(), 2)
 						+ (Math.pow(
-								this.getPosition(edge.getSource()).y - this.getPosition(edge.getTarget()).y, 2)));
+								this.getPosition(edge.getSource()).getY() - this.getPosition(edge.getTarget()).getY(), 2)));
 	}
 
 	/**
@@ -155,9 +155,9 @@ public class DefaultGraphExtensions implements GraphExtensions {
 			throw new IllegalStateException("Argument 'node2' has no position data attached.");
 		}
 		Coordinate fromPosition = this.getPosition(from);
-		Vector2d result = new Vector2d(fromPosition.x, fromPosition.y);
+		Vector2d result = new Vector2d(fromPosition.getX(), fromPosition.getY());
 		Coordinate toPosition = this.getPosition(to);
-		result.sub(new Vector2d(toPosition.x, toPosition.y));
+		result.sub(new Vector2d(toPosition.getX(), toPosition.getY()));
 		return result;
 	}
 
@@ -196,7 +196,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 		if (position == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("node"));
 		}
-		if ((position.x < 0) || (position.y < 0)) {
+		if ((position.getX() < 0) || (position.getY() < 0)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("position", true));
 		}
 		node.setGeoLocation(position);

@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.staticsensor.internal.grid.LinearGridDeployer;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 import org.junit.Ignore;
 
 /**
@@ -50,7 +50,7 @@ public class LinearGridDeployerTest {
 		assertEquals(8, positions.size());
 
 		for (Vector2d pos : positions) {
-			log.debug(String.format("(%s, %s)", pos.x, pos.y));
+			log.debug(String.format("(%s, %s)", pos.getX(), pos.getY()));
 		}
 
 		assertTrue(this.contains(positions, 0, 0));
@@ -65,7 +65,7 @@ public class LinearGridDeployerTest {
 
 	private boolean contains(List<Vector2d> ps, double x, double y) {
 		for (Vector2d p : ps) {
-			if ((p.x == x) && (p.y == y)) {
+			if ((p.getX() == x) && (p.getY() == y)) {
 				return true;
 			}
 		}

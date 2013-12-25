@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

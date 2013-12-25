@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 /**
  * Not used so far.
  * @author Dennis

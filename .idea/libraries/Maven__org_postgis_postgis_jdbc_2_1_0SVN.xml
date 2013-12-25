@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.postgis:postgis-jdbc:2.1.0SVN">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/postgis/postgis-jdbc/2.1.0SVN/postgis-jdbc-2.1.0SVN.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/postgis/postgis-jdbc/2.1.0SVN/postgis-jdbc-2.1.0SVN-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/postgis/postgis-jdbc/2.1.0SVN/postgis-jdbc-2.1.0SVN-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

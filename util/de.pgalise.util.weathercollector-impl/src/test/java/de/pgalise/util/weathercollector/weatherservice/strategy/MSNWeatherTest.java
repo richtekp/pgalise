@@ -4,7 +4,7 @@
  */
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.testutils.TestUtils;

@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.scheduler;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +45,7 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleIt
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 import org.jgrapht.alg.DijkstraShortestPath;
 
 /**

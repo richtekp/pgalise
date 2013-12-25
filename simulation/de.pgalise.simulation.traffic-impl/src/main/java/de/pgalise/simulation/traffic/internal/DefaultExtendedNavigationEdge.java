@@ -4,7 +4,7 @@
 // */
 //package de.pgalise.simulation.traffic.internal;
 //
-//import com.vividsolutions.jts.geom.Coordinate;
+//import de.pgalise.simulation.shared.city.Coordinate;
 //import com.vividsolutions.jts.operation.distance.DistanceOp;
 //import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 //import de.pgalise.simulation.traffic.NavigationEdge;
@@ -24,7 +24,7 @@
 //import javax.measure.quantity.Length;
 //import javax.measure.unit.SI;
 //import javax.persistence.Entity;
-//import javax.vecmath.Vector2d;
+//import de.pgalise.simulation.shared.city.Vector2d;
 //import org.slf4j.Logger;
 //import org.slf4j.LoggerFactory;
 //
@@ -145,7 +145,7 @@
 //	 * @return 
 //	 */
 //	private double edgeLengthPassedInM(E edge, Coordinate position) {
-//		Coordinate[] nearestPoints = DistanceOp.nearestPoints(edge.getEdgeLine(), GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPoint(new Coordinate(position.x, position.y)));
+//		Coordinate[] nearestPoints = DistanceOp.nearestPoints(edge.getEdgeLine(), GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPoint(new Coordinate(position.getX(), position.getY())));
 //		if(nearestPoints.length != 2) {
 //			throw new RuntimeException(new IllegalArgumentException("nearest points of a line and a position haves to be a pair of coordinates"));
 //		}
@@ -160,7 +160,7 @@
 ////			edge.getEdgeLine().distance(GeoToolsBootstrapping.GEOMETRY_BUILDER.createPoint(position)) > 0.1) {
 ////			throw new IllegalArgumentException("position is not on edge line (distance is more than 0.1 m)");
 ////		}
-////		return AbstractNavigationEdge.distanceHaversineInM(new Coordinate(edge.getSource().getGeoLocation().x, edge.getSource().getGeoLocation().y), new Coordinate(position.x, position.y));//edge.getSource().getGeoLocation().distance(position);
+////		return AbstractNavigationEdge.distanceHaversineInM(new Coordinate(edge.getSource().getGeoLocation().getX(), edge.getSource().getGeoLocation().getY()), new Coordinate(position.getX(), position.getY()));//edge.getSource().getGeoLocation().distance(position);
 //	}
 //	
 //	/**
@@ -205,9 +205,9 @@
 //		}
 //		if(!vehicle.getCurrentSimulationSteps().peek().getRoute().isEmpty()) {
 //			//vehicle is now at beginning of edge which will not be passed completely -> set position on edge
-//			Vector2d edgeSourceVector = new Vector2d(vehicle.getCurrentEdge().getLeft().getSource().getGeoLocation().x, 
-//				vehicle.getCurrentEdge().getLeft().getSource().getGeoLocation().y);
-//			Vector2d edgeTargetVector = new Vector2d(vehicle.getCurrentEdge().getLeft().getTarget().getGeoLocation().x, vehicle.getCurrentEdge().getLeft().getTarget().getGeoLocation().y);
+//			Vector2d edgeSourceVector = new Vector2d(vehicle.getCurrentEdge().getLeft().getSource().getGeoLocation().getX(), 
+//				vehicle.getCurrentEdge().getLeft().getSource().getGeoLocation().getY());
+//			Vector2d edgeTargetVector = new Vector2d(vehicle.getCurrentEdge().getLeft().getTarget().getGeoLocation().getX(), vehicle.getCurrentEdge().getLeft().getTarget().getGeoLocation().getY());
 //			
 //			Coordinate newPosition;
 ////			if(distanceToDrive-currentEdgeRemainingLengthInM < 0 ) {
@@ -216,9 +216,9 @@
 //				edgeVector.sub(edgeSourceVector);
 //				edgeVector.scale(distanceToDriveInM/vehicle.getCurrentEdge().getLeft().getEdgeLength().doubleValue(SI.METER));
 //
-//				Vector2d currentPositionVector = new Vector2d(vehicle.getCurrentPosition().getLeft().x, vehicle.getCurrentPosition().getLeft().y);
+//				Vector2d currentPositionVector = new Vector2d(vehicle.getCurrentPosition().getLeft().getX(), vehicle.getCurrentPosition().getLeft().getY());
 //				currentPositionVector.add(edgeVector);
-//				newPosition = new Coordinate(currentPositionVector.x, currentPositionVector.y);
+//				newPosition = new Coordinate(currentPositionVector.getX(), currentPositionVector.getY());
 ////			}else {
 ////				distanceToDrive -= currentEdgeRemainingLengthInM;
 ////				

@@ -16,7 +16,7 @@
 // 
 //package de.pgalise.simulation.traffic.graphextension;
 //
-//import com.vividsolutions.jts.geom.Coordinate;
+//import de.pgalise.simulation.shared.city.Coordinate;
 //import de.pgalise.simulation.traffic.TrafficGraph;
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertFalse;
@@ -33,7 +33,7 @@
 //
 //import de.pgalise.simulation.traffic.internal.graphextension.DefaultGraphExtensions;
 //import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
-//import javax.vecmath.Vector2d;
+//import de.pgalise.simulation.shared.city.Vector2d;
 //
 ///**
 // * Tests the {@link GraphExtensions}

@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 
 /**
@@ -50,8 +50,8 @@ public class GpsWhiteNoiseInterferer extends GpsBaseInterferer {
 			final double x = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)));
 			final double y = 1d / ((1d / ((this.random.nextDouble() * this.changeAmplitude) + Double.MIN_NORMAL)));
 			return new Coordinate(
-					this.getRandom().nextBoolean() ? mutablePosition.x + x : mutablePosition.x - x, this
-							.getRandom().nextBoolean() ? mutablePosition.y + y : mutablePosition.y - y);
+					this.getRandom().nextBoolean() ? mutablePosition.getX() + x : mutablePosition.getX() - x, this
+							.getRandom().nextBoolean() ? mutablePosition.getY() + y : mutablePosition.getY() - y);
 		}
 		return mutablePosition;
 	}

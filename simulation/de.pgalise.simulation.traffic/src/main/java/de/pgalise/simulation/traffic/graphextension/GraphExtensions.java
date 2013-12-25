@@ -16,13 +16,13 @@
  
 package de.pgalise.simulation.traffic.graphextension;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  * The TrafficGraphExtensions is an interface

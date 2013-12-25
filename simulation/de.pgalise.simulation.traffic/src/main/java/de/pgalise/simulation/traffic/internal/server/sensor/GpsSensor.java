@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
@@ -182,12 +182,12 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 		final Coordinate geoLocation = interferedPos;
 
 		log.debug(
-			"Send position of sensor " + this.getId() + ": " + geoLocation.x + ", "
-			+ geoLocation.y);
+			"Send position of sensor " + this.getId() + ": " + geoLocation.getX() + ", "
+			+ geoLocation.getY());
 
 		// Send data
-		this.getOutput().transmitDouble(geoLocation.x);
-		this.getOutput().transmitDouble(geoLocation.y);
+		this.getOutput().transmitDouble(geoLocation.getX());
+		this.getOutput().transmitDouble(geoLocation.getY());
 		this.getOutput().transmitByte((byte) 0);
 		this.getOutput().transmitShort((short) 0);
 		this.getOutput().transmitShort((short) 0);
@@ -235,8 +235,8 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 			// convert to geolocation
 			final Coordinate geoLocation = interferedPos;
 
-			GpsSensor.log.debug("Send lat: " + geoLocation.x + " long: "
-				+ geoLocation.y + " of vehicle " + vehicle.getId());
+			GpsSensor.log.debug("Send lat: " + geoLocation.getX() + " long: "
+				+ geoLocation.getY() + " of vehicle " + vehicle.getId());
 		}
 	}
 }

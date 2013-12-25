@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.Entity;
 

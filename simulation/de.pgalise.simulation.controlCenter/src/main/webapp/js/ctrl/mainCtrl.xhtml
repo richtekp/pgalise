@@ -4,6 +4,9 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets" >
   <script type="text/javascript">
 		//<![CDATA[
+		var PopupServiceRef; //@TODO: this might not be elegant, but need a quick way to access PopupService
+
+		
 		/*
 		 * MainCtrl
 		 * The scope of this ctrl can be referenced by all controlers by default,
@@ -17,7 +20,8 @@
 			var _this = this;
 			ctrl.mainCtrl = this;
 			this.$scope = $scope;
-
+			PopupServiceRef = PopupService;
+			
 			/**
 			 * Open initial Dialog on startup
 			 */
@@ -581,7 +585,7 @@
 
 				_this.$scope.allBusRoutes = startParameter.busRouteList;
 
-				#{mainCtrl.updateCurrentWeatherEventViewData(startParameter)}
+				//@TODO: updateCurrentWeatherEventViewData(startParameter)
 				
 				/*
 				 * SensorObjects

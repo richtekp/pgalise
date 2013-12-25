@@ -16,8 +16,8 @@
  
 package de.pgalise.simulation.service;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  * Enum of directions
@@ -37,21 +37,21 @@ public enum Orientation {
 	 */
 	public static Orientation getOrientation(Vector2d direction) {
 		Orientation orientation;
-		if ((direction.x == 0) && (direction.y < 0)) {
+		if ((direction.getX() == 0) && (direction.getY() < 0)) {
 			orientation = Orientation.NORTH;
-		} else if ((direction.x > 0) && (direction.y < 0)) {
+		} else if ((direction.getX() > 0) && (direction.getY() < 0)) {
 			orientation = Orientation.NORTH_EAST;
-		} else if ((direction.x > 0) && (direction.y == 0)) {
+		} else if ((direction.getX() > 0) && (direction.getY() == 0)) {
 			orientation = Orientation.EAST;
-		} else if ((direction.x > 0) && (direction.y > 0)) {
+		} else if ((direction.getX() > 0) && (direction.getY() > 0)) {
 			orientation = Orientation.SOUTH_EAST;
-		} else if ((direction.x == 0) && (direction.y > 0)) {
+		} else if ((direction.getX() == 0) && (direction.getY() > 0)) {
 			orientation = Orientation.SOUTH;
-		} else if ((direction.x < 0) && (direction.y > 0)) {
+		} else if ((direction.getX() < 0) && (direction.getY() > 0)) {
 			orientation = Orientation.SOUTH_WEST;
-		} else if ((direction.x < 0) && (direction.y == 0)) {
+		} else if ((direction.getX() < 0) && (direction.getY() == 0)) {
 			orientation = Orientation.WEST;
-		} else if ((direction.x < 0) && (direction.y < 0)) {
+		} else if ((direction.getX() < 0) && (direction.getY() < 0)) {
 			orientation = Orientation.NORTH_WEST;
 		} else {
 			orientation = Orientation.ORIGIN;
@@ -72,24 +72,24 @@ public enum Orientation {
 	 */
 	public static boolean isBeyond(Orientation orientation,
 			Coordinate position, Coordinate borderPosition) {
-		return (((orientation == Orientation.NORTH) && (position.y <= borderPosition
-				.y))
+		return (((orientation == Orientation.NORTH) && (position.getY() <= borderPosition
+				.getY()))
 				|| ((orientation == Orientation.NORTH_EAST)
-						&& (position.x >= borderPosition.x) && (position
-						.y <= borderPosition.y))
-				|| ((orientation == Orientation.EAST) && (position.x >= borderPosition
-						.x))
+						&& (position.getX() >= borderPosition.getX()) && (position
+						.getY() <= borderPosition.getY()))
+				|| ((orientation == Orientation.EAST) && (position.getX() >= borderPosition
+						.getX()))
 				|| ((orientation == Orientation.SOUTH_EAST)
-						&& (position.x >= borderPosition.x) && (position
-						.y >= borderPosition.y))
-				|| ((orientation == Orientation.SOUTH) && (position.y >= borderPosition
-						.y))
+						&& (position.getX() >= borderPosition.getX()) && (position
+						.getY() >= borderPosition.getY()))
+				|| ((orientation == Orientation.SOUTH) && (position.getY() >= borderPosition
+						.getY()))
 				|| ((orientation == Orientation.SOUTH_WEST)
-						&& (position.x <= borderPosition.x) && (position
-						.y >= borderPosition.y))
-				|| ((orientation == Orientation.WEST) && (position.x <= borderPosition
-						.x)) || ((orientation == Orientation.NORTH_WEST)
-				&& (position.x <= borderPosition.x) && (position
-				.y <= borderPosition.y)));
+						&& (position.getX() <= borderPosition.getX()) && (position
+						.getY() >= borderPosition.getY()))
+				|| ((orientation == Orientation.WEST) && (position.getX() <= borderPosition
+						.getX())) || ((orientation == Orientation.NORTH_WEST)
+				&& (position.getX() <= borderPosition.getX()) && (position
+				.getY() <= borderPosition.getY())));
 	}
 }

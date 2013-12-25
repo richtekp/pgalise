@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.MappedSuperclass;

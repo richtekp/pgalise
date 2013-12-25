@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 

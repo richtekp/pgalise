@@ -10,7 +10,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.traffic.TrafficEdge;
@@ -73,9 +73,9 @@ public class DefaultTrafficGraph extends TrafficGraph {
 		for(TrafficEdge edge : this.edgeSet()) {
 			Coordinate node0Position = edge.getSource().getGeoLocation();
 			Coordinate node1Position = edge.getTarget().getGeoLocation();
-			Coordinate node0Coordinates = new Coordinate(node0Position.x, node0Position.y);
-			Coordinate node1Coordinates = new Coordinate(node1Position.x, node1Position.y);
-			Coordinate positionCoordines = new Coordinate(position.x, position.y);
+			Coordinate node0Coordinates = new Coordinate(node0Position.getX(), node0Position.getY());
+			Coordinate node1Coordinates = new Coordinate(node1Position.getX(), node1Position.getY());
+			Coordinate positionCoordines = new Coordinate(position.getX(), position.getY());
 			double distance = CGAlgorithms.distancePointLine(positionCoordines, node0Coordinates, node1Coordinates);
 			if(distance <= distanceTolerance && distance < minDistance) {
 				minDistanceEdge = edge;

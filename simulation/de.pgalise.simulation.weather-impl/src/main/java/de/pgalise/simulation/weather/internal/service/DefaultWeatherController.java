@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;

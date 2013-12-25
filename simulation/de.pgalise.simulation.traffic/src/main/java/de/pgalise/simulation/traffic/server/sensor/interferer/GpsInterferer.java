@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.server.sensor.interferer;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**

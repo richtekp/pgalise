@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -12,7 +12,7 @@ import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  *
@@ -82,8 +82,8 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 
 	public double getLineAzimuth() {
 		if(lineAzimuth == null) {
-			Vector2d edgeVector = new Vector2d(source.getGeoLocation().x, source.getGeoLocation().y);
-			edgeVector.sub(new Vector2d(target.getGeoLocation().x, target.getGeoLocation().y));
+			Vector2d edgeVector = new Vector2d(source.getGeoLocation().getX(), source.getGeoLocation().getY());
+			edgeVector.sub(new Vector2d(target.getGeoLocation().getX(), target.getGeoLocation().getY()));
 			Vector2d northVector = new Vector2d(0,1);
 			lineAzimuth = edgeVector.angle(northVector)*180/Math.PI;
 		}
@@ -115,10 +115,10 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 
 	public Vector2d getVector() {
 		if(this.vector == null) {
-			this.vector = new Vector2d(getSource().getGeoLocation().x,
-				getSource().getGeoLocation().y);
-			vector.sub(new Vector2d(getTarget().getGeoLocation().x,
-				getTarget().getGeoLocation().y));
+			this.vector = new Vector2d(getSource().getGeoLocation().getX(),
+				getSource().getGeoLocation().getY());
+			vector.sub(new Vector2d(getTarget().getGeoLocation().getX(),
+				getTarget().getGeoLocation().getY()));
 		}
 		return this.vector;
 	}

@@ -21,7 +21,7 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 
 /**
  * Implementation of an {@link WeatherInterferer} that hold several other {@link WeatherInterferer}s

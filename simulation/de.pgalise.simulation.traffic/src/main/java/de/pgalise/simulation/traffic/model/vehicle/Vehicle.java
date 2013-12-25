@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.traffic.TrafficEdge;
 
@@ -25,7 +25,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.List;
 import javax.annotation.ManagedBean;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).

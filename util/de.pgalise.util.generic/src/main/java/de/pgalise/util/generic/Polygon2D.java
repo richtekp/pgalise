@@ -314,7 +314,7 @@ public class Polygon2D implements Shape, Cloneable, Serializable {
 	 * @see #contains(double, double)
 	 */
 	public boolean contains(Point p) {
-		return this.contains(p.x, p.y);
+		return this.contains(p.getX(), p.getY());
 	}
 
 	/**

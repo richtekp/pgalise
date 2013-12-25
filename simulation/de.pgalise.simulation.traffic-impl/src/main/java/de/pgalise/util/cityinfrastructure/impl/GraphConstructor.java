@@ -87,8 +87,8 @@ public class GraphConstructor {
 //						org.graphstream.graph.Edge edge = graph.addEdge(UUID.randomUUID().toString(), prevNode, node);
 //						Coordinate b = this.graphExtension.getPosition(node);
 //						Coordinate a = this.graphExtension.getPosition(prevNode);
-//						Vector2d bVector = new Vector2d(b.x, b.y);
-//						Vector2d aVector = new Vector2d(a.x, a.y);
+//						Vector2d bVector = new Vector2d(b.getX(), b.getY());
+//						Vector2d aVector = new Vector2d(a.getX(), a.getY());
 //						bVector.sub(aVector);
 //						double length = bVector.length();
 //						double vel = way.getMaxSpeed();

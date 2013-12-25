@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.traffic;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 
 /**
  *

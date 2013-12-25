@@ -89,9 +89,9 @@ public class RegionParser<D extends VehicleData> {
 
 			for (int i = 0; i < landuse.getEdgeList().size(); i++) {
 				NavigationNode landuseNode = landuse.getNodeList().get(i);
-				int xpoint = (int) (landuseNode.getGeoLocation().x * 10000000);
+				int xpoint = (int) (landuseNode.getGeoLocation().getX() * 10000000);
 				xpoints[i] = xpoint;
-				int ypoint = (int) (landuseNode.getGeoLocation().y * 10000000);
+				int ypoint = (int) (landuseNode.getGeoLocation().getY() * 10000000);
 				ypoints[i] = ypoint;
 			}
 
@@ -101,8 +101,8 @@ public class RegionParser<D extends VehicleData> {
 		for (TrafficWay way : ways) {
 			for (TrafficNode node : way.getNodeList()) {
 				for (EnrichedPolygon p : polygons) {
-					if (p.getPolygon().contains((int) (node.getGeoLocation().x* 10000000),
-							(int) (node.getGeoLocation().y* 10000000))) {
+					if (p.getPolygon().contains((int) (node.getGeoLocation().getX()* 10000000),
+							(int) (node.getGeoLocation().getY()* 10000000))) {
 						Set<LanduseTag> landuse = p.getLanduse();
 						node.getLanduseTags().addAll(landuse);
 

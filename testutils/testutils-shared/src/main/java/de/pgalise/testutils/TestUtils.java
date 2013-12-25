@@ -4,10 +4,10 @@
  */
 package de.pgalise.testutils;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.Position;
+import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.sql.Date;
 import java.sql.Time;
@@ -94,11 +94,11 @@ public class TestUtils {
 		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
 		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 			new Coordinate[] {
-				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-				new Coordinate(referencePoint.x-1, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y), 
-				new Coordinate(referencePoint.x, referencePoint.y-1),
-				new Coordinate(referencePoint.x-1, referencePoint.y-1)
+				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1), 
+				new Coordinate(referencePoint.getX()-1, referencePoint.getY()), 
+				new Coordinate(referencePoint.getX(), referencePoint.getY()), 
+				new Coordinate(referencePoint.getX(), referencePoint.getY()-1),
+				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1)
 			}
 		);
 		City city = new City("Berlin",
@@ -106,7 +106,7 @@ public class TestUtils {
 			80,
 			true,
 			true,
-			new Position(referenceArea));
+			new BaseGeoInfo(referenceArea));
 		return city;
 	}
 

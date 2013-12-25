@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -16,7 +16,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import java.util.Iterator;
 import java.util.Set;
 import javax.ejb.EJB;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  *
@@ -71,9 +71,9 @@ public class AbstractVehicleFactory implements VehicleFactory
 		double chosenOffset = chosenEdge.getEdgeLength()*Math.random();
 		Vector2d offsetVector = new Vector2d(chosenEdge.getVector());
 		offsetVector.scale(chosenOffset);
-		Vector2d positionVector = new Vector2d(chosenEdge.getSource().getGeoLocation().x, chosenEdge.getSource().getGeoLocation().y);
+		Vector2d positionVector = new Vector2d(chosenEdge.getSource().getGeoLocation().getX(), chosenEdge.getSource().getGeoLocation().getY());
 		positionVector.add(offsetVector);
-		return new Coordinate(positionVector.x, positionVector.y);
+		return new Coordinate(positionVector.getX(), positionVector.getY());
 	}
 
 	public void setRandomSeedService(RandomSeedService randomSeedService) {

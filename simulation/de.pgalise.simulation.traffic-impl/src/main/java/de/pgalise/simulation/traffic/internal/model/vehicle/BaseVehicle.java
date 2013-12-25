@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
 import javax.annotation.ManagedBean;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  * Superclass for vehicles
@@ -392,8 +392,8 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 	}
 
 	protected Vector2d getDirection(Coordinate a, Coordinate b) {
-		Vector2d dir = new Vector2d(b.x, b.y);
-		Vector2d aVector = new Vector2d(a.x, a.y);
+		Vector2d dir = new Vector2d(b.getX(), b.getY());
+		Vector2d aVector = new Vector2d(a.getX(), a.getY());
 		dir.sub(aVector);
 		dir.normalize();
 		return dir;
@@ -420,9 +420,9 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 			this.orientation = this.getOrientation(this.direction);
 
 			// calculate new position on the path
-			Vector2d positionVector = new Vector2d(this.position.x, this.position.y);
+			Vector2d positionVector = new Vector2d(this.position.getX(), this.position.getY());
 			Coordinate nextNodePosition = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
-			Vector2d nextNodeVector = new Vector2d(nextNodePosition.x, nextNodePosition.y);
+			Vector2d nextNodeVector = new Vector2d(nextNodePosition.getX(), nextNodePosition.getY());
 			positionVector.sub(nextNodeVector);
 			double scale = positionVector
 					.length();
@@ -531,11 +531,11 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 		double distance = this.velocity * (double) (elapsedTime / 1000);
 		// log.debug("Distance: " + distance + ", Add to vector: " + (dir.scale(distance)));
 		dir.scale(distance);
-		Vector2d posVector = new Vector2d(pos.x, pos.y);
+		Vector2d posVector = new Vector2d(pos.getX(), pos.getY());
 		posVector.add(dir);
 		// log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
 		// ", direction: " + dir);
-		return new Coordinate(posVector.x, posVector.y);
+		return new Coordinate(posVector.getX(), posVector.getY());
 	}
 
 	@Override

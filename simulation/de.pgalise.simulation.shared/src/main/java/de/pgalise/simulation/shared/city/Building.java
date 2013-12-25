@@ -16,10 +16,10 @@
  
 package de.pgalise.simulation.shared.city;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.city.AmenityTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.Position;
+import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
@@ -35,7 +35,7 @@ public class Building extends NavigationNode  {
 	
 	@Transient
 	private Double squareMeter;
-	private Position position;
+	private BaseGeoInfo position;
 
 	protected Building() {
 	}
@@ -47,7 +47,7 @@ public class Building extends NavigationNode  {
 	 * @param tags 
 	 * @param boundary an optional boundary which is not used in the simulation
 	 */
-	public Building(Coordinate geoLocation, Position position) {
+	public Building(Coordinate geoLocation, BaseGeoInfo position) {
 		super(geoLocation);
 		this.position = position;
 	}
@@ -69,7 +69,7 @@ public class Building extends NavigationNode  {
 		Set<LanduseTag> landuseTags,
 		boolean office,
 		boolean military,
-		Position position) {
+		BaseGeoInfo position) {
 		super(geoLocation,
 			tourismTags,
 			serviceTags,
@@ -97,11 +97,11 @@ public class Building extends NavigationNode  {
 		return squareMeter;
 	}
 
-	public void setPosition(Position position) {
+	public void setPosition(BaseGeoInfo position) {
 		this.position = position;
 	}
 
-	public Position getPosition() {
+	public BaseGeoInfo getPosition() {
 		return position;
 	}
 	

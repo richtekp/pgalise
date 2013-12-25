@@ -41,13 +41,13 @@ import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.Position;
+import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
@@ -145,7 +145,7 @@ public class DefaultEnergyControllerTest {
 			buildingList.add(
 				new Building(
 					new Coordinate(53.136765, 8.216524), 
-					new Position(
+					new BaseGeoInfo(
 						GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 							new Coordinate[]{
 								new Coordinate(1,1), 

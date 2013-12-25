@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.Set;
 import javax.persistence.ElementCollection;

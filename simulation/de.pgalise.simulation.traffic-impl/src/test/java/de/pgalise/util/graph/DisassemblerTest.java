@@ -16,7 +16,7 @@
  
 package de.pgalise.util.graph;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

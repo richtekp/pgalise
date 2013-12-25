@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.energy;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;

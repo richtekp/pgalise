@@ -52,7 +52,7 @@ import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.OMGeo.Polygon;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.shared.city.AmenityTag;
 import de.pgalise.simulation.shared.city.AmenityTagCustom;
 import de.pgalise.simulation.shared.city.AttractionTag;
@@ -70,7 +70,7 @@ import de.pgalise.simulation.shared.city.LanduseTagEnum;
 import de.pgalise.simulation.shared.city.LeisureTag;
 import de.pgalise.simulation.shared.city.LeisureTagCustom;
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.Position;
+import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.city.PublicTransportTag;
 import de.pgalise.simulation.shared.city.PublicTransportTagCustom;
 import de.pgalise.simulation.shared.city.RepairTag;
@@ -117,8 +117,8 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 		@Override
 		public double distanceTo(Building b, PointND p) {
 			/* euclidean distance */
-			return Math.sqrt(Math.pow((b.getPosition().getCenterPoint().x - p.getOrd(0)), 2)
-					+ Math.pow((b.getPosition().getCenterPoint().y - p.getOrd(1)), 2));
+			return Math.sqrt(Math.pow((b.getPosition().getCenterPoint().getX() - p.getOrd(0)), 2)
+					+ Math.pow((b.getPosition().getCenterPoint().getY() - p.getOrd(1)), 2));
 		}
 	}
 
@@ -137,12 +137,12 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 
 		@Override
 		public double getMax(int arg0, Building arg1) {
-			return arg0 == 0 ? arg1.getPosition().getCenterPoint().x : arg1.getPosition().getCenterPoint().y;
+			return arg0 == 0 ? arg1.getPosition().getCenterPoint().getX() : arg1.getPosition().getCenterPoint().getY();
 		}
 
 		@Override
 		public double getMin(int arg0, Building arg1) {
-			return arg0 == 0 ? arg1.getPosition().getCenterPoint().x : arg1.getPosition().getCenterPoint().y;
+			return arg0 == 0 ? arg1.getPosition().getCenterPoint().getX() : arg1.getPosition().getCenterPoint().getY();
 		}
 	}
 
@@ -157,8 +157,8 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 		@Override
 		public double distanceTo(NavigationNode n, PointND p) {
 			/* euclidean distance */
-			return Math.sqrt(Math.pow((n.getGeoLocation().x - p.getOrd(0)), 2)
-					+ Math.pow((n.getGeoLocation().y - p.getOrd(1)), 2));
+			return Math.sqrt(Math.pow((n.getGeoLocation().getX() - p.getOrd(0)), 2)
+					+ Math.pow((n.getGeoLocation().getY() - p.getOrd(1)), 2));
 		}
 	}
 
@@ -177,12 +177,12 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 
 		@Override
 		public double getMax(int arg0, NavigationNode arg1) {
-			return arg0 == 0 ? arg1.getGeoLocation().x : arg1.getGeoLocation().y;
+			return arg0 == 0 ? arg1.getGeoLocation().getX() : arg1.getGeoLocation().getY();
 		}
 
 		@Override
 		public double getMin(int arg0, NavigationNode arg1) {
-			return arg0 == 0 ? arg1.getGeoLocation().x : arg1.getGeoLocation().y;
+			return arg0 == 0 ? arg1.getGeoLocation().getX() : arg1.getGeoLocation().getY();
 		}
 	}
 
@@ -351,12 +351,12 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 		double r2d = 180.0 / Math.PI; // degrees to radians
 		double d2r = Math.PI / 180.0; // radians to degrees
 		double rlat = (radiusInKm / earthRadius) * r2d;
-		double rlng = rlat / Math.cos(centerPoint.x * d2r);
+		double rlng = rlat / Math.cos(centerPoint.getX() * d2r);
 
 		for (int i = 0; i < pointNumber; i++) {
 			double t = Math.PI * (i / (pointNumber / 2.0));
-			double lat = centerPoint.x + (rlat * Math.cos(t));
-			double lng = centerPoint.y + (rlng * Math.sin(t));
+			double lat = centerPoint.getX() + (rlat * Math.cos(t));
+			double lng = centerPoint.getY() + (rlng * Math.sin(t));
 			tmpPoints.add(new Coordinate(lat, lng));
 		}
 
@@ -366,17 +366,17 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 		double southWestLng = Double.MAX_VALUE;
 
 		for (Coordinate p : tmpPoints) {
-			if (p.x > northEastLat) {
-				northEastLat = p.x;
+			if (p.getX() > northEastLat) {
+				northEastLat = p.getX();
 			}
-			if (p.x < southWestLat) {
-				southWestLat = p.x;
+			if (p.getX() < southWestLat) {
+				southWestLat = p.getX();
 			}
-			if (p.y > northEastLng) {
-				northEastLng = p.y;
+			if (p.getY() > northEastLng) {
+				northEastLng = p.getY();
 			}
-			if (p.y < southWestLng) {
-				southWestLng = p.y;
+			if (p.getY() < southWestLng) {
+				southWestLng = p.getY();
 			}
 		}
 
@@ -445,8 +445,8 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 			List<NodeDistanceWrapper> nodeDistanceList = new ArrayList<>();
 
 			for (NavigationNode node : nodeWayMap.keySet()) {
-				nodeDistanceList.add(new NodeDistanceWrapper(node, this.getDistanceInKM(busStop.getGeoLocation().x,
-						busStop.getGeoLocation().y, node.getGeoLocation().x, node.getGeoLocation().y)));
+				nodeDistanceList.add(new NodeDistanceWrapper(node, this.getDistanceInKM(busStop.getGeoLocation().getX(),
+						busStop.getGeoLocation().getY(), node.getGeoLocation().getX(), node.getGeoLocation().getY())));
 			}
 
 			Collections.sort(nodeDistanceList, new Comparator<NodeDistanceWrapper>() {
@@ -478,10 +478,10 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 						 * larger than the distance between bus stop and node2.
 						 */
 						if (waysNode2.contains(possibleWay)
-								&& (this.getDistanceInKM(node1.getGeoLocation().x, node1.getGeoLocation().y,
-										node2.getGeoLocation().x, node2.getGeoLocation().y) <= this.getDistanceInKM(
-										node2.getGeoLocation().x, node2.getGeoLocation().y, busStop.getGeoLocation().x,
-										busStop.getGeoLocation().y))) {
+								&& (this.getDistanceInKM(node1.getGeoLocation().getX(), node1.getGeoLocation().getY(),
+										node2.getGeoLocation().getX(), node2.getGeoLocation().getY()) <= this.getDistanceInKM(
+										node2.getGeoLocation().getX(), node2.getGeoLocation().getY(), busStop.getGeoLocation().getX(),
+										busStop.getGeoLocation().getY()))) {
 
 							/* Insert busstop as new node: */
 							List<TrafficNode> newNodeList = new ArrayList<>();
@@ -654,17 +654,17 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 						gambling = node.getGamblingTags();
 					}
 
-					if (node.getGeoLocation().x > maxLat) {
-						maxLat = node.getGeoLocation().x;
+					if (node.getGeoLocation().getX() > maxLat) {
+						maxLat = node.getGeoLocation().getX();
 					}
-					if (node.getGeoLocation().x < minLat) {
-						minLat = node.getGeoLocation().x;
+					if (node.getGeoLocation().getX() < minLat) {
+						minLat = node.getGeoLocation().getX();
 					}
-					if (node.getGeoLocation().y > maxLng) {
-						maxLng = node.getGeoLocation().y;
+					if (node.getGeoLocation().getY() > maxLng) {
+						maxLng = node.getGeoLocation().getY();
 					}
-					if (node.getGeoLocation().y < minLng) {
-						minLng = node.getGeoLocation().y;
+					if (node.getGeoLocation().getY() < minLng) {
+						minLng = node.getGeoLocation().getY();
 					}
 				}
 
@@ -742,7 +742,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 				double area = length * width;
 				area *= area;
 
-				Position buildingPosition = new Position(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {new Coordinate(maxLat, maxLng),new Coordinate(minLat, minLng)}));
+				BaseGeoInfo buildingPosition = new BaseGeoInfo(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {new Coordinate(maxLat, maxLng),new Coordinate(minLat, minLng)}));
 				buildingList.add(
 					
 					new Building(
@@ -875,9 +875,9 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 	public List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter) {
 		Boundary boundary0 = this.circleToRectangle(centerPoint, radiusInMeter);
 		List<Building> tmpBuildings = new ArrayList<>();
-		for (Building building : this.buildingTree.find(boundary0.getSouthWest().x, boundary0
-				.getSouthWest().y, boundary0.getNorthEast().x, boundary0
-				.getNorthEast().y)) {
+		for (Building building : this.buildingTree.find(boundary0.getSouthWest().getX(), boundary0
+				.getSouthWest().getY(), boundary0.getNorthEast().getX(), boundary0
+				.getNorthEast().getY())) {
 			tmpBuildings.add(building);
 		}
 
@@ -940,16 +940,16 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 	 */
 	private double getDistanceInMeter(Coordinate start, Coordinate target) {
 
-		if ((start.x == target.x)
-				&& (start.y == target.y)) {
+		if ((start.getX() == target.getX())
+				&& (start.getY() == target.getY())) {
 			return 0.0;
 		}
 
 		double f = 1 / 298.257223563;
 		double a = 6378.137;
-		double F = ((start.x + target.x) / 2) * (Math.PI / 180);
-		double G = ((start.x - target.x) / 2) * (Math.PI / 180);
-		double l = ((start.y - target.y) / 2) * (Math.PI / 180);
+		double F = ((start.getX() + target.getX()) / 2) * (Math.PI / 180);
+		double G = ((start.getX() - target.getX()) / 2) * (Math.PI / 180);
+		double l = ((start.getY() - target.getY()) / 2) * (Math.PI / 180);
 		double S = Math.pow(Math.sin(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.cos(F), 2)
 				* Math.pow(Math.sin(l), 2);
 		double C = Math.pow(Math.cos(G), 2) * Math.pow(Math.cos(l), 2) + Math.pow(Math.sin(F), 2)
@@ -1071,10 +1071,10 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 								nodeMap.put(id, lastNode);
 
 								if (northEastBoundary == null
-										|| (northEastBoundary.getGeoLocation().x < lat && northEastBoundary.getGeoLocation().y < lon)) {
+										|| (northEastBoundary.getGeoLocation().getX() < lat && northEastBoundary.getGeoLocation().getY() < lon)) {
 									northEastBoundary = lastNode;
 								} else if (southWestBoundary == null
-										|| (southWestBoundary.getGeoLocation().x > lat && southWestBoundary.getGeoLocation().y > lon)) {
+										|| (southWestBoundary.getGeoLocation().getX() > lat && southWestBoundary.getGeoLocation().getY() > lon)) {
 									southWestBoundary = lastNode;
 								}
 							}
@@ -1087,7 +1087,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 
 							if (kValue.equalsIgnoreCase("highway")) {
 								if (vValue.equalsIgnoreCase("bus_stop")) {
-									lastBusstop = new BusStop("", null, new Coordinate(lastNode.getGeoLocation().x, lastNode.getGeoLocation().y));
+									lastBusstop = new BusStop("", null, new Coordinate(lastNode.getGeoLocation().getX(), lastNode.getGeoLocation().getY()));
 								} else if (vValue.equalsIgnoreCase("mini_roundabout")
 										|| vValue.equalsIgnoreCase("roundabout")) {
 									lastNode.setRoundabout(true);
@@ -1331,9 +1331,9 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 		this.junctionNodesTree.load(this.junctionNodes);
 
 		if (northEastBoundary != null) {
-			this.boundary = new Boundary(new Coordinate(northEastBoundary.getGeoLocation().x,
-					northEastBoundary.getGeoLocation().y), new Coordinate(southWestBoundary.getGeoLocation().x,
-					southWestBoundary.getGeoLocation().y));
+			this.boundary = new Boundary(new Coordinate(northEastBoundary.getGeoLocation().getX(),
+					northEastBoundary.getGeoLocation().getY()), new Coordinate(southWestBoundary.getGeoLocation().getX(),
+					southWestBoundary.getGeoLocation().getY()));
 		}
 
 		this.buildings = this.extractBuildings(wayList);
@@ -1417,7 +1417,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 
 		for (int i = 0; i < way.getNodeList().size(); i++) {
 			NavigationNode tmpNode = way.getNodeList().get(i);
-			geoArray[i] = new Geo(tmpNode.getGeoLocation().x, tmpNode.getGeoLocation().y);
+			geoArray[i] = new Geo(tmpNode.getGeoLocation().getX(), tmpNode.getGeoLocation().getY());
 		}
 
 		return new Polygon(geoArray);
@@ -1431,9 +1431,9 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 	public List<NavigationNode> getNodesInBoundary(Boundary boundary) {
 
 		List<NavigationNode> nodes = new ArrayList<>();
-		for (NavigationNode node : this.allNodesTree.find(boundary.getSouthWest().x, boundary
-				.getSouthWest().y, boundary.getNorthEast().x, boundary
-				.getNorthEast().y)) {
+		for (NavigationNode node : this.allNodesTree.find(boundary.getSouthWest().getX(), boundary
+				.getSouthWest().getY(), boundary.getNorthEast().getX(), boundary
+				.getNorthEast().getY())) {
 			nodes.add(node);
 		}
 

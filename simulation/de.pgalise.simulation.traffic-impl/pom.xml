@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -22,7 +22,7 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>traffic</artifactId>
 			<exclusions>
-<!--				<exclusion>
+				<!--				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-jdk14</artifactId>
 				</exclusion>-->
@@ -35,14 +35,14 @@
 					<artifactId>logback-classic</artifactId>
 				</exclusion>
 			</exclusions>
-		 <type>jar</type>
+			<type>jar</type>
 		</dependency>
 		<!-- 
 		<dependency>
-		    <groupId>com.ibm.db2</groupId>
-		    <artifactId>driver</artifactId>
+				<groupId>com.ibm.db2</groupId>
+				<artifactId>driver</artifactId>
 		</dependency>
- 		-->		
+		-->		
 		<dependency>
 			<groupId>pcingola</groupId>
 			<artifactId>jfuzzy</artifactId>
@@ -52,54 +52,59 @@
 			<artifactId>utils</artifactId>
 			<scope>test</scope>
 		</dependency>
-	 <dependency>
-	  <groupId>org.geotools</groupId>
-	  <artifactId>gt-api</artifactId>
-	 </dependency>
-	 <dependency>
-	  <groupId>com.javadocmd</groupId>
-	  <artifactId>simplelatlng</artifactId>
-	 </dependency>
-	 <dependency>
-	  <groupId>org.apache.commons</groupId>
-	  <artifactId>commons-collections4</artifactId>
-	  <version>4.0-alpha1</version>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared</artifactId>
-	 </dependency>
-				<dependency>
-					<groupId>de.pgalise.simulation</groupId>
-					<artifactId>shared-resources</artifactId>
-				</dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>testutils-shared</artifactId>
-	  <scope>test</scope>
-	 </dependency>
-	 <dependency>
-		 <groupId>org.apache.openejb</groupId>
-		 <artifactId>openejb-core</artifactId>
-		 <scope>test</scope>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared-impl</artifactId>
-	  <scope>test</scope>
-	  <type>ejb</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>weather-impl</artifactId>
-	  <scope>test</scope>
-	  <type>ejb</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>energy</artifactId>
-	  <type>jar</type>
-	 </dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-api</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>java3d</groupId>
+					<artifactId>vecmath</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.javadocmd</groupId>
+			<artifactId>simplelatlng</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-resources</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-shared</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>weather-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>energy</artifactId>
+			<type>jar</type>
+		</dependency>
 	</dependencies>
 
 	<build>

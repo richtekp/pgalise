@@ -19,7 +19,7 @@ package de.pgalise.simulation.weather.internal.positionconverter;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverterBase;
@@ -69,9 +69,9 @@ public class LinearWeatherPositionConverter extends WeatherPositionConverterBase
 		// Calculate distance
 		
 		double distance = 
-			LatLngTool.distance(new LatLng(this.getReferencePosition().x, this.getReferencePosition().y), new LatLng(position.x, position.y), LengthUnit.METER);
-			//Math.abs(Math.sqrt(Math.pow(this.getReferencePosition().x - position.x, 2)
-//				+ Math.pow(this.getReferencePosition().y - position.y, 2)));
+			LatLngTool.distance(new LatLng(this.getReferencePosition().getX(), this.getReferencePosition().getY()), new LatLng(position.getX(), position.getY()), LengthUnit.METER);
+			//Math.abs(Math.sqrt(Math.pow(this.getReferencePosition().getX() - position.getX(), 2)
+//				+ Math.pow(this.getReferencePosition().getY() - position.getY(), 2)));
 
 		// Get the change value
 		T changeValue = this.getChangeValue(key, time, distance, refValue);

@@ -27,7 +27,7 @@ import org.junit.Test;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.DefaultGPSTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;

@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
 		<groupId>de.pgalise</groupId>
@@ -8,68 +8,28 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-  <groupId>de.pgalise.simulation</groupId>
-  <artifactId>controlCenter-ejb</artifactId>
-  <version>2.0-SNAPSHOT</version>
-  <packaging>ejb</packaging>
+	<groupId>de.pgalise.simulation</groupId>
+	<artifactId>controlCenter-ejb</artifactId>
+	<version>2.0-SNAPSHOT</version>
+	<packaging>ejb</packaging>
 
-  <name>de.pgalise.simulation.controlCenter-ejb</name>
-  <url>http://maven.apache.org</url>
+	<name>de.pgalise.simulation.controlCenter-ejb</name>
+	<url>http://maven.apache.org</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>de.pgalise.simulation</groupId>
-      <artifactId>controlCenter-jar</artifactId>
-      <type>jar</type>
-    </dependency>
+	<dependencies>
 		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<classifier>jdk15</classifier>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>controlCenter-jar</artifactId>
+			<type>jar</type>
 		</dependency>
-    <dependency>
-      <groupId>de.pgalise.simulation</groupId>
-      <artifactId>simulationController</artifactId>
-      <type>jar</type>
-    </dependency>
-		
-		
-	 <dependency>
-	  <groupId>org.apache.openejb</groupId>
-	  <artifactId>openejb-core</artifactId>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-		 <groupId>de.pgalise.simulation</groupId>
-		 <artifactId>operationCenter-jar</artifactId>
-		 <scope>test</scope><!--until issue with persistence.xml is fixed-->
-	 </dependency>
-			<dependency>
-				<groupId>org.postgis</groupId>
-				<artifactId>postgis-jdbc</artifactId>
-				<scope>test</scope>
-			</dependency>
-				<dependency>
-					<groupId>postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-				<scope>test</scope>
-				</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<scope>test</scope>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>simulationController</artifactId>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
@@ -95,13 +55,47 @@
 			<type>ejb</type>
 			<scope>test</scope>
 		</dependency>
-    <dependency>
-      <groupId>de.pgalise</groupId>
-      <artifactId>testutils-shared</artifactId>
-      <scope>test</scope>
-      <type>jar</type>
-    </dependency>
-  </dependencies>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-shared</artifactId>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.postgis</groupId>
+			<artifactId>postgis-jdbc</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-spatial</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+	</dependencies>
 	
 	<build>
 		<finalName>de.pgalise.simulation.controlCenter-ejb</finalName>

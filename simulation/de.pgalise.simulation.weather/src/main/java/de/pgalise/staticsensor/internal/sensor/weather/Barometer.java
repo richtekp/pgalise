@@ -16,7 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.weather;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
