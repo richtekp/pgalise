@@ -65,8 +65,6 @@ function WeatherCtrl($scope, UUIDService) {
 	function recalcDuration() {
 		_this.$scope.currentWeatherEventViewData.duration = _this.$scope.durationHours
 		 	+ _this.$scope.durationMinutes/60;
-		
-		console.log(_this.$scope.currentWeatherEventViewData.duration);
 	};
 	
 	/*
