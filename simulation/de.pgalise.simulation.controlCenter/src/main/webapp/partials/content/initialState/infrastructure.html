@@ -8,7 +8,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <div help>
+                    <div>
                         The controller needs the IP address where the Simulation, Weather and Traffic Controller are.
                     </div>
                 </td>
@@ -54,17 +54,17 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <div help>
+                    <div>
                         Decide how much Traffic Servers will be used in the Simulation.
                     </div>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <nobr>
+                    <span>
                         <input button type="button" title="add traffic server" value="+ add" ng-click="addTrafficServer()" />
-                        <input button type="button" title="remove traffic server" value="- remove" ng-click="removeTrafficServer()" /></h3>
-                    </nobr>
+                        <input button type="button" title="remove traffic server" value="- remove" ng-click="removeTrafficServer()" />
+                    </span>
                 </td>
             </tr>
             <tr ng-repeat="(id, trafficServerURL) in startParameter.trafficServerIPList" id="trafficServers">
@@ -84,7 +84,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <div help>
+                    <div>
                         This defines the adresses of the user interfaces.
                     </div>
                 </td>
