@@ -16,7 +16,7 @@ import java.util.Set;
  * @param <C> 
  * @author richter
  */
-public interface ServiceDataHelper<S extends ExtendedServiceDataCurrent<C>, T extends ExtendedServiceDataForecast<C>, C extends WeatherCondition> extends TimeSensitive, ServiceDataHelperCompleter<S,T,C> {
+public interface ServiceDataHelper<S extends ExtendedServiceDataCurrent, T extends ExtendedServiceDataForecast> extends TimeSensitive, ServiceDataHelperCompleter<S,T> {
 	
 	public String getApicity() ;
 

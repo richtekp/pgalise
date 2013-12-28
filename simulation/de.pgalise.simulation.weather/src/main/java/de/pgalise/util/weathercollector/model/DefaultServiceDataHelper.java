@@ -18,7 +18,7 @@ package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.AbstractTimeSensitive;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.sql.Date;
 import java.util.Set;
 import java.util.TreeSet;
@@ -34,7 +34,7 @@ import javax.persistence.OneToOne;
  * @version 1.0 (Mar 16, 2012)
  */
 @Entity
-public class DefaultServiceDataHelper extends AbstractTimeSensitive implements ServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> {
+public class DefaultServiceDataHelper extends AbstractTimeSensitive implements ServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -122,7 +122,7 @@ public class DefaultServiceDataHelper extends AbstractTimeSensitive implements S
 	}
 
 	@Override
-	public void complete(ServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast, DefaultWeatherCondition> newObj) {
+	public void complete(ServiceDataHelper<MyExtendedServiceDataCurrent, MyExtendedServiceDataForecast> newObj) {
 
 		if ((this.city == null) || this.city.getName().isEmpty()) {
 			this.city = newObj.getCity();

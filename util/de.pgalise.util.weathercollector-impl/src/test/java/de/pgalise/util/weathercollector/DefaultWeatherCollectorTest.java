@@ -21,7 +21,7 @@ import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
@@ -68,7 +68,7 @@ public class DefaultWeatherCollectorTest {
 	private static EJBContainer CONTAINER;
 	@PersistenceContext(unitName = "pgalise")
 	private EntityManager entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 	public DefaultWeatherCollectorTest() throws NamingException {
@@ -86,7 +86,7 @@ public class DefaultWeatherCollectorTest {
 	@Test
 	public void testCollectServiceData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
-		Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>>(Arrays.asList(new YahooWeather()));
+		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(Arrays.asList(new YahooWeather()));
 		InitialContext initialContext = new InitialContext();
 		UserTransaction userTransaction = (UserTransaction) initialContext.lookup("java:comp/UserTransaction");
 		userTransaction.begin();

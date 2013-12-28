@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
@@ -99,7 +99,7 @@ public class MSNWeather extends XMLAPIWeather {
 							date, 
 							time, 
 							city, 
-							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION, new Time(1), new Time(2));
+							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, WeatherCondition.UNKNOWN_CONDITION, new Time(1), new Time(2));
 
 						// Date
 						Timestamp convertedTimestamp = DateConverter.convertTimestamp(dateString, "yyyy-MM-dd h:mm:ss");
@@ -121,7 +121,7 @@ public class MSNWeather extends XMLAPIWeather {
 					// Condition
 					dataString = attributes.getNamedItem("skycode").getTextContent();
 					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
+						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// Relativ humidity
@@ -157,7 +157,7 @@ public class MSNWeather extends XMLAPIWeather {
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION);
+							1.0f, 1.0f, 10.0f, WeatherCondition.UNKNOWN_CONDITION);
 					} catch (ParseException e) {
 						continue;
 					}
@@ -179,7 +179,7 @@ public class MSNWeather extends XMLAPIWeather {
 					// Condition
 					dataString = attributes.getNamedItem("skycodeday").getTextContent();
 					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
+						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
 					}
 
 					// City

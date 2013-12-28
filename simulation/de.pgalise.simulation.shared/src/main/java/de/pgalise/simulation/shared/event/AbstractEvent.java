@@ -32,6 +32,14 @@ public abstract class AbstractEvent extends AbstractIdentifiable implements Even
 	 */
 	private static final long serialVersionUID = -7362721454716905390L;
 
+	protected AbstractEvent() {
+		super();
+	}
+	
+	public AbstractEvent(Long id) {
+		super(id);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

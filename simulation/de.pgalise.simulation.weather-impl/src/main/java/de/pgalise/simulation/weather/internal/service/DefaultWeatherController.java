@@ -58,7 +58,7 @@ import de.pgalise.simulation.weather.internal.modifier.events.RainDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -140,7 +140,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	private ServiceDictionary serviceDictionary;
 
 	@EJB
-	private WeatherLoader<DefaultWeatherCondition> weatherLoader;
+	private WeatherLoader weatherLoader;
 
 	/**
 	 * Random Seed Service
@@ -170,6 +170,12 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 			throw new IllegalArgumentException("There is no data available.");
 		}
 	}
+	
+	public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
+		long timestamp,
+		long duration) throws IllegalArgumentException {
+		throw new UnsupportedOperationException("no use case for weather events without value check class architecture");
+	}
 
 	/**
 	 * Creates a weather strategy from the given enum element
@@ -185,7 +191,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
 		long timestamp,
 		Float value,
-		Float duration) throws IllegalArgumentException {
+		long duration) throws IllegalArgumentException {
 		if (enumElement == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"enumElement"));
@@ -260,10 +266,17 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 		// Create strategies
 		List<WeatherStrategyHelper> strategies = new ArrayList<>(eventList.size());
 		for (WeatherEvent event : eventList) {
-			WeatherStrategy strategy = this.createStrategyFromEnum(event.getType(),
+			WeatherStrategy strategy;
+			if(event instanceof ChangeWeatherEvent) {
+				strategy = this.createStrategyFromEnum(event.getType(),
 				event.getTimestamp(),
-				event.getValue(),
+				((ChangeWeatherEvent)event).getValue(),
 				event.getDuration());
+			}else {
+				strategy = this.createStrategyFromEnum(event.getType(),
+				event.getTimestamp(),
+				event.getDuration());
+			}
 			if (strategy != null) {
 				strategies.add(new WeatherStrategyHelper(strategy,
 					event.getTimestamp()));

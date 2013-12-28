@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.util;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,13 +100,13 @@ public class NonJTADatabaseManager implements EntityDatabaseManager {
 	 * @return condition code
 	 */
 	@Override
-	public DefaultWeatherCondition getCondition(String condition) {
+	public WeatherCondition getCondition(String condition) {
 		final EntityManager em = this.factory.createEntityManager();
 
 		// Get cities
-		DefaultWeatherCondition result;
+		WeatherCondition result;
 		try {
-			TypedQuery<DefaultWeatherCondition> query = em.createNamedQuery("Condition.getConditionByString", DefaultWeatherCondition.class);
+			TypedQuery<WeatherCondition> query = em.createNamedQuery("Condition.getConditionByString", WeatherCondition.class);
 			query.setParameter("condition", condition);
 			query.setMaxResults(1);
 			result = query.getSingleResult();

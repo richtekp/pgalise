@@ -11,6 +11,6 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * @param <C> 
  * @author richter
  */
-public interface ExtendedServiceDataForecastCompleter<C extends WeatherCondition> {
-	void complete(ExtendedServiceDataForecast<C> serviceDataForecast);
+public interface ExtendedServiceDataForecastCompleter {
+	void complete(ExtendedServiceDataForecast serviceDataForecast);
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.event.weather;
 
 import de.pgalise.simulation.shared.event.EventType;
@@ -21,11 +20,11 @@ import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Event for modifying the current weather
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.1 (Aug 30, 2012)
  */
-public class ChangeWeatherEvent extends WeatherEvent {
+public class ChangeWeatherEvent extends ValueWeatherEvent {
 
 	/**
 	 * Serial
@@ -34,19 +33,21 @@ public class ChangeWeatherEvent extends WeatherEvent {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param strategy
-	 *            Strategy to modify weather data
-	 * @param eventTime 
-	 * @param value
-	 *            Specified value
-	 * @param duration
-	 *            Specified duration
+	 *
+	 * @param id
+	 * @param eventType
+	 * @param value Specified value
+	 * @param timestamp
+	 * @param duration Specified duration
 	 */
-	public ChangeWeatherEvent(WeatherEventType eventType, float value, long timestamp, Float duration) {
-		super(eventType,
+	public ChangeWeatherEvent(Long id, WeatherEventType eventType,
+		float value,
+		long timestamp,
+		long duration) {
+		super(id,eventType,
 			timestamp,
-			duration,value);
+			duration,
+			value);
 	}
 
 }

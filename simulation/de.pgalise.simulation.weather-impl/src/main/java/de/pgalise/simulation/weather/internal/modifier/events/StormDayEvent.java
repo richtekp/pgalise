@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Andreas Rehfeldt
  * @version 1.0 (09.08.2012)
  */
-public class StormDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition> {
+public class StormDayEvent extends WeatherDayEventModifier {
 
 	/**
 	 * Event type
@@ -104,8 +104,8 @@ public class StormDayEvent extends WeatherDayEventModifier<DefaultWeatherConditi
 	 *            Maximal duration of the event
 	 * @param weatherLoader  
 	 */
-	public StormDayEvent(long seed, long time, Properties props, Float value, Float duration,
-			WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public StormDayEvent(long seed, long time, Properties props, Float value, long duration,
+			WeatherLoader weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
 	}
 
@@ -118,7 +118,7 @@ public class StormDayEvent extends WeatherDayEventModifier<DefaultWeatherConditi
 	 *            Properties
 	 * @param weatherLoader  
 	 */
-	public StormDayEvent(long seed, Properties props, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public StormDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -129,7 +129,7 @@ public class StormDayEvent extends WeatherDayEventModifier<DefaultWeatherConditi
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public StormDayEvent(long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public StormDayEvent(long seed, WeatherLoader weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -142,7 +142,7 @@ public class StormDayEvent extends WeatherDayEventModifier<DefaultWeatherConditi
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public StormDayEvent(WeatherMap map, long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public StormDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 
@@ -259,13 +259,13 @@ public class StormDayEvent extends WeatherDayEventModifier<DefaultWeatherConditi
 				getProperty("stormday_order_id")));
 			this.min_value = Float.parseFloat(this.getProps().getProperty("stormday_min_value"));
 			this.max_value = Integer.parseInt(this.getProps().getProperty("stormday_max_value"));
-			this.setEventDuration((Float) Float.parseFloat(this.getProps().getProperty("stormday_max_duration")));
+			this.setEventDuration((long) Float.parseFloat(this.getProps().getProperty("stormday_max_duration")));
 		} else {
 			// Take default values
 			this.setOrderID(StormDayEvent.ORDER_ID);
 			this.min_value = 5.5f;
 			this.max_value = 35.0f;
-			this.setEventDuration((Float) 4.0f);
+			this.setEventDuration((long) 4.0f);
 		}
 	}
 }

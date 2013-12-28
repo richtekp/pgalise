@@ -47,7 +47,7 @@ public class StormDayEventChart extends AbstractChartTest {
 	/**
 	 * Test duration
 	 */
-	public static float testDuration = 4.0f;
+	public static long testDuration = 4;
 
 	/**
 	 * For tests

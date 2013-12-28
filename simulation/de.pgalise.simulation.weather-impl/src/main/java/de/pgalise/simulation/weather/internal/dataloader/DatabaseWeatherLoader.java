@@ -53,7 +53,7 @@ import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -88,7 +88,7 @@ import javax.persistence.TemporalType;
 @Lock(LockType.READ)
 @Local
 @Singleton(name = "de.pgalise.simulation.weather.dataloader.WeatherLoader", mappedName = "de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader")
-public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondition> {
+public class DatabaseWeatherLoader implements WeatherLoader {
 
 	@PersistenceContext(unitName = "pgalise-weather")
 	private EntityManager entityManager;
@@ -185,7 +185,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 	}
 
 	@Override
-	public ServiceDataCurrent<DefaultWeatherCondition> loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public ServiceDataCurrent loadCurrentServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 
 		// Get the data
 		DefaultServiceDataCurrent data;
@@ -200,7 +200,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 		}		
 
 		// Copy informations to the weather object
-		ServiceDataCurrent<DefaultWeatherCondition> weather = new DefaultServiceDataCurrent(
+		ServiceDataCurrent weather = new DefaultServiceDataCurrent(
 			data.getMeasureDate(),
 			data.getMeasureTime(),
 			data.getCity(), 
@@ -208,7 +208,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 			data.getTemperature(),
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			DefaultWeatherCondition.retrieveCondition(DefaultWeatherCondition.UNKNOWN_CONDITION_CODE)
+			WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}
@@ -225,7 +225,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 	 * @return ServiceDataForecast
 	 */
 	@Override
-	public ServiceDataForecast<DefaultWeatherCondition> loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
+	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) throws NoWeatherDataFoundException {
 		//check that city has been persisted to avoid exception query in following method invocations
 		this.entityManager.merge(city);
 
@@ -251,7 +251,7 @@ public class DatabaseWeatherLoader implements WeatherLoader<DefaultWeatherCondit
 			data.getRelativHumidity(), 
 			data.getWindDirection(),
 			data.getWindVelocity(),
-			DefaultWeatherCondition.retrieveCondition(DefaultWeatherCondition.UNKNOWN_CONDITION_CODE)
+			WeatherCondition.retrieveCondition(WeatherCondition.UNKNOWN_CONDITION_CODE)
 		);
 		return weather;
 	}

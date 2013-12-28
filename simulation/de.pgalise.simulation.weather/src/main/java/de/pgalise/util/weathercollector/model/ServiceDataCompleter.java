@@ -34,6 +34,6 @@ public interface ServiceDataCompleter<C extends WeatherCondition> {
 	 * @param obj
 	 *            new obj
 	 */
-	public void complete(ServiceDataCurrent<C> obj);
+	public void complete(ServiceDataCurrent obj);
 
 }

@@ -35,7 +35,7 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * @author Andreas Rehfeldt
  * @version 1.0 (08.10.2012)
  */
-public abstract class WeatherSimulationEventModifier<C extends WeatherCondition> extends AbstractWeatherMapModifier<C> {
+public abstract class WeatherSimulationEventModifier extends AbstractWeatherMapModifier {
 
 	/**
 	 * Serial

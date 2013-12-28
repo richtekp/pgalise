@@ -36,7 +36,7 @@ import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
@@ -87,7 +87,7 @@ public class StormDayEventTest {
 	/**
 	 * Test duration
 	 */
-	private float testDuration = 4.0f;
+	private long testDuration = 4;
 
 	/**
 	 * Service Class
@@ -97,7 +97,7 @@ public class StormDayEventTest {
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader<DefaultWeatherCondition> loader;
+	private WeatherLoader loader;
 	
 	private	City city;
 	

@@ -6,10 +6,26 @@
 
 package de.pgalise.simulation.controlCenter;
 
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+
 /**
  *
  * @author richter
  */
-public enum InitDialogCtrlInitialTypeEnum {
-	CREATE, RECENT,IMPORT
+@ManagedBean
+@ApplicationScoped
+public enum InitDialogCtrlInitialTypeEnum implements InitDialogCtrlInitialType {
+	CREATE("create"), RECENT("recent"),IMPORT("import");
+	
+	private final String stringValue;
+
+	private InitDialogCtrlInitialTypeEnum(String stringValue) {
+		this.stringValue = stringValue;
+	}
+
+	@Override
+	public String getStringValue() {
+		return stringValue;
+	}
 }

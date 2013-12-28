@@ -30,7 +30,7 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public interface WeatherLoader<C extends WeatherCondition> {
+public interface WeatherLoader {
 
 	/**
 	 * Checks if the weather informations for that day are correct
@@ -50,7 +50,7 @@ public interface WeatherLoader<C extends WeatherCondition> {
 	 *            ID to the city
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataCurrent<C> loadCurrentServiceWeatherData(long timestamp, City city) ;
+	public ServiceDataCurrent loadCurrentServiceWeatherData(long timestamp, City city) ;
 
 	/**
 	 * Returns the forecast weather informations form the weather services for the given city and timestamp
@@ -61,7 +61,7 @@ public interface WeatherLoader<C extends WeatherCondition> {
 	 *            ID to the city
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataForecast<C> loadForecastServiceWeatherData(long timestamp, City city) ;
+	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) ;
 
 	/**
 	 * Returns the weather data of the weather station for the day of 

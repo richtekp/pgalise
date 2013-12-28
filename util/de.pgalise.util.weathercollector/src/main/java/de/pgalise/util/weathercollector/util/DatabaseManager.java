@@ -13,6 +13,6 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * enforce a persistable type in a subclass)
  * @author richter
  */
-public interface DatabaseManager<C extends WeatherCondition> {
-	C getCondition(String condition);
+public interface DatabaseManager {
+	WeatherCondition getCondition(String condition);
 }

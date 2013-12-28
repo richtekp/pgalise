@@ -39,7 +39,7 @@ import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
 import java.sql.Date;
@@ -85,7 +85,7 @@ public class CityClimateTest {
 	/**
 	 * Weather Loader
 	 */
-	private static WeatherLoader<DefaultWeatherCondition> loader;
+	private static WeatherLoader loader;
 	
 	private	City city;
 	

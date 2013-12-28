@@ -36,7 +36,7 @@ import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.internal.modifier.WeatherStrategyContext;
 import de.pgalise.simulation.weather.internal.positionconverter.LinearWeatherPositionConverter;
 import de.pgalise.simulation.weather.internal.util.comparator.WeatherStrategyComparator;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
@@ -112,7 +112,7 @@ public class DefaultWeatherService implements WeatherService {
 	/**
 	 * Loader for weather data
 	 */
-	private WeatherLoader<DefaultWeatherCondition> loader;
+	private WeatherLoader loader;
 
 	/**
 	 * Map with all weather parameters
@@ -151,7 +151,7 @@ public class DefaultWeatherService implements WeatherService {
 	 *            City
 	 * @param loader  
 	 */
-	public DefaultWeatherService(City city, WeatherLoader<DefaultWeatherCondition> loader) {
+	public DefaultWeatherService(City city, WeatherLoader loader) {
 		if (city == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("city"));
 		}
@@ -251,7 +251,7 @@ public class DefaultWeatherService implements WeatherService {
 				this.plannedEventModifiers.add(new WeatherStrategyHelper(strategy, this.loadedTimestamp));
 			}
 		} else {
-			WeatherDayEventModifier<DefaultWeatherCondition> dayEvent = (WeatherDayEventModifier<DefaultWeatherCondition>) strategy;
+			WeatherDayEventModifier dayEvent = (WeatherDayEventModifier) strategy;
 
 			// Execute event?
 			if (DateConverter.isTheSameDay(dayEvent.getEventTimestamp(), this.loadedTimestamp)) {

@@ -15,7 +15,7 @@
     <class>de.pgalise.simulation.shared.city.Way</class>
     <class>de.pgalise.simulation.weather.model.DefaultServiceDataCurrent</class>
     <class>de.pgalise.simulation.weather.model.DefaultServiceDataForecast</class>
-    <class>de.pgalise.simulation.weather.model.DefaultWeatherCondition</class>
+    <class>de.pgalise.simulation.weather.model.WeatherCondition</class>
     <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
     <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
     <class>de.pgalise.staticsensor.internal.sensor.weather.AnemomenterData</class>

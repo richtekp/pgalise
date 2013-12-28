@@ -9,7 +9,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import de.pgalise.util.weathercollector.util.JTADatabaseManager;
@@ -35,7 +35,7 @@ public class YahooWeatherTest {
 	private static EJBContainer CONTAINER;
 	@PersistenceContext(unitName = "pgalise")
 	private EntityManager entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper,DefaultWeatherCondition> baseDatabaseManager;
+	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
 	
 	@SuppressWarnings("LeakingThisInConstructor")
 	public YahooWeatherTest() throws NamingException {
@@ -62,7 +62,7 @@ public class YahooWeatherTest {
 		
 		City city = TestUtils.createDefaultTestCityInstance();
 		YahooWeather instance = new YahooWeather();
-		ServiceDataHelper<?,?,?> result = instance.getWeather(city,
+		ServiceDataHelper<?,?> result = instance.getWeather(city,
 			baseDatabaseManager);
 		assertFalse(result.getForecastConditions().isEmpty());
 		assertFalse(result.getCurrentCondition() == null);

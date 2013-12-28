@@ -10,6 +10,17 @@ package de.pgalise.simulation.controlCenter;
  *
  * @author richter
  */
-public enum OSMParsedStateEnum {
-	IN_PROGRESS, DONE
+public enum OSMParsedStateEnum implements OSMParsedState {
+	IN_PROGRESS("in progress"), DONE("done");
+	
+	private final String stringValue;
+
+	private OSMParsedStateEnum(String stringValue) {
+		this.stringValue = stringValue;
+	}
+
+	@Override
+	public String getStringValue() {
+		return stringValue;
+	}
 }

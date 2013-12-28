@@ -24,7 +24,7 @@ import javax.persistence.OneToOne;
  * the MappedSuperclass (if usage of @Type annotation should be avoided)
  */
 @MappedSuperclass
-public abstract class AbstractServiceData<C extends WeatherCondition> extends AbstractTimeSensitive implements ServiceData<C> {
+public abstract class AbstractServiceData extends AbstractTimeSensitive implements ServiceData {
 	
 	/**
 	 * City
@@ -51,12 +51,12 @@ public abstract class AbstractServiceData<C extends WeatherCondition> extends Ab
 	private Float windVelocity;
 	
 	@OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private C condition;
+	private WeatherCondition condition;
 
 	protected AbstractServiceData() {
 	}
 
-	public AbstractServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, C condition) {
+	public AbstractServiceData(Date measureDate, Time measureTime, City city, Float relativHumidity, Float windDirection, Float windVelocity, WeatherCondition condition) {
 		super(measureDate,
 			measureTime);
 		this.city = city;
@@ -105,12 +105,12 @@ public abstract class AbstractServiceData<C extends WeatherCondition> extends Ab
 		this.windVelocity = windVelocity;
 	}
 
-	public void setCondition(C condition) {
+	public void setCondition(WeatherCondition condition) {
 		this.condition = condition;
 	}
 
 	@Override
-	public C getCondition() {
+	public WeatherCondition getCondition() {
 		return this.condition;
 	}
 }

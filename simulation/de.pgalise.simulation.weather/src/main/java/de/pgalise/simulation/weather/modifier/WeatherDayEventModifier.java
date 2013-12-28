@@ -38,7 +38,7 @@ import de.pgalise.simulation.weather.util.DateConverter;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public abstract class WeatherDayEventModifier<C extends WeatherCondition> extends AbstractWeatherMapModifier<C> {
+public abstract class WeatherDayEventModifier extends AbstractWeatherMapModifier {
 
 	/**
 	 * Serial
@@ -82,7 +82,7 @@ public abstract class WeatherDayEventModifier<C extends WeatherCondition> extend
 	/**
 	 * Maximal duration of the event
 	 */
-	private Float eventDuration;
+	private long eventDuration;
 
 	/**
 	 * Constructor
@@ -99,8 +99,8 @@ public abstract class WeatherDayEventModifier<C extends WeatherCondition> extend
 	 *            Maximal duration of the event
 	 * @param weatherLoader  
 	 */
-	public WeatherDayEventModifier(long seed, long time, Properties props, Float value, Float duration,
-			WeatherLoader<C> weatherLoader) {
+	public WeatherDayEventModifier(long seed, long time, Properties props, Float value, long duration,
+			WeatherLoader weatherLoader) {
 		super(seed, props, weatherLoader);
 		this.eventTimestamp = time;
 		this.eventValue = value;
@@ -116,7 +116,7 @@ public abstract class WeatherDayEventModifier<C extends WeatherCondition> extend
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public WeatherDayEventModifier(long seed, Properties props, WeatherLoader<C> weatherLoader) {
+	public WeatherDayEventModifier(long seed, Properties props, WeatherLoader weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -127,7 +127,7 @@ public abstract class WeatherDayEventModifier<C extends WeatherCondition> extend
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public WeatherDayEventModifier(long seed, WeatherLoader<C> weatherLoader) {
+	public WeatherDayEventModifier(long seed, WeatherLoader weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -140,11 +140,11 @@ public abstract class WeatherDayEventModifier<C extends WeatherCondition> extend
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public WeatherDayEventModifier(WeatherMap map, long seed, WeatherLoader<C> weatherLoader) {
+	public WeatherDayEventModifier(WeatherMap map, long seed, WeatherLoader weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 
-	public Float getEventDuration() {
+	public long getEventDuration() {
 		return this.eventDuration;
 	}
 
@@ -156,7 +156,7 @@ public abstract class WeatherDayEventModifier<C extends WeatherCondition> extend
 		return this.eventValue;
 	}
 
-	public void setEventDuration(Float eventDuration) {
+	public void setEventDuration(long eventDuration) {
 		this.eventDuration = eventDuration;
 	}
 

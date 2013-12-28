@@ -20,24 +20,24 @@ import java.util.Set;
  * @param <C> the type of the {@link WeatherCondition} (in subclasses which use JPA, a persistent class can be enforced)
  * @author richter
  */
-public interface WeatherCollector<T extends ServiceDataHelper<?,?,C>, C extends WeatherCondition> {
+public interface WeatherCollector<T extends ServiceDataHelper<?,?>> {
 	
-	void collectServiceData(BaseDatabaseManager<T,C> weatherServiceSaver, Set<ServiceStrategy<T,C>> serviceStrategys);
+	void collectServiceData(BaseDatabaseManager<T> weatherServiceSaver, Set<ServiceStrategy<T>> serviceStrategys);
 
 	/**
 	 * Collect weather informations of the weather services
 	 * 
 	 * @param weatherServiceSaver 
 	 */
-	public void collectServiceData(BaseDatabaseManager<T,C> weatherServiceSaver) ;
+	public void collectServiceData(BaseDatabaseManager<T> weatherServiceSaver) ;
 	
-	public void collectStationData(BaseDatabaseManager<T,C> databaseManager, Set<StationStrategy> stationStrategys) ;
+	public void collectStationData(BaseDatabaseManager<T> databaseManager, Set<StationStrategy> stationStrategys) ;
 
 	/**
 	 * Collect weather informations of the weather stations
 	 * 
 	 * @param databaseManager 
 	 */
-	public void collectStationData(BaseDatabaseManager<T,C> databaseManager);
+	public void collectStationData(BaseDatabaseManager<T> databaseManager);
 
 }

@@ -14,7 +14,7 @@ import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.model.StationDataNormal;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
@@ -142,8 +142,8 @@ public class DatabaseWeatherLoaderTest {
 				null);
 		
 		instance = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
-		ServiceDataCurrent<DefaultWeatherCondition> expResult = null;
-		ServiceDataCurrent<DefaultWeatherCondition> result = instance.loadCurrentServiceWeatherData(timestamp, city);
+		ServiceDataCurrent expResult = null;
+		ServiceDataCurrent result = instance.loadCurrentServiceWeatherData(timestamp, city);
 		assertEquals(expResult, result);
 		
 		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
@@ -193,8 +193,8 @@ public class DatabaseWeatherLoaderTest {
 			entityManagerFactory);
 		service.addNewWeather(startTimestamp, endTimestamp, true,
 				null);
-		ServiceDataForecast<DefaultWeatherCondition> expResult =  null;
-		ServiceDataForecast<DefaultWeatherCondition> result = instance.loadForecastServiceWeatherData(timestamp, city);
+		ServiceDataForecast expResult =  null;
+		ServiceDataForecast result = instance.loadForecastServiceWeatherData(timestamp, city);
 		assertEquals(expResult, result);
 		
 		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,

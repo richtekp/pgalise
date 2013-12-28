@@ -39,7 +39,7 @@ import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
 import java.sql.Date;
@@ -91,7 +91,7 @@ public class ReferenceCityTest {
 	/**
 	 * Weather Loader
 	 */
-	private WeatherLoader<DefaultWeatherCondition> loader;
+	private WeatherLoader loader;
 
 	@SuppressWarnings("LeakingThisInConstructor")
 	public ReferenceCityTest() throws NamingException {

@@ -29,7 +29,7 @@ import java.util.List;
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-public interface WeatherServiceSaver<T extends ServiceDataHelper<?,?,C>, C extends WeatherCondition> {
+public interface WeatherServiceSaver<T extends ServiceDataHelper<?,?>> {
 
 	/**
 	 * Returns a list of reference cities from the database

@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.MutableStationData;
 import de.pgalise.simulation.weather.model.StationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public class RainDayEvent extends WeatherDayEventModifier<DefaultWeatherCondition> {
+public class RainDayEvent extends WeatherDayEventModifier {
 
 	/**
 	 * Event type
@@ -99,7 +99,7 @@ public class RainDayEvent extends WeatherDayEventModifier<DefaultWeatherConditio
 	 *            Maximal duration of the event
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(long seed, long time, Properties props, Float value, Float duration, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public RainDayEvent(long seed, long time, Properties props, Float value, long duration, WeatherLoader weatherLoader) {
 		super(seed, time, props, value, duration, weatherLoader);
 	}
 
@@ -112,7 +112,7 @@ public class RainDayEvent extends WeatherDayEventModifier<DefaultWeatherConditio
 	 *            Properties
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(long seed, Properties props, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public RainDayEvent(long seed, Properties props, WeatherLoader weatherLoader) {
 		super(seed, props, weatherLoader);
 	}
 
@@ -123,7 +123,7 @@ public class RainDayEvent extends WeatherDayEventModifier<DefaultWeatherConditio
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public RainDayEvent(long seed, WeatherLoader weatherLoader) {
 		super(seed, weatherLoader);
 	}
 
@@ -136,7 +136,7 @@ public class RainDayEvent extends WeatherDayEventModifier<DefaultWeatherConditio
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public RainDayEvent(WeatherMap map, long seed, WeatherLoader<DefaultWeatherCondition> weatherLoader) {
+	public RainDayEvent(WeatherMap map, long seed, WeatherLoader weatherLoader) {
 		super(map, seed, weatherLoader);
 	}
 
@@ -309,12 +309,12 @@ public class RainDayEvent extends WeatherDayEventModifier<DefaultWeatherConditio
 			this.setOrderID(Integer.parseInt(this.getProps().
 				getProperty("rainday_order_id")));
 			this.max_value = Integer.parseInt(this.getProps().getProperty("rainday_max_value"));
-			this.setEventDuration((Float) Float.parseFloat(this.getProps().getProperty("rainday_max_duration")));
+			this.setEventDuration((long) Float.parseFloat(this.getProps().getProperty("rainday_max_duration")));
 		} else {
 			// Take default values
 			this.setOrderID(RainDayEvent.ORDER_ID);
 			this.max_value = 5;
-			this.setEventDuration((Float) 5.0f);
+			this.setEventDuration((long) 5.0f);
 		}
 	}
 }

@@ -35,7 +35,7 @@ import javax.persistence.NamedQuery;
 @Entity
 //@Table(name = "PGALISE.DEFAULT_SERVICE_DATA_FORECAST")
 @NamedQuery(name = "DefaultServiceDataForecast.findByDate", query = "SELECT i FROM DefaultServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class DefaultServiceDataForecast extends AbstractServiceData<DefaultWeatherCondition> implements ServiceDataForecast<DefaultWeatherCondition>, Comparable<ServiceDataForecast<?>> {
+public class DefaultServiceDataForecast extends AbstractServiceData implements ServiceDataForecast, Comparable<ServiceDataForecast> {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -62,7 +62,7 @@ public class DefaultServiceDataForecast extends AbstractServiceData<DefaultWeath
 		Float relativHumidity, 
 		Float windDirection, 
 		Float windVelocity, 
-		DefaultWeatherCondition condition
+		WeatherCondition condition
 	) {
 		super(measureDate, measureTime, city, relativHumidity, windDirection, windVelocity, condition);
 		this.temperatureHigh = temperatureHigh;
@@ -98,7 +98,7 @@ public class DefaultServiceDataForecast extends AbstractServiceData<DefaultWeath
 	}
 
 	@Override
-	public int compareTo(ServiceDataForecast<?> o) {
+	public int compareTo(ServiceDataForecast o) {
 		return this.getMeasureTime().compareTo(o.getMeasureTime());
 	}
 

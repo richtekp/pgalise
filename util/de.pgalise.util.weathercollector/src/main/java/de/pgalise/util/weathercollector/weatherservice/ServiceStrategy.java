@@ -30,7 +30,7 @@ import de.pgalise.util.weathercollector.model.ServiceDataHelper;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public interface ServiceStrategy<T extends ServiceDataHelper<?,?,C>,C extends WeatherCondition> {
+public interface ServiceStrategy<T extends ServiceDataHelper<?,?>> {
 
 	/**
 	 * Returns the current weather informations to the given city
@@ -42,5 +42,5 @@ public interface ServiceStrategy<T extends ServiceDataHelper<?,?,C>,C extends We
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public T getWeather(City city, DatabaseManager<C> databaseManager) throws ReadServiceDataException;
+	public T getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException;
 }

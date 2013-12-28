@@ -13,11 +13,11 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * @param <C> 
  * @author richter
  */
-public interface WeatherMapModifier<C extends WeatherCondition> extends WeatherStrategy {
+public interface WeatherMapModifier extends WeatherStrategy {
 	WeatherMap getMap();
 
 
 	long getSimulationTimestamp();
 
-	WeatherLoader<C> getWeatherLoader();
+	WeatherLoader getWeatherLoader();
 }

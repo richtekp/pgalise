@@ -18,7 +18,7 @@ package de.pgalise.util.weathercollector.model;
 
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import java.sql.Date;
 
 import javax.persistence.Entity;
@@ -36,7 +36,7 @@ import javax.measure.quantity.Temperature;
 @Entity
 //@Table(name = "PGALISE.EXTENDED_SERVICE_DATA_FORECAST")
 @NamedQuery(name = "MyExtendedServiceDataForecast.findByCityAndDate", query = "SELECT i FROM MyExtendedServiceDataForecast i WHERE i.measureDate = :date AND i.city = :city")
-public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast implements ExtendedServiceDataForecast<DefaultWeatherCondition> {
+public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast implements ExtendedServiceDataForecast {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -54,7 +54,7 @@ public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast im
 		Float relativHumidity,
 		Float windDirection,
 		Float windVelocity,
-		DefaultWeatherCondition condition) {
+		WeatherCondition condition) {
 		super(
 			measureDate,
 			measureTime,
@@ -68,7 +68,7 @@ public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast im
 	}
 
 	@Override
-	public void complete(ExtendedServiceDataForecast<DefaultWeatherCondition> newObj) {
+	public void complete(ExtendedServiceDataForecast newObj) {
 
 		// Date
 		if (this.getMeasureDate() == null) {
@@ -83,7 +83,7 @@ public class MyExtendedServiceDataForecast extends DefaultServiceDataForecast im
 			this.setTemperatureHigh(newObj.getTemperatureHigh());
 		}
 
-		if (this.getCondition() == DefaultWeatherCondition.UNKNOWN_CONDITION) {
+		if (this.getCondition() == WeatherCondition.UNKNOWN_CONDITION) {
 			this.setCondition(newObj.getCondition());
 		}
 	}

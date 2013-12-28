@@ -13,7 +13,7 @@ import java.sql.Time;
  * @param <C> 
  * @author richter
  */
-public interface  ExtendedServiceDataCurrent<C extends WeatherCondition> extends ServiceDataCurrent<C>, ExtendedServiceDataCurrentCompleter<C> {
+public interface  ExtendedServiceDataCurrent extends ServiceDataCurrent, ExtendedServiceDataCurrentCompleter {
 	
 	Time getSunrise();
 

@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
@@ -117,7 +117,7 @@ public class GoogleWeather extends XMLAPIWeather {
 					condition.setRelativHumidity(Float.parseFloat(segs[1].substring(0, (segs[1].length() - 1))));
 				} else if ("condition".equals(childnodes.item(j).getNodeName())) {
 					// Condition
-					condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
+					condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
 
@@ -139,7 +139,7 @@ public class GoogleWeather extends XMLAPIWeather {
 							city, 
 							Measure.valueOf(10.0f, SI.CELSIUS),  
 							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, DefaultWeatherCondition.UNKNOWN_CONDITION);
+							1.0f, 1.0f, 10.0f, WeatherCondition.UNKNOWN_CONDITION);
 
 			for (int j = 0; j < childnodes.getLength(); j++) {
 				// Data
@@ -163,7 +163,7 @@ public class GoogleWeather extends XMLAPIWeather {
 					condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
 				} else if ("condition".equals(childnodes.item(j).getNodeName())) {
 					// Condition
-					condition.setCondition(DefaultWeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
+					condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)));
 				}
 			}
 

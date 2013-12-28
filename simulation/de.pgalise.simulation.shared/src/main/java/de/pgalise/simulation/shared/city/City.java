@@ -86,7 +86,7 @@ public class City extends AbstractIdentifiable {
 	/**
 	 * Default constructor
 	 */
-	protected City() {
+	public City() {
 	}
 
 	/**

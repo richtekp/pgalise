@@ -48,36 +48,21 @@ public abstract class WeatherEvent extends AbstractEvent {
 	/**
 	 * Specified duration
 	 */
-	private float duration;
+	private long duration;
 
-	/**
-	 * Specified value @TODO: move downward in hierarchy because not needed in NewDayEvent
-	 */
-	private Float value;
+	protected WeatherEvent() {
+		super();
+	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param event Weather type
-	 * @param timestamp Timestamp of the type
-	 * @param duration Duration
-	 * @param value
-	 */
-	public WeatherEvent(WeatherEventType event,
+	public WeatherEvent(
+		Long id,
+		WeatherEventType type,
 		long timestamp,
-		float duration,float value) {
-		this.type = event;
+		long duration) {
+		super(id);
+		this.type = type;
 		this.timestamp = timestamp;
 		this.duration = duration;
-		this.value = value;
-	}
-
-	public void setValue(Float value) {
-		this.value = value;
-	}
-
-	public Float getValue() {
-		return value;
 	}
 
 	@Override
@@ -97,11 +82,11 @@ public abstract class WeatherEvent extends AbstractEvent {
 		this.timestamp = timestamp;
 	}
 
-	public float getDuration() {
+	public long getDuration() {
 		return duration;
 	}
 
-	public void setDuration(float duration) {
+	public void setDuration(long duration) {
 		this.duration = duration;
 	}
 }

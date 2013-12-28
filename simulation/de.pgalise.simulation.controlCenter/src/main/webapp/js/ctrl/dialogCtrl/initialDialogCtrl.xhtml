@@ -1,7 +1,9 @@
 <ui:composition 
 	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
   <script type="text/javascript">
+		//<![CDATA[
 		/*
 		 * Initial Dialog controller
 		 * This controller is bound to the main view of the initial state
@@ -64,13 +66,13 @@
 					 * New Scenario is to be created
 					 */
 					case 'create':
-						var jqxhr = $.ajax( "#{application.contextPath}/rest/mainCtrl/parseOSMAndBusstop" )
-							.done(function() {
-							PopupService.close('initial');
-							})
-							.fail(function() {
-							alert( "Error parsing OSM and busstop data on server" );
-							});
+						var jqxhr = $.ajax("#{application.contextPath}/rest/mainCtrl/parseOSMAndBusstop")
+										.done(function() {
+										})
+										.fail(function() {
+											alert("Error parsing OSM and busstop data on server");
+										});
+						PopupService.close('initial');
 						break;
 						/*
 						 * Recently started scenario is to be loaded
@@ -118,7 +120,7 @@
 				}
 				;
 			});
-		}
-		;
+		};
+		//]]>
   </script>
 </ui:composition>

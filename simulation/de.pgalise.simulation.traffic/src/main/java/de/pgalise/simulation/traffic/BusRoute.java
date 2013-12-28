@@ -17,6 +17,8 @@ package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.BusAgency;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -28,7 +30,10 @@ import javax.persistence.ManyToOne;
  * @author Lena
  */
 @Entity
-public class BusRoute extends TransportLineInformation {
+@ManagedBean
+@SessionScoped
+public class BusRoute extends TransportLineInformation
+{
 
 	/**
 	 * Serial
@@ -48,7 +53,7 @@ public class BusRoute extends TransportLineInformation {
 	/**
 	 * Used in simulation
 	 */
-	private boolean used;
+	private Boolean used;
 
 	@ManyToOne
 	private BusAgency agency;
@@ -74,16 +79,16 @@ public class BusRoute extends TransportLineInformation {
 	}
 
 	public BusRoute(Long id,
-		String routeShortName,
-		String routeLongName,
-		boolean used,
-		BusAgency agency,
-		String routeDesc,
-		String routeUrl,
-		String routeColor,
-		String routeTextColor) {
+					String routeShortName,
+					String routeLongName,
+					boolean used,
+					BusAgency agency,
+					String routeDesc,
+					String routeUrl,
+					String routeColor,
+					String routeTextColor) {
 		super(id,
-			TransportLineTypeEnum.BUS);
+						TransportLineTypeEnum.BUS);
 		this.routeShortName = routeShortName;
 		this.routeLongName = routeLongName;
 		this.used = used;
@@ -95,12 +100,12 @@ public class BusRoute extends TransportLineInformation {
 	}
 
 	public BusRoute(Long id,
-		String routeShortName,
-		String routeLongName) {
+					String routeShortName,
+					String routeLongName) {
 		this(id,
-			routeShortName,
-			routeLongName,
-			true);
+						routeShortName,
+						routeLongName,
+						true);
 	}
 
 	/**
@@ -108,15 +113,15 @@ public class BusRoute extends TransportLineInformation {
 	 *
 	 * @param id
 	 * @param routeShortName Short name
-	 * @param routeLongName Long name
+	 * @param routeLongName  Long name
 	 * @param used
 	 */
 	public BusRoute(Long id,
-		String routeShortName,
-		String routeLongName,
-		boolean used) {
+					String routeShortName,
+					String routeLongName,
+					boolean used) {
 		super(id,
-			TransportLineTypeEnum.BUS);
+						TransportLineTypeEnum.BUS);
 		this.routeShortName = routeShortName;
 		this.routeLongName = routeLongName;
 		this.used = used;
@@ -150,11 +155,11 @@ public class BusRoute extends TransportLineInformation {
 		this.routeLongName = routeLongName;
 	}
 
-	public boolean isUsed() {
+	public Boolean getUsed() {
 		return used;
 	}
 
-	public void setUsed(boolean used) {
+	public void setUsed(Boolean used) {
 		this.used = used;
 	}
 

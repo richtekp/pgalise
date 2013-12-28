@@ -3,62 +3,48 @@
 	xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets" 
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core">
-
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 	<div class="contentDiv" >
 		<h2>Bus system</h2>
 		<div class="block">
-			<table class="noWrap">
-				<tr class="head">
-					<td colspan="5"><h3>Lines</h3></td>
-				</tr>
-				<tr>
-					<td colspan="5">
-						<div>
-							Shows different bus lines to choose
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<th>Line Id</th>
-					<th>Line Short Name</th>
-					<th>Line Long Name</th>
-					<th>Line Type</th>
-					<th>Use 
-						<h:button onclick="#{busSystemCtrl.checkAll()}" value="all"/>|
-						<h:button onclick="#{busSystemCtrl.checkNone()}" value="none"/>
-					</th>
-				</tr>
-			</table>
-			
-				<h:dataTable value="#{busSystemCtrl.busRoutes}" var="o"
-										 styleClass="order-table"
-										 headerClass="order-table-header"
-										 rowClasses="order-table-odd-row,order-table-even-row"
-										 >
+			<h:form>
+				<h:dataTable id="kfdsl" var="o" value="#{busSystemCtrl.busRoutes}" 
+										 styleClass="noWrap">
 					<h:column>
-						<!-- column header -->
-						<f:facet name="header">Line Id</f:facet>
-						<!-- row record -->
+						<f:facet name="header">
+							<h:outputText value="ID" />  
+						</f:facet> 
 						#{o.id}
 					</h:column>
 					<h:column>
-						<f:facet name="header">Line Short Name</f:facet>
-							#{o.routeShortName}
+						<f:facet name="header">
+							<h:outputText value="Route short name" />  
+						</f:facet> 
+						#{o.routeShortName}
 					</h:column>
 					<h:column>
-						<f:facet name="header">Line Long Name</f:facet>
-							#{o.routeLongName}
+						<f:facet name="header">
+							<h:outputText value="Route long name" />  
+						</f:facet> 
+						#{o.routeLongName}
 					</h:column>
 					<h:column>
-						<f:facet name="header">Line Type</f:facet>
-							#{o.transportLineType}
+						<f:facet name="header">
+							<h:outputText value="Route description" />  
+						</f:facet> 
+						#{o.routeDesc}
 					</h:column>
 					<h:column>
-						<f:facet name="header">Used</f:facet>
-							#{o.used}
+						<f:facet name="header">
+							<h:outputText value="Used" />  
+						</f:facet> 
+						<h:selectBooleanCheckbox value="#{o.used}" >
+							<f:ajax />
+						</h:selectBooleanCheckbox>
 					</h:column>
 				</h:dataTable>
+			</h:form>
 		</div>
 	</div>
 </ui:composition>

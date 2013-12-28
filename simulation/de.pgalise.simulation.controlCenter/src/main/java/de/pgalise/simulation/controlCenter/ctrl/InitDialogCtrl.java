@@ -14,6 +14,7 @@ import de.pgalise.simulation.controlCenter.InitDialogCtrlInitialTypeEnum;
 import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
@@ -21,15 +22,43 @@ import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.awt.Color;
+import java.io.IOException;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.swing.JOptionPane;
+import org.apache.commons.lang3.tuple.Pair;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFactorySpi;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.Query;
+import org.geotools.data.postgis.PostgisNGDataStoreFactory;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.swing.data.JDataStoreWizard;
+import org.geotools.swing.table.FeatureCollectionTableModel;
+import org.geotools.swing.wizard.JWizard;
+import org.opengis.feature.type.FeatureType;
+import org.opengis.filter.Filter;
+import org.postgis.PGgeometry;
+import se.kodapan.osm.parser.xml.instantiated.InstantiatedOsmXmlParserImpl;
 
 /**
  *
@@ -38,16 +67,21 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 /*
-- use IdGenerator of MainCtrl
-- interact with CCSimulationParamter singleton
-*/
-public class InitDialogCtrl implements Serializable{
+ - use IdGenerator of MainCtrl
+ - interact with CCSimulationParamter singleton
+ */
+public class InitDialogCtrl implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
-	public final static String INITIAL_TYPE_CONFIRMED = "confirmed", INITIAL_TYPE_RECENTLY_STARTED="recently", INITIAL_TYPE_IMPORT="initial";
-	
-	private String chosenInitialType;
-	private String chosenRecentScenarioPath;
+	public final static String INITIAL_TYPE_CONFIRMED = "confirmed", INITIAL_TYPE_RECENTLY_STARTED = "recently", INITIAL_TYPE_IMPORT = "initial";
+
+//	private String chosenInitialType;
+	/**
+	 * maps pathes to deserialized instances of {@link CCSimulationStartParameter}
+	 */
+	private Map<String, CCSimulationStartParameter> recentScenarioMap = new HashMap<>();
+	private Pair<String,CCSimulationStartParameter> chosenRecentScenario;
 	private String importedXML;
 	private InformationBasedVehicleFactory vehicleFactory;
 //	@ManagedProperty(value = "#{mainCtrl}")
@@ -55,7 +89,7 @@ public class InitDialogCtrl implements Serializable{
 	@EJB
 	private TcpIpOutput output;
 	private Queue<VehicleData> uiVehicles;
-	
+
 	private InitDialogCtrlInitialTypeEnum initialTypeEnum;
 
 	public InitDialogCtrl() {
@@ -63,12 +97,12 @@ public class InitDialogCtrl implements Serializable{
 
 	public InitDialogCtrl(
 		String chosenInitialType,
-		String chosenRecentScenarioPath,
+		Pair<String,CCSimulationStartParameter> chosenRecentScenario,
 		String importedXML,
 		InformationBasedVehicleFactory vehicleFactory,
 		TcpIpOutput output) {
-		this.chosenInitialType = chosenInitialType;
-		this.chosenRecentScenarioPath = chosenRecentScenarioPath;
+//		this.chosenInitialType = chosenInitialType;
+		this.chosenRecentScenario = chosenRecentScenario;
 		this.importedXML = importedXML;
 		this.vehicleFactory = vehicleFactory;
 		this.output = output;
@@ -77,9 +111,9 @@ public class InitDialogCtrl implements Serializable{
 	/**
 	 * @return the chosenInitialType
 	 */
-	public String getChosenInitialType() {
-		return chosenInitialType;
-	}
+//	public String getChosenInitialType() {
+//		return chosenInitialType;
+//	}
 
 	public void setInitialTypeEnum(InitDialogCtrlInitialTypeEnum initialTypeEnum) {
 		this.initialTypeEnum = initialTypeEnum;
@@ -92,25 +126,10 @@ public class InitDialogCtrl implements Serializable{
 	/**
 	 * @param chosenInitialType the chosenInitialType to set
 	 */
-	public void setChosenInitialType(
-		String chosenInitialType) {
-		this.chosenInitialType = chosenInitialType;
-	}
-
-	/**
-	 * @return the chosenRecentScenarioPath
-	 */
-	public String getChosenRecentScenarioPath() {
-		return chosenRecentScenarioPath;
-	}
-
-	/**
-	 * @param chosenRecentScenarioPath the chosenRecentScenarioPath to set
-	 */
-	public void setChosenRecentScenarioPath(
-		String chosenRecentScenarioPath) {
-		this.chosenRecentScenarioPath = chosenRecentScenarioPath;
-	}
+//	public void setChosenInitialType(
+//		String chosenInitialType) {
+//		this.chosenInitialType = chosenInitialType;
+//	}
 
 	/**
 	 * @return the importedXML
@@ -155,32 +174,69 @@ public class InitDialogCtrl implements Serializable{
 		TcpIpOutput output) {
 		this.output = output;
 	}
-	
+
+	private void connect() {
+		DataStoreFactorySpi format = new PostgisNGDataStoreFactory();
+		JDataStoreWizard wizard = new JDataStoreWizard(format);
+		int result = wizard.showModalDialog();
+		if (result == JWizard.FINISH) {
+			try {
+				Map<String, Object> connectionParameters = wizard.
+					getConnectionParameters();
+				
+				DataStore dataStore = DataStoreFinder.getDataStore(connectionParameters);
+				if (dataStore == null) {
+					JOptionPane.showMessageDialog(null,
+						"Could not connect - check parameters");
+				}
+				String typeName = dataStore.getTypeNames()[0]; //investigate
+				SimpleFeatureSource source = dataStore.getFeatureSource(typeName);
+				
+				String filterString = "";
+				Filter filter = CQL.toFilter(filterString);
+				SimpleFeatureCollection features = source.getFeatures(filter);
+			} catch (IOException | CQLException ex) {
+				Logger.getLogger(InitDialogCtrl.class.getName()).log(Level.SEVERE,
+					null,
+					ex);
+			}
+		}
+	}
+
+	public List<String> retrieveOSMAutocomplete() {
+		connect();
+		return null;
+	}
+
 	@PostConstruct
 	public void init() {
-		 uiVehicles= new LinkedList<VehicleData>(Arrays.asList(new CarData(Color.yellow,
-				2000,
-				500,
-				3500,
-				4000,
-				2000,
-				1000,
-				1300,
-				100,
-				200,
-				2,
-				"name",
-				new GpsSensor(output,
-					null,
-					new GpsNoInterferer()),
-				VehicleTypeEnum.CAR)));
+		uiVehicles = new LinkedList<VehicleData>(Arrays.asList(new CarData(
+			Color.yellow,
+			2000,
+			500,
+			3500,
+			4000,
+			2000,
+			1000,
+			1300,
+			100,
+			200,
+			2,
+			"name",
+			new GpsSensor(output,
+				null,
+				new GpsNoInterferer()),
+			VehicleTypeEnum.CAR)));
 	}
-	
+
 	public String getNextGpsSensor() {
-		Coordinate peekCoordinate = uiVehicles.peek().getGpsSensor().getSensorData().getPosition();
+		Coordinate peekCoordinate = uiVehicles.peek().getGpsSensor().getSensorData().
+			getPosition();
 		peekCoordinate = new Coordinate(45,
 			55);
-		return String.format("[%f,%f]", peekCoordinate.getX(), peekCoordinate.getY());
+		return String.format("[%f,%f]",
+			peekCoordinate.getX(),
+			peekCoordinate.getY());
 	}
 
 //	public void confirmInitialDialog(StartParameterOriginEnum chosenInitialType) {
@@ -591,4 +647,21 @@ public class InitDialogCtrl implements Serializable{
 //		});
 //	}
 //;
+	public Pair<String,CCSimulationStartParameter> getChosenRecentScenario() {
+		return chosenRecentScenario;
+	}
+
+	public void setChosenRecentScenario(
+		Pair<String,CCSimulationStartParameter> chosenRecentScenario) {
+		this.chosenRecentScenario = chosenRecentScenario;
+	}
+
+	public Map<String, CCSimulationStartParameter> getRecentScenarios() {
+		return recentScenarioMap;
+	}
+
+	public void setRecentScenarios(
+		Map<String, CCSimulationStartParameter> recentScenarios) {
+		this.recentScenarioMap = recentScenarios;
+	}
 }

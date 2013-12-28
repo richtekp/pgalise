@@ -23,18 +23,18 @@ public enum TransportLineTypeEnum implements TransportLineType {
 	/**
 	 * maps sensor type ids integers to {@link SensorType}
 	 */
-	private static Map<Integer, SensorType> SENSOR_TYPE_IDS;
+	private static Map<Integer, SensorType> TRANSPORT_LINE_TYPE_IDS;
 	
 	/**
 	 * Returns SENSOR_TYPE_IDS.
 	 * 
 	 * @return SENSOR_TYPE_IDS
 	 */
-	public static Map<Integer, SensorType> getSensorTypeIds() {
-		if (TransportLineTypeEnum.SENSOR_TYPE_IDS == null) {
-			TransportLineTypeEnum.SENSOR_TYPE_IDS = new HashMap<>();
+	public static Map<Integer, SensorType> getTransportLineTypeIds() {
+		if (TransportLineTypeEnum.TRANSPORT_LINE_TYPE_IDS == null) {
+			TransportLineTypeEnum.TRANSPORT_LINE_TYPE_IDS = new HashMap<>();
 		}
-		return SENSOR_TYPE_IDS;
+		return TRANSPORT_LINE_TYPE_IDS;
 	}
 
 	/**
@@ -43,7 +43,7 @@ public enum TransportLineTypeEnum implements TransportLineType {
 	 * @return an unmodifiable {@link Map} of the sensorId/SensorType mapping
 	 */
 	public static Map<Integer, SensorType> getSensorTypeIdsAsUnmodifiable() {
-		return TransportLineTypeEnum.getSensorTypeIds();
+		return TransportLineTypeEnum.getTransportLineTypeIds();
 	}
 
 	/**
@@ -74,7 +74,7 @@ public enum TransportLineTypeEnum implements TransportLineType {
 		if (sensorTypeId < 0) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("sensorTypeId", true));
 		}
-		if (SensorTypeEnum.getSensorTypeIds().containsKey(sensorTypeId)) {
+		if (TransportLineTypeEnum.getTransportLineTypeIds().containsKey(sensorTypeId)) {
 			throw new IllegalStateException("Argument 'sensorTypeId' = " + sensorTypeId + " is already registered");
 		}
 		this.transportLineTypeId = sensorTypeId;

@@ -47,7 +47,7 @@ public class ColdDayEventChart extends AbstractChartTest {
 	/**
 	 * Test duration
 	 */
-	public static float testDuration = 8.0f;
+	public static long testDuration = 8;
 
 	/**
 	 * For tests

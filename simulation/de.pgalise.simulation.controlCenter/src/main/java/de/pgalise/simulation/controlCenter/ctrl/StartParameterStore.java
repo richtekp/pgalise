@@ -14,6 +14,7 @@ import java.util.Scanner;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.servlet.http.Part;
 
 /**
@@ -26,7 +27,7 @@ import javax.servlet.http.Part;
  * @author richter
  */
 @ManagedBean
-@ApplicationScoped
+@SessionScoped
 public class StartParameterStore
 {
 

@@ -35,7 +35,7 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
-public abstract class AbstractWeatherMapModifier<C extends WeatherCondition> extends WeatherMap implements WeatherMapModifier<C> {
+public abstract class AbstractWeatherMapModifier extends WeatherMap implements WeatherMapModifier {
 
 	/**
 	 * Serial
@@ -103,7 +103,7 @@ public abstract class AbstractWeatherMapModifier<C extends WeatherCondition> ext
 	/**
 	 * Weather loader
 	 */
-	private WeatherLoader<C> weatherLoader;
+	private WeatherLoader weatherLoader;
 
 	/**
 	 * Constructor
@@ -114,7 +114,7 @@ public abstract class AbstractWeatherMapModifier<C extends WeatherCondition> ext
 	 *            Properties
 	 * @param weatherLoader  
 	 */
-	public AbstractWeatherMapModifier(long seed, Properties props, WeatherLoader<C> weatherLoader) {
+	public AbstractWeatherMapModifier(long seed, Properties props, WeatherLoader weatherLoader) {
 		this.randomGen = new Random(seed);
 		this.props = props;
 		this.weatherLoader = weatherLoader;
@@ -130,7 +130,7 @@ public abstract class AbstractWeatherMapModifier<C extends WeatherCondition> ext
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public AbstractWeatherMapModifier(long seed, WeatherLoader<C> weatherLoader) {
+	public AbstractWeatherMapModifier(long seed, WeatherLoader weatherLoader) {
 		this.randomGen = new Random(seed);
 		this.weatherLoader = weatherLoader;
 		// Init
@@ -146,7 +146,7 @@ public abstract class AbstractWeatherMapModifier<C extends WeatherCondition> ext
 	 *            Seed for random generators
 	 * @param weatherLoader  
 	 */
-	public AbstractWeatherMapModifier(WeatherMap map, long seed, WeatherLoader<C> weatherLoader) {
+	public AbstractWeatherMapModifier(WeatherMap map, long seed, WeatherLoader weatherLoader) {
 		this.map = map;
 		this.randomGen = new Random(seed);
 		this.weatherLoader = weatherLoader;
@@ -180,7 +180,7 @@ public abstract class AbstractWeatherMapModifier<C extends WeatherCondition> ext
 	}
 
 	@Override
-	public WeatherLoader<C> getWeatherLoader() {
+	public WeatherLoader getWeatherLoader() {
 		return this.weatherLoader;
 	}
 
@@ -199,7 +199,7 @@ public abstract class AbstractWeatherMapModifier<C extends WeatherCondition> ext
 		this.simulationTimestamp = timestamp;
 	}
 
-	public void setWeatherLoader(WeatherLoader<C> weatherLoader) {
+	public void setWeatherLoader(WeatherLoader weatherLoader) {
 		this.weatherLoader = weatherLoader;
 	}
 

@@ -34,7 +34,7 @@ import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
@@ -96,7 +96,7 @@ public class DefaultWeatherServiceSyncTest {
 	/**
 	 * Weather loader
 	 */
-	private WeatherLoader<DefaultWeatherCondition> loader;
+	private WeatherLoader loader;
 		
 	private City city;
 	

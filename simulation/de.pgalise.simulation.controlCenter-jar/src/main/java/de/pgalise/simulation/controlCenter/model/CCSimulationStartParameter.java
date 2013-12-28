@@ -24,6 +24,7 @@ import de.pgalise.simulation.traffic.AbstractInfrastructureStartParameter;
 import de.pgalise.simulation.traffic.BusRoute;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
@@ -127,7 +128,7 @@ public class CCSimulationStartParameter extends AbstractInfrastructureStartParam
 	 * }
 	 */
 	private String importedInstanceFileContent = null;
-
+	
 	public CCSimulationStartParameter() {
 	}
 

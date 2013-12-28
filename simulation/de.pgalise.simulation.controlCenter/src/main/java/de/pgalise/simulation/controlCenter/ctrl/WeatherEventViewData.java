@@ -8,6 +8,7 @@ package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
+import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import java.io.Serializable;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -24,18 +25,19 @@ decorator pattern
 @SessionScoped
 public class WeatherEventViewData implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private long datetime;
+	private long timestamp;
 	private long duration;
 	private WeatherEventViewData delegator; 
-	private Object value;
+	private Float value;
 	private List<WeatherEvent> events;
+	private WeatherEventType eventType;
 
-	public WeatherEventViewData(long datetime,
+	public WeatherEventViewData(long timestamp,
 		long duration,
 		WeatherEventViewData delegator,
-		Object value,
+		Float value,
 		List<WeatherEvent> events) {
-		this.datetime = datetime;
+		this.timestamp = timestamp;
 		this.duration = duration;
 		this.delegator = delegator;
 		this.value = value;
@@ -45,18 +47,26 @@ public class WeatherEventViewData implements Serializable {
 	public WeatherEventViewData() {
 	}
 
-	/**
-	 * @return the datetime
-	 */
-	public long getDatetime() {
-		return datetime;
+	public void setEventType(WeatherEventType eventType) {
+		this.eventType = eventType;
+	}
+
+	public WeatherEventType getEventType() {
+		return eventType;
 	}
 
 	/**
-	 * @param datetime the datetime to set
+	 * @return the timestamp
+	 */
+	public long getTimestamp() {
+		return timestamp;
+	}
+
+	/**
+	 * @param datetime the timestamp to set
 	 */
 	public void setDatetime(long datetime) {
-		this.datetime = datetime;
+		this.timestamp = datetime;
 	}
 
 	/**
@@ -91,14 +101,14 @@ public class WeatherEventViewData implements Serializable {
 	/**
 	 * @return the value
 	 */
-	public Object getValue() {
+	public Float getValue() {
 		return value;
 	}
 
 	/**
 	 * @param value the value to set
 	 */
-	public void setValue(Object value) {
+	public void setValue(Float value) {
 		this.value = value;
 	}
 

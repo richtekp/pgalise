@@ -100,12 +100,12 @@ public class NewServlet extends HttpServlet {
 			weatherInterferer);
 		List<Sensor<?, ?>> sensorHelpers = new ArrayList<Sensor<?, ?>>(
 			Arrays.asList(windSensor));
-		ChangeWeatherEvent weatherEvent = new ChangeWeatherEvent(
+		ChangeWeatherEvent weatherEvent = new ChangeWeatherEvent(10L,
 			WeatherEventTypeEnum.HOTDAY,
 			1.0f,
 			startTimestamp
 			+ 20,
-			30.0f);
+			30);
 		EventList<?> eventList = new EventList<>(new ArrayList<>(Arrays.asList(
 			weatherEvent)),
 			startTimestamp + 20,
@@ -114,7 +114,7 @@ public class NewServlet extends HttpServlet {
 			Arrays.asList(
 				eventList));
 		List<WeatherEvent> weatherEventHelpers = new ArrayList<WeatherEvent>(Arrays.
-			asList(new ChangeWeatherEvent(weatherEvent.getType(),
+			asList(new ChangeWeatherEvent(11L,weatherEvent.getType(),
 					weatherEvent.getValue(),
 					weatherEvent.
 					getTimestamp(),

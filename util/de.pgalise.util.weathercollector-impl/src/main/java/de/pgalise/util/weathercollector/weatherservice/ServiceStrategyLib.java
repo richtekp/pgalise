@@ -16,7 +16,7 @@
  
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
@@ -44,7 +44,7 @@ public class ServiceStrategyLib {
 	 *            New ServiceData
 	 * @return Better ServiceData
 	 */
-	public static <A extends ExtendedServiceDataCurrent<C>, B extends ExtendedServiceDataForecast<C>, C extends WeatherCondition, T extends ServiceDataHelper<A,B,C>> T completeWeather(T weather1, T weather2) {
+	public static <A extends ExtendedServiceDataCurrent, B extends ExtendedServiceDataForecast, T extends ServiceDataHelper<A,B>> T completeWeather(T weather1, T weather2) {
 		if (weather2 == null) {
 			return weather1;
 		}
@@ -77,19 +77,19 @@ public class ServiceStrategyLib {
 	 */
 	public static int getConditionCode(String condition, EntityDatabaseManager databaseManager) {
 		if ((condition == null) || condition.isEmpty()) {
-			return DefaultWeatherCondition.UNKNOWN_CONDITION_CODE;
+			return WeatherCondition.UNKNOWN_CONDITION_CODE;
 		}
 
 		// Prepare
 		String condition0 = condition.toLowerCase();
 
 		// Get condition
-		DefaultWeatherCondition result = databaseManager.getCondition(condition0);
+		WeatherCondition result = databaseManager.getCondition(condition0);
 
 		if (result != null) {
 			return result.getCode();
 		} else {
-			return DefaultWeatherCondition.UNKNOWN_CONDITION_CODE;
+			return WeatherCondition.UNKNOWN_CONDITION_CODE;
 		}
 	}
 

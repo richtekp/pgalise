@@ -16,7 +16,7 @@ import de.pgalise.util.weathercollector.util.DatabaseManager;
  * @param <C> 
  * @author richter
  */
-public interface WeatherServiceContext<T extends ServiceDataHelper<?,?,C>, C extends WeatherCondition> {
+public interface WeatherServiceContext<T extends ServiceDataHelper<?,?>> {
 	
 	/**
 	 * Returns the best ServiceData
@@ -26,7 +26,7 @@ public interface WeatherServiceContext<T extends ServiceDataHelper<?,?,C>, C ext
 	 * @param databaseManager 
 	 * @return Best ServiceData
 	 */
-	public T getBestWeather(City city, DatabaseManager<C> databaseManager) ;
+	public T getBestWeather(City city, DatabaseManager databaseManager) ;
 
 	/**
 	 * Returns the weather informations with the help of a random strategy for the given city
@@ -38,7 +38,7 @@ public interface WeatherServiceContext<T extends ServiceDataHelper<?,?,C>, C ext
 	 * @throws ReadServiceDataException
 	 *             Data can not be read by strategy
 	 */
-	public T getSingleWeather(City city, DatabaseManager<C> databaseManager) throws ReadServiceDataException;
+	public T getSingleWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException;
 
 }
 

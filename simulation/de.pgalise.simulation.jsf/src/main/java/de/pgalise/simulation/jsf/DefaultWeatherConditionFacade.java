@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author richter
  */
 @Stateless
-public class DefaultWeatherConditionFacade extends AbstractFacade<DefaultWeatherCondition> {
+public class DefaultWeatherConditionFacade extends AbstractFacade<WeatherCondition> {
 	@PersistenceContext(unitName = "pgalise-jsf")
 	private EntityManager em;
 
@@ -26,7 +26,7 @@ public class DefaultWeatherConditionFacade extends AbstractFacade<DefaultWeather
 	}
 
 	public DefaultWeatherConditionFacade() {
-		super(DefaultWeatherCondition.class);
+		super(WeatherCondition.class);
 	}
 	
 }

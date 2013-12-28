@@ -14,12 +14,12 @@ import de.pgalise.util.weathercollector.util.DatabaseManager;
  * @param <C> 
  * @author richter
  */
-public interface WeatherServiceManager<T extends ServiceDataHelper<?,?,C>, C extends WeatherCondition> {
-	public void saveInformations(DatabaseManager<C> databaseManager) ;
+public interface WeatherServiceManager<T extends ServiceDataHelper<?,?>> {
+	public void saveInformations(DatabaseManager databaseManager) ;
 
 	/**
 	 * @return the saver
 	 */
-	public WeatherServiceSaver<T,C> getSaver() ;
+	public WeatherServiceSaver<T> getSaver() ;
 
 }

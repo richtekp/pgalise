@@ -25,7 +25,7 @@ import de.pgalise.simulation.weather.model.WeatherCondition;
  * @author Andreas Rehfeldt
  * @version 1.0 (Apr 16, 2012)
  */
-public interface ExtendedServiceDataCurrentCompleter<C extends WeatherCondition>  {
+public interface ExtendedServiceDataCurrentCompleter  {
 
 	/**
 	 * Concentrate the objects
@@ -33,6 +33,6 @@ public interface ExtendedServiceDataCurrentCompleter<C extends WeatherCondition>
 	 * @param obj
 	 *            new obj
 	 */
-	public void complete(ExtendedServiceDataCurrent<C> obj);
+	public void complete(ExtendedServiceDataCurrent obj);
 
 }

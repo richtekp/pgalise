@@ -541,7 +541,7 @@ public class DefaultCCWebSocketUser extends Endpoint implements CCWebSocketUser 
 					List<CreateRandomVehicleData> busDataList = new LinkedList<>();
 					List<BusRoute> busRouteList = new LinkedList<>();
 					for (BusRoute busRoute : ccSimulationStartParameter.getBusRoutes()) {
-						if (busRoute.isUsed()) {
+						if (busRoute.getUsed()) {
 							log.debug("Selected bus route: " + busRoute.getId());
 							busRouteList.add(busRoute);
 						} else {

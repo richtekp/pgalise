@@ -46,11 +46,12 @@ public class NewDayEvent extends WeatherEvent {
 	 *            ID of the event
 	 * @param list
 	 *            List with Strategies to modify weather data
+	 * @param timestamp
 	 */
-	public NewDayEvent(List<WeatherEventTypeEnum> list, long timestamp) {
-		super(WeatherEventTypeEnum.NEW_DAY_EVENT,
+	public NewDayEvent(Long id, List<WeatherEventTypeEnum> list, long timestamp) {
+		super(id,WeatherEventTypeEnum.NEW_DAY_EVENT,
 			timestamp,
-			0, -1);
+			0);
 		this.strategyList = list;
 	}
 

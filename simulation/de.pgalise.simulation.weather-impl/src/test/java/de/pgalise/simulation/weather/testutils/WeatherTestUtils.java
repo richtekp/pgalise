@@ -10,7 +10,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
 import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
@@ -70,7 +70,7 @@ public class WeatherTestUtils {
 				1.0f,
 				1.0f,
 				1.0f,
-				DefaultWeatherCondition.UNKNOWN_CONDITION
+				WeatherCondition.UNKNOWN_CONDITION
 			);
 			em.merge(serviceDataForecast);
 			retValue.put(new Date(start), serviceDataForecast);
@@ -116,7 +116,7 @@ public class WeatherTestUtils {
 				Measure.valueOf(1.0f, SI.CELSIUS),
 				1.0f,
 				1.0f,
-				DefaultWeatherCondition.UNKNOWN_CONDITION
+				WeatherCondition.UNKNOWN_CONDITION
 			);
 			em.merge(serviceDataCurrent);
 			retValue.put(new Date(start), serviceDataCurrent);

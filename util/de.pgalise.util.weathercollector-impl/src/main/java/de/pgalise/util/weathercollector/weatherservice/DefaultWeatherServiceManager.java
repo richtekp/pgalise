@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector.weatherservice;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,26 +33,26 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Jun 23, 2012)
  */
-public class DefaultWeatherServiceManager implements WeatherServiceManager<DefaultServiceDataHelper, DefaultWeatherCondition> {
+public class DefaultWeatherServiceManager implements WeatherServiceManager<DefaultServiceDataHelper> {
 	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherServiceManager.class);
 
 	/**
 	 * Class to save the informations
 	 */
-	private WeatherServiceSaver<DefaultServiceDataHelper, DefaultWeatherCondition> saver;
+	private WeatherServiceSaver<DefaultServiceDataHelper> saver;
 	
-	private Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys;
+	private Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param weatherServiceSaver 
 	 */
-	public DefaultWeatherServiceManager(WeatherServiceSaver<DefaultServiceDataHelper, DefaultWeatherCondition> weatherServiceSaver) {
+	public DefaultWeatherServiceManager(WeatherServiceSaver<DefaultServiceDataHelper> weatherServiceSaver) {
 		this(weatherServiceSaver, null);
 	}
 	
-	public DefaultWeatherServiceManager(WeatherServiceSaver<DefaultServiceDataHelper, DefaultWeatherCondition> weatherServiceSaver, Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys) {
+	public DefaultWeatherServiceManager(WeatherServiceSaver<DefaultServiceDataHelper> weatherServiceSaver, Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
 		this.saver = weatherServiceSaver;
 		this.serviceStrategys = serviceStrategys;
 	}
@@ -63,7 +63,7 @@ public class DefaultWeatherServiceManager implements WeatherServiceManager<Defau
 	 * @param databaseManager 
 	 */
 	@Override
-	public void saveInformations(DatabaseManager<DefaultWeatherCondition> databaseManager) {
+	public void saveInformations(DatabaseManager databaseManager) {
 		// Read all cities
 		List<City> cities = this.getCities();
 
@@ -100,10 +100,10 @@ public class DefaultWeatherServiceManager implements WeatherServiceManager<Defau
 		return cities;
 	}
 	
-	private DefaultServiceDataHelper getServiceData(City city, DatabaseManager<DefaultWeatherCondition> databaseManager, Set<ServiceStrategy<DefaultServiceDataHelper, DefaultWeatherCondition>> serviceStrategys) {
+	private DefaultServiceDataHelper getServiceData(City city, DatabaseManager databaseManager, Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
 
-		WeatherServiceContext<DefaultServiceDataHelper, DefaultWeatherCondition> context = new DefaultWeatherServiceContext(serviceStrategys);
+		WeatherServiceContext<DefaultServiceDataHelper> context = new DefaultWeatherServiceContext(serviceStrategys);
 
 		// Use best strategy
 		DefaultServiceDataHelper data = context.getBestWeather(city, databaseManager);
@@ -121,7 +121,7 @@ public class DefaultWeatherServiceManager implements WeatherServiceManager<Defau
 	 *            City
 	 * @return ServiceData
 	 */
-	private DefaultServiceDataHelper getServiceData(City city, DatabaseManager<DefaultWeatherCondition> databaseManager) {
+	private DefaultServiceDataHelper getServiceData(City city, DatabaseManager databaseManager) {
 		DefaultServiceDataHelper data;
 
 		LOGGER.debug("Holen der Daten zur Stadt " + city.getName() + " beginnt.", Level.INFO);
@@ -154,7 +154,7 @@ public class DefaultWeatherServiceManager implements WeatherServiceManager<Defau
 	 * @return the saver
 	 */
 	@Override
-	public WeatherServiceSaver<DefaultServiceDataHelper, DefaultWeatherCondition> getSaver() {
+	public WeatherServiceSaver<DefaultServiceDataHelper> getSaver() {
 		return saver;
 	}
 
@@ -162,7 +162,7 @@ public class DefaultWeatherServiceManager implements WeatherServiceManager<Defau
 	 * @param saver the saver to set
 	 */
 	protected void setSaver(
-		WeatherServiceSaver<DefaultServiceDataHelper, DefaultWeatherCondition> saver) {
+		WeatherServiceSaver<DefaultServiceDataHelper> saver) {
 		this.saver = saver;
 	}
 

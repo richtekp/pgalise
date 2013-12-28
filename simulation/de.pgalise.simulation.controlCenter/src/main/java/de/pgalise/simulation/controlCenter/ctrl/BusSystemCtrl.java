@@ -3,48 +3,76 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.traffic.BusRoute;
+import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.component.html.HtmlDataTable;
+import javax.faces.component.html.HtmlSelectBooleanCheckbox;
+import javax.faces.event.AjaxBehaviorEvent;
 
 /**
  *
  * @author richter
  */
 @ManagedBean
-@RequestScoped
-public class BusSystemCtrl {
-	private List<BusRoute> busRoutes = new LinkedList<>();
+@SessionScoped
+public class BusSystemCtrl
+{
+
+	private LinkedList<BusRoute> busRoutes = new LinkedList<>(Arrays.asList(
+					new BusRoute(1L,
+									"shortN",
+									"longN")));
+	private HtmlDataTable dataTable = new HtmlDataTable();
 
 	/**
 	 * Creates a new instance of BusSystemCtrl
 	 */
 	public BusSystemCtrl() {
+//		dataTable.
 	}
 
-	public List<BusRoute> getBusRoutes() {
+	public LinkedList<BusRoute> getBusRoutes() {
 		return busRoutes;
 	}
 
-	public void setBusRoutes(List<BusRoute> busRoutes) {
+	public void setBusRoutes(LinkedList<BusRoute> busRoutes) {
 		this.busRoutes = busRoutes;
 	}
-	
+
 	public void checkAll() {
-		for(BusRoute busRoute : busRoutes) {
+		for (BusRoute busRoute : busRoutes) {
 			busRoute.setUsed(true);
 		}
 	}
-	
+
 	public void checkNone() {
-		for(BusRoute busRoute : busRoutes) {
+		for (BusRoute busRoute : busRoutes) {
 			busRoute.setUsed(false);
 		}
 	}
-	
+
+	public void setDataTable(HtmlDataTable dataTable) {
+		this.dataTable = dataTable;
+	}
+
+	public HtmlDataTable getDataTable() {
+		return dataTable;
+	}
+
+	public void useBusRouteChange(BusRoute a) {
+		a.setUsed(!a.getUsed());
+	}
+
+	public void usedChanged(AjaxBehaviorEvent event) {
+		HtmlSelectBooleanCheckbox source = (HtmlSelectBooleanCheckbox) event.
+						getSource();
+		System.out.println(event);
+	}
 }

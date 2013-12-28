@@ -6,6 +6,8 @@
 
 package de.pgalise.simulation.controlCenter.ctrl;
 
+import de.pgalise.simulation.controlCenter.InitDialogCtrlInitialType;
+import de.pgalise.simulation.controlCenter.InitDialogCtrlInitialTypeEnum;
 import de.pgalise.simulation.controlCenter.OSMParsedStateEnum;
 import de.pgalise.simulation.controlCenter.InitDialogMessageTypeEnum;
 import de.pgalise.simulation.controlCenter.internal.message.CCWebSocketMessage;
@@ -20,6 +22,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -29,7 +32,7 @@ import javax.ws.rs.Produces;
  * @author richter
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 @Path("/mainCtrl")
 public class MainCtrl implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -40,9 +43,8 @@ public class MainCtrl implements Serializable {
 	private Map<Date, CCWebSocketMessage<?>> sentMessages = new HashMap<>();
 	private OSMParsedStateEnum oSMParsedStateEnum;
 	private OSMAndBusstopFileData oSMAndBusstopFileData;
-	private WeatherEventViewData currentWeatherEventViewData = new WeatherEventViewData();
 	private CCSimulationStartParameter importedStartParameter;
-	private InitDialogMessageTypeEnum chosenInitialType = InitDialogMessageTypeEnum.SIMULATION_START_PARAMETER;
+	private InitDialogCtrlInitialType chosenInitialType = InitDialogCtrlInitialTypeEnum.CREATE;
 
 	/**
 	 * Creates a new instance of NewJSFManagedBean
@@ -59,21 +61,12 @@ public class MainCtrl implements Serializable {
 		return sentMessages;
 	}
 
-	public void setChosenInitialType(InitDialogMessageTypeEnum chosenInitialType) {
+	public void setChosenInitialType(InitDialogCtrlInitialType chosenInitialType) {
 		this.chosenInitialType = chosenInitialType;
 	}
 
-	public InitDialogMessageTypeEnum getChosenInitialType() {
+	public InitDialogCtrlInitialType getChosenInitialType() {
 		return chosenInitialType;
-	}
-
-	public void setCurrentWeatherEventViewData(
-					WeatherEventViewData currentWeatherEventViewData) {
-		this.currentWeatherEventViewData = currentWeatherEventViewData;
-	}
-
-	public WeatherEventViewData getCurrentWeatherEventViewData() {
-		return currentWeatherEventViewData;
 	}
 
 	/**
@@ -127,4 +120,8 @@ public class MainCtrl implements Serializable {
 	public void parseOSMAndBusstop() {
 		System.out.println("kfldjs222");
 	}	
+	
+	public void export() {
+		throw new UnsupportedOperationException();
+	}
 }
