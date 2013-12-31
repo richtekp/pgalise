@@ -26,6 +26,7 @@ import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.List;
 import javax.annotation.ManagedBean;
 import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.traffic.TrafficTrip;
 
 /**
  * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).
@@ -206,5 +207,12 @@ public interface Vehicle<D extends VehicleData> extends Identifiable {
 	public int getIndex(TrafficNode node);
 	
 	GpsSensor getGpsSensor();
+	
+	/**
+	 * the traffic trip which is associated with the vehicles or 
+	 * <code>null</code> if the vehicle is currently not on a trip
+	 * @return 
+	 */
+	TrafficTrip getTrafficTrip();
 
 }

@@ -55,6 +55,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensor;
@@ -291,14 +292,6 @@ public class DefaultTrafficServer extends AbstractController<
 	 */
 	private RouteConstructor routeConstructor;
 
-	/*
-	 * internal fields and data structures
-	 */
-	/**
-	 * ID of the server
-	 */
-	private int serverId;
-
 	/**
 	 * City zone of the server
 	 */
@@ -341,6 +334,11 @@ public class DefaultTrafficServer extends AbstractController<
 	 * All listed road barriers
 	 */
 	private Set<RoadBarrier> listedRoadBarriers;
+	
+	@EJB
+	private IdGenerator idGenerator;
+	
+	private Set<Vehicle<?>> managedVehicles = new HashSet<Vehicle<?>>();
 
 	/**
 	 * Default constructor
@@ -396,11 +394,11 @@ public class DefaultTrafficServer extends AbstractController<
 				this.trafficGraphExtensions);
 			this.trafficGraphExtensions.setTrafficRule(node,
 				trafficLightIntersection);
-			this.sensorRegistry.addSensor(new TrafficLightSensor(this.sensorFactory.
+			this.sensorRegistry.addSensor(new TrafficLightSensor(this.idGenerator.getNextId(),this.sensorFactory.
 				getSensorOutput(),
 				null,
 				trafficLightIntersection.getTrafficLight0()));
-			this.sensorRegistry.addSensor(new TrafficLightSensor(
+			this.sensorRegistry.addSensor(new TrafficLightSensor(this.idGenerator.getNextId(),
 				this.sensorFactory.getSensorOutput(),
 				null,
 				trafficLightIntersection.getTrafficLight1()));
@@ -563,7 +561,6 @@ public class DefaultTrafficServer extends AbstractController<
 
 	@PostConstruct
 	public void postConstruct() {
-		this.serverId = -1;
 		this.instanciateDependencies();
 	}
 
@@ -650,9 +647,9 @@ public class DefaultTrafficServer extends AbstractController<
 	public void takeVehicle(Vehicle<?> vehicle,
 		TrafficNode startNodeId,
 		TrafficNode targetNodeId,
-		TrafficServerLocal<VehicleEvent> serverId) {
+		TrafficServerLocal<VehicleEvent> origin) {
 		log.debug(
-			"Received vehicle " + vehicle.getName() + " from another server (" + serverId + "), nodeId: "
+			"Received vehicle " + vehicle.getName() + " from another server (" + origin + "), nodeId: "
 			+ startNodeId);
 		vehicle.setTrafficGraphExtensions(this.trafficGraphExtensions);
 		vehicle.setPath(this.routeConstructor.getShortestPath(
@@ -835,7 +832,7 @@ public class DefaultTrafficServer extends AbstractController<
 									log.debug(String.format(
 										"Vehicle %s drove out of the bounderies of server %s",
 										vehicle.getName(),
-										this.serverId));
+										this.getId()));
 									log.debug(String.format("Sending vehicle %s to server %s",
 										vehicle.getName(),
 										serverList.get(j)));
@@ -914,7 +911,7 @@ public class DefaultTrafficServer extends AbstractController<
 					.getTolerance(),
 					param.getTrafficFuzzyData().getUpdateSteps(),
 					param.getTrafficFuzzyData()
-					.getBuffer(),
+					.getTimeBuffer(),
 					this.fuzzyTrafficGovernor);
 			} else {
 				this.vehicleFuzzyManager = new VehicleAmountManagerMock();
@@ -1120,6 +1117,16 @@ public class DefaultTrafficServer extends AbstractController<
 
 	@Override
 	public String getName() {
-		return NAME + "(" + this.serverId + ")";
+		return NAME + "(" + this.getId() + ")";
+	}
+
+	@Override
+	public Set<Vehicle<?>> getManagedVehicles() {
+		return managedVehicles;
+	}
+
+	public void setManagedVehicles(
+		Set<Vehicle<?>> managedVehicles) {
+		this.managedVehicles = managedVehicles;
 	}
 }

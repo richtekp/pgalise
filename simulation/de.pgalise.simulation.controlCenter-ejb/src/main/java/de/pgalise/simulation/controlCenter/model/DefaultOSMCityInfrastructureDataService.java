@@ -34,11 +34,11 @@ import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 
 /**
- * The default implementation of {@link OSMCityInfrastructureDataService}.
+ * The default implementation of {@link MapCityInfrastructureDataService}.
  * 
  * @author Timo
  */
-public class DefaultOSMCityInfrastructureDataService implements OSMCityInfrastructureDataService {
+public class DefaultOSMCityInfrastructureDataService implements MapCityInfrastructureDataService {
 	/**
 	 * Pattern to get filenames without postfix.
 	 */

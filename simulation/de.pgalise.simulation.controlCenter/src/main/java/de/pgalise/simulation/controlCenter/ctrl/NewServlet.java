@@ -7,8 +7,8 @@ package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.controlCenter.internal.message.SimulationStartParameterMessage;
 import de.pgalise.simulation.controlCenter.model.AttractionData;
-import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
-import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
+import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
+import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -16,6 +16,7 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.GsonService;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
@@ -51,6 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet(name = "NewServlet",
 	urlPatterns = {"/NewServlet"})
 public class NewServlet extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
 
 	@EJB
@@ -61,6 +63,8 @@ public class NewServlet extends HttpServlet {
 	private RandomSeedService randomSeedService;
 	@EJB
 	private GsonService gsonService;
+	@EJB
+	private IdGenerator idGenerator;
 
 	/**
 	 * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -94,7 +98,8 @@ public class NewServlet extends HttpServlet {
 			new TcpIpKeepOpenStrategy());
 		WeatherInterferer weatherInterferer = new RainsensorWhiteNoiseInterferer(
 			randomSeedService);
-		Sensor<?, ?> windSensor = new RainSensor(output,
+		Sensor<?, ?> windSensor = new RainSensor(idGenerator.getNextId(),
+			output,
 			city.getReferencePoint(),
 			weatherController,
 			weatherInterferer);
@@ -106,20 +111,21 @@ public class NewServlet extends HttpServlet {
 			startTimestamp
 			+ 20,
 			30);
-		EventList<?> eventList = new EventList<>(new ArrayList<>(Arrays.asList(
-			weatherEvent)),
-			startTimestamp + 20,
-			UUID.randomUUID());
+		EventList<?> eventList = new EventList<>(idGenerator.getNextId(),
+			new ArrayList<>(Arrays.asList(
+					weatherEvent)),
+			startTimestamp + 20);
 		List<EventList<?>> simulationEventLists = new ArrayList<EventList<?>>(
 			Arrays.asList(
 				eventList));
 		List<WeatherEvent> weatherEventHelpers = new ArrayList<WeatherEvent>(Arrays.
-			asList(new ChangeWeatherEvent(11L,weatherEvent.getType(),
+			asList(new ChangeWeatherEvent(11L,
+					weatherEvent.getType(),
 					weatherEvent.getValue(),
 					weatherEvent.
 					getTimestamp(),
 					weatherEvent.getDuration())));
-//		OSMAndBusstopFileData oSMAndBusstopFileData = new OSMAndBusstopFileData();
+//		MapAndBusstopFileData oSMAndBusstopFileData = new MapAndBusstopFileData();
 		String osmFilePath = "/oldenburg_pg.osm";
 		String busStopFilePath = "/stops.gtfs";
 		RandomVehicleBundle randomVehicleBundle = new RandomVehicleBundle(
@@ -134,7 +140,7 @@ public class NewServlet extends HttpServlet {
 		TrafficFuzzyData trafficFuzzyData = new TrafficFuzzyData(10,
 			2.0,
 			2);
-		CCSimulationStartParameter simulationStartParameter = new CCSimulationStartParameter(
+		ControlCenterStartParameter simulationStartParameter = new ControlCenterStartParameter(
 			startTimestamp,
 			endTimestamp,
 			interval,
@@ -149,7 +155,7 @@ public class NewServlet extends HttpServlet {
 			sensorHelpers,
 			simulationEventLists,
 			weatherEventHelpers,
-			new OSMAndBusstopFileData(osmFilePath,
+			new MapAndBusstopFileData(osmFilePath,
 				busStopFilePath),
 			randomVehicleBundle,
 			true,

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -33,7 +32,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInter
 
 /**
  * Class to generate an induction loop sensor
- * 
+ *
  * @author Marcus
  * @author Lena
  * @version 1.0
@@ -43,7 +42,8 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor<InductionLo
 	/**
 	 * Logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(InductionLoopSensor.class);
+	private static final Logger log = LoggerFactory.getLogger(
+		InductionLoopSensor.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -63,38 +63,46 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor<InductionLo
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param interferer
-	 *            InductionLoopInterferer
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param interferer InductionLoopInterferer
 	 */
-	public InductionLoopSensor( final Output output, final TrafficNode node, final InductionLoopInterferer interferer) {
-		this( output, node,1, interferer);
+	public InductionLoopSensor(Long id,
+		final Output output,
+		final TrafficNode node,
+		final InductionLoopInterferer interferer) {
+		this(id,
+			output,
+			node,
+			1,
+			interferer);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param updateLimit
-	 *            Update limit
-	 * @param interferer
-	 *            InductionLoopInterferer
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param updateLimit Update limit
+	 * @param interferer InductionLoopInterferer
 	 */
-	public InductionLoopSensor(  Output output, TrafficNode node, int updateLimit, final InductionLoopInterferer interferer) {
-		super(output, node, updateLimit, TrafficSensorTypeEnum.INDUCTIONLOOP, new InductionLoopSensorData());
+	public InductionLoopSensor(Long id,
+		Output output,
+		TrafficNode node,
+		int updateLimit,
+		final InductionLoopInterferer interferer) {
+		super(id,
+			output,
+			node,
+			updateLimit,
+			TrafficSensorTypeEnum.INDUCTIONLOOP,
+			new InductionLoopSensorData());
 		if (interferer == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"interferer"));
 		}
 		this.interferer = interferer;
 	}
@@ -105,21 +113,23 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor<InductionLo
 
 	public void setInterferer(final InductionLoopInterferer interferer) throws IllegalArgumentException {
 		if (interferer == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"interferer"));
 		}
 		this.interferer = interferer;
 	}
 
 	/**
 	 * Transmits the actual count of vehicle and sets it to zero
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvents
+	 *
+	 * @param eventList List of SimulationEvents
 	 */
 	@Override
 	public void transmitUsageData(EventList eventList) {
-		if(this.vehicleCount>0) {
-			log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getId());
+		if (this.vehicleCount > 0) {
+			log.debug(
+				"Send number of registered vehicles (" + this.vehicleCount + ") on sensor " + this.
+				getId());
 		}
 
 		// Send data
@@ -137,24 +147,27 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor<InductionLo
 
 	@Override
 	public void logValueToSend(EventList eventList) {
-		log.debug("Send number of registered vehicles ("+this.vehicleCount+") on sensor "+this.getId());
+		log.debug(
+			"Send number of registered vehicles (" + this.vehicleCount + ") on sensor " + this.
+			getId());
 	}
 
 	/**
 	 * Increases the count of vehicles when a vehicle passes by.
-	 * 
-	 * @param vehicle
-	 *            Vehicle
+	 *
+	 * @param vehicle Vehicle
 	 */
 	@Override
 	public void vehicleOnNodeRegistered(Vehicle<?> vehicle) {
 		if (VehicleTypeEnum.MOTORIZED_VEHICLES.contains(vehicle.getData().getType())) {
 			this.realVehicleCount++;
 
-			this.vehicleCount += this.interferer.interfere(vehicle.getData().getVehicleLength(), this.realVehicleCount,
-					vehicle.getVelocity());
+			this.vehicleCount += this.interferer.interfere(vehicle.getData().
+				getVehicleLength(),
+				this.realVehicleCount,
+				vehicle.getVelocity());
 
-			log.debug(this.getId()+" registered a vehicle");
+			log.debug(this.getId() + " registered a vehicle");
 		}
 	}
 }

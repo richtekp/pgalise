@@ -28,12 +28,17 @@ import java.util.Map;
  * @version 1.0 (Aug 30, 2012)
  */
 public enum WeatherEventTypeEnum implements WeatherEventType {
-	CITYCLIMATE(0,ChangeWeatherEvent.class), COLDDAY(2,ChangeWeatherEvent.class), HOTDAY(3,ChangeWeatherEvent.class), RAINDAY(4,ChangeWeatherEvent.class), REFERENCECITY(1,ChangeWeatherEvent.class), STORMDAY(5,ChangeWeatherEvent.class),
+	CITYCLIMATE(0,ChangeWeatherEvent.class, 0,60), 
+	COLDDAY(2,ChangeWeatherEvent.class, 0,60), 
+	HOTDAY(3,ChangeWeatherEvent.class, 0,60), 
+	RAINDAY(4,ChangeWeatherEvent.class, 0,60), 
+	REFERENCECITY(1,ChangeWeatherEvent.class, 0,60), 
+	STORMDAY(5,ChangeWeatherEvent.class, 0,60),
 	/**
 	 * Prepares a new day
 	 */
 	@Deprecated
-	NEW_DAY_EVENT(6, NewDayEvent.class);
+	NEW_DAY_EVENT(6, NewDayEvent.class, 0,60);
 
 	/**
 	 * maps sensor type ids integers to {@link SensorType}
@@ -56,9 +61,11 @@ public enum WeatherEventTypeEnum implements WeatherEventType {
 	 * @param eventID
 	 *            Weather event ID
 	 */
-	WeatherEventTypeEnum(int eventID, Class<?> implementingClass) {
+	WeatherEventTypeEnum(int eventID, Class<?> implementingClass, int minValue, int maxValue) {
 		this.eventID = eventID;
 		this.implementingClass = implementingClass;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
 		WeatherEventTypeEnum.getWeatherEventEnumIds().put(eventID, this);
 	}
 
@@ -72,6 +79,8 @@ public enum WeatherEventTypeEnum implements WeatherEventType {
 	private final int eventID;
 	
 	private Class<?> implementingClass;
+	
+	private int minValue, maxValue;
 
 	/**
 	 * @return
@@ -100,5 +109,15 @@ public enum WeatherEventTypeEnum implements WeatherEventType {
 	@Override
 	public Class<?> getImplementationClass() {
 		return implementingClass;
+	}
+
+	@Override
+	public int getMaxValue() {
+		return maxValue;
+	}
+
+	@Override
+	public int getMinValue() {
+		return minValue;
 	}
 }

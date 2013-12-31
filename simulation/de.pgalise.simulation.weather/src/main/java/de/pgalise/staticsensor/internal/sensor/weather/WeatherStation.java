@@ -38,6 +38,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @version 1.0 (Oct 28, 2012)
  */
 public class WeatherStation extends WeatherSensor<WeatherStationData> {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * List with other weather sensors
@@ -47,21 +48,50 @@ public class WeatherStation extends WeatherSensor<WeatherStationData> {
 	/**
 	 * Constructor
 	 *
+	 * @param id
 	 * @param output Output of the sensor
-	 * @param sensorId ID of the sensor
 	 * @param position Position of the sensor
+	 * @param weatherInterferer
 	 * @param weatherController Reference to the weather controller of the
 	 * simulation
 	 * @param updateLimit Update limit
 	 * @param sensors Weather sensors
 	 */
-	protected WeatherStation(Output output,
+	public WeatherStation(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		final WeatherInterferer weatherInterferer,
+		WeatherSensor... sensors) {
+		this(id,
+			output,
+			position,
+			weatherController,
+			weatherInterferer,
+			1,
+			sensors);
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param id
+	 * @param output Output of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation
+	 * @param weatherInterferer
+	 * @param updateLimit Update limit
+	 */
+	public WeatherStation(Long id,
+		Output output,
 		Coordinate position,
 		WeatherController weatherController,
 		final WeatherInterferer weatherInterferer,
 		int updateLimit,
 		WeatherSensor... sensors) {
-		super(output,
+		super(id,
+			output,
 			position,
 			weatherController,
 			updateLimit,
@@ -75,29 +105,6 @@ public class WeatherStation extends WeatherSensor<WeatherStationData> {
 		for (WeatherSensor weatherSensor : sensors) {
 			this.add(weatherSensor);
 		}
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param output Output of the sensor
-	 * @param sensorId ID of the sensor
-	 * @param position Position of the sensor
-	 * @param weatherController Reference to the weather controller of the
-	 * simulation
-	 * @param updateLimit Update limit
-	 */
-	protected WeatherStation(Output output,
-		Coordinate position,
-		WeatherController weatherController,
-		int updateLimit,
-		final WeatherInterferer weatherInterferer) {
-		super(output,
-			position,
-			weatherController,
-			updateLimit,
-			weatherInterferer,
-			WeatherSensorTypeEnum.WEATHER_STATION, new WeatherStationData());
 	}
 
 	@Override

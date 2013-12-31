@@ -35,8 +35,10 @@ public class RandomCarFactory extends AbstractVehicleFactory implements
 
 	@Override
 	public Vehicle<CarData> createRandomCar(Output output) {
-		Coordinate randomPosition = generateRandomPosition(getTrafficGraphExtensions().getGraph().edgeSet());
-		GpsSensor gpsSensor = new GpsSensor(output,
+		Coordinate randomPosition = generateRandomPosition(
+			getTrafficGraphExtensions().getGraph().edgeSet());
+		GpsSensor gpsSensor = new GpsSensor(getIdGenerator().getNextId(),
+			output,
 			null,
 			retrieveGpsInterferer());
 		CarData carData = new CarData(

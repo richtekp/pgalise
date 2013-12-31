@@ -17,6 +17,9 @@
 package de.pgalise.simulation.shared.event;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import java.util.Date;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  * Superclass for every simulation event. It contains a uniqe
@@ -26,11 +29,15 @@ import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
  * 
  * @author Timo
  */
+@ManagedBean
+@SessionScoped
 public abstract class AbstractEvent extends AbstractIdentifiable implements Event {
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -7362721454716905390L;
+	
+	private Date commitDateTime;
 
 	protected AbstractEvent() {
 		super();
@@ -38,6 +45,15 @@ public abstract class AbstractEvent extends AbstractIdentifiable implements Even
 	
 	public AbstractEvent(Long id) {
 		super(id);
+	}
+
+	public void setCommitDateTime(Date commitDateTime) {
+		this.commitDateTime = commitDateTime;
+	}
+
+	@Override
+	public Date getCommitDateTime() {
+		return commitDateTime;
 	}
 
 	@Override

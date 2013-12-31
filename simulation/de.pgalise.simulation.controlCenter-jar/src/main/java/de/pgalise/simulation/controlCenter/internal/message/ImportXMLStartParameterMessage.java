@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class ImportXMLStartParameterMessage extends AbstractIdentifiableCCWebSocketMessage<String> {
+public class ImportXMLStartParameterMessage extends AbstractIdentifiableControlCenterMessage<String> {
 	/**
 	 * Constructor
 	 * 

@@ -44,6 +44,7 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -86,12 +87,12 @@ public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory impl
 	public DefaultEnergySensorFactory() {
 	}
 
-	public DefaultEnergySensorFactory(RandomSeedService rss,
+	public DefaultEnergySensorFactory(RandomSeedService rss,IdGenerator idGenerator,
 		WeatherController wctrl,
 		EnergyController ectrl,
 		Output sensorOutput,
 		int updateLimit) {
-		super(rss,
+		super(rss,idGenerator,
 			wctrl,
 			ectrl,
 			sensorOutput,

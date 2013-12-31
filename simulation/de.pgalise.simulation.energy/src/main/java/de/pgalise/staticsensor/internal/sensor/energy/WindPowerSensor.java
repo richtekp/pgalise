@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.staticsensor.internal.sensor.energy;
 
 import de.pgalise.simulation.shared.city.Coordinate;
-import java.util.concurrent.ExecutionException;
-
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
-import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.simulation.energy.sensor.EnergySensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -33,23 +28,24 @@ import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
  * Class to generate a wind power sensor.
- * 
+ *
  * @author Marina
  * @author Marcus
  * @version 1.0
  */
 public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Calculate the air density.
-	 * 
-	 * @param airPressure
-	 *            Air pressure
-	 * @param temperature
-	 *            Temperature in celsius
+	 *
+	 * @param airPressure Air pressure
+	 * @param temperature Temperature in celsius
 	 * @return airDensity
 	 */
-	public static double calculateAirDensity(double airPressure, double temperature) {
+	public static double calculateAirDensity(double airPressure,
+		double temperature) {
 		// Temperature in Kelvin
 		double kelvinTemp = temperature + 273.15;
 		// Convert air pressure from mbar to Pa
@@ -59,10 +55,10 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 		return airPressurePa / (287.058 * kelvinTemp);
 	}
 
-		/**
+	/**
 	 * Activity value
 	 */
-	private double activityValue;
+	private double activityValue = 50;
 	/**
 	 * Diameter of the rotor (m^2)
 	 */
@@ -71,66 +67,78 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 	/**
 	 * Length of the rotor
 	 */
-	private double rotorLength;
+	private double rotorLength = 20;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Weather interface to access the weather data
-	 * @param randomSeedService
-	 *            Seed service
-	 * @param energyController
-	 *            Energy interface to access the energy consumption data
-	 * @param measureRadiusInMeter
-	 *            Radius in meter
-	 * @param updateLimit
-	 *            Update limit
-	 * @param interferer
-	 *            Energy interferer
+	 *
+	 * @param output Output of the sensor
+	 * @param id ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Weather interface to access the weather data
+	 * @param randomSeedService Seed service
+	 * @param energyController Energy interface to access the energy consumption
+	 * data
+	 * @param rotorLength
+	 * @param activityValue
+	 * @param interferer Energy interferer
 	 */
-	public WindPowerSensor(Output output, Coordinate position, WeatherController weatherController,
-			EnergyController energyController, RandomSeedService randomSeedService, double rotorLength,
-			double activityValue, EnergyInterferer interferer) throws InterruptedException, ExecutionException {
-		this(output, position, weatherController, energyController, randomSeedService, rotorLength,
-				activityValue, 1, interferer);
+	public WindPowerSensor(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		EnergyController energyController,
+		RandomSeedService randomSeedService,
+		double rotorLength,
+		double activityValue,
+		EnergyInterferer interferer) {
+		this(id,
+			output,
+			position,
+			weatherController,
+			energyController,
+			randomSeedService,
+			rotorLength,
+			activityValue,
+			1,
+			interferer);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Weather interface to access the weather data
-	 * @param energyController
-	 *            Energy interface to access the energy consumption data
-	 * @param randomSeedService
-	 * Seed service
-	 * @param rotorLength
-	 *            rotor length in m (usually between 7.5m and 63m).
-	 * @param activityValue
-	 *            usually between 0.3 and 0.8
-	 * @param updateLimit
-	 *            Update limit
-	 * @param interferer
-	 *            Energy interferer
+	 *
+	 * @param output Output of the sensor
+	 * @param id ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Weather interface to access the weather data
+	 * @param energyController Energy interface to access the energy consumption
+	 * data
+	 * @param randomSeedService Seed service
+	 * @param rotorLength rotor length in m (usually between 7.5m and 63m).
+	 * @param activityValue usually between 0.3 and 0.8
+	 * @param updateLimit Update limit
+	 * @param interferer Energy interferer
 	 */
-	
-	public WindPowerSensor(Output output, Coordinate position, WeatherController weatherController, EnergyController energyController, RandomSeedService randomSeedService, double rotorLength, double activityValue, int updateLimit, EnergyInterferer interferer) throws InterruptedException,
-			ExecutionException {
-		super(output, position, weatherController, energyController, randomSeedService, updateLimit,
-				interferer, EnergySensorTypeEnum.WINDPOWERSENSOR, new WindPowerSensorData());
+	public WindPowerSensor(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		EnergyController energyController,
+		RandomSeedService randomSeedService,
+		double rotorLength,
+		double activityValue,
+		int updateLimit,
+		EnergyInterferer interferer) {
+		super(id,
+			output,
+			position,
+			weatherController,
+			energyController,
+			randomSeedService,
+			updateLimit,
+			interferer,
+			EnergySensorTypeEnum.WINDPOWERSENSOR,
+			new WindPowerSensorData());
 		this.activityValue = activityValue;
 		this.rotorLength = rotorLength;
 
@@ -139,9 +147,9 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
 	/**
 	 * Calculate the diameter on the basis of the rotor length.
-	 * 
-	 * @param rotorLength
-	 *            rotor length
+	 *
+	 * @param rotorLength rotor length
+	 * @return
 	 */
 	public static double calculateDiameter(double rotorLength) {
 		return Math.PI * (rotorLength * rotorLength);
@@ -149,26 +157,26 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
 	/**
 	 * Calculate the produced energy.
-	 * 
-	 * @param airDensity
-	 *            air density
-	 * @param activityValue
-	 *            Activ value
-	 * @param diameter
-	 *            Diameter
-	 * @param windVelocity
-	 *            wind velocity
+	 *
+	 * @param airDensity air density
+	 * @param activityValue Activ value
+	 * @param diameter Diameter
+	 * @param windVelocity wind velocity
 	 * @return Amount of produced energy
 	 */
-	public static double calculateProducedEnergy(double airDensity, double activityValue, double diameter,
-			double windVelocity) {
+	public static double calculateProducedEnergy(double airDensity,
+		double activityValue,
+		double diameter,
+		double windVelocity) {
 		// Produced Energy in Watt
-		return 0.5 * (airDensity * activityValue * diameter * (Math.pow(windVelocity, 3)));
+		return 0.5 * (airDensity * activityValue * diameter * (Math.
+			pow(windVelocity,
+				3)));
 	}
 
 	/**
 	 * Returns the activity value of the wind power station.
-	 * 
+	 *
 	 * @return activityValue
 	 */
 	public double getActivityValue() {
@@ -177,9 +185,8 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
 	/**
 	 * Sets the activity value of the wind power station.
-	 * 
-	 * @param activityValue
-	 *            activity value
+	 *
+	 * @param activityValue activity value
 	 */
 	public void setActivityValue(double activityValue) {
 		this.activityValue = activityValue;
@@ -187,7 +194,7 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
 	/**
 	 * Returns the diameter.
-	 * 
+	 *
 	 * @return diameter
 	 */
 	public double getDiameter() {
@@ -196,7 +203,7 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
 	/**
 	 * Returns the length of the rotor.
-	 * 
+	 *
 	 * @return rotorLength
 	 */
 	public double getRotorLength() {
@@ -205,9 +212,8 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
 	/**
 	 * Sets the diameter.
-	 * 
-	 * @param diameter
-	 *            diameter
+	 *
+	 * @param diameter diameter
 	 */
 	public void setDiameter(double diameter) {
 		this.diameter = diameter;
@@ -215,9 +221,8 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 
 	/**
 	 * Sets the length of the rotor.
-	 * 
-	 * @param rotorLength
-	 *            rotor length
+	 *
+	 * @param rotorLength rotor length
 	 */
 	public void setRotorLength(double rotorLength) {
 		this.rotorLength = rotorLength;
@@ -226,22 +231,34 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 	@Override
 	public void transmitUsageData(EventList eventList) {
 		// Get weather values
-		double airPressure = (this.getWeatherController().getValue(WeatherParameterEnum.AIR_PRESSURE,
-				eventList.getTimestamp(), this.getPosition())).doubleValue();
-		double temperature = (this.getWeatherController().getValue(WeatherParameterEnum.TEMPERATURE,
-				eventList.getTimestamp(), this.getPosition())).doubleValue();
-		double windVelocity = (this.getWeatherController().getValue(WeatherParameterEnum.WIND_VELOCITY,
-				eventList.getTimestamp(), this.getPosition())).doubleValue();
+		double airPressure = (this.getWeatherController().getValue(
+			WeatherParameterEnum.AIR_PRESSURE,
+			eventList.getTimestamp(),
+			this.getPosition())).doubleValue();
+		double temperature = (this.getWeatherController().getValue(
+			WeatherParameterEnum.TEMPERATURE,
+			eventList.getTimestamp(),
+			this.getPosition())).doubleValue();
+		double windVelocity = (this.getWeatherController().getValue(
+			WeatherParameterEnum.WIND_VELOCITY,
+			eventList.getTimestamp(),
+			this.getPosition())).doubleValue();
 
 		// calculate air density
-		double airDensity = calculateAirDensity(airPressure, temperature);
+		double airDensity = calculateAirDensity(airPressure,
+			temperature);
 		getSensorData().setAirDensity(airDensity);
 
 		// calculate wind power
-		double windpower = calculateProducedEnergy(airDensity, this.activityValue, this.diameter, windVelocity);
+		double windpower = calculateProducedEnergy(airDensity,
+			this.activityValue,
+			this.diameter,
+			windVelocity);
 
 		// Interferer
-		windpower = this.getInterferer().interfere(windpower, this.getPosition(), eventList.getTimestamp());
+		windpower = this.getInterferer().interfere(windpower,
+			this.getPosition(),
+			eventList.getTimestamp());
 
 		// transmit value
 		this.getOutput().transmitDouble(windpower);

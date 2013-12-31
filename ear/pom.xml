@@ -46,6 +46,12 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>controlCenter-ejb</artifactId>
 			<type>ejb</type>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>

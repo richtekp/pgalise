@@ -47,6 +47,7 @@ import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
@@ -57,6 +58,7 @@ import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.Anemometer;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import org.junit.Ignore;
 
@@ -90,6 +92,8 @@ public class DefaultSimulationControllerTest {
 	private static ServerConfigurationReader serverConfigurationReader;
 	private static TrafficInfrastructureData cityInfrastructureData;
 	private static ServerConfiguration serverConfiguration;
+	@EJB
+	private IdGenerator idGenerator;
 
 	@BeforeClass
 	public static void setUp() {
@@ -150,11 +154,11 @@ public class DefaultSimulationControllerTest {
 			"",
 			"",
 			new TrafficFuzzyData(0,
-			0.9,
-			1),
+				0.9,
+				1),
 			new Boundary(
-			new Coordinate(),
-			new Coordinate()));
+				new Coordinate(),
+				new Coordinate()));
 	}
 
 	/**
@@ -242,11 +246,14 @@ public class DefaultSimulationControllerTest {
 	public void testCreateSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor = null;
-		StaticSensor sensorHelperStaticSensor = new Anemometer(null,
+		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
+			getNextId(),
+			null,
 			null,
 			weatherController,
 			null);
 		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			idGenerator.getNextId(),
 			null,
 			null,
 			null);
@@ -288,11 +295,15 @@ public class DefaultSimulationControllerTest {
 	public void testCreateSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor = null;
-		StaticSensor sensorHelperStaticSensor = new Anemometer(null,
+		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
+			getNextId(),
+			null,
 			null,
 			weatherController,
 			null);
-		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(null,
+		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			idGenerator.getNextId(),
+			null,
 			null,
 			null);
 		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();
@@ -334,11 +345,15 @@ public class DefaultSimulationControllerTest {
 	public void testDeleteSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor1 = null, sensor2 = null;
-		StaticSensor sensorHelperStaticSensor = new Anemometer(null,
+		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
+			getNextId(),
+			null,
 			null,
 			weatherController,
 			null);
-		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(null,
+		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			idGenerator.getNextId(),
+			null,
 			null,
 			null);
 
@@ -378,11 +393,15 @@ public class DefaultSimulationControllerTest {
 	public void testDeleteSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor1 = null, sensor2 = null;
-		StaticSensor sensorHelperStaticSensor = new Anemometer(null,
+		StaticSensor<?, ?> sensorHelperStaticSensor = new Anemometer(idGenerator.
+			getNextId(),
+			null,
 			null,
 			weatherController,
 			null);
-		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(null,
+		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			idGenerator.getNextId(),
+			null,
 			null,
 			null);
 		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();
@@ -426,10 +445,10 @@ public class DefaultSimulationControllerTest {
 
 		EventInitiator eventInitiatorMock = EasyMock.createNiceMock(
 			EventInitiator.class);
-		EventList<Event> testSimulationEventList = new EventList<>(
+		EventList<Event> testSimulationEventList = new EventList<>(idGenerator.
+			getNextId(),
 			new LinkedList<Event>(),
-			0,
-			UUID.randomUUID());
+			0);
 
 		testClass.update(testSimulationEventList);
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -34,7 +33,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterfere
 
 /**
  * Represents a topo radar sensor
- * 
+ *
  * @author Marcus
  * @author Mischa
  * @author Andreas Rehfeldt
@@ -54,23 +53,29 @@ public class TopoRadarSensor extends AbstractStaticTrafficSensor<TopoRadarSensor
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param updateLimit
-	 *            Update limit
-	 * @param interferer
-	 *            TopoRadarInterferer
+	 *
+	 * @param id
+	 * @param output Output of the sensor
+	 * @param node
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param updateLimit Update limit
+	 * @param interferer TopoRadarInterferer
 	 */
-	public TopoRadarSensor( final Output output, TrafficNode node, final int updateLimit,
-			final TopoRadarInterferer interferer) throws IllegalArgumentException {
-		super( output, node, updateLimit, TrafficSensorTypeEnum.TOPORADAR, new TopoRadarSensorData());
+	public TopoRadarSensor(Long id,
+		final Output output,
+		TrafficNode node,
+		final int updateLimit,
+		final TopoRadarInterferer interferer) throws IllegalArgumentException {
+		super(id,
+			output,
+			node,
+			updateLimit,
+			TrafficSensorTypeEnum.TOPORADAR,
+			new TopoRadarSensorData());
 		if (interferer == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"interferer"));
 		}
 		this.interferer = interferer;
 		this.registeredVehicles = new LinkedList<>();
@@ -78,19 +83,21 @@ public class TopoRadarSensor extends AbstractStaticTrafficSensor<TopoRadarSensor
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param interferer
-	 *            TopoRadarInterferer
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param interferer TopoRadarInterferer
 	 */
-	public TopoRadarSensor(TrafficNode node, final Output output, final Coordinate position,
-			final TopoRadarInterferer interferer) throws IllegalArgumentException {
-		this( output, node, 1, interferer);
+	public TopoRadarSensor(Long id,
+		final Output output,
+		TrafficNode node,
+		final TopoRadarInterferer interferer) throws IllegalArgumentException {
+		this(id,
+			output,
+			node,
+			1,
+			interferer);
 
 	}
 
@@ -100,7 +107,8 @@ public class TopoRadarSensor extends AbstractStaticTrafficSensor<TopoRadarSensor
 
 	public void setInterferer(final TopoRadarInterferer interferer) throws IllegalArgumentException {
 		if (interferer == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferer"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"interferer"));
 		}
 		this.interferer = interferer;
 	}
@@ -112,8 +120,11 @@ public class TopoRadarSensor extends AbstractStaticTrafficSensor<TopoRadarSensor
 			VehicleData data = this.registeredVehicles.get(0).getData();
 
 			// Interfere values
-			int[] values = this.interferer.interfere(data.getAxleCount(), data.getVehicleLength(), data.getWheelbase1(),
-					data.getWheelbase2(), eventList.getTimestamp());
+			int[] values = this.interferer.interfere(data.getAxleCount(),
+				data.getVehicleLength(),
+				data.getWheelbase1(),
+				data.getWheelbase2(),
+				eventList.getTimestamp());
 
 			// Send data
 			this.getOutput().transmitDouble((double) 0);
@@ -137,11 +148,9 @@ public class TopoRadarSensor extends AbstractStaticTrafficSensor<TopoRadarSensor
 
 	/**
 	 * Transmits the data if the car is not null and when the vehicle is driving.
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvents
-	 * @exception IllegalStateException
-	 *                if the getVehicle returns null
+	 *
+	 * @param eventList List of SimulationEvents
+	 * @exception IllegalStateException if the getVehicle returns null
 	 */
 	@Override
 	protected void transmitData(EventList eventList) {

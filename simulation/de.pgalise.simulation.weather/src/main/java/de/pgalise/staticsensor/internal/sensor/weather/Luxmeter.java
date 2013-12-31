@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -29,7 +28,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.LuxmeterWhiteN
 
 /**
  * Class to generate a luxmeter.
- * 
+ *
  * @author Marina
  * @author Andreas Rehfeldt
  * @version 1.0
@@ -38,41 +37,55 @@ public class Luxmeter extends WeatherSensor<LuxmeterData> {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation * @param updateLimit Update limit * @throws
-	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
-	 *            is not a type of {@link LuxmeterWhiteNoiseInterferer}
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation * @param updateLimit Update limit * @throws
+	 * IllegalArgumentException if argument 'weatherController' is 'null' or if
+	 * argument 'weatherController' is not a type of
+	 * {@link LuxmeterWhiteNoiseInterferer}
 	 */
-	public Luxmeter(Output output, Coordinate position, WeatherController weatherController,
-			final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		this(output, position, weatherController, 1, weatherInterferer);
+	public Luxmeter(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
+		this(id,
+			output,
+			position,
+			weatherController,
+			1,
+			weatherInterferer);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation
-	 * @param updateLimit
-	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
-	 *            argument 'weatherController' is not a type of {@link LuxmeterWhiteNoiseInterferer}
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation
+	 * @param updateLimit Update limit * @throws IllegalArgumentException if
+	 * argument 'weatherController' is 'null' or if argument 'weatherController'
+	 * is not a type of {@link LuxmeterWhiteNoiseInterferer}
 	 */
-	public Luxmeter(Output output, Coordinate position, WeatherController weatherController,
-			int updateLimit, final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		super(output, position, weatherController, updateLimit, weatherInterferer, WeatherSensorTypeEnum.LUXMETER, new LuxmeterData());
+	public Luxmeter(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		int updateLimit,
+		final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
+		super(id,
+			output,
+			position,
+			weatherController,
+			updateLimit,
+			weatherInterferer,
+			WeatherSensorTypeEnum.LUXMETER,
+			new LuxmeterData());
 		// if (!(weatherInterferer instanceof LuxmeterWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '"
 		// + LuxmeterWhiteNoiseInterferer.class.getName() + "'");
@@ -81,20 +94,22 @@ public class Luxmeter extends WeatherSensor<LuxmeterData> {
 
 	/**
 	 * Transmits the usage data.
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvents
+	 *
+	 * @param eventList List of SimulationEvents
 	 */
 	@Override
 	public void transmitUsageData(EventList eventList) {
 		// Get value
-		double lightIntensity = (this.getWeatherController().getValue(WeatherParameterEnum.LIGHT_INTENSITY,
-				eventList.getTimestamp(), this.getPosition())).doubleValue();
+		double lightIntensity = (this.getWeatherController().getValue(
+			WeatherParameterEnum.LIGHT_INTENSITY,
+			eventList.getTimestamp(),
+			this.getPosition())).doubleValue();
 		getSensorData().setLightIntensity(lightIntensity);
 
 		// Interfere
-		lightIntensity = this.getInterferer().interfere(lightIntensity, this.getPosition(),
-				eventList.getTimestamp());
+		lightIntensity = this.getInterferer().interfere(lightIntensity,
+			this.getPosition(),
+			eventList.getTimestamp());
 
 		// transmit value
 		this.getOutput().transmitDouble(lightIntensity);

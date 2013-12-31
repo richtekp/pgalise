@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 
-import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
+import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 
 /**
  * A XML control center startParameter serializer service.
@@ -58,16 +58,16 @@ public class XMLStartParameterSerializerService implements StartParameterSeriali
 	}
 
 	@Override
-	public CCSimulationStartParameter deserialize(InputStream inputStream) {
+	public ControlCenterStartParameter deserialize(InputStream inputStream) {
 		if (this.gson == null) {
 			throw new IllegalStateException("Gson is null. Service must be initialized!");
 		}
 		return this.gson.fromJson(this.xmlSerializer.readFromStream(inputStream).toString(),
-				CCSimulationStartParameter.class);
+				ControlCenterStartParameter.class);
 	}
 
 	@Override
-	public String serialize(CCSimulationStartParameter cCSimulationStartParameter, String fileName) {
+	public String serialize(ControlCenterStartParameter cCSimulationStartParameter, String fileName) {
 		if (this.gson == null) {
 			throw new IllegalStateException("Gson is null. Service must be initialized!");
 		}
@@ -100,8 +100,8 @@ public class XMLStartParameterSerializerService implements StartParameterSeriali
 	}
 
 	@Override
-	public CCSimulationStartParameter deserialize(String content) {
-		return this.gson.fromJson(this.xmlSerializer.read(content).toString(), CCSimulationStartParameter.class);
+	public ControlCenterStartParameter deserialize(String content) {
+		return this.gson.fromJson(this.xmlSerializer.read(content).toString(), ControlCenterStartParameter.class);
 	}
 
 	@Override

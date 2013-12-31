@@ -1,8 +1,0 @@
-<nav class="sideBar" ng-controller="RuntimeNavCtrl">
-	<input button type="button" value="Simulation status" class="fullWidth" ng-click="navigate(STATUS)" ng-disabled="current==STATUS" />
-    <input button type="button" value="Random Vehicles" class="fullWidth" ng-click="navigate(RANDOMVEHICLES)" ng-disabled="current==RANDOMVEHICLES" />
-    <input button type="button" value="Weather Events" class="fullWidth" ng-click="navigate(WEATHEREVENTS)" ng-disabled="current==WEATHEREVENTS" />
-    <input button type="button" value="Sensors Events" class="fullWidth" ng-click="navigate(SENSOREVENTS)" ng-disabled="current==SENSOREVENTS" />
-    <input button type="button" value="Commit ({{uncommittedEvents.length + uncommittedWeatherEvents.length + unsentMessages.length}})" class="fullWidth" ng-click="navigate(COMMIT)" ng-disabled="current==COMMIT" />
-    <input button type="button" value="Overview ({{count(sentMessages)}})" class="fullWidth" ng-click="navigate(OVERVIEW)" ng-disabled="current==OVERVIEW" />
-</nav>

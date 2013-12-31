@@ -28,28 +28,24 @@ import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.easymock.IAnswer;
 import org.junit.Test;
 
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import java.util.LinkedList;
+import javax.ejb.EJB;
 
 /**
  * Tests the DefaultTrafficController
@@ -59,6 +55,8 @@ import java.util.LinkedList;
  */
 public class TrafficControllerTest {
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+	@EJB
+	private IdGenerator idGenerator;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
@@ -229,9 +227,9 @@ public class TrafficControllerTest {
 		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
 
 		// create sensors
-		StaticSensor sensor = new InductionLoopSensor(null,null,
+		StaticSensor sensor = new InductionLoopSensor(idGenerator.getNextId(),null,null,
 			null);	
-		StaticSensor sensor2 = new InductionLoopSensor(null,null,
+		StaticSensor sensor2 = new InductionLoopSensor(idGenerator.getNextId(),null,null,
 			null);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);

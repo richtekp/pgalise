@@ -207,9 +207,9 @@ public class DefaultWeatherControllerTest {
 			30.0f,
 			eventTimestamp,
 			6L));
-		EventList<WeatherEvent> testEvent = new EventList<>(testEventList,
-			valueTime,
-			UUID.randomUUID());
+		EventList<WeatherEvent> testEvent = new EventList<>(IdGenerator.getNextId(),
+			testEventList,
+			valueTime);
 
 		InitParameter initParameter = new InitParameter(
 			ServerConfiguration.DEFAULT_SERVER_CONFIGURATION,

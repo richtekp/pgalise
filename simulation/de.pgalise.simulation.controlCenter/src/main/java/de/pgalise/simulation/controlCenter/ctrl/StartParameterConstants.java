@@ -5,7 +5,7 @@ package de.pgalise.simulation.controlCenter.ctrl;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import de.pgalise.simulation.controlCenter.model.OSMAndBusstopFileData;
+import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,28 +25,28 @@ public class StartParameterConstants extends AbstractIdentifiable
 {
 
 //	@ManagedProperty(value = "#{osmAndBusstopFileDataList}")
-	private List<OSMAndBusstopFileData> oSMAndBusstopFileDataList = new LinkedList<OSMAndBusstopFileData>();
+	private List<MapAndBusstopFileData> oSMAndBusstopFileDataList = new LinkedList<MapAndBusstopFileData>();
 
 	public StartParameterConstants() {
 	}
 
 	public StartParameterConstants(
-					List<OSMAndBusstopFileData> oSMAndBusstopFileDatas) {
+					List<MapAndBusstopFileData> oSMAndBusstopFileDatas) {
 		this.oSMAndBusstopFileDataList = oSMAndBusstopFileDatas;
 	}
 
-	public List<OSMAndBusstopFileData> getoSMAndBusstopFileDataList() {
+	public List<MapAndBusstopFileData> getoSMAndBusstopFileDataList() {
 		return oSMAndBusstopFileDataList;
 	}
 
 	public void setoSMAndBusstopFileDataList(
-					List<OSMAndBusstopFileData> oSMAndBusstopFileDatas) {
+					List<MapAndBusstopFileData> oSMAndBusstopFileDatas) {
 		this.oSMAndBusstopFileDataList = oSMAndBusstopFileDatas;
 	}
 
 	@PostConstruct
 	public void init() {
 		oSMAndBusstopFileDataList.add(
-						new OSMAndBusstopFileData());
+						new MapAndBusstopFileData());
 	}
 }

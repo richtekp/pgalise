@@ -35,6 +35,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 /**
  * A SensorDomain is supposed to administrate Sensors. Sensors can be added and removed in the SensorDomain.
@@ -185,5 +186,14 @@ public class DefaultSensorRegistry implements SensorRegistry {
 	public Sensor<?,?> getSensor(
 		Sensor<?,?> sensorId) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public <S extends Sensor<?, ?>> Set<S> getAllSensors(Class<S> clazz) {
+		 TypedQuery<S> query = this.persistenceService.createQuery(
+			String.format("SELECT s FROM %s s", clazz.getName()),
+			clazz
+		);
+		 return new HashSet<>(query.getResultList());
 	}
 }

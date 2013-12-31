@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -29,7 +28,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.HygrometerWhit
 
 /**
  * Class to generate a hygrometer.
- * 
+ *
  * @author Marina
  * @author Andreas Rehfeldt
  * @version 1.0
@@ -38,42 +37,56 @@ public class Hygrometer extends WeatherSensor<HygrometerData> {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation * @param updateLimit Update limit * @throws
-	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
-	 *            is not a type of {@link HygrometerWhiteNoiseInterferer}
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation * @param updateLimit Update limit * @throws
+	 * IllegalArgumentException if argument 'weatherController' is 'null' or if
+	 * argument 'weatherController' is not a type of
+	 * {@link HygrometerWhiteNoiseInterferer}
 	 */
-	public Hygrometer(final Output output, final Coordinate position,
-			final WeatherController weatherController, final WeatherInterferer weatherInterferer)
-			throws IllegalArgumentException {
-		this(output, position, weatherController, 1, weatherInterferer);
+	public Hygrometer(Long id,
+		final Output output,
+		final Coordinate position,
+		final WeatherController weatherController,
+		final WeatherInterferer weatherInterferer)
+		throws IllegalArgumentException {
+		this(id,
+			output,
+			position,
+			weatherController,
+			1,
+			weatherInterferer);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation
-	 * @param updateLimit
-	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
-	 *            argument 'weatherController' is not a type of {@link HygrometerWhiteNoiseInterferer}
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation
+	 * @param updateLimit Update limit * @throws IllegalArgumentException if
+	 * argument 'weatherController' is 'null' or if argument 'weatherController'
+	 * is not a type of {@link HygrometerWhiteNoiseInterferer}
 	 */
-	public Hygrometer(Output output, Coordinate position, WeatherController weatherController,
-			int updateLimit, final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		super(output, position, weatherController, updateLimit, weatherInterferer, WeatherSensorTypeEnum.HYGROMETER, new HygrometerData());
+	public Hygrometer(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		int updateLimit,
+		final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
+		super(id,
+			output,
+			position,
+			weatherController,
+			updateLimit,
+			weatherInterferer,
+			WeatherSensorTypeEnum.HYGROMETER,
+			new HygrometerData());
 		// if(!(weatherInterferer instanceof HygrometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
 		// HygrometerWhiteNoiseInterferer.class.getName() + "'");
@@ -82,21 +95,23 @@ public class Hygrometer extends WeatherSensor<HygrometerData> {
 
 	/**
 	 * Transmits the usage data.
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvent
+	 *
+	 * @param eventList List of SimulationEvent
 	 */
 	@Override
 	public void transmitUsageData(EventList eventList) {
 
 		// Get value
-		double relativHumidity = (this.getWeatherController().getValue(WeatherParameterEnum.RELATIV_HUMIDITY,
-				eventList.getTimestamp(), this.getPosition())).doubleValue();
+		double relativHumidity = (this.getWeatherController().getValue(
+			WeatherParameterEnum.RELATIV_HUMIDITY,
+			eventList.getTimestamp(),
+			this.getPosition())).doubleValue();
 		getSensorData().setRelativHumidity(relativHumidity);
 
 		// Interfere
-		relativHumidity = this.getInterferer().interfere(relativHumidity, this.getPosition(),
-				eventList.getTimestamp());
+		relativHumidity = this.getInterferer().interfere(relativHumidity,
+			this.getPosition(),
+			eventList.getTimestamp());
 
 		// transmit value
 		this.getOutput().transmitDouble(relativHumidity);

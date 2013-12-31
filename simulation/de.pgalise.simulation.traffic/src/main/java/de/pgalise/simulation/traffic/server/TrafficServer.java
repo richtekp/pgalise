@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.server;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
@@ -26,24 +25,26 @@ import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import java.util.Set;
 
 /**
  * Remote view of the traffic server.<br/><br/>
- * In order to exploit the benefits of a distributed architecture it is necessary 
- * to divide the city in distinct areas when it comes to the traffic aspect of the simulation. 
- * A TrafficServer takes care of one of these areas.
+ * In order to exploit the benefits of a distributed architecture it is
+ * necessary to divide the city in distinct areas when it comes to the traffic
+ * aspect of the simulation. A TrafficServer takes care of one of these areas.
  * The TrafficServers are usually managed by the TrafficController.
- *  
- * @param <E> 
+ *
+ * @param <E>
  * @see de.pgalise.simulation.traffic.TrafficController
  * @author mustafa
  */
-public interface TrafficServer<E extends TrafficEvent> extends SensorManagerController<E, InfrastructureStartParameter, TrafficInitParameter,StaticSensor> {
+public interface TrafficServer<E extends TrafficEvent> extends
+	SensorManagerController<E, InfrastructureStartParameter, TrafficInitParameter, StaticSensor> {
+
 	/**
 	 * Sets the city zone this server is responsible for.
-	 * 
-	 * @param cityZone
-	 *            city zone to be set
+	 *
+	 * @param cityZone city zone to be set
 	 */
 	public void setCityZone(Geometry cityZone);
 
@@ -53,26 +54,25 @@ public interface TrafficServer<E extends TrafficEvent> extends SensorManagerCont
 	public Geometry getCityZone();
 
 	/**
-	 * Let this server take care of the passed vehicle.
-	 * 
-	 * @param vehicle 
+	 * Let this server take care of the passed vehicle which came from area of 
+	 * another server.
+	 *
+	 * @param vehicle
 	 * @param startNodeId
-	 * @param serverId 
+	 * @param origin the server the vehicle came from or <code>null</code>
+	 * if the vehicle is passed to a server for the first time
 	 * @param targetNodeId
 	 */
-	public void takeVehicle(Vehicle<?> vehicle, TrafficNode startNodeId, TrafficNode targetNodeId,
-			TrafficServerLocal<E> serverId);
+	public void takeVehicle(Vehicle<?> vehicle,
+		TrafficNode startNodeId,
+		TrafficNode targetNodeId,
+		TrafficServerLocal<E> origin);
 
 	/**
-	 * Let this server process the previously received vehicles from other servers.
+	 * Let this server process the previously received vehicles from other
+	 * servers.
 	 */
 	public void processMovedVehicles();
-	
-//	public void setServerId(int serverId);
-//	
-//	/**
-//	 * The id of this server given by the TrafficController.
-//	 * @return serverId
-//	 */
-//	public int getServerId();
+
+	public Set<Vehicle<?>> getManagedVehicles();
 }

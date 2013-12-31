@@ -21,8 +21,8 @@ import javax.ejb.Stateful;
  */
 @Stateful
 public class RandomBusFactory extends AbstractVehicleFactory implements
-				BusFactory
-{
+	BusFactory {
+
 	private InfraredInterferer infraredInterferer;
 
 	public RandomBusFactory() {
@@ -39,29 +39,33 @@ public class RandomBusFactory extends AbstractVehicleFactory implements
 
 	@Override
 	public BaseVehicle<BusData> createRandomBus(Output output) {
-		GpsSensor gpsSensor = new GpsSensor(
+		GpsSensor gpsSensor = new GpsSensor(getIdGenerator().getNextId(),
 			output,
 			null,
 			retrieveGpsInterferer());
-		InfraredSensor infraredSensor = new InfraredSensor(output,
+		InfraredSensor infraredSensor = new InfraredSensor(getIdGenerator().
+			getNextId(),
+			output,
 			null,
 			null,
 			infraredInterferer);
 		BusData busData = new BusData(1,
-						2,
-						3,
-						4,
-						5,
-						6,
-						7,
-						8,
-						null,
-						9,
-						10,
-						11,
-						gpsSensor,
-						infraredSensor);
-		return new DefaultMotorizedVehicle<>(getIdGenerator().getNextId(),busData, null);
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			null,
+			9,
+			10,
+			11,
+			gpsSensor,
+			infraredSensor);
+		return new DefaultMotorizedVehicle<>(getIdGenerator().getNextId(),
+			busData,
+			null);
 	}
 
 }

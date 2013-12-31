@@ -31,6 +31,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  *
  * @author Marcus
  * @version 1.0
+ * @param <X>
  */
 public abstract class EnergySensor<X extends SensorData> extends AbstractStaticSensor<EnergyEvent,X> {
 
@@ -69,7 +70,7 @@ public abstract class EnergySensor<X extends SensorData> extends AbstractStaticS
 	 * @param updateLimit Update limit
 	 * @param interferer Energy interferer
 	 */
-	protected EnergySensor(Output output,
+	protected EnergySensor(Long id,Output output,
 		Coordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
@@ -77,7 +78,7 @@ public abstract class EnergySensor<X extends SensorData> extends AbstractStaticS
 		int updateLimit,
 		EnergyInterferer interferer,
 		SensorType sensorType,X sensorData) {
-		super(output,
+		super(id,output,
 			position,
 			sensorType,
 			updateLimit,sensorData);

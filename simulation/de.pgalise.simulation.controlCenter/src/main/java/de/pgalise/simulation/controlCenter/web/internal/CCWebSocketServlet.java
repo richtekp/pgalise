@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 
 import de.pgalise.simulation.SimulationController;
-import de.pgalise.simulation.controlCenter.CCWebSocketUser;
-import de.pgalise.simulation.controlCenter.internal.message.CCWebSocketMessage;
+import de.pgalise.simulation.controlCenter.ControlCenterUser;
+import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationStoppedMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationUpdateMessage;
 import de.pgalise.simulation.service.GsonService;
@@ -58,7 +58,7 @@ public class CCWebSocketServlet extends HttpServlet {
 	/**
 	 * The user. Only one user.
 	 */
-	private static CCWebSocketUser user = null;
+	private static ControlCenterUser user = null;
 
 	@EJB
 	private GsonService gsonService;
@@ -87,7 +87,7 @@ public class CCWebSocketServlet extends HttpServlet {
 	 * @param controlCenterUserWebSocket
 	 */
 	public static synchronized void removeUser(
-		CCWebSocketUser controlCenterUserWebSocket) {
+		ControlCenterUser controlCenterUserWebSocket) {
 		if (user == controlCenterUserWebSocket) {
 			user = null;
 		}
@@ -99,7 +99,7 @@ public class CCWebSocketServlet extends HttpServlet {
 	 * @param message will be parsed to JSON.
 	 * @throws IOException
 	 */
-	public void sendMessage(CCWebSocketMessage<?> message) throws IOException {
+	public void sendMessage(ControlCenterMessage<?> message) throws IOException {
 		if (user != null) {
 			user.sendMessage(message);
 		} else {
@@ -164,7 +164,7 @@ public class CCWebSocketServlet extends HttpServlet {
 	 *
 	 * @return user or null, if no one is online.
 	 */
-	public static CCWebSocketUser getUser() {
+	public static ControlCenterUser getUser() {
 		return user;
 	}
 }

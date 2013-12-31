@@ -34,6 +34,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
 import javax.annotation.ManagedBean;
 import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.traffic.TrafficTrip;
 
 /**
  * Superclass for vehicles
@@ -128,6 +129,8 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 	private VehicleStateEnum state;
 
 	private transient TrafficGraphExtensions trafficGraphExtensions;
+	
+	private TrafficTrip trafficTrip;
 
 	protected BaseVehicle() {
 	}
@@ -567,5 +570,14 @@ public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable imp
 	@Override
 	public List<TrafficNode> getNodePath() {
 		return nodePath;
+	}
+
+	public void setTrafficTrip(TrafficTrip trafficTrip) {
+		this.trafficTrip = trafficTrip;
+	}
+
+	@Override
+	public TrafficTrip getTrafficTrip() {
+		return trafficTrip;
 	}
 }

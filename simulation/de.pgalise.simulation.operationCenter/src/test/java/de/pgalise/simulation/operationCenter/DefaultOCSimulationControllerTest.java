@@ -36,6 +36,7 @@ import de.pgalise.simulation.operationcenter.OCWebSocketUser;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
@@ -50,8 +51,10 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import org.easymock.EasyMock;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -172,13 +175,15 @@ public class DefaultOCSimulationControllerTest {
 	 * List of sensor helper
 	 */
 	private static List<Sensor<?, ?>> SENSOR_HELPER_LIST;
+	@EJB
+	private IdGenerator idGenerator;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST = new LinkedList<>();
 		Output output = EasyMock.createNiceMock(Output.class);
 		GpsInterferer gpsInterferer = EasyMock.createNiceMock(GpsInterferer.class);
-		Sensor sensor = new GpsSensor(output,
+		Sensor sensor = new GpsSensor(idGenerator.getNextId(),output,
 			null,
 			gpsInterferer);
 		DefaultOCSimulationControllerTest.SENSOR_HELPER_LIST.add(

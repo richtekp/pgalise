@@ -91,10 +91,10 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractSensor(final Output output,
+	public AbstractSensor(Long id,final Output output,
 		SensorType sensorType, X sensorData)
 		throws IllegalArgumentException {
-		this(output,
+		this(id,output,
 			sensorType,
 			1,sensorData);
 	}
@@ -102,16 +102,18 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 	/**
 	 * Constructor
 	 *
+	 * @param id
 	 * @param output Output of the sensor
 	 * @param sensorType
 	 * @param updateLimit Update limit
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractSensor(final Output output,
+	public AbstractSensor(Long id,final Output output,
 		SensorType sensorType,
 		final int updateLimit, X sensorData)
 		throws IllegalArgumentException {
+		super(id);
 		if (output == null) {
 			throw new IllegalArgumentException("Argument 'output' must not be 'null'.");
 		}

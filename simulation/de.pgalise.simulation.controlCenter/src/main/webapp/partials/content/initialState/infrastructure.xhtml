@@ -1,0 +1,126 @@
+<!-- INFRASTRUCTURE (INIT) -->
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" >
+	<f:view contentType="text/html">
+		<div class="contentDiv" >
+			<h:form>
+				<h2>Infrastructure</h2>
+				<div class="block">
+					<table class="noWrap">
+            <tr class="head">
+							<td colspan="2"><h3>Controllers</h3></td>
+            </tr>
+            <tr>
+							<td colspan="2">
+								<div>
+									The controller needs the IP address where the Simulation, Weather and Traffic Controller are.
+								</div>
+							</td>
+            </tr>
+            <tr>
+							<td>Simulation Controller:</td>
+							<td>
+								<h:inputText class="normalWidth" title="enter the simulation controller ip" value="#{mainCtrl.startParameter.ipSimulationController}">
+									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
+								</h:inputText>
+							</td>
+            </tr>
+            <tr>
+							<td>Traffic Controller:</td>
+							<td>
+								<h:inputText class="normalWidth" title="enter the traffic controller ip" value="#{mainCtrl.startParameter.ipTrafficController}">
+									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
+								</h:inputText>
+							</td>
+            </tr>
+            <tr>
+							<td>Weather Controller:</td>
+							<td>
+								<h:inputText class="normalWidth" title="enter the weather controller ip" value="#{mainCtrl.startParameter.ipWeatherController}">
+									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
+								</h:inputText>
+							</td>
+            </tr>
+            <tr>
+							<td>Static Sensor Controller:</td>
+							<td>
+								<h:inputText class="normalWidth" title="enter the sensor controller ip" value="#{mainCtrl.startParameter.ipStaticSensorController}">
+									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
+								</h:inputText>
+							</td>
+            </tr>
+            <tr>
+							<td>Energy Controller:</td>
+							<td>
+								<h:inputText class="normalWidth" title="enter the energy controller ip" value="#{mainCtrl.startParameter.ipEnergyController}">
+									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
+								</h:inputText>
+							</td>
+            </tr>
+					</table>
+				</div>
+				<div class="block">
+					<table class="noWrap">
+            <tr class="head">
+							<td colspan="2">
+								<h3>Traffic Servers</h3>
+							</td>
+            </tr>
+            <tr>
+							<td colspan="2">
+								<div>
+									Decide how much Traffic Servers will be used in the Simulation.
+								</div>
+							</td>
+            </tr>
+            <tr>
+							<td colspan="2">
+								<span>
+									<h:commandButton action="#{mainCtrl.addTrafficServerIP}" value="add"/>
+								</span>
+							</td>
+            </tr>
+						<tr>
+							<h:dataTable value="#{mainCtrl.startParameter.trafficServerIPs}" var="trafficServerIP">
+								<h:column >
+									<f:facet name="header">IP</f:facet>
+									#{trafficServerIP}
+								</h:column>
+								<h:column>
+									<f:facet name="Remove">Remove</f:facet>
+									<h:commandButton action="#{mainCtrl.removeTrafficServerIP(trafficServerIP)}"/>
+								</h:column>
+							</h:dataTable>
+            </tr>
+					</table>
+				</div>
+				<div class="block">
+					<table class="noWrap">
+            <tr class="head">
+							<td colspan="2">
+								<h3>User Interfaces</h3> 
+							</td>
+            </tr>
+            <tr>
+							<td colspan="2">
+								<div>
+									This defines the adresses of the user interfaces.
+								</div>
+							</td>
+            </tr>
+            <tr>
+							<td>Operation Center:</td>
+							<td>
+								<h:inputText class="longWidth"  value="#{mainCtrl.startParameter.operationCenterAddress}"/>
+							</td>
+            </tr>
+					</table>
+				</div>
+			</h:form>
+		</div>
+	</f:view>
+</ui:composition>

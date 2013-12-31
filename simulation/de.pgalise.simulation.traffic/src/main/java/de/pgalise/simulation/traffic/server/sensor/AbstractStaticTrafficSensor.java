@@ -31,44 +31,52 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * @version 1.0 (Oct 28, 2012)
  */
 public abstract class AbstractStaticTrafficSensor<X extends SensorData> extends AbstractStaticSensor<TrafficEvent, X>
-				implements StaticTrafficSensor<X>
-{
+	implements StaticTrafficSensor<X> {
 
 	private TrafficNode node;
 
 	/**
 	 * Constructor
 	 *
-	 * @param output
-	 *                    Output of the sensor
-	 * @param sensorId
-	 *                    ID of the sensor
-	 * @param position
-	 *                    Position of the sensor
-	 * @param updateLimit
-	 *                    Update limit
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param updateLimit Update limit
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractStaticTrafficSensor(Output output, TrafficNode node,
-					int updateLimit, SensorType sensorType, X sensorData)
-					throws IllegalArgumentException {
-		super(output, node.getGeoLocation(), sensorType, updateLimit, sensorData);
+	public AbstractStaticTrafficSensor(Long id,
+		Output output,
+		TrafficNode node,
+		int updateLimit,
+		SensorType sensorType,
+		X sensorData)
+		throws IllegalArgumentException {
+		super(id,
+			output,
+			node.getGeoLocation(),
+			sensorType,
+			updateLimit,
+			sensorData);
 		this.node = node;
 	}
 
 	/**
-	 * @param output
-	 *                 Output of the sensor
-	 * @param sensorId
-	 *                 ID of the sensor
-	 * @param position
-	 *                 Position of the sensor
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractStaticTrafficSensor( Output output,
-					TrafficNode node, SensorType sensorType, X sensorData) throws
-					IllegalArgumentException {
-		super(output, node.getGeoLocation(),sensorType, sensorData);
+	public AbstractStaticTrafficSensor(Long id,
+		Output output,
+		TrafficNode node,
+		SensorType sensorType,
+		X sensorData) throws
+		IllegalArgumentException {
+		super(id,
+			output,
+			node.getGeoLocation(),
+			sensorType,
+			sensorData);
 		this.node = node;
 	}
 }

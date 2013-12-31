@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
+import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.StartParameterOriginEnum;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -18,7 +18,7 @@ import javax.faces.bean.SessionScoped;
 import javax.servlet.http.Part;
 
 /**
- * Provides a store for different {@link CCSimulationStartParameter} to be
+ * Provides a store for different {@link ControlCenterStartParameter} to be
  * offered in the init dialog. The <tt>chosenStartParameter</tt> property holds
  * the start parameter which has been chosen in the init dialog, the
  * <tt>startParameterOriginEnum</tt> property indicates the origin of the start
@@ -31,10 +31,10 @@ import javax.servlet.http.Part;
 public class StartParameterStore
 {
 
-	private List<CCSimulationStartParameter> predefinedStartParameters = new LinkedList<>();
+	private List<ControlCenterStartParameter> predefinedStartParameters = new LinkedList<>();
 
-	private List<CCSimulationStartParameter> recentlyStartedSimulations = new LinkedList<>();
-	private CCSimulationStartParameter chosenStartParameter;
+	private List<ControlCenterStartParameter> recentlyStartedSimulations = new LinkedList<>();
+	private ControlCenterStartParameter chosenStartParameter;
 	private StartParameterOriginEnum startParameterOriginEnum;
 
 	/**
@@ -46,13 +46,13 @@ public class StartParameterStore
 	@PostConstruct
 	public void init() {
 		getPredefinedStartParameters().add(
-						new CCSimulationStartParameter());
+						new ControlCenterStartParameter());
 	}
 
 	/**
 	 * @return the predefinedStartParameters
 	 */
-	public List<CCSimulationStartParameter> getPredefinedStartParameters() {
+	public List<ControlCenterStartParameter> getPredefinedStartParameters() {
 		return predefinedStartParameters;
 	}
 
@@ -60,14 +60,14 @@ public class StartParameterStore
 	 * @param predefinedStartParameters the predefinedStartParameters to set
 	 */
 	public void setPredefinedStartParameters(
-					List<CCSimulationStartParameter> predefinedStartParameters) {
+					List<ControlCenterStartParameter> predefinedStartParameters) {
 		this.predefinedStartParameters = predefinedStartParameters;
 	}
 
 	/**
 	 * @return the recentlyStartedSimulations
 	 */
-	public List<CCSimulationStartParameter> getRecentlyStartedSimulations() {
+	public List<ControlCenterStartParameter> getRecentlyStartedSimulations() {
 		return recentlyStartedSimulations;
 	}
 
@@ -75,7 +75,7 @@ public class StartParameterStore
 	 * @param recentlyStartedSimulations the recentlyStartedSimulations to set
 	 */
 	public void setRecentlyStartedSimulations(
-					List<CCSimulationStartParameter> recentlyStartedSimulations) {
+					List<ControlCenterStartParameter> recentlyStartedSimulations) {
 		this.recentlyStartedSimulations = recentlyStartedSimulations;
 	}
 
@@ -103,7 +103,7 @@ public class StartParameterStore
 	/**
 	 * @return the chosenStartParameter
 	 */
-	public CCSimulationStartParameter getChosenStartParameter() {
+	public ControlCenterStartParameter getChosenStartParameter() {
 		return chosenStartParameter;
 	}
 
@@ -111,7 +111,7 @@ public class StartParameterStore
 	 * @param chosenStartParameter the chosenStartParameter to set
 	 */
 	public void setChosenStartParameter(
-					CCSimulationStartParameter chosenStartParameter) {
+					ControlCenterStartParameter chosenStartParameter) {
 		this.chosenStartParameter = chosenStartParameter;
 	}
 

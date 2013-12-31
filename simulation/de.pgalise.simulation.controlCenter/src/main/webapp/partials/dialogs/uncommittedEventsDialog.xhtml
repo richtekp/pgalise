@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+								xmlns:h="http://xmlns.jcp.org/jsf/html"
+								xmlns:f="http://xmlns.jcp.org/jsf/core"
+								xmlns:p="http://primefaces.org/ui" >
+
+	<p:dialog id="uncommittedEventsDialog" widgetVar="uncommittedEventsDialog" visible="true">
+		<h:form>
+		<div class="messageDialog">
+			<div class="block scrollable left" id="eventList">
+				<div class="head"><h3>Event list</h3></div>
+				<p:dataTable  value="#{mainCtrl.uncommittedEvents}" var="uncommittedEvent" selection="#{mainCtrl.selectedUncommittedEvents}" selectionMode="multiple">
+					<h:column class="fullWidth" >
+						<f:facet name="header">ID</f:facet>
+							#{uncommittedEvent.id}
+					</h:column>
+					<h:column  class="fullWidth">
+						<f:facet name="header">ID</f:facet>
+							#{uncommittedEvent.id}
+					</h:column>
+					<h:column>
+						<f:facet name="header">Commit date and time</f:facet>
+						<p:calendar value="#{uncommittedEvent.commitDateTime}" pattern="MM/dd/yyyy HH:mm" />
+					</h:column>
+					<h:column>
+						<f:facet name="header"></f:facet>
+						<h:commandButton action="#{mainCtrl.deleteUncommittedEvent(uncommittedEvent)}"/>
+					</h:column>
+				</p:dataTable>
+			</div>
+			<h:commandButton action="#{mainCtrl.commitEvents}"/>
+		</div>
+		</h:form>
+	</p:dialog>
+</ui:composition>

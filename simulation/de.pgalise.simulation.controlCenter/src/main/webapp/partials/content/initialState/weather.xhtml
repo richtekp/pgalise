@@ -1,0 +1,124 @@
+<!-- WEATHER (INIT) -->
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:o="http://omnifaces.org/ui">
+	<!--usage of validation stack in former implementation not clear -->
+	<o:importConstants type="de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum" var="weatherEventTypes"/>
+	<f:view contentType="text/html">
+		<div class="contentDiv" >
+			<h:form>
+				<h2>Weather</h2>
+				<div class="block">
+					<table class="noWrap">
+						<tr class="head">
+							<td colspan="2"><h3>General settings</h3></td>
+						</tr>
+            <tr>
+							<td colspan="2">
+								<div>
+									Selecet the general settings. Choose if you like to use aggregated data.
+								</div>
+							</td>
+            </tr>
+						<tr>
+							<td>Use aggregated data</td>
+							<td>
+								<div>
+									<h:selectBooleanCheckbox value="#{weatherCtrl.aggregatedWeatherDataEnabled}"/>Use aggregated weather data
+								</div>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="block">
+					<table class="noWrap">
+						<tr class="head">
+							<td colspan="2"><h3>Define weather event</h3></td>
+						</tr>
+            <tr>
+							<td colspan="2">
+								<div>
+									Choose a special weather event for a defined day. You can set the max. temperature, the modifier and the time where this event will start. 
+								</div>
+							</td>
+            </tr>
+						<tr>
+							<td colspan="2">
+								<p:calendar class="weatherDate" value="#{weatherCtrl.chosenDate}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>Duration <i>[hh:mm]</i>:</td>
+							<td>
+								Duration in minutes: <p:spinner  class="veryTinyWidth" value="#{chosenDurationMinutes}" min="0" max="43200" />
+							</td>
+						</tr>
+						<tr>
+							<td>Modifier:</td>
+							<td>
+								<h:selectManyListbox class="smallWidth" value="#{weatherCtrl.chosenWeatherEventType}">
+									<f:selectItems value="#{weatherEventTypeEnum}"/>
+								</h:selectManyListbox>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Value <i>[<h:outputText value="#{weatherCtrl.chosenWeatherEventType}"/>]</i>:
+							</td>
+							<td>
+								<p:spinner  class="smallWidth" value="#{weatherCtrl.chosenValue}" min="#{weatherCtrl.chosenWeatherEventType.getMinValue()}" max="#{weatherCtrl.chosenWeatherEventType.getMaxValue()}"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<h:commandButton class="fullWidth"  action="#{weatherCtrl.addWeatherEvent()}"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="block">
+					<table class="noWrap">
+            <tr class="head">
+							<td colspan="5"><h3>Defined weather events</h3></td>
+            </tr>
+            <tr>
+							<td colspan="5">
+								<div>
+									Shows a list of created weather events.
+								</div>
+							</td>
+            </tr>
+						<tr>
+							<h:dataTable value="#{weatherCtrl.weatherEvents}" var="weatherEvent">
+								<h:column>
+									<f:facet name="header">Date/Time</f:facet>
+										#{weatherEvent.id}
+								</h:column>
+								<h:column>
+									<f:facet name="header">Duration</f:facet>
+										#{weatherEvent.duration}
+								</h:column>
+								<h:column>
+									<f:facet name="header">Modifier</f:facet>
+										#{weatherEvent.type}
+								</h:column>
+								<h:column>
+									<f:facet name="header">Value</f:facet>
+										#{weatherEvent.value}
+								</h:column>
+								<h:column>
+									<f:facet name="header">Delete</f:facet>
+									<h:commandButton action="#{weatherCtrl.deleteWeatherEvent(weatherEvent)}"
+							</h:column>
+						</h:dataTable>
+					</tr>
+				</table>
+			</div>
+		</h:form>
+	</div>
+</f:view>
+</ui:composition>

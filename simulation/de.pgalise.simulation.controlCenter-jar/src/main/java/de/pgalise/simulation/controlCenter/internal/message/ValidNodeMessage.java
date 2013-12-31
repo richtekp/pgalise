@@ -23,7 +23,7 @@ import de.pgalise.simulation.shared.city.NavigationNode;
  * 
  * @author Timo
  */
-public class ValidNodeMessage extends AbstractIdentifiableCCWebSocketMessage<NavigationNode> {
+public class ValidNodeMessage extends AbstractIdentifiableControlCenterMessage<NavigationNode> {
 
 	/**
 	 * Constructor

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -29,52 +28,67 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.BarometerWhite
 
 /**
  * Class to generate a barometer.
- * 
+ *
  * @author Marina
  * @author Andreas Rehfeldt
  * @version 1.0
  */
 public class Barometer extends WeatherSensor<BarometerData> {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation * @param updateLimit Update limit * @throws
-	 *            IllegalArgumentException if argument 'weatherController' is 'null' or if argument 'weatherController'
-	 *            is not a type of {@link BarometerWhiteNoiseInterferer}
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation * @param updateLimit Update limit * @throws
+	 * IllegalArgumentException if argument 'weatherController' is 'null' or if
+	 * argument 'weatherController' is not a type of
+	 * {@link BarometerWhiteNoiseInterferer}
 	 */
-	
-	public Barometer(final Output output, final Coordinate position, final WeatherController weatherController, WeatherInterferer weatherInterferer)
-			throws IllegalArgumentException {
-		this(output, position, weatherController, 1, weatherInterferer);
+	public Barometer(Long id,
+		final Output output,
+		final Coordinate position,
+		final WeatherController weatherController,
+		WeatherInterferer weatherInterferer)
+		throws IllegalArgumentException {
+		this(id,
+			output,
+			position,
+			weatherController,
+			1,
+			weatherInterferer);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation
-	 * @param updateLimit
-	 *            Update limit * @throws IllegalArgumentException if argument 'weatherController' is 'null' or if
-	 *            argument 'weatherController' is not a type of {@link BarometerWhiteNoiseInterferer}
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation
+	 * @param updateLimit Update limit * @throws IllegalArgumentException if
+	 * argument 'weatherController' is 'null' or if argument 'weatherController'
+	 * is not a type of {@link BarometerWhiteNoiseInterferer}
 	 */
-	
-	public Barometer(Output output, Coordinate position, WeatherController weatherController, int updateLimit, WeatherInterferer weatherInterferer) throws IllegalArgumentException {
-		super(output, position, weatherController, updateLimit, weatherInterferer, WeatherSensorTypeEnum.ANEMOMETER, new BarometerData());
+	public Barometer(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		int updateLimit,
+		WeatherInterferer weatherInterferer) throws IllegalArgumentException {
+		super(id,
+			output,
+			position,
+			weatherController,
+			updateLimit,
+			weatherInterferer,
+			WeatherSensorTypeEnum.ANEMOMETER,
+			new BarometerData());
 		// if(!(weatherInterferer instanceof BarometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
 		// BarometerWhiteNoiseInterferer.class.getName() + "'");
@@ -83,21 +97,23 @@ public class Barometer extends WeatherSensor<BarometerData> {
 
 	/**
 	 * Transmits the usage data.
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvent
+	 *
+	 * @param eventList List of SimulationEvent
 	 */
 	@Override
 	public void transmitUsageData(EventList eventList) {
 
 		// Get value
-		double airPressure = (this.getWeatherController().getValue(WeatherParameterEnum.AIR_PRESSURE,
-				eventList.getTimestamp(), this.getPosition())).doubleValue();
+		double airPressure = (this.getWeatherController().getValue(
+			WeatherParameterEnum.AIR_PRESSURE,
+			eventList.getTimestamp(),
+			this.getPosition())).doubleValue();
 		this.getSensorData().setAirPressure(airPressure);
 
 		// Interfere
-		airPressure = this.getInterferer().interfere(airPressure, this.getPosition(),
-				eventList.getTimestamp());
+		airPressure = this.getInterferer().interfere(airPressure,
+			this.getPosition(),
+			eventList.getTimestamp());
 
 		// transmit value
 		this.getOutput().transmitDouble(airPressure);

@@ -58,13 +58,13 @@ public abstract class WeatherSensor<X extends SensorData> extends AbstractStatic
 	 * @param updateLimit Update limit
 	 * @param weatherInterferer the {@link WeatherInterferer}
 	 */
-	protected WeatherSensor(Output output,
+	protected WeatherSensor(Long id,Output output,
 		final Coordinate position,
 		WeatherController weatherController,
 		int updateLimit,
 		final WeatherInterferer weatherInterferer,
 		SensorType sensorType, X  sensorData) {
-		super(output,
+		super(id,output,
 			position,
 			sensorType,
 			updateLimit,sensorData);

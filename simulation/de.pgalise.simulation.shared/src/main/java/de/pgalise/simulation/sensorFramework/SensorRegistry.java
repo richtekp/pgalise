@@ -94,4 +94,6 @@ public interface SensorRegistry extends Iterable<Sensor<Event,?>>, SimulationCom
 	 * 
 	 */
 	public void init();
+	
+	<S extends Sensor<?,?>> Set<S> getAllSensors(Class<S> clazz) ;
 }

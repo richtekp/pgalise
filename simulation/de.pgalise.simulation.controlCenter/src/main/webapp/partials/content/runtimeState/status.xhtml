@@ -1,0 +1,25 @@
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:o="http://omnifaces.org/ui">
+	<f:view contentType="text/html">
+		<div class="contentDiv" >
+			<h2>Status</h2>
+			<div class="block">
+        <table class="noWrap">
+					<tr class="head">
+						<td><h3>Simulation status</h3></td>
+					</tr>
+					<tr>
+						<td>
+							<h:commandButton value="Stop simulation" action="#{simulationController.stopSimulation()}"/>
+						</td>
+					</tr>
+        </table>
+			</div>
+		</div>
+	</f:view>
+</ui:composition>

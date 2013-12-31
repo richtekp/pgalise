@@ -23,7 +23,7 @@ import de.pgalise.simulation.shared.city.Boundary;
  * 
  * @author Timo
  */
-public class OSMParsedMessage extends AbstractIdentifiableCCWebSocketMessage<Boundary> {
+public class OSMParsedMessage extends AbstractIdentifiableControlCenterMessage<Boundary> {
 	/**
 	 * Constructor
 	 * 

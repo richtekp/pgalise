@@ -19,14 +19,14 @@ package de.pgalise.simulation.shared.controller;
 import java.io.Serializable;
 /**
  * Settings for the fuzzy rules in traffic.
- * The updatesteps, tolerance and buffer can be set here.
+ * The updatesteps, tolerance and timeBuffer can be set here.
  * @author Mischa
  */
 public class TrafficFuzzyData implements Serializable {
 	private static final long serialVersionUID = 7976429010181411827L;
 	private int updateSteps;
 	private double tolerance;
-	private int buffer;
+	private int timeBuffer;
 
 	/**
 	 * Constructor
@@ -35,12 +35,12 @@ public class TrafficFuzzyData implements Serializable {
 	 * @param tolerance
 	 * 			what is the tolerance
 	 * @param buffer
-	 * 			how big is the buffer
+	 * 			how big is the timeBuffer
 	 */
 	public TrafficFuzzyData(int updateSteps, double tolerance, int buffer) {
 		this.updateSteps = updateSteps;
 		this.tolerance = tolerance;
-		this.buffer = buffer;
+		this.timeBuffer = buffer;
 	}
 
 	public int getUpdateSteps() {
@@ -59,11 +59,11 @@ public class TrafficFuzzyData implements Serializable {
 		this.tolerance = tolerance;
 	}
 
-	public int getBuffer() {
-		return buffer;
+	public int getTimeBuffer() {
+		return timeBuffer;
 	}
 
-	public void setBuffer(int buffer) {
-		this.buffer = buffer;
+	public void setTimeBuffer(int timeBuffer) {
+		this.timeBuffer = timeBuffer;
 	}
 }

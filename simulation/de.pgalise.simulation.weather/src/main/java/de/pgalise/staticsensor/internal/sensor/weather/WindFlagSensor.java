@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -28,7 +27,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
  * Class to generate a wind flag sensor.
- * 
+ *
  * @author Marina
  * @author Andreas Rehfeldt
  * @author marcus
@@ -38,57 +37,71 @@ public class WindFlagSensor extends WeatherSensor<WindFlagSensorData> {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation
 	 */
-	public WindFlagSensor(Output output, Coordinate position, WeatherController weatherController,
-			final WeatherInterferer weatherInterferer) {
-		this(output, position, weatherController, 1, weatherInterferer);
+	public WindFlagSensor(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		final WeatherInterferer weatherInterferer) {
+		this(id,
+			output,
+			position,
+			weatherController,
+			1,
+			weatherInterferer);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param weatherController
-	 *            Reference to the weather controller of the simulation
-	 * @param updateLimit
-	 *            Update limit
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorId ID of the sensor
+	 * @param position Position of the sensor
+	 * @param weatherController Reference to the weather controller of the
+	 * simulation
+	 * @param updateLimit Update limit
 	 */
-	public WindFlagSensor(Output output, Coordinate position, WeatherController weatherController,
-			int updateLimit, final WeatherInterferer weatherInterferer) {
-		super(output, position, weatherController, updateLimit, weatherInterferer, WeatherSensorTypeEnum.WINDFLAG, new WindFlagSensorData());
+	public WindFlagSensor(Long id,
+		Output output,
+		Coordinate position,
+		WeatherController weatherController,
+		int updateLimit,
+		final WeatherInterferer weatherInterferer) {
+		super(id,
+			output,
+			position,
+			weatherController,
+			updateLimit,
+			weatherInterferer,
+			WeatherSensorTypeEnum.WINDFLAG,
+			new WindFlagSensorData());
 	}
 
 	/**
 	 * Transmits the usage data.
-	 * 
-	 * @param eventList
-	 *            List of SimulationEvents
+	 *
+	 * @param eventList List of SimulationEvents
 	 */
 	@Override
 	public void transmitUsageData(EventList eventList) {
 
 		// Get value
-		double windDirection = (this.getWeatherController().getValue(WeatherParameterEnum.WIND_DIRECTION,
-				eventList.getTimestamp(), this.getPosition())).doubleValue();
+		double windDirection = (this.getWeatherController().getValue(
+			WeatherParameterEnum.WIND_DIRECTION,
+			eventList.getTimestamp(),
+			this.getPosition())).doubleValue();
 		getSensorData().setWindDirection(windDirection);
 
 		// Interfere
-		windDirection = this.getInterferer().interfere(windDirection, this.getPosition(),
-				eventList.getTimestamp());
+		windDirection = this.getInterferer().interfere(windDirection,
+			this.getPosition(),
+			eventList.getTimestamp());
 
 		// transmit value
 		this.getOutput().transmitDouble(windDirection);

@@ -7,14 +7,14 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author richter
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class RandomVehiclesCtrl {
 
 	/**
@@ -33,14 +33,14 @@ public class RandomVehiclesCtrl {
 	private double randomBikeGPSRatio = 100;
 	
 	public void reset() {
-		randomCars = 0;
-		randomCarGPSRatio = 100;
-		randomTrucks = 0;
-		randomTruckGPSRatio = 100;
-		randomMotorcycles = 0;
-		randomMotorcycleGPSRatio = 100;
-		randomBikes = 0;
-		randomBikeGPSRatio = 100;
+		setRandomCars(0);
+		setRandomCarGPSRatio(100);
+		setRandomTrucks(0);
+		setRandomTruckGPSRatio(100);
+		setRandomMotorcycles(0);
+		setRandomMotorcycleGPSRatio(100);
+		setRandomBikes(0);
+		setRandomBikeGPSRatio(100);
 	};
 	
 	//should be unnecessary due to JSF bean management
@@ -120,4 +120,132 @@ public class RandomVehiclesCtrl {
 //		_this.reset();
 //	};
 //}
+
+	/**
+	 * @return the randomCars
+	 */
+	public int getRandomCars() {
+		return randomCars;
+	}
+
+	/**
+	 * @param randomCars the randomCars to set
+	 */
+	public void setRandomCars(int randomCars) {
+		this.randomCars = randomCars;
+	}
+
+	/**
+	 * @return the randomCarGPSRatio
+	 */
+	public double getRandomCarGPSRatio() {
+		return randomCarGPSRatio;
+	}
+
+	/**
+	 * @param randomCarGPSRatio the randomCarGPSRatio to set
+	 */
+	public void setRandomCarGPSRatio(double randomCarGPSRatio) {
+		this.randomCarGPSRatio = randomCarGPSRatio;
+	}
+
+	/**
+	 * @return the randomTrucks
+	 */
+	public int getRandomTrucks() {
+		return randomTrucks;
+	}
+
+	/**
+	 * @param randomTrucks the randomTrucks to set
+	 */
+	public void setRandomTrucks(int randomTrucks) {
+		this.randomTrucks = randomTrucks;
+	}
+
+	/**
+	 * @return the randomTruckGPSRatio
+	 */
+	public double getRandomTruckGPSRatio() {
+		return randomTruckGPSRatio;
+	}
+
+	/**
+	 * @param randomTruckGPSRatio the randomTruckGPSRatio to set
+	 */
+	public void setRandomTruckGPSRatio(double randomTruckGPSRatio) {
+		this.randomTruckGPSRatio = randomTruckGPSRatio;
+	}
+
+	/**
+	 * @return the randomMotorcycles
+	 */
+	public int getRandomMotorcycles() {
+		return randomMotorcycles;
+	}
+
+	/**
+	 * @param randomMotorcycles the randomMotorcycles to set
+	 */
+	public void setRandomMotorcycles(int randomMotorcycles) {
+		this.randomMotorcycles = randomMotorcycles;
+	}
+
+	/**
+	 * @return the randomMotorcycleGPSRatio
+	 */
+	public double getRandomMotorcycleGPSRatio() {
+		return randomMotorcycleGPSRatio;
+	}
+
+	/**
+	 * @param randomMotorcycleGPSRatio the randomMotorcycleGPSRatio to set
+	 */
+	public void setRandomMotorcycleGPSRatio(double randomMotorcycleGPSRatio) {
+		this.randomMotorcycleGPSRatio = randomMotorcycleGPSRatio;
+	}
+
+	/**
+	 * @return the randomBikes
+	 */
+	public int getRandomBikes() {
+		return randomBikes;
+	}
+
+	/**
+	 * @param randomBikes the randomBikes to set
+	 */
+	public void setRandomBikes(int randomBikes) {
+		this.randomBikes = randomBikes;
+	}
+
+	/**
+	 * @return the randomBikeGPSRatio
+	 */
+	public double getRandomBikeGPSRatio() {
+		return randomBikeGPSRatio;
+	}
+
+	/**
+	 * @param randomBikeGPSRatio the randomBikeGPSRatio to set
+	 */
+	public void setRandomBikeGPSRatio(double randomBikeGPSRatio) {
+		this.randomBikeGPSRatio = randomBikeGPSRatio;
+	}
+	
+	public void addBikes() {
+		
+	}
+	
+	public void addTrucks() {
+		
+	}
+	
+	public void addMotorcycles() {
+		
+	}
+	
+	public void addCars() {
+		
+	}
 }

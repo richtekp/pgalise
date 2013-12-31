@@ -24,7 +24,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
  * 
  * @author Timo
  */
-public class AskForValidNodeMessage extends AbstractIdentifiableCCWebSocketMessage<TrafficNode> {
+public class AskForValidNodeMessage extends AbstractIdentifiableControlCenterMessage<TrafficNode> {
 
 	/**
 	 * Constructor

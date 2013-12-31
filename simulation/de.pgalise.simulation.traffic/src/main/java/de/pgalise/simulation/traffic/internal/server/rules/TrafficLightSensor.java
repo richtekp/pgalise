@@ -50,12 +50,12 @@ public class TrafficLightSensor<D extends VehicleData> extends AbstractStaticTra
 	 * @param trafficLight Traffic light
 	 * @throws IllegalArgumentException Thrown if no traffic light is null
 	 */
-	public TrafficLightSensor(
+	public TrafficLightSensor(Long id,
 		Output output,
 		TrafficNode node,
 		TrafficLight trafficLight)
 		throws IllegalArgumentException {
-		super(
+		super(id,
 			output,
 			node,
 			TrafficSensorTypeEnum.TRAFFICLIGHT_SENSOR,

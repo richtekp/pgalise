@@ -10,6 +10,7 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
@@ -53,12 +54,12 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 		super();
 	}
 	
-	public DefaultTrafficSensorFactory(RandomSeedService rss,
+	public DefaultTrafficSensorFactory(RandomSeedService rss,IdGenerator idGenerator,
 		WeatherController wctrl,
 		EnergyController ectrl,
 		Output sensorOutput,
 		int updateLimit) {
-		super(rss,
+		super(rss,idGenerator,
 			wctrl,
 			ectrl,
 			sensorOutput,
@@ -88,7 +89,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 		}
 
 		Coordinate position = createRandomPositionInductionLoopSensor();
-		return new InductionLoopSensor(
+		return new InductionLoopSensor(getIdGenerator().getNextId(),
 			getSensorOutput(),
 			null,
 			getUpdateLimit(),
@@ -120,7 +121,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 		}
 
 		Coordinate position = createRandomPositionTopoRadarSensor();
-		return new TopoRadarSensor(
+		return new TopoRadarSensor(getIdGenerator().getNextId(),
 			getSensorOutput(),
 			null,
 			getUpdateLimit(),
@@ -150,7 +151,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 		}
 
 		Coordinate position = createRandomPositionInfraredSensor();
-		return new InfraredSensor(getSensorOutput(),
+		return new InfraredSensor(getIdGenerator().getNextId(),getSensorOutput(),
 			null,
 			position,
 			getUpdateLimit(),
@@ -201,7 +202,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 			gpsInterferer = new GpsNoInterferer();
 		}
 
-		return new GpsSensor(getSensorOutput(),
+		return new GpsSensor(getIdGenerator().getNextId(),getSensorOutput(),
 			null,
 			getUpdateLimit(),
 			gpsInterferer);

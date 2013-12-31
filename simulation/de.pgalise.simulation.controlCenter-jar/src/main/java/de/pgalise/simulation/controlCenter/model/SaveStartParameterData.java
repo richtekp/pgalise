@@ -22,7 +22,7 @@ package de.pgalise.simulation.controlCenter.model;
  */
 public class SaveStartParameterData {
 	private String fileName;
-	private CCSimulationStartParameter ccSimulationStartParameter;
+	private ControlCenterStartParameter ccSimulationStartParameter;
 	
 	/**
 	 * Constructor
@@ -31,7 +31,7 @@ public class SaveStartParameterData {
 	 * @param ccSimulationStartParameter
 	 */
 	public SaveStartParameterData(String fileName,
-			CCSimulationStartParameter ccSimulationStartParameter) {
+			ControlCenterStartParameter ccSimulationStartParameter) {
 		this.fileName = fileName;
 		this.ccSimulationStartParameter = ccSimulationStartParameter;
 	}
@@ -44,12 +44,12 @@ public class SaveStartParameterData {
 		this.fileName = fileName;
 	}
 	
-	public CCSimulationStartParameter getCcSimulationStartParameter() {
+	public ControlCenterStartParameter getCcSimulationStartParameter() {
 		return ccSimulationStartParameter;
 	}
 	
 	public void setCcSimulationStartParameter(
-			CCSimulationStartParameter ccSimulationStartParameter) {
+			ControlCenterStartParameter ccSimulationStartParameter) {
 		this.ccSimulationStartParameter = ccSimulationStartParameter;
 	}
 }

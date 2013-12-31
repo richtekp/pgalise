@@ -7,6 +7,7 @@ package de.pgalise.simulation.staticsensor;
 import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import javax.ejb.EJB;
 
@@ -29,6 +30,8 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 	 */
 	@EJB
 	private RandomSeedService randomSeedService;
+	@EJB
+	private IdGenerator idGenerator;
 
 	private int updateLimit = 1;
 
@@ -39,11 +42,14 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 		this.sensorOutput = output;
 	}
 
-	public AbstractSensorFactory(Output sensorOutput,
+	public AbstractSensorFactory(Output sensorOutput,IdGenerator idGenerator,
 		RandomSeedService rss,
 		int updateLimit) {
 		if(sensorOutput == null) {
 			throw new IllegalArgumentException("output null");
+		}
+		if(idGenerator == null) {
+			throw new IllegalArgumentException("idGenerator null");
 		}
 		this.sensorOutput = sensorOutput;
 		if(randomSeedService == null) {
@@ -51,6 +57,14 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 		}
 		this.randomSeedService = rss;
 		this.updateLimit = updateLimit;
+	}
+
+	public void setIdGenerator(IdGenerator idGenerator) {
+		this.idGenerator = idGenerator;
+	}
+
+	public IdGenerator getIdGenerator() {
+		return idGenerator;
 	}
 
 	public void setUpdateLimit(int updateLimit) {

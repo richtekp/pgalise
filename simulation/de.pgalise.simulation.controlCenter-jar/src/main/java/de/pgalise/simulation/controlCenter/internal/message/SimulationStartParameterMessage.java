@@ -15,15 +15,15 @@
  */
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.controlCenter.model.CCSimulationStartParameter;
+import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 
 /**
- * Message to fill {@link CCSimulationStartParameter}
+ * Message to fill {@link ControlCenterStartParameter}
  * If this message will be received, the server starts the simulation.
  *
  * @author Timo
  */
-public class SimulationStartParameterMessage extends AbstractIdentifiableCCWebSocketMessage<CCSimulationStartParameter>
+public class SimulationStartParameterMessage extends AbstractIdentifiableControlCenterMessage<ControlCenterStartParameter>
 {
 
 	/**
@@ -35,7 +35,7 @@ public class SimulationStartParameterMessage extends AbstractIdentifiableCCWebSo
 	 *                                   CC Start parameter
 	 */
 	public SimulationStartParameterMessage(Long messageID,
-					CCSimulationStartParameter ccSimulationStartParameter) {
+					ControlCenterStartParameter ccSimulationStartParameter) {
 		super(messageID, MessageTypeEnum.SIMULATION_START_PARAMETER,
 						ccSimulationStartParameter);
 	}

@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class SimulationUpdateMessage extends AbstractCCWebSocketMessage<Long> {
+public class SimulationUpdateMessage extends AbstractControlCenterMessage<Long> {
 
 	/**
 	 * Constructor

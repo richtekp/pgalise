@@ -33,12 +33,12 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractStaticSensor(final Output output,
+	public AbstractStaticSensor(Long id,final Output output,
 		Coordinate position,
 		SensorType sensorType,
 		X sensorData)
 		throws IllegalArgumentException {
-		this(output,
+		this(id,output,
 			position,
 			sensorType,
 			1,
@@ -55,13 +55,13 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractStaticSensor(final Output output,
+	public AbstractStaticSensor(Long id,final Output output,
 		Coordinate position,
 		SensorType sensorType,
 		final int updateLimit,
 		X sensorData)
 		throws IllegalArgumentException {
-		super(output,
+		super(id,output,
 			sensorType,
 			updateLimit,
 			sensorData);
@@ -73,6 +73,7 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 		return position;
 	}
 
+	@Override
 	public void setPosition(Coordinate position) {
 		this.position = position;
 	}

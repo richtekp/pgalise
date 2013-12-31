@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class SimulationStoppedMessage extends AbstractIdentifiableCCWebSocketMessage<Void> {
+public class SimulationStoppedMessage extends AbstractIdentifiableControlCenterMessage<Void> {
 
 	/**
 	 * Constructor

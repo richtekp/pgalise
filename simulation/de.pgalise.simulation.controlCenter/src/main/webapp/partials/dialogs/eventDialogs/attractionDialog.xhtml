@@ -1,0 +1,36 @@
+<ui:composition 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:o="http://omnifaces.org/ui">
+	<f:view contentType="text/html">
+		<div class="contentDiv" >
+			<div class="left">
+        <table>
+					<tr>
+						<td class="top"><b>Position:</b></td>
+						<td class="top" colspan="2">
+							Latitude: <h:inputText value="#{attractionDialogCtrl.chosenLatitude}"/>
+							Longitude: <h:inputText value="#{attractionDialogCtrl.chosenLongitude}"/>
+						</td>
+					</tr>
+					<tr>
+						<td><b>Start:</b></td>
+						<td colspan="2"><p:calendar value="#{attractionDialogCtrl.chosenStartTimestamp}"/></td>
+					</tr>
+					<tr>
+						<td><b>Duration</b></td>   
+						<td colspan="2">
+							<p:spinner value="#{attractionDialogCtrl.chosenStartTimestamp}"/></td>
+					</tr>
+					<tr>
+						<td colspan="3"><hr /></td>
+					</tr>
+					<ui:include src="/partials/content/runtimeState/randomVehicles.xhtml"/>
+        </table>
+			</div>
+		</div>
+	</f:view>
+</ui:composition>

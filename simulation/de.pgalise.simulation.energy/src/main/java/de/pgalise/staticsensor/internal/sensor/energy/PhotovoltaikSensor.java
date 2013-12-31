@@ -40,12 +40,11 @@ import de.pgalise.simulation.weather.service.WeatherController;
 public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 
 	private static final long serialVersionUID = 1L;
-	
 
 	/**
 	 * Roof area (qm)
 	 */
-	private int area;
+	private int area = 500;
 
 	/**
 	 * Constructor
@@ -60,14 +59,16 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 	 * @param area roof area in m²
 	 * @param interferer Energy interferer
 	 */
-	public PhotovoltaikSensor(Output output,
+	public PhotovoltaikSensor(Long id,
+		Output output,
 		Coordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,
 		int area,
 		EnergyInterferer interferer) throws InterruptedException, ExecutionException {
-		this(output,
+		this(id,
+			output,
 			position,
 			weatherController,
 			energyController,
@@ -91,7 +92,8 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 	 * @param updateLimit Update limit
 	 * @param interferer Energy interferer
 	 */
-	public PhotovoltaikSensor(Output output,
+	public PhotovoltaikSensor(Long id,
+		Output output,
 		Coordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
@@ -99,14 +101,16 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 		int area,
 		int updateLimit,
 		EnergyInterferer interferer) throws InterruptedException, ExecutionException {
-		super(output,
+		super(id,
+			output,
 			position,
 			weatherController,
 			energyController,
 			randomSeedService,
 			updateLimit,
 			interferer,
-			EnergySensorTypeEnum.PHOTOVOLTAIK, new PhotovoltaikSensorData());
+			EnergySensorTypeEnum.PHOTOVOLTAIK,
+			new PhotovoltaikSensorData());
 		this.area = area;
 	}
 

@@ -32,6 +32,7 @@ import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
@@ -109,17 +110,20 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 	 * Constructor
 	 *
 	 * @param rss Random seed service
+	 * @param idGenerator
 	 * @param wctrl Weather controller
 	 * @param ectrl Energy controller
 	 * @param sensorOutput Sensor output
 	 * @param updateLimit
 	 */
 	public AbstractEnergySensorFactory(RandomSeedService rss,
+		IdGenerator idGenerator,
 		WeatherController wctrl,
 		EnergyController ectrl,
 		Output sensorOutput,
 		int updateLimit) {
 		super(sensorOutput,
+			idGenerator,
 			rss,
 			updateLimit);
 		this.energyController = ectrl;
@@ -160,7 +164,8 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 	public PhotovoltaikSensor createPhotovoltaikSensor(Coordinate position,
 		List<SensorInterfererType> sensorInterfererTypes,
 		int area) throws InterruptedException, ExecutionException {
-		return new PhotovoltaikSensor(this.getSensorOutput(),
+		return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
+			this.getSensorOutput(),
 			position,
 			this.getWeatherController(),
 			this.getEnergyController(),
@@ -186,7 +191,8 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 		throws InterruptedException, ExecutionException {
 		if (sensorType.equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
 			Coordinate position = createRandomPositionEnergySensor();
-			return new PhotovoltaikSensor(this.getSensorOutput(),
+			return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				this.getEnergyController(),
@@ -199,7 +205,8 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 		} else if (sensorType.equals(
 			EnergySensorTypeEnum.WINDPOWERSENSOR)) {
 			Coordinate position = createRandomPositionEnergySensor();
-			return new WindPowerSensor(this.getSensorOutput(),
+			return new WindPowerSensor(this.getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				this.getEnergyController(),
@@ -213,63 +220,64 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
 		} else if (sensorType.equals(WeatherSensorTypeEnum.THERMOMETER)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new Thermometer(this.getSensorOutput(),
+			return new Thermometer(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.WINDFLAG)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new WindFlagSensor(this.getSensorOutput(),
+			return new WindFlagSensor(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.BAROMETER)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new Barometer(this.getSensorOutput(),
+			return new Barometer(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.HYGROMETER)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new Hygrometer(this.getSensorOutput(),
+			return new Hygrometer(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.PYRANOMETER)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new Pyranometer(this.getSensorOutput(),
+			return new Pyranometer(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.RAIN)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new RainSensor(this.getSensorOutput(),
+			return new RainSensor(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.ANEMOMETER)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new Anemometer(this.getSensorOutput(),
+			return new Anemometer(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.LUXMETER)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new Luxmeter(this.getSensorOutput(),
+			return new Luxmeter(getIdGenerator().getNextId(),this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(EnergySensorTypeEnum.SMARTMETER)) {
 			Coordinate position = createRandomPositionWeatherSensor();
-			return new SmartMeterSensor(this.getSensorOutput(),
+			return new SmartMeterSensor(this.getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				this.getEnergyController(),
@@ -304,7 +312,8 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 			}
 
 			Coordinate position = createRandomPositionInfraredSensor();
-			return new InfraredSensor(this.getSensorOutput(),
+			return new InfraredSensor(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				null,
 				position,
 				getUpdateLimit(),
@@ -332,7 +341,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 			}
 
 			Coordinate position = createRandomPositionInductionLoopSensor();
-			return new InductionLoopSensor(
+			return new InductionLoopSensor(getIdGenerator().getNextId(),
 				this.getSensorOutput(),
 				null,
 				getUpdateLimit(),
@@ -361,7 +370,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 			}
 
 			Coordinate position = createRandomPositionTopoRadarSensor();
-			return new TopoRadarSensor(
+			return new TopoRadarSensor(getIdGenerator().getNextId(),
 				this.getSensorOutput(),
 				null,
 				getUpdateLimit(),
@@ -403,7 +412,8 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 				gpsInterferer = new GpsNoInterferer();
 			}
 
-			return new GpsSensor(this.getSensorOutput(),
+			return new GpsSensor(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				null,
 				getUpdateLimit(),
 				gpsInterferer);

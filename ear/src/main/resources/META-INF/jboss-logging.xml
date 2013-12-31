@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>     
+<logging xmlns="urn:jboss:logging:6.0" context="controlCenter">  
+      
+	<define-context name="controlCenter"/>  
+      
+	<!-- Just an example handler. -->  
+	<file-handler file-name="/my/file/name" name="FILE" autoflush="true" append="true">  
+		<formatter>  
+			<pattern-formatter pattern="%d %-5p [%c] (%t) %s%E%n"/>  
+		</formatter>  
+      
+		<properties>  
+			<property name="encoding">UTF-8</property>  
+		</properties>  
+	</file-handler>  
+      
+      
+	<!-- Configure the root logger with my handler from above -->  
+	<root-logger>  
+		<level name="INFO"/>  
+		<handlers>  
+			<handler-ref name="FILE"/>  
+		</handlers>  
+	</root-logger>  
+</logging>  

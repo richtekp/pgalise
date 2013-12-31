@@ -6,13 +6,10 @@
 
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.controlCenter.OSMParsedState;
-import de.pgalise.simulation.controlCenter.OSMParsedStateEnum;
+import de.pgalise.simulation.controlCenter.MapParsedState;
 import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
-import javax.faces.context.FacesContext;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -24,12 +21,16 @@ public class SimulationController {
 	private ConnectionState connectionState;
 	private SimulationState simulationState;
 	private Date simulationDate;
-	private OSMParsedState oSMParsedState;
+	private MapParsedState mapParsedState;
 
 	/**
 	 * Creates a new instance of SimulationController
 	 */
 	public SimulationController() {
+	}
+	
+	public void startSimulation() {
+		throw new UnsupportedOperationException();
 	}
 	
 	public void stopSimulation() {
@@ -61,12 +62,12 @@ public class SimulationController {
 		return simulationDate;
 	}
 
-	public void setoSMParsedState(OSMParsedState oSMParsedState) {
-		this.oSMParsedState = oSMParsedState;
+	public void setMapParsedState(MapParsedState oSMParsedState) {
+		this.mapParsedState = oSMParsedState;
 	}
 
-	public OSMParsedState getoSMParsedState() {
-		return oSMParsedState;
+	public MapParsedState getMapParsedState() {
+		return mapParsedState;
 	}
 	
 }

@@ -42,11 +42,14 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import de.pgalise.simulation.staticsensor.StaticSensor;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.persistence.EntityManager;
 import org.easymock.EasyMock;
 
@@ -71,6 +74,8 @@ public class SensorRegistryTest {
 	 * Test class
 	 */
 	private DefaultSensorRegistry sensorRegistry;
+	@EJB
+	private IdGenerator IdGenerator;
 	
 	@After
 	public void tearDown() {
@@ -102,7 +107,9 @@ public class SensorRegistryTest {
 		// add ten sensors to the SensorDomain
 		final int expected = 10;
 		for (int i = 0; i < expected; i++) {
-			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
+			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			this.sensorRegistry.addSensor(sensor);
 		}
 		// assert
 		Assert.assertEquals(expected, this.sensorRegistry.numberOfSensors());
@@ -115,9 +122,12 @@ public class SensorRegistryTest {
 	public void testGetSensor() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
+			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			this.sensorRegistry.addSensor(sensor);
 		}
-		final Sensor sensor = new TestSensor( new Coordinate(887, 14));
+		StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+		EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(887, 14));
 		this.sensorRegistry.addSensor(sensor);
 		Assert.assertEquals(this.sensorRegistry.getSensor(sensor), sensor);
 	}
@@ -129,12 +139,15 @@ public class SensorRegistryTest {
 	public void testNumberOfSensors() {
 		final ArrayList<Sensor> sensors = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
-			sensors.add(this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i))));
+			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			sensors.add(this.sensorRegistry.addSensor(sensor));
 		}
 		for (int i = 0; i < (sensors.size() - 2); i++) {
 			this.sensorRegistry.removeSensor(sensors.get(i));
 		}
-		final Sensor sensor = new TestSensor( new Coordinate(12, 343));
+		StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+		EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(12, 343));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 		Assert.assertEquals(2, this.sensorRegistry.numberOfSensors());
@@ -144,9 +157,12 @@ public class SensorRegistryTest {
 	public void testRemoveSensor() {
 		// Remove
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
+			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			this.sensorRegistry.addSensor(sensor);
 		}
-		final Sensor sensor = new TestSensor( new Coordinate(23, 8438));
+		StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+		EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(23, 8438));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 
@@ -158,7 +174,9 @@ public class SensorRegistryTest {
 	public void testSetSensorsActivated() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
+			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			this.sensorRegistry.addSensor(sensor);
 		}
 		this.sensorRegistry.setSensorsActivated(true);
 		for (final Sensor s : this.sensorRegistry) {
@@ -175,11 +193,13 @@ public class SensorRegistryTest {
 	public void testUpdateSensors() {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
-			this.sensorRegistry.addSensor(new TestSensor( new Coordinate(i, i)));
+			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
+			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			this.sensorRegistry.addSensor(sensor);
 		}
 		this.sensorRegistry.setSensorsActivated(false);
 		for (int i = 0; i < 100; i++) {
-			this.sensorRegistry.update(new EventList(new ArrayList<AbstractEvent>(), 1, UUID.randomUUID()));
+			this.sensorRegistry.update(new EventList(33L, new ArrayList<>(), 1));
 		}
 
 		for (final Sensor sensor : this.sensorRegistry) {
@@ -188,79 +208,11 @@ public class SensorRegistryTest {
 
 		this.sensorRegistry.setSensorsActivated(true);
 		for (int i = 0; i < 100; i++) {
-			this.sensorRegistry.update(new EventList(new ArrayList<AbstractEvent>(), 1, UUID.randomUUID()));
+			this.sensorRegistry.update(new EventList(66L, new ArrayList<AbstractEvent>(), 1));
 		}
 
 		for (final Sensor sensor : this.sensorRegistry) {
 			Assert.assertEquals(100, sensor.getMeasuredValues());
 		}
 	}
-}
-
-/**
- * Test class for sensors
- * 
- * @author Marcus
- * @version 1.0 (Mar 20, 2013)
- */
-class TestSensor extends AbstractSensor {
-
-	/**
-	 * Sensor output
-	 */
-	private static Output SENSOR_OUTPUT = new AbstractTcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
-
-	/**
-	 * Constructor
-	 * 
-	 * @param sensorId
-	 *            ID of sensor
-	 * @param position
-	 *            Position as Coordinate
-	 * @throws IllegalArgumentException
-	 */
-	protected TestSensor(Coordinate position) throws IllegalArgumentException {
-		super(TestSensor.SENSOR_OUTPUT, new SensorType() {
-
-			@Override
-			public int getSensorTypeId() {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
-
-			@Override
-			public Class<?> getSensorTypeClass() {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
-
-			@Override
-			public String getUnit() {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
-
-			@Override
-			public Set<SensorInterfererType> getSensorInterfererTypeSet() {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
-		}, new GPSSensorData());
-	}
-
-	@Override
-	public void transmitUsageData(EventList eventList) {
-	}
-
-	@Override
-	public int getUpdateSteps() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public List getSensorInterfererTypes() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public void setSensorInterfererTypes(List sensorInterferers) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
 }

@@ -85,12 +85,14 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 	 * @param updateLimit Update limit
 	 * @param interferer GPS interferer
 	 */
-	public GpsSensor(final Output output,
+	public GpsSensor(Long id,
+		final Output output,
 		final Vehicle<? extends VehicleData> vehicle,
 		final int updateLimit,
 		final GpsInterferer interferer) {
 
-		super(output,
+		super(id,
+			output,
 			TrafficSensorTypeEnum.GPS,
 			updateLimit,
 			new GPSSensorData());
@@ -108,10 +110,12 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 	 * @param vehicle According vehicle
 	 * @param interferer GPS interferer
 	 */
-	public GpsSensor(Output output,
+	public GpsSensor(Long id,
+		Output output,
 		Vehicle<? extends VehicleData> vehicle,
 		final GpsInterferer interferer) {
-		this(output,
+		this(id,
+			output,
 			vehicle,
 			1,
 			interferer);

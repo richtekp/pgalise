@@ -17,8 +17,13 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 /**
  * Trip class for traffic.
@@ -48,6 +53,9 @@ public class TrafficTrip extends AbstractIdentifiable {
 	 * Start timestamp
 	 */
 	private long startTime;
+	
+	@Transient
+	private Vehicle<?> vehicle;
 
 	/**
 	 * Default
@@ -92,5 +100,14 @@ public class TrafficTrip extends AbstractIdentifiable {
 
 	public void setStartTime(long startTime) {
 		this.startTime = startTime;
+	}
+
+	public void setVehicle(
+		Vehicle<?> vehicle) {
+		this.vehicle = vehicle;
+	}
+
+	public Vehicle<?> getVehicle() {
+		return vehicle;
 	}
 }

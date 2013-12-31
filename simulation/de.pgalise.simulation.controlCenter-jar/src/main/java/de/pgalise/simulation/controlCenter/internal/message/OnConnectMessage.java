@@ -46,7 +46,7 @@ import de.pgalise.simulation.traffic.BusRoute;
  * 
  * @author Timo
  */
-public class OnConnectMessage extends AbstractCCWebSocketMessage<OnConnectParameter> {
+public class OnConnectMessage extends AbstractControlCenterMessage<OnConnectParameter> {
 
 	/**
 	 * Logger

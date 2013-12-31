@@ -23,8 +23,9 @@ import javax.ejb.Stateful;
  * @author richter
  */
 @Stateful
-public class RandomInformationBasedVehicleFactory extends AbstractVehicleFactory implements InformationBasedVehicleFactory
-{
+public class RandomInformationBasedVehicleFactory extends AbstractVehicleFactory
+	implements InformationBasedVehicleFactory {
+
 	private RandomBicycleFactory bicycleFactory;
 	private RandomBusFactory busFactory;
 	private RandomCarFactory carFactory;
@@ -32,19 +33,22 @@ public class RandomInformationBasedVehicleFactory extends AbstractVehicleFactory
 	private RandomTruckFactory truckFactory;
 
 	@Override
-	public Vehicle<?> createVehicle(VehicleInformation vehicleInformation, Output output) {
-		GpsSensor gpsSensor = new GpsSensor(output,
+	public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
+		Output output) {
+		GpsSensor gpsSensor = new GpsSensor(getIdGenerator().getNextId(),
+			output,
 			null,
 			null);
-		if(vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BIKE)){
+		if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BIKE)) {
 			return bicycleFactory.createBicycle(output);
-		}else if(vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BUS)){
+		} else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BUS)) {
 			return busFactory.createBus(output);
-		}else if(vehicleInformation.getVehicleType().equals(VehicleTypeEnum.CAR)){
+		} else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.CAR)) {
 			return carFactory.createCar(output);
-		}else if(vehicleInformation.getVehicleType().equals(VehicleTypeEnum.MOTORCYCLE)){
-			motorcycleFactory.createRandomMotorcycle(				output);
-		}else if(vehicleInformation.getVehicleType().equals(VehicleTypeEnum.TRUCK)){
+		} else if (vehicleInformation.getVehicleType().equals(
+			VehicleTypeEnum.MOTORCYCLE)) {
+			motorcycleFactory.createRandomMotorcycle(output);
+		} else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.TRUCK)) {
 			return truckFactory.createRandomTruck(output);
 		}
 		throw new IllegalArgumentException();

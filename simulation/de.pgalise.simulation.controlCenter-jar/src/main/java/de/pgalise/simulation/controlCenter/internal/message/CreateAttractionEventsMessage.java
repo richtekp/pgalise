@@ -25,7 +25,7 @@ import de.pgalise.simulation.controlCenter.model.AttractionData;
  * 
  * @author Timo
  */
-public class CreateAttractionEventsMessage extends AbstractIdentifiableCCWebSocketMessage<Collection<AttractionData>> {
+public class CreateAttractionEventsMessage extends AbstractIdentifiableControlCenterMessage<Collection<AttractionData>> {
 
 	/**
 	 * Constructor

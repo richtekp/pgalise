@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * @author Timo
  */
-public class CreateSensorsMessage extends AbstractIdentifiableCCWebSocketMessage<Collection<Sensor<?,?>>> {
+public class CreateSensorsMessage extends AbstractIdentifiableControlCenterMessage<Collection<Sensor<?,?>>> {
 	/**
 	 * Constructor
 	 * 

@@ -23,7 +23,7 @@ import de.pgalise.simulation.controlCenter.model.SaveStartParameterData;
  * 
  * @author Timo
  */
-public class SimulationExportStartParameterMessage extends AbstractIdentifiableCCWebSocketMessage<SaveStartParameterData> {
+public class SimulationExportStartParameterMessage extends AbstractIdentifiableControlCenterMessage<SaveStartParameterData> {
 
 	/**
 	 * Constructor
