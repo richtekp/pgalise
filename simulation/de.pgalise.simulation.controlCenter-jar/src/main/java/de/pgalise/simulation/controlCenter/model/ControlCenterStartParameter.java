@@ -37,6 +37,9 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javolution.xml.XMLFormat;
+import javolution.xml.XMLSerializable;
+import javolution.xml.stream.XMLStreamException;
 
 /**
  * All parameters to start the simulation. This is an extra version only for the
@@ -48,11 +51,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @ManagedBean
 @SessionScoped
 @XmlRootElement
-public class ControlCenterStartParameter extends InfrastructureStartParameter {
+public class ControlCenterStartParameter extends InfrastructureStartParameter
+	implements XMLSerializable {
 
 	private static final long serialVersionUID = 1L;
-    private PropertyChangeSupport mPcs =
-        new PropertyChangeSupport(this);
+	private PropertyChangeSupport mPcs
+		= new PropertyChangeSupport(this);
 	/**
 	 * Option to start with sensor interferes. If true, all sensor interferes will
 	 * be activated.
@@ -62,11 +66,12 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 	/**
 	 * Simulation time
 	 */
-	private Long startTimestamp ;
-	private long endTimestamp = GregorianCalendar.getInstance().getTime().getTime()+1000*60*60;
+	private Long startTimestamp;
+	private long endTimestamp = GregorianCalendar.getInstance().getTime().
+		getTime() + 1000 * 60 * 60;
 	private long interval = 1;
 	private long clockGeneratorInterval = 1;
-	
+
 	/**
 	 * Sensor update steps
 	 */
@@ -84,7 +89,8 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 	/**
 	 * IPs for all the traffic servers.
 	 */
-	private List<String> trafficServerIPs = new LinkedList<>(Arrays.asList("127.0.0.1"));
+	private List<String> trafficServerIPs = new LinkedList<>(Arrays.asList(
+		"127.0.0.1"));
 
 	/**
 	 * Sensorhelper list.
@@ -141,9 +147,9 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 	 * }
 	 */
 	private String importedInstanceFileContent = null;
-	
-	private Map<Class<? extends Sensor<?,?>>, Long> specificUpdateSteps =  new HashMap<>();
-	
+
+	private Map<Class<? extends Sensor<?, ?>>, Long> specificUpdateSteps = new HashMap<>();
+
 	public ControlCenterStartParameter() {
 	}
 
@@ -228,19 +234,20 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 		this.name = city.getName();
 		this.mapAndBusstopFileData = mapAndBusstopFileData;
 	}
-	
+
 	@PostConstruct
 	public void init() {
-		 mapAndBusstopFileData = new MapAndBusstopFileData();
-		 startTimestamp = GregorianCalendar.getInstance().getTime().getTime();
+		mapAndBusstopFileData = new MapAndBusstopFileData();
+		startTimestamp = GregorianCalendar.getInstance().getTime().getTime();
 	}
 
 	public void setSpecificUpdateSteps(
 		Map<Class<? extends Sensor<?, ?>>, Long> specificUpdateSteps) {
 		Map<Class<? extends Sensor<?, ?>>, Long> oldSpecificUpdateSteps = specificUpdateSteps;
 		this.specificUpdateSteps = specificUpdateSteps;
-        mPcs.firePropertyChange("mouthWidth",
-                                   oldSpecificUpdateSteps, specificUpdateSteps);
+		mPcs.firePropertyChange("mouthWidth",
+			oldSpecificUpdateSteps,
+			specificUpdateSteps);
 	}
 
 	public Map<Class<? extends Sensor<?, ?>>, Long> getSpecificUpdateSteps() {
@@ -444,8 +451,9 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 	}
 
 	/**
-	 * handles the import of a serialized {@link ControlCenterStartParameter} using
-	 * the serialized instance passed to <tt>importedInstanceFileContent</tt>
+	 * handles the import of a serialized {@link ControlCenterStartParameter}
+	 * using the serialized instance passed to
+	 * <tt>importedInstanceFileContent</tt>
 	 */
 	/*
 	 this allows to avoid the a handler for the selected start parameter because 
@@ -471,12 +479,60 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 	}
 
 	public void
-	addPropertyChangeListener(PropertyChangeListener listener) {
+		addPropertyChangeListener(PropertyChangeListener listener) {
 		mPcs.addPropertyChangeListener(listener);
 	}
 
 	public void
-	removePropertyChangeListener(PropertyChangeListener listener) {
+		removePropertyChangeListener(PropertyChangeListener listener) {
 		mPcs.removePropertyChangeListener(listener);
+	}
+
+	public static class XML extends XMLFormat<ControlCenterStartParameter> {
+
+		@Override
+		public void write(ControlCenterStartParameter g,
+			OutputElement xml) throws XMLStreamException {
+			xml.setAttribute("withSensorInterferes",
+				g.withSensorInterferes);
+			xml.setAttribute("startTimestamp",
+				g.startTimestamp);
+			xml.setAttribute("endTimestamp",
+				g.endTimestamp);
+			xml.setAttribute("interval",
+				g.interval);
+			xml.setAttribute("clockGeneratorInterval",
+				g.clockGeneratorInterval);
+			xml.setAttribute("sensorUpdateSteps",
+				g.sensorUpdateSteps);
+			xml.setAttribute("ipSimulationController",
+				g.ipSimulationController);
+			xml.setAttribute("ipTrafficController",
+				g.ipTrafficController);
+			xml.setAttribute("ipWeatherController",
+				g.ipWeatherController);
+			xml.setAttribute("ipStaticSensorController",
+				g.ipStaticSensorController);
+			xml.setAttribute("ipEnergyController",
+				g.ipEnergyController);
+			xml.setAttribute("operationCenterAddress",
+				g.operationCenterAddress);
+			xml.setAttribute("name",
+				g.name);
+			xml.add(g.trafficServerIPs);
+			xml.add(g.simulationEventLists);
+			xml.add(g.mapAndBusstopFileData);
+			xml.add(g.randomDynamicSensorBundle);
+			xml.add(g.busRouteList);
+			xml.add(g.trafficFuzzyData);
+			xml.add(g.attractionCollection);
+			xml.add(g.specificUpdateSteps);
+		}
+
+		@Override
+		public void read(InputElement xml,
+			ControlCenterStartParameter g) throws XMLStreamException {
+			throw new UnsupportedOperationException();
+		}
 	}
 }

@@ -5,12 +5,16 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage;
+import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
-import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.shared.event.Event;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import de.pgalise.testutils.TestUtils;
+import java.io.IOException;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.embeddable.EJBContainer;
+import javax.naming.NamingException;
+import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -22,13 +26,22 @@ import org.primefaces.model.TreeNode;
  *
  * @author richter
  */
+@LocalBean
 public class MainCtrlTest {
-	
-	public MainCtrlTest() {
+
+	private static EJBContainer container;
+
+	@EJB
+	private StartParameterSerializerService startParameterSerializerService;
+
+	public MainCtrlTest() throws NamingException {
+		container.getContext().bind("inject",
+			this);
 	}
-	
+
 	@BeforeClass
 	public static void setUpClass() {
+		container = TestUtils.getContainer();
 	}
 
 	/**
@@ -171,14 +184,18 @@ public class MainCtrlTest {
 	 * Test of retrieveExportDownloadLink method, of class MainCtrl.
 	 */
 	@Test
-	public void testRetrieveExportDownloadLink() {
+	public void testRetrieveExportDownloadLink() throws IOException {
 		System.out.println("retrieveExportDownloadLink");
 		MainCtrl instance = new MainCtrl();
-		StreamedContent expResult = null;
+		instance.setStartParameterSerializerService(startParameterSerializerService);
+		ControlCenterStartParameter startParameter
+			= new ControlCenterStartParameter();
+		instance.setStartParameter(startParameter);
+		String expResult = "";
 		StreamedContent result = instance.retrieveExportDownloadLink();
+		String resultString = IOUtils.toString(result.getStream(),
+			"UTF-8");
 		assertEquals(expResult,
-			result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
+			resultString);
 	}
 }

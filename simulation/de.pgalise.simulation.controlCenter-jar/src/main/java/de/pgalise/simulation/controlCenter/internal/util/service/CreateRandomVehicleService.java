@@ -18,8 +18,6 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import java.io.Serializable;
-import javax.ejb.Local;
 
 /**
  * Service to create a {@link TrafficEvent} from
@@ -27,8 +25,7 @@ import javax.ejb.Local;
  *
  * @author Timo
  */
-@Local
-public interface CreateRandomVehicleService extends Serializable {
+public interface CreateRandomVehicleService {
 
 	/**
 	 * Creates dynamic sensors with random IDs.

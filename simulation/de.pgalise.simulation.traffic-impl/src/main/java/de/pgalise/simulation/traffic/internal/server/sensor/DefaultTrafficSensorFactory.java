@@ -9,7 +9,7 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
@@ -53,13 +53,15 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 	public DefaultTrafficSensorFactory() {
 		super();
 	}
-	
-	public DefaultTrafficSensorFactory(RandomSeedService rss,IdGenerator idGenerator,
+
+	public DefaultTrafficSensorFactory(RandomSeedService rss,
+		IdGenerator idGenerator,
 		WeatherController wctrl,
 		EnergyController ectrl,
-		Output sensorOutput,
+		TcpIpOutput sensorOutput,
 		int updateLimit) {
-		super(rss,idGenerator,
+		super(rss,
+			idGenerator,
 			wctrl,
 			ectrl,
 			sensorOutput,
@@ -151,18 +153,21 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 		}
 
 		JaxRSCoordinate position = createRandomPositionInfraredSensor();
-		return new InfraredSensor(getIdGenerator().getNextId(),getSensorOutput(),
+		return new InfraredSensor(getIdGenerator().getNextId(),
+			getSensorOutput(),
 			null,
 			position,
 			getUpdateLimit(),
 			infraredInterferer);
 	}
-	
+
 	public final static List<SensorInterfererType> DEFAULT_SENSOR_INTERFERER = new LinkedList<>();
-	
+
 	@Override
 	public GpsSensor createGpsSensor(boolean withSensorInterferer) {
-		return createGpsSensor(withSensorInterferer ? DEFAULT_SENSOR_INTERFERER : new ArrayList<SensorInterfererType>(0));
+		return createGpsSensor(
+			withSensorInterferer ? DEFAULT_SENSOR_INTERFERER : new ArrayList<SensorInterfererType>(
+				0));
 	}
 
 	@Override
@@ -202,14 +207,15 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 			gpsInterferer = new GpsNoInterferer();
 		}
 
-		return new GpsSensor(getIdGenerator().getNextId(),getSensorOutput(),
+		return new GpsSensor(getIdGenerator().getNextId(),
+			getSensorOutput(),
 			null,
 			getUpdateLimit(),
 			gpsInterferer);
 	}
 
 	@Override
-	public Sensor<?,?> createSensor(SensorType sensorType,
+	public Sensor<?, ?> createSensor(SensorType sensorType,
 		List<SensorInterfererType> sensorInterfererTypes)
 		throws InterruptedException, ExecutionException {
 		if (sensorType.equals(TrafficSensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
