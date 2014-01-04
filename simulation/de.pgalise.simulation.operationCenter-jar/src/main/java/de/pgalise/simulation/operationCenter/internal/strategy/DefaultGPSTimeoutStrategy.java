@@ -15,16 +15,11 @@
  */
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.HashSet;
@@ -49,7 +44,7 @@ public class DefaultGPSTimeoutStrategy implements GPSSensorTimeoutStrategy {
 	 * timeout) , Map<Integer = sensorID, SensorData> = contains all sensors that
 	 * have the same last update timestamp and update step.
 	 */
-	private Map<Long, Set<Sensor>> timeoutSensorHelperMap;
+	private Map<Long, Set<GpsSensor>> timeoutToSensorsMap;
 
 	/**
 	 * Default
@@ -62,31 +57,30 @@ public class DefaultGPSTimeoutStrategy implements GPSSensorTimeoutStrategy {
 		int missedGPSUpdateStepsBeforeTimeout) {
 		log.debug(
 			"Init with interval: " + interval + " and missedGPSUpdateStepsBeforeTimeout: " + missedGPSUpdateStepsBeforeTimeout);
-		this.timeoutSensorHelperMap = new HashMap<>();
+		this.timeoutToSensorsMap = new HashMap<>();
 		this.missedGPSUpdateStepsBeforeTimeout = missedGPSUpdateStepsBeforeTimeout;
 		this.interval = interval;
 	}
 
 	@Override
-	public Collection<Sensor<?,?>> processUpdateStep(long timestamp,
-		Collection<GpsSensor> sensorHelpers) {
-		Set<Sensor<?,?>> sensorsWithTimeout = new HashSet<>();
+	public Set<GpsSensor> processUpdateStep(long timestamp,
+		Set<GpsSensor> sensors) {
 
 		log.debug("Current timestamp: " + timestamp);
 
-		for (Sensor sensor : sensorHelpers) {
+		for (GpsSensor sensor : sensors) {
 			/* Add to map: */
-			long nextTimestamp = timestamp + (sensor.getUpdateSteps() * this.interval);
+			long nextUpdateTimestamp = timestamp + (sensor.getUpdateSteps() * this.interval);
 
 			log.debug(
 				"Check sensor: " + sensor.getId() + " with update steps: " + sensor.
-				getUpdateSteps() + " next update will be on: " + nextTimestamp);
+				getUpdateSteps() + " next update will be on: " + nextUpdateTimestamp);
 
-			Set<Sensor> tmpMap = this.timeoutSensorHelperMap.get(
-				nextTimestamp);
+			Set<GpsSensor> tmpMap = this.timeoutToSensorsMap.get(
+				nextUpdateTimestamp);
 			if (tmpMap == null) {
 				tmpMap = new HashSet<>();
-				this.timeoutSensorHelperMap.put(nextTimestamp,
+				this.timeoutToSensorsMap.put(nextUpdateTimestamp,
 					tmpMap);
 			}
 			tmpMap.add(
@@ -94,23 +88,24 @@ public class DefaultGPSTimeoutStrategy implements GPSSensorTimeoutStrategy {
 
 			/* Remove from old map, if there is any entry: */
 			long possibleOldTimestamp = timestamp;
-			Set<Sensor> possibleOldMap = this.timeoutSensorHelperMap.
+			Set<GpsSensor> possibleOldSensors = this.timeoutToSensorsMap.
 				get(possibleOldTimestamp);
-			if (possibleOldMap != null) {
-				possibleOldMap.remove(sensor.getId());
-				if (possibleOldMap.isEmpty()) {
-					this.timeoutSensorHelperMap.remove(possibleOldTimestamp);
+			if (possibleOldSensors != null) {
+				possibleOldSensors.remove(sensor);
+				if (possibleOldSensors.isEmpty()) {
+					this.timeoutToSensorsMap.remove(possibleOldTimestamp);
 				}
 			}
 		}
 
 		/* Check for timeouts and remove them from map: */
-		Set<Sensor> timeoutMap = this.timeoutSensorHelperMap.remove(
-			timestamp - (this.interval * this.missedGPSUpdateStepsBeforeTimeout));
-		if (timeoutMap != null) {
-			for (Sensor sensorHelper : timeoutMap) {
-				sensorsWithTimeout.add(sensorHelper);
-			}
+		Set<GpsSensor> sensorsWithTimeout;
+		long lastCheckpointTimestamp = timestamp - (this.interval * this.missedGPSUpdateStepsBeforeTimeout);
+		Set<GpsSensor> missedSensors = this.timeoutToSensorsMap.remove(lastCheckpointTimestamp);
+		if (missedSensors != null) {
+			sensorsWithTimeout = new HashSet<>(missedSensors);
+		}else {
+			sensorsWithTimeout = new HashSet<>();
 		}
 		return sensorsWithTimeout;
 	}

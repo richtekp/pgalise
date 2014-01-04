@@ -34,18 +34,16 @@ import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
 import org.jgrapht.alg.DijkstraShortestPath;
 
 /**
@@ -83,23 +81,19 @@ public class SchedulerTest {
 
 		List<Vehicle<?>> vehicles = new ArrayList<>();
 
-		Vehicle<?> a = new BaseVehicle<>(1L,ee);
-		a.setName("a");
+		Vehicle<?> a = new DefaultCar(1L,"a", null,ee);
 		a.setPath(shortestPath);
 		vehicles.add(a);
 
-		Vehicle<?> b = new BaseVehicle<>(2L,ee);
-		b.setName("b");
+		Vehicle<?> b = new DefaultCar(2L,"b",null,ee);
 		b.setPath(shortestPath);
 		vehicles.add(b);
 
-		Vehicle<?> c = new BaseVehicle<>(3L,ee);
-		c.setName("c");
+		Vehicle<?> c = new DefaultCar(3L,"c",null,ee);
 		c.setPath(shortestPath);
 		vehicles.add(c);
 
-		Vehicle<?> d = new BaseVehicle<>(4L,ee);
-		d.setName("d");
+		Vehicle<?> d = new DefaultCar(4L,"d",null,ee);
 		d.setPath(shortestPath);
 		vehicles.add(d);
 

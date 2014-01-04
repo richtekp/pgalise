@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;

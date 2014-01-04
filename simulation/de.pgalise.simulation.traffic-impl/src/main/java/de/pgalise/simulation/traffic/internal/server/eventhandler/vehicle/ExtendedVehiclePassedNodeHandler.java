@@ -17,11 +17,9 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 
-import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorizedVehicle;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;

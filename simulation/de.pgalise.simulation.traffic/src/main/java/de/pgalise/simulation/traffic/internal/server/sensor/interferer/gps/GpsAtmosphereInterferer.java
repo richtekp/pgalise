@@ -61,7 +61,7 @@ public class GpsAtmosphereInterferer extends GpsBaseInterferer {
 	@Override
 	public Coordinate interfere(final Coordinate mutablePosition, final Coordinate realPosition, final long simTime) {
 		// Should be changed?
-		if (this.getRandom().nextDouble() <= this.changeProbability) {
+		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
 			double radiation = this.weatherController.getValue(WeatherParameterEnum.RADIATION, simTime, realPosition)
 					.doubleValue();
 			return new Coordinate(mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);

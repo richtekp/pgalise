@@ -5,8 +5,6 @@
 package de.pgalise.simulation.traffic.internal;
 
 
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
@@ -16,13 +14,11 @@ import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.Set;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import org.jgrapht.EdgeFactory;
-import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  * a graph of {@link NavigationNode}s connected with {@link NavigationEdge}s. {@link DirectPosition2D}s are saved in a prefix tree in order to ensure search of closest nodes to arbitrary positions using {@link  #getElementClosestTo(org.geotools.geometry.DirectPosition2D, double) }.

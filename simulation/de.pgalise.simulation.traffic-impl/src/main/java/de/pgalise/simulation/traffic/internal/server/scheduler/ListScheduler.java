@@ -28,7 +28,6 @@ import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
  * Implements a scheduler for the traffic. Uses a list to schedule the items.

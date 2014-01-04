@@ -22,15 +22,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import de.pgalise.simulation.service.Orientation;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
-import java.util.HashSet;
 import java.util.Set;
 import de.pgalise.simulation.shared.city.Vector2d;
 

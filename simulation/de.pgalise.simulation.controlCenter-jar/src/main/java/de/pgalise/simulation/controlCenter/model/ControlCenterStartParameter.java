@@ -20,12 +20,14 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.traffic.AbstractInfrastructureStartParameter;
+import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.TrafficCity;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,8 +35,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * All parameters to start the simulation. This is an extra version only for the
@@ -45,7 +47,8 @@ import javax.faces.bean.SessionScoped;
  */
 @ManagedBean
 @SessionScoped
-public class ControlCenterStartParameter extends AbstractInfrastructureStartParameter {
+@XmlRootElement
+public class ControlCenterStartParameter extends InfrastructureStartParameter {
 
 	private static final long serialVersionUID = 1L;
     private PropertyChangeSupport mPcs =
@@ -59,11 +62,10 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 	/**
 	 * Simulation time
 	 */
-	@ManagedProperty(value="#{283940248}")
-	private long startTimestamp;
-	private long endTimestamp;
-	private long interval;
-	private long clockGeneratorInterval;
+	private Long startTimestamp ;
+	private long endTimestamp = GregorianCalendar.getInstance().getTime().getTime()+1000*60*60;
+	private long interval = 1;
+	private long clockGeneratorInterval = 1;
 	
 	/**
 	 * Sensor update steps
@@ -94,7 +96,8 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 	 */
 	private List<EventList<?>> simulationEventLists;
 
-	private MapAndBusstopFileData oSMAndBusstopFileData = new MapAndBusstopFileData();
+	@ManagedProperty(value = "#{mapAndBusstopFileData}")
+	private MapAndBusstopFileData mapAndBusstopFileData;
 
 	/**
 	 * To create random vehicles.
@@ -109,7 +112,7 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 	/**
 	 * URL of the operation center
 	 */
-	private String operationCenterAddress;
+	private String operationCenterAddress = "127.0.0.1";
 
 	/**
 	 * URL of the control center.
@@ -128,9 +131,9 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 	/**
 	 * A name of the simulation (defaults to the name of the associated city)
 	 */
-	private String name;
+	private String name = "Oldenburg";
 
-	private StartParameterOriginEnum startParameterOriginEnum = null;
+	private StartParameterOriginEnum startParameterOriginEnum = StartParameterOriginEnum.CREATED;
 
 	/**
 	 * a placeholder for uploaded serialized instances used by {@link #overwriteWithImportedInstanceProperties()
@@ -139,7 +142,7 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 	private String importedInstanceFileContent = null;
 	
 	private Map<Class<? extends Sensor<?,?>>, Long> specificUpdateSteps =  new HashMap<>();
-
+	
 	public ControlCenterStartParameter() {
 	}
 
@@ -190,7 +193,7 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 		List<EventList<?>> simulationEventLists,
 		List<WeatherEvent> weatherEventList,
 		//					MapAndBusstopFileData osmAndBusstopFileDatas,
-		MapAndBusstopFileData oSMAndBusstopFileData,
+		MapAndBusstopFileData mapAndBusstopFileData,
 		RandomVehicleBundle randomDynamicSensorBundle,
 		boolean withSensorInterferes,
 		long sensorUpdateSteps,
@@ -222,7 +225,13 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 		this.attractionCollection = attractionCollection;
 		this.controlCenterAddress = controlCenterAddress;
 		this.name = city.getName();
-		this.oSMAndBusstopFileData = oSMAndBusstopFileData;
+		this.mapAndBusstopFileData = mapAndBusstopFileData;
+	}
+	
+	@PostConstruct
+	public void init() {
+		 mapAndBusstopFileData = new MapAndBusstopFileData();
+		 startTimestamp = GregorianCalendar.getInstance().getTime().getTime();
 	}
 
 	public void setSpecificUpdateSteps(
@@ -257,11 +266,11 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 		this.sensorUpdateSteps = sensorUpdateSteps;
 	}
 
-	public long getStartTimestamp() {
+	public Long getStartTimestamp() {
 		return startTimestamp;
 	}
 
-	public void setStartTimestamp(long startTimestamp) {
+	public void setStartTimestamp(Long startTimestamp) {
 		this.startTimestamp = startTimestamp;
 	}
 
@@ -408,13 +417,13 @@ public class ControlCenterStartParameter extends AbstractInfrastructureStartPara
 		this.controlCenterAddress = controlCenterAddress;
 	}
 
-	public void setoSMAndBusstopFileData(
-		MapAndBusstopFileData oSMAndBusstopFileData) {
-		this.oSMAndBusstopFileData = oSMAndBusstopFileData;
+	public void setMapAndBusstopFileData(
+		MapAndBusstopFileData mapAndBusstopFileData) {
+		this.mapAndBusstopFileData = mapAndBusstopFileData;
 	}
 
-	public MapAndBusstopFileData getoSMAndBusstopFileData() {
-		return oSMAndBusstopFileData;
+	public MapAndBusstopFileData getMapAndBusstopFileData() {
+		return mapAndBusstopFileData;
 	}
 
 	/**

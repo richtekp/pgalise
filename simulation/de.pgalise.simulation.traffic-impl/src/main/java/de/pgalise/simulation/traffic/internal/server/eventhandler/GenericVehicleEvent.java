@@ -5,8 +5,6 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.event.AbstractVehicleEvent;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;

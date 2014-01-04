@@ -52,10 +52,8 @@ import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.ControlCenterControllerLoader;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterControllerLoader;
+import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -67,7 +65,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * {@link InitParameter#getClockGeneratorInterval()}. In every iteration the
  * update functions of the {@link SimulationComponent} controllers is called
  * with the {@link SimulationEventList} for the current interval. The update
- * order in every iteration is: {@link WeatherController}, {@link EnergyController}, {@link DefaultFrontController}, {@link OperationCenterController},
+ * order in every iteration is: {@link WeatherController}, {@link EnergyController}, {@link DefaultFrontController}, {@link ServerSideOperationCenterController},
  * {@link ControlCenterControllerLoader} and {@link TrafficController}.
  *
  * @author Timo
@@ -229,46 +227,33 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	 */
 	private static final Logger log = LoggerFactory.getLogger(
 		DefaultEventInitiator.class);
-
 	/**
 	 * Map with timestamp and future energy events
 	 */
 	private final Map<Long, List<EnergyEvent>> energyEventMap = new HashMap<>();
-
 	/**
 	 * Event thread
 	 */
 	private Thread eventThread;
-
 	/**
 	 * Lock object
 	 */
-	private final Object lockThreadLoop, lockTimestamp;
-
+	private final Object lockThreadLoop= new Object(), lockTimestamp = new Object();;
 	private long currentTimestamp, endTimestamp, interval, clockGeneratorInterval;
-
 	/**
 	 * Map with timestamp and traffic events
 	 */
 	private final Map<Long, List<Event>> trafficEventMap = new HashMap<>();
-
 	/**
 	 * Map with timestamp and weather events
 	 */
 	private final Map<Long, List<WeatherEvent>> weatherEventMap = new HashMap<>();
-
 	@EJB
 	private ServiceDictionary serviceDictionary;
-
 	@EJB
-	private OperationCenterControllerLoader operationCenterControllerLoader;
-
+	private ServerSideOperationCenterController operationCenterController;
 	@EJB
-	private ControlCenterControllerLoader controlCenterControllerLoader;
-
-	private OperationCenterController operationCenterController;
-
-	private ControlCenterController controlCenterController;
+	private ServerSideControlCenterController controlCenterController;
 
 	private List<Controller<?, ?, ?>> frontControllerList;
 
@@ -276,10 +261,38 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	 * Default constructor
 	 */
 	public DefaultEventInitiator() {
-		this.lockThreadLoop = new Object();
-		this.lockTimestamp = new Object();
 		sdf = new SimpleDateFormat();
 		sdf.applyPattern("dd.MM.yy/HH:mm:ss");
+	}public DefaultEventInitiator(IdGenerator idGenerator,
+		ServiceDictionary serviceDictionary,
+		ServerSideOperationCenterController operationCenterController,
+		ServerSideControlCenterController controlCenterController,
+		List<Controller<?, ?, ?>> frontControllerList) {
+		this.idGenerator = idGenerator;
+		this.serviceDictionary = serviceDictionary;
+		this.operationCenterController = operationCenterController;
+		this.controlCenterController = controlCenterController;
+		this.frontControllerList = frontControllerList;
+	}
+
+	public DefaultEventInitiator(IdGenerator idGenerator,
+		long currentTimestamp,
+		long endTimestamp,
+		long interval,
+		long clockGeneratorInterval,
+		ServiceDictionary serviceDictionary,
+		ServerSideOperationCenterController operationCenterController,
+		ServerSideControlCenterController controlCenterController,
+		List<Controller<?, ?, ?>> frontControllerList) {
+		this(idGenerator,
+			serviceDictionary,
+			operationCenterController,
+			controlCenterController,
+			frontControllerList);
+		this.currentTimestamp = currentTimestamp;
+		this.endTimestamp = endTimestamp;
+		this.interval = interval;
+		this.clockGeneratorInterval = clockGeneratorInterval;
 	}
 
 	/**
@@ -287,10 +300,6 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	 */
 	@PostConstruct
 	public void onPostConstruct() {
-		this.controlCenterController = this.controlCenterControllerLoader.
-			loadControlCenterController();
-		this.operationCenterController = this.operationCenterControllerLoader.
-			loadOperationCenterController();
 	}
 
 	@Override
@@ -401,12 +410,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	 */
 	private void stopEventThread() {
 		if (this.eventThread != null && this.eventThread.isAlive()) {
-			try {
-				this.eventThread.interrupt();
-			} catch (Exception e) {
-				log.error(e.getLocalizedMessage(),
-					e);
-			}
+			this.setStatus(StatusEnum.STOPPED);
 		}
 	}
 
@@ -468,7 +472,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 
 	@Override
 	public void setOperationCenterController(
-		OperationCenterController operationCenterController) {
+		ServerSideOperationCenterController operationCenterController) {
 		this.operationCenterController = operationCenterController;
 	}
 
@@ -477,7 +481,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	 *
 	 * @param serviceDictionary
 	 */
-	public void _setServiceDictionary(ServiceDictionary serviceDictionary) {
+	protected void setServiceDictionary(ServiceDictionary serviceDictionary) {
 		this.serviceDictionary = serviceDictionary;
 	}
 
@@ -489,7 +493,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 
 	@Override
 	public void setControlCenterController(
-		ControlCenterController controlCenterController) {
+		ServerSideControlCenterController controlCenterController) {
 		this.controlCenterController = controlCenterController;
 	}
 

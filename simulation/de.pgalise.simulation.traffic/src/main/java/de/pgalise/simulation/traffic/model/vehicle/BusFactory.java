@@ -16,6 +16,7 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
+import javax.ejb.Local;
 
 /**
  * Interface to provide methods to create different types of {@link Bus}.
@@ -29,18 +30,17 @@ public interface BusFactory extends VehicleFactory {
 	 * Method to create a {@link Bus} with the given typeId.All position related
 	 * data is <code>null</code>
 	 *
-	 * @param id ID of the {@link Bus}
-	 * @param typeId ID of the {@link Bus} type
+	 * @param output
 	 * @return created {@link Bus}
 	 */
-	public Vehicle<BusData> createBus(Output output);
+	public Bus createBus(Output output);
 
 	/**
 	 * Method to create a random {@link Bus}.All position related data is
 	 * <code>null</code>
 	 *
-	 * @param id ID of the {@link Bus}
+	 * @param output
 	 * @return created {@link Bus}
 	 */
-	public Vehicle<BusData> createRandomBus(Output output);
+	public Bus createRandomBus(Output output);
 }

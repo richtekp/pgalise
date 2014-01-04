@@ -28,7 +28,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
  * 
  * @author Timo
  */
-public enum VehicleTypeEnum {
+public enum VehicleTypeEnum implements VehicleType {
 	/**
 	 * VehicleTypeEnum for cars
 	 */

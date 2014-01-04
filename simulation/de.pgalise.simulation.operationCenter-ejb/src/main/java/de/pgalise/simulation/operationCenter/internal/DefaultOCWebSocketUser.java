@@ -27,6 +27,7 @@ import de.pgalise.simulation.operationCenter.internal.message.OCWebSocketMessage
 import de.pgalise.simulation.operationCenter.internal.message.SensorDataMessage;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
@@ -180,8 +181,8 @@ public class DefaultOCWebSocketUser extends Endpoint implements
 				GPSSensorTimeoutMessage gpsSensorTimeoutMessage = (GPSSensorTimeoutMessage) message;
 				if (gpsSensorTimeoutMessage.getContent().size()
 										> this.maxSensorDataInOneMessage) {
-					List<Sensor<?,?>> tmpSensorDataList = new LinkedList<>();
-					for (Sensor sensorData : gpsSensorTimeoutMessage.getContent()) {
+					List<GpsSensor> tmpSensorDataList = new LinkedList<>();
+					for (GpsSensor sensorData : gpsSensorTimeoutMessage.getContent()) {
 						tmpSensorDataList.add(sensorData);
 						if (tmpSensorDataList.size() % this.maxSensorDataInOneMessage == 0) {
 							GPSSensorTimeoutMessage tmpMessage = new GPSSensorTimeoutMessage(

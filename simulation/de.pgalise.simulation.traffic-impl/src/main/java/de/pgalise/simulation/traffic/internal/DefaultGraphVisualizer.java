@@ -15,15 +15,10 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.awt.Font;

@@ -56,7 +56,7 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	/**
 	 * List with busses
 	 */
-	private List<CreateRandomVehicleData> createRandomVehicleDataList;
+	private List<CreateRandomBusData> createRandomVehicleDataList;
 
 	/**
 	 * Constructor
@@ -70,7 +70,7 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	 * @param busRoutes
 	 *            List with bus routes
 	 */
-	public CreateBussesEvent(TrafficServerLocal<CreateBussesEvent<D>> responsibleServer, long time, long elaspsedTime, List<CreateRandomVehicleData> createRandomVehicleDataList, 
+	public CreateBussesEvent(TrafficServerLocal<CreateBussesEvent<D>> responsibleServer, long time, long elaspsedTime, List<CreateRandomBusData> createRandomVehicleDataList, 
 			List<BusRoute> busRoutes) {
 		super(responsibleServer, time,
 			elaspsedTime);
@@ -82,7 +82,7 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	/**
 	 * @return the createRandomVehicleDataList
 	 */
-	public List<CreateRandomVehicleData> getCreateRandomVehicleDataList() {
+	public List<CreateRandomBusData> getCreateRandomVehicleDataList() {
 		return createRandomVehicleDataList;
 	}
 
@@ -90,7 +90,7 @@ public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEve
 	 * @param createRandomVehicleDataList
 	 *            the createRandomVehicleDataList to set
 	 */
-	public void setCreateRandomVehicleDataList(List<CreateRandomVehicleData> createRandomVehicleDataList) {
+	protected void setCreateRandomVehicleDataList(List<CreateRandomBusData> createRandomVehicleDataList) {
 		this.createRandomVehicleDataList = createRandomVehicleDataList;
 	}
 

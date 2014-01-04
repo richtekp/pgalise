@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal.server.sensor;
 
 import de.pgalise.simulation.shared.city.Coordinate;
 import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,19 +25,14 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;

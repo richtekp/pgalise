@@ -19,13 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 
@@ -57,6 +53,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	/**
 	 * Constructor
 	 *
+	 * @param id
 	 * @param name Name of the car
 	 * @param carData Information of the car
 	 * @param trafficGraphExtensions
@@ -74,6 +71,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	/**
 	 * Constructor
 	 *
+	 * @param id
 	 * @param carData Information of the car
 	 * @param trafficGraphExtensions
 	 */

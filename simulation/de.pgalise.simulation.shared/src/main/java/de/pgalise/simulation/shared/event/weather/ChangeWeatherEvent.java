@@ -15,8 +15,7 @@
  */
 package de.pgalise.simulation.shared.event.weather;
 
-import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
+import javax.faces.bean.ManagedBean;
 
 /**
  * Event for modifying the current weather
@@ -24,12 +23,14 @@ import de.pgalise.simulation.shared.event.EventTypeEnum;
  * @author Andreas Rehfeldt
  * @version 1.1 (Aug 30, 2012)
  */
+@ManagedBean
 public class ChangeWeatherEvent extends ValueWeatherEvent {
 
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = 2452503673933039973L;
+	private WeatherEventType eventType;
 
 	/**
 	 * Constructor
@@ -44,10 +45,16 @@ public class ChangeWeatherEvent extends ValueWeatherEvent {
 		float value,
 		long timestamp,
 		long duration) {
-		super(id,eventType,
+		super(id,
 			timestamp,
 			duration,
 			value);
+		this.eventType = eventType;
+	}
+
+	@Override
+	public WeatherEventType getType() {
+		return eventType;
 	}
 
 }

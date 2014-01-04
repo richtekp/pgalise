@@ -16,9 +16,6 @@
 package de.pgalise.simulation.shared.event.weather;
 
 import de.pgalise.simulation.shared.event.AbstractEvent;
-import de.pgalise.simulation.shared.event.EventType;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
 
 /**
  * Weather type super class.
@@ -26,19 +23,12 @@ import javax.faces.bean.ManagedBean;
  * @author Timo
  * @version 1.0
  */
-@ManagedBean
-@ApplicationScoped
 public abstract class WeatherEvent extends AbstractEvent {
 
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -4700226520167357639L;
-
-	/**
-	 * Weather type
-	 */
-	private WeatherEventType type;
 
 	/**
 	 * Timestamp of the type
@@ -56,26 +46,15 @@ public abstract class WeatherEvent extends AbstractEvent {
 
 	public WeatherEvent(
 		Long id,
-		WeatherEventType type,
 		long timestamp,
 		long duration) {
 		super(id);
-		this.type = type;
 		this.timestamp = timestamp;
 		this.duration = duration;
 	}
 
-	@Override
-	public WeatherEventType getType() {
-		return this.type;
-	}
-
 	public long getTimestamp() {
 		return this.timestamp;
-	}
-
-	public void setType(WeatherEventType type) {
-		this.type = type;
 	}
 
 	public void setTimestamp(long timestamp) {
@@ -89,4 +68,7 @@ public abstract class WeatherEvent extends AbstractEvent {
 	public void setDuration(long duration) {
 		this.duration = duration;
 	}
+
+	@Override
+	public abstract WeatherEventType getType();
 }

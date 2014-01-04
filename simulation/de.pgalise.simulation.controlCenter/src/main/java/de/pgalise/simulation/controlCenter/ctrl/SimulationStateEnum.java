@@ -11,5 +11,16 @@ package de.pgalise.simulation.controlCenter.ctrl;
  * @author richter
  */
 public enum SimulationStateEnum implements SimulationState {
-	RUNNING
+	RUNNING("running"), PAUSED("paused"), STOPPED("stopped");
+	
+	private final String stringValue;
+
+	private SimulationStateEnum(String stringValue) {
+		this.stringValue = stringValue;
+	}
+
+	@Override
+	public String getStringValue() {
+		return stringValue;
+	}
 }

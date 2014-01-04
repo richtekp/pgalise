@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import java.io.IOException;
@@ -27,58 +26,70 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Abstract super class for gps interferers
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Nov 14, 2012)
  */
 public abstract class GpsBaseInterferer implements GpsInterferer {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Random Seed Service
 	 */
-	protected RandomSeedService randomservice;
+	private RandomSeedService randomSeedService;
 
 	/**
 	 * Random Object
 	 */
-	protected Random random;
+	private Random random;
 
 	/**
 	 * Change amplitude
 	 */
-	protected double changeAmplitude;
-
-	/**
-	 * Properties with limits
-	 */
-	protected Properties properties;
+	private double changeAmplitude;
 
 	/**
 	 * Probability to change the values
 	 */
-	protected double changeProbability;
+	private double changeProbability;
+	
+	/**
+	 * Properties with limits
+	 */
+	private Properties properties;
+
+	public GpsBaseInterferer(RandomSeedService randomservice,
+		double changeAmplitude,
+		double changeProbability) {
+		this.randomSeedService = randomservice;
+		this.changeAmplitude = changeAmplitude;
+		this.changeProbability = changeProbability;
+	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param randomseedservice
-	 *            Random Seed Service
-	 * @param filepath
-	 *            File path to the properties file
+	 *
+	 * @param randomSeedService Random Seed Service
+	 * @param filepath File path to the properties file
 	 */
-	public GpsBaseInterferer(RandomSeedService randomseedservice, String filepath) {
-		if (randomseedservice == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("randomseedservice"));
+	public GpsBaseInterferer(RandomSeedService randomSeedService,
+		String filepath) {
+		if (randomSeedService == null) {
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"randomseedservice"));
 		}
 		if (filepath == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("filepath"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"filepath"));
 		}
-		this.randomservice = randomseedservice;
-		this.random = new Random(this.randomservice.getSeed(GpsBaseInterferer.class.getName()));
+		this.randomSeedService = randomSeedService;
+		this.random = new Random(randomSeedService.getSeed(GpsBaseInterferer.class.
+			getName()));
 
 		// Read property file
-		try (InputStream propInFile = GpsBaseInterferer.class.getResourceAsStream(filepath)) {
+		try (InputStream propInFile = GpsBaseInterferer.class.getResourceAsStream(
+			filepath)) {
 			this.properties = new Properties();
 			this.properties.loadFromXML(propInFile);
 		} catch (IOException e) {
@@ -90,8 +101,10 @@ public abstract class GpsBaseInterferer implements GpsInterferer {
 		/*
 		 * Note every property file should have these properties
 		 */
-		this.changeAmplitude = Double.parseDouble(this.properties.getProperty("change_amplitude"));
-		this.changeProbability = Double.parseDouble(this.properties.getProperty("change_probability"));
+		this.changeAmplitude = Double.parseDouble(this.properties.getProperty(
+			"change_amplitude"));
+		this.changeProbability = Double.parseDouble(this.properties.getProperty(
+			"change_probability"));
 	}
 
 	public double getChangeAmplitude() {
@@ -116,6 +129,35 @@ public abstract class GpsBaseInterferer implements GpsInterferer {
 
 	public void setRandom(Random random) {
 		this.random = random;
+	}
+
+	/**
+	 * @return the randomSeedService
+	 */
+	public RandomSeedService getRandomservice() {
+		return randomSeedService;
+	}
+
+	/**
+	 * @param randomservice the randomSeedService to set
+	 */
+	public void setRandomservice(
+		RandomSeedService randomservice) {
+		this.randomSeedService = randomservice;
+	}
+
+	/**
+	 * @return the properties
+	 */
+	public Properties getProperties() {
+		return properties;
+	}
+
+	/**
+	 * @param properties the properties to set
+	 */
+	protected void setProperties(Properties properties) {
+		this.properties = properties;
 	}
 
 }

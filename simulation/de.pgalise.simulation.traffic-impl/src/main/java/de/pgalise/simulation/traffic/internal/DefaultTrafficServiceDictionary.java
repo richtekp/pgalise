@@ -7,15 +7,10 @@
 package de.pgalise.simulation.traffic.internal;
 
 import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.AbstractServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.traffic.TrafficServiceDictionary;
-import de.pgalise.simulation.traffic.server.TrafficServer;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -22,19 +22,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.TrafficTrip;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * Creates random vehicles with random trips.

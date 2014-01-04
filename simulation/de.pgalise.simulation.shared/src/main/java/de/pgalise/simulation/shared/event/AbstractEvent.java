@@ -29,8 +29,6 @@ import javax.faces.bean.SessionScoped;
  * 
  * @author Timo
  */
-@ManagedBean
-@SessionScoped
 public abstract class AbstractEvent extends AbstractIdentifiable implements Event {
 	/**
 	 * Serial

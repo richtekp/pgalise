@@ -27,11 +27,9 @@ import org.w3c.dom.NodeList;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import javax.ejb.EJB;
-import javax.ejb.Stateful;
 
 /**
  * Implements a factory for {@link Bike}. The vehicles are loaded by a XML file.
@@ -39,7 +37,6 @@ import javax.ejb.Stateful;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-@Stateful
 public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
 	implements BicycleFactory {
 
@@ -85,16 +82,16 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
 	}
 
 	@Override
-	public BaseVehicle<BicycleData> createRandomBicycle(Output helper) {
+	public Bicycle createRandomBicycle(Output helper) {
 		BicycleData data = getRandomVehicleData();
-		return new Bicycle(getIdGenerator().getNextId(),
+		return new DefaultBicycle(getIdGenerator().getNextId(),
 			"bicycle" + getNextCounter(),
 			data,
 			this.getTrafficGraphExtensions());
 	}
 
 	@Override
-	public BaseVehicle<BicycleData> createBicycle(Output helper) {
+	public Bicycle createBicycle(Output helper) {
 		return createRandomBicycle(helper);
 	}
 

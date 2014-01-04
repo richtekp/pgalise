@@ -27,7 +27,6 @@ import org.junit.Test;
 
 import de.pgalise.util.generic.MutableBoolean;
 import de.pgalise.util.generic.function.Function;
-import de.pgalise.simulation.shared.city.Vector2d;
 
 /**
  * Tests the {@link GraphVisualizer}

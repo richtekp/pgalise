@@ -10,10 +10,15 @@ import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
+import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
+import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
-import java.awt.Color;
+import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
+import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
+import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateful;
 
 /**
@@ -23,35 +28,10 @@ import javax.ejb.Stateful;
  * @author richter
  */
 @Stateful
-public class RandomInformationBasedVehicleFactory extends AbstractVehicleFactory
+public class RandomInformationBasedVehicleFactory extends AbstractInformationBasedVehicleFactory
 	implements InformationBasedVehicleFactory {
+	private static final long serialVersionUID = 1L;
 
-	private RandomBicycleFactory bicycleFactory;
-	private RandomBusFactory busFactory;
-	private RandomCarFactory carFactory;
-	private RandomMotorcycleFactory motorcycleFactory;
-	private RandomTruckFactory truckFactory;
-
-	@Override
-	public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
-		Output output) {
-		GpsSensor gpsSensor = new GpsSensor(getIdGenerator().getNextId(),
-			output,
-			null,
-			null);
-		if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BIKE)) {
-			return bicycleFactory.createBicycle(output);
-		} else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BUS)) {
-			return busFactory.createBus(output);
-		} else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.CAR)) {
-			return carFactory.createCar(output);
-		} else if (vehicleInformation.getVehicleType().equals(
-			VehicleTypeEnum.MOTORCYCLE)) {
-			motorcycleFactory.createRandomMotorcycle(output);
-		} else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.TRUCK)) {
-			return truckFactory.createRandomTruck(output);
-		}
-		throw new IllegalArgumentException();
+	public RandomInformationBasedVehicleFactory() {
 	}
-
 }

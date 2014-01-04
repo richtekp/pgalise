@@ -28,12 +28,10 @@ import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLMotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import static de.pgalise.simulation.traffic.vehicle.XMLCarFactoryTest.FILEPATH;
 
 /**
  * Tests the {@link XMLMotorcycleFactoryTest}

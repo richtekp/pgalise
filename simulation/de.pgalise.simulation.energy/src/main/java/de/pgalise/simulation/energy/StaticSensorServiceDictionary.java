@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 
-package de.pgalise.simulation.staticsensor;
+package de.pgalise.simulation.energy;
 
-import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.service.ServiceDictionary;
 
 /**

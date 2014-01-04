@@ -6,73 +6,34 @@
 
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
-import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.controlCenter.ctrl.BaseMapDialogCtrl;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.Coordinate;
-import de.pgalise.simulation.weather.service.WeatherController;
-import java.io.Serializable;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
-import org.primefaces.event.map.MarkerDragEvent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
+import javax.faces.bean.RequestScoped;
 
 /**
  *
  * @author richter
  */
-public class BaseSensorDialogCtrl implements Serializable {
-	private MapModel mapModel;
-	public final static LatLng DEFAULT_START_COORDINATE = new LatLng(36.879466,
-		30.667648);
-	public final static LatLng DEFAULT_END_COORDINATE = new LatLng(36.883707,
-		30.689216);
-	private Marker startMarker = new Marker(DEFAULT_START_COORDINATE,
-		"Konyaalti");
-	private Marker endMarker = new Marker(DEFAULT_END_COORDINATE,
-		"Konyaalti");
-	private Coordinate coordinate;
+@ManagedBean
+@RequestScoped
+public class BaseSensorDialogCtrl extends BaseMapDialogCtrl {
+	private static final long serialVersionUID = 1L;
 	private int chosenUpdateStep;
 	@EJB
 	private SensorManagerController sensorManagerController;
 	@EJB
-	private IdGenerator idGenerator;
-	@EJB
 	private TcpIpOutput output;
 	@EJB
 	private RandomSeedService randomSeedService;
-	
+
+	/**
+	 * Creates a new instance of BaseSensorDialogCtrl
+	 */
 	public BaseSensorDialogCtrl() {
-
-		mapModel = new DefaultMapModel();
-
-		//Draggable  
-		mapModel.addOverlay(startMarker);
-		mapModel.addOverlay(endMarker);
-		for (Marker marker : mapModel.getMarkers()) {
-			marker.setDraggable(true);
-		}
-	}
-
-	public MapModel getMapModel() {
-		return mapModel;
-	}
-
-	public void setMapModel(MapModel mapModel) {
-		this.mapModel = mapModel;
-	}
-
-	public void onMarkerDrag(MarkerDragEvent event) {
-		Marker marker = event.getMarker();
-		coordinate = new Coordinate(marker.getLatlng().getLat(),
-				marker.getLatlng().getLng());
 	}
 
 	public void setChosenUpdateStep(int chosenUpdateStep) {
@@ -81,10 +42,6 @@ public class BaseSensorDialogCtrl implements Serializable {
 
 	public int getChosenUpdateStep() {
 		return chosenUpdateStep;
-	}
-
-	public Coordinate getCoordinate() {
-		return coordinate;
 	}
 
 	/**
@@ -100,21 +57,6 @@ public class BaseSensorDialogCtrl implements Serializable {
 	public void setSensorManagerController(
 		SensorManagerController sensorManagerController) {
 		this.sensorManagerController = sensorManagerController;
-	}
-
-	/**
-	 * @return the idGenerator
-	 */
-	public IdGenerator getIdGenerator() {
-		return idGenerator;
-	}
-
-	/**
-	 * @param idGenerator the idGenerator to set
-	 */
-	public void setIdGenerator(
-		IdGenerator idGenerator) {
-		this.idGenerator = idGenerator;
 	}
 
 	/**
@@ -146,4 +88,5 @@ public class BaseSensorDialogCtrl implements Serializable {
 		RandomSeedService randomSeedService) {
 		this.randomSeedService = randomSeedService;
 	}
+	
 }

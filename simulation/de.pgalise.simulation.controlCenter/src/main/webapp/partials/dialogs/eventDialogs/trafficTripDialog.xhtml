@@ -39,7 +39,7 @@
 			</table>
 			<div class="scrollable fullHeight">
         <b>Add vehicles to traffic trip</b>
-				<p:dataTable class="fullWidth" selectionMode="multiple" selection="#{trafficTripDialogCtrl.selectedVehilces}" var="retrievedVehicle" value="#{trafficTripDialogCtrl.retrieveVehicles}">
+				<p:dataTable selectionMode="multiple" selection="#{trafficTripDialogCtrl.selectedVehilces}" var="retrievedVehicle" value="#{trafficTripDialogCtrl.retrieveVehicles}">
 					<p:column>
 						<f:facet name="header">ID</f:facet>
 							#{retrievedVehicle.id}

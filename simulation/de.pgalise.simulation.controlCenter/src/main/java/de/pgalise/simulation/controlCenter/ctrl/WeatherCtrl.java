@@ -8,46 +8,37 @@ package de.pgalise.simulation.controlCenter.ctrl;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.ValueWeatherEvent;
-import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author richter
  */
 @ManagedBean
-@RequestScoped
+@SessionScoped
 public class WeatherCtrl {
-
-	private WeatherEventViewData currentWeatherEventViewData = new WeatherEventViewData();
 	@EJB
 	private IdGenerator idGenerator;
-	private boolean aggregatedWeatherDataEnabled;
-	private Date chosenDate;
-	private int chosenDurationMinutes;
-	private WeatherEventType chosenWeatherEventType;
-	private float chosenValue;
-	private List<ValueWeatherEvent> weatherEvents = new LinkedList<>();
+	private boolean aggregatedWeatherDataEnabled = true;
+	private Date chosenTimestamp = GregorianCalendar.getInstance().getTime();
+	private int chosenDurationMinutes = 180;
+	private WeatherEventTypeEnum chosenWeatherEventType = WeatherEventTypeEnum.COLDDAY;
+	private float chosenValue = 1.0f;
+	private List<ChangeWeatherEvent> weatherEvents = new LinkedList<>();
 
 	/**
 	 * Creates a new instance of WeatherCtrl
 	 */
 	public WeatherCtrl() {
-	}
-
-	public void setCurrentWeatherEventViewData(
-		WeatherEventViewData currentWeatherEventViewData) {
-		this.currentWeatherEventViewData = currentWeatherEventViewData;
-	}
-
-	public WeatherEventViewData getCurrentWeatherEventViewData() {
-		return currentWeatherEventViewData;
 	}
 
 	public void setAggregatedWeatherDataEnabled(
@@ -60,26 +51,25 @@ public class WeatherCtrl {
 	}
 
 	public void addWeatherEvent() {
-		throw new UnsupportedOperationException("collection can be accessed directly on client");
-//		currentWeatherEventViewData.getEvents().add(
-//			new ChangeWeatherEvent(
-//				idGenerator.getNextId(),
-//				currentWeatherEventViewData.getEventType(),
-//				currentWeatherEventViewData.getValue(),
-//				currentWeatherEventViewData.getTimestamp(),
-//				currentWeatherEventViewData.getDuration()));
+		weatherEvents.add(
+			new ChangeWeatherEvent(
+				idGenerator.getNextId(),
+				chosenWeatherEventType,
+				chosenValue,
+				chosenTimestamp.getTime(),
+				chosenDurationMinutes));
 	}
 	
 	public void deleteWeatherEvent(){
 		throw new UnsupportedOperationException("collection can be accessed directly on client");
 	}
 
-	public void setChosenDate(Date chosenDate) {
-		this.chosenDate = chosenDate;
+	public void setChosenTimestamp(Date chosenTimestamp) {
+		this.chosenTimestamp = chosenTimestamp;
 	}
 
-	public Date getChosenDate() {
-		return chosenDate;
+	public Date getChosenTimestamp() {
+		return chosenTimestamp;
 	}
 
 	public void setChosenDurationMinutes(int chosenDurationMinutes) {
@@ -90,11 +80,11 @@ public class WeatherCtrl {
 		return chosenDurationMinutes;
 	}
 
-	public void setChosenWeatherEventType(WeatherEventType chosenWeatherEventType) {
+	public void setChosenWeatherEventType(WeatherEventTypeEnum chosenWeatherEventType) {
 		this.chosenWeatherEventType = chosenWeatherEventType;
 	}
 
-	public WeatherEventType getChosenWeatherEventType() {
+	public WeatherEventTypeEnum getChosenWeatherEventType() {
 		return chosenWeatherEventType;
 	}
 
@@ -106,11 +96,11 @@ public class WeatherCtrl {
 		return chosenValue;
 	}
 
-	public void setWeatherEvents(List<ValueWeatherEvent> weatherEvents) {
+	public void setWeatherEvents(List<ChangeWeatherEvent> weatherEvents) {
 		this.weatherEvents = weatherEvents;
 	}
 
-	public List<ValueWeatherEvent> getWeatherEvents() {
+	public List<ChangeWeatherEvent> getWeatherEvents() {
 		return weatherEvents;
 	}
 	

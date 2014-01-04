@@ -5,16 +5,16 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui" 
 	xmlns:o="http://omnifaces.org/ui">
-	<f:view contentType="text/html">
-		<script type="text/javascript">
-			function handlePointClick(event) {
-				var currentMarker = new google.maps.Marker({
-					position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
-				});
-				PrimeFaces('map').addOverlay(currentMarker);
-			}
-		</script>  
-		<p:dialog id="energyEventDialog">
+	<script type="text/javascript">
+		function handlePointClick(event) {
+			var currentMarker = new google.maps.Marker({
+				position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+			});
+			PrimeFaces('map').addOverlay(currentMarker);
+		}
+	</script>  
+	<p:dialog id="energyEventDialog">
+		<h:form>
 			<div class="contentDiv" >
 				<div class="left">
 					<table>
@@ -49,12 +49,13 @@
             <tr>
 							<td class="top"><b>Value [%]:</b></td>
 							<td>
-								<p:spinner value="#{energyEventDialogCtrl.chosenValue}" min="1" max="100000" />
+								<p:spinner value="#{energyEventDialogCtrl.chosenRadius}" min="1" max="100000" />
 							</td>
             </tr>
 					</table>
+					<h:commandButton action="#{energyEventDialogCtrl.saveEnergyEvent}"
 				</div>
 			</div>
-		</p:dialog>
-	</f:view>
+		</h:form>
+	</p:dialog>
 </ui:composition>

@@ -6,10 +6,9 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.traffic.BusRoute;
-import java.util.AbstractList;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.html.HtmlDataTable;
@@ -22,14 +21,13 @@ import javax.faces.event.AjaxBehaviorEvent;
  */
 @ManagedBean
 @SessionScoped
-public class BusSystemCtrl
+public class BusSystemCtrl implements Serializable 
 {
 
 	private LinkedList<BusRoute> busRoutes = new LinkedList<>(Arrays.asList(
 					new BusRoute(1L,
 									"shortN",
 									"longN")));
-	private HtmlDataTable dataTable = new HtmlDataTable();
 
 	/**
 	 * Creates a new instance of BusSystemCtrl
@@ -56,14 +54,6 @@ public class BusSystemCtrl
 		for (BusRoute busRoute : busRoutes) {
 			busRoute.setUsed(false);
 		}
-	}
-
-	public void setDataTable(HtmlDataTable dataTable) {
-		this.dataTable = dataTable;
-	}
-
-	public HtmlDataTable getDataTable() {
-		return dataTable;
 	}
 
 	public void useBusRouteChange(BusRoute a) {

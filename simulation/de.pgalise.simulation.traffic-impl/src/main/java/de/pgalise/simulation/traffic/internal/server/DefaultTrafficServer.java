@@ -40,7 +40,6 @@ import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;

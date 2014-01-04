@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.traffic.model.vehicle.Truck;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -28,16 +29,9 @@ import org.w3c.dom.NodeList;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Implements a factory for {@link Truck}. The vehicles are loaded by a XML file.
@@ -89,16 +83,16 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData> implem
 	}
 
 	@Override
-	public BaseVehicle<TruckData> createRandomTruck( Output output) {
+	public Truck createRandomTruck( Output output) {
 		TruckData data = getRandomVehicleData();
-		return new Truck(getIdGenerator().getNextId(),
+		return new DefaultTruck(getIdGenerator().getNextId(),
 			null,
 			data,
 			getTrafficGraphExtensions());
 	}
 
 	@Override
-	public BaseVehicle<TruckData> createTruck( Color color, int trailercount, Output output) {
+	public Truck createTruck( Color color, int trailercount, Output output) {
 		return createRandomTruck(output);
 	}
 

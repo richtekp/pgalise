@@ -4,92 +4,36 @@
 								xmlns:ng="http://angularjs.org"
 								xmlns:f="http://xmlns.jcp.org/jsf/core"
 								xmlns:p="http://primefaces.org/ui" 
-								xmlns:cc="http://java.sun.com/jsf/composite">
-
-	<p:dialog id="initialDialog" widgetVar="initialDialog" visible="true">
+								xmlns:cc="http://java.sun.com/jsf/composite"
+								xmlns:o="http://omnifaces.org/ui">
+	<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.InitDialogCtrlInitialTypeEnum" var="initDialogCtrlInitialTypeEnum"/>
+	<p:dialog id="initialDialog" widgetVar="initialDialogWidget" visible="true" modal="true">
 		<h:form>
-			<p:selectOneRadio id="customRadio" value="#{initDialogCtrl.chosenInitialType}" layout="custom">  
-				<f:selectItem itemLabel="${InitDialogCtrlInitialTypeEnum.CREATE.getStringValue()}" itemValue="${InitDialogCtrlInitialTypeEnum.CREATE}" />  
-        <f:selectItem itemLabel="${InitDialogCtrlInitialTypeEnum.RECENT.getStringValue()}" itemValue="${InitDialogCtrlInitialTypeEnum.RECENT}" />  
-        <f:selectItem itemLabel="${InitDialogCtrlInitialTypeEnum.IMPORT.getStringValue()}" itemValue="${InitDialogCtrlInitialTypeEnum.IMPORT}" />  
-			</p:selectOneRadio>  
-			<div>
-				<div class="block">
-					<table>
-						<tr class="head">
-							<td colspan="2">
-								<p:radioButton for="customRadio" itemIndex="0"/> <h3>Create new szenario</h3>
-							</td>
-						</tr>
-						<tr>
-							<td>City name</td>
-							<td>
-								<h:inputText value="kdfsjlf"/>
-							</td>
-						</tr>
-						<tr>
-							<td>Bus system</td>
-							<td>
-								<h:selectOneMenu class="normalWidth" value="#{startParameter.getoSMAndBusstopFileData().busStopFileName}" >
-									<f:selectItem itemLabel="#{startParameter.getoSMAndBusstopFileData().busStopFileName}" itemValue="#{startParameter.getoSMAndBusstopFileData().busStopFileName}"/>
-								</h:selectOneMenu>
-							</td>
-						</tr>
-						<tr>
-							<td>Street map</td>
-							<td>
-								<h:selectOneMenu class="normalWidth" value="#{startParameter.getoSMAndBusstopFileData().osmFileName}" disabled="#{initDialogCtrl.chosenInitialType eq 'create'}">
-									<f:selectItem itemLabel="#{startParameter.getoSMAndBusstopFileData().osmFileName}" itemValue="#{startParameter.getoSMAndBusstopFileData().osmFileName}"/>
-								</h:selectOneMenu>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="block">
-					<table>
-						<tr class="head">
-							<td>
-								<p:radioButton for="customRadio" itemIndex="1"/><h3>Load recently started scenario</h3>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Recent scenarios:</b>
-								<div>
-									<h:selectManyListbox >
-										<f:selectItems value="#{initDialogCtrl.recentScenarios}"/>
-									</h:selectManyListbox>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div><b>Current:</b></div>
-								<div>File name: #{initDialogCtrl.chosenRecentScenario.key}</div>
-								<div>Date: #{initDialogCtrl.chosenRecentScenario.right.startTimestamp}</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div class="block">
-					<table>
-						<tr class="head">
-							<td>
-								<p:radioButton for="customRadio" itemIndex="2"/><h3>Import existing scenario</h3>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b>Load XML:</b>
-								<div>
-									<p:fileUpload value="#{mainCtrl.parameterUploadData}" fileUploadListener="#{mainCtrl.onStartParameterUpload}"/>
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-			<h:commandButton onclick="initialDialog.close()" />		
-			<!--		<input type="button" class="fullWidth" value="Confirm" ng-click="confirmInitialDialog()" ng-disabled="chosenInitialType == 'confirmed'" />-->		</h:form>
+			<h:panelGrid>
+				<p:accordionPanel>
+					<p:tab title="Create new szenario">
+						<ui:include src="/partials/content/city.xhtml"/>
+					</p:tab>
+					<p:tab title="Reuse recently started scenario">
+						Recent scenarios: 
+						<h:selectManyListbox >
+							<f:selectItems value="#{initDialogCtrl.recentScenarios}"/>
+						</h:selectManyListbox>
+						<b>Current:</b>
+						File name: <h:outputText value="#{initDialogCtrl.chosenRecentScenarioPath}"/>
+						Date: <h:outputText value="#{initDialogCtrl.chosenRecentScenario.startTimestamp}"/>
+					</p:tab>
+					<p:tab title="Import existing scenario">
+						Load XML:
+						<p:fileUpload value="#{mainCtrl.parameterUploadData}" fileUploadListener="#{mainCtrl.onStartParameterUpload}"/>
+					</p:tab>
+				</p:accordionPanel>
+			</h:panelGrid>
+			<h:panelGrid>
+				<h:commandButton value="Initialize simulation" onclick="initialDialogWidget.hide()" >
+					<f:ajax />
+				</h:commandButton>	
+			</h:panelGrid>
+		</h:form>
 	</p:dialog>
 </ui:composition>

@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -28,14 +27,12 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
-import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.traffic.BusTrip;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.traffic.BusTrip;
 import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.event.CreateRandomBusData;
+import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.internal.model.vehicle.RandomBusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -176,37 +173,15 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
 		log.info("Processing CREATE_BUSSES_EVENT");
 		this.lastUpdate = cbe.getSimulationTime();
 
-		List<Vehicle<BusData>> buses = new ArrayList<>();
-		List<GpsSensor> gpsSensors = new ArrayList<>();
-		List<InfraredSensor> infraredSensors = new ArrayList<>();
+		List<Bus> buses = new ArrayList<>();
 
 		// Create busses
-		for (CreateRandomVehicleData vehicleData : cbe.
+		for (CreateRandomBusData vehicleData : cbe.
 			getCreateRandomVehicleDataList()) {
-			Sensor infraredSensor = null, gpsSensor = null;
-			for (Sensor sensorHelper : vehicleData.getSensorHelpers()) {
-				if (sensorHelper instanceof GpsSensor) {
-					gpsSensor = sensorHelper;
-				} else if (sensorHelper instanceof InfraredSensor) {
-					infraredSensor = sensorHelper;
-				}
-			}
-			Vehicle<BusData> bus = new RandomBusFactory().createRandomBus(getOutput());
+			GpsSensor gpsSensor = vehicleData.getGpsSensor();
+			InfraredSensor infraredSensor = vehicleData.getInfraredSensor();
+			Bus bus = new RandomBusFactory().createRandomBus(getOutput());
 			buses.add(bus);
-
-			// Save all sensors
-			for (Sensor sensorHelper : vehicleData.getSensorHelpers()) {
-				/*
-				 * YOU CAN ADD NEW SENSORS FOR BUSSES HERE
-				 */
-				if (sensorHelper instanceof InfraredSensor) {
-					infraredSensors.add((InfraredSensor) sensorHelper);
-					break;
-				} else {
-					gpsSensors.add((GpsSensor) sensorHelper);
-					break;
-				}
-			}
 		}
 
 		// Create all trips
@@ -220,9 +195,10 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
 		List<BusTrip> trips = new ArrayList<>();
 		for (int i = 0; i < allTrips.size(); i++) {
 			BusTrip t = allTrips.get(i);
-			t.setBus(buses.get(i));
-			t.setGpsSensor(gpsSensors.get(i));
-			t.setInfraredSensor(infraredSensors.get(i));
+			Bus bus = buses.get(i);
+			t.setBus(bus);
+			t.setGpsSensor(bus.getGpsSensor());
+			t.setInfraredSensor(bus.getInfraredSensor());
 
 			tempCal.setTime(t.getBusStopStopTimes().get(t.getBusStops().get(0)).
 				getArrivalTime());

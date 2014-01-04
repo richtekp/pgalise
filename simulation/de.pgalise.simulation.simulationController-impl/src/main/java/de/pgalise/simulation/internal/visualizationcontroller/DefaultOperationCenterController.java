@@ -47,7 +47,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.controller.DefaultStartParameter;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 
 /**
  * Implementation of operation center controller. Sends all the information via HTTP to
@@ -58,7 +58,7 @@ import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
 @Lock(LockType.READ)
 @Local
 @Singleton(name = "de.pgalise.simulation.visualizationcontroller.OperationCenterControler")
-public class DefaultOperationCenterController extends AbstractController<Event, StartParameter, InitParameter> implements OperationCenterController {
+public class DefaultOperationCenterController extends AbstractController<Event, StartParameter, InitParameter> implements ServerSideOperationCenterController {
 	private static final Logger log = LoggerFactory.getLogger(DefaultOperationCenterController.class);
 	private static final String NAME = "OperationCenterController";
 	private static final TypeToken<Collection<Sensor>> sensorCollectionTypeToken = new TypeToken<Collection<Sensor>>() {

@@ -5,32 +5,20 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui" 
 	xmlns:o="http://omnifaces.org/ui">
-	<f:view contentType="text/html">
-		<div class="contentDiv" >
-			<div class="left">
-        <table>
-					<tr>
-						<td class="top"><b>Position:</b></td>
-						<td class="top" colspan="2">
-							Latitude: <h:inputText value="#{attractionDialogCtrl.chosenLatitude}"/>
-							Longitude: <h:inputText value="#{attractionDialogCtrl.chosenLongitude}"/>
-						</td>
-					</tr>
-					<tr>
-						<td><b>Start:</b></td>
-						<td colspan="2"><p:calendar value="#{attractionDialogCtrl.chosenStartTimestamp}"/></td>
-					</tr>
-					<tr>
-						<td><b>Duration</b></td>   
-						<td colspan="2">
-							<p:spinner value="#{attractionDialogCtrl.chosenStartTimestamp}"/></td>
-					</tr>
-					<tr>
-						<td colspan="3"><hr /></td>
-					</tr>
-					<ui:include src="/partials/content/runtimeState/randomVehicles.xhtml"/>
-        </table>
+	<p:dialog id="attractionDialog">
+		<p:panelGrid>
+		<h:form>
+			<div class="contentDiv" >
+				
+				Position:<p:gmap center="36.890257,30.707417" zoom="13" type="HYBRID"  model="#{photovoltaikDialogCtrl.mapModel}" style="width:600px;height:400px" > 
+					<p:ajax event="markerDrag" listener="#{attractionDialogCtrl.onMarkerDrag}" />  
+				</p:gmap>
+				Start: <p:calendar value="#{attractionDialogCtrl.chosenStartTimestamp}"/>
+				Duration: <p:spinner value="#{attractionDialogCtrl.chosenStartTimestamp}"/>
+				<ui:include src="/partials/content/runtimeState/randomVehicles.xhtml"/>
+				<h:commandButton action="#{attractionDialogCtrl.saveAttraction}"
 			</div>
-		</div>
-	</f:view>
+		</h:form>
+		</p:panelGrid>
+	</p:dialog>
 </ui:composition>

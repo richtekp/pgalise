@@ -38,7 +38,7 @@ import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
 
 /**
  * Implementation of the control center controller. Sends all the information via HTTP to
@@ -49,7 +49,7 @@ import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
 @Lock(LockType.READ)
 @Local
 @Singleton(name = "de.pgalise.simulation.visualizationcontroller.ControlCenterController")
-public class DefaultControlCenterController implements ControlCenterController {
+public class DefaultControlCenterController implements ServerSideControlCenterController {
 
 	private static final String NAME = "ControlCenterController";
 	private int connectionTimeout;

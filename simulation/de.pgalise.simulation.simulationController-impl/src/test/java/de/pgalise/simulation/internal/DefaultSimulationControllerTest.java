@@ -54,8 +54,8 @@ import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
-import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.Anemometer;
 import javax.ejb.EJB;
@@ -83,8 +83,8 @@ public class DefaultSimulationControllerTest {
 	private static InfrastructureStartParameter startParameter;
 //	private static EventInitiatorMock eventInitiator;
 	private static ServiceDictionary serviceDictionary;
-	private static OperationCenterController operationCenterController;
-	private static ControlCenterController controlCenterController;
+	private static ServerSideOperationCenterController operationCenterController;
+	private static ServerSideControlCenterController controlCenterController;
 	private static TrafficController<?> trafficController;
 	private static EnergyController energyController;
 	private static WeatherController weatherController;
@@ -101,9 +101,9 @@ public class DefaultSimulationControllerTest {
 
 		/* Mock all controllers: */
 		operationCenterController = EasyMock.createNiceMock(
-			OperationCenterController.class);
+			ServerSideOperationCenterController.class);
 		controlCenterController = EasyMock.createNiceMock(
-			ControlCenterController.class);
+			ServerSideControlCenterController.class);
 		trafficController = EasyMock.createNiceMock(TrafficController.class);
 		energyController = EasyMock.createNiceMock(EnergyController.class);
 		weatherController = EasyMock.createNiceMock(WeatherController.class);
@@ -136,11 +136,11 @@ public class DefaultSimulationControllerTest {
 			andStubReturn(testClass);
 		EasyMock.replay(serviceDictionary);
 
-		testClass._setEventInitiator(eventInitiator);
-		testClass._setServiceDictionary(serviceDictionary);
+		testClass.setEventInitiator(eventInitiator);
+		testClass.setServiceDictionary(serviceDictionary);
 		testClass.setOperationCenterController(operationCenterController);
-		testClass._setSensorPersistenceService(sensorPersistenceService);
-		testClass._setServerConfigurationReader(serverConfigurationReader);
+		testClass.setSensorPersistenceService(sensorPersistenceService);
+		testClass.setServerConfigurationReader(serverConfigurationReader);
 		testClass.setControlCenterController(controlCenterController);
 
 		serverConfiguration = new ServerConfiguration();
@@ -483,7 +483,7 @@ public class DefaultSimulationControllerTest {
 //		}
 //
 //		@Override
-//		public void setOperationCenterController(OperationCenterController operationCenterController) {
+//		public void setOperationCenterController(ServerSideOperationCenterController operationCenterController) {
 //		}
 //
 //		@Override
@@ -516,7 +516,7 @@ public class DefaultSimulationControllerTest {
 //		}
 //
 //		@Override
-//		public void setControlCenterController(ControlCenterController controlCenterController) {
+//		public void setControlCenterController(ServerSideControlCenterController controlCenterController) {
 //		}
 //
 //		@Override

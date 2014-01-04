@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;

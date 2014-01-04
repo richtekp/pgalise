@@ -4,7 +4,8 @@
 								xmlns:h="http://xmlns.jcp.org/jsf/html"
 								xmlns:p="http://primefaces.org/ui" >
 
-	<p:dialog id="settingsDialog" widgetVar="settingsDialog" visible="true">
+	<p:dialog id="settingsDialog"  visible="false"><h:form>
 		<h:selectBooleanCheckbox value="#{mainCtrl.automaticallyOpenSensorDialog}"/>Automatically open sensor dialogs
+		</h:form>
 	</p:dialog>
 </ui:composition>

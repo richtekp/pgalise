@@ -21,7 +21,6 @@
 		<class>de.pgalise.simulation.traffic.TrafficNode</class>
 		<class>de.pgalise.simulation.traffic.TrafficTrip</class>
 		<class>de.pgalise.simulation.traffic.server.rules.TrafficRuleData</class>
-		<class>de.pgalise.simulation.operationCenter.internal.hqf.persistence.HQFData</class>
     <class>de.pgalise.simulation.shared.city.City</class>
     <class>de.pgalise.simulation.weather.model.DefaultServiceDataCurrent</class>
     <class>de.pgalise.simulation.weather.model.DefaultServiceDataForecast</class>

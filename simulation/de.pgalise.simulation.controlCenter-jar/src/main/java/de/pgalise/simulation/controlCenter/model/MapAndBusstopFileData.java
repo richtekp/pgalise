@@ -20,6 +20,7 @@ import java.io.Serializable;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 
 /**
  * Holds the name for open street map and bus stop file.
@@ -27,7 +28,7 @@ import javax.faces.bean.ManagedProperty;
  * @author Timo
  */
 @ManagedBean
-@ApplicationScoped
+@SessionScoped
 public class MapAndBusstopFileData implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**

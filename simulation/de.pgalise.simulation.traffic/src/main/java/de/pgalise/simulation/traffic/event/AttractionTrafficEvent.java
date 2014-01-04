@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
@@ -27,12 +26,14 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
- * The attraction traffic event will lead to more traffic on the given point in the given time window.
- * 
- * @param <D> 
+ * The attraction traffic event will lead to more traffic on the given point in
+ * the given time window.
+ *
+ * @param <D>
  * @author Timo
  */
 public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomVehiclesEvent<D> {
+
 	/**
 	 * Serial
 	 */
@@ -47,7 +48,7 @@ public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomV
 	 * when will the attraction end.
 	 */
 	private long attractionEndTimestamp;
-	
+
 	/**
 	 * Node id in graph
 	 */
@@ -62,7 +63,9 @@ public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomV
 		TrafficNode nodeID,
 		List<CreateRandomVehicleData> createRandomVehicleDataList) {
 		super(
-			server,simulationTimestamp, elapsedTime,
+			server,
+			simulationTimestamp,
+			elapsedTime,
 			createRandomVehicleDataList);
 		this.attractionStartTimestamp = attractionStartTimestamp;
 		this.attractionEndTimestamp = attractionEndTimestamp;

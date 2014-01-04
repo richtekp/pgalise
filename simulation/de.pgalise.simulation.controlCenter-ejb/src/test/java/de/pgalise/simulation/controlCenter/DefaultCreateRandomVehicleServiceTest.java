@@ -23,6 +23,10 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
+import de.pgalise.simulation.traffic.event.CreateRandomCarData;
+import de.pgalise.simulation.traffic.event.CreateRandomMotorcycleData;
+import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
@@ -106,58 +110,28 @@ public class DefaultCreateRandomVehicleServiceTest
 			for (CreateRandomVehicleData createRandomVehicleData
 									 : ((CreateRandomVehiclesEvent<?>) result)
 							.getCreateRandomVehicleDataList()) {
-				switch (createRandomVehicleData.getVehicleInformation().getVehicleType()) {
-					case CAR:
-						DefaultCreateRandomVehicleServiceTest.carAmount++;
-						for (Sensor<?, ?> sensorHelper : createRandomVehicleData.
-										getSensorHelpers()) {
-							if (sensorHelper instanceof GpsSensor) {
-								DefaultCreateRandomVehicleServiceTest.carsWithGPSAmount++;
+				if(createRandomVehicleData instanceof CreateRandomCarData) {
+					DefaultCreateRandomVehicleServiceTest.carAmount++;
+					DefaultCreateRandomVehicleServiceTest.carsWithGPSAmount++;
+					DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+												((CreateRandomCarData)createRandomVehicleData).getGpsSensor());
+				}else if(createRandomVehicleData instanceof CreateRandomBicycleData) {
+					DefaultCreateRandomVehicleServiceTest.bikeAmount++;
+					DefaultCreateRandomVehicleServiceTest.bikesWithGPSAmount++;
+					DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+												((CreateRandomBicycleData)createRandomVehicleData).getGpsSensor());
+				}else if(createRandomVehicleData instanceof CreateRandomMotorcycleData) {
+					DefaultCreateRandomVehicleServiceTest.motorcycleAmount++;
+					DefaultCreateRandomVehicleServiceTest.motorcyclesWithGPSAmount++;
 								DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-												sensorHelper);
-								break;
-							}
-						}
-						break;
-					case BIKE:
-						DefaultCreateRandomVehicleServiceTest.bikeAmount++;
-						for (Sensor<?, ?> sensorHelper : createRandomVehicleData.
-										getSensorHelpers()) {
-							if (sensorHelper instanceof GpsSensor) {
-								DefaultCreateRandomVehicleServiceTest.bikesWithGPSAmount++;
+												((CreateRandomMotorcycleData)createRandomVehicleData).getGpsSensor());
+				}else if(createRandomVehicleData instanceof CreateRandomTruckData) {
+					DefaultCreateRandomVehicleServiceTest.truckAmount++;
+					DefaultCreateRandomVehicleServiceTest.trucksWithGPSAmount++;
 								DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-												sensorHelper);
-								break;
-							}
-						}
-						break;
-					case MOTORCYCLE:
-						DefaultCreateRandomVehicleServiceTest.motorcycleAmount++;
-						for (Sensor<?, ?> sensorHelper : createRandomVehicleData.
-										getSensorHelpers()) {
-							if (sensorHelper instanceof GpsSensor) {
-								DefaultCreateRandomVehicleServiceTest.motorcyclesWithGPSAmount++;
-								DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-												sensorHelper);
-								break;
-							}
-						}
-						break;
-					case TRUCK:
-						DefaultCreateRandomVehicleServiceTest.truckAmount++;
-						for (Sensor<?, ?> sensorHelper : createRandomVehicleData.
-										getSensorHelpers()) {
-							if (sensorHelper instanceof GpsSensor) {
-								DefaultCreateRandomVehicleServiceTest.trucksWithGPSAmount++;
-								DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-												sensorHelper);
-								break;
-							}
-						}
-						break;
-					default:
-						Assert.assertTrue(false);
-						break;
+												((CreateRandomTruckData)createRandomVehicleData).getGpsSensor());
+				}else {
+					throw new IllegalArgumentException();
 				}
 			}
 		}

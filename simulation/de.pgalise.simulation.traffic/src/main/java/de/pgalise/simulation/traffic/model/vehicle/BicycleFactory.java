@@ -16,6 +16,9 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
+import javax.ejb.Local;
 
 /**
  * Interface to provide methods to create different types of {@link Bike}.
@@ -29,18 +32,17 @@ public interface BicycleFactory extends VehicleFactory {
 	 * Method to create a {@link Bike} with the given typeId.All position related
 	 * data is <code>null</code>
 	 *
-	 * @param id ID of the {@link Bike}
-	 * @param typeId ID of the {@link Bike} type
+	 * @param output
 	 * @return created {@link Bike}
 	 */
-	public Vehicle<BicycleData> createBicycle(Output output);
+	public Bicycle createBicycle(Output output);
 
 	/**
 	 * Method to create a random {@link Bike}.All position related data is
 	 * <code>null</code>
 	 *
-	 * @param id ID of the {@link Bike}
+	 * @param output
 	 * @return created {@link Bike}
 	 */
-	public Vehicle<BicycleData> createRandomBicycle(Output output);
+	public Bicycle createRandomBicycle(Output output);
 }

@@ -3,9 +3,35 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl;
 
+import de.pgalise.simulation.SimulationController;
+import de.pgalise.simulation.SimulationControllerLocal;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
+import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.VehicleInformation;
+import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
+import de.pgalise.simulation.traffic.event.CreateRandomCarData;
+import de.pgalise.simulation.traffic.event.CreateRandomMotorcycleData;
+import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
+import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
+import de.pgalise.simulation.traffic.model.vehicle.CarData;
+import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
+import de.pgalise.simulation.traffic.model.vehicle.TruckData;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import java.util.LinkedList;
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
@@ -17,12 +43,18 @@ import javax.faces.bean.SessionScoped;
 @SessionScoped
 public class RandomVehiclesCtrl {
 
-	/**
-	 * Creates a new instance of RandomVehiclesCtrl
-	 */
-	public RandomVehiclesCtrl() {
-	}
-	
+	@EJB
+	private IdGenerator idGenerator;
+	@EJB
+	private TrafficServerLocal trafficServerLocal;
+	@EJB
+	private TcpIpOutput output;
+	@EJB
+	private SimulationControllerLocal simulationController;
+	@EJB
+	private RandomSeedService randomSeedService;
+	private GpsInterferer gpsInterferer;
+
 	private int randomCars = 0;
 	private double randomCarGPSRatio = 100;
 	private int randomTrucks = 0;
@@ -31,7 +63,13 @@ public class RandomVehiclesCtrl {
 	private double randomMotorcycleGPSRatio = 100;
 	private int randomBikes = 0;
 	private double randomBikeGPSRatio = 100;
-	
+
+	/**
+	 * Creates a new instance of RandomVehiclesCtrl
+	 */
+	public RandomVehiclesCtrl() {
+	}
+
 	public void reset() {
 		setRandomCars(0);
 		setRandomCarGPSRatio(100);
@@ -41,86 +79,13 @@ public class RandomVehiclesCtrl {
 		setRandomMotorcycleGPSRatio(100);
 		setRandomBikes(0);
 		setRandomBikeGPSRatio(100);
-	};
+	}
 	
-	//should be unnecessary due to JSF bean management
-//	// add random cars
-//	this.$scope.applyCars = function(amount, ratio) {
-//        var messageID = MessageIDService.get();
-//        _this.$scope.unsentMessages.push(
-//			new model.CreateRandomVehiclesMessage(messageID, {
-//				randomCarAmount : amount,
-//				randomBikeAmount : 0,
-//				randomTruckAmount : 0,
-//				randomMotorcycleAmount : 0,
-//				gpsCarRatio : ratio,
-//				gpsBikeRatio : 0,
-//				gpsTruckRatio : 0,
-//				gpsMotorcycleRatio : 0,
-//		        usedSensorIDs : SensorObjectIDService.takenIds,
-//		        usedUUIDs : UUIDService.takenUUIDs
-//			}));
-//		_this.reset();		
-//	};
-//	// add random trucks
-//	this.$scope.applyTrucks = function(amount, ratio) {
-//        var messageID = MessageIDService.get();
-//        _this.$scope.unsentMessages.push(
-//			new model.CreateRandomVehiclesMessage(messageID, {
-//				randomCarAmount : 0,
-//				randomBikeAmount : 0,
-//				randomTruckAmount : amount,
-//				randomMotorcycleAmount : 0,
-//				gpsCarRatio : 0,
-//				gpsBikeRatio : 0,
-//				gpsTruckRatio : ratio,
-//				gpsMotorcycleRatio : 0,
-//	            usedSensorIDs : SensorObjectIDService.takenIds,
-//	            usedUUIDs : UUIDService.takenUUIDs
-//			}));
-//
-//		_this.reset();
-//	};
-//	// add random motorcycles
-//	this.$scope.applyMotorcycles = function(amount, ratio) {
-//        var messageID = MessageIDService.get();
-//        _this.$scope.unsentMessages.push(
-//			new model.CreateRandomVehiclesMessage(messageID, {
-//				randomCarAmount : 0,
-//				randomBikeAmount : 0,
-//				randomTruckAmount : 0,
-//				randomMotorcycleAmount : amount,
-//				gpsCarRatio : 0,
-//				gpsBikeRatio : 0,
-//				gpsTruckRatio : 0,
-//				gpsMotorcycleRatio : ratio,
-//	            usedSensorIDs : SensorObjectIDService.takenIds,
-//	            usedUUIDs : UUIDService.takenUUIDs
-//			}));
-//
-//		_this.reset();
-//	};
-//	// add random bikes
-//	this.$scope.applyBikes = function(amount, ratio) {
-//        var messageID = MessageIDService.get();
-//        _this.$scope.unsentMessages.push(
-//			new model.CreateRandomVehiclesMessage(messageID, {
-//				randomCarAmount : 0,
-//				randomBikeAmount : amount,
-//				randomTruckAmount : 0,
-//				randomMotorcycleAmount : 0,
-//				gpsCarRatio : 0,
-//				gpsBikeRatio : ratio,
-//				gpsTruckRatio : 0,
-//				gpsMotorcycleRatio : 0,
-//	            usedSensorIDs : SensorObjectIDService.takenIds,
-//	            usedUUIDs : UUIDService.takenUUIDs
-//			}));
-//
-//		_this.reset();
-//	};
-//}
-
+	@PostConstruct
+	public void init() {
+		this.gpsInterferer = new GpsWhiteNoiseInterferer(randomSeedService, 1.0);
+	}
+	
 	/**
 	 * @return the randomCars
 	 */
@@ -232,20 +197,143 @@ public class RandomVehiclesCtrl {
 	public void setRandomBikeGPSRatio(double randomBikeGPSRatio) {
 		this.randomBikeGPSRatio = randomBikeGPSRatio;
 	}
-	
+
+	public List<CreateRandomVehicleData> generateCreateRandomVehicleData() {
+		List<CreateRandomVehicleData> retValue = new LinkedList<>();
+		for (int i = 0; i < randomBikes; i++) {
+			Long id = idGenerator.getNextId();
+			CreateRandomVehicleData createRandomVehicleData = new CreateRandomBicycleData(
+				new GpsSensor(idGenerator.
+							getNextId(),
+							output,
+							null,
+							gpsInterferer),
+				new VehicleInformation(true,
+					VehicleTypeEnum.BIKE,
+					VehicleModelEnum.BIKE_RANDOM,
+					null,
+					"random bike"));
+			retValue.add(createRandomVehicleData);
+		}
+		for (int i = 0; i < randomTrucks; i++) {
+			Long id = idGenerator.getNextId();
+			CreateRandomVehicleData createRandomVehicleData = new CreateRandomTruckData(
+				new GpsSensor(idGenerator.
+							getNextId(),
+							output,
+							null,
+							gpsInterferer),
+				new VehicleInformation(true,
+					VehicleTypeEnum.BIKE,
+					VehicleModelEnum.BIKE_RANDOM,
+					null,
+					"random bike"));
+			retValue.add(createRandomVehicleData);
+		}
+		for (int i = 0; i < randomMotorcycles; i++) {
+			Long id = idGenerator.getNextId();
+			CreateRandomVehicleData createRandomVehicleData = new CreateRandomMotorcycleData(
+				new GpsSensor(idGenerator.
+							getNextId(),
+							output,
+							null,
+							gpsInterferer),
+				new VehicleInformation(true,
+					VehicleTypeEnum.BIKE,
+					VehicleModelEnum.BIKE_RANDOM,
+					null,
+					"random bike"));
+			retValue.add(createRandomVehicleData);
+		}
+		for (int i = 0; i < randomCars; i++) {
+			Long id = idGenerator.getNextId();
+			CreateRandomVehicleData createRandomVehicleData = new CreateRandomCarData(
+				new GpsSensor(idGenerator.
+							getNextId(),
+							output,
+							null,
+							gpsInterferer),
+				new VehicleInformation(true,
+					VehicleTypeEnum.BIKE,
+					VehicleModelEnum.BIKE_RANDOM,
+					null,
+					"random bike"));
+			retValue.add(createRandomVehicleData);
+		}
+		return retValue;
+	}
+
+	public List<CreateVehiclesEvent> generateEventList() {
+		List<CreateVehiclesEvent> retValue = new LinkedList<>();
+		List<Vehicle> bikes = new LinkedList<>();
+		for (int i = 0; i < randomBikes; i++) {
+			Long id = idGenerator.getNextId();
+			Vehicle<BicycleData> bicycle = trafficServerLocal.getBikeFactory().
+				createRandomBicycle(
+					output);
+			bikes.add(bicycle);
+		}
+		CreateVehiclesEvent createBicyclesEvent = new CreateVehiclesEvent(
+			trafficServerLocal,
+			System.currentTimeMillis(),
+			simulationController.getElapsedTime(),
+			bikes);
+		retValue.add(createBicyclesEvent);
+		List<Vehicle> trucks = new LinkedList<>();
+		for (int i = 0; i < randomTrucks; i++) {
+			Long id = idGenerator.getNextId();
+			Vehicle<TruckData> truck = trafficServerLocal.getTruckFactory().
+				createRandomTruck(output);
+			trucks.add(truck);
+		}
+		CreateVehiclesEvent createTrucksEvent = new CreateVehiclesEvent(
+			trafficServerLocal,
+			System.currentTimeMillis(),
+			simulationController.getElapsedTime(),
+			trucks);
+		retValue.add(createTrucksEvent);
+		List<Vehicle> cars = new LinkedList<>();
+		for (int i = 0; i < randomCars; i++) {
+			Long id = idGenerator.getNextId();
+			Vehicle<CarData> car = trafficServerLocal.getCarFactory().createRandomCar(
+				output);
+			cars.add(car);
+		}
+		CreateVehiclesEvent createCarsEvent = new CreateVehiclesEvent(
+			trafficServerLocal,
+			System.currentTimeMillis(),
+			simulationController.getElapsedTime(),
+			cars);
+		retValue.add(createCarsEvent);
+		List<Vehicle> motorcycles = new LinkedList<>();
+		for (int i = 0; i < randomMotorcycles; i++) {
+			Long id = idGenerator.getNextId();
+			Vehicle<MotorcycleData> bicycle = trafficServerLocal.
+				getMotorcycleFactory().createRandomMotorcycle(output);
+			motorcycles.add(bicycle);
+		}
+		CreateVehiclesEvent createMotorcyclesEvent = new CreateVehiclesEvent(
+			trafficServerLocal,
+			System.currentTimeMillis(),
+			simulationController.getElapsedTime(),
+			motorcycles);
+		retValue.add(createMotorcyclesEvent);
+		return retValue;
+	}
+
 	public void addBikes() {
-		
+		throw new UnsupportedOperationException();
 	}
-	
+
 	public void addTrucks() {
-		
+		throw new UnsupportedOperationException();
 	}
-	
+
 	public void addMotorcycles() {
-		
+		throw new UnsupportedOperationException();
 	}
-	
+
 	public void addCars() {
-		
+		throw new UnsupportedOperationException();
 	}
 }

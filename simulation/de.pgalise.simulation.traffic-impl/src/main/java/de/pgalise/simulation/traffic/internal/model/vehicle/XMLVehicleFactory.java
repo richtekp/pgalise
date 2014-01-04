@@ -24,25 +24,18 @@ import org.w3c.dom.Document;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
+import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.CarData;
+import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
-import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
+import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.TruckData;
+import de.pgalise.simulation.traffic.model.vehicle.Truck;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Factory for all vehicles in the simulation. Reads a given XML file and gives
@@ -53,6 +46,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  */
 public class XMLVehicleFactory extends AbstractVehicleFactory implements
 	CarFactory, BusFactory, TruckFactory, MotorcycleFactory, BicycleFactory {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Car factory
@@ -88,7 +82,6 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
 	 * Constructor
 	 *
 	 * @param randomSeedService Random Seed Service
-	 * @param gpsInterferer
 	 * @param idGenerator
 	 * @param xmlInputStream Input stream to the XML file
 	 * @param trafficGraphExtensions
@@ -133,54 +126,54 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
 	}
 
 	@Override
-	public Vehicle<BicycleData> createBicycle(Output output) {
+	public Bicycle createBicycle(Output output) {
 		return this.bicycleFactory.createBicycle(output);
 	}
 
 	@Override
-	public Vehicle<BusData> createBus(Output output) {
+	public Bus createBus(Output output) {
 		return this.busFactory.createBus(output);
 	}
 
 	@Override
-	public Vehicle<CarData> createCar(Output output) {
+	public Car createCar(Output output) {
 		return this.carFactory.createCar(output);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createMotorcycle(
+	public Motorcycle createMotorcycle(
 		Output output) {
 		return this.motorcycleFactory.createMotorcycle(
 			output);
 	}
 
 	@Override
-	public Vehicle<BicycleData> createRandomBicycle(Output output) {
+	public Bicycle createRandomBicycle(Output output) {
 		return this.bicycleFactory.createRandomBicycle(output);
 	}
 
 	@Override
-	public Vehicle<BusData> createRandomBus(Output output) {
+	public Bus createRandomBus(Output output) {
 		return this.busFactory.createRandomBus(output);
 	}
 
 	@Override
-	public Vehicle<CarData> createRandomCar(Output output) {
+	public Car createRandomCar(Output output) {
 		return this.carFactory.createRandomCar(output);
 	}
 
 	@Override
-	public Vehicle<MotorcycleData> createRandomMotorcycle(Output output) {
+	public Motorcycle createRandomMotorcycle(Output output) {
 		return this.motorcycleFactory.createRandomMotorcycle(output);
 	}
 
 	@Override
-	public Vehicle<TruckData> createRandomTruck(Output output) {
+	public Truck createRandomTruck(Output output) {
 		return this.truckFactory.createRandomTruck(output);
 	}
 
 	@Override
-	public Vehicle<TruckData> createTruck(Color color,
+	public Truck createTruck(Color color,
 		int trailercount,
 		Output output) {
 		return this.truckFactory.createTruck(color,

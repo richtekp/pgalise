@@ -1,65 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
-			xmlns:p="http://primefaces.org/ui"
+<html xmlns="http://www.w3.org/1999/xhtml" 
+			xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
 			xmlns:h="http://xmlns.jcp.org/jsf/html">
 	<h:head>
 		<title>Simulation Control Center</title>
 		<meta name="author" content="Dennis Höting"></meta>
-
-		<!-- Styles -->
-		<link rel="stylesheet" type="text/css" href="css/style.css"/>
-		<link rel="stylesheet" type="text/css" href="css//olStyle.css"/>
 	</h:head>
 	<h:body >
 		<ui:include src="/partials/dialogs/initDialog.xhtml" />
-		<!-- Actual web site -->
-		<p:layout fullPage="true">
-			<p:layoutUnit position="north">
-				<!-- Header -->
-				<div id="div_top" >
-					<h:form>
-						<img src="img/wrench.png" id="wrenchImg" onclick="settingsDialog.show()" />
-						<img src="img/console.png" id="consoleImg" onclick="consoleDialog.show()" />
-						<div id="layout_top">
-							Connection: <span class="connectionStateColor"><h:outputText value="#{simulationController.connectionState}"/></span>
-							Simulation: <span class="simulationStateColor"><h:outputText value="#{simulationController.simulationState}"/></span>
-							Simulation Time: <h:outputText value="#{simulationController.simulationDate}"/>
-							OSM: <span class="osmParsedStateColor"><h:outputText value="#{simulationController.mapParsedState}"/></span>
-						</div>
-						<div id="loadingArea" class="loadingStatus"></div>
-						<div id="div_logo">
-							<a href="index.xhtml"><img src="img/logo.png"/></a>
-						</div>
-						<div id="div_heading">
-							<div id="headline">Simulation Control Center</div>
-							<h:messages/>
-							<h:commandButton value="unsent messages" onclick="unsentMessagesDialog.show()"/>
-							<h:commandButton value="event list" onclick="uncommittedEventsDialog.show()"/>
-						</div>
-					</h:form>
-				</div>
-			</p:layoutUnit>
-			<p:layoutUnit position="center">
-				Please select from the categories on the left-hand side.
-				<div id="div_map">
-					<div id="map" class="contentDiv"><h3><i>Simulation not initialized yet.</i></h3></div>
-				</div>
-			</p:layoutUnit>
-			<p:layoutUnit position="west">
-				<p:menu overlay="true" trigger="dynaButton" my="left top" at="left bottom">
-					<p:menuitem value="Bus System" outcome="/partials/content/initialState/busSystem.xhtml"/>
-				</p:menu>
-			</p:layoutUnit>
-			<!--<ui:include src="/partials/navigation/initialNavigation.xhtml"/>-->
-		</p:layout>
-		<!-- IconDiv, will be appended to cursor when pushing sensor to map -->
-		<div id="icon_div">
-		</div>
+		<ui:composition template="/WEB-INF/templates/template.xhtml">
+		</ui:composition>
 	</h:body>
 </html>

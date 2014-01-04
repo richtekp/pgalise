@@ -17,9 +17,7 @@
 package de.pgalise.simulation.shared.event.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
 import de.pgalise.simulation.shared.city.Coordinate;
-import de.pgalise.simulation.shared.event.EventType;
 
 /**
  * Changes the energy consumption in the measure radius by the given percentage.
@@ -165,7 +163,7 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	}
 
 	@Override
-	public EventType getType() {
-		return EventTypeEnum.CHANGE_WEATHER_EVENT;
+	public EnergyEventType getType() {
+		return EnergyEventTypeEnum.CHANGE_ENERGY_CONSUMPTION_EVENT;
 	}
 }

@@ -32,7 +32,6 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
-import javax.annotation.ManagedBean;
 import de.pgalise.simulation.shared.city.Vector2d;
 import de.pgalise.simulation.traffic.TrafficTrip;
 
@@ -44,7 +43,7 @@ import de.pgalise.simulation.traffic.TrafficTrip;
  * @author Marina
  * @version 1.0 (Nov 1, 2012)
  */
-public class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable implements Vehicle<D> {
+public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable implements Vehicle<D> {
 	/**
 	 * Serial
 	 */

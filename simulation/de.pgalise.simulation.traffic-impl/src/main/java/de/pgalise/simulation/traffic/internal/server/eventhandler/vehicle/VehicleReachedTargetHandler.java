@@ -18,12 +18,9 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import java.util.Random;
 
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;

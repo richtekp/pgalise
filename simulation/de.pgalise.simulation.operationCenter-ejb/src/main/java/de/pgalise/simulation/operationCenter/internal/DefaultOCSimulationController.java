@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.operationCenter.internal;
 
+import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.operationCenter.internal.hqf.OCHQFDataStreamController;
 import de.pgalise.simulation.operationCenter.internal.message.ErrorMessage;
 import de.pgalise.simulation.operationCenter.internal.message.GPSSensorTimeoutMessage;
@@ -29,7 +30,6 @@ import de.pgalise.simulation.operationCenter.internal.message.SimulationStoppedM
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationInitParameter;
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationStartParameter;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
-import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
@@ -54,8 +54,6 @@ import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -106,14 +104,14 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	 * Holds all current sensor ids.
 	 * <Integer = sensor type, Set<Integer = sensor id>>
 	 */
-	private Map<Class<? extends Sensor>, Set<Sensor<?,?>>> sensorTypeIDMap;
+	private final Map<Class<? extends Sensor>, Set<Sensor<?,?>>> sensorTypeIDMap = new HashMap<>();
 	private Properties properties;
 	private GPSGateStrategy gateMessageStrategy;
 
 	/**
 	 * A map with marker as entry and sensor id as key.
 	 */
-	private Set<Sensor<?,?>> sensorMap;
+	private final Set<Sensor<?,?>> sensors = new HashSet<>();
 	/**
 	 * Map<UUID = vehicle id,
 	 */
@@ -162,19 +160,19 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 		this.properties = new Properties();
 		try {
 			properties.load(Thread.currentThread().getContextClassLoader()
-							.getResourceAsStream("/properties.props"));
-		} catch (Exception e) {
+							.getResourceAsStream("properties.props"));
+		} catch (IOException e) {
 			try {
 				properties.load(DefaultOCSimulationController.class
-								.getResourceAsStream("/properties.props"));
+								.getResourceAsStream("properties.props"));
 			} catch (IOException e1) {
 				throw new RuntimeException("Can not load properties!");
 			}
 		}
-		this.sensorTypeIDMap = new HashMap<>();
 		this.ocWebSocketService.registerNewUserEventListener(this);
 	}
 
+	@Override
 	public void displayException(Exception exeption) {
 		try {
 			this.ocWebSocketService.sendMessageToAllUsers(new ErrorMessage(
@@ -241,7 +239,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 												+ this.currentGPSSensors.size());
 
 			this.currentTimestamp = timestamp;
-			Collection<Sensor<?,?>> gpsSensorsWithTimeout = this.gpsTimeoutStrategy
+			Set<GpsSensor> gpsSensorsWithTimeout = this.gpsTimeoutStrategy
 							.processUpdateStep(timestamp, this.currentGPSSensors);
 			this.currentGPSSensors = new HashSet<>();
 
@@ -296,9 +294,10 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 
 	/**
 	 * @return returns always false.
+	 * @throws de.pgalise.simulation.shared.exception.SensorException
 	 */
 	@Override
-	public boolean statusOfSensor(Sensor sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor<?,?> sensor) throws SensorException {
 		/* Nothing to do */
 		return false;
 	}
@@ -496,11 +495,10 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	public void createSensors(Collection<Sensor<?,?>> sensors)
 					throws SensorException {
 		List<Sensor<?,?>> newSensors = new LinkedList<>();
-		for (Sensor sensor : sensors) {
-			this.sensorMap.add(sensor);
+		for (Sensor<?,?> sensor : sensors) {
+			this.sensors.add(sensor);
 			newSensors.add(sensor);
-			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.
-							getSensorType().getSensorTypeId());
+			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getClass());
 			if (sensorIDSet == null) {
 				sensorIDSet = new HashSet<>();
 				this.sensorTypeIDMap.put(sensor.getClass(),
@@ -526,10 +524,10 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	public void deleteSensors(Collection<Sensor<?,?>> sensors)
 					throws SensorException {
 		List<Sensor<?,?>> sensorIDList = new LinkedList<>();
-		for (Sensor sensor : sensors) {
+		for (Sensor<?,?> sensor : sensors) {
 			sensorIDList.add(sensor);
-			sensorMap.remove(sensor);
-			sensorTypeIDMap.get(sensor.getSensorType().getSensorTypeId()).remove(
+			this.sensors.remove(sensor);
+			sensorTypeIDMap.get(sensor.getClass()).remove(
 							sensor);
 			log.debug("remove sensor: " + sensor.getSensorType() + " with id: "
 												+ sensor);
@@ -565,7 +563,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 												this.initParameter.getClockGeneratorInterval(),
 												this.initParameter.getCityBoundary())));
 				/* Send sensors: */
-				user.sendMessage(new NewSensorsMessage(sensorMap));
+				user.sendMessage(new NewSensorsMessage(sensors));
 				break;
 			case STARTED:
 				/* Send init: */
@@ -577,7 +575,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 												this.initParameter.getClockGeneratorInterval(),
 												this.initParameter.getCityBoundary())));
 				/* Send sensors */
-				user.sendMessage(new NewSensorsMessage(sensorMap));
+				user.sendMessage(new NewSensorsMessage(sensors));
 
 				/* Send vehicles */
 				user.sendMessage(new NewVehiclesMessage(vehicleDataMap));
@@ -594,12 +592,12 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	private void removeVehicleSensors(
-					Collection<Vehicle<?>> vehicleDataCollection) {
+					Collection<Vehicle<?>> vehicles) {
 		Collection<Sensor<?,?>> sensorHelperCollection = new LinkedList<>();
 
-		for (Vehicle vehicleData : vehicleDataCollection) {
-			Sensor sensor = vehicleData.getGpsSensor();
-			sensorMap.add(sensor);
+		for (Vehicle<?> vehicle : vehicles) {
+			Sensor<?,?> sensor = vehicle.getGpsSensor();
+			sensors.add(sensor);
 			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getClass());
 			if (sensorIDSet != null) {
 				sensorIDSet.remove(sensor);
@@ -611,7 +609,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 
 		try {
 			this.getOcWebSocketService().sendMessageToAllUsers(
-							new RemoveVehiclesMessage(vehicleDataCollection));
+							new RemoveVehiclesMessage(vehicles));
 		} catch (IOException e) {
 			log.error("Exception", e);
 		}
@@ -634,8 +632,8 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 
 		for (Vehicle<?> vehicleData : vehicleDataCollection) {
 			Sensor sensor = vehicleData.getGpsSensor();
-			this.sensorMap.add(sensor);
-			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor);
+			this.sensors.add(sensor);
+			Set<Sensor<?,?>> sensorIDSet = this.sensorTypeIDMap.get(sensor.getClass());
 			if (sensorIDSet == null) {
 				sensorIDSet = new HashSet<>();
 				this.sensorTypeIDMap.put(sensor.getClass(), sensorIDSet);
@@ -664,5 +662,26 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	@Override
 	public String getName() {
 		return DefaultOCSimulationController.class.getName();
+	}
+
+	@Override
+	public void addSimulationEventList(
+		EventList<?> simulationEventList) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public long getSimulationTimestamp() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public long getElapsedTime() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public EventInitiator getEventInitiator() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -24,12 +23,14 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
- * Implementation of an {@link GpsInterferer} that hold several other {@link GpsInterferer}s
- * 
+ * Implementation of an {@link GpsInterferer} that hold several other
+ * {@link GpsInterferer}s
+ *
  * @author Marcus
  * @version 1.0
  */
 public class CompositeGpsInterferer implements GpsInterferer {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -38,49 +39,52 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	private final List<GpsInterferer> interferers;
 
 	/**
-	 * Creates a {@link CompositeGpsInterferer} with no composite {@link GpsInterferer}s attached.
+	 * Creates a {@link CompositeGpsInterferer} with no composite
+	 * {@link GpsInterferer}s attached.
 	 */
 	public CompositeGpsInterferer() {
 		this(new LinkedList<GpsInterferer>());
 	}
 
 	/**
-	 * Creates a {@link CompositeGpsInterferer} with the passed {@link GpsInterferer}s attached.
-	 * 
-	 * @param interferers
-	 *            the {@link CompositeGpsInterferer}s to attach
-	 * @throws IllegalArgumentException
-	 *             if argument 'interferers' is 'null'
+	 * Creates a {@link CompositeGpsInterferer} with the passed
+	 * {@link GpsInterferer}s attached.
+	 *
+	 * @param interferers the {@link CompositeGpsInterferer}s to attach
+	 * @throws IllegalArgumentException if argument 'interferers' is 'null'
 	 */
 	public CompositeGpsInterferer(List<GpsInterferer> interferers) throws IllegalArgumentException {
 		if (interferers == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("interferers"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+				"interferers"));
 		}
 		this.interferers = new LinkedList<>(interferers);
 	}
 
 	/**
 	 * Attaches an {@link GpsInterferer} to this {@link CompositeGpsInterferer}
-	 * 
-	 * @param interferer
-	 *            the {@link GpsInterferer} to be attached to this {@link CompositeGpsInterferer}
-	 * @return 'true' whether the passed {@link GpsInterferer} could have been attached to this
-	 *         {@link CompositeGpsInterferer}, otherwise 'false'
-	 * @throws UnsupportedOperationException
+	 *
+	 * @param interferer the {@link GpsInterferer} to be attached to this
+	 * {@link CompositeGpsInterferer}
+	 * @return 'true' whether the passed {@link GpsInterferer} could have been
+	 * attached to this {@link CompositeGpsInterferer}, otherwise 'false'
+	 * @throws IllegalArgumentException if <tt>interferer</tt> is a
+	 * <tt>CompositeGpsInterferer</tt>
 	 */
-	public boolean attach(final GpsInterferer interferer) throws UnsupportedOperationException {
+	public boolean attach(final GpsInterferer interferer) throws IllegalArgumentException {
 		if (interferer instanceof CompositeGpsInterferer) {
-			throw new UnsupportedOperationException(
-					"Argument 'interferer' may not be an instance of CompositeGpsInterferer");
+			throw new IllegalArgumentException(
+				"Argument 'interferer' may not be an instance of CompositeGpsInterferer");
 		}
 		return this.interferers.add(interferer);
 	}
 
 	/**
-	 * Detaches the passed {@link GpsInterferer} from this {@link CompositeGpsInterferer}
-	 * 
-	 * @param interferer
-	 *            the {@link GpsInterferer} to be detached from this {@link CompositeGpsInterferer}
+	 * Detaches the passed {@link GpsInterferer} from this
+	 * {@link CompositeGpsInterferer}
+	 *
+	 * @param interferer the {@link GpsInterferer} to be detached from this
+	 * {@link CompositeGpsInterferer}
 	 * @return true if the {@link GpsInterferer} is detached
 	 */
 	public boolean detach(final GpsInterferer interferer) {
@@ -88,10 +92,15 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	}
 
 	@Override
-	public Coordinate interfere(final Coordinate mutablePosition, final Coordinate realPosition, final long simTime) {
-		Coordinate result = new Coordinate(mutablePosition.getX(), mutablePosition.getY());
+	public Coordinate interfere(final Coordinate mutablePosition,
+		final Coordinate realPosition,
+		final long simTime) {
+		Coordinate result = new Coordinate(mutablePosition.getX(),
+			mutablePosition.getY());
 		for (final GpsInterferer interferer : this.interferers) {
-			result = interferer.interfere(result, realPosition, simTime);
+			result = interferer.interfere(result,
+				realPosition,
+				simTime);
 		}
 		// Returns the last value
 		return result;

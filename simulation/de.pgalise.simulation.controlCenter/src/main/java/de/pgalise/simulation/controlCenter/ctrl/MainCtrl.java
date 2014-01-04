@@ -3,38 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.controlCenter.InitDialogCtrlInitialType;
-import de.pgalise.simulation.controlCenter.InitDialogCtrlInitialTypeEnum;
-import de.pgalise.simulation.controlCenter.MapParsedStateEnum;
+import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.AbstractEvent;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.UUID;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 
 /**
@@ -43,30 +43,87 @@ import org.primefaces.model.TreeNode;
  */
 @ManagedBean
 @SessionScoped
-@Path("/mainCtrl")
+//@Path("/mainCtrl")
 public class MainCtrl implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	@EJB
 	private GsonService gsonService;
 	@EJB
 	private IdGenerator idGenerator;
+	@EJB
+	private SimulationControllerLocal simulationController;
 	private Map<Date, ControlCenterMessage<?>> sentMessages = new HashMap<>();
 	private MapParsedStateEnum mapParsedStateEnum;
 	private MapAndBusstopFileData mapAndBusstopFileData;
 	private ControlCenterStartParameter importedStartParameter;
-	private InitDialogCtrlInitialType chosenInitialType = InitDialogCtrlInitialTypeEnum.CREATE;
-	private boolean automaticallyOpenSensorDialog;
+	private InitDialogCtrlInitialType chosenInitialType = InitDialogCtrlInitialTypeEnum.create;
+	private boolean automaticallyOpenSensorDialog = false;
 	private List<AbstractEvent> uncommittedEvents = new LinkedList<>();
 	private List<AbstractEvent> selectedUncommittedEvents = new LinkedList<>();
 	private List<ControlCenterMessage<?>> unsentMessages = new LinkedList<>();
 	private List<ControlCenterMessage<?>> selectedUnsentMessages = new LinkedList<>();
-	@ManagedProperty(value = "#{ControlCenterStartParameter}")
+//	@ManagedProperty(value = "#{ControlCenterStartParameter}")
 	private ControlCenterStartParameter startParameter;
+	private String connectionState = ConnectionStateEnum.DISCONNECTED.
+		getStringValue();
+	private String simulationState = SimulationStateEnum.STOPPED.getStringValue();
+	private Date simulationDate = new GregorianCalendar().getTime();
+	private String mapParsedState = MapParsedStateEnum.IN_PROGRESS.
+		getStringValue();
+	private TreeNode startParameterTreeRoot;
 
 	/**
 	 * Creates a new instance of NewJSFManagedBean
 	 */
 	public MainCtrl() {
+	}
+
+	@PostConstruct
+	public void init() {
+		startParameter = new ControlCenterStartParameter();
+		startParameterTreeRoot = new DefaultTreeNode("StartParameter",
+			null);
+	}
+
+	public void startSimulation() {
+		simulationController.start(startParameter);
+	}
+
+	public void stopSimulation() {
+		simulationController.stop();
+	}
+
+	public String getConnectionState() {
+		return connectionState;
+	}
+
+	public void setConnectionState(String connectionState) {
+		this.connectionState = connectionState;
+	}
+
+	public void setSimulationState(String simulationState) {
+		this.simulationState = simulationState;
+	}
+
+	public String getSimulationState() {
+		return simulationState;
+	}
+
+	public void setSimulationDate(Date simulationDate) {
+		this.simulationDate = simulationDate;
+	}
+
+	public Date getSimulationDate() {
+		return simulationDate;
+	}
+
+	public void setMapParsedState(String oSMParsedState) {
+		this.mapParsedState = oSMParsedState;
+	}
+
+	public String getMapParsedState() {
+		return mapParsedState;
 	}
 
 	public void setStartParameter(ControlCenterStartParameter startParameter) {
@@ -94,7 +151,7 @@ public class MainCtrl implements Serializable {
 	public List<ControlCenterMessage<?>> getSelectedUnsentMessages() {
 		return selectedUnsentMessages;
 	}
-	
+
 	public void commitEvents() {
 		throw new UnsupportedOperationException();
 	}
@@ -153,7 +210,7 @@ public class MainCtrl implements Serializable {
 	 * @param mapParsedStateEnum the mapParsedStateEnum to set
 	 */
 	public void setMapParsedStateEnum(
-					MapParsedStateEnum mapParsedStateEnum) {
+		MapParsedStateEnum mapParsedStateEnum) {
 		this.mapParsedStateEnum = mapParsedStateEnum;
 	}
 
@@ -168,7 +225,7 @@ public class MainCtrl implements Serializable {
 	 * @param mapAndBusstopFileData the mapAndBusstopFileData to set
 	 */
 	public void setMapAndBusstopFileData(
-					MapAndBusstopFileData mapAndBusstopFileData) {
+		MapAndBusstopFileData mapAndBusstopFileData) {
 		this.mapAndBusstopFileData = mapAndBusstopFileData;
 	}
 
@@ -183,21 +240,17 @@ public class MainCtrl implements Serializable {
 	 * @param importedStartParameter the importedStartParameter to set
 	 */
 	public void setImportedStartParameter(
-					ControlCenterStartParameter importedStartParameter) {
+		ControlCenterStartParameter importedStartParameter) {
 		this.importedStartParameter = importedStartParameter;
 	}
-	
-	@GET()
-	@Produces("text/plain")
-	@Path("/parseOSMAndBusstop/")	
+
+//	@GET()
+//	@Produces("text/plain")
+//	@Path("/parseOSMAndBusstop/")	
 	public void parseOSMAndBusstop() {
 		System.out.println("kfldjs222");
-	}	
-	
-	public void export() {
-		throw new UnsupportedOperationException();
 	}
-	
+
 	private String parameterUploadData;
 
 	public void setParameterUploadData(String parameterUploadData) {
@@ -207,66 +260,61 @@ public class MainCtrl implements Serializable {
 	public String getParameterUploadData() {
 		return parameterUploadData;
 	}
-	
+
 	public void onStartParameterUpload() {
-		throw new UnsupportedOperationException("implement start parameter deserialization");
+		throw new UnsupportedOperationException(
+			"implement start parameter deserialization");
 	}
-	
+
 	private String parameterDownloadData;
-	
+
 	public void prepareExport() {
 		this.parameterDownloadData = null;
 		throw new UnsupportedOperationException("serialize");
 	}
-	
-	public String retrieveExportDownloadLink() {
-		if (parameterDownloadData == null) {
-			throw new IllegalStateException("export not prepared");
-		}
-		return FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath()+"/"+UUID.randomUUID().toString();
-	}
-	
+
 	public void deleteUncommittedEvent(AbstractEvent event) {
 		uncommittedEvents.remove(event);
 	}
-	
+
 	public void deleteUnSentMessage(ControlCenterMessage<?> unsentMessage) {
 	}
-	
+
 	public void sendMessages() {
-		
+
 	}
-	
+
 	public void removeTrafficServerIP(String trafficServerIP) {
 		startParameter.getTrafficServerIPs().remove(trafficServerIP);
 	}
-	
+
 	public void addTrafficServerIP() {
 		startParameter.getTrafficServerIPs().add("");
 	}
 
-	private TreeNode startParameterTreeRoot = new DefaultTreeNode("StartParameter",
-			null);
-
-	public void generateTree( )  {
-		Queue<Pair<TreeNode,Field>> queue = new LinkedList<>();
-		for(Field field : startParameter.getClass().getDeclaredFields()) {
+	public void generateTree() {
+		if (startParameter == null) {
+			return;
+		}
+		Queue<Pair<TreeNode, Field>> queue = new LinkedList<>();
+		for (Field field : startParameter.getClass().getDeclaredFields()) {
 			queue.add(new MutablePair<>(startParameterTreeRoot,
 				field));
 		}
-		while(!queue.isEmpty()) {
-			Pair<TreeNode,Field> current = queue.poll();
+		while (!queue.isEmpty()) {
+			Pair<TreeNode, Field> current = queue.poll();
 			TreeNode node = new DefaultTreeNode(current.getRight().getName(),
 				current.getLeft());
-			for(Field field : current.getRight().getDeclaringClass().getDeclaredFields()) {
+			for (Field field : current.getRight().getDeclaringClass().
+				getDeclaredFields()) {
 				queue.add(new MutablePair<>(current.getLeft(),
-	field));
+					field));
 			}
 		}
 	}
 
 	/*
-	@TODO: implements PropertyChangeListener for StartParameter and regenerate tree lazily on change
+	 @TODO: implements PropertyChangeListener for StartParameter and regenerate tree lazily on change
 	 */
 	public TreeNode getStartParameterTreeRoot() {
 		startParameterTreeRoot = new DefaultTreeNode("StartParameter",
@@ -277,5 +325,37 @@ public class MainCtrl implements Serializable {
 
 	public void setStartParameterTreeRoot(TreeNode startParameterTreeRoot) {
 		this.startParameterTreeRoot = startParameterTreeRoot;
+	}
+
+	/**
+	 *
+	 * @return
+	 */
+	/*
+	 @TODO: make async
+	 @TODO: improve streaming
+	 */
+	public StreamedContent retrieveExportDownloadLink() {
+		try {
+			JAXBContext jaxbContext = JAXBContext.newInstance(
+				ControlCenterStartParameter.class);
+			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+			// for getting nice formatted output
+			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+				Boolean.TRUE);
+
+			// Writing to XML file
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			jaxbMarshaller.marshal(startParameter,
+				outputStream);
+
+			return new DefaultStreamedContent(new ByteArrayInputStream(outputStream.
+				toByteArray()),
+				"xml",
+				String.format("pgalise_start_parameter-%s.xml", new Date().toString()));
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

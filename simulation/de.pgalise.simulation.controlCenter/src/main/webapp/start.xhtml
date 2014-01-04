@@ -1,0 +1,33 @@
+<!-- START (INIT) -->
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+								xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:ui="http://java.sun.com/jsf/facelets" 
+								xmlns:h="http://xmlns.jcp.org/jsf/html"
+								xmlns:f="http://xmlns.jcp.org/jsf/core"
+								xmlns:p="http://primefaces.org/ui" >
+	<!--usage of validation stack in former implementation not clear -->
+	<ui:define name="content">
+		<div class="contentDiv" >
+			<h:form>
+				<h3>Summary</h3>
+				Shows the XML start parameter as a hierarchic structure.
+				<p:tree value="#{mainCtrl.startParameterTreeRoot}" var="node">
+					<p:treeNode id="treeNode">  
+						<h:outputText value="#{node}" id="lblNode"/>  
+					</p:treeNode>
+				</p:tree>
+				<h3>Export start parameter</h3>
+				Export the start parameter of the actual simulation as XML.
+				<h:form>
+					<p:commandButton id="downloadLink" value="Download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"   
+													 icon="ui-icon-arrowthichk-s">  
+						<p:fileDownload value="#{mainCtrl.retrieveExportDownloadLink()}" />  
+					</p:commandButton>  
+				</h:form>
+				<h3>Start Simulation Now</h3>
+				Click the button below to start the simulation with the chosen parameters.
+				<p:commandButton value="Start" title="start the simulation with your set parameter" action="#{mainCtrl.startSimulation}"/>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

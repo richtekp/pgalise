@@ -42,6 +42,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -51,10 +52,11 @@ import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import javax.ejb.EJB;
 
 /**
  * J-Unit test for {@link DefaultEventInitiator}, which will test if every controller gets it's updates and if the event
@@ -65,7 +67,8 @@ import de.pgalise.simulation.weather.service.WeatherController;
 public class DefaultEventInitiatorTest {
 	private static final long INTERVAL = 1000;
 	private static final long CLOCK_GENERATOR_INTERVAL = 0;
-	private static DefaultEventInitiator testClass;
+	@EJB
+	private DefaultEventInitiator eventInitiator;
 	private static EnergyControllerMock energyController;
 	private static WeatherControllerMock weatherController;
 	private static TrafficControllerMock trafficController;
@@ -78,7 +81,7 @@ public class DefaultEventInitiatorTest {
 	private static ControlCenterControllerMock controlCenterController;
 
 	@BeforeClass
-	public static void setUp() {
+	public void setUp() {
 		Calendar cal = new GregorianCalendar();
 		cal.set(2011, 0, 0, 0, 0, 0);
 		startTimestamp = cal.getTimeInMillis();
@@ -105,13 +108,17 @@ public class DefaultEventInitiatorTest {
 		EasyMock.expect(serviceDictionary.getController(SimulationController.class))
 				.andStubReturn(simulationController);
 		EasyMock.replay(serviceDictionary);
+		IdGenerator idGenerator = EasyMock.createNiceMock(IdGenerator.class);
 
-		testClass = new DefaultEventInitiator();
-		testClass._setServiceDictionary(serviceDictionary);
-		testClass.setOperationCenterController(operationCenterController);
+		eventInitiator = new DefaultEventInitiator(idGenerator,
+			serviceDictionary,
+			operationCenterController,
+			controlCenterController,
+			null);
+		eventInitiator.setOperationCenterController(operationCenterController);
 		List<Controller<?,?,?>> controllerCollection = new LinkedList<>();
-		testClass.setFrontController(controllerCollection);
-		testClass.setControlCenterController(controlCenterController);
+		eventInitiator.setFrontController(controllerCollection);
+		eventInitiator.setControlCenterController(controlCenterController);
 	}
 
 	@Test
@@ -119,19 +126,19 @@ public class DefaultEventInitiatorTest {
 		long updateIntervals = ((endTimestamp - startTimestamp) / INTERVAL) + 1;
 
 		// Status test
-		assertEquals(StatusEnum.INIT, testClass.getStatus());
+		assertEquals(StatusEnum.INIT, eventInitiator.getStatus());
 
-		testClass.init(initParameter);
-
-		// Status test
-		assertEquals(StatusEnum.INITIALIZED, testClass.getStatus());
-
-		testClass.start(startParameter);
+		eventInitiator.init(initParameter);
 
 		// Status test
-		assertEquals(StatusEnum.STARTED, testClass.getStatus());
+		assertEquals(StatusEnum.INITIALIZED, eventInitiator.getStatus());
 
-		testClass.getEventThread().join();
+		eventInitiator.start(startParameter);
+
+		// Status test
+		assertEquals(StatusEnum.STARTED, eventInitiator.getStatus());
+
+		eventInitiator.getEventThread().join();
 
 		// Test all counters
 		assertEquals(updateIntervals, energyController.getUpdateCounter());
@@ -140,15 +147,15 @@ public class DefaultEventInitiatorTest {
 		assertEquals(updateIntervals, operationCenterController.getUpdateCounter());
 		assertEquals(updateIntervals, controlCenterController.getUpdateCount());
 		
-		testClass.stop();
+		eventInitiator.stop();
 
 		// Status test
-		assertEquals(StatusEnum.STOPPED, testClass.getStatus());
+		assertEquals(StatusEnum.STOPPED, eventInitiator.getStatus());
 
-		testClass.reset();
+		eventInitiator.reset();
 
 		// Status test
-		assertEquals(StatusEnum.INIT, testClass.getStatus());
+		assertEquals(StatusEnum.INIT, eventInitiator.getStatus());
 	}
 
 	/**
@@ -156,7 +163,7 @@ public class DefaultEventInitiatorTest {
 	 * 
 	 * @author Timo
 	 */
-	private static class OperationCenterControllerMock implements OperationCenterController {
+	private static class OperationCenterControllerMock implements ServerSideOperationCenterController {
 
 		private int updateCounter;
 
@@ -454,7 +461,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InitParameter param) throws InitializationException, IllegalStateException {
+		public void init(TrafficInitParameter param) throws InitializationException, IllegalStateException {
 		}
 
 		@Override
@@ -462,7 +469,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(StartParameter param) throws IllegalStateException {
+		public void start(InfrastructureStartParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -489,16 +496,8 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void setOperationCenterController(OperationCenterController operationCenterController) {
-		}
-
-		@Override
 		public EventInitiator getEventInitiator() {
 			return null;
-		}
-
-		@Override
-		public void setControlCenterController(ControlCenterController controlCenterController) {
 		}
 
 		@Override
@@ -510,13 +509,18 @@ public class DefaultEventInitiatorTest {
 		public Long getId() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
+
+		@Override
+		public long getElapsedTime() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
 	}
 	
 	/**
 	 * Mock for the controll center controller.
 	 * @author Timo
 	 */
-	private static class ControlCenterControllerMock implements ControlCenterController {
+	private static class ControlCenterControllerMock implements ServerSideControlCenterController {
 
 		private int updateCount;
 		

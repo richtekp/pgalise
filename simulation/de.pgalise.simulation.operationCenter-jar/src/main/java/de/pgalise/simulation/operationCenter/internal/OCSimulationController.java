@@ -16,17 +16,13 @@
  
 package de.pgalise.simulation.operationCenter.internal;
 
+import de.pgalise.simulation.SimulationController;
 import java.io.IOException;
 import java.net.UnknownHostException;
 
 import de.pgalise.simulation.operationCenter.internal.OCWebSocketService.NewUserEventListener;
 import de.pgalise.simulation.operationCenter.internal.message.GateMessage;
-import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorManagerController;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.visualizationcontroller.VisualizationController;
 
 /**
@@ -36,7 +32,7 @@ import de.pgalise.simulation.visualizationcontroller.VisualizationController;
  * 
  * @author Timo
  */
-public interface OCSimulationController extends SensorManagerController<Event,InfrastructureStartParameter, TrafficInitParameter,Sensor<?,?>>, NewUserEventListener, VisualizationController {
+public interface OCSimulationController extends SimulationController, NewUserEventListener, VisualizationController {
 
 	/**
 	 * Updates the clients.

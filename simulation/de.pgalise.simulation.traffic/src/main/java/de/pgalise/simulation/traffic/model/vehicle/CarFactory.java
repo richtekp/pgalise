@@ -15,10 +15,8 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import java.awt.Color;
-
-import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import javax.ejb.Local;
 
 /**
  * Interface to provide methods to create different types of {@link Car}.
@@ -32,19 +30,17 @@ public interface CarFactory extends VehicleFactory {
 	 * Method to create a {@link Car} with the given typeId.All position related
 	 * data is <code>null</code>
 	 *
-	 * @param id ID of the {@link Car}
-	 * @param typeId ID of the {@link Car} type
-	 * @param color Color of the {@link Car}
+	 * @param output
 	 * @return created {@link Car}
 	 */
-	public Vehicle<CarData> createCar(Output output);
+	public Car createCar(Output output);
 
 	/**
 	 * Method to create a random {@link Car}. All position related data is
 	 * <code>null</code>
 	 *
-	 * @param id ID of the {@link Car}
+	 * @param output
 	 * @return created {@link Car}
 	 */
-	public Vehicle<CarData> createRandomCar(Output output);
+	Car createRandomCar(Output output);
 }

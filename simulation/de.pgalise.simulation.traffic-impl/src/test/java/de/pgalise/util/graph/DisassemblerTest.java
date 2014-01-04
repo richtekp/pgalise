@@ -28,7 +28,6 @@ import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;

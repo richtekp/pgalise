@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -28,16 +29,9 @@ import org.w3c.dom.NodeList;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Implements a factory for {@link Motorcycle}. The vehicles are loaded by a XML file.
@@ -89,16 +83,16 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
 	}
 
 	@Override
-	public BaseVehicle<MotorcycleData> createRandomMotorcycle( Output output) {
+	public Motorcycle createRandomMotorcycle( Output output) {
 		MotorcycleData data = getRandomVehicleData();
-		return new Motorcycle(getIdGenerator().getNextId(),
+		return new DefaultMotorcycle(getIdGenerator().getNextId(),
 			null,
 			data,
 			getTrafficGraphExtensions());
 	}
 
 	@Override
-	public BaseVehicle<MotorcycleData> createMotorcycle( Output output) {
+	public Motorcycle createMotorcycle( Output output) {
 		return createRandomMotorcycle(output);
 	}
 

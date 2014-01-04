@@ -16,13 +16,6 @@
  
 package de.pgalise.simulation.traffic.internal.server.scheduler;
 
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;

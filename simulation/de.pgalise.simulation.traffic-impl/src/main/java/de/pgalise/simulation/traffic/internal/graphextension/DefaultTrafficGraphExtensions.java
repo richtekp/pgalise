@@ -16,11 +16,9 @@
  
 package de.pgalise.simulation.traffic.internal.graphextension;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,35 +30,21 @@ import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.internal.server.rules.LeftYieldsToRight;
 import de.pgalise.simulation.traffic.internal.server.rules.PriorityRoad;
 import de.pgalise.simulation.traffic.internal.server.rules.Roundabout;
 import de.pgalise.simulation.traffic.internal.server.rules.StraightForwardRule;
-import de.pgalise.simulation.traffic.model.vehicle.MotorizedVehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.internal.server.rules.AbstractTrafficRule;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
-import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 

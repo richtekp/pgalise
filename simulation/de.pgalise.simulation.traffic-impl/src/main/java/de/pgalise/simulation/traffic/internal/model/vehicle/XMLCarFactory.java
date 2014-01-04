@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.traffic.model.vehicle.Car;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -32,7 +33,6 @@ import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Implements a factory for {@link Car}. The vehicles are loaded by a XML file.
@@ -43,14 +43,14 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements CarFactory {
 
 	@Override
-	public BaseVehicle<CarData> createCar( Output output) {
+	public Car createCar( Output output) {
 		return createRandomCar(output);
 	}
 
 	@Override
-	public BaseVehicle<CarData> createRandomCar( Output output) {
+	public Car createRandomCar( Output output) {
 		CarData data = getRandomVehicleData();
-		return new Car(getIdGenerator().getNextId(),
+		return new DefaultCar(getIdGenerator().getNextId(),
 			null,
 			data,
 			getTrafficGraphExtensions());

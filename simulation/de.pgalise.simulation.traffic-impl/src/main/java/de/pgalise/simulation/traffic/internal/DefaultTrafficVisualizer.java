@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import java.awt.Color;
 import java.awt.Font;
@@ -24,9 +23,7 @@ import java.awt.Polygon;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficVisualizer;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.util.generic.async.AsyncHandler;

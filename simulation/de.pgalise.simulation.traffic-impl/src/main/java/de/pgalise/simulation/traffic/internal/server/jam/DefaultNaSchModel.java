@@ -19,8 +19,6 @@ package de.pgalise.simulation.traffic.internal.server.jam;
 import java.util.Random;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;

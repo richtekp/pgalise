@@ -11,5 +11,16 @@ package de.pgalise.simulation.controlCenter.ctrl;
  * @author richter
  */
 public enum ConnectionStateEnum implements ConnectionState {
-	CONNECTED
+	CONNECTED("connected"), DISCONNECTED("disconnected");
+	
+	private final String stringValue;
+
+	private ConnectionStateEnum(String stringValue) {
+		this.stringValue = stringValue;
+	}
+
+	@Override
+	public String getStringValue() {
+		return stringValue;
+	}
 }

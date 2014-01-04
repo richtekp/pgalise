@@ -6,29 +6,18 @@
 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import javax.ejb.Stateful;
 
 /**
  *
  * @author richter
  */
-public class RandomBicycleFactory extends AbstractVehicleFactory implements
-				BicycleFactory{
+@Stateful
+public class RandomBicycleFactory extends AbstractBicycleFactory implements BicycleFactory {
+	private static final long serialVersionUID = 1L;
 
-	@Override
-	public Vehicle<BicycleData> createBicycle(Output output) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
-
-	@Override
-	public Vehicle<BicycleData> createRandomBicycle(Output output) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public RandomBicycleFactory() {
 	}
 	
 }

@@ -16,7 +16,9 @@
  
 package de.pgalise.simulation.shared.city;
 
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import javax.faces.bean.ManagedBean;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -77,7 +79,12 @@ public class City extends AbstractIdentifiable {
 	@Transient
 	private int rate = 0;
 	@OneToOne
-	private BaseGeoInfo position;
+	private BaseGeoInfo position = new BaseGeoInfo(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {new Coordinate(1,
+				1), new Coordinate(1,
+				2), new Coordinate(2,
+				2), new Coordinate(2,
+				1), new Coordinate(1,
+				1)})); //@TODO: improve with correct geo information
 	/**
 	 * a point which is considered the most important in the geometry which is not forcibly always the geographical center of the referenced area
 	 */

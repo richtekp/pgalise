@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:p="http://primefaces.org/ui"
+			xmlns:o="http://omnifaces.org/ui"
+			xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+	<h:head>
+		<!-- Styles -->
+		<link rel="stylesheet" type="text/css" href="css/style.css"/>
+		<link rel="stylesheet" type="text/css" href="css//olStyle.css"/>
+		<!-- Enum access -->
+		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.ConnectionStateEnum" var="connectionStateEnum"/>
+		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.SimulationStateEnum" var="simulationStateEnum"/>
+		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.MapParsedStateEnum" var="mapParsedStateEnum"/>
+	</h:head>
+	<h:body>
+		<ui:include src="/partials/dialogs/consoleDialog.xhtml" />
+		<ui:include src="/partials/dialogs/settingsDialog.xhtml" />
+		<ui:include src="/partials/dialogs/uncommittedEventsDialog.xhtml" />
+		<ui:include src="/partials/dialogs/unsentMessagesDialog.xhtml" />
+		<div id="page">
+			<p:layout fullPage="true">
+				<p:layoutUnit position="north">
+					<div id="div_top" >
+						<h:form>
+							<img src="img/wrench.png" id="wrenchImg" onclick="settingsDialog.show()" />
+							<img src="img/console.png" id="consoleImg" onclick="consoleDialog.show()" />
+							<div id="layout_top">
+								Connection: <span class="connectionStateColor"><h:outputText value="#{mainCtrl.connectionState}"/></span>
+								Simulation: <span class="simulationStateColor"><h:outputText value="#{mainCtrl.simulationState}"/></span>
+								Simulation Time: <h:outputText value="#{mainCtrl.simulationDate}">
+									<f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+								</h:outputText>
+								OSM: <span class="osmParsedStateColor"><h:outputText value="#{mainCtrl.mapParsedState}"/></span>
+							</div>
+							<div id="loadingArea" class="loadingStatus"></div>
+							<div id="div_logo">
+								<a href="index.xhtml"><img src="img/logo.png"/></a>
+							</div>
+							<div id="div_heading">
+								<div id="headline">Simulation Control Center</div>
+								<h:messages/>
+								<h:commandButton value="unsent messages" onclick="unsentMessagesDialog.show()"/>
+								<h:commandButton value="event list" onclick="uncommittedEventsDialog.show()"/>
+							</div>
+						</h:form>
+					</div>
+				</p:layoutUnit>
+				<p:layoutUnit position="center">
+					<div class="contentDiv">
+						<ui:insert name="content" >
+							<ui:include src="/WEB-INF/templates/content.xhtml" />
+						</ui:insert>					
+					</div>
+				</p:layoutUnit>
+				<p:layoutUnit position="west">
+					<h:form>
+						<p:menu>
+							<p:submenu >  
+								<p:menuitem value="Bus System" outcome="/busSystem.xhtml" />
+								<p:menuitem value="City" outcome="/city.xhtml" />
+								<p:menuitem value="General" outcome="/general.xhtml" />
+								<p:menuitem value="Interaction" outcome="/interaction.xhtml" />
+								<p:menuitem value="Start parameter tree" outcome="/start.xhtml" />
+								<p:menuitem value="Weather" outcome="/weather.xhtml" />
+							</p:submenu>
+						</p:menu>
+					</h:form>
+				</p:layoutUnit>
+			</p:layout>
+		</div>
+	</h:body>
+</html>

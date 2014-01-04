@@ -13,7 +13,7 @@ import de.pgalise.simulation.shared.event.EventType;
  * @author richter
  */
 public interface WeatherEventType extends EventType {
-	int getMinValue();
+	float getMinValue();
 	
-	int getMaxValue();
+	float getMaxValue();
 }

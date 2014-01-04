@@ -35,7 +35,6 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import javax.annotation.PostConstruct;
 
 /**

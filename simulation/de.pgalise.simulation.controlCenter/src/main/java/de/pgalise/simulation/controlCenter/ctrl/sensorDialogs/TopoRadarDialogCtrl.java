@@ -10,7 +10,6 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensor;
-import de.pgalise.staticsensor.internal.sensor.energy.SmartMeterSensor;
 import java.util.concurrent.ExecutionException;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -23,6 +22,7 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class TopoRadarDialogCtrl extends BaseSensorDialogCtrl {
+	private static final long serialVersionUID = 1L;
 	@EJB
 	private TrafficGraph trafficGraph;
 

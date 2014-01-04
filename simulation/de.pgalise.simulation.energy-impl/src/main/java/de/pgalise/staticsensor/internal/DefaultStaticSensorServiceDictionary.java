@@ -9,7 +9,7 @@ package de.pgalise.staticsensor.internal;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.AbstractServiceDictionary;
 import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.staticsensor.StaticSensorServiceDictionary;
+import de.pgalise.simulation.energy.StaticSensorServiceDictionary;
 import java.util.List;
 import javax.ejb.Singleton;
 import org.slf4j.Logger;

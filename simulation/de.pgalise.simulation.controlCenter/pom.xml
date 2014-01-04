@@ -33,7 +33,7 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>controlCenter-ejb</artifactId>
 			<scope>test</scope>
-			<type>jar</type>
+			<type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise</groupId>
@@ -41,6 +41,14 @@
 			<type>jar</type>
 		</dependency>
 		
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-data</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools.jdbc</groupId>
+			<artifactId>gt-jdbc-postgis</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
@@ -79,7 +87,7 @@
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>3.5</version>
+			<version>4.0</version>
 		</dependency><!-- Tomcat 6 needs this 
 		<dependency>
 			<groupId>com.sun.el</groupId>
@@ -170,19 +178,7 @@
 			<artifactId>java</artifactId>
 			<version>0.0.2-SNAPSHOT</version>
 			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-swing</artifactId>
-			<version>10.2</version>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools.jdbc</groupId>
-			<artifactId>gt-jdbc-postgis</artifactId>
-			<version>10.2</version>
-			<type>jar</type>
-		</dependency>
+		</dependency>	
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>taglibs-unstandard</artifactId>
@@ -193,6 +189,21 @@
 			<artifactId>omnifaces</artifactId>
 			<version>1.6.3</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.7</version>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+	 <dependency>
+	  <groupId>org.geotools</groupId>
+	  <artifactId>gt-cql</artifactId>
+	  <version>10.3</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<finalName>de.pgalise.simulation.controlCenter</finalName>

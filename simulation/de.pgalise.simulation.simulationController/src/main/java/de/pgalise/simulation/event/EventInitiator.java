@@ -23,8 +23,8 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import java.util.List;
 
-import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
+import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 
 /**
  * An event initiator gives the tact of the simulation. It calls the
@@ -64,13 +64,13 @@ public interface EventInitiator extends Controller<Event, StartParameter, InitPa
 	 * Use this only for testing.
 	 * @param operationCenterController
 	 */
-	public void setOperationCenterController(OperationCenterController operationCenterController);
+	public void setOperationCenterController(ServerSideOperationCenterController operationCenterController);
 	
 	/**
 	 * Use this only for testing.
 	 * @param controlCenterController
 	 */
-	public void setControlCenterController(ControlCenterController controlCenterController);
+	public void setControlCenterController(ServerSideControlCenterController controlCenterController);
 	
 	public void setFrontController(List<Controller<?,?,?>> frontController);
 

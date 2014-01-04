@@ -26,12 +26,9 @@ import java.util.ListIterator;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.scheduler.AbstractScheduler;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
  * Implements a scheduler for the traffic. Uses a sorted list to schedule the items.

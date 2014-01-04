@@ -26,6 +26,7 @@ import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.List;
 import javax.annotation.ManagedBean;
 import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.traffic.TrafficTrip;
 
 /**
@@ -208,11 +209,12 @@ public interface Vehicle<D extends VehicleData> extends Identifiable {
 	
 	GpsSensor getGpsSensor();
 	
+	void setGpsSensor(GpsSensor gpsSensor);
+	
 	/**
 	 * the traffic trip which is associated with the vehicles or 
 	 * <code>null</code> if the vehicle is currently not on a trip
 	 * @return 
 	 */
 	TrafficTrip getTrafficTrip();
-
 }

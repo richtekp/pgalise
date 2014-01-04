@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -21,7 +20,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 
 /**
  * Represents an interferer that shows errors caused by satellite clocks
- * 
+ *
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
@@ -31,27 +30,31 @@ public class GpsClockInterferer extends GpsBaseInterferer {
 	 * File path for property file
 	 */
 	public static final String PROPERTIES_FILE_PATH = "/interferer_gps_clock.properties";
-	
+
 	// @TODO GPSMapper als abhängigkeit hinzufügen um die VECTOR_UNIT zu bestimmen
 	private static final double VECTOR_UNIT = 100.0;
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param randomseedservice
-	 *            Random Seed Service
+	 *
+	 * @param randomseedservice Random Seed Service
 	 */
 	public GpsClockInterferer(RandomSeedService randomseedservice) {
-		super(randomseedservice, GpsClockInterferer.PROPERTIES_FILE_PATH);
+		super(randomseedservice,
+			GpsClockInterferer.PROPERTIES_FILE_PATH);
 	}
 
 	@Override
-	public Coordinate interfere(Coordinate mutablePosition, Coordinate realPosition, long simTime) {
+	public Coordinate interfere(Coordinate mutablePosition,
+		Coordinate realPosition,
+		long simTime) {
 		// Should be changed?
-		if (this.random.nextDouble() <= this.changeProbability) {
-			double changeValue = (this.changeAmplitude / VECTOR_UNIT) * this.random.nextGaussian();
-			return new Coordinate(mutablePosition.getX() + changeValue, mutablePosition.getY() + changeValue);
+		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
+			double changeValue = (this.getChangeAmplitude() / VECTOR_UNIT) * this.
+				getRandom().nextGaussian();
+			return new Coordinate(mutablePosition.getX() + changeValue,
+				mutablePosition.getY() + changeValue);
 		}
 
 		// Returns with no change

@@ -6,11 +6,14 @@
 
 package de.pgalise.simulation.shared.event.weather;
 
+import de.pgalise.simulation.shared.event.EventType;
+import javax.faces.bean.ManagedBean;
+
 /**
  *
  * @author richter
  */
-public class ValueWeatherEvent extends WeatherEvent {
+public abstract class ValueWeatherEvent extends WeatherEvent {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -19,13 +22,13 @@ public class ValueWeatherEvent extends WeatherEvent {
 	 */
 	private Float value;
 
+	public ValueWeatherEvent() {
+	}
+
 	public ValueWeatherEvent(Long id,
-		
-		WeatherEventType type,
 		long timestamp,
 		long duration,Float value) {
 		super(id,
-			type,
 			timestamp,
 			duration);
 		this.value = value;

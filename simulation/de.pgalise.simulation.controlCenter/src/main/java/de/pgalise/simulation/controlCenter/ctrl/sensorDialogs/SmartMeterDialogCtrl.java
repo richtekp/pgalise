@@ -7,7 +7,6 @@
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.staticsensor.internal.sensor.energy.PhotovoltaikSensor;
 import de.pgalise.staticsensor.internal.sensor.energy.SmartMeterSensor;
 import java.util.concurrent.ExecutionException;
 import javax.faces.bean.ManagedBean;
@@ -20,6 +19,7 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class SmartMeterDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
+	private static final long serialVersionUID = 1L;
 	private int measureRadius;
 
 	/**

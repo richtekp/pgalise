@@ -27,14 +27,14 @@ import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
  * sensor is older than (current time - (updateSteps * interval)).
  * @author Timo
  */
-public class GPSSensorTimeoutMessage extends OCWebSocketMessage<Collection<Sensor<?,?>>>{
+public class GPSSensorTimeoutMessage extends OCWebSocketMessage<Collection<GpsSensor>>{
 
 	/**
 	 * Constructor
 	 * @param sensorData
 	 * 			the gps sensors with a time out
 	 */
-	public GPSSensorTimeoutMessage(Collection<Sensor<?,?>> sensorData) {
+	public GPSSensorTimeoutMessage(Collection<GpsSensor> sensorData) {
 		super(OCWebSocketMessage.MessageType.GPS_SENSOR_TIMEOUT, sensorData);
 	}
 }

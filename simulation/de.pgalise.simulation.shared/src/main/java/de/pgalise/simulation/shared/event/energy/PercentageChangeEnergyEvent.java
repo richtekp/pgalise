@@ -105,7 +105,7 @@ public class PercentageChangeEnergyEvent extends ChangeEnergyConsumptionEvent {
 	}
 
 	@Override
-	public EventType getType() {
+	public EnergyEventType getType() {
 		return EnergyEventTypeEnum.PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT;
 	}
 }

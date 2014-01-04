@@ -12,6 +12,6 @@ import java.io.Serializable;
  *
  * @author richter
  */
-public interface ConnectionState extends Serializable{
+public interface ConnectionState extends StringValueType {
 	
 }

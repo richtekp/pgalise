@@ -6,7 +6,6 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.shared.city.Coordinate;
-import de.pgalise.simulation.controlCenter.InitDialogCtrlInitialTypeEnum;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
@@ -25,24 +24,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import javax.swing.JOptionPane;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFactorySpi;
-import org.geotools.data.DataStoreFinder;
-import org.geotools.data.postgis.PostgisNGDataStoreFactory;
+import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.filter.text.cql2.CQL;
-import org.geotools.filter.text.cql2.CQLException;
-import org.geotools.swing.data.JDataStoreWizard;
-import org.geotools.swing.wizard.JWizard;
+import org.geotools.factory.CommonFactoryFinder;
+import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
 
 /**
  *
@@ -50,10 +44,6 @@ import org.opengis.filter.Filter;
  */
 @ManagedBean
 @SessionScoped
-/*
- - use IdGenerator of MainCtrl
- - interact with CCSimulationParamter singleton
- */
 public class InitDialogCtrl implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -62,17 +52,17 @@ public class InitDialogCtrl implements Serializable {
 	/**
 	 * maps pathes to deserialized instances of {@link ControlCenterStartParameter}
 	 */
-	private Map<String, ControlCenterStartParameter> recentScenarioMap = new HashMap<>();
-	private ChosenStartParameterPair chosenRecentScenario;
+	private Map<String, ControlCenterStartParameter> recentScenarioMap;
+	private ControlCenterStartParameter chosenRecentScenario;
+	private String chosenRecentScenarioPath;
 	private String importedXML;
+	private int chosenInitialType ;
+	
+	@EJB
 	private InformationBasedVehicleFactory vehicleFactory;
-//	@ManagedProperty(value = "#{mainCtrl}")
-//	private MainCtrl mainCtrl;
 	@EJB
 	private TcpIpOutput output;
 	private Queue<VehicleData> uiVehicles;
-
-	private InitDialogCtrlInitialTypeEnum chosenInitialType;
 	@EJB
 	private IdGenerator idGenerator;
 
@@ -81,38 +71,48 @@ public class InitDialogCtrl implements Serializable {
 
 	public InitDialogCtrl(
 		String chosenInitialType,
-		ChosenStartParameterPair chosenRecentScenario,
 		String importedXML,
 		InformationBasedVehicleFactory vehicleFactory,
 		TcpIpOutput output) {
-//		this.chosenInitialType = chosenInitialType;
-		this.chosenRecentScenario = chosenRecentScenario;
 		this.importedXML = importedXML;
 		this.vehicleFactory = vehicleFactory;
 		this.output = output;
 	}
+	
+	@PostConstruct
+	public void init() {
+		chosenInitialType = InitDialogCtrlInitialTypeEnum.create.ordinal();
+		recentScenarioMap = new HashMap<>();
+		uiVehicles = new LinkedList<VehicleData>(Arrays.asList(new CarData(
+			Color.yellow,
+			2000,
+			500,
+			3500,
+			4000,
+			2000,
+			1000,
+			1300,
+			100,
+			200,
+			2,
+			"name",
+			new GpsSensor(idGenerator.getNextId(), output,
+				null,
+				new GpsNoInterferer()),
+			VehicleTypeEnum.CAR)));
+	}
 
 	/**
-	 * @return the chosenInitialType
+	 * @param initialTypeEnum
 	 */
-//	public String getChosenInitialType() {
-//		return chosenInitialType;
-//	}
-	public void setChosenInitialType(InitDialogCtrlInitialTypeEnum initialTypeEnum) {
+	public void setChosenInitialType(int initialTypeEnum) {
 		this.chosenInitialType = initialTypeEnum;
 	}
 
-	public InitDialogCtrlInitialTypeEnum getChosenInitialType() {
+	public int getChosenInitialType() {
 		return chosenInitialType;
 	}
 
-	/**
-	 * @param chosenInitialType the chosenInitialType to set
-	 */
-//	public void setChosenInitialType(
-//		String chosenInitialType) {
-//		this.chosenInitialType = chosenInitialType;
-//	}
 	/**
 	 * @return the importedXML
 	 */
@@ -127,89 +127,21 @@ public class InitDialogCtrl implements Serializable {
 		this.importedXML = importedXML;
 	}
 
-	/**
-	 * @return the vehicleFactory
-	 */
-	public InformationBasedVehicleFactory getVehicleFactory() {
-		return vehicleFactory;
+	public void setChosenRecentScenarioPath(String chosenRecentScenarioPath) {
+		this.chosenRecentScenarioPath = chosenRecentScenarioPath;
 	}
 
-	/**
-	 * @param vehicleFactory the vehicleFactory to set
-	 */
-	public void setVehicleFactory(
-		InformationBasedVehicleFactory vehicleFactory) {
-		this.vehicleFactory = vehicleFactory;
+	public String getChosenRecentScenarioPath() {
+		return chosenRecentScenarioPath;
 	}
 
-	/**
-	 * @return the output
-	 */
-	public TcpIpOutput getOutput() {
-		return output;
+	public void setChosenRecentScenario(
+		ControlCenterStartParameter chosenRecentScenario) {
+		this.chosenRecentScenario = chosenRecentScenario;
 	}
 
-	/**
-	 * @param output the output to set
-	 */
-	public void setOutput(
-		TcpIpOutput output) {
-		this.output = output;
-	}
-
-	private void connect() {
-		DataStoreFactorySpi format = new PostgisNGDataStoreFactory();
-		JDataStoreWizard wizard = new JDataStoreWizard(format);
-		int result = wizard.showModalDialog();
-		if (result == JWizard.FINISH) {
-			try {
-				Map<String, Object> connectionParameters = wizard.
-					getConnectionParameters();
-
-				DataStore dataStore = DataStoreFinder.getDataStore(connectionParameters);
-				if (dataStore == null) {
-					JOptionPane.showMessageDialog(null,
-						"Could not connect - check parameters");
-				}
-				String typeName = dataStore.getTypeNames()[0]; //investigate
-				SimpleFeatureSource source = dataStore.getFeatureSource(typeName);
-
-				String filterString = "";
-				Filter filter = CQL.toFilter(filterString);
-				SimpleFeatureCollection features = source.getFeatures(filter);
-			} catch (IOException | CQLException ex) {
-				Logger.getLogger(InitDialogCtrl.class.getName()).log(Level.SEVERE,
-					null,
-					ex);
-			}
-		}
-	}
-
-	public List<String> retrieveOSMAutocomplete() {
-		connect();
-		return null;
-	}
-
-	@PostConstruct
-	public void init() {
-		uiVehicles = new LinkedList<VehicleData>(Arrays.asList(new CarData(
-			Color.yellow,
-			2000,
-			500,
-			3500,
-			4000,
-			2000,
-			1000,
-			1300,
-			100,
-			200,
-			2,
-			"name",
-			new GpsSensor(idGenerator.getNextId(),
-				output,
-				null,
-				new GpsNoInterferer()),
-			VehicleTypeEnum.CAR)));
+	public ControlCenterStartParameter getChosenRecentScenario() {
+		return chosenRecentScenario;
 	}
 
 	public String getNextGpsSensor() {
@@ -630,14 +562,6 @@ public class InitDialogCtrl implements Serializable {
 //		});
 //	}
 //;
-	public ChosenStartParameterPair getChosenRecentScenario() {
-		return chosenRecentScenario;
-	}
-
-	public void setChosenRecentScenario(
-		ChosenStartParameterPair chosenRecentScenario) {
-		this.chosenRecentScenario = chosenRecentScenario;
-	}
 
 	public Map<String, ControlCenterStartParameter> getRecentScenarios() {
 		return recentScenarioMap;

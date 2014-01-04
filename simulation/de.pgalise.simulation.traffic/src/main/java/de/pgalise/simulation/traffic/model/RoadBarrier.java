@@ -17,6 +17,7 @@
 package de.pgalise.simulation.traffic.model;
 
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import java.util.Set;
 
@@ -26,7 +27,8 @@ import java.util.Set;
  * @author Andreas Rehfeldt
  * @version 1.0 (Feb 19, 2013)
  */
-public class RoadBarrier {
+public class RoadBarrier extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Start timestamp of the road barrier
@@ -51,6 +53,7 @@ public class RoadBarrier {
 	/**
 	 * Constructor
 	 * 
+	 * @param id
 	 * @param node
 	 *            Blocked node
 	 * @param edges
@@ -60,7 +63,8 @@ public class RoadBarrier {
 	 * @param end
 	 *            End timestamp of the road barrier
 	 */
-	public RoadBarrier(NavigationNode node, Set<TrafficEdge> edges, long start, long end) {
+	public RoadBarrier(Long id,NavigationNode node, Set<TrafficEdge> edges, long start, long end) {
+		super(id);
 		this.node = node;
 		this.edges = edges;
 		this.start = start;

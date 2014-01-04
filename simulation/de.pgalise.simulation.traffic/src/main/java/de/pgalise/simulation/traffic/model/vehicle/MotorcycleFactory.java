@@ -16,9 +16,8 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import java.awt.Color;
-
 import de.pgalise.simulation.sensorFramework.output.Output;
+import javax.ejb.Local;
 
 /**
  * Interface to provide methods to create different types of {@link Motorcycle}.
@@ -31,22 +30,16 @@ public interface MotorcycleFactory extends VehicleFactory {
 	/**
 	 * Method to create a {@link Motorcycle} with the given typeId.
 	 * 
-	 * @param id
-	 *            ID of the {@link Motorcycle}
-	 * @param typeId
-	 *            ID of the {@link Motorcycle} type
-	 * @param color
-	 *            Color of the {@link Motorcycle}
+	 * @param output
 	 * @return created {@link Motorcycle}
 	 */
-	public Vehicle<MotorcycleData> createMotorcycle(  Output output);
+	Motorcycle createMotorcycle(  Output output);
 
 	/**
 	 * Method to create a random {@link Motorcycle}.
 	 * 
-	 * @param id
-	 *            ID of the {@link Motorcycle}
+	 * @param output
 	 * @return created {@link Motorcycle}
 	 */
-	public Vehicle<MotorcycleData>  createRandomMotorcycle( Output output);
+	Motorcycle createRandomMotorcycle( Output output);
 }

@@ -9,6 +9,8 @@ import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 import de.pgalise.simulation.shared.city.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * 
@@ -20,6 +22,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
  */
 public class GeoToolsBootstrapping {
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
+	public final static CoordinateReferenceSystem COORDINATE_REFERENCE_SYSTEM = DefaultGeographicCRS.WGS84;
 
 	public static GeometryFactory getGEOMETRY_FACTORY() {
 		return GEOMETRY_FACTORY;

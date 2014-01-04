@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
 import de.pgalise.simulation.shared.city.Coordinate;
@@ -21,15 +20,18 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Represents an interferer that shows no errors
- * 
+ *
  * @author Marcus
  * @version 1.0 (Nov 12, 2012)
  */
 public class GpsNoInterferer implements GpsInterferer {
+
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Coordinate interfere(Coordinate mutablePosition, Coordinate realPosition, long simTime) {
+	public Coordinate interfere(Coordinate mutablePosition,
+		Coordinate realPosition,
+		long simTime) {
 		// Returns with no change
 		return mutablePosition;
 	}

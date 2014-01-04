@@ -9,14 +9,13 @@ package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.weather.service.WeatherController;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 
 /**
  *
  * @author richter
  */
 public class BaseEnergyWeatherSensorDialogCtrl extends BaseSensorDialogCtrl {
+	private static final long serialVersionUID = 1L;
 	@EJB
 	private WeatherController weatherController;
 	@EJB

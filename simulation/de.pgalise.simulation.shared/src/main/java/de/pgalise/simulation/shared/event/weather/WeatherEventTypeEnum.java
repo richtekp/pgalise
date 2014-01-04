@@ -80,7 +80,7 @@ public enum WeatherEventTypeEnum implements WeatherEventType {
 	
 	private Class<?> implementingClass;
 	
-	private int minValue, maxValue;
+	private float minValue, maxValue;
 
 	/**
 	 * @return
@@ -112,12 +112,12 @@ public enum WeatherEventTypeEnum implements WeatherEventType {
 	}
 
 	@Override
-	public int getMaxValue() {
+	public float getMaxValue() {
 		return maxValue;
 	}
 
 	@Override
-	public int getMinValue() {
+	public float getMinValue() {
 		return minValue;
 	}
 }

@@ -48,7 +48,6 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
-import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -224,7 +223,7 @@ public class DefaultWeatherControllerTest {
 		initParameter.setStartTimestamp(startTimestamp);
 		initParameter.setEndTimestamp(endTimestamp);
 
-		InfrastructureStartParameter parameter = new DefaultInfrastructureStartParameter(
+		InfrastructureStartParameter parameter = new InfrastructureStartParameter(
 			city,
 			true,
 			null);

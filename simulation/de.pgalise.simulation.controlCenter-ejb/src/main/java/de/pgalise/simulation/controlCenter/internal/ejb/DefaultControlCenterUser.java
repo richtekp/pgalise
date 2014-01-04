@@ -57,9 +57,11 @@ import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.staticsensor.StaticSensorServiceDictionary;
+import de.pgalise.simulation.energy.StaticSensorServiceDictionary;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
@@ -68,8 +70,10 @@ import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomBusData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
@@ -103,6 +107,7 @@ import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
+import javax.xml.ws.WebEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -316,297 +321,8 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 					break;
 
 				case SIMULATION_START_PARAMETER: {
-					log.debug("Start simulation");
-
-					ControlCenterStartParameter ccSimulationStartParameter = this.gson.
-						fromJson(message,
-							SimulationStartParameterMessage.class).
-						getContent();
-					this.simulationStartParameter = ccSimulationStartParameter;
-
-					/* Create server configuration: */
-					ServerConfiguration serverConfiguration = new ServerConfiguration();
-					Map<String, List<ServerConfigurationEntity>> serverConfiguationMap = new HashMap<>();
-
-					log.debug("Create server configuration");
-
-					/* Add traffic servers: */
-					for (String address : ccSimulationStartParameter.getTrafficServerIPs()) {
-						List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.
-							get(address);
-						if (tmpEntityList == null) {
-							tmpEntityList = new LinkedList<>();
-							serverConfiguationMap.put(address,
-								tmpEntityList);
-						}
-						tmpEntityList.add(new ServerConfigurationEntity(
-							TrafficServiceDictionary.TRAFFIC_SERVER));
-					}
-
-					/* Add traffic controller: */
-					List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.
-						get(ccSimulationStartParameter.getIpTrafficController());
-					if (tmpEntityList == null) {
-						tmpEntityList = new LinkedList<>();
-						serverConfiguationMap.put(ccSimulationStartParameter.
-							getIpTrafficController(),
-							tmpEntityList);
-					}
-					tmpEntityList.add(new ServerConfigurationEntity(
-						TrafficServiceDictionary.TRAFFIC_CONTROLLER));
-
-					/* Add static sensor controller: */
-					tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
-						getIpStaticSensorController());
-					if (tmpEntityList == null) {
-						tmpEntityList = new LinkedList<>();
-						serverConfiguationMap.put(ccSimulationStartParameter.
-							getIpStaticSensorController(),
-							tmpEntityList);
-					}
-					tmpEntityList.add(new ServerConfigurationEntity(
-						StaticSensorServiceDictionary.STATIC_SENSOR_CONTROLLER));
-
-					/* Weather controller: */
-					tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
-						getIpWeatherController());
-					if (tmpEntityList == null) {
-						tmpEntityList = new LinkedList<>();
-						serverConfiguationMap.put(ccSimulationStartParameter.
-							getIpWeatherController(),
-							tmpEntityList);
-					}
-					tmpEntityList.add(new ServerConfigurationEntity(
-						WeatherServiceDictionary.WEATHER_CONTROLLER));
-
-					/* Energy controller: */
-					tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
-						getIpEnergyController());
-					if (tmpEntityList == null) {
-						tmpEntityList = new LinkedList<>();
-						serverConfiguationMap.put(ccSimulationStartParameter.
-							getIpEnergyController(),
-							tmpEntityList);
-					}
-					tmpEntityList.add(new ServerConfigurationEntity(
-						EnergyControllerServiceDictionary.ENERGY_CONTROLLER));
-
-					/* Front controller (on every used ip): */
-					Set<String> frontControllerAddressSet = new HashSet<>();
-					for (String address : ccSimulationStartParameter.getTrafficServerIPs()) {
-						if (!frontControllerAddressSet.contains(address)) {
-							serverConfiguationMap.get(address).add(
-								new ServerConfigurationEntity(
-									ServiceDictionary.FRONT_CONTROLLER));
-							frontControllerAddressSet.add(address);
-						}
-					}
-					if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-						getIpEnergyController())) {
-						serverConfiguationMap.get(ccSimulationStartParameter.
-							getIpEnergyController()).add(new ServerConfigurationEntity(
-									ServiceDictionary.FRONT_CONTROLLER));
-						frontControllerAddressSet.add(ccSimulationStartParameter.
-							getIpEnergyController());
-					}
-					if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-						getIpWeatherController())) {
-						serverConfiguationMap.get(ccSimulationStartParameter.
-							getIpWeatherController()).add(new ServerConfigurationEntity(
-									ServiceDictionary.FRONT_CONTROLLER));
-						frontControllerAddressSet.add(ccSimulationStartParameter.
-							getIpWeatherController());
-					}
-					if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-						getIpStaticSensorController())) {
-						serverConfiguationMap.get(ccSimulationStartParameter.
-							getIpStaticSensorController()).add(
-								new ServerConfigurationEntity(
-									ServiceDictionary.FRONT_CONTROLLER));
-						frontControllerAddressSet.add(ccSimulationStartParameter.
-							getIpSimulationController());
-					}
-					if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-						getIpTrafficController())) {
-						serverConfiguationMap.get(ccSimulationStartParameter.
-							getIpTrafficController()).add(new ServerConfigurationEntity(
-									ServiceDictionary.FRONT_CONTROLLER));
-						frontControllerAddressSet.add(ccSimulationStartParameter.
-							getIpTrafficController());
-					}
-
-					/* Random seed service */
-					tmpEntityList.add(new ServerConfigurationEntity(
-						ServiceDictionary.RANDOM_SEED_SERVICE));
-
-					/* get simulation controller */
-					log.debug("Look up simulationcontroller at: "
-						+ ccSimulationStartParameter.
-						getIpSimulationController());
-
-					serverConfiguration.setConfiguration(serverConfiguationMap);
-
-					/* Created server configuration */
-					/* Create init parameters: */
-					TrafficInitParameter initParameter = new TrafficInitParameter(
-						this.cityInfrastructureData,
-						serverConfiguration,
-						ccSimulationStartParameter.getStartTimestamp(),
-						ccSimulationStartParameter.getEndTimestamp(),
-						ccSimulationStartParameter.getInterval(),
-						ccSimulationStartParameter.getClockGeneratorInterval(),
-						ccSimulationStartParameter.getOperationCenterAddress(),
-						ccSimulationStartParameter.getControlCenterAddress(),
-						ccSimulationStartParameter.getTrafficFuzzyData(),
-						this.cityInfrastructureData.getBoundary());
-
-					/* Init: */
-					this.simulationController.init(initParameter);
-
-					/* Init random seed service: */
-					this.serviceDictionary.getRandomSeedService().init(
-						ccSimulationStartParameter.getStartTimestamp());
-					Random random = new Random(this.serviceDictionary.
-						getRandomSeedService().
-						getSeed(ControlCenterUser.class.getName()));
-
-					/* To produce new sensor ids, we have to save all the used ones */
-					Set<UUID> usedUUIDs = new HashSet<>();
-
-					/* Create sensors: */
-					for (Sensor<?, ?> sensorHelper : ccSimulationStartParameter.
-						getSensorHelperList()) {
-						sensorHelper.setSensorInterfererTypes(sensorInterfererService.
-							getSensorInterfererTypes(sensorHelper.getSensorType(),
-								ccSimulationStartParameter.isWithSensorInterferes()));
-					}
-					this.simulationController.createSensors(ccSimulationStartParameter.
-						getSensorHelperList());
-
-					/* Create start parameters: */
-					InfrastructureStartParameter startParameter = lookupStartParameter();
-					startParameter.setCity(ccSimulationStartParameter.getCity());
-					startParameter.setAggregatedWeatherDataEnabled(
-						ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
-					startParameter.setWeatherEventList(ccSimulationStartParameter.
-						getWeatherEventList());
-
-					List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
-					List<UUID> newUUIDs = new LinkedList<>();
-
-					List<Event> simulationEventList = new LinkedList<>();
-
-					/* Create random vehicles: */
-					CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent<?>) randomDynamicSensorService.
-						createRandomDynamicSensors(ccSimulationStartParameter.
-							getRandomDynamicSensorBundle(),
-							this.serviceDictionary.getRandomSeedService(),
-							ccSimulationStartParameter.isWithSensorInterferes());
-					simulationEventList.add(createRandomVehiclesEvent);
-
-					/* Save the new and old IDs from create random vehicles: */
-					for (CreateRandomVehicleData data : createRandomVehiclesEvent.
-						getCreateRandomVehicleDataList()) {
-						for (Sensor<?, ?> sensor : data.getSensorHelpers()) {
-						}
-					}
-
-					/* Create attractions: */
-					for (AttractionData attractionData : ccSimulationStartParameter.
-						getAttractionCollection()) {
-						/* Before creating them, update the used IDs: */
-						AttractionTrafficEvent<?> attractionTrafficEvent = createAttractionEventService.
-							createAttractionTrafficEvent(
-								attractionData.getRandomVehicleBundle(),
-								this.serviceDictionary.getRandomSeedService(),
-								this.simulationStartParameter.
-								isWithSensorInterferes(),
-								attractionData.getNodeID(),
-								attractionData.getAttractionPoint(),
-								attractionData.getAttractionStartTimestamp(),
-								attractionData.getAttractionEndTimestamp());
-						simulationEventList.add(attractionTrafficEvent);
-
-						/* Update the new used IDs: */
-						for (CreateRandomVehicleData data : attractionTrafficEvent.
-							getCreateRandomVehicleDataList()) {
-							for (Sensor<?, ?> sensor : data.getSensorHelpers()) {
-							}
-						}
-					}
-
-					/* Create busses: */
-					log.debug("Selected bus routes in cc: " + ccSimulationStartParameter.
-						getBusRoutes().size());
-
-					List<CreateRandomVehicleData> busDataList = new LinkedList<>();
-					List<BusRoute> busRouteList = new LinkedList<>();
-					for (BusRoute busRoute : ccSimulationStartParameter.getBusRoutes()) {
-						if (busRoute.getUsed()) {
-							log.debug("Selected bus route: " + busRoute.getId());
-							busRouteList.add(busRoute);
-						} else {
-							log.debug("Not selected bus route: " + busRoute.getId());
-						}
-					}
-
-					log.debug("Selected bus routes: " + busRouteList.size());
-
-					int totalNumberOfBusTrips = this.busService.getTotalNumberOfBusTrips(
-						busRouteList,
-						ccSimulationStartParameter.getStartTimestamp());
-
-					log.debug("Create " + totalNumberOfBusTrips + " busses!");
-
-					for (int i = 0; i < totalNumberOfBusTrips; i++) {
-						UUID id = this.getUniqueRandomUUID(usedUUIDs,
-							random);
-						List<Sensor<?, ?>> sensorLists = new ArrayList<>();
-						Sensor<?, ?> sensor = null;
-						NavigationNode sensorCoordinate = null;
-						sensorLists.add(sensor);
-						busDataList.add(new CreateRandomVehicleData(sensorLists,
-							new VehicleInformation(true,
-								VehicleTypeEnum.BUS,
-								VehicleModelEnum.BUS_CITARO,
-								null,
-								id.toString())));
-					}
-					simulationEventList.add(new CreateBussesEvent(serviceDictionary.
-						getController(TrafficServerLocal.class),
-						ccSimulationStartParameter.getStartTimestamp(),
-						0L,
-						busDataList,
-						busRouteList));
-
-					/* Add events to simulation: */
-					this.simulationController.addSimulationEventList(new EventList<>(
-						idGenerator.getNextId(),
-						simulationEventList,
-						0));
-
-					/* Add event lists from startparameter: */
-					for (EventList<?> tmpList : ccSimulationStartParameter.
-						getSimulationEventLists()) {
-						this.simulationController.addSimulationEventList(tmpList);
-					}
-
-					/* Start the controllers: */
-					this.simulationController.start(startParameter);
-
-					/* Save start parameter: */
-					startParameterSerializerService.serialize(ccSimulationStartParameter,
-						ccSimulationStartParameter.getCity().getName().replaceAll(
-							removeFromFileNameRegExp,
-							"") + "_"
-						+ dateFormat.format(new Date())
-						+ "." + this.properties.getProperty(
-							"suffixStartParameterXML"));
-
-					/* Send message with new used ids: */
-					this.sendMessage(new SimulationStartedMessage(ccWebSocketMessage.
-						getId()));
-					return;
+					onStartParameterMessage(message, ccWebSocketMessage);
+					break;
 				}
 				case SIMULATION_STOP:
 					this.simulationController.stop();
@@ -839,5 +555,286 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 					ex);
 			throw new RuntimeException(ex);
 		}
+	}
+
+	private void onStartParameterMessage(String message, IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
+		log.debug("Start simulation");
+
+		ControlCenterStartParameter ccSimulationStartParameter = this.gson.
+			fromJson(message,
+				SimulationStartParameterMessage.class).
+			getContent();
+		this.simulationStartParameter = ccSimulationStartParameter;
+
+		/* Create server configuration: */
+		ServerConfiguration serverConfiguration = new ServerConfiguration();
+		Map<String, List<ServerConfigurationEntity>> serverConfiguationMap = new HashMap<>();
+
+		log.debug("Create server configuration");
+
+		/* Add traffic servers: */
+		for (String address : ccSimulationStartParameter.getTrafficServerIPs()) {
+			List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.
+				get(address);
+			if (tmpEntityList == null) {
+				tmpEntityList = new LinkedList<>();
+				serverConfiguationMap.put(address,
+					tmpEntityList);
+			}
+			tmpEntityList.add(new ServerConfigurationEntity(
+				TrafficServiceDictionary.TRAFFIC_SERVER));
+		}
+
+		/* Add traffic controller: */
+		List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.
+			get(ccSimulationStartParameter.getIpTrafficController());
+		if (tmpEntityList == null) {
+			tmpEntityList = new LinkedList<>();
+			serverConfiguationMap.put(ccSimulationStartParameter.
+				getIpTrafficController(),
+				tmpEntityList);
+		}
+		tmpEntityList.add(new ServerConfigurationEntity(
+			TrafficServiceDictionary.TRAFFIC_CONTROLLER));
+
+		/* Add static sensor controller: */
+		tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
+			getIpStaticSensorController());
+		if (tmpEntityList == null) {
+			tmpEntityList = new LinkedList<>();
+			serverConfiguationMap.put(ccSimulationStartParameter.
+				getIpStaticSensorController(),
+				tmpEntityList);
+		}
+		tmpEntityList.add(new ServerConfigurationEntity(
+			StaticSensorServiceDictionary.STATIC_SENSOR_CONTROLLER));
+
+		/* Weather controller: */
+		tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
+			getIpWeatherController());
+		if (tmpEntityList == null) {
+			tmpEntityList = new LinkedList<>();
+			serverConfiguationMap.put(ccSimulationStartParameter.
+				getIpWeatherController(),
+				tmpEntityList);
+		}
+		tmpEntityList.add(new ServerConfigurationEntity(
+			WeatherServiceDictionary.WEATHER_CONTROLLER));
+
+		/* Energy controller: */
+		tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
+			getIpEnergyController());
+		if (tmpEntityList == null) {
+			tmpEntityList = new LinkedList<>();
+			serverConfiguationMap.put(ccSimulationStartParameter.
+				getIpEnergyController(),
+				tmpEntityList);
+		}
+		tmpEntityList.add(new ServerConfigurationEntity(
+			EnergyControllerServiceDictionary.ENERGY_CONTROLLER));
+
+		/* Front controller (on every used ip): */
+		Set<String> frontControllerAddressSet = new HashSet<>();
+		for (String address : ccSimulationStartParameter.getTrafficServerIPs()) {
+			if (!frontControllerAddressSet.contains(address)) {
+				serverConfiguationMap.get(address).add(
+					new ServerConfigurationEntity(
+						ServiceDictionary.FRONT_CONTROLLER));
+				frontControllerAddressSet.add(address);
+			}
+		}
+		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
+			getIpEnergyController())) {
+			serverConfiguationMap.get(ccSimulationStartParameter.
+				getIpEnergyController()).add(new ServerConfigurationEntity(
+						ServiceDictionary.FRONT_CONTROLLER));
+			frontControllerAddressSet.add(ccSimulationStartParameter.
+				getIpEnergyController());
+		}
+		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
+			getIpWeatherController())) {
+			serverConfiguationMap.get(ccSimulationStartParameter.
+				getIpWeatherController()).add(new ServerConfigurationEntity(
+						ServiceDictionary.FRONT_CONTROLLER));
+			frontControllerAddressSet.add(ccSimulationStartParameter.
+				getIpWeatherController());
+		}
+		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
+			getIpStaticSensorController())) {
+			serverConfiguationMap.get(ccSimulationStartParameter.
+				getIpStaticSensorController()).add(
+					new ServerConfigurationEntity(
+						ServiceDictionary.FRONT_CONTROLLER));
+			frontControllerAddressSet.add(ccSimulationStartParameter.
+				getIpSimulationController());
+		}
+		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
+			getIpTrafficController())) {
+			serverConfiguationMap.get(ccSimulationStartParameter.
+				getIpTrafficController()).add(new ServerConfigurationEntity(
+						ServiceDictionary.FRONT_CONTROLLER));
+			frontControllerAddressSet.add(ccSimulationStartParameter.
+				getIpTrafficController());
+		}
+
+		/* Random seed service */
+		tmpEntityList.add(new ServerConfigurationEntity(
+			ServiceDictionary.RANDOM_SEED_SERVICE));
+
+		/* get simulation controller */
+		log.debug("Look up simulationcontroller at: "
+			+ ccSimulationStartParameter.
+			getIpSimulationController());
+
+		serverConfiguration.setConfiguration(serverConfiguationMap);
+
+		/* Created server configuration */
+		/* Create init parameters: */
+		TrafficInitParameter initParameter = new TrafficInitParameter(
+			this.cityInfrastructureData,
+			serverConfiguration,
+			ccSimulationStartParameter.getStartTimestamp(),
+			ccSimulationStartParameter.getEndTimestamp(),
+			ccSimulationStartParameter.getInterval(),
+			ccSimulationStartParameter.getClockGeneratorInterval(),
+			ccSimulationStartParameter.getOperationCenterAddress(),
+			ccSimulationStartParameter.getControlCenterAddress(),
+			ccSimulationStartParameter.getTrafficFuzzyData(),
+			this.cityInfrastructureData.getBoundary());
+
+		/* Init: */
+		this.simulationController.init(initParameter);
+
+		/* Init random seed service: */
+		this.serviceDictionary.getRandomSeedService().init(
+			ccSimulationStartParameter.getStartTimestamp());
+		Random random = new Random(this.serviceDictionary.
+			getRandomSeedService().
+			getSeed(ControlCenterUser.class.getName()));
+
+		/* To produce new sensor ids, we have to save all the used ones */
+		Set<UUID> usedUUIDs = new HashSet<>();
+
+		/* Create sensors: */
+		for (Sensor<?, ?> sensorHelper : ccSimulationStartParameter.
+			getSensorHelperList()) {
+			sensorHelper.setSensorInterfererTypes(sensorInterfererService.
+				getSensorInterfererTypes(sensorHelper.getSensorType(),
+					ccSimulationStartParameter.isWithSensorInterferes()));
+		}
+		this.simulationController.createSensors(ccSimulationStartParameter.
+			getSensorHelperList());
+
+		/* Create start parameters: */
+		InfrastructureStartParameter startParameter = lookupStartParameter();
+		startParameter.setCity(ccSimulationStartParameter.getCity());
+		startParameter.setAggregatedWeatherDataEnabled(
+			ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
+		startParameter.setWeatherEventList(ccSimulationStartParameter.
+			getWeatherEventList());
+
+		List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
+		List<UUID> newUUIDs = new LinkedList<>();
+
+		List<Event> simulationEventList = new LinkedList<>();
+
+		/* Create random vehicles: */
+		CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent<?>) randomDynamicSensorService.
+			createRandomDynamicSensors(ccSimulationStartParameter.
+				getRandomDynamicSensorBundle(),
+				this.serviceDictionary.getRandomSeedService(),
+				ccSimulationStartParameter.isWithSensorInterferes());
+		simulationEventList.add(createRandomVehiclesEvent);
+
+		/* @TODO?: Save the new and old IDs from create random vehicles: */
+
+		/* Create attractions: */
+		for (AttractionData attractionData : ccSimulationStartParameter.
+			getAttractionCollection()) {
+			/* Before creating them, update the used IDs: */
+			AttractionTrafficEvent<?> attractionTrafficEvent = createAttractionEventService.
+				createAttractionTrafficEvent(
+					attractionData.getRandomVehicleBundle(),
+					this.serviceDictionary.getRandomSeedService(),
+					this.simulationStartParameter.
+					isWithSensorInterferes(),
+					attractionData.getNodeID(),
+					attractionData.getAttractionPoint(),
+					attractionData.getAttractionStartTimestamp(),
+					attractionData.getAttractionEndTimestamp());
+			simulationEventList.add(attractionTrafficEvent);
+
+			/* @TODO?: Update the new used IDs: */
+		}
+
+		/* Create busses: */
+		log.debug("Selected bus routes in cc: " + ccSimulationStartParameter.
+			getBusRoutes().size());
+
+		List<CreateRandomVehicleData> busDataList = new LinkedList<>();
+		List<BusRoute> busRouteList = new LinkedList<>();
+		for (BusRoute busRoute : ccSimulationStartParameter.getBusRoutes()) {
+			if (busRoute.getUsed()) {
+				log.debug("Selected bus route: " + busRoute.getId());
+				busRouteList.add(busRoute);
+			} else {
+				log.debug("Not selected bus route: " + busRoute.getId());
+			}
+		}
+
+		log.debug("Selected bus routes: " + busRouteList.size());
+
+		int totalNumberOfBusTrips = this.busService.getTotalNumberOfBusTrips(
+			busRouteList,
+			ccSimulationStartParameter.getStartTimestamp());
+
+		log.debug("Create " + totalNumberOfBusTrips + " busses!");
+
+		for (int i = 0; i < totalNumberOfBusTrips; i++) {
+			UUID id = this.getUniqueRandomUUID(usedUUIDs,
+				random);
+			NavigationNode sensorCoordinate = null;
+			busDataList.add(new CreateRandomBusData(null,null,
+				new VehicleInformation(true,
+					VehicleTypeEnum.BUS,
+					VehicleModelEnum.BUS_CITARO,
+					null,
+					id.toString())));
+		}
+		simulationEventList.add(new CreateBussesEvent(serviceDictionary.
+			getController(TrafficServerLocal.class),
+			ccSimulationStartParameter.getStartTimestamp(),
+			0L,
+			busDataList,
+			busRouteList));
+
+		/* Add events to simulation: */
+		this.simulationController.addSimulationEventList(new EventList<>(
+			idGenerator.getNextId(),
+			simulationEventList,
+			0));
+
+		/* Add event lists from startparameter: */
+		for (EventList<?> tmpList : ccSimulationStartParameter.
+			getSimulationEventLists()) {
+			this.simulationController.addSimulationEventList(tmpList);
+		}
+
+		/* Start the controllers: */
+		this.simulationController.start(startParameter);
+
+		/* Save start parameter: */
+		startParameterSerializerService.serialize(ccSimulationStartParameter,
+			ccSimulationStartParameter.getCity().getName().replaceAll(
+				removeFromFileNameRegExp,
+				"") + "_"
+			+ dateFormat.format(new Date())
+			+ "." + this.properties.getProperty(
+				"suffixStartParameterXML"));
+
+		/* Send message with new used ids: */
+		this.sendMessage(new SimulationStartedMessage(ccWebSocketMessage.
+			getId()));
+		return;
 	}
 }

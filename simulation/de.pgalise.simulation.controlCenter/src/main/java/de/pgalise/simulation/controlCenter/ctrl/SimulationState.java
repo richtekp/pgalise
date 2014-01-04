@@ -12,6 +12,6 @@ import java.io.Serializable;
  *
  * @author richter
  */
-public interface SimulationState extends Serializable {
+public interface SimulationState extends StringValueType {
 	
 }

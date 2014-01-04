@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,17 +27,9 @@ import org.w3c.dom.NodeList;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.CarData;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
  * Implements a factory for {@link Bus}. The vehicles are loaded by a XML file.
@@ -93,16 +86,16 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
 	}
 
 	@Override
-	public BaseVehicle<BusData> createRandomBus(Output output) {
+	public Bus createRandomBus(Output output) {
 		BusData data = getRandomVehicleData();
-		return new Bus(getIdGenerator().getNextId(),
+		return new DefaultBus(getIdGenerator().getNextId(),
 			"bus" + getNextCounter(),
 			data,
 			this.getTrafficGraphExtensions());
 	}
 
 	@Override
-	public BaseVehicle<BusData> createBus(Output output) {
+	public Bus createBus(Output output) {
 		return createRandomBus(output);
 	}
 

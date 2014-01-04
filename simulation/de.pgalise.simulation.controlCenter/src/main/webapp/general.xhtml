@@ -1,0 +1,121 @@
+<!-- GENERAL (INIT) -->
+<ui:composition template="/WEB-INF/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" >
+	<ui:define name="content">
+		<div class="contentDiv" >
+			<h:form>
+				<div class="contentDiv" ng-controller="GeneralCtrl">
+					<h2>General</h2>
+					<div class="block">
+						<table class="noWrap">
+							<tr class="head">
+								<td><h3>Start</h3></td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										Choose a date where the simulation has to start.
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p:calendar value="#{mainCtrl.startParameter.startTimestamp}" title="set the simulation's start date" />
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="block">
+						<table class="noWrap">
+							<tr class="head">
+								<td><h3>End</h3></td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										Choose a date of expiration.
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<p:calendar value="#{mainCtrl.startParameter.endTimestamp}" title="set the simulation's end date" />
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="block">
+						<table class="noWrap">
+							<tr class="head">
+								<td colspan="2"><h3>Simulation time</h3></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<div>
+										Set the time interval and the steps when the simulation will be updated. As well you can choose if there are any kind of interferer in the simulation or not.
+									</div>
+								</td>
+							</tr>
+							<tr >
+								<td>Clock [ms]:</td>
+								<td>
+									<p:spinner value="#{mainCtrl.startParameter.clockGeneratorInterval}" min="0" max="60000" />
+								</td>
+							</tr>
+							<tr title="set the simulationstep's timeinterval">
+								<td>Intervall [ms]:</td>
+								<td>
+									<p:spinner value="#{mainCtrl.startParameter.interval}" min="1000" max="60000" />
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="block">
+						<table class="noWrap">
+							<tr class="head">
+								<td colspan="2"><h3>Sensor settings</h3></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<div>
+										Set the time interval and the steps when the simulation will be updated. As well you can choose if there are any kind of interferer in the simulation or not.
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>Interferer enabled:</td>
+								<td>
+									<div>
+										<h:selectBooleanCheckbox value="#{mainCtrl.startParameter.withSensorInterferes}"/>
+									</div>
+								</td>
+							</tr>
+							<tr title="set the intervall for sensors to send data">
+								<td>General Update steps:</td>
+								<td>
+									<p:spinner styleClass="smallWidth"  value="#{mainCtrl.startParameter.sensorUpdateSteps}" min="1" max="10" />
+								</td>
+							</tr>
+							<tr>
+								<h:dataTable value="#{mainCtrl.startParameter.specificUpdateSteps.values}" var="specificUpdateStepEntry">
+									<h:column>
+										<f:facet name="header">Sensor type</f:facet>
+											#{specificUpdateStepEntry.key}
+									</h:column>
+									<h:column>
+										<f:facet name="header">Update steps</f:facet>
+										<p:spinner value="#{specificUpdateStepEntry.key}" min="1" max="10" />
+									</h:column>
+								</h:dataTable>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

@@ -74,10 +74,12 @@ import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
+import de.pgalise.simulation.traffic.event.CreateRandomBusData;
+import de.pgalise.simulation.traffic.event.CreateRandomCarData;
+import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.DefaultInfrastructureStartParameter;
 import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorFactory;
@@ -288,7 +290,7 @@ public class DefaultTrafficServerTest {
 			1,
 			gs);
 
-		InfrastructureStartParameter startParam = new DefaultInfrastructureStartParameter();
+		InfrastructureStartParameter startParam = new InfrastructureStartParameter();
 
 		server1.start(startParam);
 		server2.start(startParam);
@@ -513,25 +515,22 @@ public class DefaultTrafficServerTest {
 			"301",
 			"Eversten");
 		busRoutes.add(b301a);
-		List<CreateRandomVehicleData> busDataList = new ArrayList<>();
+		List<CreateRandomBusData> busDataList = new ArrayList<>();
 		int tnbt
 			= 1;
 //			(new DefaultBusService()).getTotalNumberOfBusTrips(busRoutes,
 //			SIMULATION_START);
 		for (int i = 0; i < tnbt; i++) {
 			UUID id = UUID.randomUUID();
-			List<Sensor<?, ?>> sensorLists = new ArrayList<>();
-			Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),null,
+			GpsSensor sensor = new GpsSensor(idGenerator.getNextId(),null,
 				null,
 				0,
 				null);
-			sensorLists.add(sensor);
-			Sensor<?, ?> sensor2 = new InfraredSensor(idGenerator.getNextId(),null,
+			InfraredSensor sensor2 = new InfraredSensor(idGenerator.getNextId(),null,
 				null,
 				null,
 				null);
-			sensorLists.add(sensor);
-			busDataList.add(new CreateRandomVehicleData(sensorLists,
+			busDataList.add(new CreateRandomBusData(sensor2,sensor,
 				new VehicleInformation(true,
 					VehicleTypeEnum.BUS,
 					VehicleModelEnum.BUS_CITARO,
@@ -762,7 +761,7 @@ public class DefaultTrafficServerTest {
 		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 
-		Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),null,
+		GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),null,
 			null,
 			null);
 		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(null);
@@ -795,14 +794,14 @@ public class DefaultTrafficServerTest {
 				List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
 
 				List<Sensor<?, ?>> sensorLists = new ArrayList<>();
-				sensorLists.add(sensor);
+				sensorLists.add(gpsSensor);
 				TrafficNode startNode = new TrafficNode(new Coordinate(1,
 					2)), endNode = new TrafficNode(new Coordinate(2,
 							3));
 				trip = new TrafficTrip(startNode,
 					endNode,
 					SIMULATION_START + 4000);
-				vehicleDataList.add(new CreateRandomVehicleData(sensorLists,
+				vehicleDataList.add(new CreateRandomCarData(gpsSensor,
 					new VehicleInformation(
 						true,
 						VehicleTypeEnum.CAR,
@@ -849,7 +848,7 @@ public class DefaultTrafficServerTest {
 		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
 
-		Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),null,
+		GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),null,
 			null,
 			null);
 		Vehicle<CarData> car = server0.getCarFactory().createRandomCar(null);
@@ -881,9 +880,7 @@ public class DefaultTrafficServerTest {
 				List<AbstractTrafficEvent> list = new ArrayList<>();
 				List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
 
-				List<Sensor<?, ?>> sensorLists = new ArrayList<>();
-				sensorLists.add(sensor);
-				vehicleDataList.add(new CreateRandomVehicleData(sensorLists,
+				vehicleDataList.add(new CreateRandomCarData(gpsSensor,
 					new VehicleInformation(
 						true,
 						VehicleTypeEnum.CAR,
@@ -996,18 +993,27 @@ public class DefaultTrafficServerTest {
 		List<CreateRandomVehicleData> vehicleDataList = new ArrayList<>();
 		List<Sensor<?, ?>> sensorLists = new ArrayList<>();
 
-		Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),null,
+		GpsSensor sensor = new GpsSensor(idGenerator.getNextId(),null,
 			null,
 			null);
 		sensorLists.add(sensor);
 
 		for (int i = 0; i < count; i++) {
-			vehicleDataList.add(new CreateRandomVehicleData(sensorLists,
-				new VehicleInformation(true,
-					vehicleType,
-					vehicleModel,
-					null,
-					null)));
+			if(vehicleType == VehicleTypeEnum.TRUCK) {
+				vehicleDataList.add(new CreateRandomTruckData(sensor,
+					new VehicleInformation(true,
+						vehicleType,
+						vehicleModel,
+						null,
+						null)));
+			}else if(vehicleType == VehicleTypeEnum.CAR) {
+				vehicleDataList.add(new CreateRandomCarData(sensor,
+					new VehicleInformation(true,
+						vehicleType,
+						vehicleModel,
+						null,
+						null)));
+			}
 		}
 		TrafficServerLocal<?> trafficServerLocal = EasyMock.createNiceMock(
 			TrafficServerLocal.class);

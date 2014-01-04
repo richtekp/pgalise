@@ -16,19 +16,14 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 
 /**
@@ -57,6 +52,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	/**
 	 * Constructor
 	 * 
+	 * @param id
 	 * @param name
 	 *            Name of the car
 	 * @param carData
@@ -71,6 +67,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	/**
 	 * Constructor
 	 * 
+	 * @param id
 	 * @param trafficGraphExtensions 
 	 * @param carData
 	 *            Information of the car

@@ -60,9 +60,6 @@ public class OCSimulationServlet extends HttpServlet {
 	private OCSimulationController ocSimulationController ;
 	private static final TypeToken<Collection<Sensor>> sensorCollectionTypeToken = new TypeToken<Collection<Sensor>>(){};
 	
-	@PersistenceContext(unitName = "pgalise")
-	private EntityManager em;
-	
 	@EJB
 	private GsonService gsonService;
 	private Gson gson;
@@ -99,7 +96,6 @@ public class OCSimulationServlet extends HttpServlet {
 	 * @param req
 	 * @param resp
 	 * @throws IOException 
-	 * @throws SensorException 
 	 * @throws IllegalStateException 
 	 * @throws JsonSyntaxException 
 	 */

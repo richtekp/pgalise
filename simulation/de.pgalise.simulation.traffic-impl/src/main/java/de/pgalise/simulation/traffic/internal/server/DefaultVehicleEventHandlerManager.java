@@ -17,10 +17,6 @@
 package de.pgalise.simulation.traffic.internal.server;
 
 import de.pgalise.simulation.service.internal.event.AbstractEventHandlerManager;
-import de.pgalise.simulation.traffic.event.AbstractVehicleEvent;
-import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 

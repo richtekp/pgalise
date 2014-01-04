@@ -6,7 +6,7 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.shared.city.Coordinate;
-import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficEdge;
@@ -22,14 +22,19 @@ import de.pgalise.simulation.shared.city.Vector2d;
  *
  * @author richter
  */
-public class AbstractVehicleFactory implements VehicleFactory 
+public abstract class AbstractVehicleFactory implements VehicleFactory
 {
+	private static final long serialVersionUID = 1L;
 	private TrafficGraphExtensions trafficGraphExtensions;
 	@EJB
 	private IdGenerator idGenerator;
 	@EJB
 	private RandomSeedService randomSeedService;
-	private Output output;
+	@EJB
+	private TcpIpOutput output;
+	
+	public AbstractVehicleFactory() {
+	}
 
 	public AbstractVehicleFactory(		TrafficGraphExtensions trafficGraphExtensions,
 		IdGenerator idGenerator,
@@ -48,13 +53,11 @@ public class AbstractVehicleFactory implements VehicleFactory
 		return trafficGraphExtensions;
 	}
 
-	public AbstractVehicleFactory() {
-	}
-
 	public void setIdGenerator(IdGenerator idGenerator) {
 		this.idGenerator = idGenerator;
 	}
 
+	@Override
 	public IdGenerator getIdGenerator() {
 		return idGenerator;
 	}
@@ -80,6 +83,7 @@ public class AbstractVehicleFactory implements VehicleFactory
 		this.randomSeedService = randomSeedService;
 	}
 
+	@Override
 	public RandomSeedService getRandomSeedService() {
 		return randomSeedService;
 	}
@@ -93,5 +97,10 @@ public class AbstractVehicleFactory implements VehicleFactory
 	*/
 	public GpsInterferer retrieveGpsInterferer(){
 		return new GpsClockInterferer(randomSeedService);
+	}
+
+	@Override
+	public TcpIpOutput getTcpIpOutput() {
+		return output;
 	}
 }
