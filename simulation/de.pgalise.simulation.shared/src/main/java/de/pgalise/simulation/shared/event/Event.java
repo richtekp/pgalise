@@ -6,6 +6,9 @@ package de.pgalise.simulation.shared.event;
 
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.util.Date;
+import javolution.xml.XMLFormat;
+import javolution.xml.XMLSerializable;
+import javolution.xml.stream.XMLStreamException;
 
 /**
  *
@@ -18,5 +21,4 @@ public interface Event extends Identifiable {
 	public EventType getType();
 	
 	public Date getCommitDateTime();
-	
 }

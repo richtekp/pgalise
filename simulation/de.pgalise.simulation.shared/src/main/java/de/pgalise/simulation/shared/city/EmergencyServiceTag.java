@@ -4,10 +4,13 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 /**
  *
  * @author richter
  */
+@XmlSeeAlso({EmergencyServiceTagCustom.class})
 public interface EmergencyServiceTag extends BaseTag {
 	
 }

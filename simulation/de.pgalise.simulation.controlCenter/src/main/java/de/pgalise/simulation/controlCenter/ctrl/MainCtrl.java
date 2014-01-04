@@ -7,11 +7,13 @@ package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage;
+import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.shared.event.Event;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -80,6 +82,8 @@ public class MainCtrl implements Serializable {
 	private String mapParsedState = MapParsedStateEnum.IN_PROGRESS.
 		getStringValue();
 	private TreeNode startParameterTreeRoot;
+	@EJB
+	private StartParameterSerializerService startParameterSerializerService;
 
 	/**
 	 * Creates a new instance of NewJSFManagedBean
@@ -281,7 +285,7 @@ public class MainCtrl implements Serializable {
 		throw new UnsupportedOperationException("serialize");
 	}
 
-	public void deleteUncommittedEvent(AbstractEvent event) {
+	public void deleteUncommittedEvent(Event event) {
 		uncommittedEvents.remove(event);
 	}
 
@@ -351,6 +355,11 @@ public class MainCtrl implements Serializable {
 	public StreamedContent retrieveExportDownloadLink() {
 		InputStream inputStream;
 		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		startParameterSerializerService.serialize(startParameter,
+			outputStream);
+		inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+		
 //		ByteArrayOutputStream out = new ByteArrayOutputStream();
 //		try {
 //			XMLObjectWriter writer = new XMLObjectWriter().setOutput(out);
@@ -361,24 +370,24 @@ public class MainCtrl implements Serializable {
 //			throw new RuntimeException(ex);
 //		}
 		
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(
-				ControlCenterStartParameter.class);
-			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-
-			// for getting nice formatted output
-			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
-				Boolean.TRUE);
-
-			// Writing to XML file
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			jaxbMarshaller.marshal(startParameter,
-				outputStream);
-      inputStream = new ByteArrayInputStream(outputStream.
-				toByteArray());
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
-		}
+//		try {
+//			JAXBContext jaxbContext = JAXBContext.newInstance(
+//				ControlCenterStartParameter.class);
+//			Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+//
+//			// for getting nice formatted output
+//			jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+//				Boolean.TRUE);
+//
+//			// Writing to XML file
+//			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//			jaxbMarshaller.marshal(startParameter,
+//				outputStream);
+//      inputStream = new ByteArrayInputStream(outputStream.
+//				toByteArray());
+//		} catch (JAXBException e) {
+//			throw new RuntimeException(e);
+//		}
 
 			return new DefaultStreamedContent(inputStream,
 				"xml",

@@ -11,12 +11,14 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * This class encapsultes the different types of {@link VehicleEvent}s which are not represented as subclasses (like {@link TrafficEvent}, but only by their type attribute. This should change in the futures.
  * @param <D> 
  * @author richter
  */
+@XmlRootElement
 public class GenericVehicleEvent<D extends VehicleData> extends AbstractVehicleEvent<D>{
 	private static final long serialVersionUID = 1L;
 	private EventType type;

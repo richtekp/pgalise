@@ -14,8 +14,9 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.model;
+package de.pgalise.simulation.controlCenter.internal.ejb;
 
+import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import java.util.LinkedList;

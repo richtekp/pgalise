@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.controlCenter.internal.util.service;
+package de.pgalise.simulation.controlCenter.internal.ejb;
 
+import de.pgalise.simulation.controlCenter.internal.util.service.CreateAttractionEventService;
+import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;

@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.controlCenter.model;
+package de.pgalise.simulation.controlCenter.internal.ejb;
 
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
@@ -38,7 +38,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import javax.ejb.EJB;
-import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 
 /**
@@ -48,13 +47,17 @@ import javax.ejb.Stateful;
  *
  * @author Timo
  */
-@Singleton
+@Stateful
 public class DefaultCreateRandomVehicleService implements
 	CreateRandomVehicleService {
 
+	private static final long serialVersionUID = 1L;
+
 	private SensorInterfererService sensorInterfererService;
+	@EJB
 	private TrafficServerLocal<?> trafficServerLocal;
-	private Output output;
+	@EJB
+	private TcpIpOutput output;
 	@EJB
 	private TrafficSensorFactory sensorFactory;
 
@@ -65,6 +68,7 @@ public class DefaultCreateRandomVehicleService implements
 	 * Contructor
 	 *
 	 * @param sensorInterfererService
+	 * @param trafficServerLocal
 	 */
 	public DefaultCreateRandomVehicleService(
 		SensorInterfererService sensorInterfererService,

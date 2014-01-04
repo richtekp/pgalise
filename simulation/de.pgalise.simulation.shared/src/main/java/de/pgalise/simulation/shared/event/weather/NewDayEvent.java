@@ -20,6 +20,7 @@ import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 
 import de.pgalise.simulation.shared.event.EventTypeEnum;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Event for generating new weather data. Should be thrown by 23:59 of the day.
@@ -28,6 +29,7 @@ import de.pgalise.simulation.shared.event.EventTypeEnum;
  * @version 1.0 (Aug 30, 2012)
  */
 @Deprecated
+@XmlRootElement
 public class NewDayEvent extends WeatherEvent {
 	/**
 	 * Serial

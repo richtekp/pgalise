@@ -25,12 +25,14 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import java.util.List;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The create random busses event will create random busses
  * for the given bus linves.
  * @author Lena
  */
+@XmlRootElement
 public class CreateRandomBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D,VehicleEvent> {
 	/**
 	 * Serial

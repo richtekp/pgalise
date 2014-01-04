@@ -17,6 +17,7 @@
 package de.pgalise.simulation.shared.city;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -32,6 +33,7 @@ import javax.persistence.TemporalType;
 @Entity
 //@Table(name = "PGALISE.BUS_CALENDAR")
 public class BusCalendar extends AbstractIdentifiable {
+	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "MONDAY")
 	private char monday;

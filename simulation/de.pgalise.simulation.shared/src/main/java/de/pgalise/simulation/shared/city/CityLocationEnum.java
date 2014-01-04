@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Enum with city location attributes.
  * This is useful to determine the correct weather.

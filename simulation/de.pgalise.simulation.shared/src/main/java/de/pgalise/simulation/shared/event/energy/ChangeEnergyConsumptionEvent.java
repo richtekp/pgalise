@@ -18,12 +18,14 @@ package de.pgalise.simulation.shared.event.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Changes the energy consumption in the measure radius by the given percentage.
  * 
  * @author Timo
  */
+@XmlRootElement
 public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	/**
 	 * Serial

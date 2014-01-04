@@ -24,6 +24,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import java.util.UUID;
+import javax.xml.bind.annotation.XmlRootElement;
 
 
 /**
@@ -31,6 +32,7 @@ import java.util.UUID;
  * @param <D> 
  * @author Timo
  */
+@XmlRootElement
 public class DeleteVehiclesEvent<D extends VehicleData> extends AbstractVehicleEvent<D> {
 
 	/**

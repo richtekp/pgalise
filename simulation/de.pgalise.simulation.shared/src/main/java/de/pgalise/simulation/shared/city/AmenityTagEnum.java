@@ -4,10 +4,13 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author richter
  */
+@XmlRootElement
 public enum AmenityTagEnum implements AmenityTag {
 	KINDERGARTEN("kindergarten"), PHARMACY("pharmarcy"), RESTAURANT("restaurant"), PARKING("parking"), BICYKLE_PARKING("bicycle_parking"), CAR_RENTAL("car_rental");
 	

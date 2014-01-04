@@ -23,6 +23,7 @@ import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import javax.persistence.MappedSuperclass;
 
 /**

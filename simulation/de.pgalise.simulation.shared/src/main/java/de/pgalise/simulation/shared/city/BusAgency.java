@@ -17,6 +17,7 @@
 package de.pgalise.simulation.shared.city;
 
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 

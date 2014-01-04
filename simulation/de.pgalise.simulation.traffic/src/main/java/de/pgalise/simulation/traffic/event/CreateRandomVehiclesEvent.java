@@ -24,6 +24,7 @@ import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The create random vehicles event creates the given {@link List} of
@@ -35,6 +36,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
  * @author Timo
  * @author Lena
  */
+@XmlRootElement
 public class CreateRandomVehiclesEvent<D extends VehicleData> extends AbstractVehicleEvent<D> {
 
 	/**

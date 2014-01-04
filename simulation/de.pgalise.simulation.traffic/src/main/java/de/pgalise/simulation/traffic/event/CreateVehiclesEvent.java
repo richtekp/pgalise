@@ -24,6 +24,7 @@ import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Creates vehicles with given path.
@@ -32,6 +33,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
  * @author Timo
  * @author Andreas Rehfeldt
  */
+@XmlRootElement
 public class CreateVehiclesEvent<D extends VehicleData> extends AbstractVehicleEvent<D> {
 
 	/**

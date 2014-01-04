@@ -23,7 +23,6 @@ import java.util.concurrent.ExecutionException;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergySensorFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
@@ -32,6 +31,7 @@ import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
@@ -120,7 +120,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 		IdGenerator idGenerator,
 		WeatherController wctrl,
 		EnergyController ectrl,
-		Output sensorOutput,
+		TcpIpOutput sensorOutput,
 		int updateLimit) {
 		super(sensorOutput,
 			idGenerator,
@@ -220,56 +220,64 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
 		} else if (sensorType.equals(WeatherSensorTypeEnum.THERMOMETER)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Thermometer(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new Thermometer(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.WINDFLAG)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new WindFlagSensor(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new WindFlagSensor(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.BAROMETER)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Barometer(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new Barometer(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.HYGROMETER)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Hygrometer(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new Hygrometer(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.PYRANOMETER)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Pyranometer(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new Pyranometer(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.RAIN)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new RainSensor(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new RainSensor(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.ANEMOMETER)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Anemometer(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new Anemometer(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),
 				this.createWeatherInterferer(sensorInterfererTypes));
 		} else if (sensorType.equals(WeatherSensorTypeEnum.LUXMETER)) {
 			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Luxmeter(getIdGenerator().getNextId(),this.getSensorOutput(),
+			return new Luxmeter(getIdGenerator().getNextId(),
+				this.getSensorOutput(),
 				position,
 				this.getWeatherController(),
 				getUpdateLimit(),

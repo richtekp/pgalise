@@ -4,19 +4,22 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author richter
  */
+@XmlRootElement
 public enum TourismTagEnum implements TourismTag {
 
 	;
 
+	private final String value;
+
 	private TourismTagEnum(String value) {
 		this.value = value;
 	}
-
-	private String value;
 	
 	@Override
 	public String getStringValue() {

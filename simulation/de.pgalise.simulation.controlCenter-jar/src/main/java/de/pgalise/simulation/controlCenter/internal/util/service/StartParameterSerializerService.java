@@ -21,6 +21,7 @@ import java.io.InputStream;
 import com.google.gson.Gson;
 
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
+import java.io.OutputStream;
 
 /**
  * Interface for all start parameter serializer services.
@@ -46,10 +47,16 @@ public interface StartParameterSerializerService {
 	 * Serializes the ControlCenterStartParameter into a file.
 	 * @param cCSimulationStartParameter
 	 * @param fileName
-	 * @return
-	 * 		the file name.
+	 * @return the file name.
 	 */
 	public String serialize(ControlCenterStartParameter cCSimulationStartParameter, String fileName);
+	
+	/**
+	 * serializes <tt>controlCenterStartParameter</tt> to <tt>outputStream</tt>
+	 * @param controlCenterStartParameter
+	 * @param outputStream 
+	 */
+	public void serialize(ControlCenterStartParameter controlCenterStartParameter, OutputStream outputStream);
 	
 	/**
 	 * Inits the start parameter serializer service.

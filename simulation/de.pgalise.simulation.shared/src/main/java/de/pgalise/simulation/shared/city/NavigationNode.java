@@ -6,10 +6,14 @@ package de.pgalise.simulation.shared.city;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -18,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class NavigationNode extends AbstractIdentifiable {
 	private static final long serialVersionUID = 1L;
 	/**
@@ -36,6 +41,7 @@ public class NavigationNode extends AbstractIdentifiable {
 	@ElementCollection(targetClass = BaseTag.class)
 	private Set<SchoolTag> schoolTags;
 	@ElementCollection(targetClass = BaseTag.class)
+	@XmlAnyElement
 	private Set<RepairTag> repairTags;
 	@ElementCollection(targetClass = BaseTag.class)
 	private Set<AttractionTag> attractionTags;

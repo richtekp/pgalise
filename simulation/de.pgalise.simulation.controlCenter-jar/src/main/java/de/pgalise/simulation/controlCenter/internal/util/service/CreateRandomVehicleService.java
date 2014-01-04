@@ -13,28 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import java.io.Serializable;
+import javax.ejb.Local;
 
 /**
- * Service to create a {@link TrafficEvent} from {@link RandomDynamicSensorBundle}.
+ * Service to create a {@link TrafficEvent} from
+ * {@link RandomDynamicSensorBundle}.
+ *
  * @author Timo
  */
-public interface CreateRandomVehicleService {
+@Local
+public interface CreateRandomVehicleService extends Serializable {
+
 	/**
 	 * Creates dynamic sensors with random IDs.
-	 * @param randomDynamicSensorBundle
-	 * 			contains how many random vehicles shall be created
-	 * @param randomSeedService
-	 * 			to produce random IDs.
-	 * @param withSensorInterferer
-	 * 			sensors with interferer or not
+	 *
+	 * @param randomDynamicSensorBundle contains how many random vehicles shall be
+	 * created
+	 * @param randomSeedService to produce random IDs.
+	 * @param withSensorInterferer sensors with interferer or not
 	 * @return
 	 */
-	public TrafficEvent<?> createRandomDynamicSensors(RandomVehicleBundle randomDynamicSensorBundle, 
-			RandomSeedService randomSeedService, boolean withSensorInterferer);
+	public TrafficEvent<?> createRandomDynamicSensors(
+		RandomVehicleBundle randomDynamicSensorBundle,
+		RandomSeedService randomSeedService,
+		boolean withSensorInterferer);
 }

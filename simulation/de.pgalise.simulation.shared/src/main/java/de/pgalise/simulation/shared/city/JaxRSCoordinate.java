@@ -6,6 +6,9 @@
 
 package de.pgalise.simulation.shared.city;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -14,11 +17,9 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author richter
  */
 @XmlRootElement
-public class JaxRSCoordinate extends com.vividsolutions.jts.geom.Coordinate {
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxRSCoordinate extends Coordinate {
 	private static final long serialVersionUID = 1L;
-	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
-	@XmlTransient //will be discovered via getter
-	private double x,y,z;
 
   /**
    *  Constructs a <code>Coordinate</code> at (x,y,z).

@@ -16,6 +16,7 @@
 package de.pgalise.simulation.shared.event.weather;
 
 import javax.faces.bean.ManagedBean;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Event for modifying the current weather
@@ -23,7 +24,7 @@ import javax.faces.bean.ManagedBean;
  * @author Andreas Rehfeldt
  * @version 1.1 (Aug 30, 2012)
  */
-@ManagedBean
+@XmlRootElement
 public class ChangeWeatherEvent extends ValueWeatherEvent {
 
 	/**

@@ -4,14 +4,17 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author richter
  */
+@XmlRootElement
 public enum WayTagEnum implements WayTag {
 	HIGHWAY("highway"), LANDUSE("landuse"), RAILWAY("railway"), CYCLEWAY("cycleway"),BUS_STOP("busstop"), UNCLASSIFIED("unclassified"), pedestrian("pedestrian"), STEPS("steps"), FOOTPATH("footpath"), PATH("path"), service("service"), natural("natural"), track("track");
 	
-	private String stringValue;
+	private final String stringValue;
 
 	private WayTagEnum(String stringValue) {
 		this.stringValue = stringValue;
@@ -19,6 +22,6 @@ public enum WayTagEnum implements WayTag {
 	
 	@Override
 	public String getStringValue() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return stringValue;
 	}
 }

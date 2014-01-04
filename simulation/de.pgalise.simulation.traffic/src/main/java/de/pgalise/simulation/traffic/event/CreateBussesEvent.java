@@ -32,6 +32,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The create busses event will create the given vehicles as busses
@@ -41,6 +42,7 @@ import java.util.Map;
  * @param <E> 
  * @author Lena
  */
+@XmlRootElement
 public class CreateBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D,CreateBussesEvent<D>> {
 
 	/**

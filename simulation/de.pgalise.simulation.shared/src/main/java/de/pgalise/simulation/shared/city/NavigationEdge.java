@@ -8,11 +8,12 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.LineString;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 
 /**
  *

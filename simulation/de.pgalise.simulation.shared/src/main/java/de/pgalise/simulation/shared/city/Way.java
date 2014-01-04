@@ -19,6 +19,7 @@ package de.pgalise.simulation.shared.city;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;

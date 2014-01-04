@@ -4,11 +4,15 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author richter
  */
+@XmlRootElement
 public class WayTagCustom implements WayTag {
+	private static final long serialVersionUID = 1L;
 	private String stringValue;
 
 	public WayTagCustom(String stringValue) {

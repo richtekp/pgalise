@@ -4,10 +4,13 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 /**
  *
  * @author richter
  */
+@XmlSeeAlso({CraftTagCustom.class})
 public interface CraftTag extends BaseTag {
 	
 }

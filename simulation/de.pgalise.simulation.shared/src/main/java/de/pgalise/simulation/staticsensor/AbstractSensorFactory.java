@@ -6,7 +6,7 @@ package de.pgalise.simulation.staticsensor;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import javax.ejb.EJB;
@@ -16,14 +16,14 @@ import javax.ejb.EJB;
  * @param <S>
  * @author richter
  */
-public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
+public abstract class AbstractSensorFactory<S extends Sensor<?, ?>> implements
 	SensorFactory {
 
 	/**
 	 * Sensor output
 	 */
 	@EJB
-	private Output sensorOutput;
+	private TcpIpOutput sensorOutput;
 
 	/**
 	 * Random seed service
@@ -38,21 +38,22 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 	public AbstractSensorFactory() {
 	}
 
-	public AbstractSensorFactory(Output output) {
+	public AbstractSensorFactory(TcpIpOutput output) {
 		this.sensorOutput = output;
 	}
 
-	public AbstractSensorFactory(Output sensorOutput,IdGenerator idGenerator,
+	public AbstractSensorFactory(TcpIpOutput sensorOutput,
+		IdGenerator idGenerator,
 		RandomSeedService rss,
 		int updateLimit) {
-		if(sensorOutput == null) {
+		if (sensorOutput == null) {
 			throw new IllegalArgumentException("output null");
 		}
-		if(idGenerator == null) {
+		if (idGenerator == null) {
 			throw new IllegalArgumentException("idGenerator null");
 		}
 		this.sensorOutput = sensorOutput;
-		if(randomSeedService == null) {
+		if (randomSeedService == null) {
 			throw new IllegalArgumentException("randomSeedService null");
 		}
 		this.randomSeedService = rss;
@@ -75,12 +76,12 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 		return updateLimit;
 	}
 
-	protected void setSensorOutput(Output output) {
+	protected void setSensorOutput(TcpIpOutput output) {
 		this.sensorOutput = output;
 	}
 
 	@Override
-	public Output getSensorOutput() {
+	public TcpIpOutput getSensorOutput() {
 		return sensorOutput;
 	}
 
@@ -91,23 +92,23 @@ public abstract class AbstractSensorFactory<S extends Sensor<?,?>> implements
 	public RandomSeedService getRandomSeedService() {
 		return randomSeedService;
 	}
-	
+
 	public JaxRSCoordinate createRandomPositionEnergySensor() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public JaxRSCoordinate createRandomPositionWeatherSensor() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public JaxRSCoordinate createRandomPositionInfraredSensor() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public JaxRSCoordinate createRandomPositionInductionLoopSensor() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public JaxRSCoordinate createRandomPositionTopoRadarSensor() {
 		throw new UnsupportedOperationException();
 	}

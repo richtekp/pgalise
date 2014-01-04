@@ -4,10 +4,13 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 /**
  *
  * @author richter
  */
+@XmlSeeAlso({LeisureTagCustom.class})
 public interface LeisureTag extends BaseTag {
 	
 }

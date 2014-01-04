@@ -24,6 +24,7 @@ import java.util.List;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The attraction traffic event will lead to more traffic on the given point in
@@ -32,6 +33,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
  * @param <D>
  * @author Timo
  */
+@XmlRootElement
 public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomVehiclesEvent<D> {
 
 	/**

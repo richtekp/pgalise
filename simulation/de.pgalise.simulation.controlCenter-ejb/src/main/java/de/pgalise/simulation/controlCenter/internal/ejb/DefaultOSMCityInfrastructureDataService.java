@@ -14,8 +14,9 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.controlCenter.internal.util.service;
+package de.pgalise.simulation.controlCenter.internal.ejb;
 
+import de.pgalise.simulation.controlCenter.internal.util.service.MapCityInfrastructureDataService;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

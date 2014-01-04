@@ -25,6 +25,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The road barrier traffic event will block a route during the given time window.
@@ -33,6 +34,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
  * @param <E> 
  * @author Timo
  */
+@XmlRootElement
 public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTrafficEvent<D, VehicleEvent> {
 
 	/**

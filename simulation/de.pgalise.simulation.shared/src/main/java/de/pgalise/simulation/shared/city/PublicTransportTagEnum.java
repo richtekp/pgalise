@@ -6,10 +6,13 @@
 
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author richter
  */
+@XmlRootElement
 public enum PublicTransportTagEnum implements PublicTransportTag {
 	STOP_POSITION("stop_position");
 	

@@ -7,8 +7,11 @@ package de.pgalise.simulation.shared.city;
 
 import javax.vecmath.Tuple2d;
 import javax.vecmath.Tuple2f;
+import javax.vecmath.Vector2d;
 import javax.vecmath.Vector2f;
-import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * A subclass fo {@link javax.vecmath.Vector2d} which hides x and y properties
@@ -16,15 +19,14 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author richter
  */
-public class JaxbVector2d extends javax.vecmath.Vector2d {
+/*
+ * @TODO: pointless subclass; this should be handled with xml config file 
+ */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
+public class JaxbVector2d extends Vector2d {
 
 	private static final long serialVersionUID = 1L;
-
-	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
-	@XmlTransient //will be discovered via getter
-	private double x;
-	@XmlTransient //will be discovered via getter
-	private double y;
 
 	/**
 	 * Constructs and initializes a Vector2d from the specified xy coordinates.

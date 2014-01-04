@@ -4,10 +4,13 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  *
  * @author richter
  */
+@XmlRootElement
 public enum LanduseTagEnum implements LanduseTag {
 	INDUSTRY("industry"), FARMLAND("farmland"), FARMYARD("farmyard"), RETAIL("retail"), MILITARY("military"), RESIDENTIAL("residential"), COMMERCIAL("commercial");
 	

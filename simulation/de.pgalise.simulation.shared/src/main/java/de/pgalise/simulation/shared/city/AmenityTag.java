@@ -4,10 +4,13 @@
  */
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 /**
  *
  * @author richter
  */
+@XmlSeeAlso({AmenityTagCustom.class, AmenityTagEnum.class})
 public interface AmenityTag extends BaseTag {
 	
 }

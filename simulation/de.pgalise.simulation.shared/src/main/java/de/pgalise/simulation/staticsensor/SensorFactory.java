@@ -18,12 +18,11 @@ package de.pgalise.simulation.staticsensor;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import java.util.concurrent.ExecutionException;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Factory to create sensors
@@ -40,7 +39,7 @@ public interface SensorFactory {
 	 *
 	 * @return the Output of the {@link SensorFactory}
 	 */
-	public Output getSensorOutput();
+	public TcpIpOutput getSensorOutput();
 
 	/**
 	 * Creates a sensor of a specific type with random values (use other methods

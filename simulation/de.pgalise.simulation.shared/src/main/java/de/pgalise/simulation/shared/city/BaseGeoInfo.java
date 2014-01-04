@@ -8,6 +8,7 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.persistence.Identifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;

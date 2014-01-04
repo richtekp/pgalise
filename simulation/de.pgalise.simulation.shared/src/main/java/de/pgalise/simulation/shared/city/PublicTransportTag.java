@@ -6,10 +6,13 @@
 
 package de.pgalise.simulation.shared.city;
 
+import javax.xml.bind.annotation.XmlSeeAlso;
+
 /**
  *
  * @author richter
  */
+@XmlSeeAlso({PublicTransportTagCustom.class, PublicTransportTagEnum.class})
 public interface PublicTransportTag extends BaseTag {
 	
 }

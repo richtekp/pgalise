@@ -93,7 +93,13 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
-		<dependency>
+	 <dependency>
+	  <groupId>org.javolution</groupId>
+	  <artifactId>javolution</artifactId>
+	  <version>5.2.3</version>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<type>jar</type>

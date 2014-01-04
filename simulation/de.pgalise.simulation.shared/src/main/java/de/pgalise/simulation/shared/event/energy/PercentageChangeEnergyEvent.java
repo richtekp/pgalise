@@ -19,6 +19,7 @@ package de.pgalise.simulation.shared.event.energy;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.event.EventType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Implementation of change energy consumption event with percentage.
@@ -27,6 +28,7 @@ import de.pgalise.simulation.shared.event.EventType;
  * 
  * @author Timo
  */
+@XmlRootElement
 public class PercentageChangeEnergyEvent extends ChangeEnergyConsumptionEvent {
 
 	/**
