@@ -14,7 +14,7 @@ import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
  *
  * @author richter
  */
-public class DefaultMotorcycle extends BaseVehicle<MotorcycleData> implements Motorcycle {
+public class DefaultMotorcycle extends ExtendedMotorizedVehicle<MotorcycleData> implements Motorcycle {
 	private static final long serialVersionUID = 1L;
 
 	protected DefaultMotorcycle() {

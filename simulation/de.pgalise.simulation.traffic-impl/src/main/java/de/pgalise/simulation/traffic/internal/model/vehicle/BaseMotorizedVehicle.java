@@ -33,7 +33,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
  * @author Mustafa
  * @version 1.0 (Nov 7, 2012)
  */
-public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<T> {
+public abstract class BaseMotorizedVehicle<T extends VehicleData> extends BaseVehicle<T> {
 	/**
 	 * Serial
 	 */
@@ -42,12 +42,15 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	/**
 	 * Logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(DefaultMotorizedVehicle.class);
+	private static final Logger log = LoggerFactory.getLogger(BaseMotorizedVehicle.class);
 
 	/**
 	 * Last registered node of the graph
 	 */
 	private TrafficNode lastRegisteredNode;
+
+	protected BaseMotorizedVehicle() {
+	}
 
 	/**
 	 * Constructor
@@ -59,7 +62,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	 *            Information of the car
 	 * @param trafficGraphExtensions  
 	 */
-	public DefaultMotorizedVehicle(Long id, String name, T carData, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseMotorizedVehicle(Long id, String name, T carData, TrafficGraphExtensions trafficGraphExtensions) {
 		super(id, name, trafficGraphExtensions);
 		this.setData(carData);
 	}
@@ -72,7 +75,7 @@ public class DefaultMotorizedVehicle<T extends VehicleData> extends BaseVehicle<
 	 * @param carData
 	 *            Information of the car
 	 */
-	public DefaultMotorizedVehicle(Long id,T carData, TrafficGraphExtensions trafficGraphExtensions) {
+	public BaseMotorizedVehicle(Long id,T carData, TrafficGraphExtensions trafficGraphExtensions) {
 		super(id,
 			null,
 			carData,

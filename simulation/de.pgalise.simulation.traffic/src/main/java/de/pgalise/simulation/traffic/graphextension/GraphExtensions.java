@@ -148,6 +148,7 @@ public interface GraphExtensions {
 	 *            the edge which maximum speed has to be set
 	 * @param maxSpeed
 	 *            the new maximum speed of the edge
+	 * @return  
 	 */
 	public TrafficEdge setMaxSpeed(final TrafficEdge edge, final double maxSpeed);
 
@@ -156,8 +157,8 @@ public interface GraphExtensions {
 	 * 
 	 * @param edge
 	 *            the edge which street name has to be set
-	 * @param length
-	 *            the new street name of the edge
+	 * @param streetName 
+	 * @return  
 	 */
 	public TrafficEdge setStreetName(final TrafficEdge edge, final String streetName);
 

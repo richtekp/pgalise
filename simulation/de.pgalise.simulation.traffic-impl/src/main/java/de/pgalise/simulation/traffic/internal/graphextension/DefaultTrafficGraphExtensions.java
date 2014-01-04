@@ -63,21 +63,6 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	private static final Logger log = LoggerFactory.getLogger(DefaultTrafficGraphExtensions.class);
 
 	/**
-	 * constant value which holds the key for the sensor set
-	 */
-	private final static String SENSORS = "sensors";
-
-	/**
-	 * constant value which holds the key for the TrafficlightSetof
-	 */
-	private final static String TRAFFICLIGHT_RULE = "trafficRule";
-
-	/**
-	 * constant value which holds the key for the vehicles set
-	 */
-	private final static String VEHICLES = "vehicles";
-
-	/**
 	 * Set with traffic rules
 	 */
 	private final Set<TrafficRule> trafficRules = new HashSet<>(1);

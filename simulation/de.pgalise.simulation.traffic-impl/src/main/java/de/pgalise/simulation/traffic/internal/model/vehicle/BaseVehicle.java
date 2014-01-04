@@ -154,6 +154,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 		this.state = VehicleStateEnum.NOT_STARTED;
 	}
 
+	@Override
 	public void setGpsSensor(GpsSensor gpsSensor) {
 		this.gpsSensor = gpsSensor;
 	}
@@ -322,7 +323,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 
 	@Override
 	public void update(long elapsedTime) {
-		this._preUpdate(elapsedTime);
+		this.preUpdate(elapsedTime);
 		if (!(VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.vehicleState))) {
 			return;
 		}
@@ -344,13 +345,13 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 
 		passedNode = (passedNode != this.currentNode || this.isVirgin) ? this.currentNode : null;
 		if (this.isVirgin) {
-			this._passedNode(passedNode);
+			this.passedNode(passedNode);
 		}
 		// if(passedNode!=null)
 		// log.info("postUpdate on "+this.getName()+", passedNode: "+passedNode.getId());
 		// else
 		// log.info("postUpdate on "+this.getName()+", passedNode: null");
-		this._postUpdate(passedNode);
+		this.postUpdate(passedNode);
 		// logger.debug(String.format("Vehicle '%s' position and velocity after update: %s, %s", this.name,
 		// this.position,
 		// this.velocity));
@@ -447,7 +448,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 			this.prevEdge = this.currentEdge;
 			this.currentEdge = this._getNextEdge();
 
-			this._passedNode(this.currentNode);
+			this.passedNode(this.currentNode);
 
 			// log.debug("Vehicle's "+name+" position: "+this.position);
 			if (this.hasReachedNextNode(this.orientation, this.position)) {
@@ -466,7 +467,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 			this.prevEdge = this.currentEdge;
 			this.currentEdge = null;
 
-			this._passedNode(this.currentNode);
+			this.passedNode(this.currentNode);
 		}
 	}
 
@@ -480,47 +481,6 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	protected boolean hasReachedNextNode(Orientation orientation, JaxRSCoordinate position) {
 		return Orientation.isBeyond(orientation, position,
 				this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
-	}
-
-	private void _passedNode(TrafficNode passedNode) {
-		// if(this.state!=State.PAUSED)
-		passedNode(passedNode);
-	}
-
-	private void _postUpdate(TrafficNode lastPassedNode) {
-		// if(this.state!=State.PAUSED)
-		postUpdate(lastPassedNode);
-	}
-
-	private void _preUpdate(long elapsedTime) {
-		// if(this.state!=State.PAUSED)
-		preUpdate(elapsedTime);
-	}
-
-	/**
-	 * This method will be invoked when ever a node has been passed.
-	 * 
-	 * @param passedNode
-	 */
-	protected void passedNode(TrafficNode passedNode) {
-	}
-
-	/**
-	 * This method will be invoked after this vehicle was updated.
-	 * 
-	 * @param lastPassedNode
-	 *            Passed Node on the last update otherwise null
-	 */
-	protected void postUpdate(TrafficNode lastPassedNode) {
-	}
-
-	/**
-	 * This method will be invoked before this vehicle is updated.
-	 * 
-	 * @param elapsedTime
-	 *            elapsed time in ms since this vehicle has been updated the last time
-	 */
-	protected void preUpdate(long elapsedTime) {
 	}
 
 	protected JaxRSCoordinate update(long elapsedTime, JaxRSCoordinate pos, JaxbVector2d dir) {
@@ -579,4 +539,27 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	public TrafficTrip getTrafficTrip() {
 		return trafficTrip;
 	}
+
+	/**
+	 * This method will be invoked when ever a node has been passed.
+	 * 
+	 * @param passedNode
+	 */
+	protected abstract void passedNode(TrafficNode passedNode) ;
+
+	/**
+	 * This method will be invoked after this vehicle was updated.
+	 * 
+	 * @param lastPassedNode
+	 *            Passed Node on the last update otherwise null
+	 */
+	protected abstract void postUpdate(TrafficNode lastPassedNode);
+
+	/**
+	 * This method will be invoked before this vehicle is updated.
+	 * 
+	 * @param elapsedTime
+	 *            elapsed time in ms since this vehicle has been updated the last time
+	 */
+	protected abstract void preUpdate(long elapsedTime) ;
 }

@@ -13,7 +13,7 @@ import de.pgalise.simulation.traffic.model.vehicle.BusData;
  *
  * @author richter
  */
-public class DefaultBus extends BaseVehicle<BusData> implements Bus{
+public class DefaultBus extends ExtendedMotorizedVehicle<BusData> implements Bus{
 	private static final long serialVersionUID = 1L;
 	private InfraredSensor infraredSensor;
 

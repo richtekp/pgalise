@@ -14,7 +14,7 @@ import de.pgalise.simulation.traffic.model.vehicle.TruckData;
  *
  * @author richter
  */
-public class DefaultTruck extends BaseVehicle<TruckData> implements Truck {
+public class DefaultTruck extends ExtendedMotorizedVehicle<TruckData> implements Truck {
 	private static final long serialVersionUID = 1L;
 
 	protected DefaultTruck() {

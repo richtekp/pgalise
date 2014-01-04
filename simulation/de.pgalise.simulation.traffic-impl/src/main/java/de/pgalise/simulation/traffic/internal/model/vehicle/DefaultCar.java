@@ -13,7 +13,7 @@ import de.pgalise.simulation.traffic.model.vehicle.CarData;
  *
  * @author richter
  */
-public class DefaultCar extends BaseVehicle<CarData> implements Car {
+public class DefaultCar extends ExtendedMotorizedVehicle<CarData> implements Car {
 
 	private static final long serialVersionUID = 1L;
 

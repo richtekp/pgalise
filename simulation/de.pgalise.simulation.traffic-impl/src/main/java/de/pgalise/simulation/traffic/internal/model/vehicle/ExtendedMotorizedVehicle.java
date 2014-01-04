@@ -32,7 +32,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  * @version 1.0 (Feb 17, 2013)
  * @param <T> VehicleData
  */
-public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle<T> {
+public abstract class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseMotorizedVehicle<T> {
 
 	/**
 	 * Serial
@@ -49,6 +49,9 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	 * Last registered node of the graph
 	 */
 	private TrafficNode lastRegisteredNode;
+	
+	protected ExtendedMotorizedVehicle() {
+	}
 
 	/**
 	 * Constructor
@@ -63,7 +66,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 		T carData,
 		TrafficGraphExtensions trafficGraphExtensions) {
 		super(id,
-			name,
+			carData,
 			trafficGraphExtensions);
 		this.setData(carData);
 	}
@@ -78,7 +81,7 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 	public ExtendedMotorizedVehicle(Long id,
 		T carData,
 		TrafficGraphExtensions trafficGraphExtensions) {
-		super(id,
+		super(id,carData,
 			trafficGraphExtensions);
 		if (carData == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
@@ -188,6 +191,10 @@ public class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseVehicle
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void preUpdate(long elapsedTime) {
 	}
 
 	@Override
