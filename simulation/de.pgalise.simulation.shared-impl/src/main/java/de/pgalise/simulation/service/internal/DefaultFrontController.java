@@ -6,7 +6,6 @@ package de.pgalise.simulation.service.internal;
 
 import de.pgalise.simulation.service.FrontController;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;

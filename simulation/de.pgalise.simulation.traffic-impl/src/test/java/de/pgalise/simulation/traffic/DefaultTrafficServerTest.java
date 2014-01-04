@@ -70,7 +70,6 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
@@ -459,7 +458,7 @@ public class DefaultTrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		StartParameter startParam = new DefaultStartParameter();
+		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 
 		server0.update(eventList);
@@ -490,7 +489,7 @@ public class DefaultTrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		DefaultStartParameter startParam = new DefaultStartParameter();
+		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 
 		server0.update(eventList);
@@ -551,7 +550,7 @@ public class DefaultTrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		DefaultStartParameter startParam = new DefaultStartParameter();
+		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 
 		server0.update(eventList);
@@ -606,7 +605,7 @@ public class DefaultTrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		DefaultStartParameter startParam = new DefaultStartParameter();
+		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 		JaxRSCoordinate location;
 		NavigationNode nodeForStaticSensor = null;
@@ -758,7 +757,7 @@ public class DefaultTrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		DefaultStartParameter startParam = new DefaultStartParameter();
+		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 
 		GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),null,
@@ -845,7 +844,7 @@ public class DefaultTrafficServerTest {
 
 		TrafficServerLocal server0 = createTrafficServer(null);
 
-		DefaultStartParameter startParam = new DefaultStartParameter();
+		StartParameter startParam = new StartParameter();
 		server0.start(startParam);
 
 		GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),null,

@@ -7,21 +7,40 @@
 package de.pgalise.simulation.shared.controller;
 
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
-/**
- *
- * @author richter
- */
-public interface StartParameter extends Serializable {
 
-	List<WeatherEvent> getWeatherEventList();
-	
-	void setWeatherEventList(List<WeatherEvent> eventHelpers);
+public class StartParameter {
+	private static final long serialVersionUID = 1L;
+	private List<WeatherEvent> weatherEvents = new LinkedList<>();
+	private boolean aggregatedWeatherDataEnabled;
 
-	boolean isAggregatedWeatherDataEnabled();
-	
-	void setAggregatedWeatherDataEnabled(boolean b);
+	public StartParameter() {
+	}
+
+	public StartParameter(
+		boolean aggregatedWeatherDataEnabled,List<WeatherEvent> weatherEvents) {
+		this.weatherEvents = weatherEvents;
+		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
+	}
+
+	public void setWeatherEvents(
+		List<WeatherEvent> weatherEvents) {
+		this.weatherEvents = weatherEvents;
+	}
+
+	public void setAggregatedWeatherDataEnabled(
+		boolean aggregatedWeatherDataEnabled) {
+		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
+	}
+
+	public boolean isAggregatedWeatherDataEnabled() {
+		return aggregatedWeatherDataEnabled;
+	}
+
+	public List<WeatherEvent> getWeatherEvents() {
+		return weatherEvents;
+	}
 	
 }

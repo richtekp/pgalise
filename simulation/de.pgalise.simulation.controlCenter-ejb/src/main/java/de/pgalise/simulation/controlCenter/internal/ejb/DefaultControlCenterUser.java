@@ -716,22 +716,19 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 		Set<UUID> usedUUIDs = new HashSet<>();
 
 		/* Create sensors: */
-		for (Sensor<?, ?> sensorHelper : ccSimulationStartParameter.
-			getSensorHelperList()) {
+		for (Sensor<?, ?> sensorHelper : ccSimulationStartParameter.getSensors()) {
 			sensorHelper.setSensorInterfererTypes(sensorInterfererService.
 				getSensorInterfererTypes(sensorHelper.getSensorType(),
 					ccSimulationStartParameter.isWithSensorInterferes()));
 		}
-		this.simulationController.createSensors(ccSimulationStartParameter.
-			getSensorHelperList());
+		this.simulationController.createSensors(ccSimulationStartParameter.getSensors());
 
 		/* Create start parameters: */
 		InfrastructureStartParameter startParameter = lookupStartParameter();
 		startParameter.setCity(ccSimulationStartParameter.getCity());
 		startParameter.setAggregatedWeatherDataEnabled(
 			ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
-		startParameter.setWeatherEventList(ccSimulationStartParameter.
-			getWeatherEventList());
+		startParameter.setWeatherEvents(ccSimulationStartParameter.getWeatherEvents());
 
 		List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
 		List<UUID> newUUIDs = new LinkedList<>();

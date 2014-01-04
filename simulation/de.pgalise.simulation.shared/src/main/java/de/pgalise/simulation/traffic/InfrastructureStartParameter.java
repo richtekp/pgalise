@@ -6,11 +6,11 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.AbstractStartParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.util.List;
 
-public class InfrastructureStartParameter extends AbstractStartParameter {
+public class InfrastructureStartParameter extends StartParameter {
 
 	private static final long serialVersionUID = 1L;
 	private City city = new City();
@@ -21,8 +21,8 @@ public class InfrastructureStartParameter extends AbstractStartParameter {
 	public InfrastructureStartParameter(City city,
 		boolean aggregatedWeatherDataEnabled,
 		List<WeatherEvent> weatherEventHelperList) {
-		super(weatherEventHelperList,
-			aggregatedWeatherDataEnabled);
+		super(
+			aggregatedWeatherDataEnabled,weatherEventHelperList);
 		this.city = city;
 	}
 

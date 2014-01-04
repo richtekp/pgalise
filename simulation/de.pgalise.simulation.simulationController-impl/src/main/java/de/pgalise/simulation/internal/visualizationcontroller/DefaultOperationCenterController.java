@@ -46,7 +46,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.controller.DefaultStartParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 
 /**
@@ -195,9 +195,9 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 	@Override
 	protected void onStart(StartParameter param) {
 		log.debug("start");
-		StartParameter startParameterCopy = new DefaultStartParameter(
+		StartParameter startParameterCopy = new StartParameter(
 				param.isAggregatedWeatherDataEnabled(),
-				param.getWeatherEventList());
+				param.getWeatherEvents());
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("start", "true");
 		requestParameterMap.put("json", this.gson.toJson(startParameterCopy));

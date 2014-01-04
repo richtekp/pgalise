@@ -74,6 +74,7 @@ public class TrafficNode extends NavigationNode  {
 		this.sensors = sensors;
 	}
 
+	@XmlTransient
 	public Set<StaticTrafficSensor<?>> getSensors() {
 		return sensors;
 	}
@@ -91,6 +92,7 @@ public class TrafficNode extends NavigationNode  {
 		this.trafficRule = trafficRule;
 	}
 
+	@XmlTransient
 	public TrafficRule getTrafficRule() {
 		return trafficRule;
 	}

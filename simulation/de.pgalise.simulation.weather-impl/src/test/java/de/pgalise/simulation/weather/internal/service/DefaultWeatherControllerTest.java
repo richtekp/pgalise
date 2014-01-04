@@ -39,7 +39,6 @@ import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.service.ServerConfigurationEntity;
-import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;

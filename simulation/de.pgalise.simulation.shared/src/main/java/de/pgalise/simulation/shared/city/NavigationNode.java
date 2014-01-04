@@ -10,12 +10,14 @@ import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author richter
  */
 @Entity
+@XmlRootElement
 public class NavigationNode extends AbstractIdentifiable {
 	private static final long serialVersionUID = 1L;
 	/**

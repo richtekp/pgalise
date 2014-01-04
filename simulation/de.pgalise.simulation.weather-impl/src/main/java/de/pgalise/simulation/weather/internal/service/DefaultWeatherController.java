@@ -412,7 +412,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 		this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp(),
 			this.initParameter.getEndTimestamp(),
 			!param.isAggregatedWeatherDataEnabled(),
-			this.createStrategyList(param.getWeatherEventList()));
+			this.createStrategyList(param.getWeatherEvents()));
 
 		// Set start date
 		this.setStartTimestamp(this.initParameter.getStartTimestamp());

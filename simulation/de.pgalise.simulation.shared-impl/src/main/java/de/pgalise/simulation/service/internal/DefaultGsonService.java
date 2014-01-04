@@ -37,7 +37,6 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.DefaultStartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;

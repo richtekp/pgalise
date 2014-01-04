@@ -22,7 +22,6 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.TrafficCity;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Arrays;
@@ -37,9 +36,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.xml.bind.annotation.XmlRootElement;
-import javolution.xml.XMLFormat;
-import javolution.xml.XMLSerializable;
-import javolution.xml.stream.XMLStreamException;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * All parameters to start the simulation. This is an extra version only for the
@@ -92,7 +89,8 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 	/**
 	 * Sensorhelper list.
 	 */
-	private List<Sensor<?, ?>> sensorHelperList;
+	@XmlTransient
+	private List<Sensor<?, ?>> sensors;
 
 	/**
 	 * list of simulation event lists
@@ -218,7 +216,7 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 		this.ipStaticSensorController = ipStaticSensorController;
 		this.ipEnergyController = ipEnergyController;
 		this.trafficServerIPs = trafficServerIPList;
-		this.sensorHelperList = sensorHelperList;
+		this.sensors = sensorHelperList;
 		this.simulationEventLists = simulationEventLists;
 		this.randomDynamicSensorBundle = randomDynamicSensorBundle;
 		this.withSensorInterferes = withSensorInterferes;
@@ -325,12 +323,13 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter {
 		this.trafficServerIPs = trafficServerIPs;
 	}
 
-	public List<Sensor<?, ?>> getSensorHelperList() {
-		return sensorHelperList;
+	@XmlTransient
+	public List<Sensor<?, ?>> getSensors() {
+		return sensors;
 	}
 
-	public void setSensorHelperList(List<Sensor<?, ?>> sensorHelperList) {
-		this.sensorHelperList = sensorHelperList;
+	public void setSensors(List<Sensor<?, ?>> sensors) {
+		this.sensors = sensors;
 	}
 
 	public List<EventList<?>> getSimulationEventLists() {

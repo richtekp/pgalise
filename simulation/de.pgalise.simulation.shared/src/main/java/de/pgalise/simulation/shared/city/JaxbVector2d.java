@@ -8,6 +8,7 @@ package de.pgalise.simulation.shared.city;
 import javax.vecmath.Tuple2d;
 import javax.vecmath.Tuple2f;
 import javax.vecmath.Vector2f;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * A subclass fo {@link javax.vecmath.Vector2d} which hides x and y properties
@@ -20,7 +21,10 @@ public class JaxbVector2d extends javax.vecmath.Vector2d {
 	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
-	private double x, y;
+	@XmlTransient //will be discovered via getter
+	private double x;
+	@XmlTransient //will be discovered via getter
+	private double y;
 
 	/**
 	 * Constructs and initializes a Vector2d from the specified xy coordinates.
