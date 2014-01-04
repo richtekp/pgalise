@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.testutils.TestUtils;
 import java.io.IOException;

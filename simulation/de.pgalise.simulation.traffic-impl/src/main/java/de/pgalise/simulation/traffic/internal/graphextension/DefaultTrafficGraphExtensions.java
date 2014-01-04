@@ -195,7 +195,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public Set<StaticTrafficSensor> getSensorsAsUnmodifialable(final TrafficNode node) throws IllegalArgumentException {
+	public Set<StaticTrafficSensor<?>> getSensorsAsUnmodifialable(final TrafficNode node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		return Collections.unmodifiableSet(this.getSensors(node));
 	}
@@ -380,7 +380,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 */
 	private void createSensorSet(final TrafficNode node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
-		node.setSensors(new HashSet<StaticTrafficSensor>(16));
+		node.setSensors(new HashSet<StaticTrafficSensor<?>>(16));
 	}
 
 	/**
@@ -393,7 +393,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions implem
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public Set<StaticTrafficSensor> getSensors(final TrafficNode node) throws IllegalArgumentException {
+	public Set<StaticTrafficSensor<?>> getSensors(final TrafficNode node) throws IllegalArgumentException {
 		DefaultTrafficGraphExtensions.checkNode(node);
 		if (node.getSensors() == null) {
 			this.createSensorSet(node);

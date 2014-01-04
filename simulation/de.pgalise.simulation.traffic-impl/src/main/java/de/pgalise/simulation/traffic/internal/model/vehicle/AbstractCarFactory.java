@@ -7,7 +7,7 @@
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
@@ -33,7 +33,7 @@ public class AbstractCarFactory extends AbstractVehicleFactory implements CarFac
 
 	@Override
 	public Car createRandomCar(Output output) {
-		Coordinate randomPosition = generateRandomPosition(
+		JaxRSCoordinate randomPosition = generateRandomPosition(
 			getTrafficGraphExtensions().getGraph().edgeSet());
 		GpsSensor gpsSensor = new GpsSensor(getIdGenerator().getNextId(),
 			output,

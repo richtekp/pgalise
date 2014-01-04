@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 
 /**
@@ -29,8 +29,8 @@ public class GpsNoInterferer implements GpsInterferer {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public Coordinate interfere(Coordinate mutablePosition,
-		Coordinate realPosition,
+	public JaxRSCoordinate interfere(JaxRSCoordinate mutablePosition,
+		JaxRSCoordinate realPosition,
 		long simTime) {
 		// Returns with no change
 		return mutablePosition;

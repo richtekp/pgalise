@@ -44,7 +44,7 @@ import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.City;
@@ -77,7 +77,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 		/**
 		 * Position
 		 */
-		private Coordinate geoLocation;
+		private JaxRSCoordinate geoLocation;
 		/**
 		 * Radius in meter
 		 */
@@ -89,7 +89,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 		 * @param geoLocation
 		 * @param measureRadiusInMeter
 		 */
-		GeoRadiusWrapper(Coordinate geoLocation,
+		GeoRadiusWrapper(JaxRSCoordinate geoLocation,
 				int measureRadiusInMeter) {
 			this.geoLocation = geoLocation;
 			this.measureRadiusInMeter = measureRadiusInMeter;
@@ -120,7 +120,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 			return true;
 		}
 
-		public Coordinate getGeoLocation() {
+		public JaxRSCoordinate getGeoLocation() {
 			return geoLocation;
 		}
 
@@ -138,7 +138,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 			return result;
 		}
 
-		public void setGeoLocation(Coordinate geoLocation) {
+		public void setGeoLocation(JaxRSCoordinate geoLocation) {
 			this.geoLocation = geoLocation;
 		}
 
@@ -208,7 +208,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 
 	@Override
 	public double getEnergyConsumptionInKWh(long timestamp,
-			Coordinate position, int measureRadiusInMeter) {
+			JaxRSCoordinate position, int measureRadiusInMeter) {
 		if (this.getStatus() != StatusEnum.STARTED) {
 			throw new IllegalStateException(
 					"Controller is not in running state!");

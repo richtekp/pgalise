@@ -16,13 +16,13 @@
  
 package de.pgalise.simulation.traffic.graphextension;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  * The TrafficGraphExtensions is an interface
@@ -43,7 +43,7 @@ public interface GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	public Coordinate getPosition(final NavigationNode node);
+	public JaxRSCoordinate getPosition(final NavigationNode node);
 
 	/**
 	 * Returns the vector between the two nodes as difference.
@@ -56,7 +56,7 @@ public interface GraphExtensions {
 	 * @exception IllegalArgumentException
 	 *                if node1 or node2 is null
 	 */
-	public Vector2d getVectorBetween(final TrafficNode from, final TrafficNode to);
+	public JaxbVector2d getVectorBetween(final TrafficNode from, final TrafficNode to);
 
 	/**
 	 * Checks whether the passed node has an attached position.
@@ -77,7 +77,7 @@ public interface GraphExtensions {
 	 *            the new position of the node
 	 * @return the passed node for method chaining
 	 */
-	public TrafficNode setPosition(final TrafficNode node, final Coordinate position);
+	public TrafficNode setPosition(final TrafficNode node, final JaxRSCoordinate position);
 
 	/**
 	 * Returns the length between two nodes.
@@ -121,7 +121,7 @@ public interface GraphExtensions {
 	 *            the edge which vector is asked.
 	 * @return the vector of the passed edge or null if at least one of the edge's node has no position
 	 */
-	public Vector2d getVector(final TrafficEdge edge);
+	public JaxbVector2d getVector(final TrafficEdge edge);
 
 	/**
 	 * Checks whether a passed edge has attached the maxSpeed property.

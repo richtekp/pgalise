@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.BusStop;
@@ -114,7 +114,7 @@ public class OSMCityInfrastructureDataTest {
 		int radiusInMeter = 500;
 		NavigationNode tmpNode = osmParser.getNodes().get(
 			(int) (Math.random() * osmParser.getNodes().size()));
-		Coordinate centerPoint = new Coordinate(tmpNode.getGeoLocation().getX(),
+		JaxRSCoordinate centerPoint = new JaxRSCoordinate(tmpNode.getGeoLocation().getX(),
 			tmpNode.getGeoLocation().getY());
 		for (Building building : osmParser.getBuildingsInRadius(centerPoint,
 			radiusInMeter)) {
@@ -147,8 +147,8 @@ public class OSMCityInfrastructureDataTest {
 	 * @param target BaseGeoInfo
 	 * @return distance
 	 */
-	private double getDistanceInMeter(Coordinate start,
-		Coordinate target) {
+	private double getDistanceInMeter(JaxRSCoordinate start,
+		JaxRSCoordinate target) {
 
 		if ((start.getX() == target.getX())
 			&& (start.getY() == target.getY())) {

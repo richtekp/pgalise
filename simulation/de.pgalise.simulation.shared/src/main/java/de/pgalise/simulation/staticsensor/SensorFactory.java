@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import java.util.concurrent.ExecutionException;
@@ -56,6 +56,6 @@ public interface SensorFactory {
 		List<SensorInterfererType> sensorInterfererTypes)
 		throws InterruptedException, ExecutionException;
 
-	public Coordinate createEnergySensor(Coordinate position,
+	public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
 		List<SensorInterfererType> sensorInterfererTypes);
 }

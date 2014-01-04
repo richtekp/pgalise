@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,10 +92,10 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	}
 
 	@Override
-	public Coordinate interfere(final Coordinate mutablePosition,
-		final Coordinate realPosition,
+	public JaxRSCoordinate interfere(final JaxRSCoordinate mutablePosition,
+		final JaxRSCoordinate realPosition,
 		final long simTime) {
-		Coordinate result = new Coordinate(mutablePosition.getX(),
+		JaxRSCoordinate result = new JaxRSCoordinate(mutablePosition.getX(),
 			mutablePosition.getY());
 		for (final GpsInterferer interferer : this.interferers) {
 			result = interferer.interfere(result,

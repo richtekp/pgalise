@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.energy;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -40,7 +40,7 @@ public interface EnergyConsumptionManager {
 	 * 				position can be useful to consider weather data.
 	 * @return value of the energy consumption
 	 */
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum energyProfile, Coordinate position);
+	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum energyProfile, JaxRSCoordinate position);
 	
 	/**
 	 * Inits the energy consumption manager.

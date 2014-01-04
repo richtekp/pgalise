@@ -26,7 +26,7 @@ import de.pgalise.simulation.energy.internal.DefaultEnergyEventStrategy;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.energy.PercentageChangeEnergyEvent;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 
 /**
  * JUnit test for the {@link DefaultEventStrategy}.<br />
@@ -43,8 +43,8 @@ public class DefaultEventStrategyTest {
 	private static final long eventStartTimestamp = 4000;
 	private static final long eventEndTimestamp = 7000;
 	private static final EnergyProfileEnum energyProfile = EnergyProfileEnum.HOUSEHOLD;
-	private static final Coordinate testGeoLocation = new Coordinate(50, 50);
-	private static final Coordinate testGeoLocationOutsideEvent = new Coordinate(90, 90);
+	private static final JaxRSCoordinate testGeoLocation = new JaxRSCoordinate(50, 50);
+	private static final JaxRSCoordinate testGeoLocationOutsideEvent = new JaxRSCoordinate(90, 90);
 	private static final int energyConsumption = 50;
 	private static final double assertEqualsDelta = 0.01;
 

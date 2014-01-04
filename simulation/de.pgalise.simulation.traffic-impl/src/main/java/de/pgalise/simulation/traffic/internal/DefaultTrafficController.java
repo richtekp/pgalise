@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -361,7 +361,7 @@ public class DefaultTrafficController<
 	@Override
 	public boolean statusOfSensor(StaticSensor sensor) throws SensorException {
 		for (int i = 0; i < cityZones.size(); i++) {
-			Coordinate pos = sensor.getPosition();
+			JaxRSCoordinate pos = sensor.getPosition();
 			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos))) {
 				return serverList.get(i).statusOfSensor(sensor);
 			}

@@ -37,6 +37,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.xml.bind.annotation.XmlRootElement;
+import javolution.xml.XMLFormat;
+import javolution.xml.XMLSerializable;
+import javolution.xml.stream.XMLStreamException;
 
 /**
  * All parameters to start the simulation. This is an extra version only for the

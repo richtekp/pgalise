@@ -52,7 +52,7 @@ import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.OMGeo.Polygon;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.AmenityTag;
 import de.pgalise.simulation.shared.city.AmenityTagCustom;
 import de.pgalise.simulation.shared.city.AttractionTag;
@@ -342,9 +342,9 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 	 * @param radiusInMeter
 	 * @return
 	 */
-	private Boundary circleToRectangle(Coordinate centerPoint, int radiusInMeter) {
+	private Boundary circleToRectangle(JaxRSCoordinate centerPoint, int radiusInMeter) {
 
-		List<Coordinate> tmpPoints = new ArrayList<>();
+		List<JaxRSCoordinate> tmpPoints = new ArrayList<>();
 		int pointNumber = 4;
 		double radiusInKm = radiusInMeter / 1000.0;
 		double earthRadius = 6378.137; // in km
@@ -357,7 +357,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 			double t = Math.PI * (i / (pointNumber / 2.0));
 			double lat = centerPoint.getX() + (rlat * Math.cos(t));
 			double lng = centerPoint.getY() + (rlng * Math.sin(t));
-			tmpPoints.add(new Coordinate(lat, lng));
+			tmpPoints.add(new JaxRSCoordinate(lat, lng));
 		}
 
 		double northEastLat = Double.MIN_VALUE;
@@ -365,7 +365,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 		double southWestLat = Double.MAX_VALUE;
 		double southWestLng = Double.MAX_VALUE;
 
-		for (Coordinate p : tmpPoints) {
+		for (JaxRSCoordinate p : tmpPoints) {
 			if (p.getX() > northEastLat) {
 				northEastLat = p.getX();
 			}
@@ -380,7 +380,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 			}
 		}
 
-		return new Boundary(new Coordinate(northEastLat, northEastLng), new Coordinate(southWestLat, southWestLng));
+		return new Boundary(new JaxRSCoordinate(northEastLat, northEastLng), new JaxRSCoordinate(southWestLat, southWestLng));
 	}
 
 	/**
@@ -669,7 +669,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 				}
 
 				/* find other tags */
-				for (NavigationNode node : this.getNodesInBoundary(new Boundary(new Coordinate(maxLat, maxLng), new Coordinate(
+				for (NavigationNode node : this.getNodesInBoundary(new Boundary(new JaxRSCoordinate(maxLat, maxLng), new JaxRSCoordinate(
 						minLat, minLng)))) {
 					if (node.getTourismTags()!= null) {
 						tourism = node.getTourismTags();
@@ -742,7 +742,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 				double area = length * width;
 				area *= area;
 
-				BaseGeoInfo buildingPosition = new BaseGeoInfo(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {new Coordinate(maxLat, maxLng),new Coordinate(minLat, minLng)}));
+				BaseGeoInfo buildingPosition = new BaseGeoInfo(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new JaxRSCoordinate[] {new JaxRSCoordinate(maxLat, maxLng),new JaxRSCoordinate(minLat, minLng)}));
 				buildingList.add(
 					
 					new Building(
@@ -849,7 +849,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 	}
 
 	@Override
-	public Map<EnergyProfileEnum, List<Building>> getBuildings(Coordinate geolocation, int radiusInMeter) {
+	public Map<EnergyProfileEnum, List<Building>> getBuildings(JaxRSCoordinate geolocation, int radiusInMeter) {
 
 		Map<EnergyProfileEnum, List<Building>> energyProfileCountMap = new HashMap<>();
 		List<Building> buildingsInRadius = this.getBuildingsInRadius(geolocation, radiusInMeter);
@@ -872,7 +872,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 	}
 
 	@Override
-	public List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter) {
+	public List<Building> getBuildingsInRadius(JaxRSCoordinate centerPoint, int radiusInMeter) {
 		Boundary boundary0 = this.circleToRectangle(centerPoint, radiusInMeter);
 		List<Building> tmpBuildings = new ArrayList<>();
 		for (Building building : this.buildingTree.find(boundary0.getSouthWest().getX(), boundary0
@@ -938,7 +938,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 	 * @param target
 	 * @return
 	 */
-	private double getDistanceInMeter(Coordinate start, Coordinate target) {
+	private double getDistanceInMeter(JaxRSCoordinate start, JaxRSCoordinate target) {
 
 		if ((start.getX() == target.getX())
 				&& (start.getY() == target.getY())) {
@@ -1067,7 +1067,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 							}
 
 							if ((id != null) && (lat != null) && (lon != null)) {
-								lastNode = new TrafficNode(new Coordinate(lat, lon));
+								lastNode = new TrafficNode(new JaxRSCoordinate(lat, lon));
 								nodeMap.put(id, lastNode);
 
 								if (northEastBoundary == null
@@ -1087,7 +1087,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 
 							if (kValue.equalsIgnoreCase("highway")) {
 								if (vValue.equalsIgnoreCase("bus_stop")) {
-									lastBusstop = new BusStop("", null, new Coordinate(lastNode.getGeoLocation().getX(), lastNode.getGeoLocation().getY()));
+									lastBusstop = new BusStop("", null, new JaxRSCoordinate(lastNode.getGeoLocation().getX(), lastNode.getGeoLocation().getY()));
 								} else if (vValue.equalsIgnoreCase("mini_roundabout")
 										|| vValue.equalsIgnoreCase("roundabout")) {
 									lastNode.setRoundabout(true);
@@ -1331,8 +1331,8 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 		this.junctionNodesTree.load(this.junctionNodes);
 
 		if (northEastBoundary != null) {
-			this.boundary = new Boundary(new Coordinate(northEastBoundary.getGeoLocation().getX(),
-					northEastBoundary.getGeoLocation().getY()), new Coordinate(southWestBoundary.getGeoLocation().getX(),
+			this.boundary = new Boundary(new JaxRSCoordinate(northEastBoundary.getGeoLocation().getX(),
+					northEastBoundary.getGeoLocation().getY()), new JaxRSCoordinate(southWestBoundary.getGeoLocation().getX(),
 					southWestBoundary.getGeoLocation().getY()));
 		}
 
@@ -1383,7 +1383,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData {
 
 			/* Parse other: */
 			for (String[] text = csvParser.getLine(); text != null; text = csvParser.getLine()) {
-				busStopList.add(new OSMBusStop(text[idColumn], text[nameColumn], null, new Coordinate(Double.valueOf(text[latColumn]), Double
+				busStopList.add(new OSMBusStop(text[idColumn], text[nameColumn], null, new JaxRSCoordinate(Double.valueOf(text[latColumn]), Double
 						.valueOf(text[lngColumn]))));
 			}
 		} catch (IOException e) {

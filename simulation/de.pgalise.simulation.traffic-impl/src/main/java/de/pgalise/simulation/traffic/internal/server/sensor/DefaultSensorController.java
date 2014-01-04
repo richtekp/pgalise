@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.Collection;
 
 import org.slf4j.Logger;
@@ -79,10 +79,10 @@ public class DefaultSensorController extends AbstractController<TrafficEvent, In
 	/**
 	 * GPS mapper
 	 */
-	private final Coordinate mapper;
+	private final JaxRSCoordinate mapper;
 
 	public DefaultSensorController(TrafficServerLocal<VehicleEvent> server, SensorRegistry sensorRegistry,
-			SensorFactory sensorFactory, Coordinate mapper, TrafficGraphExtensions trafficGraphExtensions) {
+			SensorFactory sensorFactory, JaxRSCoordinate mapper, TrafficGraphExtensions trafficGraphExtensions) {
 		this.server = server;
 		this.sensorRegistry = sensorRegistry;
 		this.sensorFactory = sensorFactory;

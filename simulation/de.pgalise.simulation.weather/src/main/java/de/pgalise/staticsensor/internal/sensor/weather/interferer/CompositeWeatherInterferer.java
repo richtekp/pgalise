@@ -21,7 +21,7 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 
 /**
  * Implementation of an {@link WeatherInterferer} that hold several other {@link WeatherInterferer}s
@@ -89,7 +89,7 @@ public class CompositeWeatherInterferer implements WeatherInterferer {
 	}
 
 	@Override
-	public double interfere(final double mutableValue, final Coordinate position, final long simTime) {
+	public double interfere(final double mutableValue, final JaxRSCoordinate position, final long simTime) {
 		double result = mutableValue;
 		for (final WeatherInterferer interferer : this.interferers) {
 			result = interferer.interfere(result, position, simTime);

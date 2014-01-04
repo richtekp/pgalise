@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
@@ -88,7 +88,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 			inductionLoopInterferer = new InductionLoopNoInterferer();
 		}
 
-		Coordinate position = createRandomPositionInductionLoopSensor();
+		JaxRSCoordinate position = createRandomPositionInductionLoopSensor();
 		return new InductionLoopSensor(getIdGenerator().getNextId(),
 			getSensorOutput(),
 			null,
@@ -120,7 +120,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 			toporadarInterferer = new TopoRadarNoInterferer();
 		}
 
-		Coordinate position = createRandomPositionTopoRadarSensor();
+		JaxRSCoordinate position = createRandomPositionTopoRadarSensor();
 		return new TopoRadarSensor(getIdGenerator().getNextId(),
 			getSensorOutput(),
 			null,
@@ -150,7 +150,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 			infraredInterferer = new InfraredNoInterferer();
 		}
 
-		Coordinate position = createRandomPositionInfraredSensor();
+		JaxRSCoordinate position = createRandomPositionInfraredSensor();
 		return new InfraredSensor(getIdGenerator().getNextId(),getSensorOutput(),
 			null,
 			position,
@@ -229,19 +229,19 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 	}
 
 	@Override
-	public InfraredSensor createInfraredSensor(Coordinate position,
+	public InfraredSensor createInfraredSensor(JaxRSCoordinate position,
 		List<SensorInterfererType> sensorInterfererTypes) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public InductionLoopSensor createInductionLoopSensor(Coordinate position,
+	public InductionLoopSensor createInductionLoopSensor(JaxRSCoordinate position,
 		List<SensorInterfererType> sensorInterfererTypes) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public TopoRadarSensor createTopoRadarSensor(Coordinate position,
+	public TopoRadarSensor createTopoRadarSensor(JaxRSCoordinate position,
 		List<SensorInterfererType> sensorInterfererTypes) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}

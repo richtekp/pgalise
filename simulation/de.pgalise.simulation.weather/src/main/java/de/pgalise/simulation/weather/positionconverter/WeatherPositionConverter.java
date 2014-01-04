@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.positionconverter;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
 
@@ -44,5 +44,5 @@ public interface WeatherPositionConverter {
 	 *            Reference value
 	 * @return Modified value
 	 */
-	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position, T refValue);
+	public <T extends Number> T getValue(WeatherParameterEnum key, long time, JaxRSCoordinate position, T refValue);
 }

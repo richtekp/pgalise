@@ -5,7 +5,7 @@
 package de.pgalise.simulation.traffic;
 
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
@@ -42,7 +42,7 @@ public abstract class TrafficGraph extends DefaultDirectedGraph<TrafficNode, Tra
 	 * graph is less than <tt>distanceTolerance</tt>	and 1. doesn't apply</li>
 	 * <li><code>null</code> if 1. and 2. don't apply
 	 */
-	public Identifiable getElementClosestTo(Coordinate position, double distanceTolerance) {
+	public Identifiable getElementClosestTo(JaxRSCoordinate position, double distanceTolerance) {
 		//@TODO: remove brute force search
 		TrafficNode minDistanceNode = null;
 		double minDistance = Double.MAX_VALUE;
@@ -58,11 +58,11 @@ public abstract class TrafficGraph extends DefaultDirectedGraph<TrafficNode, Tra
 		minDistance = Double.MAX_VALUE;
 		TrafficEdge minDistanceEdge = null;
 		for(TrafficEdge edge : this.edgeSet()) {
-			Coordinate node0Position = edge.getSource().getGeoLocation();
-			Coordinate node1Position = edge.getTarget().getGeoLocation();
-			Coordinate node0Coordinates = new Coordinate(node0Position.getX(), node0Position.getY());
-			Coordinate node1Coordinates = new Coordinate(node1Position.getX(), node1Position.getY());
-			Coordinate positionCoordines = new Coordinate(position.getX(), position.getY());
+			JaxRSCoordinate node0Position = edge.getSource().getGeoLocation();
+			JaxRSCoordinate node1Position = edge.getTarget().getGeoLocation();
+			JaxRSCoordinate node0Coordinates = new JaxRSCoordinate(node0Position.getX(), node0Position.getY());
+			JaxRSCoordinate node1Coordinates = new JaxRSCoordinate(node1Position.getX(), node1Position.getY());
+			JaxRSCoordinate positionCoordines = new JaxRSCoordinate(position.getX(), position.getY());
 			double distance = CGAlgorithms.distancePointLine(positionCoordines, node0Coordinates, node1Coordinates);
 			if(distance <= distanceTolerance && distance < minDistance) {
 				minDistanceEdge = edge;
@@ -71,12 +71,12 @@ public abstract class TrafficGraph extends DefaultDirectedGraph<TrafficNode, Tra
 		return minDistanceEdge; //if it is null it fulfills the last condition;
 	}
 	
-	public TrafficNode getNodeClosestTo(Coordinate position) {
+	public TrafficNode getNodeClosestTo(JaxRSCoordinate position) {
 		return getNodeClosestTo(position,
 			Integer.MAX_VALUE);
 	}
 	
-	public TrafficNode getNodeClosestTo(Coordinate position, int distanceTolerance) {
+	public TrafficNode getNodeClosestTo(JaxRSCoordinate position, int distanceTolerance) {
 		
 		TrafficNode minDistanceNode = null;
 		double minDistance = Double.MAX_VALUE;

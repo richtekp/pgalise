@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.sensorFramework.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
@@ -108,7 +108,7 @@ public class SensorRegistryTest {
 		final int expected = 10;
 		for (int i = 0; i < expected; i++) {
 			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(i, i));
 			this.sensorRegistry.addSensor(sensor);
 		}
 		// assert
@@ -123,11 +123,11 @@ public class SensorRegistryTest {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
 			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(i, i));
 			this.sensorRegistry.addSensor(sensor);
 		}
 		StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-		EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(887, 14));
+		EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(887, 14));
 		this.sensorRegistry.addSensor(sensor);
 		Assert.assertEquals(this.sensorRegistry.getSensor(sensor), sensor);
 	}
@@ -140,14 +140,14 @@ public class SensorRegistryTest {
 		final ArrayList<Sensor> sensors = new ArrayList<>();
 		for (int i = 0; i < 20; i++) {
 			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(i, i));
 			sensors.add(this.sensorRegistry.addSensor(sensor));
 		}
 		for (int i = 0; i < (sensors.size() - 2); i++) {
 			this.sensorRegistry.removeSensor(sensors.get(i));
 		}
 		StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-		EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(12, 343));
+		EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(12, 343));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 		Assert.assertEquals(2, this.sensorRegistry.numberOfSensors());
@@ -158,11 +158,11 @@ public class SensorRegistryTest {
 		// Remove
 		for (int i = 0; i < 10; i++) {
 			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(i, i));
 			this.sensorRegistry.addSensor(sensor);
 		}
 		StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-		EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(23, 8438));
+		EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(23, 8438));
 		this.sensorRegistry.addSensor(sensor);
 		this.sensorRegistry.removeSensor(sensor);
 
@@ -175,7 +175,7 @@ public class SensorRegistryTest {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
 			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(i, i));
 			this.sensorRegistry.addSensor(sensor);
 		}
 		this.sensorRegistry.setSensorsActivated(true);
@@ -194,7 +194,7 @@ public class SensorRegistryTest {
 		// add ten sensors to the SensorDomain
 		for (int i = 0; i < 10; i++) {
 			StaticSensor sensor = EasyMock.createNiceMock(StaticSensor.class);
-			EasyMock.expect(sensor.getPosition()).andReturn(new Coordinate(i, i));
+			EasyMock.expect(sensor.getPosition()).andReturn(new JaxRSCoordinate(i, i));
 			this.sensorRegistry.addSensor(sensor);
 		}
 		this.sensorRegistry.setSensorsActivated(false);

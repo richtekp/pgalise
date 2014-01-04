@@ -14,15 +14,21 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -30,6 +36,8 @@ import javax.faces.bean.SessionScoped;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javolution.xml.XMLObjectWriter;
+import javolution.xml.stream.XMLStreamException;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.primefaces.model.DefaultStreamedContent;
@@ -296,6 +304,7 @@ public class MainCtrl implements Serializable {
 		if (startParameter == null) {
 			return;
 		}
+		Set<Field> visitedFields = new HashSet<>();
 		Queue<Pair<TreeNode, Field>> queue = new LinkedList<>();
 		for (Field field : startParameter.getClass().getDeclaredFields()) {
 			queue.add(new MutablePair<>(startParameterTreeRoot,
@@ -303,6 +312,9 @@ public class MainCtrl implements Serializable {
 		}
 		while (!queue.isEmpty()) {
 			Pair<TreeNode, Field> current = queue.poll();
+			if (visitedFields.contains(current.getRight())) {
+				continue;
+			}
 			TreeNode node = new DefaultTreeNode(current.getRight().getName(),
 				current.getLeft());
 			for (Field field : current.getRight().getDeclaringClass().
@@ -310,6 +322,7 @@ public class MainCtrl implements Serializable {
 				queue.add(new MutablePair<>(current.getLeft(),
 					field));
 			}
+			visitedFields.add(current.getRight());
 		}
 	}
 
@@ -336,6 +349,18 @@ public class MainCtrl implements Serializable {
 	 @TODO: improve streaming
 	 */
 	public StreamedContent retrieveExportDownloadLink() {
+		InputStream inputStream;
+		
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		try {
+//			XMLObjectWriter writer = new XMLObjectWriter().setOutput(out);
+//			writer.write(startParameter);
+//			writer.close();
+//			inputStream = new ByteArrayInputStream(out.toByteArray());
+//		} catch (XMLStreamException ex) {
+//			throw new RuntimeException(ex);
+//		}
+		
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(
 				ControlCenterStartParameter.class);
@@ -349,13 +374,15 @@ public class MainCtrl implements Serializable {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			jaxbMarshaller.marshal(startParameter,
 				outputStream);
-
-			return new DefaultStreamedContent(new ByteArrayInputStream(outputStream.
-				toByteArray()),
-				"xml",
-				String.format("pgalise_start_parameter-%s.xml", new Date().toString()));
+      inputStream = new ByteArrayInputStream(outputStream.
+				toByteArray());
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		}
+
+			return new DefaultStreamedContent(inputStream,
+				"xml",
+				String.format("pgalise_start_parameter-%s.xml",
+					new Date().toString()));
 	}
 }

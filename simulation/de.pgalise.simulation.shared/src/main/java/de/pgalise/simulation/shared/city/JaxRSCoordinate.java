@@ -6,13 +6,11 @@
 
 package de.pgalise.simulation.shared.city;
 
-import static com.vividsolutions.jts.geom.Coordinate.NULL_ORDINATE;
-
 /**
  *
  * @author richter
  */
-public class Coordinate extends com.vividsolutions.jts.geom.Coordinate {
+public class JaxRSCoordinate extends com.vividsolutions.jts.geom.Coordinate {
 	private static final long serialVersionUID = 1L;
 	@SuppressWarnings("FieldNameHidesFieldInSuperclass")
 	private double x,y,z;
@@ -24,7 +22,7 @@ public class Coordinate extends com.vividsolutions.jts.geom.Coordinate {
    *@param  y  the y-value
    *@param  z  the z-value
    */
-  public Coordinate(double x, double y, double z) {
+  public JaxRSCoordinate(double x, double y, double z) {
 		super(x,
 			y,
 			z);
@@ -33,7 +31,7 @@ public class Coordinate extends com.vividsolutions.jts.geom.Coordinate {
   /**
    *  Constructs a <code>Coordinate</code> at (0,0,NaN).
    */
-  public Coordinate() {
+  public JaxRSCoordinate() {
 		super();
   }
 
@@ -43,7 +41,7 @@ public class Coordinate extends com.vividsolutions.jts.geom.Coordinate {
    *
    *@param  c  the <code>Coordinate</code> to copy.
    */
-  public Coordinate(com.vividsolutions.jts.geom.Coordinate c) {
+  public JaxRSCoordinate(com.vividsolutions.jts.geom.Coordinate c) {
 		super(c);
   }
 
@@ -53,7 +51,7 @@ public class Coordinate extends com.vividsolutions.jts.geom.Coordinate {
    *@param  x  the x-value
    *@param  y  the y-value
    */
-  public Coordinate(double x, double y) {
+  public JaxRSCoordinate(double x, double y) {
 		super(x,
 			y);
   }

@@ -41,7 +41,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
  * @param <D> 
  * @author Marcus
  */
-public class PriorityRoad<D extends VehicleData> extends AbstractTrafficRule<D> {
+public class PriorityRoad extends AbstractTrafficRule {
 	private static final long serialVersionUID = 1L;
 
 	/**

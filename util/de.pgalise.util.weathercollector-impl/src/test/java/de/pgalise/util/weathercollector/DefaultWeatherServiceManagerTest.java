@@ -17,7 +17,7 @@
 package de.pgalise.util.weathercollector;
 
 import de.pgalise.testutils.TestUtils;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;

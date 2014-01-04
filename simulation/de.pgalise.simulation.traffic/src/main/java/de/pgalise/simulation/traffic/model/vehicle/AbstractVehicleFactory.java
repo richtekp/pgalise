@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -16,7 +16,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import java.util.Iterator;
 import java.util.Set;
 import javax.ejb.EJB;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  *
@@ -62,7 +62,7 @@ public abstract class AbstractVehicleFactory implements VehicleFactory
 		return idGenerator;
 	}
 	
-	public Coordinate generateRandomPosition(Set<TrafficEdge> edges) {
+	public JaxRSCoordinate generateRandomPosition(Set<TrafficEdge> edges) {
 		int edgeCount = edges.size();
 		int chosenIndex = (int)(Math.random()*edgeCount);
 		int i=0;
@@ -72,11 +72,11 @@ public abstract class AbstractVehicleFactory implements VehicleFactory
 		}
 		TrafficEdge chosenEdge = it.next();
 		double chosenOffset = chosenEdge.getEdgeLength()*Math.random();
-		Vector2d offsetVector = new Vector2d(chosenEdge.getVector());
+		JaxbVector2d offsetVector = new JaxbVector2d(chosenEdge.getVector());
 		offsetVector.scale(chosenOffset);
-		Vector2d positionVector = new Vector2d(chosenEdge.getSource().getGeoLocation().getX(), chosenEdge.getSource().getGeoLocation().getY());
+		JaxbVector2d positionVector = new JaxbVector2d(chosenEdge.getSource().getGeoLocation().getX(), chosenEdge.getSource().getGeoLocation().getY());
 		positionVector.add(offsetVector);
-		return new Coordinate(positionVector.getX(), positionVector.getY());
+		return new JaxRSCoordinate(positionVector.getX(), positionVector.getY());
 	}
 
 	public void setRandomSeedService(RandomSeedService randomSeedService) {

@@ -42,7 +42,7 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
  * @param <D>
  * @author Marcus
  */
-public class TrafficLightIntersection<D extends VehicleData> extends AbstractTrafficRule<D> {
+public class TrafficLightIntersection extends AbstractTrafficRule {
 
 	private static final long serialVersionUID = 1L;
 

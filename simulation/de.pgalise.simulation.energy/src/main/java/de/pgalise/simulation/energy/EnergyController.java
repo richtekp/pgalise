@@ -17,7 +17,7 @@
 package de.pgalise.simulation.energy;
 
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -44,6 +44,6 @@ public interface EnergyController extends Controller<EnergyEvent, Infrastructure
 	 *            the measure radius around the given position
 	 * @return double value in KWh
 	 */
-	public double getEnergyConsumptionInKWh(long timestamp, Coordinate position, int measureRadiusInMeter);
+	public double getEnergyConsumptionInKWh(long timestamp, JaxRSCoordinate position, int measureRadiusInMeter);
 
 }

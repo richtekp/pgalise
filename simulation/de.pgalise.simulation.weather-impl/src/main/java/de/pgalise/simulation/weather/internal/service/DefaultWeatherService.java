@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -122,7 +122,7 @@ public class DefaultWeatherService implements WeatherService {
 	/**
 	 * BaseGeoInfo of the reference point
 	 */
-	private Coordinate referencePosition;
+	private JaxRSCoordinate referencePosition;
 
 	/**
 	 * Values linked to the reference point
@@ -279,7 +279,7 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public Coordinate getReferencePosition() {
+	public JaxRSCoordinate getReferencePosition() {
 		return this.referencePosition;
 	}
 
@@ -340,7 +340,7 @@ public class DefaultWeatherService implements WeatherService {
 	}
 
 	@Override
-	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position)
+	public <T extends Number> T getValue(WeatherParameterEnum key, long time, JaxRSCoordinate position)
 			throws IllegalArgumentException, NoWeatherDataFoundException {
 		if (key == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("key"));

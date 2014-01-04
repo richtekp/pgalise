@@ -25,20 +25,16 @@ import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
-import java.util.ArrayList;
 
 /**
  * Interface for traffic rules
  * 
- * @param <D> 
  * @author Marcus
  */
-public abstract class AbstractTrafficRule<
-	D extends VehicleData> extends AbstractIdentifiable implements 
+public abstract class AbstractTrafficRule extends AbstractIdentifiable implements 
 TrafficRule {
 	private static final Logger log = LoggerFactory
 			.getLogger(AbstractTrafficRule.class);

@@ -16,7 +16,7 @@
  
 package de.pgalise.util.graph;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,19 +48,19 @@ public class DisassemblerTest {
 		TrafficGraph graph = new DefaultTrafficGraph();
 
 		// erster qudrant
-		TrafficNode a = new TrafficNode(new Coordinate(10, 10));
-		TrafficNode b = new TrafficNode(new Coordinate(25, 25));
-		TrafficNode c = new TrafficNode(new Coordinate(20, 25));
+		TrafficNode a = new TrafficNode(new JaxRSCoordinate(10, 10));
+		TrafficNode b = new TrafficNode(new JaxRSCoordinate(25, 25));
+		TrafficNode c = new TrafficNode(new JaxRSCoordinate(20, 25));
 
 		// zweiter quadrant
-		TrafficNode d = new TrafficNode(new Coordinate(18, 45));
-		TrafficNode e = new TrafficNode(new Coordinate(40, 50));
+		TrafficNode d = new TrafficNode(new JaxRSCoordinate(18, 45));
+		TrafficNode e = new TrafficNode(new JaxRSCoordinate(40, 50));
 
 		// dritter quadrant
-		TrafficNode f = new TrafficNode(new Coordinate(75, 30));
-		TrafficNode g= new TrafficNode(new Coordinate(80, 45));
+		TrafficNode f = new TrafficNode(new JaxRSCoordinate(75, 30));
+		TrafficNode g= new TrafficNode(new JaxRSCoordinate(80, 45));
 
-		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(new Coordinate(0, 0), new Coordinate(100, 60))), 4);
+		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(new JaxRSCoordinate(0, 0), new JaxRSCoordinate(100, 60))), 4);
 
 		// es gibt 3 quadranten
 		assertEquals(4, quadrants.size());
@@ -100,7 +100,7 @@ public class DisassemblerTest {
 		String str = "";
 		for (Iterator<TrafficNode> i = nodes.iterator(); i.hasNext();) {
 			TrafficNode node = i.next();
-			if (geometry.covers(GEOMETRY_FACTORY.createPoint(((Coordinate) node.getGeoLocation())))) {
+			if (geometry.covers(GEOMETRY_FACTORY.createPoint(((JaxRSCoordinate) node.getGeoLocation())))) {
 				str += node.getId();
 			}
 		}

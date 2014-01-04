@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.jam;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +29,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
 import java.util.Set;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  * Implements the advanced car finder. Has a visibility range to verify the vehicles in front of the given vehicle.
@@ -94,16 +94,16 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		// Berechnen der Endposition (Ende der Visibilityrange auf der letzten
 		// Kante)
 		double diff = edgesLength - visibilityRange;
-		Coordinate toNodePosition = trafficGraphExtensions.getPosition(toNode);
-		Vector2d dir = new Vector2d(toNodePosition.getX(), toNodePosition.getY());
-		Coordinate fromNodePosition = trafficGraphExtensions.getPosition(fromNode);
-		Vector2d fromNodeVector = new Vector2d(fromNodePosition.getX(), fromNodePosition.getY());
+		JaxRSCoordinate toNodePosition = trafficGraphExtensions.getPosition(toNode);
+		JaxbVector2d dir = new JaxbVector2d(toNodePosition.getX(), toNodePosition.getY());
+		JaxRSCoordinate fromNodePosition = trafficGraphExtensions.getPosition(fromNode);
+		JaxbVector2d fromNodeVector = new JaxbVector2d(fromNodePosition.getX(), fromNodePosition.getY());
 		dir.sub(fromNodeVector);
 		dir.normalize();
 		dir.scale(diff);
-		Vector2d endPositionVector = new Vector2d(toNodePosition.getX(), toNodePosition.getY());
+		JaxbVector2d endPositionVector = new JaxbVector2d(toNodePosition.getX(), toNodePosition.getY());
 		endPositionVector.sub(dir);
-		Coordinate endPosition = new Coordinate(endPositionVector.getX(), endPositionVector.getY());
+		JaxRSCoordinate endPosition = new JaxRSCoordinate(endPositionVector.getX(), endPositionVector.getY());
 
 		// AdvancedCarFinder.log.debug("Endposition: " + endPosition.toString());
 
@@ -126,7 +126,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 	@Override
 	public Vehicle<?> findNearestCar(Vehicle<?> car, long time) {
 		Set<Vehicle<? extends VehicleData>> vehicles = this.findCars(car, time);
-		Vector2d carPos = new Vector2d(car.getPosition().getX(), car.getPosition().getY());
+		JaxbVector2d carPos = new JaxbVector2d(car.getPosition().getX(), car.getPosition().getY());
 
 		Vehicle<? extends VehicleData> nearestCar = null;
 		double distance = -1;
@@ -134,7 +134,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		for (Vehicle<? extends VehicleData> v : vehicles) {
 			// AdvancedCarFinder.log.debug("Checking " + v.getName() + " as potential nearest car with its distance: "
 			// + v.getPosition().sub(car.getPosition()).length());
-			Vector2d otherCarPos = new Vector2d(v.getPosition().getX(), v.getPosition().getY());
+			JaxbVector2d otherCarPos = new JaxbVector2d(v.getPosition().getX(), v.getPosition().getY());
 			otherCarPos.sub(carPos);
 			if (distance == -1) {
 				nearestCar = v;

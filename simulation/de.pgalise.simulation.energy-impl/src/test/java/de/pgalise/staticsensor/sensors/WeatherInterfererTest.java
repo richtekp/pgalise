@@ -16,7 +16,7 @@
  
 package de.pgalise.staticsensor.sensors;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class WeatherInterfererTest {
 	/**
 	 * Test position
 	 */
-	public static Coordinate testPosition;
+	public static JaxRSCoordinate testPosition;
 
 	/**
 	 * Test value
@@ -92,7 +92,7 @@ public class WeatherInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new Coordinate(1.0, 10.0);
+		testPosition = new JaxRSCoordinate(1.0, 10.0);
 
 		/*
 		 * Mock of the Weather Controller

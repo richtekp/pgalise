@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.server.sensor.interferer;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**
@@ -35,7 +35,7 @@ public interface GpsInterferer extends SensorInterferer {
 	 * @param simTime Simulation timestamp
 	 * @return new position as Vector2d
 	 */
-	Coordinate interfere(final Coordinate mutablePosition,
-		final Coordinate realPosition,
+	JaxRSCoordinate interfere(final JaxRSCoordinate mutablePosition,
+		final JaxRSCoordinate realPosition,
 		final long simTime);
 }

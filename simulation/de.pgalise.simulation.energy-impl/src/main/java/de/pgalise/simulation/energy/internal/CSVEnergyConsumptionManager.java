@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.energy.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
@@ -150,7 +150,7 @@ public class CSVEnergyConsumptionManager implements EnergyConsumptionManagerLoca
 	}
 
 	@Override
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, Coordinate position) {
+	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, JaxRSCoordinate position) {
 		try {
 			this.semaphore.acquire();
 

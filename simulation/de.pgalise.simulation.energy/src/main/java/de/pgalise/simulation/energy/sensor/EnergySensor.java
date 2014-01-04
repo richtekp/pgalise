@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.energy.sensor;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
@@ -71,7 +71,7 @@ public abstract class EnergySensor<X extends SensorData> extends AbstractStaticS
 	 * @param interferer Energy interferer
 	 */
 	protected EnergySensor(Long id,Output output,
-		Coordinate position,
+		JaxRSCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,

@@ -16,25 +16,26 @@
  
 package de.pgalise.simulation.operationCenter.internal.model;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+
 /**
  * Not used so far.
  * @author Dennis
  */
 public class HeatMapDataPoint {
-	private Coordinate lonlat;
+	private JaxRSCoordinate lonlat;
 	private double count;
 	
-	public HeatMapDataPoint(Coordinate position, double count) {
+	public HeatMapDataPoint(JaxRSCoordinate position, double count) {
 		this.lonlat = position;
 		this.count = count;
 	}
 
-	public Coordinate getPosition() {
+	public JaxRSCoordinate getPosition() {
 		return lonlat;
 	}
 
-	public void setPosition(Coordinate position) {
+	public void setPosition(JaxRSCoordinate position) {
 		this.lonlat = position;
 	}
 

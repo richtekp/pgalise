@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.positionconverter;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
@@ -64,7 +64,7 @@ public abstract class WeatherPositionConverterBase implements WeatherPositionCon
 
 	public double getGridDistance() {
 		double retValue = Double.MIN_VALUE;
-		Coordinate referncePoint = getReferencePosition();
+		JaxRSCoordinate referncePoint = getReferencePosition();
 		for(com.vividsolutions.jts.geom.Coordinate coordinate : grid.getCoordinates()) {
 			double distance = referncePoint.distance(coordinate);
 			if(distance > retValue) {
@@ -74,8 +74,8 @@ public abstract class WeatherPositionConverterBase implements WeatherPositionCon
 		return retValue;
 	}
 
-	public Coordinate getReferencePosition() {
+	public JaxRSCoordinate getReferencePosition() {
 		Point centroid = this.grid.getCentroid();
-		return new Coordinate(centroid.getX(), centroid.getY());
+		return new JaxRSCoordinate(centroid.getX(), centroid.getY());
 	}
 }

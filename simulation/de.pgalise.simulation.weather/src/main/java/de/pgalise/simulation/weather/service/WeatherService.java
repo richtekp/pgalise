@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.service;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.List;
 
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
@@ -109,7 +109,7 @@ public interface WeatherService {
 	 * 
 	 * @return referencePosition
 	 */
-	public Coordinate getReferencePosition();
+	public JaxRSCoordinate getReferencePosition();
 
 	/**
 	 * Returns the reference values
@@ -151,7 +151,7 @@ public interface WeatherService {
 	 * @throws IllegalArgumentException
 	 *             There is no value linked to the timestamp or wrong position (e.g. perhaps wrong date)
 	 */
-	public <T extends Number> T getValue(WeatherParameterEnum key, long time, Coordinate position)
+	public <T extends Number> T getValue(WeatherParameterEnum key, long time, JaxRSCoordinate position)
 			throws IllegalArgumentException;
 
 	/**

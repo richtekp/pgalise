@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.Set;
 import javax.persistence.ElementCollection;
@@ -24,7 +24,7 @@ public class NavigationNode extends AbstractIdentifiable {
 	public final static int NODE_RADIUS = 5;
 	
 	@Embedded
-	private Coordinate geoLocation;
+	private JaxRSCoordinate geoLocation;
 	@ElementCollection(targetClass = BaseTag.class)
 	private Set<TourismTag> tourismTags;
 	@ElementCollection(targetClass = BaseTag.class)
@@ -59,11 +59,11 @@ public class NavigationNode extends AbstractIdentifiable {
 	protected NavigationNode() {
 	}
 
-	public NavigationNode(Coordinate geoLocation) {
+	public NavigationNode(JaxRSCoordinate geoLocation) {
 		this.geoLocation = geoLocation;
 	}
 
-	public NavigationNode(Coordinate geoLocation,
+	public NavigationNode(JaxRSCoordinate geoLocation,
 		Set<TourismTag> tourismTags,
 		Set<ServiceTag> serviceTags,
 		Set<SportTag> sportTags,
@@ -98,11 +98,11 @@ public class NavigationNode extends AbstractIdentifiable {
 		this.military = military;
 	}
 
-	public Coordinate getGeoLocation() {
+	public JaxRSCoordinate getGeoLocation() {
 		return geoLocation;
 	}
 
-	public void setGeoLocation(Coordinate geoLocation) {
+	public void setGeoLocation(JaxRSCoordinate geoLocation) {
 		this.geoLocation = geoLocation;
 	}
 

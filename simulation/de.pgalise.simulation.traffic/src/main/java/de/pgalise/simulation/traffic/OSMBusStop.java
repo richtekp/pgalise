@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import javax.persistence.Entity;
 
 /**
@@ -21,7 +21,7 @@ public class OSMBusStop extends BusStop {
 
 	public OSMBusStop(String osmId,
 		String stopName,
-		BusStopInformation busStopInformation, Coordinate geoLocation) {
+		BusStopInformation busStopInformation, JaxRSCoordinate geoLocation) {
 		super(stopName,
 			busStopInformation, geoLocation);
 		this.osmId = osmId;

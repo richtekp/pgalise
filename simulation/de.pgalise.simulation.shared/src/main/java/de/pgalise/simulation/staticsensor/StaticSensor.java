@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.Event;
@@ -16,7 +16,7 @@ import de.pgalise.simulation.shared.event.Event;
  * @author richter
  */
 public interface StaticSensor<E extends Event, X extends SensorData> extends Sensor<E,X> {
-	Coordinate getPosition();
+	JaxRSCoordinate getPosition();
 	
-	void setPosition(Coordinate position);
+	void setPosition(JaxRSCoordinate position);
 }

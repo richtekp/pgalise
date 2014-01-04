@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.route;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -97,7 +97,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	 * @param randomSeedService
 	 * @param trafficGraphExtensions
 	 */
-	public DefaultRouteConstructor(Coordinate mapper, TrafficInfrastructureData cityInfrastructure, long time,
+	public DefaultRouteConstructor(JaxRSCoordinate mapper, TrafficInfrastructureData cityInfrastructure, long time,
 			RandomSeedService randomSeedService, TrafficGraphExtensions trafficGraphExtensions) {
 		this.trafficInformation = cityInfrastructure;
 		this.graphConstructor = new GraphConstructor(trafficGraphExtensions);

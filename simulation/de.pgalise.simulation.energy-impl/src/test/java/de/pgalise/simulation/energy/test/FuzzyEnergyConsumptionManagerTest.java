@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.energy.internal.FuzzyEnergyConsumptionManager;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -39,8 +39,8 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @author Timo
  */
 public class FuzzyEnergyConsumptionManagerTest {
-	private static final Coordinate testLocation = new Coordinate(0.0, 0.0);
-	private static final Coordinate testLocationV2d = FuzzyEnergyConsumptionManagerTest.testLocation;
+	private static final JaxRSCoordinate testLocation = new JaxRSCoordinate(0.0, 0.0);
+	private static final JaxRSCoordinate testLocationV2d = FuzzyEnergyConsumptionManagerTest.testLocation;
 	private static final double coldDayTemperature = -5.0;
 	private static final double hotDayTemperature = 35.0;
 	private static final double mediumTemperature = 15.0;

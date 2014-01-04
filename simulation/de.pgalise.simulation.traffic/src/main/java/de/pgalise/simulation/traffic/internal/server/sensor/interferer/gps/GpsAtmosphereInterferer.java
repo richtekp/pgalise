@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -59,12 +59,12 @@ public class GpsAtmosphereInterferer extends GpsBaseInterferer {
 	}
 
 	@Override
-	public Coordinate interfere(final Coordinate mutablePosition, final Coordinate realPosition, final long simTime) {
+	public JaxRSCoordinate interfere(final JaxRSCoordinate mutablePosition, final JaxRSCoordinate realPosition, final long simTime) {
 		// Should be changed?
 		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
 			double radiation = this.weatherController.getValue(WeatherParameterEnum.RADIATION, simTime, realPosition)
 					.doubleValue();
-			return new Coordinate(mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
+			return new JaxRSCoordinate(mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
 		}
 		// Returns with no change
 		return mutablePosition;

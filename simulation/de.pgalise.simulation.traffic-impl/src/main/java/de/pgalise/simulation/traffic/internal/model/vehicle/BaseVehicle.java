@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 import de.pgalise.simulation.traffic.TrafficTrip;
 
 /**
@@ -71,12 +71,12 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	/**
 	 * Position
 	 */
-	private Coordinate position;
+	private JaxRSCoordinate position;
 
 	/**
 	 * Direction
 	 */
-	private Vector2d direction;
+	private JaxbVector2d direction;
 
 	/**
 	 * Orientation
@@ -179,7 +179,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	}
 
 	@Override
-	public Vector2d getDirection() {
+	public JaxbVector2d getDirection() {
 		return this.direction;
 	}
 
@@ -204,7 +204,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	}
 
 	@Override
-	public Coordinate getPosition() {
+	public JaxRSCoordinate getPosition() {
 		return this.position;
 	}
 
@@ -258,7 +258,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	}
 
 	@Override
-	public void setDirection(Vector2d direction) {
+	public void setDirection(JaxbVector2d direction) {
 		this.direction = direction;
 	}
 
@@ -301,7 +301,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	}
 
 	@Override
-	public void setPosition(Coordinate position) {
+	public void setPosition(JaxRSCoordinate position) {
 		this.position = position;
 	}
 
@@ -393,9 +393,9 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 		return nextNode;
 	}
 
-	protected Vector2d getDirection(Coordinate a, Coordinate b) {
-		Vector2d dir = new Vector2d(b.getX(), b.getY());
-		Vector2d aVector = new Vector2d(a.getX(), a.getY());
+	protected JaxbVector2d getDirection(JaxRSCoordinate a, JaxRSCoordinate b) {
+		JaxbVector2d dir = new JaxbVector2d(b.getX(), b.getY());
+		JaxbVector2d aVector = new JaxbVector2d(a.getX(), a.getY());
 		dir.sub(aVector);
 		dir.normalize();
 		return dir;
@@ -407,7 +407,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	 * @param direction 
 	 * @return Direction enum
 	 */
-	protected Orientation getOrientation(Vector2d direction) {
+	protected Orientation getOrientation(JaxbVector2d direction) {
 		return Orientation.getOrientation(direction);
 	}
 
@@ -422,9 +422,9 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 			this.orientation = this.getOrientation(this.direction);
 
 			// calculate new position on the path
-			Vector2d positionVector = new Vector2d(this.position.getX(), this.position.getY());
-			Coordinate nextNodePosition = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
-			Vector2d nextNodeVector = new Vector2d(nextNodePosition.getX(), nextNodePosition.getY());
+			JaxbVector2d positionVector = new JaxbVector2d(this.position.getX(), this.position.getY());
+			JaxRSCoordinate nextNodePosition = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
+			JaxbVector2d nextNodeVector = new JaxbVector2d(nextNodePosition.getX(), nextNodePosition.getY());
 			positionVector.sub(nextNodeVector);
 			double scale = positionVector
 					.length();
@@ -477,7 +477,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	 * @param position
 	 * @return true, if the next node is reached
 	 */
-	protected boolean hasReachedNextNode(Orientation orientation, Coordinate position) {
+	protected boolean hasReachedNextNode(Orientation orientation, JaxRSCoordinate position) {
 		return Orientation.isBeyond(orientation, position,
 				this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
 	}
@@ -523,7 +523,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 	protected void preUpdate(long elapsedTime) {
 	}
 
-	protected Coordinate update(long elapsedTime, Coordinate pos, Vector2d dir) {
+	protected JaxRSCoordinate update(long elapsedTime, JaxRSCoordinate pos, JaxbVector2d dir) {
 		// log.debug("elapsedTime == 0 " + (elapsedTime == 0) + ", velocity == 0 " + (this.velocity == 0));
 		if (elapsedTime == 0 || this.velocity == 0) {
 			return pos;
@@ -533,11 +533,11 @@ public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentif
 		double distance = this.velocity * (double) (elapsedTime / 1000);
 		// log.debug("Distance: " + distance + ", Add to vector: " + (dir.scale(distance)));
 		dir.scale(distance);
-		Vector2d posVector = new Vector2d(pos.getX(), pos.getY());
+		JaxbVector2d posVector = new JaxbVector2d(pos.getX(), pos.getY());
 		posVector.add(dir);
 		// log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
 		// ", direction: " + dir);
-		return new Coordinate(posVector.getX(), posVector.getY());
+		return new JaxRSCoordinate(posVector.getX(), posVector.getY());
 	}
 
 	@Override

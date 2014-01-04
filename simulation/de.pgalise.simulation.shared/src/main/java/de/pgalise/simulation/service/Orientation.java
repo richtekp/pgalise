@@ -16,8 +16,8 @@
  
 package de.pgalise.simulation.service;
 
-import de.pgalise.simulation.shared.city.Coordinate;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  * Enum of directions
@@ -35,7 +35,7 @@ public enum Orientation {
 	 * @param direction 
 	 * @return Direction enum
 	 */
-	public static Orientation getOrientation(Vector2d direction) {
+	public static Orientation getOrientation(JaxbVector2d direction) {
 		Orientation orientation;
 		if ((direction.getX() == 0) && (direction.getY() < 0)) {
 			orientation = Orientation.NORTH;
@@ -71,7 +71,7 @@ public enum Orientation {
 	 * @return True, if the position is beyond the border position
 	 */
 	public static boolean isBeyond(Orientation orientation,
-			Coordinate position, Coordinate borderPosition) {
+			JaxRSCoordinate position, JaxRSCoordinate borderPosition) {
 		return (((orientation == Orientation.NORTH) && (position.getY() <= borderPosition
 				.getY()))
 				|| ((orientation == Orientation.NORTH_EAST)

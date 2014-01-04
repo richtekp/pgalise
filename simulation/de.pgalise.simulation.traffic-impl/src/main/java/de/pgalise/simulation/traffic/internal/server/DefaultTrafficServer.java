@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -207,7 +207,7 @@ public class DefaultTrafficServer extends AbstractController<
 	/**
 	 * GPS mapper (as EJB)
 	 */
-	private Coordinate coordinate;
+	private JaxRSCoordinate coordinate;
 
 	/**
 	 * Service dictionary (as EJB)
@@ -356,7 +356,7 @@ public class DefaultTrafficServer extends AbstractController<
 	 * @param sensorFactory
 	 * @param graph
 	 */
-	public DefaultTrafficServer(Coordinate coordinate,
+	public DefaultTrafficServer(JaxRSCoordinate coordinate,
 		ServiceDictionary serviceDictionary,
 		SensorRegistry sensorRegistry,
 		TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager,

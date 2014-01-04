@@ -18,7 +18,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.service.RandomSeedService;
 
 /**
@@ -50,14 +50,14 @@ public class GpsReceiverInterferer extends GpsBaseInterferer {
 	}
 
 	@Override
-	public Coordinate interfere(Coordinate mutablePosition,
-		Coordinate realPosition,
+	public JaxRSCoordinate interfere(JaxRSCoordinate mutablePosition,
+		JaxRSCoordinate realPosition,
 		long simTime) {
 		// Should be changed?
 		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
 			double changeValue = (this.getChangeAmplitude() / VECTOR_UNIT) * this.
 				getRandom().nextGaussian();
-			return new Coordinate(mutablePosition.getX() + changeValue,
+			return new JaxRSCoordinate(mutablePosition.getX() + changeValue,
 				mutablePosition.getY() + changeValue);
 		}
 

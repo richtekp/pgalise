@@ -18,7 +18,7 @@ package de.pgalise.simulation.staticsensor.grid;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  * Interface for util classes to get positions for sensors
@@ -33,6 +33,6 @@ public interface GridDeployer {
 	 * 
 	 * @return List<Position>
 	 */
-	public List<Vector2d> getPositions(double width, double height, int number);
+	public List<JaxbVector2d> getPositions(double width, double height, int number);
 
 }

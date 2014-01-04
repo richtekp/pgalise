@@ -15,7 +15,7 @@ import javax.vecmath.Vector2f;
  *
  * @author richter
  */
-public class Vector2d extends javax.vecmath.Vector2d {
+public class JaxbVector2d extends javax.vecmath.Vector2d {
 
 	private static final long serialVersionUID = 1L;
 
@@ -28,7 +28,7 @@ public class Vector2d extends javax.vecmath.Vector2d {
 	 * @param x the x coordinate
 	 * @param y the y coordinate
 	 */
-	public Vector2d(double x,
+	public JaxbVector2d(double x,
 		double y) {
 		super(x,
 			y);
@@ -39,7 +39,7 @@ public class Vector2d extends javax.vecmath.Vector2d {
 	 *
 	 * @param v the array of length 2 containing xy in order
 	 */
-	public Vector2d(double[] v) {
+	public JaxbVector2d(double[] v) {
 		super(v);
 	}
 
@@ -48,7 +48,7 @@ public class Vector2d extends javax.vecmath.Vector2d {
 	 *
 	 * @param v1 the Vector2d containing the initialization x y data
 	 */
-	public Vector2d(javax.vecmath.Vector2d v1) {
+	public JaxbVector2d(javax.vecmath.Vector2d v1) {
 		super(v1);
 	}
 
@@ -57,7 +57,7 @@ public class Vector2d extends javax.vecmath.Vector2d {
 	 *
 	 * @param v1 the Vector2f containing the initialization x y data
 	 */
-	public Vector2d(Vector2f v1) {
+	public JaxbVector2d(Vector2f v1) {
 		super(v1);
 	}
 
@@ -66,7 +66,7 @@ public class Vector2d extends javax.vecmath.Vector2d {
 	 *
 	 * @param t1 the Tuple2d containing the initialization x y data
 	 */
-	public Vector2d(Tuple2d t1) {
+	public JaxbVector2d(Tuple2d t1) {
 		super(t1);
 	}
 
@@ -75,14 +75,14 @@ public class Vector2d extends javax.vecmath.Vector2d {
 	 *
 	 * @param t1 the Tuple2f containing the initialization x y data
 	 */
-	public Vector2d(Tuple2f t1) {
+	public JaxbVector2d(Tuple2f t1) {
 		super(t1);
 	}
 
 	/**
 	 * Constructs and initializes a Vector2d to (0,0).
 	 */
-	public Vector2d() {
+	public JaxbVector2d() {
 		super();
 	}
 }

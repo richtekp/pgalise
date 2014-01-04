@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

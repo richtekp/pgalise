@@ -15,7 +15,7 @@
  */
 package de.pgalise.staticsensor.internal.sensor.energy;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -61,7 +61,7 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 	 */
 	public PhotovoltaikSensor(Long id,
 		Output output,
-		Coordinate position,
+		JaxRSCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,
@@ -94,7 +94,7 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 	 */
 	public PhotovoltaikSensor(Long id,
 		Output output,
-		Coordinate position,
+		JaxRSCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,

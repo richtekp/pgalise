@@ -60,7 +60,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -372,8 +372,8 @@ public class DefaultTrafficServerTest {
 			null);
 		Vehicle<CarData> car2 = server2.getCarFactory().createRandomCar(null);
 		car2.setName("Car " + i);
-		TrafficNode startNode = new TrafficNode(new Coordinate(1,
-			2)), endNode = new TrafficNode(new Coordinate(3,
+		TrafficNode startNode = new TrafficNode(new JaxRSCoordinate(1,
+			2)), endNode = new TrafficNode(new JaxRSCoordinate(3,
 					6));
 		car2.setPath(server2.getShortestPath(startNode,
 			endNode));
@@ -608,7 +608,7 @@ public class DefaultTrafficServerTest {
 
 		DefaultStartParameter startParam = new DefaultStartParameter();
 		server0.start(startParam);
-		Coordinate location;
+		JaxRSCoordinate location;
 		NavigationNode nodeForStaticSensor = null;
 
 		if (VEHICLE_TYPE.equals("car") || VEHICLE_TYPE.equals("all")) {
@@ -696,7 +696,7 @@ public class DefaultTrafficServerTest {
 		log.debug(
 			"##############################################################################");
 
-		location = ((Coordinate) nodeForStaticSensor.getGeoLocation());
+		location = ((JaxRSCoordinate) nodeForStaticSensor.getGeoLocation());
 		if (location != null) {
 			Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),null,
 				null,
@@ -795,8 +795,8 @@ public class DefaultTrafficServerTest {
 
 				List<Sensor<?, ?>> sensorLists = new ArrayList<>();
 				sensorLists.add(gpsSensor);
-				TrafficNode startNode = new TrafficNode(new Coordinate(1,
-					2)), endNode = new TrafficNode(new Coordinate(2,
+				TrafficNode startNode = new TrafficNode(new JaxRSCoordinate(1,
+					2)), endNode = new TrafficNode(new JaxRSCoordinate(2,
 							3));
 				trip = new TrafficTrip(startNode,
 					endNode,
@@ -888,7 +888,7 @@ public class DefaultTrafficServerTest {
 						null,
 						"K.A.R.R")));
 
-				TrafficNode node = new TrafficNode(new Coordinate(4,
+				TrafficNode node = new TrafficNode(new JaxRSCoordinate(4,
 					4));
 				list.add(new AttractionTrafficEvent(server0,
 					SIMULATION_START,
@@ -945,7 +945,7 @@ public class DefaultTrafficServerTest {
 		EntityManager entityManager = EasyMock.createMock(EntityManager.class);
 		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
 
-		Coordinate referencePoint = new Coordinate(52.516667,
+		JaxRSCoordinate referencePoint = new JaxRSCoordinate(52.516667,
 			13.4);
 		TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager = EasyMock.
 			createNiceMock(

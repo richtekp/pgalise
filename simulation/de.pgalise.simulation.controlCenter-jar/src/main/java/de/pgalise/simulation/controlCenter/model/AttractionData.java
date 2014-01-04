@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.model;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.traffic.TrafficNode;
 
@@ -40,7 +40,7 @@ public class AttractionData extends AbstractIdentifiable {
 	/**
 	 * where is the point of interest.
 	 */
-	private Coordinate attractionPoint;
+	private JaxRSCoordinate attractionPoint;
 	
 	/**
 	 * Node id in graph
@@ -63,7 +63,7 @@ public class AttractionData extends AbstractIdentifiable {
 	 * 			defines which vehicle will drive to the attraction
 	 */
 	public AttractionData(long attractionStartTimestamp,
-			long attractionEndTimestamp, Coordinate attractionPoint,
+			long attractionEndTimestamp, JaxRSCoordinate attractionPoint,
 			TrafficNode nodeID, RandomVehicleBundle randomVehicleBundle) {
 		this.attractionStartTimestamp = attractionStartTimestamp;
 		this.attractionEndTimestamp = attractionEndTimestamp;
@@ -88,11 +88,11 @@ public class AttractionData extends AbstractIdentifiable {
 		this.attractionEndTimestamp = attractionEndTimestamp;
 	}
 
-	public Coordinate getAttractionPoint() {
+	public JaxRSCoordinate getAttractionPoint() {
 		return attractionPoint;
 	}
 
-	public void setAttractionPoint(Coordinate attractionPoint) {
+	public void setAttractionPoint(JaxRSCoordinate attractionPoint) {
 		this.attractionPoint = attractionPoint;
 	}
 

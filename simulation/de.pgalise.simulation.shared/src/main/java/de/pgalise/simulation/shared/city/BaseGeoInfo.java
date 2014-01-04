@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
@@ -24,7 +24,7 @@ public class BaseGeoInfo extends AbstractIdentifiable {
 	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
 	private Polygon boundaries;
 	@Transient
-	private Coordinate centerPoint;
+	private JaxRSCoordinate centerPoint;
 
 	protected BaseGeoInfo() {
 	}
@@ -40,10 +40,10 @@ public class BaseGeoInfo extends AbstractIdentifiable {
 		this.boundaries = boundaries;
 	}
 
-	public Coordinate getCenterPoint() {
+	public JaxRSCoordinate getCenterPoint() {
 		if(centerPoint == null) {
 			Point centroid = boundaries.getCentroid();
-			this.centerPoint = new Coordinate(centroid.getX(),
+			this.centerPoint = new JaxRSCoordinate(centroid.getX(),
 				centroid.getY());
 		}
 		return this.centerPoint;

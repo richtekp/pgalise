@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.MappedSuperclass;
@@ -139,7 +139,7 @@ public abstract class CityInfrastructureData<W extends Way> extends AbstractIden
 	 * @param radiusInMeter
 	 * @return
 	 */
-	public abstract Map<EnergyProfileEnum, List<Building>> getBuildings(Coordinate geolocation, int radiusInMeter);
+	public abstract Map<EnergyProfileEnum, List<Building>> getBuildings(JaxRSCoordinate geolocation, int radiusInMeter);
 	
 	/**
 	 * Returns all buildings in the radius.
@@ -147,7 +147,7 @@ public abstract class CityInfrastructureData<W extends Way> extends AbstractIden
 	 * @param radiusInMeter
 	 * @return
 	 */
-	public abstract List<Building> getBuildingsInRadius(Coordinate centerPoint, int radiusInMeter);
+	public abstract List<Building> getBuildingsInRadius(JaxRSCoordinate centerPoint, int radiusInMeter);
 	
 	/**
 	 * Returns all nodes in the boundary.

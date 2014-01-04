@@ -7,7 +7,7 @@ package de.pgalise.simulation.shared.geotools;
 import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -38,7 +38,7 @@ public class GeoToolsBootstrapping {
 	 * Geotools uses calculation that returns immense errors (> 100 % for values 
 	 * below 500 m)
 	 */
-	public static double distanceHaversineInM(Coordinate c1, Coordinate c2) {
+	public static double distanceHaversineInM(JaxRSCoordinate c1, JaxRSCoordinate c2) {
 		LatLng p1 = new LatLng(c1.getX(), c1.getY());
 		LatLng p2 = new LatLng(c2.getX(), c2.getY());
 		return LatLngTool.distance(p1, p2, LengthUnit.METER);

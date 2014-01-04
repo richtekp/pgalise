@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 
@@ -14,7 +14,7 @@ import de.pgalise.simulation.shared.persistence.Identifiable;
  */
 public interface Shaped extends Identifiable {
 	
-	public Coordinate getCenterPoint() ;
+	public JaxRSCoordinate getCenterPoint();
 
 	public Polygon getBoundaries() ;
 

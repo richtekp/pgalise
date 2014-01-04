@@ -17,7 +17,7 @@
 package de.pgalise.simulation.shared.event.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.event.EventType;
 
 /**
@@ -48,7 +48,7 @@ public class PercentageChangeEnergyEvent extends ChangeEnergyConsumptionEvent {
 	 * @param percentage
 	 *            percentage value that will change the energy consumption. Must be >= 0.0. 0.0 == 0%, 1.0 == 100%.
 	 */
-	public PercentageChangeEnergyEvent(Coordinate position, int measureRadiusInMeter,
+	public PercentageChangeEnergyEvent(JaxRSCoordinate position, int measureRadiusInMeter,
 			long startTimestamp, long endTimestamp, double percentage) {
 		super( position,
 				measureRadiusInMeter, startTimestamp, endTimestamp);

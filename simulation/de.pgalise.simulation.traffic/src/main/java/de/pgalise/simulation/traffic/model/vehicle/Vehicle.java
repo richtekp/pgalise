@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.traffic.TrafficEdge;
 
@@ -25,7 +25,7 @@ import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.List;
 import javax.annotation.ManagedBean;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.traffic.TrafficTrip;
 
@@ -89,24 +89,24 @@ public interface Vehicle<D extends VehicleData> extends Identifiable {
 	/**
 	 * @return the position
 	 */
-	public Coordinate getPosition();
+	public JaxRSCoordinate getPosition();
 
 	/**
 	 * @param position
 	 *            the position to set
 	 */
-	public void setPosition(Coordinate position);
+	public void setPosition(JaxRSCoordinate position);
 
 	/**
 	 * @return the direction
 	 */
-	public Vector2d getDirection();
+	public JaxbVector2d getDirection();
 
 	/**
 	 * @param direction
 	 *            the direction to set
 	 */
-	public void setDirection(Vector2d direction);
+	public void setDirection(JaxbVector2d direction);
 
 	/**
 	 * @return the name or 'unnamed' if no name is specified

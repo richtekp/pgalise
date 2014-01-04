@@ -34,7 +34,7 @@ import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.ChangeEnergyConsumptionEvent;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 
 /**
  * Default implementation of energy event strategy.
@@ -120,7 +120,7 @@ public class DefaultEnergyEventStrategy implements EnergyEventStrategyLocal {
 
 	@Override
 	public double getEnergyConsumptionInKWh(long timestamp,
-			EnergyProfileEnum key, Coordinate geoLocation,
+			EnergyProfileEnum key, JaxRSCoordinate geoLocation,
 			double consumptionWithoutEvents) {
 		
 		List<DistanceResult<ChangeEnergyConsumptionEvent>> results = this.changeEnergyConsumptionEventDataTree.nearestNeighbour(this.PR_TREE_DISTANCE_CALCULATOR,

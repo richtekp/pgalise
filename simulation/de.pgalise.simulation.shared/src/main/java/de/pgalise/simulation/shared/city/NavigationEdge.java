@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.LineString;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -12,7 +12,7 @@ import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  *
@@ -36,7 +36,7 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	@ManyToOne(targetEntity = NavigationNode.class)
 	private N target;
 	@Transient
-	private Vector2d vector = null;
+	private JaxbVector2d vector = null;
 	private boolean oneWay = false;
 	
 	/**
@@ -60,7 +60,7 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	public LineString getEdgeLine() {
 		if(edgeLine == null) {
 			this.edgeLine = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createLineString(
-				new Coordinate[] {
+				new JaxRSCoordinate[] {
 				getSource().getGeoLocation(), getTarget().getGeoLocation()
 				}
 			);
@@ -82,9 +82,9 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 
 	public double getLineAzimuth() {
 		if(lineAzimuth == null) {
-			Vector2d edgeVector = new Vector2d(source.getGeoLocation().getX(), source.getGeoLocation().getY());
-			edgeVector.sub(new Vector2d(target.getGeoLocation().getX(), target.getGeoLocation().getY()));
-			Vector2d northVector = new Vector2d(0,1);
+			JaxbVector2d edgeVector = new JaxbVector2d(source.getGeoLocation().getX(), source.getGeoLocation().getY());
+			edgeVector.sub(new JaxbVector2d(target.getGeoLocation().getX(), target.getGeoLocation().getY()));
+			JaxbVector2d northVector = new JaxbVector2d(0,1);
 			lineAzimuth = edgeVector.angle(northVector)*180/Math.PI;
 		}
 		return lineAzimuth;
@@ -113,11 +113,11 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 		return updateTimestamp;
 	}
 
-	public Vector2d getVector() {
+	public JaxbVector2d getVector() {
 		if(this.vector == null) {
-			this.vector = new Vector2d(getSource().getGeoLocation().getX(),
+			this.vector = new JaxbVector2d(getSource().getGeoLocation().getX(),
 				getSource().getGeoLocation().getY());
-			vector.sub(new Vector2d(getTarget().getGeoLocation().getX(),
+			vector.sub(new JaxbVector2d(getTarget().getGeoLocation().getX(),
 				getTarget().getGeoLocation().getY()));
 		}
 		return this.vector;

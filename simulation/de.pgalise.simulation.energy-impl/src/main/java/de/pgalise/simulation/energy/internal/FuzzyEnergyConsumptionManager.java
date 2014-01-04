@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.energy.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.io.InputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -66,7 +66,7 @@ public class FuzzyEnergyConsumptionManager implements EnergyConsumptionManagerLo
 	public FuzzyEnergyConsumptionManager() {}
 
 	@Override
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, Coordinate position) {		
+	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, JaxRSCoordinate position) {		
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeInMillis(timestamp);
 		double percentage = 0.0;

@@ -41,7 +41,7 @@ import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
@@ -91,7 +91,7 @@ public class DefaultEnergyControllerTest {
 	/**
 	 * Geolocation (should be inside building)
 	 */
-	private static final Coordinate testLocation = new Coordinate(1.5, 1.5);
+	private static final JaxRSCoordinate testLocation = new JaxRSCoordinate(1.5, 1.5);
 
 	/**
 	 * Init parameters
@@ -143,15 +143,15 @@ public class DefaultEnergyControllerTest {
 		for (int i = 0; i < 100; i++) {
 			buildingList.add(
 				new Building(
-					new Coordinate(53.136765, 8.216524), 
+					new JaxRSCoordinate(53.136765, 8.216524), 
 					new BaseGeoInfo(
 						GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-							new Coordinate[]{
-								new Coordinate(1,1), 
-								new Coordinate(1,2), 
-								new Coordinate(2,2), 
-								new Coordinate(2,1), 
-								new Coordinate(1,1)
+							new JaxRSCoordinate[]{
+								new JaxRSCoordinate(1,1), 
+								new JaxRSCoordinate(1,2), 
+								new JaxRSCoordinate(2,2), 
+								new JaxRSCoordinate(2,1), 
+								new JaxRSCoordinate(1,1)
 							}
 						)
 					)
@@ -196,7 +196,7 @@ public class DefaultEnergyControllerTest {
 			DefaultEnergyControllerTest.startTime,
 				DefaultEnergyControllerTest.endTime, interval, interval, "http://localhost:8080/operationCenter",
 				"", null,
-				new Boundary(new Coordinate(), new Coordinate()));
+				new Boundary(new JaxRSCoordinate(), new JaxRSCoordinate()));
 
 		city = TestUtils.createDefaultTestCityInstance();
 		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(city,

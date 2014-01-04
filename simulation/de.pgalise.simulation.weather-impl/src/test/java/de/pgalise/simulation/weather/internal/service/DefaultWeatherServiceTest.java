@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
@@ -347,7 +347,7 @@ public class DefaultWeatherServiceTest  {
 		long timestamp = startTimestamp + time.getTime();
 		long timestamp2 = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS + time.getTime();
 
-		Coordinate position = new Coordinate(2, 3);
+		JaxRSCoordinate position = new JaxRSCoordinate(2, 3);
 		DefaultWeatherService service = new DefaultWeatherService(city, loader);
 
 		/*
@@ -411,7 +411,7 @@ public class DefaultWeatherServiceTest  {
 
 		// Test false position
 		try {
-			service.getValue(testParameter, timestamp, new Coordinate(-1, -1));
+			service.getValue(testParameter, timestamp, new JaxRSCoordinate(-1, -1));
 			fail();
 		} catch (IllegalArgumentException e) {
 			//expected

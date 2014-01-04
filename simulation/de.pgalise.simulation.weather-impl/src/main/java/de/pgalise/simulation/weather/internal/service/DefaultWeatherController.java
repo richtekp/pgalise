@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -298,7 +298,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	@Override
 	public Number getValue(final WeatherParameterEnum key,
 		final long timestamp,
-		final Coordinate position) {
+		final JaxRSCoordinate position) {
 		return DefaultWeatherController.this.weatherservice.getValue(key,
 			timestamp,
 			position);
@@ -462,7 +462,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	}
 
 	@Override
-	public Coordinate getReferencePosition() {
+	public JaxRSCoordinate getReferencePosition() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

@@ -39,6 +39,7 @@ import java.util.List;
  * @author Marcus
  */
 public class StraightForwardRule extends AbstractTrafficRule {
+	private static final long serialVersionUID = 1L;
 	/*
 	provide fields in order to have the same iteration order which can not be 
 	provided by TrafficGraph.edgesOf (returns Set)

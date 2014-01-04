@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
@@ -103,7 +103,7 @@ public class TrafficControllerTest {
 		s2.start(startParam);
 		replay(s2);
 
-		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}),new LinkedList<>(Arrays.asList(s1, s2)));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}),new LinkedList<>(Arrays.asList(s1, s2)));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -139,7 +139,7 @@ public class TrafficControllerTest {
 		s2.start(null);
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -172,7 +172,7 @@ public class TrafficControllerTest {
 		s2.reset();
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -205,7 +205,7 @@ public class TrafficControllerTest {
 		s2.processMovedVehicles();
 		replay(s2);
 
-		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -251,7 +251,7 @@ public class TrafficControllerTest {
 		s2.deleteSensor(sensor);
 		replay(s2);
 
-		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new Coordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);

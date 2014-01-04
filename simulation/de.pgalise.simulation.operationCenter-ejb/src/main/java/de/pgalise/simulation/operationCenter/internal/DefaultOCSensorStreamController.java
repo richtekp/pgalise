@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.operationCenter.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
 import de.pgalise.simulation.operationCenter.internal.InputStreamDecoder;
 import de.pgalise.simulation.operationCenter.internal.OCSensorStreamController;
 import de.pgalise.simulation.operationCenter.internal.OCSimulationController;
@@ -25,6 +24,7 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSen
 import de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensorData;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.TrafficLightSensorData;
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -217,7 +217,7 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
 						long currentTimestamp = Long.valueOf(text[0]);
 						Sensor sensor = entityManager.find(Sensor.class,
 							Long.valueOf(text[1]));
-						sensorData = new GPSSensorData(new Coordinate(
+						sensorData = new GPSSensorData(new JaxRSCoordinate(
 							Double.valueOf(text[3]),
 							Double.valueOf(text[4])),
 							0d,

@@ -37,7 +37,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 import javax.vecmath.Vector3d;
 
 /**
@@ -46,7 +46,7 @@ import javax.vecmath.Vector3d;
  * @author Marcus
  * @version 1.0 (Oct 28, 2012)
  */
-public class Roundabout extends AbstractTrafficRule<VehicleData> {
+public class Roundabout extends AbstractTrafficRule {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -197,8 +197,8 @@ public class Roundabout extends AbstractTrafficRule<VehicleData> {
 				this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo)) * 180D)
 				/ Math.PI;
 
-		final Vector2d posNodeFrom = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom);
-		final Vector2d posNodeTo = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo);
+		final JaxbVector2d posNodeFrom = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeFrom);
+		final JaxbVector2d posNodeTo = this.trafficGraphExtensions.getVectorBetween(this.getNode(), nodeTo);
 
 		final Vector3d vector3dCross = new Vector3d(posNodeFrom.getX(), posNodeFrom.getY(), 0);
 		vector3dCross.cross(vector3dCross,

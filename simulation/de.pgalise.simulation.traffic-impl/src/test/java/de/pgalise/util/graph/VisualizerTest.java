@@ -16,7 +16,7 @@
  
 package de.pgalise.util.graph;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -77,12 +77,12 @@ public class VisualizerTest {
 	 */
 	private TrafficGraph createGraph() {
 		TrafficGraph graph = new DefaultTrafficGraph();
-		TrafficNode a = new TrafficNode(new Coordinate(1,1));
-		TrafficNode b = new TrafficNode(new Coordinate(2,2));
-		TrafficNode c = new TrafficNode(new Coordinate(4, 7));
-		TrafficNode d = new TrafficNode(new Coordinate(9, 4));
-		TrafficNode e = new TrafficNode(new Coordinate(11, 7));
-		TrafficNode f = new TrafficNode(new Coordinate(2, 10));
+		TrafficNode a = new TrafficNode(new JaxRSCoordinate(1,1));
+		TrafficNode b = new TrafficNode(new JaxRSCoordinate(2,2));
+		TrafficNode c = new TrafficNode(new JaxRSCoordinate(4, 7));
+		TrafficNode d = new TrafficNode(new JaxRSCoordinate(9, 4));
+		TrafficNode e = new TrafficNode(new JaxRSCoordinate(11, 7));
+		TrafficNode f = new TrafficNode(new JaxRSCoordinate(2, 10));
 		TrafficEdge e1 = graph.addEdge(a,b);
 		TrafficEdge e2 = graph.addEdge(b,c);
 		TrafficEdge e3 = graph.addEdge(c,d);

@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
@@ -145,9 +145,9 @@ public class InitDialogCtrl implements Serializable {
 	}
 
 	public String getNextGpsSensor() {
-		Coordinate peekCoordinate = uiVehicles.peek().getGpsSensor().getSensorData().
+		JaxRSCoordinate peekCoordinate = uiVehicles.peek().getGpsSensor().getSensorData().
 			getPosition();
-		peekCoordinate = new Coordinate(45,
+		peekCoordinate = new JaxRSCoordinate(45,
 			55);
 		return String.format("[%f,%f]",
 			peekCoordinate.getX(),

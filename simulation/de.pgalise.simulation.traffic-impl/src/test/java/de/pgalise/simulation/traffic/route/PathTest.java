@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.route;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 import org.jgrapht.traverse.ClosestFirstIterator;
 
 /**
@@ -48,9 +48,9 @@ public class PathTest {
 
 		// log.debug("velocity = " + velocity);
 		// log.debug("distance 2000m = " + distance);
-		TrafficNode a = new TrafficNode(new Coordinate(0,0));
-		TrafficNode b = new TrafficNode(new Coordinate(distance,0));
-		TrafficNode c = new TrafficNode(new Coordinate(distance,distance));
+		TrafficNode a = new TrafficNode(new JaxRSCoordinate(0,0));
+		TrafficNode b = new TrafficNode(new JaxRSCoordinate(distance,0));
+		TrafficNode c = new TrafficNode(new JaxRSCoordinate(distance,distance));
 
 		TrafficEdge ab = graph.addEdge(a,b);
 		ab.setMaxSpeed( velocity);
@@ -64,8 +64,8 @@ public class PathTest {
 		PathTest.log.debug("Weight of bc: " + distance/velocity);
 
 		TrafficEdge ac = graph.addEdge(a,c);
-		Vector2d v = new Vector2d(a.getGeoLocation().getX(), a.getGeoLocation().getY());
-		v.sub(new Vector2d(c.getGeoLocation().getX(), c.getGeoLocation().getY()));
+		JaxbVector2d v = new JaxbVector2d(a.getGeoLocation().getX(), a.getGeoLocation().getY());
+		v.sub(new JaxbVector2d(c.getGeoLocation().getX(), c.getGeoLocation().getY()));
 		double length = v.length();
 
 		ac.setMaxSpeed( velocity);

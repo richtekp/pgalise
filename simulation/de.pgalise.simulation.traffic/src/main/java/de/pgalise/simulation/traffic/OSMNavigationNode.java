@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 
 /**
  *
@@ -23,7 +23,7 @@ public class OSMNavigationNode extends TrafficNode {
 	}
 
 	public OSMNavigationNode(String OSMId,
-		Coordinate geoLocation) {
+		JaxRSCoordinate geoLocation) {
 		super(geoLocation);
 		this.OSMId = OSMId;
 	}

@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.energy;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 public interface EnergySensorFactory extends SensorFactory {
 	
 
-	public PhotovoltaikSensor createPhotovoltaikSensor(Coordinate position,
+	public PhotovoltaikSensor createPhotovoltaikSensor(JaxRSCoordinate position,
 		List<SensorInterfererType> sensorInterfererTypes,
 		int area) throws InterruptedException, ExecutionException;
 

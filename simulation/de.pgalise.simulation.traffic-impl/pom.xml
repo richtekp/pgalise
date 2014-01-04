@@ -35,7 +35,6 @@
 					<artifactId>logback-classic</artifactId>
 				</exclusion>
 			</exclusions>
-			<type>jar</type>
 		</dependency>
 		<!-- 
 		<dependency>

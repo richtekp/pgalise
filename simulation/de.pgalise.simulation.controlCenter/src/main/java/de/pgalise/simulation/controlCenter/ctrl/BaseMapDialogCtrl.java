@@ -7,7 +7,7 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import org.primefaces.event.map.MarkerDragEvent;
@@ -27,7 +27,7 @@ public abstract class BaseMapDialogCtrl implements Serializable {
 		30.667648);
 	protected final Marker startMarker = new Marker(DEFAULT_START_COORDINATE,
 		"Konyaalti");
-	private Coordinate coordinate;
+	private JaxRSCoordinate coordinate;
 	@EJB
 	private IdGenerator idGenerator;
 	
@@ -49,15 +49,15 @@ public abstract class BaseMapDialogCtrl implements Serializable {
 
 	public void onMarkerDrag(MarkerDragEvent event) {
 		Marker marker = event.getMarker();
-		coordinate = new Coordinate(marker.getLatlng().getLat(),
+		coordinate = new JaxRSCoordinate(marker.getLatlng().getLat(),
 				marker.getLatlng().getLng());
 	}
 
-	public Coordinate getCoordinate() {
+	public JaxRSCoordinate getCoordinate() {
 		return coordinate;
 	}
 
-	protected void setCoordinate(Coordinate coordinate) {
+	protected void setCoordinate(JaxRSCoordinate coordinate) {
 		this.coordinate = coordinate;
 	}
 

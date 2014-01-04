@@ -16,7 +16,7 @@
  
 package de.pgalise.util.graph.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -52,17 +52,17 @@ public class QuadrantDisassemblerTest {
 		NavigationNode node;
 
 		// erster qudrant
-		graph.addVertex(new TrafficNode(new Coordinate(10, 10)));
-		graph.addVertex(new TrafficNode(new Coordinate(25, 25)));
-		graph.addVertex(new TrafficNode(new Coordinate(20, 25)));
+		graph.addVertex(new TrafficNode(new JaxRSCoordinate(10, 10)));
+		graph.addVertex(new TrafficNode(new JaxRSCoordinate(25, 25)));
+		graph.addVertex(new TrafficNode(new JaxRSCoordinate(20, 25)));
 		
 // zweiter quadrant
-		graph.addVertex(new TrafficNode(new Coordinate(18, 45)));
-		graph.addVertex(new TrafficNode(new Coordinate(40, 50)));
+		graph.addVertex(new TrafficNode(new JaxRSCoordinate(18, 45)));
+		graph.addVertex(new TrafficNode(new JaxRSCoordinate(40, 50)));
 
 		// dritter quadrant
-		graph.addVertex(new TrafficNode(new Coordinate(75, 30)));
-		graph.addVertex(new TrafficNode(new Coordinate(80, 45)));
+		graph.addVertex(new TrafficNode(new JaxRSCoordinate(75, 30)));
+		graph.addVertex(new TrafficNode(new JaxRSCoordinate(80, 45)));
 
 		List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(0, 100, 0, 60)), 4);
 		// es gibt 3 quadranten
@@ -102,7 +102,7 @@ public class QuadrantDisassemblerTest {
 		String str = "";
 		for (Iterator<TrafficNode> i = nodes.iterator(); i.hasNext();) {
 			TrafficNode node = i.next();
-			if (geometry.covers(GEOMETRY_FACTORY.createPoint(((Coordinate) node.getGeoLocation())))) {
+			if (geometry.covers(GEOMETRY_FACTORY.createPoint(((JaxRSCoordinate) node.getGeoLocation())))) {
 				str += node.getId();
 			}
 		}

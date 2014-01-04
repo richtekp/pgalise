@@ -33,7 +33,7 @@ import de.pgalise.simulation.energy.internal.profile.CSVProfileLoader;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Building;
 
 /**
@@ -58,12 +58,12 @@ public class CSVEnergyConsumptionManagerTest {
 	/**
 	 * Test location as GeoLocation
 	 */
-	private static final Coordinate testLocationAsGL = new Coordinate(53.136765, 8.216524);
+	private static final JaxRSCoordinate testLocationAsGL = new JaxRSCoordinate(53.136765, 8.216524);
 
 	/**
 	 * Test location as Vector2d
 	 */
-	private static final Coordinate testLocation = CSVEnergyConsumptionManagerTest.testLocationAsGL;
+	private static final JaxRSCoordinate testLocation = CSVEnergyConsumptionManagerTest.testLocationAsGL;
 	
 	/**
 	 * The used energy profile loader.
@@ -80,7 +80,7 @@ public class CSVEnergyConsumptionManagerTest {
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
 		List<Building> buildingList = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			buildingList.add(new Building( new Coordinate(53.136765, 8.216524), null));
+			buildingList.add(new Building( new JaxRSCoordinate(53.136765, 8.216524), null));
 		}
 		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
 		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);

@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.rules;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -20,12 +20,12 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 public class TrafficLightIntersectionSensor extends AbstractStaticSensor<TrafficEvent, TrafficLightIntersectionSensorData> {
 
 	private static final long serialVersionUID = 1L;
-	private TrafficLightIntersection<?> trafficLightIntersection;
+	private TrafficLightIntersection trafficLightIntersection;
 
 	public TrafficLightIntersectionSensor(Long id,
-		TrafficLightIntersection<?> trafficLightIntersection,
+		TrafficLightIntersection trafficLightIntersection,
 		Output output,
-		Coordinate position,
+		JaxRSCoordinate position,
 		SensorType sensorType,
 		int updateLimit,
 		TrafficLightIntersectionSensorData sensorData) throws IllegalArgumentException {
@@ -39,11 +39,11 @@ public class TrafficLightIntersectionSensor extends AbstractStaticSensor<Traffic
 	}
 
 	public void setTrafficLightIntersection(
-		TrafficLightIntersection<?> trafficLightIntersection) {
+		TrafficLightIntersection trafficLightIntersection) {
 		this.trafficLightIntersection = trafficLightIntersection;
 	}
 
-	public TrafficLightIntersection<?> getTrafficLightIntersection() {
+	public TrafficLightIntersection getTrafficLightIntersection() {
 		return trafficLightIntersection;
 	}
 

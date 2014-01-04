@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.AmenityTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
@@ -47,12 +47,12 @@ public class Building extends NavigationNode  {
 	 * @param tags 
 	 * @param boundary an optional boundary which is not used in the simulation
 	 */
-	public Building(Coordinate geoLocation, BaseGeoInfo position) {
+	public Building(JaxRSCoordinate geoLocation, BaseGeoInfo position) {
 		super(geoLocation);
 		this.position = position;
 	}
 
-	public Building(Coordinate geoLocation,
+	public Building(JaxRSCoordinate geoLocation,
 		Set<TourismTag> tourismTags,
 		Set<ServiceTag> serviceTags,
 		Set<SportTag> sportTags,

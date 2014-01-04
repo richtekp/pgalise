@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import org.primefaces.event.map.MarkerDragEvent;
@@ -23,7 +23,7 @@ public abstract class BaseMapTwoPointsMapDialogCtrl extends BaseMapDialogCtrl {
 	private static final long serialVersionUID = 1L;
 	protected final Marker endMarker = new Marker(DEFAULT_END_COORDINATE,
 		"Konyaalti");
-	private Coordinate endCoordinate;
+	private JaxRSCoordinate endCoordinate;
 
 	/**
 	 * Creates a new instance of BaseMapTwoPointsMapDialogCtrl
@@ -33,11 +33,11 @@ public abstract class BaseMapTwoPointsMapDialogCtrl extends BaseMapDialogCtrl {
 		endMarker.setDraggable(true);
 	}
 
-	protected void setEndCoordinate(Coordinate endCoordinate) {
+	protected void setEndCoordinate(JaxRSCoordinate endCoordinate) {
 		this.endCoordinate = endCoordinate;
 	}
 
-	public Coordinate getEndCoordinate() {
+	public JaxRSCoordinate getEndCoordinate() {
 		return endCoordinate;
 	}
 
@@ -45,10 +45,10 @@ public abstract class BaseMapTwoPointsMapDialogCtrl extends BaseMapDialogCtrl {
 	public void onMarkerDrag(MarkerDragEvent event) {
 		Marker marker = event.getMarker();
 		if(marker == startMarker) {
-			setCoordinate(new Coordinate(marker.getLatlng().getLat(),
+			setCoordinate(new JaxRSCoordinate(marker.getLatlng().getLat(),
 				marker.getLatlng().getLng()));
 		}else {
-			endCoordinate = new Coordinate(marker.getLatlng().getLat(),
+			endCoordinate = new JaxRSCoordinate(marker.getLatlng().getLat(),
 				marker.getLatlng().getLng());
 		}
 	}

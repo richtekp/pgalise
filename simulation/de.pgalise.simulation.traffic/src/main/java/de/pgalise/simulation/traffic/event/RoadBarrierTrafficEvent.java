@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.event;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficEdge;
@@ -53,7 +53,7 @@ public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTra
 	/**
 	 * Position to block
 	 */
-	private Coordinate roadBarrierPoint;
+	private JaxRSCoordinate roadBarrierPoint;
 
 	/**
 	 * node id in graph
@@ -65,7 +65,7 @@ public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTra
 		long elapsedTime,
 		long roadBarrierStartTimestamp,
 		long roadBarrierEndTimestamp,
-		Coordinate roadBarrierPoint,
+		JaxRSCoordinate roadBarrierPoint,
 		TrafficNode nodeID
 		) {
 		super(responsibleServer, simulationTimestamp, elapsedTime);
@@ -91,11 +91,11 @@ public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTra
 		this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
 	}
 
-	public Coordinate getRoadBarrierPoint() {
+	public JaxRSCoordinate getRoadBarrierPoint() {
 		return roadBarrierPoint;
 	}
 
-	public void setRoadBarrierPoint(Coordinate roadBarrierPoint) {
+	public void setRoadBarrierPoint(JaxRSCoordinate roadBarrierPoint) {
 		this.roadBarrierPoint = roadBarrierPoint;
 	}
 

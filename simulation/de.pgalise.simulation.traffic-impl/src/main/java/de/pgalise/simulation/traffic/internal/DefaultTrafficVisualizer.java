@@ -29,7 +29,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  * Default implementation of the TrafficVisualizer.
@@ -165,9 +165,9 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 		// }
 		g2d.setColor(Color.BLACK);
 		for (Vehicle<?> v : vehicles) {
-			Vector2d pos = new Vector2d(v.getPosition().getX(),
+			JaxbVector2d pos = new JaxbVector2d(v.getPosition().getX(),
 				v.getPosition().getY());
-			pos = new Vector2d((pos.getX() * transform.getScaleX() + transform.
+			pos = new JaxbVector2d((pos.getX() * transform.getScaleX() + transform.
 				getTranslateX()),
 				(pos.getY()
 				* transform.getScaleX() + transform.getTranslateY()));
@@ -175,18 +175,18 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 			// pos.getX(), pos.getY()));
 
 			// Vector2d opos = pos;
-			Vector2d dir = v.getDirection();
+			JaxbVector2d dir = v.getDirection();
 			// Orthogonale zeigt nach rechts
-			Vector2d ortho = new Vector2d(dir.getY(),
+			JaxbVector2d ortho = new JaxbVector2d(dir.getY(),
 				dir.getX() * (-1));
-			Vector2d ortho2 = ortho;
+			JaxbVector2d ortho2 = ortho;
 			ortho2.scale(-1);
 
 			dir.normalize();
 			ortho.normalize();
 			ortho2.normalize();
 
-			Vector2d d = dir;
+			JaxbVector2d d = dir;
 			d.scale(12);
 			pos.sub(d);
 

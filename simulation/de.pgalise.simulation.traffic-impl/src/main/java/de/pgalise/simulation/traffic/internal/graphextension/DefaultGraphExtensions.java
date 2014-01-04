@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.graphextension;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -25,7 +25,7 @@ import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
 import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  * Extension class which methods interact with edge's attribute hashmap
@@ -78,7 +78,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'edge' is 'null'
 	 */
-	private Vector2d calculateVector(final TrafficEdge edge) throws IllegalArgumentException {
+	private JaxbVector2d calculateVector(final TrafficEdge edge) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkEdge(edge);
 		if (!this.hasPosition(edge.getSource()) || !this.hasPosition(edge.getTarget())) {
 			return null;
@@ -125,7 +125,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public Coordinate getPosition(final NavigationNode node) throws IllegalArgumentException {
+	public JaxRSCoordinate getPosition(final NavigationNode node) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		return node.getGeoLocation();
 	}
@@ -144,7 +144,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *                if node1 or node2 have no position data attached
 	 */
 	@Override
-	public Vector2d getVectorBetween(final TrafficNode from, final TrafficNode to) throws IllegalArgumentException,
+	public JaxbVector2d getVectorBetween(final TrafficNode from, final TrafficNode to) throws IllegalArgumentException,
 			IllegalStateException {
 		DefaultGraphExtensions.checkNode(from);
 		DefaultGraphExtensions.checkNode(to);
@@ -154,10 +154,10 @@ public class DefaultGraphExtensions implements GraphExtensions {
 		if (!this.hasPosition(to)) {
 			throw new IllegalStateException("Argument 'node2' has no position data attached.");
 		}
-		Coordinate fromPosition = this.getPosition(from);
-		Vector2d result = new Vector2d(fromPosition.getX(), fromPosition.getY());
-		Coordinate toPosition = this.getPosition(to);
-		result.sub(new Vector2d(toPosition.getX(), toPosition.getY()));
+		JaxRSCoordinate fromPosition = this.getPosition(from);
+		JaxbVector2d result = new JaxbVector2d(fromPosition.getX(), fromPosition.getY());
+		JaxRSCoordinate toPosition = this.getPosition(to);
+		result.sub(new JaxbVector2d(toPosition.getX(), toPosition.getY()));
 		return result;
 	}
 
@@ -188,7 +188,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public TrafficNode setPosition(final TrafficNode node, final Coordinate position) throws IllegalArgumentException {
+	public TrafficNode setPosition(final TrafficNode node, final JaxRSCoordinate position) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
 		if (node.getGeoLocation() != null) {
 			throw new IllegalStateException("Argument \"node\" has already position property attached.");
@@ -289,7 +289,7 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public Vector2d getVector(final TrafficEdge edge) throws IllegalArgumentException {
+	public JaxbVector2d getVector(final TrafficEdge edge) throws IllegalArgumentException {
 		return edge.getVector();
 	}
 

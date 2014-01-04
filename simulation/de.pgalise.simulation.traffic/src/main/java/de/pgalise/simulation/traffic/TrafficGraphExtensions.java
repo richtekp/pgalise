@@ -58,7 +58,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the {@link AbstractStaticTrafficSensor} to attach
 	 * @return true if {@link AbstractStaticTrafficSensor} could have been added, otherwise false
 	 */
-	public boolean addSensor(final TrafficNode node, final StaticTrafficSensor sensor);
+	public boolean addSensor(final TrafficNode node, final StaticTrafficSensor<?> sensor);
 
 	/**
 	 * Returns the {@link AbstractStaticTrafficSensor}s from the passed node as an unmodifiable set.
@@ -67,7 +67,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the node which {@link AbstractStaticTrafficSensor}s shall be returned as an unmodifiable set.
 	 * @return an unmodifiable set of the {@link AbstractStaticTrafficSensor}s of the passed node
 	 */
-	public Set<StaticTrafficSensor> getSensorsAsUnmodifialable(final TrafficNode node);
+	public Set<StaticTrafficSensor<?>> getSensorsAsUnmodifialable(final TrafficNode node);
 
 	/**
 	 * Returns the TrafficlightSetof of the passed node. If the passed node hasn't an attached TrafficLightSetof
@@ -121,7 +121,7 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 *            the {@link AbstractStaticTrafficSensor} that shall have the passed static traffic sensor removed
 	 * @return true if the passed {@link AbstractStaticTrafficSensor} could have been removed from the passed node
 	 */
-	public boolean removeSensor(final TrafficNode node, final StaticTrafficSensor sensor);
+	public boolean removeSensor(final TrafficNode node, final StaticTrafficSensor<?> sensor);
 
 	/**
 	 * Sets the TrafficlightSetof of the passed node.
@@ -218,5 +218,5 @@ public interface TrafficGraphExtensions extends GraphExtensions {
 	 */
 	public void unregisterFromEdge(TrafficEdge edge, TrafficNode from, TrafficNode to, Vehicle<?> v);
 
-	public Set<StaticTrafficSensor> getSensors(TrafficNode node);
+	public Set<StaticTrafficSensor<?>> getSensors(TrafficNode node);
 }

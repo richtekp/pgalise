@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
@@ -177,13 +177,13 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 
 		/* Send data if the vehicle is driving */
 		// Use interferer
-		final Coordinate interferedPos = this.interferer.interfere(this.vehicle.
+		final JaxRSCoordinate interferedPos = this.interferer.interfere(this.vehicle.
 			getPosition(),
 			this.vehicle.getPosition(),
 			eventList.getTimestamp());
 
 		// convert to geo location
-		final Coordinate geoLocation = interferedPos;
+		final JaxRSCoordinate geoLocation = interferedPos;
 
 		log.debug(
 			"Send position of sensor " + this.getId() + ": " + geoLocation.getX() + ", "
@@ -231,13 +231,13 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 			// GpsSensor.log.debug("Send: x: " + this.vehicle.getPosition().getX() + " y:"
 			// + this.vehicle.getPosition().getY());
 			// Use interferer
-			final Coordinate interferedPos = this.interferer.interfere(this.vehicle.
+			final JaxRSCoordinate interferedPos = this.interferer.interfere(this.vehicle.
 				getPosition(),
 				this.vehicle.getPosition(),
 				eventList.getTimestamp());
 
 			// convert to geolocation
-			final Coordinate geoLocation = interferedPos;
+			final JaxRSCoordinate geoLocation = interferedPos;
 
 			GpsSensor.log.debug("Send lat: " + geoLocation.getX() + " long: "
 				+ geoLocation.getY() + " of vehicle " + vehicle.getId());

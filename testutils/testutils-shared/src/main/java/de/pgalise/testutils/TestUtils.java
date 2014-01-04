@@ -4,7 +4,7 @@
  */
 package de.pgalise.testutils;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
@@ -91,14 +91,14 @@ public class TestUtils {
 	
 	public static City createDefaultTestCityInstance() {
 		
-		Coordinate referencePoint = new Coordinate(52.516667, 13.4);
+		JaxRSCoordinate referencePoint = new JaxRSCoordinate(52.516667, 13.4);
 		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1), 
-				new Coordinate(referencePoint.getX()-1, referencePoint.getY()), 
-				new Coordinate(referencePoint.getX(), referencePoint.getY()), 
-				new Coordinate(referencePoint.getX(), referencePoint.getY()-1),
-				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1)
+			new JaxRSCoordinate[] {
+				new JaxRSCoordinate(referencePoint.getX()-1, referencePoint.getY()-1), 
+				new JaxRSCoordinate(referencePoint.getX()-1, referencePoint.getY()), 
+				new JaxRSCoordinate(referencePoint.getX(), referencePoint.getY()), 
+				new JaxRSCoordinate(referencePoint.getX(), referencePoint.getY()-1),
+				new JaxRSCoordinate(referencePoint.getX()-1, referencePoint.getY()-1)
 			}
 		);
 		City city = new City("Berlin",

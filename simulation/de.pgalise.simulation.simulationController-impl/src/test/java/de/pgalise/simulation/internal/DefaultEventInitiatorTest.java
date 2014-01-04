@@ -40,7 +40,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.Event;
@@ -355,12 +355,12 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public Coordinate getReferencePosition() {
+		public JaxRSCoordinate getReferencePosition() {
 			return null;
 		}
 
 		@Override
-		public Number getValue(WeatherParameterEnum key, long timestamp, Coordinate position) {
+		public Number getValue(WeatherParameterEnum key, long timestamp, JaxRSCoordinate position) {
 			return null;
 		}
 
@@ -414,7 +414,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public double getEnergyConsumptionInKWh(long timestamp, Coordinate position, int measureRadiusInMeter) {
+		public double getEnergyConsumptionInKWh(long timestamp, JaxRSCoordinate position, int measureRadiusInMeter) {
 			return 0;
 		}
 

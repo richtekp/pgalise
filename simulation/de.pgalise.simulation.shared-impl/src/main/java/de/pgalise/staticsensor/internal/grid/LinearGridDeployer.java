@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.staticsensor.grid.GridDeployer;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 import org.geotools.geometry.jts.JTS;
 
 /**
@@ -48,9 +48,9 @@ public class LinearGridDeployer implements GridDeployer {
 	}
 
 	@Override
-	public List<Vector2d> getPositions(double width, double height, int number) {
+	public List<JaxbVector2d> getPositions(double width, double height, int number) {
 		int newNumber = number;
-		List<Vector2d> positions = new ArrayList<>();
+		List<JaxbVector2d> positions = new ArrayList<>();
 
 		if ((number % 2) == 1) {
 			newNumber++;
@@ -64,7 +64,7 @@ public class LinearGridDeployer implements GridDeployer {
 
 		for (int i = 0; i < newNumber; i++) {
 			Geometry geo = list.get(i);
-			positions.add(new Vector2d(geo.getEnvelopeInternal().getMinX(), geo.getEnvelopeInternal().getMinY()));
+			positions.add(new JaxbVector2d(geo.getEnvelopeInternal().getMinX(), geo.getEnvelopeInternal().getMinY()));
 		}
 		return positions;
 	}

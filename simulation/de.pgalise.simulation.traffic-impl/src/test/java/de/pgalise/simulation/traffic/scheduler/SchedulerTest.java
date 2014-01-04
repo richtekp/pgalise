@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.scheduler;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,9 +53,9 @@ import org.jgrapht.alg.DijkstraShortestPath;
  * @version 1.0 (Nov 22, 2012)
  */
 public class SchedulerTest {
-	private static TrafficNode a = new TrafficNode(new Coordinate( 0, 0));
-	private static TrafficNode b = new TrafficNode(new Coordinate( 2, 0));
-	private static TrafficNode c = new TrafficNode(new Coordinate( 2, 2));
+	private static TrafficNode a = new TrafficNode(new JaxRSCoordinate( 0, 0));
+	private static TrafficNode b = new TrafficNode(new JaxRSCoordinate( 2, 0));
+	private static TrafficNode c = new TrafficNode(new JaxRSCoordinate( 2, 2));
 
 	/**
 	 * Graph

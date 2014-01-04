@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -43,7 +43,7 @@ import javax.swing.JPanel;
 
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.GraphVisualizer;
-import de.pgalise.simulation.shared.city.Vector2d;
+import de.pgalise.simulation.shared.city.JaxbVector2d;
 
 /**
  * @param <D>
@@ -65,7 +65,7 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 	protected AffineTransform transform;
 	protected AffineTransform origin;
 	private long lastCall;
-	private Vector2d srcClick;
+	private JaxbVector2d srcClick;
 	protected double scaleX, scaleY;
 	protected double translateX, translateY;
 
@@ -115,7 +115,7 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		Vector2d v = new Vector2d(e.getX(),
+		JaxbVector2d v = new JaxbVector2d(e.getX(),
 			e.getY());
 		v.sub(srcClick);
 		this.translateX += v.getX();
@@ -147,8 +147,8 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 
 		for (Iterator<TrafficNode> i = graph.vertexSet().iterator(); i.hasNext();) {
 			TrafficNode node = i.next();
-			Coordinate vec0 = this.nodeExtensions.getPosition(node);
-			Vector2d vec = new Vector2d(
+			JaxRSCoordinate vec0 = this.nodeExtensions.getPosition(node);
+			JaxbVector2d vec = new JaxbVector2d(
 				(vec0.getX() * transform.getScaleX() + transform.getTranslateX()),
 				(vec0.getY()
 				* transform.getScaleY() + transform.getTranslateY()));
@@ -169,12 +169,12 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 		}
 
 		for (TrafficEdge edge : graph.edgeSet()) {
-			Coordinate a0 = this.nodeExtensions.getPosition(edge.getSource());
-			Vector2d a = new Vector2d(a0.getX() * transform.getScaleX() + transform.
+			JaxRSCoordinate a0 = this.nodeExtensions.getPosition(edge.getSource());
+			JaxbVector2d a = new JaxbVector2d(a0.getX() * transform.getScaleX() + transform.
 				getTranslateX(),
 				a0.getY() * transform.getScaleY() + transform.getTranslateY());
-			Coordinate b0 = this.nodeExtensions.getPosition(edge.getTarget());
-			Vector2d b = new Vector2d(b0.getX() * transform.getScaleX() + transform.
+			JaxRSCoordinate b0 = this.nodeExtensions.getPosition(edge.getTarget());
+			JaxbVector2d b = new JaxbVector2d(b0.getX() * transform.getScaleX() + transform.
 				getTranslateX(),
 				b0.getY() * transform.getScaleY() + transform.getTranslateY());
 			g2d.drawLine((int) a.getX(),
@@ -276,7 +276,7 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// log.debug(String.format("Source: (%s, %s) ", e.getX(), e.getY()));
-		srcClick = new Vector2d(e.getX(),
+		srcClick = new JaxbVector2d(e.getX(),
 			e.getY());
 	}
 

@@ -16,7 +16,7 @@
  
 package de.pgalise.staticsensor.internal;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.EnumSet;
 import java.util.concurrent.ExecutionException;
 
@@ -140,7 +140,7 @@ public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory impl
 	}
 
 	@Override
-	public PhotovoltaikSensor createPhotovoltaikSensor(Coordinate position,
+	public PhotovoltaikSensor createPhotovoltaikSensor(JaxRSCoordinate position,
 		List<SensorInterfererType> sensorInterfererTypes,
 		int area) throws InterruptedException, ExecutionException {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -154,7 +154,7 @@ public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory impl
 	}
 
 	@Override
-	public Coordinate createEnergySensor(Coordinate position,
+	public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
 		List<SensorInterfererType> sensorInterfererTypes) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}

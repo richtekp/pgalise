@@ -79,16 +79,16 @@ public class City extends AbstractIdentifiable {
 	@Transient
 	private int rate = 0;
 	@OneToOne
-	private BaseGeoInfo position = new BaseGeoInfo(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinate[] {new Coordinate(1,
-				1), new Coordinate(1,
-				2), new Coordinate(2,
-				2), new Coordinate(2,
-				1), new Coordinate(1,
+	private BaseGeoInfo position = new BaseGeoInfo(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new JaxRSCoordinate[] {new JaxRSCoordinate(1,
+				1), new JaxRSCoordinate(1,
+				2), new JaxRSCoordinate(2,
+				2), new JaxRSCoordinate(2,
+				1), new JaxRSCoordinate(1,
 				1)})); //@TODO: improve with correct geo information
 	/**
 	 * a point which is considered the most important in the geometry which is not forcibly always the geographical center of the referenced area
 	 */
-	private Coordinate referencePoint;
+	private JaxRSCoordinate referencePoint;
 
 	/**
 	 * Default constructor
@@ -176,11 +176,11 @@ public class City extends AbstractIdentifiable {
 		return position;
 	}
 
-	public void setReferencePoint(Coordinate referencePoint) {
+	public void setReferencePoint(JaxRSCoordinate referencePoint) {
 		this.referencePoint = referencePoint;
 	}
 
-	public Coordinate getReferencePoint() {
+	public JaxRSCoordinate getReferencePoint() {
 		return referencePoint;
 	}
 }

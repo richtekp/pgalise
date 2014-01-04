@@ -16,7 +16,7 @@
 package de.pgalise.simulation.weather.internal.service;
 
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -198,7 +198,7 @@ public class DefaultWeatherControllerTest {
 		// Local test variables
 		long valueTime = startTimestamp + 360000;
 		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
-		Coordinate testPosition = new Coordinate(2,
+		JaxRSCoordinate testPosition = new JaxRSCoordinate(2,
 			3);
 		List<WeatherEvent> testEventList = new ArrayList<>(1);
 		testEventList.add(new ChangeWeatherEvent(IdGenerator.getNextId(),
@@ -293,7 +293,7 @@ public class DefaultWeatherControllerTest {
 		try {
 			testNumber = ctrl.getValue(testParameter,
 				0,
-				new Coordinate(-1,
+				new JaxRSCoordinate(-1,
 					-2));
 			Assert.assertNull(testNumber);
 		} catch (Exception expected) {

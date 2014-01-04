@@ -15,7 +15,7 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
@@ -46,7 +46,7 @@ public class WindFlagSensor extends WeatherSensor<WindFlagSensorData> {
 	 */
 	public WindFlagSensor(Long id,
 		Output output,
-		Coordinate position,
+		JaxRSCoordinate position,
 		WeatherController weatherController,
 		final WeatherInterferer weatherInterferer) {
 		this(id,
@@ -69,7 +69,7 @@ public class WindFlagSensor extends WeatherSensor<WindFlagSensorData> {
 	 */
 	public WindFlagSensor(Long id,
 		Output output,
-		Coordinate position,
+		JaxRSCoordinate position,
 		WeatherController weatherController,
 		int updateLimit,
 		final WeatherInterferer weatherInterferer) {

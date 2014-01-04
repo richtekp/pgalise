@@ -15,7 +15,7 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
@@ -49,7 +49,7 @@ public class Hygrometer extends WeatherSensor<HygrometerData> {
 	 */
 	public Hygrometer(Long id,
 		final Output output,
-		final Coordinate position,
+		final JaxRSCoordinate position,
 		final WeatherController weatherController,
 		final WeatherInterferer weatherInterferer)
 		throws IllegalArgumentException {
@@ -75,7 +75,7 @@ public class Hygrometer extends WeatherSensor<HygrometerData> {
 	 */
 	public Hygrometer(Long id,
 		Output output,
-		Coordinate position,
+		JaxRSCoordinate position,
 		WeatherController weatherController,
 		int updateLimit,
 		final WeatherInterferer weatherInterferer) throws IllegalArgumentException {

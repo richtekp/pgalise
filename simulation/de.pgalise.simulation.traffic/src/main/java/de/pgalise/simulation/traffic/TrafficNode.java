@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * A <tt>TrafficNode</tt> is a position (represented by a 
@@ -41,10 +42,13 @@ public class TrafficNode extends NavigationNode  {
 	private boolean onStreet;
 	private boolean roundabout;
 	@Transient
-	private Set<StaticTrafficSensor> sensors;
+	@XmlTransient
+	private Set<StaticTrafficSensor<?>> sensors;
 	@Transient
+	@XmlTransient
 	private Set<Vehicle<?>> vehicles;
 	@Transient
+	@XmlTransient
 	private TrafficRule trafficRule;
 	@OneToOne
 	private BusStop busStop;
@@ -53,7 +57,7 @@ public class TrafficNode extends NavigationNode  {
 		super();
 	}
 	
-	public TrafficNode(Coordinate geoLocation) {
+	public TrafficNode(JaxRSCoordinate geoLocation) {
 		super(geoLocation);
 	}
 
@@ -66,11 +70,11 @@ public class TrafficNode extends NavigationNode  {
 	}
 
 	public void setSensors(
-		Set<StaticTrafficSensor> sensors) {
+		Set<StaticTrafficSensor<?>> sensors) {
 		this.sensors = sensors;
 	}
 
-	public Set<StaticTrafficSensor> getSensors() {
+	public Set<StaticTrafficSensor<?>> getSensors() {
 		return sensors;
 	}
 

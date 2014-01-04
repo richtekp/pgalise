@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.positionconverter;
 
-import de.pgalise.simulation.shared.city.Coordinate;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.sql.Timestamp;
@@ -45,19 +45,19 @@ public class LinearWeatherPositionConverterTest {
 		 * Test preparations
 		 */
 		Timestamp testTime = DateConverter.convertTimestamp("2012-10-08 12:00:00", "YYYY-MM-dd HH:mm:ss");
-		Coordinate testPosition = new Coordinate(1, 1);
+		JaxRSCoordinate testPosition = new JaxRSCoordinate(1, 1);
 		double value;
 		/*
 		 * Test: Temperature
 		 */
-		Coordinate referencePoint = new Coordinate(20, 20);
+		JaxRSCoordinate referencePoint = new JaxRSCoordinate(20, 20);
 		Geometry referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[] {
-				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1), 
-				new Coordinate(referencePoint.getX()-1, referencePoint.getY()), 
-				new Coordinate(referencePoint.getX(), referencePoint.getY()), 
-				new Coordinate(referencePoint.getX(), referencePoint.getY()-1),
-				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1)
+			new JaxRSCoordinate[] {
+				new JaxRSCoordinate(referencePoint.getX()-1, referencePoint.getY()-1), 
+				new JaxRSCoordinate(referencePoint.getX()-1, referencePoint.getY()), 
+				new JaxRSCoordinate(referencePoint.getX(), referencePoint.getY()), 
+				new JaxRSCoordinate(referencePoint.getX(), referencePoint.getY()-1),
+				new JaxRSCoordinate(referencePoint.getX()-1, referencePoint.getY()-1)
 			}
 		);
 		LinearWeatherPositionConverter instance = new LinearWeatherPositionConverter(referenceArea);
