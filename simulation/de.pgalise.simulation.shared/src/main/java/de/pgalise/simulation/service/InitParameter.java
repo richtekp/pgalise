@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.service;
 
+import com.vividsolutions.jts.geom.Envelope;
 import de.pgalise.simulation.service.ServerConfiguration;
 import java.io.Serializable;
 
-import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 
 /**
- * The init parameters will be send to every controller on init.
- * It contains all information needed in the init state.
+ * The init parameters will be send to every controller on init. It contains all
+ * information needed in the init state.
+ *
  * @author Mustafa
  * @author Timo
  */
 public class InitParameter implements Serializable {
+
 	/**
 	 * Serial
 	 */
@@ -63,7 +64,7 @@ public class InitParameter implements Serializable {
 	 * URL to the operation center
 	 */
 	private String operationCenterURL;
-	
+
 	/**
 	 * URL to the control center
 	 */
@@ -77,7 +78,7 @@ public class InitParameter implements Serializable {
 	/**
 	 * City boundary
 	 */
-	private Boundary cityBoundary;
+	private Envelope cityBoundary;
 
 	/**
 	 * Default
@@ -87,32 +88,27 @@ public class InitParameter implements Serializable {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param cityInfrastructureData
-	 *            Information about the city infrastructure
-	 * @param serverConfiguration
-	 *            Information about the server configuration
-	 * @param startTimestamp
-	 *            Timestamp of the simulation start
-	 * @param endTimestamp
-	 *            Timestamp of the simulation end
-	 * @param interval
-	 *            Simulation interval
-	 * @param clockGeneratorInterval
-	 *            Clock generator interval
-	 * @param operationCenterURL
-	 *            URL to the operation center
-	 * @param controlCenterURL
-	 * 			  URL to the control center
-	 * @param trafficFuzzyData
-	 *            Traffic fuzzy data
-	 * @param cityBoundary
-	 *            City boundary
+	 *
+	 * @param cityInfrastructureData Information about the city infrastructure
+	 * @param serverConfiguration Information about the server configuration
+	 * @param startTimestamp Timestamp of the simulation start
+	 * @param endTimestamp Timestamp of the simulation end
+	 * @param interval Simulation interval
+	 * @param clockGeneratorInterval Clock generator interval
+	 * @param operationCenterURL URL to the operation center
+	 * @param controlCenterURL URL to the control center
+	 * @param trafficFuzzyData Traffic fuzzy data
+	 * @param cityBoundary City boundary
 	 */
 	public InitParameter(ServerConfiguration serverConfiguration,
-			long startTimestamp, long endTimestamp, long interval, long clockGeneratorInterval,
-			String operationCenterURL, String controlCenterURL,
-			TrafficFuzzyData trafficFuzzyData, Boundary cityBoundary) {
+		long startTimestamp,
+		long endTimestamp,
+		long interval,
+		long clockGeneratorInterval,
+		String operationCenterURL,
+		String controlCenterURL,
+		TrafficFuzzyData trafficFuzzyData,
+		Envelope cityBoundary) {
 		super();
 		this.serverConfiguration = serverConfiguration;
 		this.startTimestamp = startTimestamp;
@@ -181,11 +177,11 @@ public class InitParameter implements Serializable {
 		this.trafficFuzzyData = trafficFuzzyData;
 	}
 
-	public Boundary getCityBoundary() {
+	public Envelope getCityBoundary() {
 		return cityBoundary;
 	}
 
-	public void setCityBoundary(Boundary cityBoundary) {
+	public void setCityBoundary(Envelope cityBoundary) {
 		this.cityBoundary = cityBoundary;
 	}
 

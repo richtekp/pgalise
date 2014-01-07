@@ -15,12 +15,12 @@
  */
 package de.pgalise.simulation.internal;
 
+import com.vividsolutions.jts.geom.Envelope;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 import org.easymock.EasyMock;
 import org.junit.BeforeClass;
@@ -31,10 +31,6 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.manager.ServerConfigurationReader;
-import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
@@ -45,8 +41,6 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
@@ -156,7 +150,7 @@ public class DefaultSimulationControllerTest {
 			new TrafficFuzzyData(0,
 				0.9,
 				1),
-			new Boundary(
+			new Envelope(
 				new JaxRSCoordinate(),
 				new JaxRSCoordinate()));
 	}

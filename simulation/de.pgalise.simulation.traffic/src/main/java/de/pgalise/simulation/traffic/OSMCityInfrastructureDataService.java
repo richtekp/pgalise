@@ -13,36 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
-package de.pgalise.simulation.controlCenter.internal.util.service;
+package de.pgalise.simulation.traffic;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 
 /**
- * Interface for all services to create city infrastructure data
- * with open street map files.
+ * Interface for all services to create city infrastructure data with open
+ * street map files.
+ *
  * @author Timo
  */
-public interface MapCityInfrastructureDataService {
+public interface OSMCityInfrastructureDataService {
+
 	/**
 	 * Returns an instance of @CityInfrastructureData.
-	 * @param osm
-	 * 			the used openstreetmap file
-	 * @param busstops
-	 * 			the used bus stop file
-	 * @param buildingEnergyProfileStrategy
-	 * 			the used building energy profile strategy
+	 *
+	 * @param osm the used openstreetmap file
+	 * @param busstops the used bus stop file
+	 * @param buildingEnergyProfileStrategy the used building energy profile
+	 * strategy
+	 * @param graph
 	 * @return
-	 * @throws FileNotFoundException 
-	 * @throws IOException 
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 */
-	public TrafficInfrastructureData createCityInfrastructureData(File osm, File busstops, 
-			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy, TrafficGraph graph) throws FileNotFoundException, IOException;
+	public TrafficInfrastructureData<?, ?, ?> createCityInfrastructureData(
+		File osm,
+		File busstops,
+		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy,
+		TrafficGraph graph) throws FileNotFoundException, IOException;
 }

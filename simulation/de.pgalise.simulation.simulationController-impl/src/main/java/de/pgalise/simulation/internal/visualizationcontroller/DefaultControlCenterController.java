@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.internal.visualizationcontroller;
 
 import java.io.DataOutputStream;
@@ -37,19 +36,20 @@ import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
 
 /**
- * Implementation of the control center controller. Sends all the information via HTTP to
- * the REST-ful interface of the simulation control center.
- * 
+ * Implementation of the control center controller. Sends all the information
+ * via HTTP to the REST-ful interface of the simulation control center.
+ *
  * @author Timo
  */
 @Lock(LockType.READ)
 @Local
-@Singleton(name = "de.pgalise.simulation.visualizationcontroller.ControlCenterController")
-public class DefaultControlCenterController implements ServerSideControlCenterController {
+@Singleton(
+	name = "de.pgalise.simulation.visualizationcontroller.ControlCenterController")
+public class DefaultControlCenterController implements
+	ServerSideControlCenterController {
 
 	private static final String NAME = "ControlCenterController";
 	private int connectionTimeout;
@@ -73,7 +73,7 @@ public class DefaultControlCenterController implements ServerSideControlCenterCo
 	}
 
 	@Override
-	public void init(InitParameter param) throws InitializationException, IllegalStateException {
+	public void init(InitParameter param) throws IllegalStateException {
 		this.servletURL = param.getControlCenterURL();
 
 	}
@@ -85,22 +85,26 @@ public class DefaultControlCenterController implements ServerSideControlCenterCo
 	@Override
 	public void start(StartParameter param) throws IllegalStateException {
 		Map<String, String> requestParameterMap = new HashMap<>();
-		requestParameterMap.put("start", "true");
+		requestParameterMap.put("start",
+			"true");
 		this.performRequest(requestParameterMap);
 	}
 
 	@Override
 	public void stop() throws IllegalStateException {
 		Map<String, String> requestParameterMap = new HashMap<>();
-		requestParameterMap.put("stop", "true");
+		requestParameterMap.put("stop",
+			"true");
 		this.performRequest(requestParameterMap);
 	}
 
 	@Override
 	public void update(EventList simulationEventList) throws IllegalStateException {
 		Map<String, String> requestParameterMap = new HashMap<>();
-		requestParameterMap.put("update", "true");
-		requestParameterMap.put("json", this.gson.toJson(simulationEventList));
+		requestParameterMap.put("update",
+			"true");
+		requestParameterMap.put("json",
+			this.gson.toJson(simulationEventList));
 		this.performRequest(requestParameterMap);
 	}
 
@@ -112,15 +116,16 @@ public class DefaultControlCenterController implements ServerSideControlCenterCo
 	@Override
 	public void displayException(Exception exception) throws IllegalStateException {
 		Map<String, String> requestMap = new HashMap<>();
-		requestMap.put("exception", exception.getMessage());
+		requestMap.put("exception",
+			exception.getMessage());
 		this.performRequest(requestMap);
 	}
 
 	/**
 	 * Performs the http request.
-	 * 
+	 *
 	 * @param requestParameterMap
-	 *            <Stirng = key, String = item>
+	 * <Stirng = key, String = item>
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
@@ -128,28 +133,34 @@ public class DefaultControlCenterController implements ServerSideControlCenterCo
 		StringBuilder parameters;
 		try {
 			HttpURLConnection connection;
-			connection = (HttpURLConnection) new java.net.URL(this.servletURL).openConnection();
+			connection = (HttpURLConnection) new java.net.URL(this.servletURL).
+				openConnection();
 			connection.setRequestMethod("POST");
 
 			connection.setDoOutput(true);
 			connection.setConnectTimeout(this.connectionTimeout);
 
 			parameters = new StringBuilder();
-			for (java.util.Map.Entry<String, String> entry : requestParameterMap.entrySet()) {
+			for (java.util.Map.Entry<String, String> entry : requestParameterMap.
+				entrySet()) {
 				if (parameters.length() > 0) {
 					parameters.append("&");
 				}
 
-				parameters.append(entry.getKey().replaceAll("\\s", "%20")).append("=").append(entry.getValue().replaceAll("\\s", "%20"));
+				parameters.append(entry.getKey().replaceAll("\\s",
+					"%20")).append("=").append(entry.getValue().replaceAll("\\s",
+							"%20"));
 			}
-			try (DataOutputStream wr = new DataOutputStream(connection.getOutputStream())) {
+			try (DataOutputStream wr = new DataOutputStream(connection.
+				getOutputStream())) {
 				wr.writeBytes(parameters.toString());
 				wr.flush();
 			}
 
 			int responseCode = connection.getResponseCode();
 			if (responseCode != HttpURLConnection.HTTP_OK) {
-				throw new RuntimeException("Got responseCode: " + responseCode + " for url: " + this.servletURL);
+				throw new RuntimeException(
+					"Got responseCode: " + responseCode + " for url: " + this.servletURL);
 			}
 			connection.disconnect();
 		} catch (IOException e) {

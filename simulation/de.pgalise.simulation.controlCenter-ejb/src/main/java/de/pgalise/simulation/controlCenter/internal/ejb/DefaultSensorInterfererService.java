@@ -13,37 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.internal.ejb;
 
-import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import javax.ejb.Singleton;
+
 /**
- * The default implementation of {@link SensorInterfererService}.
- * It just returns every possible sensor interferer as composite.
+ * The default implementation of {@link SensorInterfererService}. It just
+ * returns every possible sensor interferer as composite.
+ *
  * @author Timo
  */
 @Singleton
 public class DefaultSensorInterfererService implements SensorInterfererService {
-	
 
 	public DefaultSensorInterfererService() {
 	}
 
 	@Override
-	public List<SensorInterfererType> getSensorInterfererTypes(SensorType sensorType, boolean isWithSensorInterferer) {
+	public List<SensorInterfererType> getSensorInterfererTypes(
+		SensorType sensorType,
+		boolean isWithSensorInterferer) {
 
 		List<SensorInterfererType> sensorInterfererTypeList = new LinkedList<>();
-		
-		if(isWithSensorInterferer) {
+
+		if (isWithSensorInterferer) {
 			sensorInterfererTypeList.addAll(sensorType.getSensorInterfererTypeSet());
 		}
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.controller.internal;
 
 import org.slf4j.Logger;
@@ -29,21 +28,23 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 
 /**
- * Skeleton class for the implementation of a Controller. When using this class it's not necessary anymore to handle the
- * different states of a controller.
- * 
- * @param <E> 
- * @param <S> 
- * @param <I> 
+ * Skeleton class for the implementation of a Controller. When using this class
+ * it's not necessary anymore to handle the different states of a controller.
+ *
+ * @param <E>
+ * @param <S>
+ * @param <I>
  * @author Mustafa
  * @version 1.0
  */
-public abstract class AbstractController<E extends Event, S extends StartParameter, I extends InitParameter> extends AbstractIdentifiable implements Controller<E, S, I> {
+public abstract class AbstractController<E extends Event, S extends StartParameter, I extends InitParameter>
+	extends AbstractIdentifiable implements Controller<E, S, I> {
 
 	/**
 	 * Logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(AbstractController.class);
+	private static final Logger log = LoggerFactory.getLogger(
+		AbstractController.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -55,12 +56,12 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	public void init(I param) {
 		switch (status) {
 			case INIT:
-		try {
-			//				log.info("Initializing "+getName()+" ...");
-							onInit(param);
-		} catch (InitializationException ex) {
-			throw new RuntimeException(ex);
-		}
+				try {
+					//				log.info("Initializing "+getName()+" ...");
+					onInit(param);
+				} catch (InitializationException ex) {
+					throw new RuntimeException(ex);
+				}
 				status = StatusEnum.INITIALIZED;
 
 				// Log
@@ -68,7 +69,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 				break;
 			default:
 				throw new IllegalStateException(getName()
-						+ " can not be initialized in its current state: " + status);
+					+ " can not be initialized in its current state: " + status);
 		}
 	}
 
@@ -86,13 +87,16 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 				break;
 			default:
 				throw new IllegalStateException(getName()
-						+ " can not be reset in its current state: " + status);
+					+ " can not be reset in its current state: " + status);
 		}
 	}
 
 	@Override
 	public void start(S param) throws IllegalStateException {
 		switch (status) {
+			case INIT:
+				throw new IllegalStateException(
+					"The controller is still in INIT state which means that initialization has not taken place, is currently running on another thread or failed before");
 			case INITIALIZED:
 //				log.info("Starting "+getName()+" ...");
 				onStart(param);
@@ -111,7 +115,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 				break;
 			default:
 				throw new IllegalStateException(getName()
-						+ " can not be started in its current state: " + status);
+					+ " can not be started in its current state: " + status);
 		}
 	}
 
@@ -128,7 +132,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 				break;
 			default:
 				throw new IllegalStateException(getName()
-						+ " can not be stopped in its current state: " + status);
+					+ " can not be stopped in its current state: " + status);
 		}
 	}
 
@@ -139,7 +143,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 
 	/**
 	 * Should not be used by sub classes. For testing purpose only.
-	 * 
+	 *
 	 * @param status
 	 */
 	public void setStatus(StatusEnum status) {
@@ -155,13 +159,14 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 				break;
 			default:
 				throw new IllegalStateException(getName()
-						+ " can not be updated in its current state: " + status);
+					+ " can not be updated in its current state: " + status);
 		}
 	}
 
 	/**
-	 * Implementation specific method. Will be automatically called when initializing this controller.
-	 * 
+	 * Implementation specific method. Will be automatically called when
+	 * initializing this controller.
+	 *
 	 * @param param
 	 * @see Controller#init(InitParameter)
 	 * @throws InitializationException
@@ -169,34 +174,38 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	protected abstract void onInit(I param) throws InitializationException;
 
 	/**
-	 * Implementation specific method. Will be automatically called when resetting this controller.
+	 * Implementation specific method. Will be automatically called when resetting
+	 * this controller.
 	 */
 	protected abstract void onReset();
 
 	/**
-	 * Implementation specific method. Will be automatically called when starting this controller.
-	 * 
+	 * Implementation specific method. Will be automatically called when starting
+	 * this controller.
+	 *
 	 * @param param
 	 * @see Controller#start(StartParameter)
 	 */
 	protected abstract void onStart(S param);
 
 	/**
-	 * Implementation specific method. Will be automatically called when stopping this controller.
-	 * 
+	 * Implementation specific method. Will be automatically called when stopping
+	 * this controller.
+	 *
 	 * @see Controller#stop()
 	 */
 	protected abstract void onStop();
 
 	/**
-	 * Implementation specific method. Will be automatically called when this controller is started after it has been
-	 * stopped.
+	 * Implementation specific method. Will be automatically called when this
+	 * controller is started after it has been stopped.
 	 */
 	protected abstract void onResume();
 
 	/**
-	 * Implementation specific method. Will be automatically called when updating this controller.
-	 * 
+	 * Implementation specific method. Will be automatically called when updating
+	 * this controller.
+	 *
 	 * @param simulationEventList
 	 * @see Controller#update(SimulationEventList)
 	 */

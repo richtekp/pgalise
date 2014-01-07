@@ -152,8 +152,6 @@ public class DefaultTrafficController<
 					TrafficServerLocal<VehicleEvent> server = serverList.get(serverId);
 					try {
 						server.init(param);
-					} catch (InitializationException ex) {
-						throw new RuntimeException(ex);
 					} catch (IllegalStateException ex) {
 						throw new RuntimeException(ex);
 					}

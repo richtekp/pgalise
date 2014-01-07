@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
@@ -23,41 +22,44 @@ import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Map;
 
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+
 /**
- * Ignores the gate messages.
- * Only for testing or if you can not use InfoSphere or other DSMS, which
- * can not handle a gate.
+ * Ignores the gate messages. Only for testing or if you can not use InfoSphere
+ * or other DSMS, which can not handle a gate.
+ *
  * @author Timo
  *
  */
-public class NoGPSGateStrategy extends AbstractIdentifiable implements GPSGateStrategy {
+public class NoGPSGateStrategy extends AbstractIdentifiable implements
+	GPSGateStrategy {
 
 	@Override
-	public void init(TrafficInitParameter param) throws InitializationException,
-			IllegalStateException {}
+	public void init(TrafficInitParameter param) throws
+		IllegalStateException {
+	}
 
 	@Override
-	public void reset() throws IllegalStateException {}
+	public void reset() throws IllegalStateException {
+	}
 
 	@Override
-	public void start(InfrastructureStartParameter param) throws IllegalStateException {}
+	public void start(InfrastructureStartParameter param) throws IllegalStateException {
+	}
 
 	@Override
-	public void stop() throws IllegalStateException {}
+	public void stop() throws IllegalStateException {
+	}
 
 	@Override
 	public void update(EventList<Event> simulationEventList)
-			throws IllegalStateException {}
+		throws IllegalStateException {
+	}
 
 	@Override
 	public StatusEnum getStatus() {
@@ -65,27 +67,32 @@ public class NoGPSGateStrategy extends AbstractIdentifiable implements GPSGateSt
 	}
 
 	@Override
-	public void createSensor(Sensor<?,?> sensor) throws SensorException {}
+	public void createSensor(Sensor<?, ?> sensor) throws SensorException {
+	}
 
 	@Override
-	public void createSensors(Collection<Sensor<?,?>> sensors)
-			throws SensorException {}
+	public void createSensors(Collection<Sensor<?, ?>> sensors)
+		throws SensorException {
+	}
 
 	@Override
-	public void deleteSensor(Sensor<?,?> sensor) throws SensorException {}
+	public void deleteSensor(Sensor<?, ?> sensor) throws SensorException {
+	}
 
 	@Override
-	public void deleteSensors(Collection<Sensor<?,?>> sensors)
-			throws SensorException {}
+	public void deleteSensors(Collection<Sensor<?, ?>> sensors)
+		throws SensorException {
+	}
 
 	@Override
-	public boolean statusOfSensor(Sensor<?,?> sensor) throws SensorException {
+	public boolean statusOfSensor(Sensor<?, ?> sensor) throws SensorException {
 		return false;
 	}
 
 	@Override
 	public void handleGateMessage(Map<Integer, Double> gateInformationMap)
-			throws UnknownHostException, IOException {}
+		throws UnknownHostException, IOException {
+	}
 
 	@Override
 	public String getName() {

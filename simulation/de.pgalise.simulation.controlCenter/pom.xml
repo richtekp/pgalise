@@ -213,6 +213,12 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-spatial</artifactId>
 		</dependency>
+	 <dependency>
+	  <groupId>net.sf.ehcache</groupId>
+	  <artifactId>ehcache</artifactId>
+	  <version>2.7.0</version>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<finalName>de.pgalise.simulation.controlCenter</finalName>

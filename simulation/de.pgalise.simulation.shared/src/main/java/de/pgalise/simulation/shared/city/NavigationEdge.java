@@ -8,7 +8,6 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.LineString;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.shared.persistence.Identifiable;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -17,12 +16,13 @@ import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 
 /**
  *
- * @param <N> 
- * @param <E> 
+ * @param <N>
+ * @param <E>
  * @author richter
  */
 @Entity
 public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiable {
+
 	private static final long serialVersionUID = 1L;
 
 	@Transient
@@ -38,40 +38,55 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	private N target;
 	@Transient
 	private JaxbVector2d vector = null;
-	private boolean oneWay = false;
-	
+	/*
+	 Wrapper in order to indicate not set status with null
+	 */
+	private Boolean oneWay = false;
+
 	/**
-	 * <tt>source</tt> and <tt>target</tt> are set using {@link Graph#addEdge(java.lang.Object, java.lang.Object) } or {@link Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object) }. You should invoke {@link #validateNavigationNodeDistance() } after a call to {@link Graph#addEdge(java.lang.Object, java.lang.Object) } or {@link Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object) }!
-	 * @throws IllegalArgumentException if the distance between <tt>node0</tt> and <tt>node1</tt> is less than or equals {@link NavigationNode#NODE_RADIUS}
+	 * <tt>source</tt> and <tt>target</tt> are set using {@link Graph#addEdge(java.lang.Object, java.lang.Object)
+	 * } or {@link Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object)
+	 * }. You should invoke {@link #validateNavigationNodeDistance() } after a
+	 * call to {@link Graph#addEdge(java.lang.Object, java.lang.Object) } or {@link Graph#addEdge(java.lang.Object, java.lang.Object, java.lang.Object)
+	 * }!
+	 *
+	 * @throws IllegalArgumentException if the distance between <tt>node0</tt> and
+	 * <tt>node1</tt> is less than or equals {@link NavigationNode#NODE_RADIUS}
 	 */
 	public NavigationEdge() {
 		super();
 	}
-	
-	public NavigationEdge(N source, N target) {
+
+	public NavigationEdge(N source,
+		N target) {
 		this();
 		this.source = source;
 		this.target = target;
 	}
-	
+
 	/**
-	 * generates edge line lazily in order to allow usage of this class in an {@link EdgeFactory}
-	 * @return 
+	 * generates edge line lazily in order to allow usage of this class in an
+	 * {@link EdgeFactory}
+	 *
+	 * @return
 	 */
 	public LineString getEdgeLine() {
-		if(edgeLine == null) {
-			this.edgeLine = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createLineString(
-				new JaxRSCoordinate[] {
-				getSource().getGeoLocation(), getTarget().getGeoLocation()
-				}
-			);
+		if (edgeLine == null) {
+			this.edgeLine = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+				createLineString(
+					new JaxRSCoordinate[]{
+						getSource().getGeoLocation(), getTarget().getGeoLocation()
+					}
+				);
 		}
 		return edgeLine;
 	}
 
 	public double getEdgeLength() {
-		if(edgeLineLength == null) {
-			double distance = GeoToolsBootstrapping.distanceHaversineInM(source.getGeoLocation(), target.getGeoLocation());
+		if (edgeLineLength == null) {
+			double distance = GeoToolsBootstrapping.distanceHaversineInM(source.
+				getGeoLocation(),
+				target.getGeoLocation());
 			edgeLineLength = distance;
 		}
 		return edgeLineLength;
@@ -82,11 +97,14 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	}
 
 	public double getLineAzimuth() {
-		if(lineAzimuth == null) {
-			JaxbVector2d edgeVector = new JaxbVector2d(source.getGeoLocation().getX(), source.getGeoLocation().getY());
-			edgeVector.sub(new JaxbVector2d(target.getGeoLocation().getX(), target.getGeoLocation().getY()));
-			JaxbVector2d northVector = new JaxbVector2d(0,1);
-			lineAzimuth = edgeVector.angle(northVector)*180/Math.PI;
+		if (lineAzimuth == null) {
+			JaxbVector2d edgeVector = new JaxbVector2d(source.getGeoLocation().getX(),
+				source.getGeoLocation().getY());
+			edgeVector.sub(new JaxbVector2d(target.getGeoLocation().getX(),
+				target.getGeoLocation().getY()));
+			JaxbVector2d northVector = new JaxbVector2d(0,
+				1);
+			lineAzimuth = edgeVector.angle(northVector) * 180 / Math.PI;
 		}
 		return lineAzimuth;
 	}
@@ -94,11 +112,12 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	public void setTarget(N target) {
 		this.target = target;
 	}
-		public void setSource(N source) {
+
+	public void setSource(N source) {
 		this.source = source;
 	}
 
-		public N getSource() {
+	public N getSource() {
 		return source;
 	}
 
@@ -109,13 +128,13 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	public void setUpdateTimestamp(long updateTimestamp) {
 		this.updateTimestamp = updateTimestamp;
 	}
-	
+
 	public long getUpdateTimestamp() {
 		return updateTimestamp;
 	}
 
 	public JaxbVector2d getVector() {
-		if(this.vector == null) {
+		if (this.vector == null) {
 			this.vector = new JaxbVector2d(getSource().getGeoLocation().getX(),
 				getSource().getGeoLocation().getY());
 			vector.sub(new JaxbVector2d(getTarget().getGeoLocation().getX(),
@@ -129,12 +148,14 @@ public class NavigationEdge<N extends NavigationNode> extends AbstractIdentifiab
 	}
 
 	public N getOpposite(N node) {
-		if(node.equals(getSource())) {
+		if (node.equals(getSource())) {
 			return getTarget();
-		}else if(node.equals(getTarget())) {
+		} else if (node.equals(getTarget())) {
 			return getSource();
-		}else {
-			throw new IllegalArgumentException(String.format("node %s is not part of this edge", this));
+		} else {
+			throw new IllegalArgumentException(String.format(
+				"node %s is not part of this edge",
+				this));
 		}
 	}
 

@@ -13,79 +13,79 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.operationCenter.internal.model;
 
-import de.pgalise.simulation.shared.city.Boundary;
-
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * This model contains all that is needed to initialize the operation center.
+ *
  * @author Timo
  */
 public class OCSimulationInitParameter {
+
 	private long startTimestamp, endTimestamp, interval, clockGeneratorInterval;
-	private Boundary cityBoundary;
-	
+	private Envelope cityBoundary;
+
 	/**
 	 * Constructor
-	 * @param startTimestamp
-	 * 			the start time of the simulation
-	 * @param endTimestamp
-	 * 			the end time of the simulation
-	 * @param interval
-	 * 			the interval of the simulation
-	 * @param clockGeneratorInterval
-	 * 			the interval for pauses between every simulation step
-	 * @param cityBoundary
-	 * 			the boundaries of the city to set a fitting map
+	 *
+	 * @param startTimestamp the start time of the simulation
+	 * @param endTimestamp the end time of the simulation
+	 * @param interval the interval of the simulation
+	 * @param clockGeneratorInterval the interval for pauses between every
+	 * simulation step
+	 * @param cityBoundary the boundaries of the city to set a fitting map
 	 */
 	public OCSimulationInitParameter(long startTimestamp,
-			long endTimestamp, long interval, long clockGeneratorInterval, Boundary cityBoundary) {
+		long endTimestamp,
+		long interval,
+		long clockGeneratorInterval,
+		Envelope cityBoundary) {
 		this.startTimestamp = startTimestamp;
 		this.endTimestamp = endTimestamp;
 		this.interval = interval;
 		this.clockGeneratorInterval = clockGeneratorInterval;
 		this.cityBoundary = cityBoundary;
 	}
-	
+
 	public long getStartTimestamp() {
 		return startTimestamp;
 	}
-	
+
 	public void setStartTimestamp(long startTimestamp) {
 		this.startTimestamp = startTimestamp;
 	}
-	
+
 	public long getEndTimestamp() {
 		return endTimestamp;
 	}
-	
+
 	public void setEndTimestamp(long endTimestamp) {
 		this.endTimestamp = endTimestamp;
 	}
-	
+
 	public long getInterval() {
 		return interval;
 	}
-	
+
 	public void setInterval(long interval) {
 		this.interval = interval;
 	}
-	
+
 	public long getClockGeneratorInterval() {
 		return clockGeneratorInterval;
 	}
-	
+
 	public void setClockGeneratorInterval(long clockGeneratorInterval) {
 		this.clockGeneratorInterval = clockGeneratorInterval;
 	}
 
-	public Boundary getCityBoundary() {
+	public Envelope getCityBoundary() {
 		return cityBoundary;
 	}
 
-	public void setCityBoundary(Boundary cityBoundary) {
+	public void setCityBoundary(Envelope cityBoundary) {
 		this.cityBoundary = cityBoundary;
 	}
 }

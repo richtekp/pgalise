@@ -9,12 +9,10 @@ import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterS
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.testutils.TestUtils;
-import java.io.IOException;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
-import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -182,20 +180,20 @@ public class MainCtrlTest {
 
 	/**
 	 * Test of retrieveExportDownloadLink method, of class MainCtrl.
+	 *
+	 * Only test that the result is not null and returns without exception because
+	 * serialization is handled by {@link StartParameterSerializerService} and
+	 * tested there.
 	 */
 	@Test
-	public void testRetrieveExportDownloadLink() throws IOException {
+	public void testRetrieveExportDownloadLink() {
 		System.out.println("retrieveExportDownloadLink");
 		MainCtrl instance = new MainCtrl();
 		instance.setStartParameterSerializerService(startParameterSerializerService);
 		ControlCenterStartParameter startParameter
 			= new ControlCenterStartParameter();
 		instance.setStartParameter(startParameter);
-		String expResult = "";
 		StreamedContent result = instance.retrieveExportDownloadLink();
-		String resultString = IOUtils.toString(result.getStream(),
-			"UTF-8");
-		assertEquals(expResult,
-			resultString);
+		assertNotNull(result);
 	}
 }

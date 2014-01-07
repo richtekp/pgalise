@@ -10,7 +10,7 @@ import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterS
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import java.io.InputStream;
 import java.io.OutputStream;
-import javax.ejb.Stateful;
+import javax.ejb.Singleton;
 import javolution.xml.XMLObjectWriter;
 import javolution.xml.stream.XMLStreamException;
 
@@ -18,7 +18,7 @@ import javolution.xml.stream.XMLStreamException;
  *
  * @author richter
  */
-@Stateful
+@Singleton
 public class XMLStartParameterSerializerService implements
 	StartParameterSerializerService {
 

@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.internal.message;
 
 import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 
 /**
- * Holds information about osm and busstop file. The user can select between several files
- * and the server will load the selected files for the simulation scenario.
- * 
+ * Holds information about osm and busstop file. The user can select between
+ * several files and the server will load the selected files for the simulation
+ * scenario.
+ *
  * @author Timo
  */
 public class MapAndBusstopFileMessage extends AbstractIdentifiableControlCenterMessage<MapAndBusstopFileData> {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param messageID
-	 *            ID
-	 * @param content
-	 *            Holds information about osm and busstop file.
+	 *
+	 * @param messageID ID
+	 * @param content Holds information about osm and busstop file.
 	 */
-	public MapAndBusstopFileMessage(Long messageID, MapAndBusstopFileData content) {
-		super(messageID, MessageTypeEnum.OSM_AND_BUSSTOP_FILE_MESSAGE, content);
+	public MapAndBusstopFileMessage(Long messageID,
+		MapAndBusstopFileData content) {
+		super(messageID,
+			MessageTypeEnum.OSM_AND_BUSSTOP_FILE_MESSAGE,
+			content);
 	}
 }

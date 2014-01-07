@@ -4,16 +4,16 @@
  */
 package de.pgalise.simulation.traffic;
 
+import com.vividsolutions.jts.geom.Envelope;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
-import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 
-
 public class TrafficInitParameter extends InitParameter {
+
 	private static final long serialVersionUID = 1L;
 	private TrafficInfrastructureData trafficInfrastructureData;
-	
+
 	protected TrafficInitParameter() {
 	}
 
@@ -27,7 +27,7 @@ public class TrafficInitParameter extends InitParameter {
 		String operationCenterURL,
 		String controlCenterURL,
 		TrafficFuzzyData trafficFuzzyData,
-		Boundary cityBoundary) {
+		Envelope cityBoundary) {
 		super(
 			serverConfiguration,
 			startTimestamp,
@@ -49,5 +49,5 @@ public class TrafficInitParameter extends InitParameter {
 	public TrafficInfrastructureData getCityInfrastructureData() {
 		return trafficInfrastructureData;
 	}
-	
+
 }

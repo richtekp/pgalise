@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.shared.city.Boundary;
+import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Notification when the osm parser finished it's work.
- * 
+ *
  * @author Timo
  */
-public class OSMParsedMessage extends AbstractIdentifiableControlCenterMessage<Boundary> {
+public class OSMParsedMessage extends AbstractIdentifiableControlCenterMessage<Envelope> {
+
 	/**
 	 * Constructor
-	 * 
-	 * @param messageID
-	 *            ID
-	 * @param content
-	 *            Boundary for the city. This is useful to set the map boundary.
+	 *
+	 * @param messageID ID
+	 * @param content Boundary for the city. This is useful to set the map
+	 * boundary.
 	 */
-	public OSMParsedMessage(Long messageID, Boundary content) {
-		super(messageID, MessageTypeEnum.OSM_PARSED, content);
+	public OSMParsedMessage(Long messageID,
+		Envelope content) {
+		super(messageID,
+			MessageTypeEnum.OSM_PARSED,
+			content);
 	}
 }

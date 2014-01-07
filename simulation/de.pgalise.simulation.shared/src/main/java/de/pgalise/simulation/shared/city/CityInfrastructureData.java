@@ -13,51 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.city;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.util.List;
 import java.util.Map;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.persistence.Identifiable;
 import javax.persistence.MappedSuperclass;
 
 /**
- * Contains streets, bus stops and landuse information.
- * Its an interface, because there can be different ways to fill it and
- * implement the functions:
- * {@link CityInfrastructureData#getNearestNode(double, double)}, {@link CityInfrastructureData#getNearestStreetNode(double, double)
+ * Contains streets, bus stops and landuse information. Its an interface,
+ * because there can be different ways to fill it and implement the functions:
+ * null {@link CityInfrastructureData#getNearestNode(double, double)}, {@link CityInfrastructureData#getNearestStreetNode(double, double)
  * and {@link CityInfrastructureData#getNodesInBoundary(Boundary)
- * 
+ *
  * @author Timo
  */
 @MappedSuperclass
-public abstract class CityInfrastructureData<W extends Way> extends AbstractIdentifiable {
+public abstract class CityInfrastructureData<N extends NavigationNode, E extends NavigationEdge<N>, W extends Way<E, N>>
+	extends AbstractIdentifiable {
+
+	private static final long serialVersionUID = 1L;
 	private List<W> cycleWays;
 	private List<W> landUseWays;
 	private List<W> motorWays;
 	private List<W> motorWaysWithBusStops;
-	private List<NavigationNode> junctionNodes;
-	private List<NavigationNode> nodes;
-	private List<NavigationNode> streetNodes;
-	private List<Way<?,?>> ways;
-	private Boundary boundary;
-	private List<W> cycleAndMotorways;  
+	private List<N> junctionNodes;
+	private List<N> nodes;
+	private List<N> streetNodes;
+	private List<W> ways;
+	private Envelope boundary;
+	private List<W> cycleAndMotorways;
 
 	public void setWays(
-		List<Way<?,?>> ways) {
+		List<W> ways) {
 		this.ways = ways;
 	}
 
-	public void setStreetNodes(List<NavigationNode> streetNodes) {
+	public void setStreetNodes(List<N> streetNodes) {
 		this.streetNodes = streetNodes;
 	}
 
-	public void setNodes(List<NavigationNode> nodes) {
+	public void setNodes(List<N> nodes) {
 		this.nodes = nodes;
 	}
 
@@ -76,7 +75,7 @@ public abstract class CityInfrastructureData<W extends Way> extends AbstractIden
 		this.landUseWays = landUseWays;
 	}
 
-	public void setJunctionNodes(List<NavigationNode> junctionNodes) {
+	public void setJunctionNodes(List<N> junctionNodes) {
 		this.junctionNodes = junctionNodes;
 	}
 
@@ -90,19 +89,19 @@ public abstract class CityInfrastructureData<W extends Way> extends AbstractIden
 		this.cycleAndMotorways = cycleAndMotorways;
 	}
 
-	public void setBoundary(Boundary boundary) {
+	public void setBoundary(Envelope boundary) {
 		this.boundary = boundary;
 	}
 
-	public List<Way<?,?>> getWays() {
+	public List<W> getWays() {
 		return ways;
 	}
 
-	public List<NavigationNode> getStreetNodes() {
+	public List<N> getStreetNodes() {
 		return streetNodes;
 	}
 
-	public List<NavigationNode> getNodes() {
+	public List<N> getNodes() {
 		return nodes;
 	}
 
@@ -118,7 +117,7 @@ public abstract class CityInfrastructureData<W extends Way> extends AbstractIden
 		return landUseWays;
 	}
 
-	public List<NavigationNode> getJunctionNodes() {
+	public List<N> getJunctionNodes() {
 		return junctionNodes;
 	}
 
@@ -130,55 +129,67 @@ public abstract class CityInfrastructureData<W extends Way> extends AbstractIden
 		return cycleAndMotorways;
 	}
 
-	public Boundary getBoundary() {
+	public Envelope getBoundary() {
 		return boundary;
 	}
-	
+
 	/**
 	 * Returns the number of buildings.
+	 *
 	 * @param geolocation
 	 * @param radiusInMeter
 	 * @return
 	 */
-	public abstract Map<EnergyProfileEnum, List<Building>> getBuildings(JaxRSCoordinate geolocation, int radiusInMeter);
-	
+	public abstract Map<EnergyProfileEnum, List<Building>> getBuildings(
+		JaxRSCoordinate geolocation,
+		int radiusInMeter);
+
 	/**
 	 * Returns all buildings in the radius.
+	 *
 	 * @param centerPoint
 	 * @param radiusInMeter
 	 * @return
 	 */
-	public abstract List<Building> getBuildingsInRadius(JaxRSCoordinate centerPoint, int radiusInMeter);
-	
+	public abstract List<Building> getBuildingsInRadius(
+		JaxRSCoordinate centerPoint,
+		int radiusInMeter);
+
 	/**
 	 * Returns all nodes in the boundary.
+	 *
 	 * @param boundary
 	 * @return
 	 */
-	public abstract List<NavigationNode> getNodesInBoundary(Boundary boundary);
+	public abstract List<NavigationNode> getNodesInBoundary(Envelope boundary);
 
 	/**
 	 * Returns the nearest used node.
-	 * 
+	 *
 	 * @param latitude
 	 * @param longitude
 	 * @return
 	 */
-	public abstract NavigationNode getNearestNode(double latitude, double longitude);
+	public abstract NavigationNode getNearestNode(double latitude,
+		double longitude);
 
 	/**
 	 * Returns the nearest used street node.
+	 *
 	 * @param latitude
 	 * @param longitude
 	 * @return
 	 */
-	public abstract NavigationNode getNearestStreetNode(double latitude, double longitude);
-	
+	public abstract NavigationNode getNearestStreetNode(double latitude,
+		double longitude);
+
 	/**
 	 * Returns the nearest used junction node.
+	 *
 	 * @param latitude
 	 * @param longitude
 	 * @return
 	 */
-	public abstract NavigationNode getNearestJunctionNode(double latitude, double longitude);
+	public abstract NavigationNode getNearestJunctionNode(double latitude,
+		double longitude);
 }

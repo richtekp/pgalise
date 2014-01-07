@@ -17,72 +17,79 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  *
- * @param <N> 
- * @param <E> 
- * @param <D> 
- * @param <V> 
  * @author richter
  */
-public abstract class TrafficGraph extends DefaultDirectedGraph<TrafficNode, TrafficEdge>{
+public abstract class TrafficGraph extends DefaultDirectedGraph<TrafficNode, TrafficEdge> {
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	
-	public TrafficGraph(EdgeFactory<TrafficNode,TrafficEdge> edgeFactory) {
+
+	public TrafficGraph(EdgeFactory<TrafficNode, TrafficEdge> edgeFactory) {
 		super(edgeFactory);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param position
-	 * @param distanceTolerance can be set to {@link Double#MAX_VALUE} in order to ignore
-	 * @return <ol><li> a {@link NavigationNode} if the distance to a node in 
-	 * this graph is <= <tt>distanceTolerance</tt></li>
-	 * <li>a {@link NavigationEdge} if the distance to an edge in this 
-	 * graph is less than <tt>distanceTolerance</tt>	and 1. doesn't apply</li>
+	 * @param distanceTolerance can be set to {@link Double#MAX_VALUE} in order to
+	 * ignore
+	 * @return <ol><li> a {@link NavigationNode} if the distance to a node in this
+	 * graph is <= <tt>distanceTolerance</tt></li>
+	 * <li>a {@link NavigationEdge} if the distance to an edge in this graph is
+	 * less than <tt>distanceTolerance</tt>	and 1. doesn't apply</li>
 	 * <li><code>null</code> if 1. and 2. don't apply
 	 */
-	public Identifiable getElementClosestTo(JaxRSCoordinate position, double distanceTolerance) {
+	public Identifiable getElementClosestTo(JaxRSCoordinate position,
+		double distanceTolerance) {
 		//@TODO: remove brute force search
 		TrafficNode minDistanceNode = null;
 		double minDistance = Double.MAX_VALUE;
-		for(TrafficNode node : this.vertexSet()) {
+		for (TrafficNode node : this.vertexSet()) {
 			double distance = node.getGeoLocation().distance(position);
-			if(distance <= distanceTolerance && distance < minDistance) {
+			if (distance <= distanceTolerance && distance < minDistance) {
 				minDistanceNode = node;
 			}
 		}
-		if(minDistanceNode != null) {
+		if (minDistanceNode != null) {
 			return minDistanceNode;
 		}
 		minDistance = Double.MAX_VALUE;
 		TrafficEdge minDistanceEdge = null;
-		for(TrafficEdge edge : this.edgeSet()) {
+		for (TrafficEdge edge : this.edgeSet()) {
 			JaxRSCoordinate node0Position = edge.getSource().getGeoLocation();
 			JaxRSCoordinate node1Position = edge.getTarget().getGeoLocation();
-			JaxRSCoordinate node0Coordinates = new JaxRSCoordinate(node0Position.getX(), node0Position.getY());
-			JaxRSCoordinate node1Coordinates = new JaxRSCoordinate(node1Position.getX(), node1Position.getY());
-			JaxRSCoordinate positionCoordines = new JaxRSCoordinate(position.getX(), position.getY());
-			double distance = CGAlgorithms.distancePointLine(positionCoordines, node0Coordinates, node1Coordinates);
-			if(distance <= distanceTolerance && distance < minDistance) {
+			JaxRSCoordinate node0Coordinates = new JaxRSCoordinate(node0Position.
+				getX(),
+				node0Position.getY());
+			JaxRSCoordinate node1Coordinates = new JaxRSCoordinate(node1Position.
+				getX(),
+				node1Position.getY());
+			JaxRSCoordinate positionCoordines = new JaxRSCoordinate(position.getX(),
+				position.getY());
+			double distance = CGAlgorithms.distancePointLine(positionCoordines,
+				node0Coordinates,
+				node1Coordinates);
+			if (distance <= distanceTolerance && distance < minDistance) {
 				minDistanceEdge = edge;
 			}
 		}
 		return minDistanceEdge; //if it is null it fulfills the last condition;
 	}
-	
+
 	public TrafficNode getNodeClosestTo(JaxRSCoordinate position) {
 		return getNodeClosestTo(position,
 			Integer.MAX_VALUE);
 	}
-	
-	public TrafficNode getNodeClosestTo(JaxRSCoordinate position, int distanceTolerance) {
-		
+
+	public TrafficNode getNodeClosestTo(JaxRSCoordinate position,
+		int distanceTolerance) {
+
 		TrafficNode minDistanceNode = null;
 		double minDistance = Double.MAX_VALUE;
-		for(TrafficNode node : this.vertexSet()) {
+		for (TrafficNode node : this.vertexSet()) {
 			double distance = node.getGeoLocation().distance(position);
-			if(distance <= distanceTolerance && distance < minDistance) {
+			if (distance <= distanceTolerance && distance < minDistance) {
 				minDistanceNode = node;
 			}
 		}
@@ -100,31 +107,33 @@ public abstract class TrafficGraph extends DefaultDirectedGraph<TrafficNode, Tra
 
 	@OneToMany
 	public Set<TrafficEdge> getEdgeSet() {
-		return super.edgeSet(); 
+		return super.edgeSet();
 	}
-	
+
 	public void setEdgeSet(Set<TrafficEdge> edgeSet) {
 		super.edgeSet().addAll(edgeSet);
 	}
 
 	@OneToMany
 	public Set<TrafficNode> getVertexSet() {
-		return super.vertexSet(); 
+		return super.vertexSet();
 	}
-	
+
 	public void setVertexSet(Set<TrafficNode> vertexSet) {
 		super.vertexSet().addAll(vertexSet);
 	}
 
 	/**
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 */
 	public Geometry calulateBoundaries() {
 		throw new UnsupportedOperationException();
 	}
-	
-	private static class NavigationEdgeFactory<Y extends TrafficNode, X extends TrafficEdge, Z extends VehicleData> implements EdgeFactory<Y, X> {
+
+	private static class NavigationEdgeFactory<Y extends TrafficNode, X extends TrafficEdge, Z extends VehicleData>
+		implements EdgeFactory<Y, X> {
+
 		private Class<? extends X> edgeClass;
 
 		NavigationEdgeFactory(Class<X> edgeClass) {
@@ -132,7 +141,8 @@ public abstract class TrafficGraph extends DefaultDirectedGraph<TrafficNode, Tra
 		}
 
 		@Override
-		public X createEdge(Y sourceVertex, Y targetVertex) {
+		public X createEdge(Y sourceVertex,
+			Y targetVertex) {
 			X retValue;
 			try {
 				retValue = edgeClass.newInstance();

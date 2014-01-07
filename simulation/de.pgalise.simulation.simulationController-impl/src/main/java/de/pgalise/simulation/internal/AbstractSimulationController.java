@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.internal;
 
 import de.pgalise.simulation.SimulationController;
@@ -47,6 +46,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractSimulationController extends AbstractController<Event, InfrastructureStartParameter, TrafficInitParameter>
 	implements SimulationControllerLocal {
+
 	private static final String NAME = "SimulationController";
 	private static final long serialVersionUID = 1L;
 	/**
@@ -54,7 +54,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	 */
 	private static final Logger log = LoggerFactory.getLogger(
 		AbstractSimulationController.class);
-	
+
 	/**
 	 * EventInitiator
 	 */
@@ -221,7 +221,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 								service.reset();
 							}
 							service.init(param);
-						} catch (IllegalStateException | InitializationException e) {
+						} catch (IllegalStateException e) {
 							exception.setValue(false);
 							log.error("Could not inititialize FrontController",
 								e);

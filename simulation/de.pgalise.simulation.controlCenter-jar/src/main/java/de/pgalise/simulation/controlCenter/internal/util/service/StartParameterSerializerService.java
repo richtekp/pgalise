@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import java.io.InputStream;
@@ -25,41 +24,49 @@ import java.io.OutputStream;
 
 /**
  * Interface for all start parameter serializer services.
+ *
  * @author Timo
  */
 public interface StartParameterSerializerService {
+
 	/**
 	 * Deserialize the ControlCenterStartParameter.
-	 * @param content
-	 * 			e.g. a XML string.
+	 *
+	 * @param content e.g. a XML string.
 	 * @return
 	 */
 	public ControlCenterStartParameter deserialize(String content);
-	
+
 	/**
 	 * Deserialize the ControlCenterStartParameter.
+	 *
 	 * @param inputStream
 	 * @return
 	 */
 	public ControlCenterStartParameter deserialize(InputStream inputStream);
-	
+
 	/**
 	 * Serializes the ControlCenterStartParameter into a file.
+	 *
 	 * @param cCSimulationStartParameter
 	 * @param fileName
 	 * @return the file name.
 	 */
-	public String serialize(ControlCenterStartParameter cCSimulationStartParameter, String fileName);
-	
+	public String serialize(ControlCenterStartParameter cCSimulationStartParameter,
+		String fileName);
+
 	/**
 	 * serializes <tt>controlCenterStartParameter</tt> to <tt>outputStream</tt>
+	 *
 	 * @param controlCenterStartParameter
-	 * @param outputStream 
+	 * @param outputStream
 	 */
-	public void serialize(ControlCenterStartParameter controlCenterStartParameter, OutputStream outputStream);
-	
+	public void serialize(ControlCenterStartParameter controlCenterStartParameter,
+		OutputStream outputStream);
+
 	/**
 	 * Inits the start parameter serializer service.
+	 *
 	 * @param gson
 	 */
 	public void init(Gson gson);

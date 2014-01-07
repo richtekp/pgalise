@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,14 +28,14 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 
-
 /**
  * Service to create OSM city infrastructure data.
- * 
+ *
  * @author Timo
  * @author Mustafa
  */
 public class DefaultOSMCityInfrastructureDataService {
+
 	/**
 	 * Pattern to get filenames without postfix.
 	 */
@@ -46,7 +44,8 @@ public class DefaultOSMCityInfrastructureDataService {
 	/**
 	 * Logger
 	 */
-	private static final Logger log = org.slf4j.LoggerFactory.getLogger(DefaultOSMCityInfrastructureDataService.class);
+	private static final Logger log = org.slf4j.LoggerFactory.getLogger(
+		DefaultOSMCityInfrastructureDataService.class);
 
 	/**
 	 * Default
@@ -55,31 +54,32 @@ public class DefaultOSMCityInfrastructureDataService {
 	}
 
 	/**
-	 * Returns an instance of {@link CityInfrastructureData}. If the file is already parsed and persistent, it can be
-	 * loaded, otherwise it will be parsed.
-	 * 
-	 * @param osm
-	 *            OSM file
-	 * @param busstops
-	 *            bus stops file
-	 * @param buildingEnergyProfileStrategy
-	 *            BuildingEnergyProfileStrategy
+	 * Returns an instance of {@link CityInfrastructureData}. If the file is
+	 * already parsed and persistent, it can be loaded, otherwise it will be
+	 * parsed.
+	 *
+	 * @param osm OSM file
+	 * @param busstops bus stops file
+	 * @param buildingEnergyProfileStrategy BuildingEnergyProfileStrategy
 	 * @return CityInfrastructureData
 	 * @throws IOException
 	 */
-	public TrafficInfrastructureData createCityInfrastructureData(File osm, File busstops,
-			BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
+	public TrafficInfrastructureData createCityInfrastructureData(File osm,
+		File busstops,
+		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
 
 		Matcher osmNameMatcher = fileNamePattern.matcher(osm.getName());
 		osmNameMatcher.find();
 		Matcher busstopNameMatcher = fileNamePattern.matcher(busstops.getName());
 		busstopNameMatcher.find();
-		File cityInfrastructuraDataFile = new File(osm.getParent() + "/" + osmNameMatcher.group() + "_"
-				+ busstopNameMatcher.group() + ".bin");
+		File cityInfrastructuraDataFile = new File(
+			osm.getParent() + "/" + osmNameMatcher.group() + "_"
+			+ busstopNameMatcher.group() + ".bin");
 
 		/* Already parsed, correct osm/busstop and correct class version: */
-		if (cityInfrastructuraDataFile.exists() && osm.lastModified() < cityInfrastructuraDataFile.lastModified()
-				&& busstops.lastModified() < cityInfrastructuraDataFile.lastModified()) {
+		if (cityInfrastructuraDataFile.exists() && osm.lastModified() < cityInfrastructuraDataFile.
+			lastModified()
+			&& busstops.lastModified() < cityInfrastructuraDataFile.lastModified()) {
 
 			FileInputStream fis = null;
 			ObjectInputStream ois = null;
@@ -102,14 +102,13 @@ public class DefaultOSMCityInfrastructureDataService {
 		}
 
 		/* Files have to be parsed and saved: */
-
 		if (cityInfrastructuraDataFile.exists()) {
 			cityInfrastructuraDataFile.delete();
 		}
-		TrafficGraph graph = new DefaultTrafficGraph();
 		TrafficInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(
 			new FileInputStream(osm),
-				new FileInputStream(busstops), buildingEnergyProfileStrategy, graph);
+			new FileInputStream(busstops),
+			buildingEnergyProfileStrategy);
 
 		FileOutputStream fis = null;
 		ObjectOutputStream oos = null;

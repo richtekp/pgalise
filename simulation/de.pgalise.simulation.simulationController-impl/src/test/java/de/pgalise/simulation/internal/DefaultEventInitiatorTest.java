@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.internal;
 
 import static org.junit.Assert.assertEquals;
@@ -36,7 +35,6 @@ import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
@@ -59,12 +57,14 @@ import de.pgalise.simulation.weather.service.WeatherController;
 import javax.ejb.EJB;
 
 /**
- * J-Unit test for {@link DefaultEventInitiator}, which will test if every controller gets it's updates and if the event
- * initiator will start and finish.
- * 
+ * J-Unit test for {@link DefaultEventInitiator}, which will test if every
+ * controller gets it's updates and if the event initiator will start and
+ * finish.
+ *
  * @author Timo
  */
 public class DefaultEventInitiatorTest {
+
 	private static final long INTERVAL = 1000;
 	private static final long CLOCK_GENERATOR_INTERVAL = 0;
 	@EJB
@@ -83,16 +83,34 @@ public class DefaultEventInitiatorTest {
 	@BeforeClass
 	public void setUp() {
 		Calendar cal = new GregorianCalendar();
-		cal.set(2011, 0, 0, 0, 0, 0);
+		cal.set(2011,
+			0,
+			0,
+			0,
+			0,
+			0);
 		startTimestamp = cal.getTimeInMillis();
 
-		cal.set(2011, 0, 0, 1, 0, 0);
+		cal.set(2011,
+			0,
+			0,
+			1,
+			0,
+			0);
 		endTimestamp = cal.getTimeInMillis();
 
-		initParameter = new InitParameter( null, startTimestamp, endTimestamp, INTERVAL, CLOCK_GENERATOR_INTERVAL,
-				"", "", null, null);
+		initParameter = new InitParameter(null,
+			startTimestamp,
+			endTimestamp,
+			INTERVAL,
+			CLOCK_GENERATOR_INTERVAL,
+			"",
+			"",
+			null,
+			null);
 
-		startParameter = new StartParameter( true, null);
+		startParameter = new StartParameter(true,
+			null);
 
 		energyController = new EnergyControllerMock();
 		weatherController = new WeatherControllerMock();
@@ -102,11 +120,14 @@ public class DefaultEventInitiatorTest {
 		controlCenterController = new ControlCenterControllerMock();
 
 		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
-		EasyMock.expect(serviceDictionary.getController(EnergyController.class)).andStubReturn(energyController);
-		EasyMock.expect(serviceDictionary.getController(WeatherController.class)).andStubReturn(weatherController);
-		EasyMock.expect(serviceDictionary.getController(TrafficController.class)).andStubReturn(trafficController);
+		EasyMock.expect(serviceDictionary.getController(EnergyController.class)).
+			andStubReturn(energyController);
+		EasyMock.expect(serviceDictionary.getController(WeatherController.class)).
+			andStubReturn(weatherController);
+		EasyMock.expect(serviceDictionary.getController(TrafficController.class)).
+			andStubReturn(trafficController);
 		EasyMock.expect(serviceDictionary.getController(SimulationController.class))
-				.andStubReturn(simulationController);
+			.andStubReturn(simulationController);
 		EasyMock.replay(serviceDictionary);
 		IdGenerator idGenerator = EasyMock.createNiceMock(IdGenerator.class);
 
@@ -116,7 +137,7 @@ public class DefaultEventInitiatorTest {
 			controlCenterController,
 			null);
 		eventInitiator.setOperationCenterController(operationCenterController);
-		List<Controller<?,?,?>> controllerCollection = new LinkedList<>();
+		List<Controller<?, ?, ?>> controllerCollection = new LinkedList<>();
 		eventInitiator.setFrontController(controllerCollection);
 		eventInitiator.setControlCenterController(controlCenterController);
 	}
@@ -126,44 +147,55 @@ public class DefaultEventInitiatorTest {
 		long updateIntervals = ((endTimestamp - startTimestamp) / INTERVAL) + 1;
 
 		// Status test
-		assertEquals(StatusEnum.INIT, eventInitiator.getStatus());
+		assertEquals(StatusEnum.INIT,
+			eventInitiator.getStatus());
 
 		eventInitiator.init(initParameter);
 
 		// Status test
-		assertEquals(StatusEnum.INITIALIZED, eventInitiator.getStatus());
+		assertEquals(StatusEnum.INITIALIZED,
+			eventInitiator.getStatus());
 
 		eventInitiator.start(startParameter);
 
 		// Status test
-		assertEquals(StatusEnum.STARTED, eventInitiator.getStatus());
+		assertEquals(StatusEnum.STARTED,
+			eventInitiator.getStatus());
 
 		eventInitiator.getEventThread().join();
 
 		// Test all counters
-		assertEquals(updateIntervals, energyController.getUpdateCounter());
-		assertEquals(updateIntervals, weatherController.getUpdateCounter());
-		assertEquals(updateIntervals, trafficController.getUpdateCounter());
-		assertEquals(updateIntervals, operationCenterController.getUpdateCounter());
-		assertEquals(updateIntervals, controlCenterController.getUpdateCount());
-		
+		assertEquals(updateIntervals,
+			energyController.getUpdateCounter());
+		assertEquals(updateIntervals,
+			weatherController.getUpdateCounter());
+		assertEquals(updateIntervals,
+			trafficController.getUpdateCounter());
+		assertEquals(updateIntervals,
+			operationCenterController.getUpdateCounter());
+		assertEquals(updateIntervals,
+			controlCenterController.getUpdateCount());
+
 		eventInitiator.stop();
 
 		// Status test
-		assertEquals(StatusEnum.STOPPED, eventInitiator.getStatus());
+		assertEquals(StatusEnum.STOPPED,
+			eventInitiator.getStatus());
 
 		eventInitiator.reset();
 
 		// Status test
-		assertEquals(StatusEnum.INIT, eventInitiator.getStatus());
+		assertEquals(StatusEnum.INIT,
+			eventInitiator.getStatus());
 	}
 
 	/**
 	 * Operation center controller mock which can count the update steps.
-	 * 
+	 *
 	 * @author Timo
 	 */
-	private static class OperationCenterControllerMock implements ServerSideOperationCenterController {
+	private static class OperationCenterControllerMock implements
+		ServerSideOperationCenterController {
 
 		private int updateCounter;
 
@@ -176,7 +208,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		public void createSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
 		}
 
 		@Override
@@ -184,7 +216,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void deleteSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		public void deleteSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
 		}
 
 		@Override
@@ -193,7 +225,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InitParameter param) throws InitializationException, IllegalStateException {
+		public void init(InitParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -239,10 +271,12 @@ public class DefaultEventInitiatorTest {
 
 	/**
 	 * TrafficController mock which can count the update steps.
-	 * 
+	 *
 	 * @author Timo
 	 */
-	private static class TrafficControllerMock implements TrafficController<TrafficEvent> {
+	private static class TrafficControllerMock implements
+		TrafficController<TrafficEvent> {
+
 		private int updateCounter;
 
 		TrafficControllerMock() {
@@ -271,7 +305,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(TrafficInitParameter param) throws InitializationException, IllegalStateException {
+		public void init(TrafficInitParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -313,7 +347,7 @@ public class DefaultEventInitiatorTest {
 
 	/**
 	 * WeatherController mock which can count the update steps.
-	 * 
+	 *
 	 * @author Timo
 	 */
 	private static class WeatherControllerMock implements WeatherController {
@@ -325,7 +359,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InitParameter param) throws InitializationException, IllegalStateException {
+		public void init(InitParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -360,7 +394,9 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public Number getValue(WeatherParameterEnum key, long timestamp, JaxRSCoordinate position) {
+		public Number getValue(WeatherParameterEnum key,
+			long timestamp,
+			JaxRSCoordinate position) {
 			return null;
 		}
 
@@ -376,7 +412,7 @@ public class DefaultEventInitiatorTest {
 
 	/**
 	 * EnergyController mock which can count the update steps.
-	 * 
+	 *
 	 * @author Timo
 	 */
 	private static class EnergyControllerMock implements EnergyController {
@@ -388,7 +424,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(TrafficInitParameter param) throws InitializationException, IllegalStateException {
+		public void init(TrafficInitParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -414,7 +450,9 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public double getEnergyConsumptionInKWh(long timestamp, JaxRSCoordinate position, int measureRadiusInMeter) {
+		public double getEnergyConsumptionInKWh(long timestamp,
+			JaxRSCoordinate position,
+			int measureRadiusInMeter) {
 			return 0;
 		}
 
@@ -430,7 +468,7 @@ public class DefaultEventInitiatorTest {
 
 	/**
 	 * Mock for testing.
-	 * 
+	 *
 	 * @author Timo
 	 */
 	private static class SimulationControllerMock implements SimulationController {
@@ -444,7 +482,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		public void createSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
 		}
 
 		@Override
@@ -452,7 +490,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void deleteSensors(Collection<Sensor<?,?>> sensors) throws SensorException {
+		public void deleteSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
 		}
 
 		@Override
@@ -461,7 +499,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(TrafficInitParameter param) throws InitializationException, IllegalStateException {
+		public void init(TrafficInitParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -515,38 +553,44 @@ public class DefaultEventInitiatorTest {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}
-	
+
 	/**
 	 * Mock for the controll center controller.
+	 *
 	 * @author Timo
 	 */
-	private static class ControlCenterControllerMock implements ServerSideControlCenterController {
+	private static class ControlCenterControllerMock implements
+		ServerSideControlCenterController {
 
 		private int updateCount;
-		
+
 		/**
 		 * Constructor
 		 */
 		ControlCenterControllerMock() {
 			this.updateCount = 0;
 		}
-		
-		@Override
-		public void init(InitParameter param) throws InitializationException,
-				IllegalStateException {}
 
 		@Override
-		public void reset() throws IllegalStateException {}
+		public void init(InitParameter param) throws
+			IllegalStateException {
+		}
 
 		@Override
-		public void start(StartParameter param) throws IllegalStateException {}
+		public void reset() throws IllegalStateException {
+		}
 
 		@Override
-		public void stop() throws IllegalStateException {}
+		public void start(StartParameter param) throws IllegalStateException {
+		}
+
+		@Override
+		public void stop() throws IllegalStateException {
+		}
 
 		@Override
 		public void update(EventList<Event> simulationEventList)
-				throws IllegalStateException {
+			throws IllegalStateException {
 			this.updateCount++;
 		}
 
@@ -562,7 +606,8 @@ public class DefaultEventInitiatorTest {
 
 		@Override
 		public void displayException(Exception exception)
-				throws IllegalStateException {}
+			throws IllegalStateException {
+		}
 
 		public int getUpdateCount() {
 			return updateCount;

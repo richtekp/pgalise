@@ -12,10 +12,17 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
+import de.pgalise.util.cityinfrastructure.impl.DefaultBuildingEnergyProfileStrategy;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -31,6 +38,7 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -76,10 +84,9 @@ public class MainCtrl implements Serializable {
 	private TreeNode startParameterTreeRoot;
 	@EJB
 	private StartParameterSerializerService startParameterSerializerService;
+	@ManagedProperty(value = "#{cityCtrl}")
+	private CityCtrl cityCtrl;
 
-	/**
-	 * Creates a new instance of NewJSFManagedBean
-	 */
 	public MainCtrl() {
 	}
 
@@ -90,7 +97,38 @@ public class MainCtrl implements Serializable {
 			null);
 	}
 
-	public void startSimulation() {
+	public void startSimulation() throws IOException {
+		if (cityCtrl.getMapAndBusstopFileData().getOsmFileNames().size() > 1) {
+			throw new UnsupportedOperationException(
+				"multiple osm files not supported yet");
+		}
+		if (cityCtrl.getMapAndBusstopFileData().getBusStopFileNames().size() > 1) {
+			throw new UnsupportedOperationException(
+				"multiple bus stop files not supported yet");
+		}
+		byte[] osmFileBytes = (byte[]) MainCtrlUtils.OSM_FILE_CACHE.get(cityCtrl.
+			getMapAndBusstopFileData().getOsmFileNames().iterator().next()).
+			getObjectValue();
+		byte[] busStopFileBytes = (byte[]) MainCtrlUtils.BUS_STOP_FILE_CACHE.get(
+			cityCtrl.getMapAndBusstopFileData().getBusStopFileNames().iterator().
+			next()).getObjectValue();
+		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
+
+		TrafficInfrastructureData trafficInfrastructureData = new OSMCityInfrastructureData(
+			new ByteArrayInputStream(osmFileBytes),
+			new ByteArrayInputStream(busStopFileBytes),
+			buildingEnergyProfileStrategy);
+		simulationController.init(
+			new TrafficInitParameter(trafficInfrastructureData,
+				ServerConfiguration.DEFAULT_SERVER_CONFIGURATION,
+				startParameter.getStartTimestamp(),
+				startParameter.getEndTimestamp(),
+				startParameter.getInterval(),
+				startParameter.getClockGeneratorInterval(),
+				startParameter.getOperationCenterAddress(),
+				startParameter.getControlCenterAddress(),
+				startParameter.getTrafficFuzzyData(),
+				cityCtrl.retrieveBoundaries()));
 		simulationController.start(startParameter);
 	}
 

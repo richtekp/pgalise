@@ -5,15 +5,19 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.geom.Envelope;
+import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import net.sf.ehcache.Element;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -25,6 +29,7 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
@@ -51,12 +56,40 @@ public class CityCtrl implements Serializable {
 	private MapModel mapModel;
 	private String mapCenter = "52.50304053365354, 13.617159360663575";
 	private City chosenCity = null;
+	private MapAndBusstopFileData mapAndBusstopFileData = new MapAndBusstopFileData();
+	private boolean useFileBoundaries = true;
+	private List<JaxRSCoordinate> customFileBoundaries = new LinkedList<>();
 
 	/**
 	 * Creates a new instance of CityCtrl
 	 */
 	public CityCtrl() {
 		mapModel = new DefaultMapModel();
+	}
+
+	public void setUseFileBoundaries(boolean useFileBoundaries) {
+		this.useFileBoundaries = useFileBoundaries;
+	}
+
+	public boolean getUseFileBoundaries() {
+		return useFileBoundaries;
+	}
+
+	public List<String> retrieveOsmFileCacheKeys() {
+		return MainCtrlUtils.OSM_FILE_CACHE.getKeys();
+	}
+
+	public List<String> retrieveBusStopFileCacheKeys() {
+		return MainCtrlUtils.BUS_STOP_FILE_CACHE.getKeys();
+	}
+
+	public MapAndBusstopFileData getMapAndBusstopFileData() {
+		return mapAndBusstopFileData;
+	}
+
+	public void setMapAndBusstopFileData(
+		MapAndBusstopFileData mapAndBusstopFileData) {
+		this.mapAndBusstopFileData = mapAndBusstopFileData;
 	}
 
 	public City getChosenCity() {
@@ -156,7 +189,6 @@ public class CityCtrl implements Serializable {
 			while (simpleFeatureIterator.hasNext()) {
 				SimpleFeature nextFeature = simpleFeatureIterator.next();
 				String name = (String) nextFeature.getAttribute("name");
-				WKTReader parser = new WKTReader(); //new GeometryBuilder(GeoToolsBootstrapping.COORDINATE_REFERENCE_SYSTEM));
 				com.vividsolutions.jts.geom.Polygon polygon = (com.vividsolutions.jts.geom.Polygon) nextFeature.
 					getAttribute("way");
 				City autocompletionValue = new City(name,
@@ -191,5 +223,43 @@ public class CityCtrl implements Serializable {
 		citySelectionBoundsPolygon.setStrokeOpacity(0.7);
 		citySelectionBoundsPolygon.setFillOpacity(0.7);
 		mapModel.addOverlay(citySelectionBoundsPolygon);
+	}
+
+	/**
+	 * Adds file to available files, i.e. cache, not to selected files. Files are
+	 * overwritten in the server side cache no matter what.
+	 *
+	 * @param event
+	 */
+	/*
+	 @TODO: implement check for name with p:remoteCommand and onStart of p:fileUpload
+	 */
+	public void onGTFSFileUpload(FileUploadEvent event) {
+		MainCtrlUtils.BUS_STOP_FILE_CACHE.put(new Element(event.getFile().
+			getFileName(),
+			event.getFile().getContents()));
+	}
+
+	/**
+	 * Adds file to available files, i.e. cache, not to selected files. Files are
+	 * overwritten in the server side cache no matter what.
+	 *
+	 * @param event
+	 */
+	public void onOSMFileUpload(FileUploadEvent event) {
+		MainCtrlUtils.OSM_FILE_CACHE.put(new Element(event.getFile().
+			getFileName(),
+			event.getFile().getContents()));
+	}
+
+	public Envelope retrieveBoundaries() {
+		if (useFileBoundaries) {
+			throw new UnsupportedOperationException();
+
+		} else {
+			return GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+				customFileBoundaries.toArray(new JaxRSCoordinate[customFileBoundaries.
+					size()])).getEnvelopeInternal();
+		}
 	}
 }

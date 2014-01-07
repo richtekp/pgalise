@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.city;
 
 import de.pgalise.simulation.shared.city.NavigationEdge;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,13 +31,18 @@ import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
- * A way is logical union of {@link NavigationEdge}s, i.e. a highway with a number. Information about oneway limilations or speed limits are encapsulated in {@link NavigationEdge} because these constraints might not apply to the entire way as definded above.
- * @param <E> 
- * @param <N> 
+ * A way is logical union of {@link NavigationEdge}s, i.e. a highway with a
+ * number. Information about oneway limilations or speed limits are encapsulated
+ * in {@link NavigationEdge} because these constraints might not apply to the
+ * entire way as definded above.
+ *
+ * @param <E>
+ * @param <N>
  * @author Timo
  */
 @Entity
 public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends AbstractIdentifiable {
+
 	private static final long serialVersionUID = 2942128399393060939L;
 	@OneToMany(targetEntity = NavigationEdge.class)
 	private List<E> edgeList;
@@ -48,24 +51,28 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 	private Set<WayTag> tags;
 	@ElementCollection
 	private Set<LanduseTag> landuseTags;
-	
+
 	/**
 	 * Default
 	 */
-	protected Way() {}
-	
+	protected Way() {
+	}
+
 	/**
 	 * Constructor
-	 * @param edgeList 
-	 * @param streetname 
-	 * @param wayTags 
+	 *
+	 * @param edgeList
+	 * @param streetname
+	 * @param wayTags
 	 */
-	public Way(List<E> edgeList, String streetname, Set<WayTag> wayTags) {
+	public Way(List<E> edgeList,
+		String streetname,
+		Set<WayTag> wayTags) {
 		this(edgeList,
 			streetname);
 		this.tags = wayTags;
 		this.landuseTags = new HashSet<>();
-		
+
 	}
 
 	public Way(
@@ -120,49 +127,61 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 	public void setStreetName(String streetname) {
 		this.streetName = streetname;
 	}
-	
+
 	/**
-	 * retrieves the nodes of the way for the edge list. Usage is discouraged 
-	 * due to low performance and unnecessary copy (all information that can be retrieved from the node list might as well be retrieved from the edge list)
-	 * @return 
+	 * retrieves the nodes of the way for the edge list. Usage is discouraged due
+	 * to low performance and unnecessary copy (all information that can be
+	 * retrieved from the node list might as well be retrieved from the edge list)
+	 *
+	 * @return
 	 */
 	public List<N> getNodeList() {
 		List<N> retValue = new LinkedList<>();
 		retValue.add(edgeList.get(0).getSource());
-		for(E edge : edgeList) {
+		for (E edge : edgeList) {
 			retValue.add(edge.getTarget());
 		}
 		return retValue;
 	}
-	
+
 	private class NavigationGraph extends DefaultDirectedGraph<NavigationEdge<NavigationNode>, NavigationNode> {
 
 		public NavigationGraph(
 			Class<? extends NavigationNode> edgeClass) {
 			super(edgeClass);
 		}
-		
+
 	}
-	
-	public <G extends DirectedGraph<N,E>> void setEdgeList(List<N> nodes, G graph) {
+
+	public <G extends DirectedGraph<N, E>> void setEdgeList(List<N> nodes,
+		G graph) {
 		List<E> edgeList0 = new LinkedList<>();
 		Iterator<N> it = nodes.iterator();
 		N last = it.next();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			N current = it.next();
 			E edge = graph.getEdge(last,
 				current);
-			if(edge != null) {
+			if (edge != null) {
 				edgeList0.add(edge);
 			}
 		}
 		this.edgeList = edgeList0;
 	}
-	
-	public void setOneWay(boolean oneWay) {
-		for(E edge : edgeList) {
-			if(edge.isOneWay() != null) {
-				throw new IllegalStateException(String.format("oneWay flag of edge %s already set (flags on all edges have to be null before a whole way can be set to one way)", edge));
+
+	/**
+	 * sets the oneWay flag on every edge on the say only if all oneWay flags are
+	 * <code>null</code>, thr ows @{@link IllegalStateException} otherwise. This
+	 * avoids unintended overwriting of information.
+	 *
+	 * @param oneWay
+	 */
+	public void applyOneWay(boolean oneWay) {
+		for (E edge : edgeList) {
+			if (edge.isOneWay() != null) {
+				throw new IllegalStateException(String.format(
+					"oneWay flag of edge %s already set (flags on all edges have to be null before a whole way can be set to one way)",
+					edge));
 			}
 			edge.setOneWay(oneWay);
 		}

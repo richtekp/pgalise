@@ -3,12 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.config.CacheConfiguration;
+import net.sf.ehcache.config.MemoryUnit;
+import net.sf.ehcache.config.PersistenceConfiguration;
+import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
+import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 
@@ -17,9 +24,10 @@ import org.geotools.data.DataStoreFinder;
  * @author richter
  */
 public class MainCtrlUtils {
-	
+
 	public final static DataStore POSTGIS_OSM_DATA_STORE;
-	static  {
+
+	static {
 		try {
 			Map<String, Object> connectionParameters = new HashMap<>();
 			connectionParameters.put("port",
@@ -66,7 +74,8 @@ public class MainCtrlUtils {
 				"pgalise");
 			connectionParameters.put("min connections",
 				null);
-			POSTGIS_OSM_DATA_STORE = DataStoreFinder.getDataStore(connectionParameters);
+			POSTGIS_OSM_DATA_STORE = DataStoreFinder.
+				getDataStore(connectionParameters);
 			if (POSTGIS_OSM_DATA_STORE == null) {
 				throw new RuntimeException("Could not connect - check parameters");
 			}
@@ -75,7 +84,45 @@ public class MainCtrlUtils {
 		}
 	}
 
+	public final static String CACHE_DIR_PATH = System.getProperty("user.home") + File.pathSeparator + ".pgalise/cache";
+	public final static Cache OSM_FILE_CACHE;
+	public final static Cache BUS_STOP_FILE_CACHE;
+
+	static {
+		CacheManager singletonManager = CacheManager.create();
+		Cache osmFileCache = new Cache(
+			new CacheConfiguration("osmFileCache",
+				-1 //maxElementsInMemory
+			)
+			.memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+			.eternal(true)
+			.timeToLiveSeconds(60)
+			.timeToIdleSeconds(30)
+			.diskExpiryThreadIntervalSeconds(120)
+			.maxBytesLocalDisk(5,
+				MemoryUnit.GIGABYTES)
+			.persistence(new PersistenceConfiguration().strategy(
+					Strategy.LOCALRESTARTABLE)));
+		singletonManager.addCache(osmFileCache);
+		Cache busStopFileCache = new Cache(
+			new CacheConfiguration("busStopFileCache",
+				-1 //maxElementsInMemory
+			)
+			.memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+			.eternal(true)
+			.timeToLiveSeconds(60)
+			.timeToIdleSeconds(30)
+			.diskExpiryThreadIntervalSeconds(120)
+			.maxBytesLocalDisk(5,
+				MemoryUnit.GIGABYTES)
+			.persistence(new PersistenceConfiguration().strategy(
+					Strategy.LOCALRESTARTABLE)));
+		singletonManager.addCache(busStopFileCache);
+		OSM_FILE_CACHE = singletonManager.getCache("osmFileCache");
+		BUS_STOP_FILE_CACHE = singletonManager.getCache("busStopFileCache");
+	}
+
 	private MainCtrlUtils() {
 	}
-	
+
 }

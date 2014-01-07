@@ -35,6 +35,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -153,8 +154,8 @@ public class NewServlet extends HttpServlet {
 			sensorHelpers,
 			simulationEventLists,
 			weatherEventHelpers,
-			new MapAndBusstopFileData(osmFilePath,
-				busStopFilePath),
+			new MapAndBusstopFileData(new HashSet<String>(Arrays.asList(osmFilePath)),
+				new HashSet<String>(Arrays.asList(busStopFilePath))),
 			randomVehicleBundle,
 			true,
 			10,

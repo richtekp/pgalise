@@ -13,62 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.controlCenter.model;
 
 import java.io.Serializable;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Holds the name for open street map and bus stop file.
- * This is used, when the client selects an openstreetmap and bus stop file to load them.
+ * Holds the name for open street map and bus stop file. This is used, when the
+ * client selects an openstreetmap and bus stop file to load them.
+ *
  * @author Timo
  */
-@ManagedBean
-@SessionScoped
 public class MapAndBusstopFileData implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 	/**
 	 * This OSM-File will be parsed and used for the street-graph.
 	 */
-	@ManagedProperty(value = "/oldenburg_pg.osm")
-	private String osmFileName = "/oldenburg_pg.osm";
-	
+	private Set<String> osmFileNames = new HashSet<>(Arrays.asList(
+		"/oldenburg_pg.osm"));
+
 	/**
 	 * This busstop file will be used for the busstops on the street-graph.
 	 */
-	@ManagedProperty(value = "/stops.gtfs")
-	private String busStopFileName = "/stops.gtfs";
+	private Set<String> busStopFileNames = new HashSet<>(Arrays.asList(
+		"/stops.gtfs"));
 
 	public MapAndBusstopFileData() {
 	}
 
 	/**
 	 * Constructor
+	 *
 	 * @param osmFileName
 	 * @param busStopFileName
 	 */
-	public MapAndBusstopFileData(String osmFileName, String busStopFileName) {
-		this.osmFileName = osmFileName;
-		this.busStopFileName = busStopFileName;
+	public MapAndBusstopFileData(Set<String> osmFileName,
+		Set<String> busStopFileName) {
+		this.osmFileNames = osmFileName;
+		this.busStopFileNames = busStopFileName;
 	}
 
-	public String getOsmFileName() {
-		return osmFileName;
+	public Set<String> getOsmFileNames() {
+		return osmFileNames;
 	}
 
-	public void setOsmFileName(String osmFileName) {
-		this.osmFileName = osmFileName;
+	public void setOsmFileNames(Set<String> osmFileNames) {
+		this.osmFileNames = osmFileNames;
 	}
 
-	public String getBusStopFileName() {
-		return busStopFileName;
+	public Set<String> getBusStopFileNames() {
+		return busStopFileNames;
 	}
 
-	public void setBusstopFileName(String busstopFileName) {
-		this.busStopFileName = busstopFileName;
+	public void setBusstopFileName(Set<String> busstopFileName) {
+		this.busStopFileNames = busstopFileName;
 	}
 }

@@ -40,7 +40,6 @@ import de.pgalise.simulation.controlCenter.internal.message.SimulationStartedMes
 import de.pgalise.simulation.controlCenter.internal.message.ValidNodeMessage;
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateAttractionEventService;
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
-import de.pgalise.simulation.controlCenter.internal.util.service.MapCityInfrastructureDataService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.AttractionData;
@@ -65,6 +64,7 @@ import de.pgalise.simulation.energy.StaticSensorServiceDictionary;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.OSMCityInfrastructureDataService;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.VehicleInformation;
@@ -73,7 +73,6 @@ import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomBusData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
@@ -87,7 +86,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -107,7 +105,6 @@ import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
-import javax.xml.ws.WebEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,7 +124,8 @@ import org.slf4j.LoggerFactory;
  * @author Timo
  */
 //@ServerEndpoint(value = "/echo")
-public class DefaultControlCenterUser extends Endpoint implements ControlCenterUser {
+public class DefaultControlCenterUser extends Endpoint implements
+	ControlCenterUser {
 
 	/**
 	 * Not wanted reg exp in file names.
@@ -157,7 +155,7 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 	 * serialize the file binary and reload it, if it's already parsed.
 	 */
 	@EJB
-	private MapCityInfrastructureDataService osmCityInfrastructureDataService;
+	private OSMCityInfrastructureDataService osmCityInfrastructureDataService;
 	/**
 	 * This service knows about all sensor interferers.
 	 */
@@ -263,9 +261,9 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 							= osmCityInfrastructureDataService.
 							createCityInfrastructureData(
 								new File(path + osmAndBusstopFileMessage.
-									getContent().getOsmFileName()),
+									getContent().getOsmFileNames()),
 								new File(path + osmAndBusstopFileMessage.
-									getContent().getBusStopFileName()),
+									getContent().getBusStopFileNames()),
 								buildingEnergyProfileStrategy,
 								null);
 						this.sendMessage(new OSMParsedMessage(ccWebSocketMessage.getId(),
@@ -321,7 +319,8 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 					break;
 
 				case SIMULATION_START_PARAMETER: {
-					onStartParameterMessage(message, ccWebSocketMessage);
+					onStartParameterMessage(message,
+						ccWebSocketMessage);
 					break;
 				}
 				case SIMULATION_STOP:
@@ -557,7 +556,8 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 		}
 	}
 
-	private void onStartParameterMessage(String message, IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
+	private void onStartParameterMessage(String message,
+		IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
 		log.debug("Start simulation");
 
 		ControlCenterStartParameter ccSimulationStartParameter = this.gson.
@@ -721,14 +721,16 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 				getSensorInterfererTypes(sensorHelper.getSensorType(),
 					ccSimulationStartParameter.isWithSensorInterferes()));
 		}
-		this.simulationController.createSensors(ccSimulationStartParameter.getSensors());
+		this.simulationController.createSensors(ccSimulationStartParameter.
+			getSensors());
 
 		/* Create start parameters: */
 		InfrastructureStartParameter startParameter = lookupStartParameter();
 		startParameter.setCity(ccSimulationStartParameter.getCity());
 		startParameter.setAggregatedWeatherDataEnabled(
 			ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
-		startParameter.setWeatherEvents(ccSimulationStartParameter.getWeatherEvents());
+		startParameter.setWeatherEvents(ccSimulationStartParameter.
+			getWeatherEvents());
 
 		List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
 		List<UUID> newUUIDs = new LinkedList<>();
@@ -791,7 +793,8 @@ public class DefaultControlCenterUser extends Endpoint implements ControlCenterU
 			UUID id = this.getUniqueRandomUUID(usedUUIDs,
 				random);
 			NavigationNode sensorCoordinate = null;
-			busDataList.add(new CreateRandomBusData(null,null,
+			busDataList.add(new CreateRandomBusData(null,
+				null,
 				new VehicleInformation(true,
 					VehicleTypeEnum.BUS,
 					VehicleModelEnum.BUS_CITARO,

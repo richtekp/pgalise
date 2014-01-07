@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.energy.test;
 
+import com.vividsolutions.jts.geom.Envelope;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,16 +32,12 @@ import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.energy.internal.DefaultEnergyController;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -56,7 +51,7 @@ import org.junit.Ignore;
 
 /**
  * JUnit tests for {@link DefaultEnergyController}
- * 
+ *
  * @author Timo
  * @author Andreas
  */
@@ -91,7 +86,8 @@ public class DefaultEnergyControllerTest {
 	/**
 	 * Geolocation (should be inside building)
 	 */
-	private static final JaxRSCoordinate testLocation = new JaxRSCoordinate(1.5, 1.5);
+	private static final JaxRSCoordinate testLocation = new JaxRSCoordinate(1.5,
+		1.5);
 
 	/**
 	 * Init parameters
@@ -112,17 +108,17 @@ public class DefaultEnergyControllerTest {
 	 * Traffic information
 	 */
 	private static CityInfrastructureData information;
-	
+
 	/**
 	 * The used energy consumption manager
 	 */
 	private static EnergyConsumptionManager energyConsumptionManager;
-	
+
 	/**
 	 * The used energy event strategy
 	 */
 	private static EnergyEventStrategy energyEventStrategy;
-	
+
 	/**
 	 * Test time
 	 */
@@ -132,26 +128,32 @@ public class DefaultEnergyControllerTest {
 	public static void setUpBeforeClass() throws Exception {
 		Calendar cal = new GregorianCalendar();
 
-		
 		// city
 		City city = TestUtils.createDefaultTestCityInstance();
 
 		// City information
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
 		List<Building> buildingList = new ArrayList<>();
-		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
+		map.put(EnergyProfileEnum.HOUSEHOLD,
+			buildingList);
 		for (int i = 0; i < 100; i++) {
 			buildingList.add(
 				new Building(
-					new JaxRSCoordinate(53.136765, 8.216524), 
+					new JaxRSCoordinate(53.136765,
+						8.216524),
 					new BaseGeoInfo(
 						GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 							new JaxRSCoordinate[]{
-								new JaxRSCoordinate(1,1), 
-								new JaxRSCoordinate(1,2), 
-								new JaxRSCoordinate(2,2), 
-								new JaxRSCoordinate(2,1), 
-								new JaxRSCoordinate(1,1)
+								new JaxRSCoordinate(1,
+									1),
+								new JaxRSCoordinate(1,
+									2),
+								new JaxRSCoordinate(2,
+									2),
+								new JaxRSCoordinate(2,
+									1),
+								new JaxRSCoordinate(1,
+									1)
 							}
 						)
 					)
@@ -159,62 +161,97 @@ public class DefaultEnergyControllerTest {
 			);
 		}
 
-		DefaultEnergyControllerTest.information = EasyMock.createNiceMock(CityInfrastructureData.class);
+		DefaultEnergyControllerTest.information = EasyMock.createNiceMock(
+			CityInfrastructureData.class);
 		EasyMock.expect(
-				DefaultEnergyControllerTest.information.getBuildings(DefaultEnergyControllerTest.testLocation, 3))
-				.andStubReturn(map);
+			DefaultEnergyControllerTest.information.getBuildings(
+				DefaultEnergyControllerTest.testLocation,
+				3))
+			.andStubReturn(map);
 		EasyMock.replay(DefaultEnergyControllerTest.information);
 
 		// Start
-		cal.set(2012, 1, 1, 0, 0, 0);
+		cal.set(2012,
+			1,
+			1,
+			0,
+			0,
+			0);
 		DefaultEnergyControllerTest.startTime = cal.getTimeInMillis();
 
 		// End
-		cal.set(2012, 1, 5, 0, 0, 0);
+		cal.set(2012,
+			1,
+			5,
+			0,
+			0,
+			0);
 		DefaultEnergyControllerTest.endTime = cal.getTimeInMillis();
 
 		// Interval
 		long interval = 1000;
-		
+
 		// Test time
-		cal.set(2012, 1, 2, 11, 35, 0);
+		cal.set(2012,
+			1,
+			2,
+			11,
+			35,
+			0);
 		testTime = cal.getTimeInMillis();
 
 		// Weather Controller:
-		DefaultEnergyControllerTest.weather = EasyMock.createNiceMock(WeatherController.class);
+		DefaultEnergyControllerTest.weather = EasyMock.createNiceMock(
+			WeatherController.class);
 		EasyMock.replay(DefaultEnergyControllerTest.weather);
 
 		// Service Dictionary:
-		DefaultEnergyControllerTest.serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
-		EasyMock.expect(DefaultEnergyControllerTest.serviceDictionary.getController(WeatherController.class))
-				.andStubReturn(DefaultEnergyControllerTest.weather);
+		DefaultEnergyControllerTest.serviceDictionary = EasyMock.createNiceMock(
+			ServiceDictionary.class);
+		EasyMock.expect(DefaultEnergyControllerTest.serviceDictionary.getController(
+			WeatherController.class))
+			.andStubReturn(DefaultEnergyControllerTest.weather);
 		EasyMock.replay(DefaultEnergyControllerTest.serviceDictionary);
 
 		DefaultEnergyControllerTest.initParameter = new TrafficInitParameter(
 			null,
-			EasyMock.createNiceMock(ServerConfiguration.class), 
+			EasyMock.createNiceMock(ServerConfiguration.class),
 			DefaultEnergyControllerTest.startTime,
-				DefaultEnergyControllerTest.endTime, interval, interval, "http://localhost:8080/operationCenter",
-				"", null,
-				new Boundary(new JaxRSCoordinate(), new JaxRSCoordinate()));
+			DefaultEnergyControllerTest.endTime,
+			interval,
+			interval,
+			"http://localhost:8080/operationCenter",
+			"",
+			null,
+			new Envelope(new JaxRSCoordinate(),
+				new JaxRSCoordinate()));
 
 		city = TestUtils.createDefaultTestCityInstance();
-		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(city,
-				true, new ArrayList<WeatherEvent>());
-		
+		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(
+			city,
+			true,
+			new ArrayList<WeatherEvent>());
+
 		// EnergyEventStrategy
 		energyEventStrategy = EasyMock.createNiceMock(EnergyEventStrategy.class);
 
 		// EnergyConsumptionManager
-		energyConsumptionManager = EasyMock.createNiceMock(EnergyConsumptionManager.class);
-		EasyMock.expect(energyConsumptionManager.getEnergyConsumptionInKWh(testTime, EnergyProfileEnum.HOUSEHOLD, testLocation)).andStubReturn(1.0);
+		energyConsumptionManager = EasyMock.createNiceMock(
+			EnergyConsumptionManager.class);
+		EasyMock.expect(energyConsumptionManager.getEnergyConsumptionInKWh(testTime,
+			EnergyProfileEnum.HOUSEHOLD,
+			testLocation)).andStubReturn(1.0);
 		EasyMock.replay(energyConsumptionManager);
 
 		// Create class
-		DefaultEnergyControllerTest.testClass = new DefaultEnergyController(information);
-		DefaultEnergyControllerTest.testClass.setServiceDictionary(DefaultEnergyControllerTest.serviceDictionary);
-		DefaultEnergyControllerTest.testClass.setEnergyConsumptionManager(energyConsumptionManager);
-		DefaultEnergyControllerTest.testClass.setEnergyEventStrategy(energyEventStrategy);
+		DefaultEnergyControllerTest.testClass = new DefaultEnergyController(
+			information);
+		DefaultEnergyControllerTest.testClass.setServiceDictionary(
+			DefaultEnergyControllerTest.serviceDictionary);
+		DefaultEnergyControllerTest.testClass.setEnergyConsumptionManager(
+			energyConsumptionManager);
+		DefaultEnergyControllerTest.testClass.setEnergyEventStrategy(
+			energyEventStrategy);
 	}
 
 	@Test
@@ -223,36 +260,45 @@ public class DefaultEnergyControllerTest {
 		/*
 		 * Init the controller
 		 */
-		DefaultEnergyControllerTest.testClass.init(DefaultEnergyControllerTest.initParameter);
-		Assert.assertEquals(StatusEnum.INITIALIZED, testClass.getStatus());
+		DefaultEnergyControllerTest.testClass.init(
+			DefaultEnergyControllerTest.initParameter);
+		Assert.assertEquals(StatusEnum.INITIALIZED,
+			testClass.getStatus());
 
 		/*
 		 * Start the controller
 		 */
-		DefaultEnergyControllerTest.testClass.start(DefaultEnergyControllerTest.startParameter);
-		Assert.assertEquals(StatusEnum.STARTED, testClass.getStatus());
+		DefaultEnergyControllerTest.testClass.start(
+			DefaultEnergyControllerTest.startParameter);
+		Assert.assertEquals(StatusEnum.STARTED,
+			testClass.getStatus());
 
 
 		/*
 		 * RUN TEST
 		 */
-
 		// Get value
-		double value = DefaultEnergyControllerTest.testClass.getEnergyConsumptionInKWh(testTime,
-				DefaultEnergyControllerTest.testLocation, 3);
+		double value = DefaultEnergyControllerTest.testClass.
+			getEnergyConsumptionInKWh(testTime,
+				DefaultEnergyControllerTest.testLocation,
+				3);
 
-		Assert.assertEquals(100.0, value, 0.5);
+		Assert.assertEquals(100.0,
+			value,
+			0.5);
 
 		/*
 		 * Stop the controller
 		 */
 		DefaultEnergyControllerTest.testClass.stop();
-		Assert.assertEquals(StatusEnum.STOPPED, testClass.getStatus());
+		Assert.assertEquals(StatusEnum.STOPPED,
+			testClass.getStatus());
 
 		/*
 		 * Reset the controller
 		 */
 		DefaultEnergyControllerTest.testClass.reset();
-		Assert.assertEquals(StatusEnum.INIT, testClass.getStatus());
+		Assert.assertEquals(StatusEnum.INIT,
+			testClass.getStatus());
 	}
 }

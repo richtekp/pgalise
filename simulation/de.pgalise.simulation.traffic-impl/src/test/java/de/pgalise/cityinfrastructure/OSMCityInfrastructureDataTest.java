@@ -22,7 +22,6 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.shared.city.Boundary;
 import de.pgalise.simulation.shared.city.Way;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Building;
@@ -30,8 +29,6 @@ import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.util.cityinfrastructure.impl.DefaultBuildingEnergyProfileStrategy;
 import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
-import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 
 /**
  * Several JUnit test cases for the OSMParser.
@@ -44,7 +41,6 @@ public class OSMCityInfrastructureDataTest {
 	 * Test class
 	 */
 	private static OSMCityInfrastructureData osmParser;
-	private static TrafficGraph graph = new DefaultTrafficGraph();
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -52,8 +48,8 @@ public class OSMCityInfrastructureDataTest {
 			osmParser = new OSMCityInfrastructureData(
 				OSMCityInfrastructureData.class.getResourceAsStream("/oldenburg_pg.osm"),
 				OSMCityInfrastructureData.class.getResourceAsStream("/stops.txt"),
-				new DefaultBuildingEnergyProfileStrategy(),
-				graph);
+				new DefaultBuildingEnergyProfileStrategy()
+			);
 		} catch (IOException e) {
 			assertTrue(false);
 			e.printStackTrace();
@@ -75,16 +71,6 @@ public class OSMCityInfrastructureDataTest {
 			getGeoLocation().getX()
 			&& givenNode.getGeoLocation().getY() == returnedNode.getGeoLocation().
 			getY());
-	}
-
-	/**
-	 * Tests if the northeast value is bigger, than the southwest value.
-	 */
-	@Test
-	public void boundaryTest() {
-		Boundary boundary = osmParser.getBoundary();
-		assertTrue(boundary.getNorthEast().getX() > boundary.getSouthWest().getX()
-			&& boundary.getNorthEast().getY() > boundary.getSouthWest().getY());
 	}
 
 	/**
@@ -114,7 +100,8 @@ public class OSMCityInfrastructureDataTest {
 		int radiusInMeter = 500;
 		NavigationNode tmpNode = osmParser.getNodes().get(
 			(int) (Math.random() * osmParser.getNodes().size()));
-		JaxRSCoordinate centerPoint = new JaxRSCoordinate(tmpNode.getGeoLocation().getX(),
+		JaxRSCoordinate centerPoint = new JaxRSCoordinate(tmpNode.getGeoLocation().
+			getX(),
 			tmpNode.getGeoLocation().getY());
 		for (Building building : osmParser.getBuildingsInRadius(centerPoint,
 			radiusInMeter)) {
