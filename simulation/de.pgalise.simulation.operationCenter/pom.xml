@@ -24,10 +24,6 @@
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>simulationController</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>traffic</artifactId>
 		</dependency>
 		<dependency>

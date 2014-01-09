@@ -15,6 +15,7 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,6 @@ import java.util.Set;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
@@ -38,6 +38,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @version 1.0 (Oct 28, 2012)
  */
 public class WeatherStation extends WeatherSensor<WeatherStationData> {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -96,7 +97,6 @@ public class WeatherStation extends WeatherSensor<WeatherStationData> {
 			weatherController,
 			updateLimit,
 			weatherInterferer,
-			WeatherSensorTypeEnum.WEATHER_STATION,
 			new WeatherStationData());
 		if (sensors == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
@@ -134,6 +134,11 @@ public class WeatherStation extends WeatherSensor<WeatherStationData> {
 		if (children.contains(sensor)) {
 			children.remove(sensor);
 		}
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return WeatherSensorTypeEnum.WEATHER_STATION;
 	}
 
 }

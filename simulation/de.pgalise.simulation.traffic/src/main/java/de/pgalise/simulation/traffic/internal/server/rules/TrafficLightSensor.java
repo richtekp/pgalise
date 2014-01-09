@@ -16,10 +16,10 @@
 package de.pgalise.simulation.traffic.internal.server.rules;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.TrafficLightSensorData;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -58,8 +58,7 @@ public class TrafficLightSensor<D extends VehicleData> extends AbstractStaticTra
 		super(id,
 			output,
 			node,
-			TrafficSensorTypeEnum.TRAFFICLIGHT_SENSOR,
-			 new TrafficLightSensorData());
+			new TrafficLightSensorData());
 		if (trafficLight == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"trafficLight"));
@@ -82,5 +81,10 @@ public class TrafficLightSensor<D extends VehicleData> extends AbstractStaticTra
 	@Override
 	public void vehicleOnNodeRegistered(Vehicle<?> vehicle) {
 		// nothing to do here
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return TrafficSensorTypeEnum.TRAFFICLIGHT_SENSOR;
 	}
 }

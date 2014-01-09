@@ -20,10 +20,10 @@ import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.simulation.energy.sensor.EnergySensor;
 import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -99,7 +99,6 @@ public class SmartMeterSensor extends EnergySensor<SmartMeterSensorData> {
 			randomSeedService,
 			updateLimit,
 			interferer,
-			EnergySensorTypeEnum.SMARTMETER,
 			new SmartMeterSensorData());
 		this.measureRadiusInMeter = measureRadiusInMeter;
 	}
@@ -129,5 +128,10 @@ public class SmartMeterSensor extends EnergySensor<SmartMeterSensorData> {
 
 	protected void setMeasureRadiusInMeter(int measureRadiusInMeter) {
 		this.measureRadiusInMeter = measureRadiusInMeter;
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return EnergySensorTypeEnum.SMARTMETER;
 	}
 }

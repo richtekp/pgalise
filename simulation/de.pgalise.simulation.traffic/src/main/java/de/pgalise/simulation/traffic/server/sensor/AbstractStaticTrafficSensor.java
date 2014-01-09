@@ -15,10 +15,7 @@
  */
 package de.pgalise.simulation.traffic.server.sensor;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.sensorFramework.AbstractSensor;
-import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.staticsensor.AbstractStaticSensor;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -48,13 +45,11 @@ public abstract class AbstractStaticTrafficSensor<X extends SensorData> extends 
 		Output output,
 		TrafficNode node,
 		int updateLimit,
-		SensorType sensorType,
 		X sensorData)
 		throws IllegalArgumentException {
 		super(id,
 			output,
 			node.getGeoLocation(),
-			sensorType,
 			updateLimit,
 			sensorData);
 		this.node = node;
@@ -69,13 +64,11 @@ public abstract class AbstractStaticTrafficSensor<X extends SensorData> extends 
 	public AbstractStaticTrafficSensor(Long id,
 		Output output,
 		TrafficNode node,
-		SensorType sensorType,
 		X sensorData) throws
 		IllegalArgumentException {
 		super(id,
 			output,
 			node.getGeoLocation(),
-			sensorType,
 			sensorData);
 		this.node = node;
 	}

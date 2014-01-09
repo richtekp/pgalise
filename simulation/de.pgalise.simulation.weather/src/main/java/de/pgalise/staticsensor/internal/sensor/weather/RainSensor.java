@@ -15,10 +15,10 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
@@ -69,11 +69,11 @@ public class RainSensor extends WeatherSensor<RainSensorData> {
 	 * @param position Position of the sensor
 	 * @param weatherController Reference to the weather controller of the
 	 * simulation
-	 * @param updateLimit Update limit 
-	 * @param weatherInterferer 
-	 * @throws IllegalArgumentException if
-	 * argument 'weatherController' is 'null' or if argument 'weatherController'
-	 * is not a type of {@link RainsensorWhiteNoiseInterferer}
+	 * @param updateLimit Update limit
+	 * @param weatherInterferer
+	 * @throws IllegalArgumentException if argument 'weatherController' is 'null'
+	 * or if argument 'weatherController' is not a type of
+	 * {@link RainsensorWhiteNoiseInterferer}
 	 */
 	public RainSensor(Long id,
 		Output output,
@@ -87,7 +87,6 @@ public class RainSensor extends WeatherSensor<RainSensorData> {
 			weatherController,
 			updateLimit,
 			weatherInterferer,
-			WeatherSensorTypeEnum.RAIN,
 			new RainSensorData());
 		// if(!(weatherInterferer instanceof RainsensorWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
@@ -120,4 +119,10 @@ public class RainSensor extends WeatherSensor<RainSensorData> {
 		// transmit dummy values
 		this.transmitDummyValues();
 	}
+
+	@Override
+	public SensorType getSensorType() {
+		return WeatherSensorTypeEnum.RAIN;
+	}
+
 }

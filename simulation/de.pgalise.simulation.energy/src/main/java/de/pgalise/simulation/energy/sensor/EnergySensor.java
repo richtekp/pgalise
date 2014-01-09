@@ -19,7 +19,6 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -33,7 +32,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @version 1.0
  * @param <X>
  */
-public abstract class EnergySensor<X extends SensorData> extends AbstractStaticSensor<EnergyEvent,X> {
+public abstract class EnergySensor<X extends SensorData> extends AbstractStaticSensor<EnergyEvent, X> {
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,18 +69,20 @@ public abstract class EnergySensor<X extends SensorData> extends AbstractStaticS
 	 * @param updateLimit Update limit
 	 * @param interferer Energy interferer
 	 */
-	protected EnergySensor(Long id,Output output,
+	protected EnergySensor(Long id,
+		Output output,
 		JaxRSCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,
 		int updateLimit,
 		EnergyInterferer interferer,
-		SensorType sensorType,X sensorData) {
-		super(id,output,
+		X sensorData) {
+		super(id,
+			output,
 			position,
-			sensorType,
-			updateLimit,sensorData);
+			updateLimit,
+			sensorData);
 		if (weatherController == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"weather"));

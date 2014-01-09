@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.SimulationController;
@@ -54,7 +53,13 @@ import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterCont
 import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.testutils.TestUtils;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.ejb.EJB;
+import javax.ejb.embeddable.EJBContainer;
+import javax.naming.NamingException;
+import org.junit.Before;
 
 /**
  * J-Unit test for {@link DefaultEventInitiator}, which will test if every
@@ -64,6 +69,8 @@ import javax.ejb.EJB;
  * @author Timo
  */
 public class DefaultEventInitiatorTest {
+
+	private EJBContainer container;
 
 	private static final long INTERVAL = 1000;
 	private static final long CLOCK_GENERATOR_INTERVAL = 0;
@@ -80,8 +87,15 @@ public class DefaultEventInitiatorTest {
 	private static SimulationController simulationController;
 	private static ControlCenterControllerMock controlCenterController;
 
-	@BeforeClass
-	public void setUp() {
+	public DefaultEventInitiatorTest() {
+	}
+
+	@Before
+	public void setUp() throws NamingException, MalformedURLException {
+		container = TestUtils.getContainer();
+		container.getContext().bind("inject",
+			this);
+
 		Calendar cal = new GregorianCalendar();
 		cal.set(2011,
 			0,
@@ -104,8 +118,8 @@ public class DefaultEventInitiatorTest {
 			endTimestamp,
 			INTERVAL,
 			CLOCK_GENERATOR_INTERVAL,
-			"",
-			"",
+			new URL(""),
+			new URL(""),
 			null,
 			null);
 
@@ -175,7 +189,6 @@ public class DefaultEventInitiatorTest {
 			operationCenterController.getUpdateCounter());
 		assertEquals(updateIntervals,
 			controlCenterController.getUpdateCount());
-
 		eventInitiator.stop();
 
 		// Status test

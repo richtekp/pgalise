@@ -1,4 +1,4 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -19,9 +19,11 @@ import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
-import de.pgalise.util.cityinfrastructure.impl.DefaultBuildingEnergyProfileStrategy;
+import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -40,8 +42,10 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
@@ -73,8 +77,8 @@ public class MainCtrl implements Serializable {
 	private List<AbstractEvent> selectedUncommittedEvents = new LinkedList<>();
 	private List<ControlCenterMessage<?>> unsentMessages = new LinkedList<>();
 	private List<ControlCenterMessage<?>> selectedUnsentMessages = new LinkedList<>();
-//	@ManagedProperty(value = "#{ControlCenterStartParameter}")
-	private ControlCenterStartParameter startParameter;
+	@ManagedProperty(value = "#{controlCenterStartParameter}")
+	private ControlCenterStartParameter startParameter = new ControlCenterStartParameter();
 	private String connectionState = ConnectionStateEnum.DISCONNECTED.
 		getStringValue();
 	private String simulationState = SimulationStateEnum.STOPPED.getStringValue();
@@ -84,7 +88,6 @@ public class MainCtrl implements Serializable {
 	private TreeNode startParameterTreeRoot;
 	@EJB
 	private StartParameterSerializerService startParameterSerializerService;
-	@ManagedProperty(value = "#{cityCtrl}")
 	private CityCtrl cityCtrl;
 
 	public MainCtrl() {
@@ -92,43 +95,54 @@ public class MainCtrl implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		startParameter = new ControlCenterStartParameter();
 		startParameterTreeRoot = new DefaultTreeNode("StartParameter",
 			null);
+		cityCtrl = (CityCtrl) FacesContext.getCurrentInstance().
+			getELContext()
+			.getELResolver().
+			getValue(FacesContext.getCurrentInstance().getELContext(),
+				null,
+				"cityCtrl");
 	}
 
 	public void startSimulation() throws IOException {
-		if (cityCtrl.getMapAndBusstopFileData().getOsmFileNames().size() > 1) {
+		if (cityCtrl.getOsmFileNames().size() > 1) {
 			throw new UnsupportedOperationException(
 				"multiple osm files not supported yet");
 		}
-		if (cityCtrl.getMapAndBusstopFileData().getBusStopFileNames().size() > 1) {
+		if (cityCtrl.getBusStopFileNames().size() > 1) {
 			throw new UnsupportedOperationException(
 				"multiple bus stop files not supported yet");
 		}
-		byte[] osmFileBytes = (byte[]) MainCtrlUtils.OSM_FILE_CACHE.get(cityCtrl.
-			getMapAndBusstopFileData().getOsmFileNames().iterator().next()).
-			getObjectValue();
-		byte[] busStopFileBytes = (byte[]) MainCtrlUtils.BUS_STOP_FILE_CACHE.get(
-			cityCtrl.getMapAndBusstopFileData().getBusStopFileNames().iterator().
-			next()).getObjectValue();
+		String osmFileKey = cityCtrl.getOsmFileNames().
+			iterator().next();
+		String busStopFileKey = cityCtrl.getBusStopFileNames().iterator().next();
+		InputStream osmFileBytes = new FileInputStream(new File(
+			MainCtrlUtils.CACHE_DATA_DIR,
+			osmFileKey));
+		InputStream busStopFileBytes = new FileInputStream(new File(
+			MainCtrlUtils.CACHE_DATA_DIR,
+			busStopFileKey));
 		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
 
 		TrafficInfrastructureData trafficInfrastructureData = new OSMCityInfrastructureData(
-			new ByteArrayInputStream(osmFileBytes),
-			new ByteArrayInputStream(busStopFileBytes),
+			osmFileBytes,
+			busStopFileBytes,
 			buildingEnergyProfileStrategy);
+		Long startTimestamp = startParameter.getStartTimestamp().getTime();
+		long endTimestamp = startParameter.getEndTimestamp().getTime();
+		ServerConfiguration serverConfiguration = ServerConfiguration.DEFAULT_SERVER_CONFIGURATION;
 		simulationController.init(
 			new TrafficInitParameter(trafficInfrastructureData,
-				ServerConfiguration.DEFAULT_SERVER_CONFIGURATION,
-				startParameter.getStartTimestamp(),
-				startParameter.getEndTimestamp(),
+				serverConfiguration,
+				startTimestamp,
+				endTimestamp,
 				startParameter.getInterval(),
 				startParameter.getClockGeneratorInterval(),
 				startParameter.getOperationCenterAddress(),
 				startParameter.getControlCenterAddress(),
 				startParameter.getTrafficFuzzyData(),
-				cityCtrl.retrieveBoundaries()));
+				cityCtrl.retrieveBoundaries(trafficInfrastructureData)));
 		simulationController.start(startParameter);
 	}
 
@@ -303,7 +317,7 @@ public class MainCtrl implements Serializable {
 		return parameterUploadData;
 	}
 
-	public void onStartParameterUpload() {
+	public void onStartParameterUpload(FileUploadEvent event) {
 		throw new UnsupportedOperationException(
 			"implement start parameter deserialization");
 	}

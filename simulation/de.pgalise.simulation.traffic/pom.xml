@@ -30,11 +30,6 @@
 			<artifactId>generic</artifactId>
 		</dependency>	
 		<dependency>
-			<groupId>com.vividsolutions</groupId>
-			<artifactId>jts</artifactId>
-			<type>jar</type>
-		</dependency>
-		<dependency>
 			<groupId>net.sf.jgrapht</groupId>
 			<artifactId>jgrapht</artifactId>
 		</dependency>

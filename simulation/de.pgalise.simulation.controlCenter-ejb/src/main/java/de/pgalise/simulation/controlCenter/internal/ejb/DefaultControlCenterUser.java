@@ -215,7 +215,6 @@ public class DefaultControlCenterUser extends Endpoint implements
 		ServiceDictionary serviceDictionary) {
 		this.gson = gson;
 		this.serviceDictionary = serviceDictionary;
-		startParameterSerializerService.init(gson);
 		this.properties = new Properties();
 		InputStream is = Thread.currentThread().getContextClassLoader().
 			getResourceAsStream("/properties.props");
@@ -693,8 +692,8 @@ public class DefaultControlCenterUser extends Endpoint implements
 		TrafficInitParameter initParameter = new TrafficInitParameter(
 			this.cityInfrastructureData,
 			serverConfiguration,
-			ccSimulationStartParameter.getStartTimestamp(),
-			ccSimulationStartParameter.getEndTimestamp(),
+			ccSimulationStartParameter.getStartTimestamp().getTime(),
+			ccSimulationStartParameter.getEndTimestamp().getTime(),
 			ccSimulationStartParameter.getInterval(),
 			ccSimulationStartParameter.getClockGeneratorInterval(),
 			ccSimulationStartParameter.getOperationCenterAddress(),
@@ -707,7 +706,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 
 		/* Init random seed service: */
 		this.serviceDictionary.getRandomSeedService().init(
-			ccSimulationStartParameter.getStartTimestamp());
+			ccSimulationStartParameter.getStartTimestamp().getTime());
 		Random random = new Random(this.serviceDictionary.
 			getRandomSeedService().
 			getSeed(ControlCenterUser.class.getName()));
@@ -785,7 +784,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 
 		int totalNumberOfBusTrips = this.busService.getTotalNumberOfBusTrips(
 			busRouteList,
-			ccSimulationStartParameter.getStartTimestamp());
+			ccSimulationStartParameter.getStartTimestamp().getTime());
 
 		log.debug("Create " + totalNumberOfBusTrips + " busses!");
 
@@ -803,7 +802,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 		}
 		simulationEventList.add(new CreateBussesEvent(serviceDictionary.
 			getController(TrafficServerLocal.class),
-			ccSimulationStartParameter.getStartTimestamp(),
+			ccSimulationStartParameter.getStartTimestamp().getTime(),
 			0L,
 			busDataList,
 			busRouteList));

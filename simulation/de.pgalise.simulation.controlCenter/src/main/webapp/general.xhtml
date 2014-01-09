@@ -24,7 +24,7 @@
 							</tr>
 							<tr>
 								<td>
-									<p:calendar value="#{mainCtrl.startParameter.startTimestamp}" title="set the simulation's start date" />
+									<p:calendar value="#{mainCtrl.startParameter.startTimestamp}" title="set the simulation's start date" pattern="MM/dd/yyyy HH:mm" />
 								</td>
 							</tr>
 						</table>
@@ -43,7 +43,7 @@
 							</tr>
 							<tr>
 								<td>
-									<p:calendar value="#{mainCtrl.startParameter.endTimestamp}" title="set the simulation's end date" />
+									<p:calendar value="#{mainCtrl.startParameter.endTimestamp}" title="set the simulation's end date" pattern="MM/dd/yyyy HH:mm" />
 								</td>
 							</tr>
 						</table>
@@ -97,24 +97,27 @@
 							<tr title="set the intervall for sensors to send data">
 								<td>General Update steps:</td>
 								<td>
-									<p:spinner styleClass="smallWidth"  value="#{mainCtrl.startParameter.sensorUpdateSteps}" min="1" max="10" />
+									<p:spinner value="#{mainCtrl.startParameter.sensorUpdateSteps}" min="1" max="10" />
 								</td>
 							</tr>
 							<tr>
-								<h:dataTable value="#{mainCtrl.startParameter.specificUpdateSteps.values}" var="specificUpdateStepEntry">
+								<h:dataTable value="#{mainCtrl.startParameter.specificUpdateSteps.entrySet()}" var="specificUpdateStepEntry">
 									<h:column>
 										<f:facet name="header">Sensor type</f:facet>
 											#{specificUpdateStepEntry.key}
 									</h:column>
 									<h:column>
 										<f:facet name="header">Update steps</f:facet>
-										<p:spinner value="#{specificUpdateStepEntry.key}" min="1" max="10" />
+										<p:spinner value="#{mainCtrl.startParameter.specificUpdateSteps[specificUpdateStepEntry.key]}" min="1" max="10" >
+											<f:ajax/>
+										</p:spinner>
 									</h:column>
 								</h:dataTable>
 							</tr>
 						</table>
 					</div>
 				</div>
+				<h:commandButton value="save"/>
 			</h:form>
 		</div>
 	</ui:define>

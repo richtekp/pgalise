@@ -14,7 +14,7 @@
 		<java.compiler.source>1.7</java.compiler.source>
 		<java.compiler.target>1.7</java.compiler.target>
 		<de.pgalise.openejb.version>4.6.0</de.pgalise.openejb.version>
-		<de.pgalise.geotools.version>10.3</de.pgalise.geotools.version>
+		<de.pgalise.geotools.version>9.3</de.pgalise.geotools.version>
 	</properties>
 		
 	<modules>

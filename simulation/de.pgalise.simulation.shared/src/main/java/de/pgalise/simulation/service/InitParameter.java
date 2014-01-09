@@ -20,6 +20,10 @@ import de.pgalise.simulation.service.ServerConfiguration;
 import java.io.Serializable;
 
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import java.net.URL;
+import java.util.Date;
+import javax.faces.bean.ManagedBean;
+import javax.validation.constraints.NotNull;
 
 /**
  * The init parameters will be send to every controller on init. It contains all
@@ -28,6 +32,7 @@ import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
  * @author Mustafa
  * @author Timo
  */
+@ManagedBean
 public class InitParameter implements Serializable {
 
 	/**
@@ -43,12 +48,20 @@ public class InitParameter implements Serializable {
 	/**
 	 * Timestamp of the simulation start
 	 */
-	private long startTimestamp;
+	/*
+	 Has to be a java.util.Date in order to work out-of-the box with Primefaces p:calendar
+	 */
+	@NotNull
+	private Date startTimestamp;
 
 	/**
 	 * Timestamp of the simulation end
 	 */
-	private long endTimestamp;
+	/*
+	 Has to be a java.util.Date in order to work out-of-the box with Primefaces p:calendar
+	 */
+	@NotNull
+	private Date endTimestamp;
 
 	/**
 	 * Simulation interval
@@ -63,12 +76,12 @@ public class InitParameter implements Serializable {
 	/**
 	 * URL to the operation center
 	 */
-	private String operationCenterURL;
+	private URL operationCenterURL;
 
 	/**
 	 * URL to the control center
 	 */
-	private String controlCenterURL;
+	private URL controlCenterURL;
 
 	/**
 	 * Traffic fuzzy data
@@ -84,6 +97,8 @@ public class InitParameter implements Serializable {
 	 * Default
 	 */
 	public InitParameter() {
+		startTimestamp = new Date();
+		endTimestamp = new Date(startTimestamp.getTime() + 1000 * 60 * 60);
 	}
 
 	/**
@@ -105,14 +120,20 @@ public class InitParameter implements Serializable {
 		long endTimestamp,
 		long interval,
 		long clockGeneratorInterval,
-		String operationCenterURL,
-		String controlCenterURL,
+		URL operationCenterURL,
+		URL controlCenterURL,
 		TrafficFuzzyData trafficFuzzyData,
 		Envelope cityBoundary) {
 		super();
 		this.serverConfiguration = serverConfiguration;
-		this.startTimestamp = startTimestamp;
-		this.endTimestamp = endTimestamp;
+		this.startTimestamp = new Date(startTimestamp);
+		this.endTimestamp = new Date(endTimestamp);
+		if (this.startTimestamp.before(this.endTimestamp)) {
+			throw new IllegalArgumentException(String.format(
+				"endTimestamp %s lies before startTimestamp %s",
+				this.endTimestamp.toString(),
+				this.startTimestamp.toString()));
+		}
 		this.interval = interval;
 		this.clockGeneratorInterval = clockGeneratorInterval;
 		this.operationCenterURL = operationCenterURL;
@@ -125,7 +146,7 @@ public class InitParameter implements Serializable {
 		return this.clockGeneratorInterval;
 	}
 
-	public long getEndTimestamp() {
+	public Date getEndTimestamp() {
 		return this.endTimestamp;
 	}
 
@@ -133,7 +154,7 @@ public class InitParameter implements Serializable {
 		return this.interval;
 	}
 
-	public String getOperationCenterURL() {
+	public URL getOperationCenterURL() {
 		return this.operationCenterURL;
 	}
 
@@ -141,7 +162,7 @@ public class InitParameter implements Serializable {
 		return this.serverConfiguration;
 	}
 
-	public long getStartTimestamp() {
+	public Date getStartTimestamp() {
 		return this.startTimestamp;
 	}
 
@@ -149,7 +170,7 @@ public class InitParameter implements Serializable {
 		this.clockGeneratorInterval = clockGeneratorInterval;
 	}
 
-	public void setEndTimestamp(long endTimestamp) {
+	public void setEndTimestamp(Date endTimestamp) {
 		this.endTimestamp = endTimestamp;
 	}
 
@@ -157,7 +178,7 @@ public class InitParameter implements Serializable {
 		this.interval = interval;
 	}
 
-	public void setOperationCenterURL(String operationCenterURL) {
+	public void setOperationCenterURL(URL operationCenterURL) {
 		this.operationCenterURL = operationCenterURL;
 	}
 
@@ -165,7 +186,7 @@ public class InitParameter implements Serializable {
 		this.serverConfiguration = serverConfiguration;
 	}
 
-	public void setStartTimestamp(long startTimestamp) {
+	public void setStartTimestamp(Date startTimestamp) {
 		this.startTimestamp = startTimestamp;
 	}
 
@@ -185,11 +206,11 @@ public class InitParameter implements Serializable {
 		this.cityBoundary = cityBoundary;
 	}
 
-	public String getControlCenterURL() {
+	public URL getControlCenterURL() {
 		return controlCenterURL;
 	}
 
-	public void setControlCenterURL(String controlCenterURL) {
+	public void setControlCenterURL(URL controlCenterURL) {
 		this.controlCenterURL = controlCenterURL;
 	}
 }

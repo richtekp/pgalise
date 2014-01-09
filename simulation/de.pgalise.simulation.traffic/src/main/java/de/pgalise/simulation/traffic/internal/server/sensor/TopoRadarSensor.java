@@ -15,14 +15,13 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
@@ -71,7 +70,6 @@ public class TopoRadarSensor extends AbstractStaticTrafficSensor<TopoRadarSensor
 			output,
 			node,
 			updateLimit,
-			TrafficSensorTypeEnum.TOPORADAR,
 			new TopoRadarSensorData());
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
@@ -157,5 +155,10 @@ public class TopoRadarSensor extends AbstractStaticTrafficSensor<TopoRadarSensor
 		while (!this.registeredVehicles.isEmpty()) {
 			super.transmitData(eventList);
 		}
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return TrafficSensorTypeEnum.TOPORADAR;
 	}
 }

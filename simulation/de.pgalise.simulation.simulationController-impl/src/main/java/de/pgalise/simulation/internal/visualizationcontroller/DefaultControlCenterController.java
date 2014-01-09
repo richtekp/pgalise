@@ -37,6 +37,7 @@ import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
+import java.net.URL;
 
 /**
  * Implementation of the control center controller. Sends all the information
@@ -53,7 +54,7 @@ public class DefaultControlCenterController implements
 
 	private static final String NAME = "ControlCenterController";
 	private int connectionTimeout;
-	private String servletURL;
+	private URL servletURL;
 	@EJB
 	private GsonService gsonService;
 	private Gson gson;
@@ -133,7 +134,7 @@ public class DefaultControlCenterController implements
 		StringBuilder parameters;
 		try {
 			HttpURLConnection connection;
-			connection = (HttpURLConnection) new java.net.URL(this.servletURL).
+			connection = (HttpURLConnection) this.servletURL.
 				openConnection();
 			connection.setRequestMethod("POST");
 

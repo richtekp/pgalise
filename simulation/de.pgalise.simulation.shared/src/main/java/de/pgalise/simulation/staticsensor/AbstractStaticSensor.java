@@ -8,7 +8,6 @@ package de.pgalise.simulation.staticsensor;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
-import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.Event;
 
@@ -33,14 +32,14 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractStaticSensor(Long id,final Output output,
+	public AbstractStaticSensor(Long id,
+		final Output output,
 		JaxRSCoordinate position,
-		SensorType sensorType,
 		X sensorData)
 		throws IllegalArgumentException {
-		this(id,output,
+		this(id,
+			output,
 			position,
-			sensorType,
 			1,
 			sensorData);
 	}
@@ -55,14 +54,14 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractStaticSensor(Long id,final Output output,
+	public AbstractStaticSensor(Long id,
+		final Output output,
 		JaxRSCoordinate position,
-		SensorType sensorType,
 		final int updateLimit,
 		X sensorData)
 		throws IllegalArgumentException {
-		super(id,output,
-			sensorType,
+		super(id,
+			output,
 			updateLimit,
 			sensorData);
 		this.position = position;

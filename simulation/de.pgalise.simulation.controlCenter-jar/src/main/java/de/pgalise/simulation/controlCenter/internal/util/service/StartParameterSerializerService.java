@@ -17,8 +17,6 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import java.io.InputStream;
 
-import com.google.gson.Gson;
-
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import java.io.OutputStream;
 
@@ -64,10 +62,4 @@ public interface StartParameterSerializerService {
 	public void serialize(ControlCenterStartParameter controlCenterStartParameter,
 		OutputStream outputStream);
 
-	/**
-	 * Inits the start parameter serializer service.
-	 *
-	 * @param gson
-	 */
-	public void init(Gson gson);
 }

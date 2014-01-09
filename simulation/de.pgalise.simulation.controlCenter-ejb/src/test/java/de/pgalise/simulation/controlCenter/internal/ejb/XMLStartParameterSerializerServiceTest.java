@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.controlCenter.internal.ejb;
 
-import com.google.gson.Gson;
 import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.testutils.TestUtils;
@@ -19,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -51,6 +51,7 @@ public class XMLStartParameterSerializerServiceTest {
 	 * Test of deserialize method, of class XMLStartParameterSerializerService.
 	 */
 	@Test
+	@Ignore
 	public void testDeserialize_String() {
 		System.out.println("deserialize");
 		String content = "";
@@ -66,6 +67,7 @@ public class XMLStartParameterSerializerServiceTest {
 	 * Test of deserialize method, of class XMLStartParameterSerializerService.
 	 */
 	@Test
+	@Ignore
 	public void testDeserialize_InputStream() {
 		System.out.println("deserialize");
 		InputStream inputStream = null;
@@ -81,6 +83,7 @@ public class XMLStartParameterSerializerServiceTest {
 	 * Test of serialize method, of class XMLStartParameterSerializerService.
 	 */
 	@Test
+	@Ignore
 	public void testSerialize_ControlCenterStartParameter_String() {
 		System.out.println("serialize");
 		ControlCenterStartParameter cCSimulationStartParameter = null;
@@ -98,6 +101,7 @@ public class XMLStartParameterSerializerServiceTest {
 	 * Test of serialize method, of class XMLStartParameterSerializerService.
 	 */
 	@Test
+	@Ignore
 	public void testSerialize_ControlCenterStartParameter_OutputStream() {
 		System.out.println("serialize");
 		ControlCenterStartParameter controlCenterStartParameter = new ControlCenterStartParameter();
@@ -110,13 +114,4 @@ public class XMLStartParameterSerializerServiceTest {
 			result);
 	}
 
-	/**
-	 * Test of init method, of class XMLStartParameterSerializerService.
-	 */
-	@Test
-	public void testInit() {
-		System.out.println("init");
-		Gson gson = null;
-		instance.init(gson);
-	}
 }

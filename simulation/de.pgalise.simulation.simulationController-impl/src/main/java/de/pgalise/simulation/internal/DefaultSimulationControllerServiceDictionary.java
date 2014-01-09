@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.internal;
 
 import de.pgalise.simulation.SimulationControllerServiceDictionary;
@@ -19,9 +18,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-@Singleton(mappedName = "de.pgalise.simulation.SimulationControllerServiceDictionary", name = "de.pgalise.simulation.SimulationControllerServiceDictionary")
-public class DefaultSimulationControllerServiceDictionary extends AbstractServiceDictionary implements SimulationControllerServiceDictionary {
-	private static final Logger log = LoggerFactory.getLogger(DefaultSimulationControllerServiceDictionary.class);
+@Singleton
+public class DefaultSimulationControllerServiceDictionary extends AbstractServiceDictionary
+	implements SimulationControllerServiceDictionary {
+
+	private static final Logger log = LoggerFactory.getLogger(
+		DefaultSimulationControllerServiceDictionary.class);
 
 	@Override
 	protected void initBeforeRead(List<ServiceHandler<Service>> list) {
@@ -34,13 +36,15 @@ public class DefaultSimulationControllerServiceDictionary extends AbstractServic
 			}
 
 			@Override
-			public void handle(String server, Service service) {
-				log.info(String.format("Using %s on server %s", getName(), server));
-				getServices().put(getName(), service);
+			public void handle(String server,
+				Service service) {
+				log.info(String.format("Using %s on server %s",
+					getName(),
+					server));
+				getServices().put(getName(),
+					service);
 			}
 		});
 	}
 
-	
-	
 }

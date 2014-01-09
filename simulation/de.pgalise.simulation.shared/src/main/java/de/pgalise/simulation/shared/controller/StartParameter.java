@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.shared.controller;
 
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+public class StartParameter extends InitParameter {
 
-public class StartParameter {
 	private static final long serialVersionUID = 1L;
 	private List<WeatherEvent> weatherEvents = new LinkedList<>();
 	private boolean aggregatedWeatherDataEnabled;
@@ -20,7 +20,8 @@ public class StartParameter {
 	}
 
 	public StartParameter(
-		boolean aggregatedWeatherDataEnabled,List<WeatherEvent> weatherEvents) {
+		boolean aggregatedWeatherDataEnabled,
+		List<WeatherEvent> weatherEvents) {
 		this.weatherEvents = weatherEvents;
 		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
 	}
@@ -42,5 +43,5 @@ public class StartParameter {
 	public List<WeatherEvent> getWeatherEvents() {
 		return weatherEvents;
 	}
-	
+
 }

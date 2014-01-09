@@ -23,6 +23,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.simulation.energy.sensor.EnergySensor;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 
@@ -137,7 +138,6 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 			randomSeedService,
 			updateLimit,
 			interferer,
-			EnergySensorTypeEnum.WINDPOWERSENSOR,
 			new WindPowerSensorData());
 		this.activityValue = activityValue;
 		this.rotorLength = rotorLength;
@@ -264,5 +264,10 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 		this.getOutput().transmitDouble(windpower);
 		// transmit dummy values
 		this.transmitDummyValues();
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return EnergySensorTypeEnum.WINDPOWERSENSOR;
 	}
 }

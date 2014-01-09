@@ -15,14 +15,13 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
@@ -98,7 +97,6 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor<InductionLo
 			output,
 			node,
 			updateLimit,
-			TrafficSensorTypeEnum.INDUCTIONLOOP,
 			new InductionLoopSensorData());
 		if (interferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
@@ -169,5 +167,10 @@ public class InductionLoopSensor extends AbstractStaticTrafficSensor<InductionLo
 
 			log.debug(this.getId() + " registered a vehicle");
 		}
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return TrafficSensorTypeEnum.INDUCTIONLOOP;
 	}
 }

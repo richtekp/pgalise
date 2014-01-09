@@ -15,10 +15,10 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
@@ -85,7 +85,6 @@ public class Hygrometer extends WeatherSensor<HygrometerData> {
 			weatherController,
 			updateLimit,
 			weatherInterferer,
-			WeatherSensorTypeEnum.HYGROMETER,
 			new HygrometerData());
 		// if(!(weatherInterferer instanceof HygrometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
@@ -117,5 +116,10 @@ public class Hygrometer extends WeatherSensor<HygrometerData> {
 		this.getOutput().transmitDouble(relativHumidity);
 		// transmit dummy values
 		this.transmitDummyValues();
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return WeatherSensorTypeEnum.HYGROMETER;
 	}
 }

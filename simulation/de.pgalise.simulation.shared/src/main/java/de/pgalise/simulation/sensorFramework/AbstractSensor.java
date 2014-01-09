@@ -15,16 +15,13 @@
  */
 package de.pgalise.simulation.sensorFramework;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import java.util.List;
-import javax.persistence.Embedded;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import org.slf4j.Logger;
@@ -41,10 +38,12 @@ import org.slf4j.LoggerFactory;
  * @param <X>
  */
 @MappedSuperclass
-public abstract class AbstractSensor<E extends Event, X extends SensorData> extends AbstractIdentifiable
-	implements Sensor<E,X> {
+public abstract class AbstractSensor<E extends Event, X extends SensorData>
+	extends AbstractIdentifiable
+	implements Sensor<E, X> {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(AbstractSensor.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(
+		AbstractSensor.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -74,10 +73,8 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 	 */
 	private int updateLimit;
 
-	private SensorType sensorType;
-	
 	private X sensorData;
-	
+
 	private List<SensorInterfererType> sensorInterferers;
 
 	protected AbstractSensor() {
@@ -91,12 +88,15 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractSensor(Long id,final Output output,
-		SensorType sensorType, X sensorData)
+	public AbstractSensor(Long id,
+		final Output output,
+		X sensorData)
 		throws IllegalArgumentException {
-		this(id,output,
-			sensorType,
-			1,sensorData);
+		this(id,
+			output,
+
+			1,
+			sensorData);
 	}
 
 	/**
@@ -109,9 +109,10 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 	 * @param sensorData
 	 * @throws IllegalArgumentException
 	 */
-	public AbstractSensor(Long id,final Output output,
-		SensorType sensorType,
-		final int updateLimit, X sensorData)
+	public AbstractSensor(Long id,
+		final Output output,
+		final int updateLimit,
+		X sensorData)
 		throws IllegalArgumentException {
 		super(id);
 		if (output == null) {
@@ -127,7 +128,6 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 
 		this.output = output;
 		this.updateLimit = updateLimit;
-		this.sensorType = sensorType;
 		this.sensorData = sensorData;
 	}
 
@@ -138,15 +138,6 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 
 	protected void setUpdateSteps(int updateSteps) {
 		this.updateSteps = updateSteps;
-	}
-
-	@Override
-	public SensorType getSensorType() {
-		return sensorType;
-	}
-
-	public void setSensorType(SensorTypeEnum sensorType) {
-		this.sensorType = sensorType;
 	}
 
 	/**
@@ -276,7 +267,8 @@ public abstract class AbstractSensor<E extends Event, X extends SensorData> exte
 	}
 
 	@Override
-	public void setSensorInterfererTypes(List<SensorInterfererType> sensorInterferer) {
+	public void setSensorInterfererTypes(
+		List<SensorInterfererType> sensorInterferer) {
 		this.sensorInterferers = sensorInterferer;
 	}
 }

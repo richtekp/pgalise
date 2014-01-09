@@ -36,11 +36,6 @@
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-	  <groupId>com.vividsolutions</groupId>
-	  <artifactId>jts</artifactId>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
 	  <groupId>org.geotools</groupId>
 	  <artifactId>gt-api</artifactId>
 		<exclusions>

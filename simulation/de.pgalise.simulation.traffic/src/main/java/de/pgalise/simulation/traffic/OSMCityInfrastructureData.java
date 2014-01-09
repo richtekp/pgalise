@@ -53,42 +53,42 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.AmenityTag;
-import de.pgalise.simulation.shared.city.AmenityTagCustom;
-import de.pgalise.simulation.shared.city.AttractionTag;
-import de.pgalise.simulation.shared.city.AttractionTagCustom;
+import de.pgalise.simulation.shared.tag.AmenityTag;
+import de.pgalise.simulation.shared.tag.AttractionTag;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.CraftTag;
-import de.pgalise.simulation.shared.city.CraftTagCustom;
-import de.pgalise.simulation.shared.city.EmergencyServiceTag;
-import de.pgalise.simulation.shared.city.EmergencyServiceTagCustom;
-import de.pgalise.simulation.shared.city.GamblingTag;
-import de.pgalise.simulation.shared.city.GamblingTagCustom;
-import de.pgalise.simulation.shared.city.LanduseTagCustom;
-import de.pgalise.simulation.shared.city.LanduseTagEnum;
-import de.pgalise.simulation.shared.city.LeisureTag;
-import de.pgalise.simulation.shared.city.LeisureTagCustom;
+import de.pgalise.simulation.shared.tag.CraftTag;
+import de.pgalise.simulation.shared.tag.EmergencyServiceTag;
+import de.pgalise.simulation.shared.tag.GamblingTag;
+import de.pgalise.simulation.shared.tag.LanduseTagEnum;
+import de.pgalise.simulation.shared.tag.LeisureTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
-import de.pgalise.simulation.shared.city.PublicTransportTag;
-import de.pgalise.simulation.shared.city.PublicTransportTagCustom;
-import de.pgalise.simulation.shared.city.RepairTag;
-import de.pgalise.simulation.shared.city.RepairTagCustom;
-import de.pgalise.simulation.shared.city.SchoolTag;
-import de.pgalise.simulation.shared.city.SchoolTagCustom;
-import de.pgalise.simulation.shared.city.ServiceTag;
-import de.pgalise.simulation.shared.city.ServiceTagCustom;
-import de.pgalise.simulation.shared.city.ShopTag;
-import de.pgalise.simulation.shared.city.ShopTagCustom;
-import de.pgalise.simulation.shared.city.SportTag;
-import de.pgalise.simulation.shared.city.SportTagCustom;
-import de.pgalise.simulation.shared.city.TourismTag;
-import de.pgalise.simulation.shared.city.TourismTagCustom;
+import de.pgalise.simulation.shared.tag.PublicTransportTag;
+import de.pgalise.simulation.shared.tag.RepairTag;
+import de.pgalise.simulation.shared.tag.SchoolTag;
+import de.pgalise.simulation.shared.tag.ServiceTag;
+import de.pgalise.simulation.shared.tag.ShopTag;
+import de.pgalise.simulation.shared.tag.SportTag;
+import de.pgalise.simulation.shared.tag.TourismTag;
 import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.shared.city.WayTag;
-import de.pgalise.simulation.shared.city.WayTagCustom;
-import de.pgalise.simulation.shared.city.WayTagEnum;
+import de.pgalise.simulation.shared.tag.WayTag;
+import de.pgalise.simulation.shared.tag.WayTagEnum;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import de.pgalise.simulation.shared.tag.factory.AmenityTagFactory;
+import de.pgalise.simulation.shared.tag.factory.AttractionTagFactory;
+import de.pgalise.simulation.shared.tag.factory.CraftTagFactory;
+import de.pgalise.simulation.shared.tag.factory.EmergencyServiceTagFactory;
+import de.pgalise.simulation.shared.tag.factory.GamblingTagFactory;
+import de.pgalise.simulation.shared.tag.factory.LanduseTagFactory;
+import de.pgalise.simulation.shared.tag.factory.LeisureTagFactory;
+import de.pgalise.simulation.shared.tag.factory.PublicTransportTagFactory;
+import de.pgalise.simulation.shared.tag.factory.RepairTagFactory;
+import de.pgalise.simulation.shared.tag.factory.SchoolTagFactory;
+import de.pgalise.simulation.shared.tag.factory.ServiceTagFactory;
+import de.pgalise.simulation.shared.tag.factory.ShopTagFactory;
+import de.pgalise.simulation.shared.tag.factory.SportTagFactory;
+import de.pgalise.simulation.shared.tag.factory.TourismTagFactory;
+import de.pgalise.simulation.shared.tag.factory.WayTagFactory;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
 import java.util.Arrays;
@@ -1248,51 +1248,58 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 								tmpBusStopList.add(lastBusstop);
 								lastBusstop = null;
 							} else if (kValue.equalsIgnoreCase("tourism")) {
-								lastNode.getTourismTags().add(new TourismTagCustom(vValue));
+								lastNode.getTourismTags().add(TourismTagFactory.getInstance(
+									vValue));
 							} else if (kValue.equalsIgnoreCase("sport")) {
-								lastNode.getSportTags().add(new SportTagCustom(vValue));
+								lastNode.getSportTags().add(SportTagFactory.getInstance(vValue));
 
 							} else if (kValue.equalsIgnoreCase("school")) {
-								lastNode.getSchoolTags().add(new SchoolTagCustom(vValue));
+								lastNode.getSchoolTags().add(SchoolTagFactory.
+									getInstance(vValue));
 
 							} else if (kValue.equalsIgnoreCase("shop")) {
-								lastNode.getShopTags().add(new ShopTagCustom(vValue));
+								lastNode.getShopTags().add(ShopTagFactory.getInstance(vValue));
 
 							} else if (kValue.equalsIgnoreCase("service")) {
-								lastNode.getServiceTags().add(new ServiceTagCustom(vValue));
+								lastNode.getServiceTags().add(ServiceTagFactory.getInstance(
+									vValue));
 
 							} else if (kValue.equalsIgnoreCase("repair")) {
-								lastNode.getRepairTags().add(new RepairTagCustom(vValue));
+								lastNode.getRepairTags().add(RepairTagFactory.
+									getInstance(vValue));
 
 							} else if (kValue.equalsIgnoreCase("amenity")) {
-								lastNode.getAmenityTags().add(new AmenityTagCustom(vValue));
+								lastNode.getAmenityTags().add(AmenityTagFactory.getInstance(
+									vValue));
 
 							} else if (kValue.equalsIgnoreCase("attraction")) {
-								lastNode.getAttractionTags().add(new AttractionTagCustom(
-									vValue));
+								lastNode.getAttractionTags().add(AttractionTagFactory.
+									getInstance(
+										vValue));
 
 							} else if (kValue.equalsIgnoreCase("emergency_service")) {
 								lastNode.getEmergencyServiceTags().add(
-									new EmergencyServiceTagCustom(vValue));
+									EmergencyServiceTagFactory.getInstance(vValue));
 
 							} else if (kValue.equalsIgnoreCase("office")) {
 								lastNode.setOffice(true);
 
 							} else if (kValue.equalsIgnoreCase("craft")) {
-								lastNode.getCraftTags().add(new CraftTagCustom(vValue));
+								lastNode.getCraftTags().add(CraftTagFactory.getInstance(vValue));
 
 							} else if (kValue.equalsIgnoreCase("leisure")) {
-								lastNode.getLeisureTags().add(new LeisureTagCustom(vValue));
+								lastNode.getLeisureTags().add(LeisureTagFactory.getInstance(
+									vValue));
 
 							} else if (kValue.equalsIgnoreCase("military")) {
 								lastNode.setMilitary(true);
 
 							} else if (kValue.equalsIgnoreCase("public_transport")) {
-								lastNode.getPublicTransportTags().add(
-									new PublicTransportTagCustom(vValue));
-
+								lastNode.getPublicTransportTags().add(PublicTransportTagFactory.
+									getInstance(vValue));
 							} else if (kValue.equalsIgnoreCase("gambling")) {
-								lastNode.getGamblingTags().add(new GamblingTagCustom(vValue));
+								lastNode.getGamblingTags().add(GamblingTagFactory.getInstance(
+									vValue));
 							}
 						} else if (parser.getLocalName().equalsIgnoreCase("way")) {
 
@@ -1336,18 +1343,21 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 										}
 									}
 									if (lastFoundWay != null) {
-										lastFoundWay.getWayTags().add(new WayTagCustom(vValue));
+										lastFoundWay.getWayTags().add(WayTagFactory.getInstance(
+											vValue));
 									}
 								} else if (kValue.equalsIgnoreCase("oneway") && vValue.
 									equalsIgnoreCase("yes")) {
 									lastFoundWay.applyOneWay(true);
 								} else if (kValue.equalsIgnoreCase("landuse")) {
-									lastFoundWay.getLanduseTags().add(new LanduseTagCustom(
-										vValue));
+									lastFoundWay.getLanduseTags().add(LanduseTagFactory.
+										getInstance(
+											vValue));
 								} else if (kValue.equalsIgnoreCase("railway")) {
 									lastFoundWay.getWayTags().add(WayTagEnum.RAILWAY);
 								} else if (kValue.equalsIgnoreCase("building")) {
-									lastFoundWay.getWayTags().add(new WayTagCustom(vValue));
+									lastFoundWay.getWayTags().add(WayTagFactory.
+										getInstance(vValue));
 								} else if (kValue.equalsIgnoreCase("cycleway")) {
 									lastFoundWay.getWayTags().add(WayTagEnum.CYCLEWAY);
 								}

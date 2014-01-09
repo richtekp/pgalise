@@ -16,7 +16,6 @@
 package de.pgalise.simulation.controlCenter.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,17 +28,16 @@ import java.util.Set;
 public class MapAndBusstopFileData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * This OSM-File will be parsed and used for the street-graph.
 	 */
-	private Set<String> osmFileNames = new HashSet<>(Arrays.asList(
-		"/oldenburg_pg.osm"));
+	private Set<String> osmFileNames = new HashSet<>();
 
 	/**
 	 * This busstop file will be used for the busstops on the street-graph.
 	 */
-	private Set<String> busStopFileNames = new HashSet<>(Arrays.asList(
-		"/stops.gtfs"));
+	private Set<String> busStopFileNames = new HashSet<>();
 
 	public MapAndBusstopFileData() {
 	}
@@ -68,7 +66,7 @@ public class MapAndBusstopFileData implements Serializable {
 		return busStopFileNames;
 	}
 
-	public void setBusstopFileName(Set<String> busstopFileName) {
-		this.busStopFileNames = busstopFileName;
+	public void setBusStopFileNames(Set<String> busStopFileNames) {
+		this.busStopFileNames = busStopFileNames;
 	}
 }

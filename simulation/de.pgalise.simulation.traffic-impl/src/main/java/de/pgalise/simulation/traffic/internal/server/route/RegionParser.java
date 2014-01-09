@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.route;
 
-import de.pgalise.simulation.shared.city.LanduseTagEnum;
+import de.pgalise.simulation.shared.tag.LanduseTagEnum;
 import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.city.LanduseTag;
+import de.pgalise.simulation.shared.tag.LanduseTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.shared.city.Way;

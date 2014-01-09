@@ -27,8 +27,8 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.BusStop;
-import de.pgalise.util.cityinfrastructure.impl.DefaultBuildingEnergyProfileStrategy;
 import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
+import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 
 /**
  * Several JUnit test cases for the OSMParser.

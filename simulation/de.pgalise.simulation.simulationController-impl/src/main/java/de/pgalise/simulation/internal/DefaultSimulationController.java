@@ -15,47 +15,14 @@
  */
 package de.pgalise.simulation.internal;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.manager.ServerConfigurationReader;
-import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
-import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
-import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
-import de.pgalise.util.generic.MutableBoolean;
-import javax.persistence.EntityManager;
+import javax.ejb.Singleton;
 
 /**
  * The default implementation of the simulation controller inits, starts, stops
@@ -71,11 +38,10 @@ import javax.persistence.EntityManager;
  * @author Kamil
  * @author Timo
  */
-@Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.SimulationController")
-@Local(SimulationControllerLocal.class)
+@Singleton
 public class DefaultSimulationController extends AbstractSimulationController
 	implements SimulationControllerLocal {
+
 	private static final long serialVersionUID = 1L;
 
 	public DefaultSimulationController() {

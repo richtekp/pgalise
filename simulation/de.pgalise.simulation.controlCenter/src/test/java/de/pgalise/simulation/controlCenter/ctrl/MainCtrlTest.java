@@ -9,6 +9,7 @@ import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterS
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.testutils.TestUtils;
+import java.io.IOException;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.embeddable.EJBContainer;
@@ -51,19 +52,6 @@ public class MainCtrlTest {
 		System.out.println("parseOSMAndBusstop");
 		MainCtrl instance = new MainCtrl();
 		instance.parseOSMAndBusstop();
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-
-	/**
-	 * Test of onStartParameterUpload method, of class MainCtrl.
-	 */
-	@Test
-	@Ignore
-	public void testOnStartParameterUpload() {
-		System.out.println("onStartParameterUpload");
-		MainCtrl instance = new MainCtrl();
-		instance.onStartParameterUpload();
 		// TODO review the generated test code and remove the default call to fail.
 		fail("The test case is a prototype.");
 	}
@@ -195,5 +183,12 @@ public class MainCtrlTest {
 		instance.setStartParameter(startParameter);
 		StreamedContent result = instance.retrieveExportDownloadLink();
 		assertNotNull(result);
+	}
+
+	@Test
+	@Ignore
+	public void testStartSimulation() throws IOException {
+		MainCtrl instance = new MainCtrl();
+		instance.startSimulation();
 	}
 }

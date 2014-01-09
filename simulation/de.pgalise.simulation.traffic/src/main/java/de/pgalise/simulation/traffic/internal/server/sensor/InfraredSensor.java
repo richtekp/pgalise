@@ -24,7 +24,6 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -76,7 +75,6 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent, InfraredSensorD
 		final InfraredInterferer interferer) {
 		super(id,
 			output,
-			TrafficSensorTypeEnum.INFRARED,
 			updateLimit,
 			new InfraredSensorData());
 		if (interferer == null) {
@@ -212,5 +210,10 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent, InfraredSensorD
 
 	public void sendDataOnNextUpdate() {
 		sendData = true;
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return TrafficSensorTypeEnum.INFRARED;
 	}
 }

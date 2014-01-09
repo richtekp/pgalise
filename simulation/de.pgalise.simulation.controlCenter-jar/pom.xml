@@ -36,11 +36,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.vividsolutions</groupId>
-      <artifactId>jts</artifactId>
-      <type>jar</type>
-    </dependency>
   </dependencies>
 
   <name>de.pgalise.simulation.controlCenter-jar</name>

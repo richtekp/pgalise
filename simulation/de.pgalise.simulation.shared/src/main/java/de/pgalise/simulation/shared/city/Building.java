@@ -16,8 +16,21 @@
  
 package de.pgalise.simulation.shared.city;
 
+import de.pgalise.simulation.shared.tag.RepairTag;
+import de.pgalise.simulation.shared.tag.SchoolTag;
+import de.pgalise.simulation.shared.tag.LanduseTag;
+import de.pgalise.simulation.shared.tag.CraftTag;
+import de.pgalise.simulation.shared.tag.GamblingTag;
+import de.pgalise.simulation.shared.tag.LeisureTag;
+import de.pgalise.simulation.shared.tag.AttractionTag;
+import de.pgalise.simulation.shared.tag.ServiceTag;
+import de.pgalise.simulation.shared.tag.PublicTransportTag;
+import de.pgalise.simulation.shared.tag.SportTag;
+import de.pgalise.simulation.shared.tag.EmergencyServiceTag;
+import de.pgalise.simulation.shared.tag.TourismTag;
+import de.pgalise.simulation.shared.tag.ShopTag;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.AmenityTag;
+import de.pgalise.simulation.shared.tag.AmenityTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import java.util.Set;

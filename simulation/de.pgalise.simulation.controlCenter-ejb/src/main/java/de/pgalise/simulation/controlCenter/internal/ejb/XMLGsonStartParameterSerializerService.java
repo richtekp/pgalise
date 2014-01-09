@@ -132,11 +132,6 @@ public class XMLGsonStartParameterSerializerService implements
 	}
 
 	@Override
-	public void init(Gson gson) {
-		this.gson = gson;
-	}
-
-	@Override
 	public void serialize(
 		ControlCenterStartParameter controlCenterStartParameter,
 		OutputStream outputStream) {

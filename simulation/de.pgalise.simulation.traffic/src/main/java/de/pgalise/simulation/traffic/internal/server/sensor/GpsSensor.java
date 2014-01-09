@@ -24,13 +24,13 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import javax.faces.bean.ManagedBean;
 
 /**
  * Class to generate a GPS sensor
@@ -39,7 +39,6 @@ import javax.faces.bean.ManagedBean;
  * @author Mischa
  * @version 1.1
  */
-@ManagedBean
 public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 
 	/**
@@ -93,7 +92,6 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 
 		super(id,
 			output,
-			TrafficSensorTypeEnum.GPS,
 			updateLimit,
 			new GPSSensorData());
 		if (interferer == null) {
@@ -177,7 +175,8 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 
 		/* Send data if the vehicle is driving */
 		// Use interferer
-		final JaxRSCoordinate interferedPos = this.interferer.interfere(this.vehicle.
+		final JaxRSCoordinate interferedPos = this.interferer.interfere(
+			this.vehicle.
 			getPosition(),
 			this.vehicle.getPosition(),
 			eventList.getTimestamp());
@@ -231,7 +230,8 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 			// GpsSensor.log.debug("Send: x: " + this.vehicle.getPosition().getX() + " y:"
 			// + this.vehicle.getPosition().getY());
 			// Use interferer
-			final JaxRSCoordinate interferedPos = this.interferer.interfere(this.vehicle.
+			final JaxRSCoordinate interferedPos = this.interferer.interfere(
+				this.vehicle.
 				getPosition(),
 				this.vehicle.getPosition(),
 				eventList.getTimestamp());
@@ -242,5 +242,10 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
 			GpsSensor.log.debug("Send lat: " + geoLocation.getX() + " long: "
 				+ geoLocation.getY() + " of vehicle " + vehicle.getId());
 		}
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return TrafficSensorTypeEnum.GPS;
 	}
 }

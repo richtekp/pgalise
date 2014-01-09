@@ -30,7 +30,7 @@ import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.ejb.Stateful;
+import javax.ejb.Singleton;
 
 /**
  * EJB-Wrapper around the AbstractEnergySensorFactory.
@@ -39,7 +39,7 @@ import javax.ejb.Stateful;
  * @version 1.0 (Apr 5, 2013)
  */
 @Lock(LockType.READ)
-@Stateful
+@Singleton
 public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory
 	implements EnergySensorFactory {
 

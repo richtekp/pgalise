@@ -6,18 +6,23 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import com.vividsolutions.jts.geom.Envelope;
-import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.validation.constraints.Size;
 import net.sf.ehcache.Element;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -56,15 +61,33 @@ public class CityCtrl implements Serializable {
 	private MapModel mapModel;
 	private String mapCenter = "52.50304053365354, 13.617159360663575";
 	private City chosenCity = null;
-	private MapAndBusstopFileData mapAndBusstopFileData = new MapAndBusstopFileData();
 	private boolean useFileBoundaries = true;
 	private List<JaxRSCoordinate> customFileBoundaries = new LinkedList<>();
+	private String dbHost = "127.0.0.1";
+	private int dbPort = 5204;
+	private String dbDatabase = "postgis1";
+	private String dbUser = "pgalise";
+	private String dbPassword = "somepw";
+	@Size(min = 1)
+	private List<String> osmFileNames = new LinkedList<>(
+		MainCtrlUtils.INITIAL_OSM_FILE_PATHS);
+	@Size(min = 1)
+	private List<String> busStopFileNames = new LinkedList<>(
+		MainCtrlUtils.INITIAL_BUS_STOP_FILE_PATHS);
 
 	/**
 	 * Creates a new instance of CityCtrl
 	 */
 	public CityCtrl() {
 		mapModel = new DefaultMapModel();
+	}
+
+	public void setDbDatabase(String dbDatabase) {
+		this.dbDatabase = dbDatabase;
+	}
+
+	public String getDbDatabase() {
+		return dbDatabase;
 	}
 
 	public void setUseFileBoundaries(boolean useFileBoundaries) {
@@ -76,20 +99,30 @@ public class CityCtrl implements Serializable {
 	}
 
 	public List<String> retrieveOsmFileCacheKeys() {
-		return MainCtrlUtils.OSM_FILE_CACHE.getKeys();
+		return MainCtrlUtils.OSM_FILE_CACHE.
+			getKeys();
 	}
 
 	public List<String> retrieveBusStopFileCacheKeys() {
 		return MainCtrlUtils.BUS_STOP_FILE_CACHE.getKeys();
 	}
 
-	public MapAndBusstopFileData getMapAndBusstopFileData() {
-		return mapAndBusstopFileData;
+	public void setOsmFileNames(
+		List<String> osmFileNames) {
+		this.osmFileNames = osmFileNames;
 	}
 
-	public void setMapAndBusstopFileData(
-		MapAndBusstopFileData mapAndBusstopFileData) {
-		this.mapAndBusstopFileData = mapAndBusstopFileData;
+	public List<String> getOsmFileNames() {
+		return osmFileNames;
+	}
+
+	public void setBusStopFileNames(
+		List<String> busStopFileNames) {
+		this.busStopFileNames = busStopFileNames;
+	}
+
+	public List<String> getBusStopFileNames() {
+		return busStopFileNames;
 	}
 
 	public City getChosenCity() {
@@ -169,7 +202,7 @@ public class CityCtrl implements Serializable {
 	public List<City> cityNameAutocomplete(String input) {
 		try {
 			String typeName = "planet_osm_polygon";
-			SimpleFeatureSource featureSource = MainCtrlUtils.POSTGIS_OSM_DATA_STORE.
+			SimpleFeatureSource featureSource = retrieveDataStore().
 				getFeatureSource(typeName);
 			FeatureType schema = featureSource.getSchema();
 			String geometryPropertyName = schema.getGeometryDescriptor().
@@ -225,6 +258,64 @@ public class CityCtrl implements Serializable {
 		mapModel.addOverlay(citySelectionBoundsPolygon);
 	}
 
+	public DataStore retrieveDataStore() {
+		try {
+			Map<String, Object> connectionParameters = new HashMap<>();
+			connectionParameters.put("port",
+				dbPort);
+			connectionParameters.put("Connection timeout",
+				null);
+			connectionParameters.put("passwd",
+				dbPassword);
+			connectionParameters.put("dbtype",
+				"postgis");
+			connectionParameters.put("host",
+				dbHost);
+			connectionParameters.put("Session close-up SQL",
+				null);
+			connectionParameters.put("encode functions",
+				null);
+			connectionParameters.put("validate connections",
+				null);
+			connectionParameters.put("max connections",
+				null);
+			connectionParameters.put("Primary key metadata table",
+				null);
+			connectionParameters.put("database",
+				dbDatabase);
+			connectionParameters.put("namespace",
+				null);
+			connectionParameters.put("schema",
+				null);
+			connectionParameters.put("Loose bbox",
+				null);
+			connectionParameters.put("Expose primary keys",
+				null);
+			connectionParameters.put("Session startup SQL",
+				null);
+			connectionParameters.put("fetch size",
+				null);
+			connectionParameters.put("Max open prepared statements",
+				null);
+			connectionParameters.put("preparedStatements",
+				null);
+			connectionParameters.put("Estimated extends",
+				null);
+			connectionParameters.put("user",
+				dbUser);
+			connectionParameters.put("min connections",
+				null);
+			DataStore dataStore = DataStoreFinder.
+				getDataStore(connectionParameters);
+			if (dataStore == null) {
+				throw new RuntimeException("Could not connect - check parameters");
+			}
+			return dataStore;
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+	}
+
 	/**
 	 * Adds file to available files, i.e. cache, not to selected files. Files are
 	 * overwritten in the server side cache no matter what.
@@ -252,14 +343,78 @@ public class CityCtrl implements Serializable {
 			event.getFile().getContents()));
 	}
 
-	public Envelope retrieveBoundaries() {
+	/**
+	 *
+	 * @param trafficInfrastructureData
+	 * @return
+	 */
+	/*
+	 OSM shouldn't be parsed again
+	 */
+	public Envelope retrieveBoundaries(
+		TrafficInfrastructureData trafficInfrastructureData) {
 		if (useFileBoundaries) {
-			throw new UnsupportedOperationException();
-
+			return trafficInfrastructureData.getBoundary();
 		} else {
 			return GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 				customFileBoundaries.toArray(new JaxRSCoordinate[customFileBoundaries.
 					size()])).getEnvelopeInternal();
 		}
+	}
+
+	/**
+	 * @return the dbHost
+	 */
+	public String getDbHost() {
+		return dbHost;
+	}
+
+	/**
+	 * @param dbHost the dbHost to set
+	 */
+	public void setDbHost(String dbHost) {
+		this.dbHost = dbHost;
+	}
+
+	/**
+	 * @return the dbPort
+	 */
+	public int getDbPort() {
+		return dbPort;
+	}
+
+	/**
+	 * @param dbPort the dbPort to set
+	 */
+	public void setDbPort(int dbPort) {
+		this.dbPort = dbPort;
+	}
+
+	/**
+	 * @return the dbUser
+	 */
+	public String getDbUser() {
+		return dbUser;
+	}
+
+	/**
+	 * @param dbUser the dbUser to set
+	 */
+	public void setDbUser(String dbUser) {
+		this.dbUser = dbUser;
+	}
+
+	/**
+	 * @return the dbPassword
+	 */
+	public String getDbPassword() {
+		return dbPassword;
+	}
+
+	/**
+	 * @param dbPassword the dbPassword to set
+	 */
+	public void setDbPassword(String dbPassword) {
+		this.dbPassword = dbPassword;
 	}
 }

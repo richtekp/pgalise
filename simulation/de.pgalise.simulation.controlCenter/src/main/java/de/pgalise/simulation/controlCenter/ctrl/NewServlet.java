@@ -8,7 +8,6 @@ package de.pgalise.simulation.controlCenter.ctrl;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationStartParameterMessage;
 import de.pgalise.simulation.controlCenter.model.AttractionData;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
-import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -35,7 +34,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -154,8 +152,6 @@ public class NewServlet extends HttpServlet {
 			sensorHelpers,
 			simulationEventLists,
 			weatherEventHelpers,
-			new MapAndBusstopFileData(new HashSet<String>(Arrays.asList(osmFilePath)),
-				new HashSet<String>(Arrays.asList(busStopFilePath))),
 			randomVehicleBundle,
 			true,
 			10,

@@ -39,9 +39,11 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
@@ -52,9 +54,13 @@ import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterCont
 import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.Anemometer;
+import de.pgalise.testutils.TestUtils;
+import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.naming.NamingException;
 import javax.persistence.EntityManager;
-import org.junit.Ignore;
+import org.junit.Before;
 
 /**
  * JUnit tests for {@link DefaultSimulationController}<br />
@@ -64,7 +70,8 @@ import org.junit.Ignore;
  *
  * @author Timo
  */
-@Ignore //@EasyMock setup stimmt noch nicht
+@ManagedBean
+@LocalBean
 public class DefaultSimulationControllerTest {
 
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
@@ -88,9 +95,17 @@ public class DefaultSimulationControllerTest {
 	private static ServerConfiguration serverConfiguration;
 	@EJB
 	private IdGenerator idGenerator;
+	@EJB
+	private TcpIpOutput output;
+
+	@Before
+	public void setUp() throws NamingException {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
+	}
 
 	@BeforeClass
-	public static void setUp() {
+	public static void setUpClass() {
 		testClass = new DefaultSimulationController();
 
 		/* Mock all controllers: */
@@ -108,6 +123,7 @@ public class DefaultSimulationControllerTest {
 			ServerConfigurationReader.class);
 		EventInitiator eventInitiator = EasyMock.
 			createNiceMock(EventInitiator.class);
+		EasyMock.expect(eventInitiator.getStatus()).andReturn(StatusEnum.STARTED);
 		cityInfrastructureData = EasyMock.createNiceMock(
 			TrafficInfrastructureData.class);
 
@@ -242,13 +258,13 @@ public class DefaultSimulationControllerTest {
 		Sensor<?, ?> sensor = null;
 		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
 			getNextId(),
-			null,
+			output,
 			null,
 			weatherController,
 			null);
 		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
-			null,
+			output,
 			null,
 			null);
 
@@ -291,13 +307,13 @@ public class DefaultSimulationControllerTest {
 		Sensor<?, ?> sensor = null;
 		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
 			getNextId(),
-			null,
+			output,
 			null,
 			weatherController,
 			null);
 		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
-			null,
+			output,
 			null,
 			null);
 		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();
@@ -341,13 +357,13 @@ public class DefaultSimulationControllerTest {
 		Sensor<?, ?> sensor1 = null, sensor2 = null;
 		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
 			getNextId(),
-			null,
+			output,
 			null,
 			weatherController,
 			null);
 		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
-			null,
+			output,
 			null,
 			null);
 
@@ -389,13 +405,13 @@ public class DefaultSimulationControllerTest {
 		Sensor<?, ?> sensor1 = null, sensor2 = null;
 		StaticSensor<?, ?> sensorHelperStaticSensor = new Anemometer(idGenerator.
 			getNextId(),
-			null,
+			output,
 			null,
 			weatherController,
 			null);
 		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
-			null,
+			output,
 			null,
 			null);
 		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();

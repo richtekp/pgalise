@@ -15,10 +15,10 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
@@ -79,7 +79,6 @@ public class WindFlagSensor extends WeatherSensor<WindFlagSensorData> {
 			weatherController,
 			updateLimit,
 			weatherInterferer,
-			WeatherSensorTypeEnum.WINDFLAG,
 			new WindFlagSensorData());
 	}
 
@@ -107,5 +106,10 @@ public class WindFlagSensor extends WeatherSensor<WindFlagSensorData> {
 		this.getOutput().transmitDouble(windDirection);
 		// transmit dummy values
 		this.transmitDummyValues();
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return WeatherSensorTypeEnum.WINDFLAG;
 	}
 }

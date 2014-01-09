@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.server.route;
 
-import de.pgalise.simulation.shared.city.LanduseTag;
+import de.pgalise.simulation.shared.tag.LanduseTag;
 import java.awt.Polygon;
 import java.util.Set;
 

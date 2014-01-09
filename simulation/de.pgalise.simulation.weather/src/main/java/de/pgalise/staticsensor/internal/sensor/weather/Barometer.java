@@ -15,10 +15,10 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
@@ -87,7 +87,6 @@ public class Barometer extends WeatherSensor<BarometerData> {
 			weatherController,
 			updateLimit,
 			weatherInterferer,
-			WeatherSensorTypeEnum.ANEMOMETER,
 			new BarometerData());
 		// if(!(weatherInterferer instanceof BarometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
@@ -119,5 +118,11 @@ public class Barometer extends WeatherSensor<BarometerData> {
 		this.getOutput().transmitDouble(airPressure);
 		// transmit dummy values
 		this.transmitDummyValues();
+	}
+
+	@Override
+	public SensorType getSensorType() {
+
+		return WeatherSensorTypeEnum.BAROMETER;
 	}
 }

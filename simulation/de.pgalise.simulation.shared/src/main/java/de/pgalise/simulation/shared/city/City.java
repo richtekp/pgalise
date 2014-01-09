@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.city;
 
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import javax.faces.bean.ManagedBean;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -28,22 +25,24 @@ import javax.persistence.Transient;
 
 /**
  * Represents the city from the simulation
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 11, 2012)
  */
 @Entity
-@NamedQuery(name = "City.getAll", query = "SELECT i FROM City i")
+@NamedQuery(name = "City.getAll",
+	query = "SELECT i FROM City i")
 /*
  * has identical properties boundaries and centerPoint and Building, but sharing 
  * code is not possible in this inheritance hierarchy (all NavigationNode would have to be AbstractGeometricObjects
  */
 public class City extends AbstractIdentifiable {
+
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = 3576972145732461552L;
-	
+
 	/**
 	 * Altitude (in m over normal null)
 	 */
@@ -74,20 +73,26 @@ public class City extends AbstractIdentifiable {
 	@Column(name = "POPULATION")
 	private int population = 162481;
 
+	@OneToOne
+	private CityInfrastructureData cityInfrastructureData;
+
 	/**
 	 * Rate for reference evaluation
 	 */
 	@Transient
 	private int rate = 0;
 	@OneToOne
-	private BaseGeoInfo position = new BaseGeoInfo(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new JaxRSCoordinate[] {new JaxRSCoordinate(1,
-				1), new JaxRSCoordinate(1,
-				2), new JaxRSCoordinate(2,
-				2), new JaxRSCoordinate(2,
-				1), new JaxRSCoordinate(1,
-				1)})); //@TODO: improve with correct geo information
+	private BaseGeoInfo position = new BaseGeoInfo(GeoToolsBootstrapping.
+		getGEOMETRY_FACTORY().createPolygon(
+			new JaxRSCoordinate[]{new JaxRSCoordinate(1,
+					1), new JaxRSCoordinate(1,
+					2), new JaxRSCoordinate(2,
+					2), new JaxRSCoordinate(2,
+					1), new JaxRSCoordinate(1,
+					1)})); //@TODO: improve with correct geo information
 	/**
-	 * a point which is considered the most important in the geometry which is not forcibly always the geographical center of the referenced area
+	 * a point which is considered the most important in the geometry which is not
+	 * forcibly always the geographical center of the referenced area
 	 */
 	private JaxRSCoordinate referencePoint;
 
@@ -99,26 +104,37 @@ public class City extends AbstractIdentifiable {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param name
-	 *            Name
-	 * @param population
-	 *            Population
-	 * @param altitude
-	 *            Altitude
-	 * @param nearRiver
-	 *            Option that the city is near a river
-	 * @param nearSea
-	 *            Option that the city is near the sea
-	 * @param position  
+	 *
+	 * @param name Name
+	 * @param population Population
+	 * @param altitude Altitude
+	 * @param nearRiver Option that the city is near a river
+	 * @param nearSea Option that the city is near the sea
+	 * @param position
 	 */
-	public City(String name, int population, int altitude, boolean nearRiver, boolean nearSea, BaseGeoInfo position) {
+	public City(String name,
+		int population,
+		int altitude,
+		boolean nearRiver,
+		boolean nearSea,
+		BaseGeoInfo position,
+		CityInfrastructureData cityInfrastructureData) {
 		this.position = position;
 		this.name = name;
 		this.population = population;
 		this.altitude = altitude;
 		this.nearRiver = nearRiver;
 		this.nearSea = nearSea;
+		this.cityInfrastructureData = cityInfrastructureData;
+	}
+
+	protected void setCityInfrastructureData(
+		CityInfrastructureData cityInfrastructureData) {
+		this.cityInfrastructureData = cityInfrastructureData;
+	}
+
+	public CityInfrastructureData getCityInfrastructureData() {
+		return cityInfrastructureData;
 	}
 
 	public int getAltitude() {
@@ -164,7 +180,7 @@ public class City extends AbstractIdentifiable {
 	public void setPopulation(int population) {
 		this.population = population;
 	}
-	
+
 	public void setRate(int rate) {
 		this.rate = rate;
 	}

@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -44,7 +43,6 @@ import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
@@ -238,7 +236,8 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	/**
 	 * Lock object
 	 */
-	private final Object lockThreadLoop= new Object(), lockTimestamp = new Object();;
+	private final Object lockThreadLoop = new Object(), lockTimestamp = new Object();
+	;
 	private long currentTimestamp, endTimestamp, interval, clockGeneratorInterval;
 	/**
 	 * Map with timestamp and traffic events
@@ -263,7 +262,9 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	public DefaultEventInitiator() {
 		sdf = new SimpleDateFormat();
 		sdf.applyPattern("dd.MM.yy/HH:mm:ss");
-	}public DefaultEventInitiator(IdGenerator idGenerator,
+	}
+
+	public DefaultEventInitiator(IdGenerator idGenerator,
 		ServiceDictionary serviceDictionary,
 		ServerSideOperationCenterController operationCenterController,
 		ServerSideControlCenterController controlCenterController,
@@ -454,15 +455,14 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {
-		this.endTimestamp = param.getEndTimestamp();
+		this.endTimestamp = param.getEndTimestamp().getTime();
 		this.interval = param.getInterval();
 		this.clockGeneratorInterval = param.getClockGeneratorInterval();
-		this.currentTimestamp = param.getStartTimestamp();
+		this.currentTimestamp = param.getStartTimestamp().getTime();
 	}
 
 	@Override
 	protected void onReset() {
-
 	}
 
 	@Override

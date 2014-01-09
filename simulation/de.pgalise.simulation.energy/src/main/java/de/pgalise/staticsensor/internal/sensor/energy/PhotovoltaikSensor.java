@@ -24,7 +24,6 @@ import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.simulation.energy.sensor.EnergySensor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -109,7 +108,6 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 			randomSeedService,
 			updateLimit,
 			interferer,
-			EnergySensorTypeEnum.PHOTOVOLTAIK,
 			new PhotovoltaikSensorData());
 		this.area = area;
 	}
@@ -173,5 +171,10 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 		// transmit dummy values
 		this.transmitDummyValues();
 
+	}
+
+	@Override
+	public SensorType getSensorType() {
+		return EnergySensorTypeEnum.PHOTOVOLTAIK;
 	}
 }

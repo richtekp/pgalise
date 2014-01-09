@@ -8,52 +8,75 @@
 	<script src="http://maps.google.com/maps/api/js?sensor=false"
 	type="text/javascript"></script>
 	<div class="contentDiv" >
-		<h:form>
-			<h2>City</h2>
-			<h3>Boundaries</h3>
-			<p:accordionPanel id="boundariesPanel" multiple="false">
-				<p:tab title="Free boundaries">
-					<p:gmap center="12,55" type="HYBRID" zoom="8" />
-					<h:outputLabel for="cityNameInput" value="Area name"/>
-					<h:inputText id="cityNameInput"/>
+		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils" var="mapAndBusstopFileData"/>
+		<h2>City</h2>
+		<h3>Boundaries</h3>
+		<p:accordionPanel id="boundariesPanel" multiple="false" >
+			<div class="scrollable">
+				<p:tab title="Free boundaries" >
+					<h:form>
+						<p:gmap center="12.0, 55.0" type="HYBRID" zoom="8" />
+						<h:outputLabel for="cityNameInput" value="Area name"/>
+						<h:inputText id="cityNameInput"/>
+					</h:form>
 				</p:tab>
 				<p:tab title="OSM file">
-					Seleted files:
-					<h:selectOneListbox value="#{cityCtrl.mapAndBusstopFileData.osmFileNames}" />
-					Available files:
-					<h:selectOneListbox value="#{cityCtrl.retrieveOsmFileCacheKeys}"/>
-					Selection preview: <p:gmap center="1,2" type="HYBRID" zoom="8"/>
-					Upload other:
-					<p:fileUpload fileUploadListener="#{cityCtrl.onOSMFileUpload}"/>
-					Selected matching GTFS files:
-					<h:selectOneListbox value="#{cityCtrl.mapAndBusstopFileData.busStopFileNames}"/>
-					Available GTFS files:
-					<h:selectOneListbox value="#{cityCtrl.retrieveBusStopFileCacheKeys}"/>
-					Selection preview: <p:gmap center="1,2" type="HYBRID" zoom="8"/>
-					Upload other:
-					<p:fileUpload fileUploadListener="#{cityCtrl.onGTFSFileUpload}" />
-					<h:selectBooleanCheckbox onchange="" label="Use file boundaries" value="#{cityCtrl.useFileBoundaries}"/>
-					<p:panel collapsed="true">
-						Select boundaries:
-						<p:gmap center="1,2" type="HYBRID" zoom="8" />
-					</p:panel>
+					<h:form>
+						<h:outputLabel for="osmFileNames" value="Selected OSM files"/>
+						<h:selectManyCheckbox id="osmFileNames" value="#{cityCtrl.osmFileNames}" required="true">
+							<f:selectItems value="#{mapAndBusstopFileData.INITIAL_OSM_FILE_PATHS}"/>
+							<f:validateBean />
+							<f:ajax/>
+						</h:selectManyCheckbox>
+						Selection preview: <p:gmap center="13.0, 54.0" type="HYBRID" zoom="8" style="width:600px;height:400px"/>
+						Upload other:
+						<p:fileUpload fileUploadListener="#{cityCtrl.onOSMFileUpload}"/>
+						<h:outputLabel for="useFileBoundaries" value="Use file boundaries"/>
+						<h:selectBooleanCheckbox id="useFileBoundaries" label="Use file boundaries" value="#{cityCtrl.useFileBoundaries}">
+							<p:ajax update="customBoundariesMapPanel"/>
+						</h:selectBooleanCheckbox>
+						<p:accordionPanel activeIndex="-1" id="customBoundariesMapPanel">
+							<p:tab title="Custom boundaries"
+										 disabled="#{cityCtrl.useFileBoundaries}">
+								<p:gmap center="13.0, 54.0" style="width:600px;height:400px" type="HYBRID" zoom="8" />
+							</p:tab>
+						</p:accordionPanel>
+					</h:form>
 				</p:tab>
 				<p:tab title="OSM PostGIS data based" >
-					host: <h:inputText />
-					port: <p:spinner/>
-					user: <h:inputText/>
-					password: <h:inputText/>
-					Search:
-					<p:autoComplete id="someid" value="#{cityCtrl.chosenCity}"   
-													completeMethod="#{cityCtrl.cityNameAutocomplete}" var="c" itemLabel="#{c.name}" itemValue="#{c}" converter="cityConverter">
-						<p:ajax event="itemSelect" listener="#{cityCtrl.onCityNameSelectionChange}"
-										update="cityNameMap"/>
-					</p:autoComplete>
-					<p:gmap id="cityNameMap" center="#{cityCtrl.mapCenter}" zoom="13" type="HYBRID"  model="#{cityCtrl.mapModel}" style="width:600px;height:400px" fitBounds="false"/>
+					<h:form>
+						<p:outputLabel for="dbHost" value="Host:"/>
+						<h:inputText id="dbHost" value="#{cityCtrl.dbHost}"/>
+						<p:outputLabel for="dbPort" value="Port"/>
+						<p:spinner id="dbPort" min="1" max="65535" value="#{cityCtrl.dbPort}"/>
+						<p:outputLabel for="dbDatabase" value="PostGIS Database:"/>
+						<h:inputText id="dbDatabase" value="#{cityCtrl.dbDatabase}"/>
+						<p:outputLabel for="dbUser" value="User:"/>
+						<h:inputText id="dbUser" value="#{cityCtrl.dbUser}"/>
+						<p:outputLabel for="dbPassword" value="Password:"/>
+						<h:inputText id="dbPassword" value="#{cityCtrl.dbPassword}"/>
+						<p:outputLabel for="dbSearch" value="Search:"/>
+						<p:autoComplete id="dbSearch" value="#{cityCtrl.chosenCity}"   
+														completeMethod="#{cityCtrl.cityNameAutocomplete}" var="c" itemLabel="#{c.name}" itemValue="#{c}" converter="cityConverter">
+							<p:ajax event="itemSelect" listener="#{cityCtrl.onCityNameSelectionChange}"
+											update="cityNameMap"/>
+						</p:autoComplete>
+						<p:gmap id="cityNameMap" center="#{cityCtrl.mapCenter}" zoom="13" type="HYBRID"  model="#{cityCtrl.mapModel}" style="width:600px;height:400px" fitBounds="false"/>
+					</h:form>
 				</p:tab>
-			</p:accordionPanel>
+			</div>
+		</p:accordionPanel>
+		<h:form>
 			<h3>Public transport data</h3>
-			Path to gtfs data file: <p:fileUpload fileUploadListener="#{cityCtrl.onGTFSFileUpload}"/> @TODO: preview on separate map
+			<h:outputLabel for="busStopFileNames" value="Selected matching GTFS files"/>
+			<h:selectManyCheckbox id="busStopFileNames" value="#{cityCtrl.busStopFileNames}" required="true">
+				<f:selectItems value="#{mapAndBusstopFileData.INITIAL_BUS_STOP_FILE_PATHS}"/>
+				<f:ajax/>
+				<f:validateBean />
+			</h:selectManyCheckbox>
+			Selection preview: <p:gmap center="1.0, 2.0" style="width:600px;height:400px" type="HYBRID" zoom="8"/>
+			Upload other:
+			<p:fileUpload fileUploadListener="#{cityCtrl.onGTFSFileUpload}" />
 			<h3>Parameters</h3>
 			<div>
 				Choose the individual parameters of the City, for example the name, the altitude or if the city is close to a river or near to a coast.

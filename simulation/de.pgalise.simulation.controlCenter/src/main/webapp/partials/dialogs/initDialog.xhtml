@@ -7,31 +7,31 @@
 								xmlns:cc="http://java.sun.com/jsf/composite"
 								xmlns:o="http://omnifaces.org/ui">
 	<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.InitDialogCtrlInitialTypeEnum" var="initDialogCtrlInitialTypeEnum"/>
-	<p:dialog id="initialDialog" widgetVar="initialDialogWidget" visible="true" modal="true">
+	<p:dialog id="initialDialog" widgetVar="initialDialogWidget" visible="true" modal="true" resizable="true" height="600" width="800">
 		<h:form>
 			<h:panelGrid>
-				<p:accordionPanel>
-					<p:tab title="Create new szenario">
-						<ui:include src="/partials/content/city.xhtml"/>
-					</p:tab>
-					<p:tab title="Reuse recently started scenario">
-						Recent scenarios: 
-						<h:selectManyListbox >
-							<f:selectItems value="#{initDialogCtrl.recentScenarios}"/>
-						</h:selectManyListbox>
-						<b>Current:</b>
-						File name: <h:outputText value="#{initDialogCtrl.chosenRecentScenarioPath}"/>
-						Date: <h:outputText value="#{initDialogCtrl.chosenRecentScenario.startTimestamp}"/>
-					</p:tab>
-					<p:tab title="Import existing scenario">
-						Load XML:
-						<p:fileUpload value="#{mainCtrl.parameterUploadData}" fileUploadListener="#{mainCtrl.onStartParameterUpload}"/>
-					</p:tab>
-				</p:accordionPanel>
+					<p:accordionPanel styleClass="scrollable">
+						<p:tab title="Create new szenario">
+							<ui:include src="/partials/content/city.xhtml"/>
+						</p:tab>
+						<p:tab title="Reuse recently started scenario">
+							Recent scenarios: 
+							<h:selectManyListbox >
+								<f:selectItems value="#{initDialogCtrl.recentScenarios}"/>
+							</h:selectManyListbox>
+							<b>Current:</b>
+							File name: <h:outputText value="#{initDialogCtrl.chosenRecentScenarioPath}"/>
+							Date: <h:outputText value="#{initDialogCtrl.chosenRecentScenario.startTimestamp}"/>
+						</p:tab>
+						<p:tab title="Import existing scenario">
+							Load XML:
+							<p:fileUpload fileUploadListener="#{mainCtrl.onStartParameterUpload}"/>
+						</p:tab>
+					</p:accordionPanel>
 			</h:panelGrid>
 			<h:panelGrid>
-				<h:commandButton value="Initialize simulation" onclick="initialDialogWidget.hide()" >
-					<f:ajax />
+				<h:commandButton type="" value="Initialize simulation" onclick="initialDialogWidget.hide();" >
+					<f:ajax/>
 				</h:commandButton>	
 			</h:panelGrid>
 		</h:form>

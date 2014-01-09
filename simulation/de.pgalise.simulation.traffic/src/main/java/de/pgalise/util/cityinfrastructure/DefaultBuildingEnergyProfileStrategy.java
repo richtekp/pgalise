@@ -14,12 +14,12 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.cityinfrastructure.impl;
+package de.pgalise.util.cityinfrastructure;
 
-import de.pgalise.simulation.shared.city.AmenityTagEnum;
+import de.pgalise.simulation.shared.tag.AmenityTagEnum;
 import de.pgalise.simulation.shared.city.Building;
-import de.pgalise.simulation.shared.city.LanduseTagEnum;
-import de.pgalise.simulation.shared.city.PublicTransportTagEnum;
+import de.pgalise.simulation.shared.tag.LanduseTagEnum;
+import de.pgalise.simulation.shared.tag.PublicTransportTagEnum;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;

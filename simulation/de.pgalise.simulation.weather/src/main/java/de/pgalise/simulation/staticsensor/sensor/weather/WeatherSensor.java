@@ -17,10 +17,7 @@ package de.pgalise.simulation.staticsensor.sensor.weather;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.staticsensor.AbstractStaticSensor;
@@ -35,7 +32,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @version 1.0 (Aug 23, 2012)
  * @param <X>
  */
-public abstract class WeatherSensor<X extends SensorData> extends AbstractStaticSensor<WeatherEvent,X> {
+public abstract class WeatherSensor<X extends SensorData> extends AbstractStaticSensor<WeatherEvent, X> {
 
 	/**
 	 * Weather controller used by the weather sensors
@@ -57,17 +54,21 @@ public abstract class WeatherSensor<X extends SensorData> extends AbstractStatic
 	 * simulation
 	 * @param updateLimit Update limit
 	 * @param weatherInterferer the {@link WeatherInterferer}
+	 * @param sensorType
+	 * @param sensorData
 	 */
-	protected WeatherSensor(Long id,Output output,
+	protected WeatherSensor(Long id,
+		Output output,
 		final JaxRSCoordinate position,
 		WeatherController weatherController,
 		int updateLimit,
 		final WeatherInterferer weatherInterferer,
-		SensorType sensorType, X  sensorData) {
-		super(id,output,
+		X sensorData) {
+		super(id,
+			output,
 			position,
-			sensorType,
-			updateLimit,sensorData);
+			updateLimit,
+			sensorData);
 		if (weatherController == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"weathercontroller"));

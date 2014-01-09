@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.controlCenter.internal.ejb;
 
-import com.google.gson.Gson;
 import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import java.io.InputStream;
@@ -69,11 +68,6 @@ public class XMLStartParameterSerializerService implements
 //		} catch (JAXBException e) {
 //			throw new RuntimeException(e);
 //		}
-	}
-
-	@Override
-	public void init(Gson gson) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 }

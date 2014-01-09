@@ -15,10 +15,9 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.tag.WayTag;
+import de.pgalise.simulation.shared.tag.LanduseTag;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -28,7 +27,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  * A way is logical union of {@link NavigationEdge}s, i.e. a highway with a
@@ -45,12 +43,12 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 
 	private static final long serialVersionUID = 2942128399393060939L;
 	@OneToMany(targetEntity = NavigationEdge.class)
-	private List<E> edgeList;
+	private List<E> edgeList = new LinkedList<>();
 	private String streetName;
 	@ElementCollection
-	private Set<WayTag> tags;
+	private Set<WayTag> tags = new HashSet<>();
 	@ElementCollection
-	private Set<LanduseTag> landuseTags;
+	private Set<LanduseTag> landuseTags = new HashSet<>();
 
 	/**
 	 * Default
@@ -71,8 +69,6 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 		this(edgeList,
 			streetname);
 		this.tags = wayTags;
-		this.landuseTags = new HashSet<>();
-
 	}
 
 	public Way(
@@ -95,7 +91,7 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 		this.landuseTags = landuseTags;
 	}
 
-	public Collection<WayTag> getWayTags() {
+	public Set<WayTag> getWayTags() {
 		return tags;
 	}
 
@@ -137,20 +133,14 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 	 */
 	public List<N> getNodeList() {
 		List<N> retValue = new LinkedList<>();
+		if (edgeList.isEmpty()) {
+			return retValue;
+		}
 		retValue.add(edgeList.get(0).getSource());
 		for (E edge : edgeList) {
 			retValue.add(edge.getTarget());
 		}
 		return retValue;
-	}
-
-	private class NavigationGraph extends DefaultDirectedGraph<NavigationEdge<NavigationNode>, NavigationNode> {
-
-		public NavigationGraph(
-			Class<? extends NavigationNode> edgeClass) {
-			super(edgeClass);
-		}
-
 	}
 
 	public <G extends DirectedGraph<N, E>> void setEdgeList(List<N> nodes,
