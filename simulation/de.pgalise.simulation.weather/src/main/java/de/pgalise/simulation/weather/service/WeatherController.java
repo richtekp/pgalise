@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.service;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
@@ -21,51 +20,53 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 
 /**
- * The main interaction point of the component Weather is the interface {@link WeatherController} that represents the
- * weather environment controller of the simulation. Its public methods can be called by other components. Therefore,
- * the controller is implemented as an EJB. For one thing the controller sends all requests to the interface
- * {@link WeatherService} and the responses back to the other components, for another thing it inherits from the generic
- * {@link Controller} interface and implements its state transitions. So this controller acts as intermediary between
- * components of the simulation and the {@link WeatherService}.
- * 
+ * The main interaction point of the component Weather is the interface
+ * {@link WeatherController} that represents the weather environment controller
+ * of the simulation. Its public methods can be called by other components.
+ * Therefore, the controller is implemented as an EJB. For one thing the
+ * controller sends all requests to the interface {@link WeatherService} and the
+ * responses back to the other components, for another thing it inherits from
+ * the generic {@link Controller} interface and implements its state
+ * transitions. So this controller acts as intermediary between components of
+ * the simulation and the {@link WeatherService}.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 24, 2012)
  */
-public interface WeatherController extends Controller<WeatherEvent, InfrastructureStartParameter, InitParameter> {
+public interface WeatherController extends
+	Controller<WeatherEvent, StartParameter, InitParameter> {
 
 	/**
 	 * Checks if the weather data can be loaded for the given date.
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @throws IllegalArgumentException  
+	 *
+	 * @param timestamp Timestamp
+	 * @throws IllegalArgumentException
 	 */
 	public void checkDate(long timestamp) throws IllegalArgumentException;
 
 	/**
 	 * Returns the position of the reference point
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 */
 	public JaxRSCoordinate getReferencePosition();
 
 	/**
-	 * Get the reference value for the given timestamp and position. If the value can be cached the method looks into
-	 * the cached parameters. The weather values are stored with a specific time interval (see
-	 * {@link Weather#INTERPOLATE_INTERVAL}). If you want to get a value between this interval, you will get the value
-	 * to the next reference timestamp.
-	 * 
-	 * @param key
-	 *            WeatherParameterEnum
-	 * @param timestamp
-	 *            Timestamp
-	 * @param position
-	 *            Position of the sensor
+	 * Get the reference value for the given timestamp and position. If the value
+	 * can be cached the method looks into the cached parameters. The weather
+	 * values are stored with a specific time interval (see
+	 * {@link Weather#INTERPOLATE_INTERVAL}). If you want to get a value between
+	 * this interval, you will get the value to the next reference timestamp.
+	 *
+	 * @param key WeatherParameterEnum
+	 * @param timestamp Timestamp
+	 * @param position Position of the sensor
 	 * @return Number
 	 */
-	public Number getValue(WeatherParameterEnum key, long timestamp, JaxRSCoordinate position);
+	public Number getValue(WeatherParameterEnum key,
+		long timestamp,
+		JaxRSCoordinate position);
 }

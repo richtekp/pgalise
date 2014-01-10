@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;
@@ -25,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ejb.EJB;
 
 import org.slf4j.Logger;
 
@@ -46,6 +48,9 @@ public class DefaultOSMCityInfrastructureDataService {
 	 */
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(
 		DefaultOSMCityInfrastructureDataService.class);
+
+	@EJB
+	private IdGenerator idGenerator;
 
 	/**
 	 * Default
@@ -106,6 +111,7 @@ public class DefaultOSMCityInfrastructureDataService {
 			cityInfrastructuraDataFile.delete();
 		}
 		TrafficInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(
+			idGenerator.getNextId(),
 			new FileInputStream(osm),
 			new FileInputStream(busstops),
 			buildingEnergyProfileStrategy);

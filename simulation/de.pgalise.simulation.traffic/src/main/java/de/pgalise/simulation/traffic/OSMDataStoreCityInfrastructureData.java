@@ -46,8 +46,10 @@ public class OSMDataStoreCityInfrastructureData extends TrafficInfrastructureDat
 	 *
 	 * @param cityPolygonOsmId
 	 */
-	public OSMDataStoreCityInfrastructureData(DataStore dataStore,
+	public OSMDataStoreCityInfrastructureData(Long id,
+		DataStore dataStore,
 		String cityBoundaryOsmId) throws IOException {
+		super(id);
 		try {
 			String typeName = "planet_osm_polygon";
 			SimpleFeatureSource featureSource = dataStore.getFeatureSource(typeName);

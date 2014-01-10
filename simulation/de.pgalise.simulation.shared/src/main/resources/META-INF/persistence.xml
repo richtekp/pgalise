@@ -12,7 +12,6 @@
     <class>de.pgalise.simulation.shared.city.City</class>
     <class>de.pgalise.simulation.shared.city.NavigationEdge</class>
     <class>de.pgalise.simulation.shared.city.NavigationNode</class>
-    <class>de.pgalise.simulation.shared.city.OsmCity</class>
     <class>de.pgalise.simulation.shared.city.Way</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>

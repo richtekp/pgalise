@@ -36,6 +36,11 @@
 			<artifactId>testutils-shared</artifactId>
 			<type>jar</type>
 		</dependency>
+	 <dependency>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>testutils-traffic</artifactId>
+	  <type>jar</type>
+	 </dependency>
 		
 		<dependency>
 			<groupId>org.geotools</groupId>

@@ -29,13 +29,13 @@ import javax.persistence.Transient;
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 11, 2012)
  */
-@Entity
-@NamedQuery(name = "City.getAll",
-	query = "SELECT i FROM City i")
 /*
  * has identical properties boundaries and centerPoint and Building, but sharing 
  * code is not possible in this inheritance hierarchy (all NavigationNode would have to be AbstractGeometricObjects
  */
+@Entity
+@NamedQuery(name = "City.getAll",
+	query = "SELECT i FROM City i")
 public class City extends AbstractIdentifiable {
 
 	/**
@@ -72,9 +72,6 @@ public class City extends AbstractIdentifiable {
 	 */
 	@Column(name = "POPULATION")
 	private int population = 162481;
-
-	@OneToOne
-	private CityInfrastructureData cityInfrastructureData;
 
 	/**
 	 * Rate for reference evaluation
@@ -117,24 +114,13 @@ public class City extends AbstractIdentifiable {
 		int altitude,
 		boolean nearRiver,
 		boolean nearSea,
-		BaseGeoInfo position,
-		CityInfrastructureData cityInfrastructureData) {
+		BaseGeoInfo position) {
 		this.position = position;
 		this.name = name;
 		this.population = population;
 		this.altitude = altitude;
 		this.nearRiver = nearRiver;
 		this.nearSea = nearSea;
-		this.cityInfrastructureData = cityInfrastructureData;
-	}
-
-	protected void setCityInfrastructureData(
-		CityInfrastructureData cityInfrastructureData) {
-		this.cityInfrastructureData = cityInfrastructureData;
-	}
-
-	public CityInfrastructureData getCityInfrastructureData() {
-		return cityInfrastructureData;
 	}
 
 	public int getAltitude() {

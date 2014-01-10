@@ -79,6 +79,9 @@ public class MainCtrl implements Serializable {
 	private List<ControlCenterMessage<?>> selectedUnsentMessages = new LinkedList<>();
 	@ManagedProperty(value = "#{controlCenterStartParameter}")
 	private ControlCenterStartParameter startParameter = new ControlCenterStartParameter();
+	@ManagedProperty(value = "#{trafficInitParameter")
+	private TrafficInitParameter initParameter = new TrafficInitParameter();
+
 	private String connectionState = ConnectionStateEnum.DISCONNECTED.
 		getStringValue();
 	private String simulationState = SimulationStateEnum.STOPPED.getStringValue();
@@ -126,28 +129,30 @@ public class MainCtrl implements Serializable {
 		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
 
 		TrafficInfrastructureData trafficInfrastructureData = new OSMCityInfrastructureData(
+			idGenerator.getNextId(),
 			osmFileBytes,
 			busStopFileBytes,
 			buildingEnergyProfileStrategy);
 		Long startTimestamp = startParameter.getStartTimestamp().getTime();
 		long endTimestamp = startParameter.getEndTimestamp().getTime();
 		ServerConfiguration serverConfiguration = ServerConfiguration.DEFAULT_SERVER_CONFIGURATION;
-		simulationController.init(
-			new TrafficInitParameter(trafficInfrastructureData,
-				serverConfiguration,
-				startTimestamp,
-				endTimestamp,
-				startParameter.getInterval(),
-				startParameter.getClockGeneratorInterval(),
-				startParameter.getOperationCenterAddress(),
-				startParameter.getControlCenterAddress(),
-				startParameter.getTrafficFuzzyData(),
-				cityCtrl.retrieveBoundaries(trafficInfrastructureData)));
+		initParameter.setCityBoundary(cityCtrl.retrieveBoundaries(
+			trafficInfrastructureData));
+		initParameter.setCityInfrastructureData(trafficInfrastructureData);
+		simulationController.init(initParameter);
 		simulationController.start(startParameter);
 	}
 
 	public void stopSimulation() {
 		simulationController.stop();
+	}
+
+	public TrafficInitParameter getInitParameter() {
+		return initParameter;
+	}
+
+	public void setInitParameter(TrafficInitParameter initParameter) {
+		this.initParameter = initParameter;
 	}
 
 	public String getConnectionState() {

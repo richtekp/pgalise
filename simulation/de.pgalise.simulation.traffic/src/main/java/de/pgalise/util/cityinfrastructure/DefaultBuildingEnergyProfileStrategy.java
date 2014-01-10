@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.util.cityinfrastructure;
 
 import de.pgalise.simulation.shared.tag.AmenityTagEnum;
@@ -23,26 +22,26 @@ import de.pgalise.simulation.shared.tag.PublicTransportTagEnum;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 
 /**
- * Default implementation of {@link BuildingEnergyProfileStrategy}.
- * It uses the properties "too-small-size-for-house" and "min-size-for-industry"
- * from "properties.props" to find the best energy profile.
- * 
+ * Default implementation of {@link BuildingEnergyProfileStrategy}. It uses the
+ * properties "too-small-size-for-house" and "min-size-for-industry" from
+ * "properties.props" to find the best energy profile.
+ *
  * @author Timo
  */
-public class DefaultBuildingEnergyProfileStrategy implements BuildingEnergyProfileStrategy {
+public class DefaultBuildingEnergyProfileStrategy implements
+	BuildingEnergyProfileStrategy {
+
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -8937195673955676784L;
 
 	/**
-	 * If nothing else can be found: a building smaller than this gets the profile household and a building bigger than
-	 * this gets the profile industry_general
+	 * If nothing else can be found: a building smaller than this gets the profile
+	 * household and a building bigger than this gets the profile industry_general
 	 */
 	private double minSquareMetersForIndustry = 100;
 
@@ -53,17 +52,21 @@ public class DefaultBuildingEnergyProfileStrategy implements BuildingEnergyProfi
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @throws IOException
 	 */
-	public DefaultBuildingEnergyProfileStrategy() throws IOException {
-		try (InputStream propertiesInputStream = DefaultBuildingEnergyProfileStrategy.class
-				.getResourceAsStream("/properties.props")) {
+	public DefaultBuildingEnergyProfileStrategy() {
+		try (InputStream propertiesInputStream = DefaultBuildingEnergyProfileStrategy.class.
+			getResourceAsStream("/properties.props")) {
 			Properties properties = new Properties();
 			properties.load(propertiesInputStream);
-			this.minSquareMetersForIndustry = Double.valueOf(properties.getProperty("too-small-size-for-house"));
-			this.tooSmallBuilding = Double.valueOf(properties.getProperty("min-size-for-industry"));
-		} 
+			this.minSquareMetersForIndustry = Double.valueOf(properties.getProperty(
+				"too-small-size-for-house"));
+			this.tooSmallBuilding = Double.valueOf(properties.getProperty(
+				"min-size-for-industry"));
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	@Override
@@ -71,13 +74,14 @@ public class DefaultBuildingEnergyProfileStrategy implements BuildingEnergyProfi
 		if (building.getSquareMeter() <= tooSmallBuilding) {
 			throw new RuntimeException("Building is too small");
 		}
-		if (building.getPublicTransportTags()!= null && building.getPublicTransportTags().contains(PublicTransportTagEnum.STOP_POSITION)) {
+		if (building.getPublicTransportTags() != null && building.
+			getPublicTransportTags().contains(PublicTransportTagEnum.STOP_POSITION)) {
 			throw new RuntimeException("No energy profile found!");
 		}
 
-		if (building.getLanduseTags()!= null) {
+		if (building.getLanduseTags() != null) {
 			if (building.getLanduseTags().contains(LanduseTagEnum.FARMLAND)
-					|| building.getLanduseTags().contains(LanduseTagEnum.FARMYARD)) {
+				|| building.getLanduseTags().contains(LanduseTagEnum.FARMYARD)) {
 
 				return EnergyProfileEnum.FARM_BUILDING;
 
@@ -104,7 +108,7 @@ public class DefaultBuildingEnergyProfileStrategy implements BuildingEnergyProfi
 			}
 		}
 
-		if (building.getAmenityTags()!= null) {
+		if (building.getAmenityTags() != null) {
 			if (building.getAmenityTags().contains(AmenityTagEnum.KINDERGARTEN)) {
 
 				return EnergyProfileEnum.INDUSTRY_ON_WORKDAYS;
@@ -118,7 +122,7 @@ public class DefaultBuildingEnergyProfileStrategy implements BuildingEnergyProfi
 				return EnergyProfileEnum.BUSINESS_ON_WEEKEND;
 
 			} else if (building.getAmenityTags().contains(AmenityTagEnum.KINDERGARTEN)
-					|| building.getAmenityTags().contains(AmenityTagEnum.BICYKLE_PARKING)) {
+				|| building.getAmenityTags().contains(AmenityTagEnum.BICYKLE_PARKING)) {
 
 				return EnergyProfileEnum.INDUSTRY_GENERAL;
 
@@ -129,7 +133,7 @@ public class DefaultBuildingEnergyProfileStrategy implements BuildingEnergyProfi
 			}
 		}
 
-		if (building.getShopTags()!= null) {
+		if (building.getShopTags() != null) {
 
 			return EnergyProfileEnum.SHOP;
 		}

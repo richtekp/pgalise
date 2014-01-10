@@ -18,5 +18,6 @@
   </properties>
 	<modules>
 		<module>testutils-shared</module>
+		<module>testutils-traffic</module>
 	</modules>
 </project>

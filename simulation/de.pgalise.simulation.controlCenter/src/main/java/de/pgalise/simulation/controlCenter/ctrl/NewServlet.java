@@ -16,7 +16,6 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
@@ -24,11 +23,12 @@ import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.RainSensor;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhiteNoiseInterferer;
-import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.traffic.TrafficTestUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -89,7 +89,8 @@ public class NewServlet extends HttpServlet {
 //		Position berlinPosition = new Position(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinates))
 //		City city = new TrafficCity(graph, "Berlin", 3400000, 100, true,
 //						true, new po);
-		City city = TestUtils.createDefaultTestCityInstance();
+		TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
+			idGenerator.getNextId());
 		Output output = new AbstractTcpIpOutput("127.0.0.1",
 			22000,
 			new TcpIpKeepOpenStrategy());

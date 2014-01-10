@@ -37,8 +37,14 @@
 			<scope>test</scope>
 			<type>ejb</type>
 		</dependency>
-				
-		<dependency>
+	 <dependency>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>de.pgalise.testutils-traffic</artifactId>
+	  <version>2.0-SNAPSHOT</version>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<scope>provided</scope>

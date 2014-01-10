@@ -38,7 +38,6 @@ import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.city.City;
@@ -46,7 +45,10 @@ import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.testutils.traffic.TrafficTestUtils;
+import java.net.URL;
 import org.junit.Ignore;
 
 /**
@@ -129,7 +131,7 @@ public class DefaultEnergyControllerTest {
 		Calendar cal = new GregorianCalendar();
 
 		// city
-		City city = TestUtils.createDefaultTestCityInstance();
+		TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance();
 
 		// City information
 		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
@@ -220,13 +222,13 @@ public class DefaultEnergyControllerTest {
 			DefaultEnergyControllerTest.endTime,
 			interval,
 			interval,
-			"http://localhost:8080/operationCenter",
-			"",
+			new URL("http://localhost:8080/operationCenter"),
+			new URL(""),
 			null,
 			new Envelope(new JaxRSCoordinate(),
 				new JaxRSCoordinate()));
 
-		city = TestUtils.createDefaultTestCityInstance();
+		city = TrafficTestUtils.createDefaultTestCityInstance();
 		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(
 			city,
 			true,

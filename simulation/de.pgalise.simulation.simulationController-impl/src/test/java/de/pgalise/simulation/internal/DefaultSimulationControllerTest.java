@@ -55,6 +55,8 @@ import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterCo
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.Anemometer;
 import de.pgalise.testutils.TestUtils;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -105,7 +107,7 @@ public class DefaultSimulationControllerTest {
 	}
 
 	@BeforeClass
-	public static void setUpClass() {
+	public static void setUpClass() throws MalformedURLException {
 		testClass = new DefaultSimulationController();
 
 		/* Mock all controllers: */
@@ -161,8 +163,8 @@ public class DefaultSimulationControllerTest {
 			END_TIMESTAMP,
 			INTERVAL,
 			CLOCK_GENERATOR_INTERVAL,
-			"",
-			"",
+			new URL(""),
+			new URL(""),
 			new TrafficFuzzyData(0,
 				0.9,
 				1),

@@ -205,7 +205,8 @@ public class DefaultOperationCenterController extends AbstractController<Event, 
 		log.debug("start");
 		StartParameter startParameterCopy = new StartParameter(
 			param.isAggregatedWeatherDataEnabled(),
-			param.getWeatherEvents());
+			param.getWeatherEvents(),
+			param.getCity());
 		Map<String, String> requestParameterMap = new HashMap<>();
 		requestParameterMap.put("start",
 			"true");

@@ -16,12 +16,12 @@
 package de.pgalise.simulation.controlCenter.model;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensor;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -93,6 +93,7 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter
 	private static final long serialVersionUID = 1L;
 	private PropertyChangeSupport mPcs
 		= new PropertyChangeSupport(this);
+
 	/**
 	 * Option to start with sensor interferes. If true, all sensor interferes will
 	 * be activated.
@@ -141,16 +142,6 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter
 	 * List of bus routes
 	 */
 	private List<BusRoute> busRouteList;
-
-	/**
-	 * URL of the operation center
-	 */
-	private String operationCenterAddress = "http://127.0.0.1/operationCenter";
-
-	/**
-	 * URL of the control center.
-	 */
-	private String controlCenterAddress;
 
 	/**
 	 * Attractions during the simulation.
@@ -219,7 +210,7 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter
 		String ipStaticSensorController,
 		String ipEnergyController,
 		List<String> trafficServerIPList,
-		City city,
+		TrafficCity city,
 		List<Sensor<?, ?>> sensorHelperList,
 		List<EventList<?>> simulationEventLists,
 		List<WeatherEvent> weatherEventList,
@@ -247,9 +238,7 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter
 		this.randomDynamicSensorBundle = randomDynamicSensorBundle;
 		this.withSensorInterferes = withSensorInterferes;
 		this.busRouteList = busRoutes;
-		this.operationCenterAddress = operationCenterAddress;
 		this.attractionCollection = attractionCollection;
-		this.controlCenterAddress = controlCenterAddress;
 		this.name = city.getName();
 		this.mapAndBusstopFileData = mapAndBusstopFileData;
 	}
@@ -358,14 +347,6 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter
 		this.busRouteList = busRoutes;
 	}
 
-	public String getOperationCenterAddress() {
-		return operationCenterAddress;
-	}
-
-	public void setOperationCenterAddress(String operationCenterAddress) {
-		this.operationCenterAddress = operationCenterAddress;
-	}
-
 	public String getIpStaticSensorController() {
 		return ipStaticSensorController;
 	}
@@ -389,14 +370,6 @@ public class ControlCenterStartParameter extends InfrastructureStartParameter
 	public void setAttractionCollection(
 		Collection<AttractionData> attractionCollection) {
 		this.attractionCollection = attractionCollection;
-	}
-
-	public String getControlCenterAddress() {
-		return controlCenterAddress;
-	}
-
-	public void setControlCenterAddress(String controlCenterAddress) {
-		this.controlCenterAddress = controlCenterAddress;
 	}
 
 	public void setMapAndBusstopFileData(

@@ -124,6 +124,7 @@ public class DefaultEventInitiatorTest {
 			null);
 
 		startParameter = new StartParameter(true,
+			null,
 			null);
 
 		energyController = new EnergyControllerMock();
@@ -380,7 +381,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(InfrastructureStartParameter param) throws IllegalStateException {
+		public void start(StartParameter param) throws IllegalStateException {
 		}
 
 		@Override

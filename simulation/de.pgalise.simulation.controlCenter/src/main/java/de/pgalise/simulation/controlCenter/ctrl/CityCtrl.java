@@ -10,6 +10,7 @@ import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import java.io.IOException;
 import java.io.Serializable;
@@ -224,12 +225,13 @@ public class CityCtrl implements Serializable {
 				String name = (String) nextFeature.getAttribute("name");
 				com.vividsolutions.jts.geom.Polygon polygon = (com.vividsolutions.jts.geom.Polygon) nextFeature.
 					getAttribute("way");
-				City autocompletionValue = new City(name,
+				City autocompletionValue = new TrafficCity(name,
 					-1,
 					-1,
 					false,
 					false,
-					new BaseGeoInfo(polygon));
+					new BaseGeoInfo(polygon),
+					null);
 				retValue.add(autocompletionValue);
 			}
 			simpleFeatureIterator.close();

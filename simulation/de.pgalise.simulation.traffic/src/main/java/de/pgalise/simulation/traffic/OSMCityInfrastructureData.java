@@ -90,8 +90,11 @@ import de.pgalise.simulation.shared.tag.factory.SportTagFactory;
 import de.pgalise.simulation.shared.tag.factory.TourismTagFactory;
 import de.pgalise.simulation.shared.tag.factory.WayTagFactory;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
+import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
 import java.util.Arrays;
+import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
@@ -103,6 +106,10 @@ import javax.xml.stream.XMLStreamException;
  * and {@link CityInfrastructureData#getNodesInBoundary(Boundary) are implements with a PR-Tree.
  * @author Timo
  */
+/*
+ @TODO: separate logic from data
+ */
+@Entity
 public class OSMCityInfrastructureData extends TrafficInfrastructureData<TrafficEdge, TrafficNode, TrafficWay> {
 
 	/**
@@ -338,9 +345,15 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 	private List<TrafficWay> motorWays, motorWaysWithBusstops, cycleAndMotorways;
 	private Envelope boundary;
 	private List<Building> buildings;
-	private final BuildingEnergyProfileStrategy buildingEnergyProfileStrategy;
+	private BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
 	private final TrafficGraph trafficGraph;
+	@Transient
 	private final GraphConstructor graphConstructor = new GraphConstructor();
+
+	public OSMCityInfrastructureData(Long id) {
+		super(id);
+		this.trafficGraph = graphConstructor.createGraph(ways);
+	}
 
 	/**
 	 * parses the passed input streams and initializes graph
@@ -351,15 +364,16 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 	 * profile for a buidling
 	 * @throws IOException
 	 */
-	public OSMCityInfrastructureData(InputStream osmIN,
+	public OSMCityInfrastructureData(Long id,
+		InputStream osmIN,
 		InputStream busStopIN,
 		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
+		this(id);
+		this.buildingEnergyProfileStrategy = buildingEnergyProfileStrategy;
 		this.prTreeDistanceCalculator = new NodeDistance();
 		this.prTreeNodeFilter = new PRTreeNodeFilter();
-		this.buildingEnergyProfileStrategy = buildingEnergyProfileStrategy;
 		this.parse(osmIN,
 			busStopIN);
-		this.trafficGraph = graphConstructor.createGraph(ways);
 	}
 
 	/**

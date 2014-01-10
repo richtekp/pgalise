@@ -47,6 +47,10 @@ public abstract class CityInfrastructureData<N extends NavigationNode, E extends
 	private Envelope boundary;
 	private List<W> cycleAndMotorways;
 
+	public CityInfrastructureData(Long id) {
+		super(id);
+	}
+
 	public void setWays(
 		List<W> ways) {
 		this.ways = ways;

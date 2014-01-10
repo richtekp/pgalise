@@ -35,6 +35,7 @@ import de.pgalise.simulation.controlCenter.internal.message.OSMParsedMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationEventListMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationExportStartParameterMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationExportedMessage;
+import de.pgalise.simulation.controlCenter.internal.message.SimulationInitParameterMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationStartParameterMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationStartedMessage;
 import de.pgalise.simulation.controlCenter.internal.message.ValidNodeMessage;
@@ -62,10 +63,10 @@ import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.energy.StaticSensorServiceDictionary;
 import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.OSMCityInfrastructureDataService;
 import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
@@ -248,6 +249,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 			IdentifiableControlCenterMessage.class);
 
 		try {
+			ServerConfiguration configuration = new ServerConfiguration();
 			switch (ccWebSocketMessage.getMessageType()) {
 				case OSM_AND_BUSSTOP_FILE_MESSAGE:
 					synchronized (cityInfrastructureDataLock) {
@@ -317,11 +319,17 @@ public class DefaultControlCenterUser extends Endpoint implements
 						DeleteSensorsMessage.class).getContent());
 					break;
 
-				case SIMULATION_START_PARAMETER: {
+				case SIMULATION_START_PARAMETER:
 					onStartParameterMessage(message,
-						ccWebSocketMessage);
+						ccWebSocketMessage,
+						configuration);
 					break;
-				}
+
+				case SIMULATION_INIT_PARAMETER:
+					onInitParameterMessage(message,
+						ccWebSocketMessage,
+						configuration);
+					break;
 				case SIMULATION_STOP:
 					this.simulationController.stop();
 					break;
@@ -556,7 +564,8 @@ public class DefaultControlCenterUser extends Endpoint implements
 	}
 
 	private void onStartParameterMessage(String message,
-		IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
+		IdentifiableControlCenterMessage<?> ccWebSocketMessage,
+		ServerConfiguration serverConfiguration) throws IOException, SensorException, InitializationException {
 		log.debug("Start simulation");
 
 		ControlCenterStartParameter ccSimulationStartParameter = this.gson.
@@ -566,7 +575,6 @@ public class DefaultControlCenterUser extends Endpoint implements
 		this.simulationStartParameter = ccSimulationStartParameter;
 
 		/* Create server configuration: */
-		ServerConfiguration serverConfiguration = new ServerConfiguration();
 		Map<String, List<ServerConfigurationEntity>> serverConfiguationMap = new HashMap<>();
 
 		log.debug("Create server configuration");
@@ -689,20 +697,6 @@ public class DefaultControlCenterUser extends Endpoint implements
 
 		/* Created server configuration */
 		/* Create init parameters: */
-		TrafficInitParameter initParameter = new TrafficInitParameter(
-			this.cityInfrastructureData,
-			serverConfiguration,
-			ccSimulationStartParameter.getStartTimestamp().getTime(),
-			ccSimulationStartParameter.getEndTimestamp().getTime(),
-			ccSimulationStartParameter.getInterval(),
-			ccSimulationStartParameter.getClockGeneratorInterval(),
-			ccSimulationStartParameter.getOperationCenterAddress(),
-			ccSimulationStartParameter.getControlCenterAddress(),
-			ccSimulationStartParameter.getTrafficFuzzyData(),
-			this.cityInfrastructureData.getBoundary());
-
-		/* Init: */
-		this.simulationController.init(initParameter);
 
 		/* Init random seed service: */
 		this.serviceDictionary.getRandomSeedService().init(
@@ -835,5 +829,18 @@ public class DefaultControlCenterUser extends Endpoint implements
 		this.sendMessage(new SimulationStartedMessage(ccWebSocketMessage.
 			getId()));
 		return;
+	}
+
+	public void onInitParameterMessage(String message,
+		IdentifiableControlCenterMessage<?> ccWebSocketMessage,
+		ServerConfiguration configuration) throws IOException, SensorException, InitializationException {
+
+		TrafficInitParameter initParameter = this.gson.
+			fromJson(message,
+				SimulationInitParameterMessage.class).
+			getContent();
+
+		/* Init: */
+		this.simulationController.init(initParameter);
 	}
 }

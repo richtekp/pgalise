@@ -34,15 +34,18 @@ import de.pgalise.simulation.operationcenter.OCWebSocketUser;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.traffic.TrafficTestUtils;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -175,16 +178,18 @@ public class DefaultOCSimulationControllerTest {
 	@EJB
 	private IdGenerator idGenerator;
 
-	public DefaultOCSimulationControllerTest()  {	
+	public DefaultOCSimulationControllerTest() {
 	}
 
 	@Before
-	public void setUpClass() throws NamingException {
-		 TestUtils.getContainer().getContext().bind("inject", this);	
+	public void setUpClass() throws NamingException, MalformedURLException {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
 		SENSOR_HELPER_LIST = new LinkedList<>();
 		Output output = EasyMock.createNiceMock(Output.class);
 		GpsInterferer gpsInterferer = EasyMock.createNiceMock(GpsInterferer.class);
-		GpsSensor sensor = new GpsSensor(idGenerator.getNextId(),output,
+		GpsSensor sensor = new GpsSensor(idGenerator.getNextId(),
+			output,
 			null,
 			gpsInterferer);
 		SENSOR_HELPER_LIST.add(
@@ -214,13 +219,13 @@ public class DefaultOCSimulationControllerTest {
 			0,
 			0,
 			0,
-			"",
-			"",
+			new URL(""),
+			new URL(""),
 			null,
 			null);
 
 		/* Create start parameter: */
-		City city = TestUtils.createDefaultTestCityInstance();
+		TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance();
 		START_PARAMTER = new InfrastructureStartParameter(
 			city,
 			true,
@@ -257,7 +262,7 @@ public class DefaultOCSimulationControllerTest {
 		Assert.assertTrue(OC_WEB_SOCKET_SERVICE.
 			getLastMessage() instanceof NewSensorsMessage);
 
-		for (Sensor<?,?> sensorHelper
+		for (Sensor<?, ?> sensorHelper
 			: SENSOR_HELPER_LIST) {
 			TESTCLASS.update(0,
 				sensorHelper);

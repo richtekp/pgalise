@@ -21,6 +21,8 @@
     <class>de.pgalise.simulation.traffic.BusStopTime</class>
     <class>de.pgalise.simulation.traffic.BusTrip</class>
     <class>de.pgalise.simulation.traffic.OSMBusStop</class>
+    <class>de.pgalise.simulation.traffic.OSMCityInfrastructureData</class>
+    <class>de.pgalise.simulation.traffic.TrafficCity</class>
     <class>de.pgalise.simulation.traffic.TrafficEdge</class>
     <class>de.pgalise.simulation.traffic.TrafficNode</class>
     <class>de.pgalise.simulation.traffic.TrafficTrip</class>

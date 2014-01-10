@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import javax.ejb.embeddable.EJBContainer;
@@ -39,14 +38,13 @@ import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.service.ServerConfigurationEntity;
-import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -219,13 +217,13 @@ public class DefaultWeatherControllerTest {
 			null,
 			null,
 			null);
-		initParameter.setStartTimestamp(startTimestamp);
-		initParameter.setEndTimestamp(endTimestamp);
+		initParameter.setStartTimestamp(new Date(startTimestamp));
+		initParameter.setEndTimestamp(new Date(endTimestamp));
 
-		InfrastructureStartParameter parameter = new InfrastructureStartParameter(
-			city,
+		StartParameter parameter = new StartParameter(
 			true,
-			null);
+			null,
+			city);
 
 		// Create controller
 		Context ctx = CONTAINER.getContext();

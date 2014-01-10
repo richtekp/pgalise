@@ -110,7 +110,8 @@ public class TestUtils {
 						referencePoint.getY() - 1)
 				}
 			);
-		City city = new City("Berlin",
+		City city = new City(
+			"Berlin",
 			3375222,
 			80,
 			true,

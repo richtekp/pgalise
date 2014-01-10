@@ -4,26 +4,51 @@
  */
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
 /**
  *
- * @param <D> 
  * @author richter
+ * @param <C>
  */
-public class TrafficCity<D extends VehicleData> extends City  {
+@Entity
+public class TrafficCity<C extends TrafficInfrastructureData> extends City {
+
 	private static final long serialVersionUID = 1L;
 
 	@OneToOne
-	private TrafficGraph graph;
+	private C cityInfrastructureData;
 
-	public void setTrafficGraph(TrafficGraph graph) {
-		this.graph = graph;
+	public TrafficCity() {
 	}
 
-	public TrafficGraph getTrafficGraph() {
-		return graph;
+	public TrafficCity(
+		String name,
+		int population,
+		int altitude,
+		boolean nearRiver,
+		boolean nearSea,
+		BaseGeoInfo position,
+		C cityInfrastructureData) {
+		super(name,
+			population,
+			altitude,
+			nearRiver,
+			nearSea,
+			position
+		);
+		this.cityInfrastructureData = cityInfrastructureData;
 	}
+
+	public C getCityInfrastructureData() {
+		return cityInfrastructureData;
+	}
+
+	public void setCityInfrastructureData(C cityInfrastructureData) {
+		this.cityInfrastructureData = cityInfrastructureData;
+	}
+
 }

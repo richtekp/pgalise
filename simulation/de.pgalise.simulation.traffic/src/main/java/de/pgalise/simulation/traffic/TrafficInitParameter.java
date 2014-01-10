@@ -8,13 +8,18 @@ import com.vividsolutions.jts.geom.Envelope;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import java.net.URL;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
+@ManagedBean
+@SessionScoped
 public class TrafficInitParameter extends InitParameter {
 
 	private static final long serialVersionUID = 1L;
 	private TrafficInfrastructureData trafficInfrastructureData;
 
-	protected TrafficInitParameter() {
+	public TrafficInitParameter() {
 	}
 
 	public TrafficInitParameter(
@@ -24,8 +29,8 @@ public class TrafficInitParameter extends InitParameter {
 		long endTimestamp,
 		long interval,
 		long clockGeneratorInterval,
-		String operationCenterURL,
-		String controlCenterURL,
+		URL operationCenterURL,
+		URL controlCenterURL,
 		TrafficFuzzyData trafficFuzzyData,
 		Envelope cityBoundary) {
 		super(
@@ -41,7 +46,7 @@ public class TrafficInitParameter extends InitParameter {
 		this.trafficInfrastructureData = cityInfrastructureData;
 	}
 
-	protected void setCityInfrastructureData(
+	public void setCityInfrastructureData(
 		TrafficInfrastructureData cityInfrastructureData) {
 		this.trafficInfrastructureData = cityInfrastructureData;
 	}

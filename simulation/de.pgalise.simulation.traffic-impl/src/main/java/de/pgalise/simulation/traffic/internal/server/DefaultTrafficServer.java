@@ -333,10 +333,10 @@ public class DefaultTrafficServer extends AbstractController<
 	 * All listed road barriers
 	 */
 	private Set<RoadBarrier> listedRoadBarriers;
-	
+
 	@EJB
 	private IdGenerator idGenerator;
-	
+
 	private Set<Vehicle<?>> managedVehicles = new HashSet<Vehicle<?>>();
 
 	/**
@@ -393,11 +393,14 @@ public class DefaultTrafficServer extends AbstractController<
 				this.trafficGraphExtensions);
 			this.trafficGraphExtensions.setTrafficRule(node,
 				trafficLightIntersection);
-			this.sensorRegistry.addSensor(new TrafficLightSensor(this.idGenerator.getNextId(),this.sensorFactory.
+			this.sensorRegistry.addSensor(new TrafficLightSensor(this.idGenerator.
+				getNextId(),
+				this.sensorFactory.
 				getSensorOutput(),
 				null,
 				trafficLightIntersection.getTrafficLight0()));
-			this.sensorRegistry.addSensor(new TrafficLightSensor(this.idGenerator.getNextId(),
+			this.sensorRegistry.addSensor(new TrafficLightSensor(this.idGenerator.
+				getNextId(),
 				this.sensorFactory.getSensorOutput(),
 				null,
 				trafficLightIntersection.getTrafficLight1()));
@@ -815,7 +818,7 @@ public class DefaultTrafficServer extends AbstractController<
 							"Vehicle " + vehicle.getName() + " passed node " + curNode.getId());
 						if (this.cityZone == null
 							|| this.cityZone.covers(GEOMETRY_FACTORY.createPoint(
-								this.trafficGraphExtensions.getPosition(curNode)))) {
+									this.trafficGraphExtensions.getPosition(curNode)))) {
 							this.vehicleEventHandlerManager.handleEvent(
 								new GenericVehicleEvent<>(
 									this,
@@ -839,7 +842,7 @@ public class DefaultTrafficServer extends AbstractController<
 										vehicle,
 										curNode,
 										vehicle.getNodePath()
-											.get(vehicle.getNodePath().size() - 1),
+										.get(vehicle.getNodePath().size() - 1),
 										this);
 									removeableVehicles.add(vehicle);
 									break loop;
@@ -862,7 +865,7 @@ public class DefaultTrafficServer extends AbstractController<
 					&& (item.getScheduleTime() == currentTime)) {
 					log.debug(
 						"Vehicle " + vehicle.getName() + " passed startNode " + varNode.
-							getId());
+						getId());
 					this.vehicleEventHandlerManager.handleEvent(new GenericVehicleEvent<>(
 						this,
 						currentTime,
@@ -892,7 +895,7 @@ public class DefaultTrafficServer extends AbstractController<
 
 			this.routeConstructor = new DefaultRouteConstructor(this.coordinate,
 				param.getCityInfrastructureData(),
-				param.getStartTimestamp(),
+				param.getStartTimestamp().getTime(),
 				this.serviceDictionary.getRandomSeedService(),
 				this.trafficGraphExtensions);
 			this.updateIntervall = param.getInterval();
@@ -902,7 +905,7 @@ public class DefaultTrafficServer extends AbstractController<
 				this.serviceDictionary.getIdGenerator(),
 				this.trafficGraphExtensions,
 				DefaultTrafficServer.class.getResourceAsStream("/defaultvehicles.xml")
-				);
+			);
 
 			if (fuzzyTrafficGovernor != null) {
 				this.vehicleFuzzyManager = new DefaultVehicleAmountManager(this,
@@ -1021,7 +1024,6 @@ public class DefaultTrafficServer extends AbstractController<
 //	public TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> getTrafficEventHandlerManager() {
 //		return vehicleEventHandlerManager;
 //	}
-
 	@Override
 	public int getServerListSize() {
 		return serverList.size();

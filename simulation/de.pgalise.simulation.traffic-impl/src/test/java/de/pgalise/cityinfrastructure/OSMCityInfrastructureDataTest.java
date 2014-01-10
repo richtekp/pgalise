@@ -45,7 +45,7 @@ public class OSMCityInfrastructureDataTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		try {
-			osmParser = new OSMCityInfrastructureData(
+			osmParser = new OSMCityInfrastructureData(1L,
 				OSMCityInfrastructureData.class.getResourceAsStream("/oldenburg_pg.osm"),
 				OSMCityInfrastructureData.class.getResourceAsStream("/stops.txt"),
 				new DefaultBuildingEnergyProfileStrategy()

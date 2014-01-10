@@ -6,24 +6,36 @@
 package de.pgalise.simulation.shared.controller;
 
 import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-public class StartParameter extends InitParameter {
+public class StartParameter<C extends City> extends InitParameter {
 
 	private static final long serialVersionUID = 1L;
 	private List<WeatherEvent> weatherEvents = new LinkedList<>();
 	private boolean aggregatedWeatherDataEnabled;
+	private C city;
 
 	public StartParameter() {
 	}
 
 	public StartParameter(
 		boolean aggregatedWeatherDataEnabled,
-		List<WeatherEvent> weatherEvents) {
+		List<WeatherEvent> weatherEvents,
+		C city) {
 		this.weatherEvents = weatherEvents;
 		this.aggregatedWeatherDataEnabled = aggregatedWeatherDataEnabled;
+		this.city = city;
+	}
+
+	public void setCity(C city) {
+		this.city = city;
+	}
+
+	public C getCity() {
+		return city;
 	}
 
 	public void setWeatherEvents(

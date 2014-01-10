@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.internal.message;
 
 /**
  * Self-made enum (appropriate for JSON transport, including fixed int bindings
  * New message types need to be added here and in the JavaScript client code.
+ *
  * @author dhoeting
  * @author Timo
  */
 public enum MessageTypeEnum {
-	
+
 	ERROR(-1),
 	ON_CONNECT(0), // By Server
 	SIMULATION_START(1), // By Server
@@ -22,6 +22,7 @@ public enum MessageTypeEnum {
 	SIMULATION_RESUMED(4), // By Server
 	ACCESS_DENIED(5), // By Server
 	SIMULATION_START_PARAMETER(10), // By Client and Server
+	SIMULATION_INIT_PARAMETER(29),
 	SIMULATION_EXPORT_PARAMETER(11), // By Client
 	SIMULATION_EXPORTET(12), // By Server
 	OSM_AND_BUSSTOP_FILE_MESSAGE(13), // By Client
@@ -40,9 +41,9 @@ public enum MessageTypeEnum {
 	SIMULATION_STOPPED(27), // By Server
 	SIMULATION_UPDATE(28), // By Server
 	GENERIC_NOTIFICATION_MESSAGE(100); // By Server
-	
+
 	private int value;
-	
+
 	MessageTypeEnum(int value) {
 		this.value = value;
 	}

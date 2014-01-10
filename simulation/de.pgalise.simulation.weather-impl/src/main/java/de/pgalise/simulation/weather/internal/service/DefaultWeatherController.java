@@ -38,19 +38,17 @@ import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
-import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.HotDayEvent;
@@ -58,7 +56,6 @@ import de.pgalise.simulation.weather.internal.modifier.events.RainDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -94,7 +91,7 @@ import java.util.HashSet;
 @Lock(LockType.READ)
 @Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
 @Local
-public class DefaultWeatherController extends AbstractController<WeatherEvent, InfrastructureStartParameter, InitParameter>
+public class DefaultWeatherController extends AbstractController<WeatherEvent, StartParameter, InitParameter>
 	implements WeatherController {
 
 	/**
@@ -170,11 +167,12 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 			throw new IllegalArgumentException("There is no data available.");
 		}
 	}
-	
+
 	public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
 		long timestamp,
 		long duration) throws IllegalArgumentException {
-		throw new UnsupportedOperationException("no use case for weather events without value check class architecture");
+		throw new UnsupportedOperationException(
+			"no use case for weather events without value check class architecture");
 	}
 
 	/**
@@ -267,15 +265,15 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 		List<WeatherStrategyHelper> strategies = new ArrayList<>(eventList.size());
 		for (WeatherEvent event : eventList) {
 			WeatherStrategy strategy;
-			if(event instanceof ChangeWeatherEvent) {
+			if (event instanceof ChangeWeatherEvent) {
 				strategy = this.createStrategyFromEnum(event.getType(),
-				event.getTimestamp(),
-				((ChangeWeatherEvent)event).getValue(),
-				event.getDuration());
-			}else {
+					event.getTimestamp(),
+					((ChangeWeatherEvent) event).getValue(),
+					event.getDuration());
+			} else {
 				strategy = this.createStrategyFromEnum(event.getType(),
-				event.getTimestamp(),
-				event.getDuration());
+					event.getTimestamp(),
+					event.getDuration());
 			}
 			if (strategy != null) {
 				strategies.add(new WeatherStrategyHelper(strategy,
@@ -398,7 +396,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 	}
 
 	@Override
-	protected void onStart(InfrastructureStartParameter param) {
+	protected void onStart(StartParameter param) {
 		// Save values
 		this.startWeatherService(param.getCity());
 
@@ -409,14 +407,15 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, I
 				getEndTimestamp());
 
 		// Add new weather data
-		this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp(),
-			this.initParameter.getEndTimestamp(),
+		this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp().
+			getTime(),
+			this.initParameter.getEndTimestamp().getTime(),
 			!param.isAggregatedWeatherDataEnabled(),
 			this.createStrategyList(param.getWeatherEvents()));
 
 		// Set start date
-		this.setStartTimestamp(this.initParameter.getStartTimestamp());
-		this.setNextNewDayInMillis(this.initParameter.getStartTimestamp());
+		this.setStartTimestamp(this.initParameter.getStartTimestamp().getTime());
+		this.setNextNewDayInMillis(this.initParameter.getStartTimestamp().getTime());
 	}
 
 	@Override
