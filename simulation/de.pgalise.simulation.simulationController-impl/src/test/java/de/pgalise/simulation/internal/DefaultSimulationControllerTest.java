@@ -43,13 +43,17 @@ import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.Anemometer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 import de.pgalise.testutils.TestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
+import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -127,7 +131,6 @@ public class DefaultSimulationControllerTest {
 		controllerCollection.add(testClass);
 
 		testClass.setEventInitiator(eventInitiator);
-		testClass.setSensorPersistenceService(sensorPersistenceService);
 
 		initParameter = new TrafficInitParameter(cityInfrastructureData,
 			START_TIMESTAMP,
@@ -218,13 +221,11 @@ public class DefaultSimulationControllerTest {
 	public void testCreateSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor = null;
-		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
+		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,
-			weatherController,
-			new WeatherNoInterferer());
-		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			null,null);
+		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,
 			null,
@@ -263,18 +264,16 @@ public class DefaultSimulationControllerTest {
 	public void testCreateSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor = null;
-		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
+		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,
-			weatherController,
-			new WeatherNoInterferer());
-		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			null,null);
+		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,
 			null,
 			null);
-		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();
+		Set<Sensor<?, ?>> sensorHelperList = new HashSet<>();
 		sensorHelperList.add(sensorHelperStaticSensor);
 		sensorHelperList.add(sensorHelperTrafficSensor);
 
@@ -309,13 +308,11 @@ public class DefaultSimulationControllerTest {
 	public void testDeleteSensor() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor1 = null, sensor2 = null;
-		StaticSensor sensorHelperStaticSensor = new Anemometer(idGenerator.
+		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,
-			weatherController,
-			new WeatherNoInterferer());
-		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			null,null);
+		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,
 			null,
@@ -353,18 +350,16 @@ public class DefaultSimulationControllerTest {
 	public void testDeleteSensors() throws SensorException, IllegalStateException, InitializationException {
 		resetControllerMockBehavior();
 		Sensor<?, ?> sensor1 = null, sensor2 = null;
-		StaticSensor<?, ?> sensorHelperStaticSensor = new Anemometer(idGenerator.
+		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,
-			weatherController,
-			new WeatherNoInterferer());
-		StaticSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+			null,null);
+		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,
 			null,
 			null);
-		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();
+		Set<Sensor<?, ?>> sensorHelperList = new HashSet<>();
 		sensorHelperList.add(sensorHelperStaticSensor);
 		sensorHelperList.add(sensorHelperTrafficSensor);
 

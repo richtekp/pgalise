@@ -305,7 +305,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 					}
 
 				case CREATE_SENSORS_MESSAGE:
-					List<Sensor<?, ?>> sensorHelperList = new LinkedList<>(this.gson.
+					Set<Sensor<?, ?>> sensorHelperList = new HashSet<>(this.gson.
 						fromJson(message,
 							CreateSensorsMessage.class).getContent());
 					for (Sensor<?, ?> sensorHelper : sensorHelperList) {

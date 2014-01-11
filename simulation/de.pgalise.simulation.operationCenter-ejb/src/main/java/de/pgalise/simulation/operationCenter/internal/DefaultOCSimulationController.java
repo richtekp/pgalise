@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.operationCenter.internal;
 
+import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.operationCenter.internal.hqf.OCHQFDataStreamController;
 import de.pgalise.simulation.operationCenter.internal.message.ErrorMessage;
@@ -42,6 +43,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
+import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
@@ -54,6 +56,7 @@ import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -204,21 +207,23 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 	}
 
 	@Override
-	public void createSensor(Sensor<?, ?> sensor) throws SensorException,
-		IllegalStateException {
-		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();
+	public void createSensor(Sensor<?, ?> sensor)  {
+		Set<Sensor<?, ?>> sensorHelperList = new HashSet<>();
 		sensorHelperList.add(sensor);
 		this.createSensors(sensorHelperList);
-		this.gateMessageStrategy.createSensor(sensor);
+		if(sensor instanceof GpsSensor) {
+			this.gateMessageStrategy.createSensor((GpsSensor)sensor);
+		}
 	}
 
 	@Override
-	public void deleteSensor(Sensor sensor) throws SensorException,
-		IllegalStateException {
-		List<Sensor<?, ?>> sensorHelperList = new LinkedList<>();
+	public void deleteSensor(Sensor sensor)  {
+		Set<Sensor<?, ?>> sensorHelperList = new HashSet<>();
 		sensorHelperList.add(sensor);
 		this.deleteSensors(sensorHelperList);
-		this.gateMessageStrategy.deleteSensor(sensor);
+		if(sensor instanceof GpsSensor) {
+			this.gateMessageStrategy.deleteSensor((GpsSensor)sensor);
+		}
 	}
 
 	@Override
@@ -297,7 +302,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 	 * @throws de.pgalise.simulation.shared.exception.SensorException
 	 */
 	@Override
-	public boolean isActivated(Sensor<?, ?> sensor) throws SensorException {
+	public boolean isActivated(Sensor<?, ?> sensor) {
 		/* Nothing to do */
 		return false;
 	}
@@ -506,8 +511,8 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 	}
 
 	@Override
-	public void createSensors(Collection<Sensor<?, ?>> sensors)
-		throws SensorException {
+	public void createSensors(Set<Sensor<?, ?>> sensors)
+		 {
 		List<Sensor<?, ?>> newSensors = new LinkedList<>();
 		for (Sensor<?, ?> sensor : sensors) {
 			this.sensors.add(sensor);
@@ -532,13 +537,18 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 				e);
 		}
 
-		this.gateMessageStrategy.createSensors(sensors);
-
+		Set<GpsSensor> gpsSensors = new HashSet<>();
+		for(Sensor sensor : sensors) {
+			if(sensor instanceof GpsSensor) {
+				gpsSensors.add((GpsSensor)sensor);
+			}
+		}
+		this.gateMessageStrategy.createSensors(gpsSensors);
 	}
 
 	@Override
-	public void deleteSensors(Collection<Sensor<?, ?>> sensors)
-		throws SensorException {
+	public void deleteSensors(Set<Sensor<?, ?>> sensors)
+		 {
 		List<Sensor<?, ?>> sensorIDList = new LinkedList<>();
 		for (Sensor<?, ?> sensor : sensors) {
 			sensorIDList.add(sensor);
@@ -556,7 +566,14 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 			log.error("Exception",
 				e);
 		}
-		this.gateMessageStrategy.deleteSensors(sensors);
+		
+		Set<GpsSensor> gpsSensors = new HashSet<>();
+		for(Sensor sensor : sensors) {
+			if(sensor instanceof GpsSensor) {
+				gpsSensors.add((GpsSensor)sensor);
+			}
+		}
+		this.gateMessageStrategy.deleteSensors(gpsSensors);
 	}
 
 	@Override
@@ -633,11 +650,13 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 				e);
 		}
 
-		try {
-			this.gateMessageStrategy.deleteSensors(sensorHelperCollection);
-		} catch (SensorException e) {
-			throw new RuntimeException(e);
+		Set<GpsSensor> gpsSensors = new HashSet<>();
+		for(Sensor sensor : sensors) {
+			if(sensor instanceof GpsSensor) {
+				gpsSensors.add((GpsSensor)sensor);
+			}
 		}
+		this.gateMessageStrategy.deleteSensors(gpsSensors);
 	}
 
 	/**
@@ -674,11 +693,13 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 				e);
 		}
 
-		try {
-			this.gateMessageStrategy.createSensors(sensorHelperCollection);
-		} catch (SensorException e) {
-			throw new RuntimeException(e);
+		Set<GpsSensor> gpsSensors = new HashSet<>();
+		for(Sensor sensor : sensors) {
+			if(sensor instanceof GpsSensor) {
+				gpsSensors.add((GpsSensor)sensor);
+			}
 		}
+		this.gateMessageStrategy.createSensors(gpsSensors);
 	}
 
 	@Override
@@ -704,6 +725,26 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 
 	@Override
 	public EventInitiator getEventInitiator() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Set<Sensor<?, ?>> getAllManagedSensors() {
+		return this.sensors;
+	}
+
+	@Override
+	public WeatherSensorController getWeatherSensorController() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public EnergySensorController getEnergySensorController() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public TrafficSensorController getTrafficSensorController() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

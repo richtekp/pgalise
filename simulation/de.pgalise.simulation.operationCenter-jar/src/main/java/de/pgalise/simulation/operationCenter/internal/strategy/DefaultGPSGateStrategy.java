@@ -42,6 +42,7 @@ import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  * Default implementation of a gate message strategy. It will transmit the
@@ -142,7 +143,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event, TrafficSta
 	}
 
 	@Override
-	public void createSensor(Sensor<?, ?> sensor) throws SensorException {
+	public void createSensor(GpsSensor sensor) {
 		if (sensor.getSensorType().equals(TrafficSensorTypeEnum.GPS)) {
 			log.debug("create gps sensor. ID: " + sensor.getId() + " type: " + sensor.
 				getSensorType());
@@ -172,8 +173,8 @@ public class DefaultGPSGateStrategy extends AbstractController<Event, TrafficSta
 	}
 
 	@Override
-	public void createSensors(Collection<Sensor<?, ?>> sensors)
-		throws SensorException {
+	public void createSensors(Set<GpsSensor> sensors)
+		 {
 		Set<Sensor> sensorIDSet = new HashSet<>();
 
 		/* Add sensors to map and find out, if we have to send them: */
@@ -211,7 +212,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event, TrafficSta
 	}
 
 	@Override
-	public void deleteSensor(Sensor sensor) throws SensorException {
+	public void deleteSensor(GpsSensor sensor) {
 		/*
 		 * Remove from all maps and find out, if we have to add a new sensor to InfoSphere:
 		 */
@@ -234,8 +235,8 @@ public class DefaultGPSGateStrategy extends AbstractController<Event, TrafficSta
 	}
 
 	@Override
-	public void deleteSensors(Collection<Sensor<?, ?>> sensors)
-		throws SensorException {
+	public void deleteSensors(Set<GpsSensor> sensors)
+		{
 		/*
 		 * Remove from all maps and find out, if we have to add new sensors to InfoSphere:
 		 */
@@ -273,7 +274,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event, TrafficSta
 	}
 
 	@Override
-	public boolean isActivated(Sensor sensor) throws SensorException {
+	public boolean isActivated(GpsSensor sensor) {
 		return false;
 	}
 
@@ -444,5 +445,10 @@ public class DefaultGPSGateStrategy extends AbstractController<Event, TrafficSta
 	@Override
 	public String getName() {
 		return DefaultGPSGateStrategy.class.getName();
+	}
+
+	@Override
+	public Set<GpsSensor> getAllManagedSensors() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

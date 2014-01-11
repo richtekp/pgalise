@@ -6,10 +6,11 @@
 
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
-import de.pgalise.simulation.sensorFramework.SensorRegistry;
+import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
+import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.WeatherStation;
 import java.util.List;
 import java.util.Set;
@@ -26,10 +27,10 @@ import javax.faces.bean.RequestScoped;
 public class WeatherStationDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
 	private static final long serialVersionUID = 1L;
 	@EJB
-	private SensorRegistry sensorRegistry;
-	@EJB
 	private WeatherInterferer weatherInterferer;
 	private List<WeatherSensor> selectedWeatherSensors;
+	@EJB
+	private SimulationController simulationController;
 
 	/**
 	 * Creates a new instance of WeatherStationDialogCtrl
@@ -47,7 +48,7 @@ public class WeatherStationDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl 
 	}
 	
 	public Set<WeatherSensor> retrieveWeatherSensors() {
-		return sensorRegistry.getAllSensors(WeatherSensor.class);
+		return simulationController.getWeatherSensorController().getAllManagedSensors();
 	}
 	
 	public void saveSensor() throws SensorException {

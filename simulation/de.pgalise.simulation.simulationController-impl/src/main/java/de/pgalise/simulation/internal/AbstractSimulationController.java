@@ -27,10 +27,12 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
+import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -38,6 +40,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
@@ -65,8 +68,6 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	 */
 	@EJB
 	private EventInitiator eventInitiator;
-	@PersistenceContext(unitName = "pgalise-simulationcontroller")
-	private EntityManager sensorPersistenceService;
 	@EJB
 	private ConfigReader configReader;
 	/**
@@ -87,6 +88,8 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	private TrafficSensorController<TrafficEvent<?>> trafficSensorController;
 	@EJB
 	private EnergySensorController energySensorController;
+	@EJB 
+	private WeatherSensorController weatherSensorController;
 	@EJB
 	private TrafficServer<TrafficEvent<?>> trafficServer;
 	/**
@@ -111,18 +114,18 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	/**
 	 * handles delegation of sensors to controllers which are managed by {@link SensorManagerController}s, others sensors are ignored
 	 * @param sensor
-	 * @throws SensorException 
+	 * @
 	 */
 	@Override
-	public void createSensor(Sensor<?, ?> sensor) throws SensorException {
+	public void createSensor(Sensor<?, ?> sensor) {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"sensor"));
 		}
 		if(sensor instanceof EnergySensor) {
 			energySensorController.createSensor((EnergySensor)sensor);
-		}else if(sensor instanceof StaticSensor) {
-			trafficServer.createSensor((StaticSensor)sensor);
+		}else if(sensor instanceof TrafficSensor) {
+			trafficServer.createSensor((TrafficSensor)sensor);
 		}else if(sensor instanceof GpsSensor) {
 			trafficSensorController.createSensor((GpsSensor)sensor);
 		}else {
@@ -133,15 +136,15 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	}
 
 	@Override
-	public void deleteSensor(Sensor sensor) throws SensorException {
+	public void deleteSensor(Sensor sensor) {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"sensor"));
 		}
 		if(sensor instanceof EnergySensor) {
 			energySensorController.deleteSensor((EnergySensor)sensor);
-		}else if(sensor instanceof StaticSensor) {
-			trafficServer.deleteSensor((StaticSensor)sensor);
+		}else if(sensor instanceof TrafficSensor) {
+			trafficServer.deleteSensor((TrafficSensor)sensor);
 		}else if(sensor instanceof GpsSensor) {
 			trafficSensorController.deleteSensor((GpsSensor)sensor);
 		}else {
@@ -159,15 +162,15 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	 * @throws SensorException
 	 */
 	@Override
-	public boolean isActivated(Sensor<?,?> sensor) throws SensorException {
+	public boolean isActivated(Sensor<?,?> sensor) {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"sensor"));
 		}
 		if(sensor instanceof EnergySensor) {
 			return energySensorController.isActivated((EnergySensor)sensor);
-		}else if(sensor instanceof StaticSensor) {
-			return trafficServer.isActivated((StaticSensor)sensor);
+		}else if(sensor instanceof TrafficSensor) {
+			return trafficServer.isActivated((TrafficSensor)sensor);
 		}else if(sensor instanceof GpsSensor) {
 			return trafficSensorController.isActivated((GpsSensor)sensor);
 		}else {
@@ -179,12 +182,10 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	
 	@Override
 	protected void onInit(final TrafficInitParameter param) throws InitializationException {
-		// Delete all Sensors from database
-		this.sensorPersistenceService.clear();
-		
 		weatherController.init(param);
 		energyController.init(param);
 		trafficController.init(param);
+		weatherSensorController.init(param);
 
 		// init the event initiator
 		this.eventInitiator.setFrontController(frontControllerList);
@@ -201,6 +202,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		trafficServer.reset();
 		energyController.reset();
 		energySensorController.reset();
+		weatherSensorController.reset();
 
 		// reset the event initiator
 		this.eventInitiator.reset();
@@ -215,6 +217,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		trafficServer.start(param);
 		energyController.start(param);
 		energySensorController.start(param);
+		weatherSensorController.start(param);
 
 		// start the event initiator
 		this.eventInitiator.start(param);
@@ -233,6 +236,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		trafficServer.stop();
 		energyController.stop();
 		energySensorController.stop();
+		weatherSensorController.stop();
 	}
 
 	@Override
@@ -244,6 +248,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		trafficServer.start(startParameter);
 		energyController.start(startParameter);
 		energySensorController.start(startParameter);
+		weatherSensorController.start(startParameter);
 		
 		// start the event initiator
 		this.eventInitiator.start(this.startParameter);
@@ -278,14 +283,14 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	}
 
 	@Override
-	public void createSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
+	public void createSensors(Set<Sensor<?, ?>> sensors) {
 		for (Sensor<?, ?> sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
+	public void deleteSensors(Set<Sensor<?, ?>> sensors) {
 		for (Sensor<?, ?> sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
@@ -300,18 +305,28 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		this.eventInitiator = eventInitiator;
 	}
 
-	/**
-	 * Only for J-Unit tests.
-	 *
-	 * @param sensorPersistenceService
-	 */
-	protected void setSensorPersistenceService(
-		EntityManager sensorPersistenceService) {
-		this.sensorPersistenceService = sensorPersistenceService;
-	}
-
 	@Override
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public Set<Sensor<?, ?>> getAllManagedSensors() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public EnergySensorController getEnergySensorController() {
+		return energySensorController;
+	}
+
+	@Override
+	public WeatherSensorController getWeatherSensorController() {
+		return weatherSensorController;
+	}
+
+	@Override
+	public TrafficSensorController getTrafficSensorController() {
+		return trafficSensorController;
 	}
 }

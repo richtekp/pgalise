@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.internal;
 
+import de.pgalise.simulation.sensorFramework.Sensor;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -23,7 +24,6 @@ import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -31,6 +31,7 @@ import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.staticsensor.SensorFactory;
+import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -53,8 +54,7 @@ public class DefaultFrontController extends AbstractController implements
 	private static final String NAME = "FrontController";
 	private static final long serialVersionUID = 1L;
 
-	@EJB
-	private SensorRegistry sensorRegistry;
+	private Set<Sensor> sensorRegistry;
 	@PersistenceContext(unitName = "pgalise-simulationcontroller")
 	private EntityManager sensorPersistenceService;
 
@@ -63,15 +63,11 @@ public class DefaultFrontController extends AbstractController implements
 
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {
-		log.info("Initializing local ServiceDictionary");
-
-		/* Init sensor registry: */
-		this.sensorRegistry.init();
 	}
 
 	@Override
 	protected void onReset() {
-		sensorRegistry.removeAllSensors();
+		sensorRegistry.clear();
 	}
 
 	@Override
@@ -80,17 +76,23 @@ public class DefaultFrontController extends AbstractController implements
 
 	@Override
 	protected void onStop() {
-		sensorRegistry.setSensorsActivated(false);
+		for(Sensor<?,?> sensor : sensorRegistry) {
+			sensor.setActivated(false);
+		}
 	}
 
 	@Override
 	protected void onUpdate(EventList simulationEventList) {
-		sensorRegistry.update(simulationEventList);
+		for(Sensor<?,?> sensor : sensorRegistry) {
+			sensor.update(simulationEventList);
+		}
 	}
 
 	@Override
 	protected void onResume() {
-		sensorRegistry.setSensorsActivated(true);
+		for(Sensor<?,?> sensor : sensorRegistry) {
+			sensor.setActivated(true);
+		}
 	}
 
 	@Override

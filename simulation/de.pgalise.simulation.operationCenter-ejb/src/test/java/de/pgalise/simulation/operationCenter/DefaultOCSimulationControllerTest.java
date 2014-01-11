@@ -46,6 +46,7 @@ import de.pgalise.testutils.traffic.TrafficTestUtils;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -174,7 +175,7 @@ public class DefaultOCSimulationControllerTest {
 	/**
 	 * List of sensor helper
 	 */
-	private List<Sensor<?, ?>> SENSOR_HELPER_LIST = new LinkedList<>();
+	private Set<Sensor<?, ?>> SENSOR_HELPER_LIST = new HashSet<>();
 	@EJB
 	private IdGenerator idGenerator;
 
@@ -185,7 +186,7 @@ public class DefaultOCSimulationControllerTest {
 	public void setUpClass() throws NamingException, MalformedURLException {
 		TestUtils.getContainer().getContext().bind("inject",
 			this);
-		SENSOR_HELPER_LIST = new LinkedList<>();
+		SENSOR_HELPER_LIST = new HashSet<>();
 		Output output = EasyMock.createNiceMock(Output.class);
 		GpsInterferer gpsInterferer = EasyMock.createNiceMock(GpsInterferer.class);
 		GpsSensor sensor = new GpsSensor(idGenerator.getNextId(),

@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.event.DefaultEventInitiator;
 import de.pgalise.simulation.service.Controller;
@@ -44,15 +45,19 @@ import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.staticsensor.StaticSensor;
+import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
+import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.TestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -197,23 +202,23 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensor(StaticSensor sensor) throws SensorException {
+		public void createSensor(TrafficSensor sensor) {
 		}
 
 		@Override
-		public void createSensors(Collection<StaticSensor> sensors) throws SensorException {
+		public void createSensors(Set<TrafficSensor> sensors) {
 		}
 
 		@Override
-		public void deleteSensor(StaticSensor sensor) throws SensorException {
+		public void deleteSensor(TrafficSensor sensor) {
 		}
 
 		@Override
-		public void deleteSensors(Collection<StaticSensor> sensors) throws SensorException {
+		public void deleteSensors(Set<TrafficSensor> sensors) {
 		}
 
 		@Override
-		public boolean isActivated(StaticSensor sensor) throws SensorException {
+		public boolean isActivated(TrafficSensor sensor) {
 			return false;
 		}
 
@@ -254,6 +259,11 @@ public class DefaultEventInitiatorTest {
 
 		@Override
 		public Long getId() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public Set<TrafficSensor> getAllManagedSensors() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}
@@ -391,23 +401,23 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void createSensor(Sensor sensor) throws SensorException {
+		public void createSensor(Sensor sensor) {
 		}
 
 		@Override
-		public void createSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
+		public void createSensors(Set<Sensor<?, ?>> sensors) {
 		}
 
 		@Override
-		public void deleteSensor(Sensor sensor) throws SensorException {
+		public void deleteSensor(Sensor sensor) {
 		}
 
 		@Override
-		public void deleteSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
+		public void deleteSensors(Set<Sensor<?, ?>> sensors) {
 		}
 
 		@Override
-		public boolean isActivated(Sensor sensor) throws SensorException {
+		public boolean isActivated(Sensor sensor) {
 			return false;
 		}
 
@@ -463,6 +473,26 @@ public class DefaultEventInitiatorTest {
 
 		@Override
 		public long getElapsedTime() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public Set<Sensor<?, ?>> getAllManagedSensors() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public WeatherSensorController getWeatherSensorController() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public EnergySensorController getEnergySensorController() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public TrafficSensorController getTrafficSensorController() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}

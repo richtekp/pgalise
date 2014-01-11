@@ -22,7 +22,7 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.exception.SensorException;
-import javax.ejb.Singleton;
+import javax.ejb.Stateful;
 
 /**
  * The default implementation of the simulation controller inits, starts, stops
@@ -38,7 +38,7 @@ import javax.ejb.Singleton;
  * @author Kamil
  * @author Timo
  */
-@Singleton
+@Stateful
 public class DefaultSimulationController extends AbstractSimulationController
 	implements SimulationControllerLocal {
 

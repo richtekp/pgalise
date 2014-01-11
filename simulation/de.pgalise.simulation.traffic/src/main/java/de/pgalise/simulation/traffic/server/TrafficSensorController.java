@@ -25,6 +25,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
@@ -38,7 +39,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  */
 public interface TrafficSensorController<
 	F extends TrafficEvent> extends
-	SensorManagerController<F, TrafficStartParameter, TrafficInitParameter, GpsSensor> {
+	SensorManagerController<F, TrafficStartParameter, TrafficInitParameter, TrafficSensor> {
 
 	public void onSchedule(Vehicle<?> v);
 

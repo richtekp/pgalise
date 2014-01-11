@@ -38,7 +38,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  * @author Andreas
  * @version 1.0
  */
-public class InfraredSensor extends AbstractSensor<TrafficEvent, InfraredSensorData> {
+public class InfraredSensor extends AbstractSensor<TrafficEvent<?>, InfraredSensorData> implements TrafficSensor<InfraredSensorData> {
 
 	/**
 	 * Logger
@@ -125,7 +125,7 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent, InfraredSensorD
 	 * @param eventList
 	 */
 	@Override
-	public void transmitUsageData(EventList<TrafficEvent> eventList) {
+	public void transmitUsageData(EventList<TrafficEvent<?>> eventList) {
 
 		// Get random passengers
 		int passengers = this.vehicle.getData().getCurrentPassengerCount();

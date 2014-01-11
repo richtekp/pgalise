@@ -39,6 +39,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
@@ -46,6 +47,9 @@ import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -363,14 +367,14 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	public void createSensor(StaticSensor sensor) throws SensorException {
+	public void createSensor(TrafficSensor sensor)  {
 		for (TrafficServer<?> server : serverList) {
 			server.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensor(StaticSensor sensor) throws SensorException {
+	public void deleteSensor(TrafficSensor sensor) {
 		for (TrafficServer<?> server : serverList) {
 			server.deleteSensor(sensor);
 		}
@@ -378,15 +382,30 @@ public class DefaultTrafficController<
 
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
+	/**
+	 * {@link InfraredSensor}s are always actived in this implementation
+	 * @param sensor
+	 * @return
+	 * @throws SensorException 
+	 */
 	@Override
-	public boolean isActivated(StaticSensor sensor) throws SensorException {
+	public boolean isActivated(TrafficSensor sensor) {
 		for (int i = 0; i < cityZones.size(); i++) {
-			JaxRSCoordinate pos = sensor.getPosition();
+			JaxRSCoordinate pos;
+			if(sensor instanceof StaticSensor) {
+				pos = ((StaticSensor)sensor).getPosition();
+			}else if(sensor instanceof GpsSensor) {
+				pos = ((GpsSensor)sensor).getSensorData().getPosition();
+			}else if(sensor instanceof InfraredSensor) {
+				return true;
+			}else {
+				throw new IllegalArgumentException();
+			}
 			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos))) {
 				return serverList.get(i).isActivated(sensor);
 			}
 		}
-		throw new SensorException("Could not find sensor.");
+		throw new IllegalArgumentException("sensor is not in any city zone of any server");
 	}
 
 //	/**
@@ -430,15 +449,15 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	public void createSensors(Collection<StaticSensor> sensors) throws SensorException {
-		for (StaticSensor sensor : sensors) {
+	public void createSensors(Set<TrafficSensor> sensors) {
+		for (TrafficSensor sensor : sensors) {
 			this.createSensor(sensor);
 		}
 	}
 
 	@Override
-	public void deleteSensors(Collection<StaticSensor> sensors) throws SensorException {
-		for (StaticSensor sensor : sensors) {
+	public void deleteSensors(Set<TrafficSensor> sensors) {
+		for (TrafficSensor sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
 	}
@@ -446,5 +465,18 @@ public class DefaultTrafficController<
 	@Override
 	public String getName() {
 		return NAME;
+	}
+
+	@Override
+	public Set<TrafficSensor> getAllManagedSensors() {
+		Set<TrafficSensor> retValue = new HashSet<>();
+		for(TrafficServer<?> trafficServer : serverList) {
+			for(TrafficSensor sensor : trafficServer.getAllManagedSensors()) {
+				if(!retValue.contains(sensor)) {
+					retValue.add(sensor);
+				}
+			}
+		}
+		return retValue;
 	}
 }

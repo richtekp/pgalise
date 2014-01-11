@@ -67,7 +67,7 @@ public class TrafficLightSensor<D extends VehicleData> extends AbstractStaticTra
 	}
 
 	@Override
-	public void transmitUsageData(EventList<TrafficEvent> eventList) {
+	public void transmitUsageData(EventList<TrafficEvent<?>> eventList) {
 		// // Send data
 		this.getOutput().transmitDouble(this.trafficLight.getAngle1());
 		this.getOutput().transmitDouble(this.trafficLight.getAngle2());

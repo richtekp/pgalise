@@ -15,13 +15,17 @@
  */
 package de.pgalise.simulation;
 
+import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.server.TrafficSensorController;
+import de.pgalise.simulation.traffic.server.TrafficServer;
 
 /**
  * The simulation controller inits, starts, stops, resets and updates the whole
@@ -59,4 +63,10 @@ public interface SimulationController extends
 	 * @return
 	 */
 	public EventInitiator getEventInitiator();
+	
+	public WeatherSensorController getWeatherSensorController();
+	
+	public EnergySensorController getEnergySensorController();
+	
+	public TrafficSensorController getTrafficSensorController();
 }

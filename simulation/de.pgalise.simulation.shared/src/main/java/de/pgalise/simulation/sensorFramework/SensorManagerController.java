@@ -23,6 +23,7 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.persistence.Identifiable;
 import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -39,28 +40,28 @@ public interface SensorManagerController<E extends Event, S extends StartParamet
 	 * @param sensor
 	 * @throws SensorException
 	 */
-	public void createSensor(Y sensor) throws SensorException;
+	public void createSensor(Y sensor) ;
 	
 	/**
 	 * Creates a collection of new sensors.
 	 * @param sensors
 	 * @throws SensorException
 	 */
-	public void createSensors(Collection<Y> sensors) throws SensorException;
+	public void createSensors(Set<Y> sensors);
 	
 	/**
 	 * Deletes a sensor.
 	 * @param sensor
 	 * @throws SensorException
 	 */
-	public void deleteSensor(Y sensor) throws SensorException;
+	public void deleteSensor(Y sensor);
 	
 	/**
 	 * Removes a collection of sensors.
 	 * @param sensors
 	 * @throws SensorException
 	 */
-	public void deleteSensors(Collection<Y> sensors) throws SensorException;
+	public void deleteSensors(Set<Y> sensors) ;
 	
 	/**
 	 * Is the sensor activated or not
@@ -68,5 +69,7 @@ public interface SensorManagerController<E extends Event, S extends StartParamet
 	 * @return
 	 * @throws SensorException
 	 */
-	public boolean isActivated(Y sensor) throws SensorException;
+	public boolean isActivated(Y sensor) ;
+	
+	public Set<Y> getAllManagedSensors();
 }

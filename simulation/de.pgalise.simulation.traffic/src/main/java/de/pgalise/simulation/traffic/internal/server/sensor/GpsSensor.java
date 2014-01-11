@@ -39,7 +39,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  * @author Mischa
  * @version 1.1
  */
-public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> {
+public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData> implements TrafficSensor<GPSSensorData> {
 
 	/**
 	 * Search signal time for GPS connection

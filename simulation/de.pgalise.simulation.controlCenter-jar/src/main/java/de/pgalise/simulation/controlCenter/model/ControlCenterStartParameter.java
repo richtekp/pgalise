@@ -120,7 +120,7 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 	 * Sensorhelper list.
 	 */
 	@XmlTransient
-	private List<Sensor<?, ?>> sensors;
+	private Set<Sensor<?, ?>> sensors;
 
 	/**
 	 * list of simulation event lists
@@ -207,7 +207,7 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		String ipEnergyController,
 		int trafficServerCount,
 		TrafficCity city,
-		List<Sensor<?, ?>> sensorHelperList,
+		Set<Sensor<?, ?>> sensorHelperList,
 		List<EventList<?>> simulationEventLists,
 		List<WeatherEvent> weatherEventList,
 		//					MapAndBusstopFileData osmAndBusstopFileDatas,
@@ -301,11 +301,11 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 	}
 
 	@XmlTransient
-	public List<Sensor<?, ?>> getSensors() {
+	public Set<Sensor<?, ?>> getSensors() {
 		return sensors;
 	}
 
-	public void setSensors(List<Sensor<?, ?>> sensors) {
+	public void setSensors(Set<Sensor<?, ?>> sensors) {
 		this.sensors = sensors;
 	}
 

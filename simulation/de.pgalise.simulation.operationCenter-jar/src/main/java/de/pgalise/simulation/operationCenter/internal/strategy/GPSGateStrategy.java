@@ -25,6 +25,7 @@ import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 
 /**
  * Interface to handle gate messages.
@@ -33,7 +34,7 @@ import de.pgalise.simulation.traffic.TrafficStartParameter;
  */
 public interface GPSGateStrategy extends
 	Controller<Event, TrafficStartParameter, TrafficInitParameter>,
-	SensorManagerController<Event, TrafficStartParameter, TrafficInitParameter, Sensor<?, ?>> {
+	SensorManagerController<Event, TrafficStartParameter, TrafficInitParameter, GpsSensor> {
 
 	/**
 	 * Handles a gate message.

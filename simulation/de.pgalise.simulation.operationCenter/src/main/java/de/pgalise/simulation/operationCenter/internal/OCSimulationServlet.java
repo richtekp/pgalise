@@ -38,6 +38,8 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import java.util.Set;
 
 /**
  * The oc simulation servlet receives simulation updates directly from the
@@ -127,7 +129,7 @@ public class OCSimulationServlet extends HttpServlet {
 			} else if (req.getParameter("createsensors") != null && req.getParameter(
 				"createsensor").equalsIgnoreCase("true")) {
 				log.debug("create sensors");
-				Collection<Sensor<?, ?>> sensors = gson.fromJson(req.
+				Set<Sensor<?,?>> sensors = gson.fromJson(req.
 					getParameter("json"),
 					sensorCollectionTypeToken.getType());
 				ocSimulationController.createSensors(sensors);
@@ -136,7 +138,7 @@ public class OCSimulationServlet extends HttpServlet {
 			} else if (req.getParameter("deletesensors") != null && req.getParameter(
 				"createsensor").equalsIgnoreCase("true")) {
 				log.debug("delete sensors");
-				Collection<Sensor<?, ?>> sensors = gson.fromJson(req.
+				Set<Sensor<?,?>> sensors = gson.fromJson(req.
 					getParameter("json"),
 					sensorCollectionTypeToken.getType());
 				ocSimulationController.deleteSensors(sensors);
@@ -196,7 +198,7 @@ public class OCSimulationServlet extends HttpServlet {
 				log.error(exceptionMessage);
 			}
 
-		} catch (JsonSyntaxException | SensorException | IllegalStateException e) {
+		} catch (JsonSyntaxException | IllegalStateException e) {
 			log.error("Exception",
 				e);
 		}

@@ -34,7 +34,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -99,7 +101,7 @@ public class NewServlet extends HttpServlet {
 			city.getReferencePoint(),
 			weatherController,
 			weatherInterferer);
-		List<Sensor<?, ?>> sensorHelpers = new ArrayList<Sensor<?, ?>>(
+		Set<Sensor<?, ?>> sensorHelpers = new HashSet<Sensor<?, ?>>(
 			Arrays.asList(windSensor));
 		ChangeWeatherEvent weatherEvent = new ChangeWeatherEvent(10L,
 			WeatherEventTypeEnum.HOTDAY,

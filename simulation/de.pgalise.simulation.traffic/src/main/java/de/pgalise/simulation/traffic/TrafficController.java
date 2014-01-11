@@ -17,6 +17,7 @@ package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.staticsensor.StaticSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
@@ -36,6 +37,6 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  */
 public interface TrafficController<
 	F extends TrafficEvent> extends
-	SensorManagerController<F, TrafficStartParameter, TrafficInitParameter, StaticSensor> {
+	SensorManagerController<F, TrafficStartParameter, TrafficInitParameter, TrafficSensor> {
 
 }

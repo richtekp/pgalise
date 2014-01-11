@@ -19,6 +19,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -26,7 +27,7 @@ import java.util.List;
  * 
  * @author Timo
  */
-public class DeleteSensorsMessage extends AbstractIdentifiableControlCenterMessage<Collection<Sensor<?,?>>> {
+public class DeleteSensorsMessage extends AbstractIdentifiableControlCenterMessage<Set<Sensor<?,?>>> {
 	/**
 	 * Constructor
 	 * 
@@ -35,7 +36,7 @@ public class DeleteSensorsMessage extends AbstractIdentifiableControlCenterMessa
 	 * @param content
 	 *            List with SensorHelper which shall be deleted
 	 */
-	public DeleteSensorsMessage(Long messageID, List<Sensor<?,?>> content) {
+	public DeleteSensorsMessage(Long messageID, Set<Sensor<?,?>> content) {
 		super(messageID, MessageTypeEnum.DELETE_SENSORS_MESSAGE, content);
 	}
 }

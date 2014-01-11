@@ -41,6 +41,7 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import java.util.LinkedList;
@@ -251,11 +252,11 @@ public class TrafficControllerTest {
 			TrafficStartParameter.class);
 
 		// create sensors
-		StaticSensor sensor = new InductionLoopSensor(idGenerator.getNextId(),
+		TrafficSensor sensor = new InductionLoopSensor(idGenerator.getNextId(),
 			null,
 			null,
 			null);
-		StaticSensor sensor2 = new InductionLoopSensor(idGenerator.getNextId(),
+		TrafficSensor sensor2 = new InductionLoopSensor(idGenerator.getNextId(),
 			null,
 			null,
 			null);

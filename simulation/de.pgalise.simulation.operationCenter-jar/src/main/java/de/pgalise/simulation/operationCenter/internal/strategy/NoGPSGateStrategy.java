@@ -28,6 +28,10 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Ignores the gate messages. Only for testing or if you can not use InfoSphere
@@ -67,25 +71,25 @@ public class NoGPSGateStrategy extends AbstractIdentifiable implements
 	}
 
 	@Override
-	public void createSensor(Sensor<?, ?> sensor) throws SensorException {
+	public void createSensor(GpsSensor sensor) {
 	}
 
 	@Override
-	public void createSensors(Collection<Sensor<?, ?>> sensors)
-		throws SensorException {
+	public void createSensors(Set<GpsSensor> sensors)
+		 {
 	}
 
 	@Override
-	public void deleteSensor(Sensor<?, ?> sensor) throws SensorException {
+	public void deleteSensor(GpsSensor sensor) {
 	}
 
 	@Override
-	public void deleteSensors(Collection<Sensor<?, ?>> sensors)
-		throws SensorException {
+	public void deleteSensors(Set<GpsSensor> sensors)
+		 {
 	}
 
 	@Override
-	public boolean isActivated(Sensor<?, ?> sensor) throws SensorException {
+	public boolean isActivated(GpsSensor sensor) {
 		return false;
 	}
 
@@ -97,5 +101,14 @@ public class NoGPSGateStrategy extends AbstractIdentifiable implements
 	@Override
 	public String getName() {
 		return NoGPSGateStrategy.class.getName();
+	}
+
+	/**
+	 * 
+	 * @return an unmodifiable {@link Set}
+	 */
+	@Override
+	public Set<GpsSensor> getAllManagedSensors() {
+		return Collections.unmodifiableSet(new HashSet(0));
 	}
 }

@@ -48,7 +48,6 @@ import com.Ostermiller.util.CSVParser;
 
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.FileOutputServer;
-import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.sensorFramework.Server;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -64,7 +63,6 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
@@ -83,6 +81,7 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleIt
 import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
@@ -185,7 +184,7 @@ public class DefaultTrafficServerTest {
 	/**
 	 * Implementation of SensorRegistry.
 	 */
-	private static SensorRegistry SENSOR_REGISTRY;
+	private static Set<TrafficSensor<?>> SENSOR_REGISTRY;
 	@EJB
 	private IdGenerator idGenerator;
 	@EJB
@@ -209,7 +208,7 @@ public class DefaultTrafficServerTest {
 		EnergyController ec = createNiceMock(EnergyController.class);
 
 		EntityManager entityManager = EasyMock.createMock(EntityManager.class);
-		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
+		SENSOR_REGISTRY = new HashSet();
 
 		server = new FileOutputServer(new File(CSV_OUTPUT),
 			null,
@@ -256,7 +255,7 @@ public class DefaultTrafficServerTest {
 		if (file.exists()) {
 			file.delete();
 		}
-		SENSOR_REGISTRY.removeAllSensors();
+		SENSOR_REGISTRY.clear();
 	}
 
 	/*
@@ -568,7 +567,9 @@ public class DefaultTrafficServerTest {
 			1392697560000L);
 
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		log.debug(
 			"##############################################################################");
@@ -577,7 +578,9 @@ public class DefaultTrafficServerTest {
 			null,
 			1392697560000L + 1000);
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		log.debug(
 			"##############################################################################");
@@ -586,7 +589,9 @@ public class DefaultTrafficServerTest {
 			null,
 			1392697560000L + 2000);
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		log.debug(
 			"##############################################################################");
@@ -595,7 +600,9 @@ public class DefaultTrafficServerTest {
 			null,
 			1392697560000L + 3000);
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 	}
 
 	@Test
@@ -696,7 +703,9 @@ public class DefaultTrafficServerTest {
 				(server0.getScheduler().getScheduledItems().size()));
 		}
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		log.debug(
 			"##############################################################################");
@@ -714,7 +723,9 @@ public class DefaultTrafficServerTest {
 			null,
 			SIMULATION_START.getTime() + 1000);
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		log.debug(
 			"##############################################################################");
@@ -723,7 +734,9 @@ public class DefaultTrafficServerTest {
 			null,
 			SIMULATION_START.getTime() + 2000);
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		log.debug(
 			"##############################################################################");
@@ -732,7 +745,9 @@ public class DefaultTrafficServerTest {
 			null,
 			SIMULATION_START.getTime() + 3000);
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		// es sollte eine csv datei beschrieben worden sein
 		// auto ist 2x gefahren, also müssten 2 zeilen existieren
@@ -790,7 +805,9 @@ public class DefaultTrafficServerTest {
 			SIMULATION_START.getTime());
 
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		for (int i = 1000; i <= 10000; i += 1000) {
 			log.debug(
@@ -835,7 +852,9 @@ public class DefaultTrafficServerTest {
 			}
 
 			server0.update(eventList);
-			SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 			if (i == 4000) {
 				assertEquals(2,
@@ -879,7 +898,9 @@ public class DefaultTrafficServerTest {
 			SIMULATION_START.getTime());
 
 		server0.update(eventList);
-		SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 		for (int i = 1000; i <= 100000; i += 1000) {
 			log.debug(
@@ -923,7 +944,9 @@ public class DefaultTrafficServerTest {
 			}
 
 			server0.update(eventList);
-			SENSOR_REGISTRY.update(eventList);
+		for(Sensor sensor : SENSOR_REGISTRY) {
+			sensor.update(eventList);
+		}
 
 			// KARR hin (KARR zurück fährt noch nicht) + KITT
 			if (i == 4000) {
@@ -953,7 +976,7 @@ public class DefaultTrafficServerTest {
 		// sd.getController(WeatherController.class), mapper);
 
 		EntityManager entityManager = EasyMock.createMock(EntityManager.class);
-		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
+		SENSOR_REGISTRY = new HashSet<>();
 
 		JaxRSCoordinate referencePoint = new JaxRSCoordinate(52.516667,
 			13.4);
@@ -962,7 +985,6 @@ public class DefaultTrafficServerTest {
 				TrafficEventHandlerManager.class);
 		TrafficServerLocal<VehicleEvent> server0 = new DefaultTrafficServer(
 			referencePoint,
-			SENSOR_REGISTRY,
 			eventHandlerManager,
 			serverList,
 			sensorFactory,
