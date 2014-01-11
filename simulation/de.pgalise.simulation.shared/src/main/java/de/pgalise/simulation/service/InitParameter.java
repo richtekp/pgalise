@@ -16,7 +16,6 @@
 package de.pgalise.simulation.service;
 
 import com.vividsolutions.jts.geom.Envelope;
-import de.pgalise.simulation.service.ServerConfiguration;
 import java.io.Serializable;
 
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
@@ -42,11 +41,6 @@ public class InitParameter implements Serializable {
 	 * Serial
 	 */
 	private static final long serialVersionUID = -39986353888978216L;
-
-	/**
-	 * Information about the server configuration
-	 */
-	private ServerConfiguration serverConfiguration;
 
 	/**
 	 * Timestamp of the simulation start
@@ -115,8 +109,6 @@ public class InitParameter implements Serializable {
 	/**
 	 * Constructor
 	 *
-	 * @param cityInfrastructureData Information about the city infrastructure
-	 * @param serverConfiguration Information about the server configuration
 	 * @param startTimestamp Timestamp of the simulation start
 	 * @param endTimestamp Timestamp of the simulation end
 	 * @param interval Simulation interval
@@ -126,7 +118,7 @@ public class InitParameter implements Serializable {
 	 * @param trafficFuzzyData Traffic fuzzy data
 	 * @param cityBoundary City boundary
 	 */
-	public InitParameter(ServerConfiguration serverConfiguration,
+	public InitParameter(
 		long startTimestamp,
 		long endTimestamp,
 		long interval,
@@ -136,7 +128,6 @@ public class InitParameter implements Serializable {
 		TrafficFuzzyData trafficFuzzyData,
 		Envelope cityBoundary) {
 		super();
-		this.serverConfiguration = serverConfiguration;
 		this.startTimestamp = new Date(startTimestamp);
 		this.endTimestamp = new Date(endTimestamp);
 		if (this.startTimestamp.after(this.endTimestamp)) {
@@ -170,10 +161,6 @@ public class InitParameter implements Serializable {
 		return this.operationCenterURL;
 	}
 
-	public ServerConfiguration getServerConfiguration() {
-		return this.serverConfiguration;
-	}
-
 	public Date getStartTimestamp() {
 		return this.startTimestamp;
 	}
@@ -192,10 +179,6 @@ public class InitParameter implements Serializable {
 
 	public void setOperationCenterURL(URL operationCenterURL) {
 		this.operationCenterURL = operationCenterURL;
-	}
-
-	public void setServerConfiguration(ServerConfiguration serverConfiguration) {
-		this.serverConfiguration = serverConfiguration;
 	}
 
 	public void setStartTimestamp(Date startTimestamp) {

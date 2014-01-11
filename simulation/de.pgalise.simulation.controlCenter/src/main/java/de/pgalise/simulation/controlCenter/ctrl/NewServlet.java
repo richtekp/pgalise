@@ -84,8 +84,6 @@ public class NewServlet extends HttpServlet {
 		long clockGeneratorInterval = 100;
 		String ipSimulationController = "127.0.0.1", ipTrafficController = "127.0.0.1", ipWeatherController = "127.0.0.1",
 			ipStaticSensorController = "127.0.0.1", ipEnergyController = "127.0.0.1";
-		List<String> trafficServerIPList = new ArrayList<>(Arrays.
-			asList("127.0.0.1"));
 //		Position berlinPosition = new Position(GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(new Coordinates))
 //		City city = new TrafficCity(graph, "Berlin", 3400000, 100, true,
 //						true, new po);
@@ -148,7 +146,7 @@ public class NewServlet extends HttpServlet {
 			ipWeatherController,
 			ipStaticSensorController,
 			ipEnergyController,
-			trafficServerIPList,
+			2,
 			city,
 			sensorHelpers,
 			simulationEventLists,

@@ -18,12 +18,8 @@ package de.pgalise.simulation.traffic.event;
 
 import java.util.Map;
 
-import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -54,11 +50,6 @@ public abstract class AbstractVehicleEvent<D extends VehicleData> extends Abstra
 	@Override
 	public Vehicle<D> getVehicle() {
 		return vehicle;
-	}
-
-	@Override
-	public ServiceDictionary getServiceDictionary() {
-		return getResponsibleServer().getServiceDictionary();
 	}
 
 	/**

@@ -68,5 +68,5 @@ public interface SensorManagerController<E extends Event, S extends StartParamet
 	 * @return
 	 * @throws SensorException
 	 */
-	public boolean statusOfSensor(Y sensor) throws SensorException;
+	public boolean isActivated(Y sensor) throws SensorException;
 }

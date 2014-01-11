@@ -47,12 +47,11 @@ import de.pgalise.simulation.controlCenter.model.AttractionData;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.ErrorMessageData;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
-import de.pgalise.simulation.energy.EnergyControllerServiceDictionary;
+import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.ServerConfigurationEntity;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
@@ -61,13 +60,13 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.energy.StaticSensorServiceDictionary;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.staticsensor.StaticSensorController;
+import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
@@ -76,7 +75,7 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.weather.WeatherServiceDictionary;
+import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.util.GTFS.service.BusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;
@@ -100,6 +99,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import javax.ejb.EJB;
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.websocket.Endpoint;
@@ -188,9 +188,6 @@ public class DefaultControlCenterUser extends Endpoint implements
 	 * To serialize the messages.
 	 */
 	private Gson gson;
-
-	@EJB
-	private ServiceDictionary serviceDictionary;
 	/**
 	 * This service can query bus information.
 	 */
@@ -202,6 +199,18 @@ public class DefaultControlCenterUser extends Endpoint implements
 	private Session session;
 	@EJB
 	private IdGenerator idGenerator;
+	@EJB
+	private TrafficServerLocal trafficServer;
+	@EJB
+	private RandomSeedService randomSeedService;
+	@EJB
+	private TrafficController trafficController;
+	@EJB
+	private StaticSensorController staticSensorController;
+	@EJB
+	private WeatherController weatherController;
+	@EJB
+	private EnergyController energyController;
 
 	public DefaultControlCenterUser() {
 	}
@@ -213,10 +222,8 @@ public class DefaultControlCenterUser extends Endpoint implements
 	 * @param serviceDictionary to set and get the controllers.
 	 */
 	public DefaultControlCenterUser(
-		Gson gson,
-		ServiceDictionary serviceDictionary) {
+		Gson gson) {
 		this.gson = gson;
-		this.serviceDictionary = serviceDictionary;
 		this.properties = new Properties();
 		InputStream is = Thread.currentThread().getContextClassLoader().
 			getResourceAsStream("/properties.props");
@@ -250,7 +257,6 @@ public class DefaultControlCenterUser extends Endpoint implements
 			IdentifiableControlCenterMessage.class);
 
 		try {
-			ServerConfiguration configuration = new ServerConfiguration();
 			switch (ccWebSocketMessage.getMessageType()) {
 				case OSM_AND_BUSSTOP_FILE_MESSAGE:
 					synchronized (cityInfrastructureDataLock) {
@@ -318,14 +324,13 @@ public class DefaultControlCenterUser extends Endpoint implements
 
 				case SIMULATION_START_PARAMETER:
 					onStartParameterMessage(message,
-						ccWebSocketMessage,
-						configuration);
+						ccWebSocketMessage
+						);
 					break;
 
 				case SIMULATION_INIT_PARAMETER:
 					onInitParameterMessage(message,
-						ccWebSocketMessage,
-						configuration);
+						ccWebSocketMessage);
 					break;
 				case SIMULATION_STOP:
 					this.simulationController.stop();
@@ -342,8 +347,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 					RandomVehicleBundle rvb = this.gson.fromJson(message,
 						CreateRandomVehiclesMessage.class).getContent();
 					simulationEventList.add(randomDynamicSensorService.
-						createRandomDynamicSensors(rvb,
-							this.serviceDictionary.getRandomSeedService(),
+						createRandomDynamicSensors(rvb,randomSeedService,
 							this.simulationStartParameter.isWithSensorInterferes()));
 					this.simulationController.update(
 						new EventList(idGenerator.getNextId(),
@@ -369,7 +373,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 						simulationEventList.add(createAttractionEventService.
 							createAttractionTrafficEvent(
 								attractionData.getRandomVehicleBundle(),
-								this.serviceDictionary.getRandomSeedService(),
+								randomSeedService,
 								this.simulationStartParameter.
 								isWithSensorInterferes(),
 								attractionData.getNodeID(),
@@ -528,41 +532,8 @@ public class DefaultControlCenterUser extends Endpoint implements
 		return randomValue;
 	}
 
-	/**
-	 * Returns a random unused UUID.
-	 *
-	 * @param usedIDs
-	 * @param random
-	 * @return
-	 */
-	private UUID getUniqueRandomUUID(Set<UUID> usedIDs,
-		Random random) {
-		UUID id = new UUID(random.nextLong(),
-			random.nextLong());
-		while (usedIDs.contains(id)) {
-			id = UUID.randomUUID();
-		}
-		return id;
-	}
-
-	private TrafficStartParameter lookupStartParameter() {
-		try {
-			TrafficStartParameter retValue = (TrafficStartParameter) new InitialContext().
-				lookup(
-					"global:/de.pgalise.simulation/controlCenter/model/CCSimulationStartParameter");
-			return retValue;
-		} catch (NamingException ex) {
-			java.util.logging.Logger.getLogger(ControlCenterUser.class.getName()).
-				log(Level.SEVERE,
-					null,
-					ex);
-			throw new RuntimeException(ex);
-		}
-	}
-
 	private void onStartParameterMessage(String message,
-		IdentifiableControlCenterMessage<?> ccWebSocketMessage,
-		ServerConfiguration serverConfiguration) throws IOException, SensorException, InitializationException {
+		IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
 		log.debug("Start simulation");
 
 		ControlCenterStartParameter ccSimulationStartParameter = this.gson.
@@ -577,133 +548,25 @@ public class DefaultControlCenterUser extends Endpoint implements
 		log.debug("Create server configuration");
 
 		/* Add traffic servers: */
-		for (String address : ccSimulationStartParameter.getTrafficServerIPs()) {
-			List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.
-				get(address);
-			if (tmpEntityList == null) {
-				tmpEntityList = new LinkedList<>();
-				serverConfiguationMap.put(address,
-					tmpEntityList);
+		List<TrafficServerLocal> trafficServerList = new LinkedList<>();
+		Context context;
+		try {
+			context = new InitialContext();
+		} catch (NamingException ex) {
+			throw new RuntimeException(ex);
+		}
+		for(int i=0; i<ccSimulationStartParameter.getTrafficServerCount(); i++) {
+			TrafficServerLocal trafficServerLocal;
+			try {
+				trafficServerLocal = (TrafficServerLocal) context.lookup(TrafficServerLocal.class.getName());
+			} catch (NamingException ex) {
+				throw new RuntimeException(ex);
 			}
-			tmpEntityList.add(new ServerConfigurationEntity(
-				TrafficServiceDictionary.TRAFFIC_SERVER));
+			trafficServerList.add(trafficServerLocal);
 		}
-
-		/* Add traffic controller: */
-		List<ServerConfigurationEntity> tmpEntityList = serverConfiguationMap.
-			get(ccSimulationStartParameter.getIpTrafficController());
-		if (tmpEntityList == null) {
-			tmpEntityList = new LinkedList<>();
-			serverConfiguationMap.put(ccSimulationStartParameter.
-				getIpTrafficController(),
-				tmpEntityList);
-		}
-		tmpEntityList.add(new ServerConfigurationEntity(
-			TrafficServiceDictionary.TRAFFIC_CONTROLLER));
-
-		/* Add static sensor controller: */
-		tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
-			getIpStaticSensorController());
-		if (tmpEntityList == null) {
-			tmpEntityList = new LinkedList<>();
-			serverConfiguationMap.put(ccSimulationStartParameter.
-				getIpStaticSensorController(),
-				tmpEntityList);
-		}
-		tmpEntityList.add(new ServerConfigurationEntity(
-			StaticSensorServiceDictionary.STATIC_SENSOR_CONTROLLER));
-
-		/* Weather controller: */
-		tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
-			getIpWeatherController());
-		if (tmpEntityList == null) {
-			tmpEntityList = new LinkedList<>();
-			serverConfiguationMap.put(ccSimulationStartParameter.
-				getIpWeatherController(),
-				tmpEntityList);
-		}
-		tmpEntityList.add(new ServerConfigurationEntity(
-			WeatherServiceDictionary.WEATHER_CONTROLLER));
-
-		/* Energy controller: */
-		tmpEntityList = serverConfiguationMap.get(ccSimulationStartParameter.
-			getIpEnergyController());
-		if (tmpEntityList == null) {
-			tmpEntityList = new LinkedList<>();
-			serverConfiguationMap.put(ccSimulationStartParameter.
-				getIpEnergyController(),
-				tmpEntityList);
-		}
-		tmpEntityList.add(new ServerConfigurationEntity(
-			EnergyControllerServiceDictionary.ENERGY_CONTROLLER));
-
-		/* Front controller (on every used ip): */
-		Set<String> frontControllerAddressSet = new HashSet<>();
-		for (String address : ccSimulationStartParameter.getTrafficServerIPs()) {
-			if (!frontControllerAddressSet.contains(address)) {
-				serverConfiguationMap.get(address).add(
-					new ServerConfigurationEntity(
-						ServiceDictionary.FRONT_CONTROLLER));
-				frontControllerAddressSet.add(address);
-			}
-		}
-		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-			getIpEnergyController())) {
-			serverConfiguationMap.get(ccSimulationStartParameter.
-				getIpEnergyController()).add(new ServerConfigurationEntity(
-						ServiceDictionary.FRONT_CONTROLLER));
-			frontControllerAddressSet.add(ccSimulationStartParameter.
-				getIpEnergyController());
-		}
-		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-			getIpWeatherController())) {
-			serverConfiguationMap.get(ccSimulationStartParameter.
-				getIpWeatherController()).add(new ServerConfigurationEntity(
-						ServiceDictionary.FRONT_CONTROLLER));
-			frontControllerAddressSet.add(ccSimulationStartParameter.
-				getIpWeatherController());
-		}
-		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-			getIpStaticSensorController())) {
-			serverConfiguationMap.get(ccSimulationStartParameter.
-				getIpStaticSensorController()).add(
-					new ServerConfigurationEntity(
-						ServiceDictionary.FRONT_CONTROLLER));
-			frontControllerAddressSet.add(ccSimulationStartParameter.
-				getIpSimulationController());
-		}
-		if (!frontControllerAddressSet.contains(ccSimulationStartParameter.
-			getIpTrafficController())) {
-			serverConfiguationMap.get(ccSimulationStartParameter.
-				getIpTrafficController()).add(new ServerConfigurationEntity(
-						ServiceDictionary.FRONT_CONTROLLER));
-			frontControllerAddressSet.add(ccSimulationStartParameter.
-				getIpTrafficController());
-		}
-
-		/* Random seed service */
-		tmpEntityList.add(new ServerConfigurationEntity(
-			ServiceDictionary.RANDOM_SEED_SERVICE));
-
-		/* get simulation controller */
-		log.debug("Look up simulationcontroller at: "
-			+ ccSimulationStartParameter.
-			getIpSimulationController());
-
-		serverConfiguration.setConfiguration(serverConfiguationMap);
 
 		/* Created server configuration */
 		/* Create init parameters: */
-
-		/* Init random seed service: */
-		this.serviceDictionary.getRandomSeedService().init(
-			ccSimulationStartParameter.getStartTimestamp().getTime());
-		Random random = new Random(this.serviceDictionary.
-			getRandomSeedService().
-			getSeed(ControlCenterUser.class.getName()));
-
-		/* To produce new sensor ids, we have to save all the used ones */
-		Set<UUID> usedUUIDs = new HashSet<>();
 
 		/* Create sensors: */
 		for (Sensor<?, ?> sensorHelper : ccSimulationStartParameter.getSensors()) {
@@ -715,15 +578,12 @@ public class DefaultControlCenterUser extends Endpoint implements
 			getSensors());
 
 		/* Create start parameters: */
-		TrafficStartParameter startParameter = lookupStartParameter();
+		TrafficStartParameter startParameter = new TrafficStartParameter();
 		startParameter.setCity(ccSimulationStartParameter.getCity());
 		startParameter.setAggregatedWeatherDataEnabled(
 			ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
 		startParameter.setWeatherEvents(ccSimulationStartParameter.
 			getWeatherEvents());
-
-		List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
-		List<UUID> newUUIDs = new LinkedList<>();
 
 		List<Event> simulationEventList = new LinkedList<>();
 
@@ -731,7 +591,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 		CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent<?>) randomDynamicSensorService.
 			createRandomDynamicSensors(ccSimulationStartParameter.
 				getRandomDynamicSensorBundle(),
-				this.serviceDictionary.getRandomSeedService(),
+				randomSeedService,
 				ccSimulationStartParameter.isWithSensorInterferes());
 		simulationEventList.add(createRandomVehiclesEvent);
 
@@ -744,7 +604,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 			AttractionTrafficEvent<?> attractionTrafficEvent = createAttractionEventService.
 				createAttractionTrafficEvent(
 					attractionData.getRandomVehicleBundle(),
-					this.serviceDictionary.getRandomSeedService(),
+					randomSeedService,
 					this.simulationStartParameter.
 					isWithSensorInterferes(),
 					attractionData.getNodeID(),
@@ -780,9 +640,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 		log.debug("Create " + totalNumberOfBusTrips + " busses!");
 
 		for (int i = 0; i < totalNumberOfBusTrips; i++) {
-			UUID id = this.getUniqueRandomUUID(usedUUIDs,
-				random);
-			NavigationNode sensorCoordinate = null;
+			UUID id = UUID.randomUUID();
 			busDataList.add(new CreateRandomBusData(null,
 				null,
 				new VehicleInformation(true,
@@ -791,8 +649,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 					null,
 					id.toString())));
 		}
-		simulationEventList.add(new CreateBussesEvent(serviceDictionary.
-			getController(TrafficServerLocal.class),
+		simulationEventList.add(new CreateBussesEvent(trafficServer,
 			ccSimulationStartParameter.getStartTimestamp().getTime(),
 			0L,
 			busDataList,
@@ -829,8 +686,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 	}
 
 	public void onInitParameterMessage(String message,
-		IdentifiableControlCenterMessage<?> ccWebSocketMessage,
-		ServerConfiguration configuration) throws IOException, SensorException, InitializationException {
+		IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
 
 		TrafficInitParameter initParameter = this.gson.
 			fromJson(message,

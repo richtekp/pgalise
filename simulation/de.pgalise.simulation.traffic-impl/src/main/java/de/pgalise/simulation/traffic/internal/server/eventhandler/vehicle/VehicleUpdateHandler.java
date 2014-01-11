@@ -16,12 +16,14 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.jam.DefaultNaSchModel;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
+import javax.ejb.EJB;
 
 /**
  * ...
@@ -29,6 +31,8 @@ import de.pgalise.simulation.traffic.server.jam.TrafficJamModel;
  * @author Mustafa
  */
 public class VehicleUpdateHandler extends AbstractVehicleEventHandler<VehicleData,VehicleEvent> {
+	@EJB
+	private RandomSeedService randomSeedService;
 
 	/**
 	 * Traffic jam model
@@ -54,7 +58,7 @@ public class VehicleUpdateHandler extends AbstractVehicleEventHandler<VehicleDat
 		// }
 
 		if (jamModel == null) {
-			jamModel = new DefaultNaSchModel(event.getServiceDictionary().getRandomSeedService());
+			jamModel = new DefaultNaSchModel(randomSeedService);
 		}
 		if(VehicleTypeEnum.MOTORIZED_VEHICLES.contains(event.getVehicle().getData().getType())) {			
 			jamModel.update(event.getVehicle(), event.getElapsedTime(), event.getGraph(), 0.01);

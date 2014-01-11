@@ -28,7 +28,6 @@ import javax.ejb.Singleton;
 import net.sourceforge.jFuzzyLogic.FIS;
 import net.sourceforge.jFuzzyLogic.FunctionBlock;
 import net.sourceforge.jFuzzyLogic.rule.RuleBlock;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -219,13 +218,8 @@ public class FuzzyTrafficGovernor implements TrafficGovernor {
 	/**
 	 * name of input variable for rain
 	 */
-	private WeatherController weatherController;
-
-	/**
-	 * ServiceDictionary for resolving remote Services
-	 */
 	@EJB
-	private ServiceDictionary serviceDictionary;
+	private WeatherController weatherController;
 
 	/**
 	 * Creates a FuzzyTrafficGovernor with definition from the FCL-file of the passed "filePath" argument.
@@ -311,21 +305,6 @@ public class FuzzyTrafficGovernor implements TrafficGovernor {
 	 */
 	public FuzzyTrafficGovernor() {
 		this(FuzzyTrafficGovernor.FILE_PATH);
-	}
-
-	/**
-	 * Initiates all dependencies.
-	 * 
-	 * @throws IllegalStateException
-	 *             if ServiceDictionary returns 'null' for WeatherController.
-	 */
-	@PostConstruct
-	public void init() {
-		// Extract WeatherController
-		this.weatherController = this.serviceDictionary.getController(WeatherController.class);
-		if (this.weatherController == null) {
-			throw new IllegalStateException("ServiceDictionary returns 'null' for 'WeatherController'");
-		}
 	}
 
 	/**

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.energy;
 
+import de.pgalise.simulation.energy.sensor.EnergySensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -30,4 +31,4 @@ import de.pgalise.simulation.staticsensor.StaticSensor;
  * @author Marcus
  * @author Timo
  */
-public interface EnergySensorController extends SensorManagerController<Event, StartParameter, InitParameter,StaticSensor> {}
+public interface EnergySensorController extends SensorManagerController<Event, StartParameter, InitParameter,EnergySensor> {}

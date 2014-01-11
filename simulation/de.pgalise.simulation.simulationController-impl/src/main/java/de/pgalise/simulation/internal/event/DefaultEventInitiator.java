@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.DefaultFrontController;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.InitParameter;
@@ -50,8 +49,6 @@ import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -81,6 +78,12 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 
 	@EJB
 	private IdGenerator idGenerator;
+	@EJB
+	private WeatherController weatherController;
+	@EJB
+	private EnergyController energyController;
+	@EJB
+	private TrafficController trafficController;
 
 	@Override
 	public EventList<?> getEventList() {
@@ -134,11 +137,10 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 							weatherEventList = new ArrayList<>();
 						}
 
-						DefaultEventInitiator.this.serviceDictionary.getController(
-							WeatherController.class).update(
-								new EventList<>(idGenerator.getNextId(),
-									weatherEventList,
-									DefaultEventInitiator.this.currentTimestamp));
+						DefaultEventInitiator.this.weatherController.update(
+							new EventList<>(idGenerator.getNextId(),
+								weatherEventList,
+								DefaultEventInitiator.this.currentTimestamp));
 
 						/* Update EnergyController: */
 						List<EnergyEvent> energyEventList;
@@ -152,12 +154,11 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 							energyEventList = new ArrayList<>();
 						}
 
-						DefaultEventInitiator.this.serviceDictionary.getController(
-							EnergyController.class).update(
-								new EventList(idGenerator.getNextId(),
-									energyEventList,
-									DefaultEventInitiator.this
-									.getCurrentTimestamp()));
+						DefaultEventInitiator.this.energyController.update(
+							new EventList(idGenerator.getNextId(),
+								energyEventList,
+								DefaultEventInitiator.this
+								.getCurrentTimestamp()));
 
 						/*
 						 * FrontController...
@@ -179,23 +180,11 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 						if (trafficEventList == null) {
 							trafficEventList = new ArrayList<>();
 						}
-						/* Update the operation center. It needs only the traffic events. */
-						DefaultEventInitiator.this.operationCenterController.update(
+
+						DefaultEventInitiator.this.trafficController.update(
 							new EventList<>(idGenerator.getNextId(),
 								new ArrayList<>(trafficEventList),
 								DefaultEventInitiator.this.currentTimestamp));
-
-						/* Update the control center. It needs only the time: */
-						DefaultEventInitiator.this.controlCenterController.update(
-							new EventList<Event>(idGenerator.getNextId(),
-								new ArrayList<Event>(),
-								DefaultEventInitiator.this.currentTimestamp));
-
-						DefaultEventInitiator.this.serviceDictionary.getController(
-							TrafficController.class).update(
-								new EventList<>(idGenerator.getNextId(),
-									new ArrayList<>(trafficEventList),
-									DefaultEventInitiator.this.currentTimestamp));
 
 						/* update time */
 						synchronized (DefaultEventInitiator.this.lockTimestamp) {
@@ -247,12 +236,6 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	 * Map with timestamp and weather events
 	 */
 	private final Map<Long, List<WeatherEvent>> weatherEventMap = new HashMap<>();
-	@EJB
-	private ServiceDictionary serviceDictionary;
-	@EJB
-	private ServerSideOperationCenterController operationCenterController;
-	@EJB
-	private ServerSideControlCenterController controlCenterController;
 
 	private List<Controller<?, ?, ?>> frontControllerList;
 
@@ -265,14 +248,8 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	}
 
 	public DefaultEventInitiator(IdGenerator idGenerator,
-		ServiceDictionary serviceDictionary,
-		ServerSideOperationCenterController operationCenterController,
-		ServerSideControlCenterController controlCenterController,
 		List<Controller<?, ?, ?>> frontControllerList) {
 		this.idGenerator = idGenerator;
-		this.serviceDictionary = serviceDictionary;
-		this.operationCenterController = operationCenterController;
-		this.controlCenterController = controlCenterController;
 		this.frontControllerList = frontControllerList;
 	}
 
@@ -281,14 +258,8 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 		long endTimestamp,
 		long interval,
 		long clockGeneratorInterval,
-		ServiceDictionary serviceDictionary,
-		ServerSideOperationCenterController operationCenterController,
-		ServerSideControlCenterController controlCenterController,
 		List<Controller<?, ?, ?>> frontControllerList) {
 		this(idGenerator,
-			serviceDictionary,
-			operationCenterController,
-			controlCenterController,
 			frontControllerList);
 		this.currentTimestamp = currentTimestamp;
 		this.endTimestamp = endTimestamp;
@@ -471,30 +442,9 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	}
 
 	@Override
-	public void setOperationCenterController(
-		ServerSideOperationCenterController operationCenterController) {
-		this.operationCenterController = operationCenterController;
-	}
-
-	/**
-	 * Use this only for J-Unit tests.
-	 *
-	 * @param serviceDictionary
-	 */
-	protected void setServiceDictionary(ServiceDictionary serviceDictionary) {
-		this.serviceDictionary = serviceDictionary;
-	}
-
-	@Override
 	protected void onResume() {
 		// Nothing to do
 
-	}
-
-	@Override
-	public void setControlCenterController(
-		ServerSideControlCenterController controlCenterController) {
-		this.controlCenterController = controlCenterController;
 	}
 
 	@Override

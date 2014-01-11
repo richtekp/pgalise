@@ -114,11 +114,7 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 	private String ipStaticSensorController = "127.0.0.1";
 	private String ipEnergyController = "127.0.0.1";
 
-	/**
-	 * IPs for all the traffic servers.
-	 */
-	private List<String> trafficServerIPs = new LinkedList<>(Arrays.asList(
-		"127.0.0.1"));
+	private int trafficServerCount = 2;
 
 	/**
 	 * Sensorhelper list.
@@ -209,7 +205,7 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		String ipWeatherController,
 		String ipStaticSensorController,
 		String ipEnergyController,
-		List<String> trafficServerIPList,
+		int trafficServerCount,
 		TrafficCity city,
 		List<Sensor<?, ?>> sensorHelperList,
 		List<EventList<?>> simulationEventLists,
@@ -232,7 +228,6 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		this.ipWeatherController = ipWeatherController;
 		this.ipStaticSensorController = ipStaticSensorController;
 		this.ipEnergyController = ipEnergyController;
-		this.trafficServerIPs = trafficServerIPList;
 		this.sensors = sensorHelperList;
 		this.simulationEventLists = simulationEventLists;
 		this.randomDynamicSensorBundle = randomDynamicSensorBundle;
@@ -241,6 +236,7 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		this.attractionCollection = attractionCollection;
 		this.name = city.getName();
 		this.mapAndBusstopFileData = mapAndBusstopFileData;
+		this.trafficServerCount = trafficServerCount;
 	}
 
 	public void setSpecificUpdateSteps(
@@ -262,6 +258,14 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 
 	public String getName() {
 		return name;
+	}
+
+	public void setTrafficServerCount(int trafficServerCount) {
+		this.trafficServerCount = trafficServerCount;
+	}
+
+	public int getTrafficServerCount() {
+		return trafficServerCount;
 	}
 
 	public long getSensorUpdateSteps() {
@@ -294,14 +298,6 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 
 	public void setIpWeatherController(String ipWeatherController) {
 		this.ipWeatherController = ipWeatherController;
-	}
-
-	public List<String> getTrafficServerIPs() {
-		return trafficServerIPs;
-	}
-
-	public void setTrafficServerIPs(List<String> trafficServerIPs) {
-		this.trafficServerIPs = trafficServerIPs;
 	}
 
 	@XmlTransient

@@ -25,12 +25,8 @@ import org.easymock.EasyMock;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
-import de.pgalise.simulation.service.ServiceDictionary;
-//import de.pgalise.simulation.service.manager.ServerConfigurationReader;
-import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
@@ -48,8 +44,6 @@ import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
-import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.Anemometer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
@@ -86,16 +80,12 @@ public class DefaultSimulationControllerTest {
 	private static TrafficInitParameter initParameter;
 	private static TrafficStartParameter startParameter;
 //	private static EventInitiatorMock eventInitiator;
-	private static ServiceDictionary serviceDictionary;
-	private static ServerSideOperationCenterController operationCenterController;
-	private static ServerSideControlCenterController controlCenterController;
 	private static TrafficController<?> trafficController;
 	private static EnergyController energyController;
 	private static WeatherController weatherController;
 	private static EntityManager sensorPersistenceService;
 //	private static ServerConfigurationReader serverConfigurationReader;
 	private static CityInfrastructureData cityInfrastructureData;
-	private static ServerConfiguration serverConfiguration;
 	@EJB
 	private IdGenerator idGenerator;
 	@EJB
@@ -115,10 +105,6 @@ public class DefaultSimulationControllerTest {
 		testClass = new DefaultSimulationController();
 
 		/* Mock all controllers: */
-		operationCenterController = EasyMock.createNiceMock(
-			ServerSideOperationCenterController.class);
-		controlCenterController = EasyMock.createNiceMock(
-			ServerSideControlCenterController.class);
 		trafficController = EasyMock.createNiceMock(TrafficController.class);
 		energyController = EasyMock.createNiceMock(EnergyController.class);
 		weatherController = EasyMock.createNiceMock(WeatherController.class);
@@ -134,35 +120,16 @@ public class DefaultSimulationControllerTest {
 			CityInfrastructureData.class);
 
 		/* Prepare service dictionary: */
-		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
 		Collection<Service> controllerCollection = new LinkedList<>();
 		controllerCollection.add(energyController);
 		controllerCollection.add(trafficController);
 		controllerCollection.add(weatherController);
 		controllerCollection.add(testClass);
-		EasyMock.expect(serviceDictionary.getControllers()).andStubReturn(
-			controllerCollection);
-		EasyMock.expect(serviceDictionary.getController(TrafficController.class)).
-			andStubReturn(trafficController);
-		EasyMock.expect(serviceDictionary.getController(EnergyController.class)).
-			andStubReturn(energyController);
-		EasyMock.expect(serviceDictionary.getController(WeatherController.class)).
-			andStubReturn(weatherController);
-		EasyMock.expect(serviceDictionary.getController(SimulationController.class)).
-			andStubReturn(testClass);
-		EasyMock.replay(serviceDictionary);
 
 		testClass.setEventInitiator(eventInitiator);
-		testClass.setServiceDictionary(serviceDictionary);
-		testClass.setOperationCenterController(operationCenterController);
 		testClass.setSensorPersistenceService(sensorPersistenceService);
-//		testClass.setServerConfigurationReader(serverConfigurationReader);
-		testClass.setControlCenterController(controlCenterController);
-
-		serverConfiguration = new ServerConfiguration();
 
 		initParameter = new TrafficInitParameter(cityInfrastructureData,
-			serverConfiguration,
 			START_TIMESTAMP,
 			END_TIMESTAMP,
 			INTERVAL,
@@ -182,12 +149,6 @@ public class DefaultSimulationControllerTest {
 	 * @throws IllegalStateException
 	 */
 	private static void initControllerMockStateBehavior() throws IllegalStateException, InitializationException {
-		operationCenterController.init(initParameter);
-		operationCenterController.start(startParameter);
-		operationCenterController.stop();
-		operationCenterController.reset();
-		EasyMock.replay(operationCenterController);
-
 		trafficController.init(initParameter);
 		trafficController.start(startParameter);
 		trafficController.stop();
@@ -211,7 +172,6 @@ public class DefaultSimulationControllerTest {
 	 * Resets the behavior for the controller mocks.
 	 */
 	private static void resetControllerMockBehavior() {
-		EasyMock.reset(operationCenterController);
 		EasyMock.reset(trafficController);
 		EasyMock.reset(weatherController);
 		EasyMock.reset(energyController);
@@ -229,7 +189,6 @@ public class DefaultSimulationControllerTest {
 		testClass.reset();
 
 		/* Verify all controllers: */
-		EasyMock.verify(operationCenterController);
 		EasyMock.verify(trafficController);
 		EasyMock.verify(weatherController);
 		EasyMock.verify(energyController);
@@ -243,7 +202,6 @@ public class DefaultSimulationControllerTest {
 		testClass.reset();
 
 		/* Verify all controllers: */
-		EasyMock.verify(operationCenterController);
 		EasyMock.verify(trafficController);
 		EasyMock.verify(weatherController);
 		EasyMock.verify(energyController);
@@ -273,9 +231,6 @@ public class DefaultSimulationControllerTest {
 			null);
 
 		/* The operation center will receive both sensors: */
-		operationCenterController.createSensor(sensorHelperStaticSensor);
-		operationCenterController.createSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
 
 		/* The static sensor controller will receive only the static sensor: */
 		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
@@ -291,7 +246,6 @@ public class DefaultSimulationControllerTest {
 		testClass.createSensor(sensorHelperStaticSensor);
 		testClass.createSensor(sensorHelperTrafficSensor);
 
-		EasyMock.verify(operationCenterController);
 		EasyMock.verify(trafficController);
 
 		testClass.stop();
@@ -325,9 +279,6 @@ public class DefaultSimulationControllerTest {
 		sensorHelperList.add(sensorHelperTrafficSensor);
 
 		/* The operation center will receive both sensors: */
-		operationCenterController.createSensor(sensorHelperStaticSensor);
-		operationCenterController.createSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
 
 		/* The static sensor controller will receive only the static sensor: */
 
@@ -341,7 +292,6 @@ public class DefaultSimulationControllerTest {
 		testClass.start(startParameter);
 		testClass.createSensors(sensorHelperList);
 
-		EasyMock.verify(operationCenterController);
 		EasyMock.verify(trafficController);
 
 		testClass.stop();
@@ -372,9 +322,6 @@ public class DefaultSimulationControllerTest {
 			null);
 
 		/* The operation center will receive both sensors: */
-		operationCenterController.deleteSensor(sensorHelperStaticSensor);
-		operationCenterController.deleteSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
 
 		/* The static sensor controller will receive only the static sensor: */
 
@@ -389,7 +336,6 @@ public class DefaultSimulationControllerTest {
 		testClass.deleteSensor(sensorHelperStaticSensor);
 		testClass.deleteSensor(sensorHelperTrafficSensor);
 
-		EasyMock.verify(operationCenterController);
 		EasyMock.verify(trafficController);
 
 		testClass.stop();
@@ -422,13 +368,6 @@ public class DefaultSimulationControllerTest {
 		sensorHelperList.add(sensorHelperStaticSensor);
 		sensorHelperList.add(sensorHelperTrafficSensor);
 
-		/* The operation center will receive both sensors: */
-		operationCenterController.deleteSensor(sensorHelperStaticSensor);
-		operationCenterController.deleteSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
-
-		/* The static sensor controller will receive only the static sensor: */
-
 		/* The traffic controller will receive only the traffic sensor: */
 		trafficController.deleteSensor(sensorHelperTrafficSensor);
 		trafficController.deleteSensor(sensorHelperStaticSensor);
@@ -439,7 +378,6 @@ public class DefaultSimulationControllerTest {
 		testClass.start(startParameter);
 		testClass.deleteSensors(sensorHelperList);
 
-		EasyMock.verify(operationCenterController);
 		EasyMock.verify(trafficController);
 
 		testClass.stop();

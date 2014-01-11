@@ -85,7 +85,7 @@ public class NoGPSGateStrategy extends AbstractIdentifiable implements
 	}
 
 	@Override
-	public boolean statusOfSensor(Sensor<?, ?> sensor) throws SensorException {
+	public boolean isActivated(Sensor<?, ?> sensor) throws SensorException {
 		return false;
 	}
 

@@ -30,7 +30,6 @@ import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.event.DefaultEventInitiator;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
@@ -49,8 +48,6 @@ import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.TestUtils;
@@ -85,13 +82,10 @@ public class DefaultEventInitiatorTest {
 	private static EnergyControllerMock energyController;
 	private static WeatherControllerMock weatherController;
 	private static TrafficControllerMock trafficController;
-	private static ServiceDictionary serviceDictionary;
-	private static OperationCenterControllerMock operationCenterController;
 	private static long startTimestamp, endTimestamp;
 	private static InitParameter initParameter;
 	private static StartParameter startParameter;
 	private static SimulationController simulationController;
-	private static ControlCenterControllerMock controlCenterController;
 
 	public DefaultEventInitiatorTest() {
 	}
@@ -119,7 +113,7 @@ public class DefaultEventInitiatorTest {
 			0);
 		endTimestamp = cal.getTimeInMillis();
 
-		initParameter = new InitParameter(null,
+		initParameter = new InitParameter(
 			startTimestamp,
 			endTimestamp,
 			INTERVAL,
@@ -136,31 +130,14 @@ public class DefaultEventInitiatorTest {
 		energyController = new EnergyControllerMock();
 		weatherController = new WeatherControllerMock();
 		trafficController = new TrafficControllerMock();
-		operationCenterController = new OperationCenterControllerMock();
 		simulationController = new SimulationControllerMock();
-		controlCenterController = new ControlCenterControllerMock();
 
-		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
-		EasyMock.expect(serviceDictionary.getController(EnergyController.class)).
-			andStubReturn(energyController);
-		EasyMock.expect(serviceDictionary.getController(WeatherController.class)).
-			andStubReturn(weatherController);
-		EasyMock.expect(serviceDictionary.getController(TrafficController.class)).
-			andStubReturn(trafficController);
-		EasyMock.expect(serviceDictionary.getController(SimulationController.class))
-			.andStubReturn(simulationController);
-		EasyMock.replay(serviceDictionary);
 		IdGenerator idGenerator = EasyMock.createNiceMock(IdGenerator.class);
 
 		eventInitiator = new DefaultEventInitiator(idGenerator,
-			serviceDictionary,
-			operationCenterController,
-			controlCenterController,
 			null);
-		eventInitiator.setOperationCenterController(operationCenterController);
 		List<Controller<?, ?, ?>> controllerCollection = new LinkedList<>();
 		eventInitiator.setFrontController(controllerCollection);
-		eventInitiator.setControlCenterController(controlCenterController);
 	}
 
 	@Test
@@ -192,10 +169,6 @@ public class DefaultEventInitiatorTest {
 			weatherController.getUpdateCounter());
 		assertEquals(updateIntervals,
 			trafficController.getUpdateCounter());
-		assertEquals(updateIntervals,
-			operationCenterController.getUpdateCounter());
-		assertEquals(updateIntervals,
-			controlCenterController.getUpdateCount());
 		eventInitiator.stop();
 
 		// Status test
@@ -207,86 +180,6 @@ public class DefaultEventInitiatorTest {
 		// Status test
 		assertEquals(StatusEnum.INIT,
 			eventInitiator.getStatus());
-	}
-
-	/**
-	 * Operation center controller mock which can count the update steps.
-	 *
-	 * @author Timo
-	 */
-	private static class OperationCenterControllerMock implements
-		ServerSideOperationCenterController {
-
-		private int updateCounter;
-
-		OperationCenterControllerMock() {
-			this.updateCounter = 0;
-		}
-
-		@Override
-		public void createSensor(Sensor sensor) throws SensorException {
-		}
-
-		@Override
-		public void createSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
-		}
-
-		@Override
-		public void deleteSensor(Sensor sensor) throws SensorException {
-		}
-
-		@Override
-		public void deleteSensors(Collection<Sensor<?, ?>> sensors) throws SensorException {
-		}
-
-		@Override
-		public boolean statusOfSensor(Sensor sensor) throws SensorException {
-			return false;
-		}
-
-		@Override
-		public void init(InitParameter param) throws IllegalStateException {
-		}
-
-		@Override
-		public void reset() throws IllegalStateException {
-		}
-
-		@Override
-		public void start(StartParameter param) throws IllegalStateException {
-		}
-
-		@Override
-		public void stop() throws IllegalStateException {
-		}
-
-		@Override
-		public void update(EventList<Event> simulationEventList) throws IllegalStateException {
-			this.updateCounter++;
-		}
-
-		@Override
-		public StatusEnum getStatus() {
-			return null;
-		}
-
-		@Override
-		public void displayException(Exception exception) throws IllegalStateException {
-		}
-
-		public int getUpdateCounter() {
-			return updateCounter;
-		}
-
-		@Override
-		public String getName() {
-			return "OperationCenterController";
-		}
-
-		@Override
-		public Long getId() {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
 	}
 
 	/**
@@ -320,7 +213,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public boolean statusOfSensor(StaticSensor sensor) throws SensorException {
+		public boolean isActivated(StaticSensor sensor) throws SensorException {
 			return false;
 		}
 
@@ -514,7 +407,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public boolean statusOfSensor(Sensor sensor) throws SensorException {
+		public boolean isActivated(Sensor sensor) throws SensorException {
 			return false;
 		}
 
@@ -571,66 +464,6 @@ public class DefaultEventInitiatorTest {
 		@Override
 		public long getElapsedTime() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-	}
-
-	/**
-	 * Mock for the controll center controller.
-	 *
-	 * @author Timo
-	 */
-	private static class ControlCenterControllerMock implements
-		ServerSideControlCenterController {
-
-		private int updateCount;
-
-		/**
-		 * Constructor
-		 */
-		ControlCenterControllerMock() {
-			this.updateCount = 0;
-		}
-
-		@Override
-		public void init(InitParameter param) throws
-			IllegalStateException {
-		}
-
-		@Override
-		public void reset() throws IllegalStateException {
-		}
-
-		@Override
-		public void start(StartParameter param) throws IllegalStateException {
-		}
-
-		@Override
-		public void stop() throws IllegalStateException {
-		}
-
-		@Override
-		public void update(EventList<Event> simulationEventList)
-			throws IllegalStateException {
-			this.updateCount++;
-		}
-
-		@Override
-		public StatusEnum getStatus() {
-			return null;
-		}
-
-		@Override
-		public String getName() {
-			return null;
-		}
-
-		@Override
-		public void displayException(Exception exception)
-			throws IllegalStateException {
-		}
-
-		public int getUpdateCount() {
-			return updateCount;
 		}
 	}
 }

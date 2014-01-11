@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
@@ -51,6 +50,7 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensor;
@@ -66,7 +66,7 @@ import de.pgalise.simulation.traffic.internal.model.vehicle.XMLVehicleFactory;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersection;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
-import de.pgalise.simulation.traffic.internal.server.sensor.DefaultSensorController;
+import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorController;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
@@ -194,6 +194,9 @@ public class DefaultTrafficServer extends AbstractController<
 	private static final Logger log = LoggerFactory.getLogger(
 		DefaultTrafficServer.class);
 	private static final String NAME = "TrafficServer";
+	
+	@EJB
+	private RandomSeedService randomSeedService;
 
 	/*
 	 * API Dependencies
@@ -202,12 +205,6 @@ public class DefaultTrafficServer extends AbstractController<
 	 * GPS mapper (as EJB)
 	 */
 	private JaxRSCoordinate coordinate;
-
-	/**
-	 * Service dictionary (as EJB)
-	 */
-	@EJB
-	private ServiceDictionary serviceDictionary;
 
 	/**
 	 * Traffic graph extension (as EJB)
@@ -351,19 +348,16 @@ public class DefaultTrafficServer extends AbstractController<
 	 * @param graph
 	 */
 	public DefaultTrafficServer(JaxRSCoordinate coordinate,
-		ServiceDictionary serviceDictionary,
 		SensorRegistry sensorRegistry,
 		TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager,
 		List<TrafficServerLocal<VehicleEvent>> slist,
 		TrafficSensorFactory sensorFactory,
 		TrafficGraph graph) {
 		this.coordinate = coordinate;
-		this.serviceDictionary = serviceDictionary;
 		this.sensorRegistry = sensorRegistry;
 		this.sensorFactory = sensorFactory;
 
 		this.trafficGraphExtensions = new DefaultTrafficGraphExtensions(
-			serviceDictionary.getRandomSeedService(),
 			graph);
 
 //		this.trafficEventHandlerManager = eventHandlerManager;
@@ -402,7 +396,7 @@ public class DefaultTrafficServer extends AbstractController<
 	}
 
 	@Override
-	public void createSensors(Collection<StaticSensor> sensors) throws SensorException {
+	public void createSensors(Collection<StaticSensor<?,?>> sensors) throws SensorException {
 		for (StaticSensor sensor : sensors) {
 			this.createSensor(sensor);
 		}
@@ -456,7 +450,7 @@ public class DefaultTrafficServer extends AbstractController<
 	}
 
 	@Override
-	public void deleteSensors(Collection<StaticSensor> sensors) throws SensorException {
+	public void deleteSensors(Collection<StaticSensor<?,?>> sensors) throws SensorException {
 		for (StaticSensor sensor : sensors) {
 			this.deleteSensor(sensor);
 		}
@@ -505,11 +499,6 @@ public class DefaultTrafficServer extends AbstractController<
 	@Override
 	public Scheduler getScheduler() {
 		return this.scheduler;
-	}
-
-	@Override
-	public ServiceDictionary getServiceDictionary() {
-		return this.serviceDictionary;
 	}
 
 	@Override
@@ -635,8 +624,8 @@ public class DefaultTrafficServer extends AbstractController<
 	}
 
 	@Override
-	public boolean statusOfSensor(StaticSensor sensor) throws SensorException {
-		return this.sensorController.statusOfSensor(sensor);
+	public boolean isActivated(StaticSensor sensor) throws SensorException {
+		return this.sensorController.isActivated(sensor);
 	}
 
 	@Override
@@ -690,8 +679,6 @@ public class DefaultTrafficServer extends AbstractController<
 	 * Instanciate dependencies for the traffic server
 	 */
 	private void instanciateDependencies() {
-		this.trafficGraphExtensions.setRandomSeedService(this.serviceDictionary.
-			getRandomSeedService());
 		this.cityZones = new ArrayList<>();
 		this.trafficServers = new HashSet<>();
 		this.receivedVehicles = new ArrayList<>();
@@ -754,7 +741,7 @@ public class DefaultTrafficServer extends AbstractController<
 	 * @throws Exception
 	 */
 	private void loadSensorDependencies(InitParameter param) {
-		this.sensorController = new DefaultSensorController(this,
+		this.sensorController = new DefaultTrafficSensorController(this,
 			this.sensorRegistry,
 			this.sensorFactory,
 			this.coordinate,
@@ -890,9 +877,8 @@ public class DefaultTrafficServer extends AbstractController<
 
 			this.updateIntervall = param.getInterval();
 
-			this.vehicleFactory = new XMLVehicleFactory(this.serviceDictionary.
-				getRandomSeedService(),
-				this.serviceDictionary.getIdGenerator(),
+			this.vehicleFactory = new XMLVehicleFactory(randomSeedService,
+				idGenerator,
 				this.trafficGraphExtensions,
 				DefaultTrafficServer.class.getResourceAsStream("/defaultvehicles.xml")
 			);

@@ -12,7 +12,6 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.event.AbstractEvent;
@@ -136,8 +135,6 @@ public class MainCtrl implements Serializable {
 		CityInfrastructureData cityInfrastructureData = cityInfrastructureManager.
 			createCityInfrastructureData();
 		initParameter.setCityInfrastructureData(cityInfrastructureData);
-		initParameter.setServerConfiguration(
-			ServerConfiguration.DEFAULT_SERVER_CONFIGURATION);
 		simulationController.init(initParameter);
 		simulationController.start(startParameter);
 	}
@@ -342,14 +339,6 @@ public class MainCtrl implements Serializable {
 
 	public void sendMessages() {
 
-	}
-
-	public void removeTrafficServerIP(String trafficServerIP) {
-		startParameter.getTrafficServerIPs().remove(trafficServerIP);
-	}
-
-	public void addTrafficServerIP() {
-		startParameter.getTrafficServerIPs().add("");
 	}
 
 	public void generateTree() {

@@ -38,7 +38,6 @@ import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage
 import de.pgalise.simulation.controlCenter.internal.message.SimulationStoppedMessage;
 import de.pgalise.simulation.controlCenter.internal.message.SimulationUpdateMessage;
 import de.pgalise.simulation.service.GsonService;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.event.EventList;
 import javax.servlet.http.HttpServlet;
 
@@ -67,9 +66,6 @@ public class CCWebSocketServlet extends HttpServlet {
 	 * Gson to serialize and deserialize the messages.
 	 */
 	private Gson gson;
-
-	@EJB
-	private ServiceDictionary serviceDictionary;
 
 	/**
 	 * Post construct method. Don't call this separately. It will be called on

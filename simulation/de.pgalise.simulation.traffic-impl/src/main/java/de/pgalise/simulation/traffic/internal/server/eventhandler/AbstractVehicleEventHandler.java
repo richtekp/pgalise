@@ -16,6 +16,7 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.service.RandomSeedService;
 import java.util.List;
 import java.util.Random;
 
@@ -39,6 +40,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import javax.ejb.EJB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +65,8 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
 	 * Random generator
 	 */
 	private Random random;
+	@EJB
+	private RandomSeedService randomSeedService;
 	
 	/**
 	 * Constructor
@@ -116,7 +120,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
 	@Override
 	public void init(TrafficServerLocal server) {
 		setResponsibleServer(server);
-		random = new Random(server.getServiceDictionary().getRandomSeedService()
+		random = new Random(randomSeedService
 			.getSeed(AbstractVehicleEventHandler.class.getName()));
 	}
 

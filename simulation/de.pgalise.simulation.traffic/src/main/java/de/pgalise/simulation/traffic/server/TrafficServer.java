@@ -38,7 +38,7 @@ import java.util.Set;
  * @author mustafa
  */
 public interface TrafficServer<E extends TrafficEvent> extends
-	SensorManagerController<E, TrafficStartParameter, TrafficInitParameter, StaticSensor> {
+	SensorManagerController<E, TrafficStartParameter, TrafficInitParameter, StaticSensor<?,?>> {
 
 	/**
 	 * Sets the city zone this server is responsible for.

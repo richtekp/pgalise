@@ -16,30 +16,17 @@
  
 package de.pgalise.simulation.traffic.event;
 
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import java.util.ArrayList;
 import java.util.List;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
-import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * The create busses event will create the given vehicles as busses
  * for the given routes.
  * @param <D>
- * @param <N> 
- * @param <E> 
  * @author Lena
  */
 @XmlRootElement

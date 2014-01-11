@@ -47,24 +47,9 @@
 				<div>
 					Decide how much Traffic Servers will be used in the Simulation.
 				</div>
-				<h:commandButton action="#{mainCtrl.addTrafficServerIP()}" value="add entry">
-					<f:ajax render="@form"/>
-				</h:commandButton>
-				<h:dataTable id="trafficServerIPTable" value="#{mainCtrl.startParameter.trafficServerIPs}" var="trafficServerIP">
-					<h:column >
-						<f:facet name="header">IP</f:facet>
-						<h:inputText value="#{trafficServerIP}">
-							<f:ajax/>
-							<f:validator validatorId="IpValidator"/>
-						</h:inputText>
-					</h:column>
-					<h:column>
-						<f:facet name="Remove">Remove</f:facet>
-						<h:commandButton value="Remove" action="#{mainCtrl.removeTrafficServerIP(trafficServerIP)}">
-							<f:ajax render="@form"/>
-						</h:commandButton>
-					</h:column>
-				</h:dataTable>
+				<p:spinner value="#{mainCtrl.initParameter.trafficServerCount}">
+					<f:ajax/>
+				</p:spinner>
 			</h:form>
 			<h:form>
 				<h3>User Interfaces</h3> 

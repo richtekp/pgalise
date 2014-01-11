@@ -7,28 +7,34 @@ package de.pgalise.simulation.internal;
 
 import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerLocal;
+import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergySensorController;
+import de.pgalise.simulation.energy.sensor.EnergySensor;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.FrontController;
 import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.configReader.ConfigReader;
-//import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.exception.SensorException;
+import de.pgalise.simulation.staticsensor.StaticSensor;
+import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
+import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
-import de.pgalise.util.generic.MutableBoolean;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.server.TrafficSensorController;
+import de.pgalise.simulation.traffic.server.TrafficServer;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.weather.service.WeatherController;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,22 +68,31 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	@PersistenceContext(unitName = "pgalise-simulationcontroller")
 	private EntityManager sensorPersistenceService;
 	@EJB
-	private ServerSideOperationCenterController operationCenterController;
-	@EJB
-	private ServerSideControlCenterController controlCenterController;
-	@EJB
-	private ServiceDictionary serviceDictionary;
-//	@EJB
-//	private ServerConfigurationReader serverConfigReader;
-	@EJB
 	private ConfigReader configReader;
 	/**
 	 * Start parameter
 	 */
-	private StartParameter startParameter;
 	private List<Controller<?, ?, ?>> frontControllerList;
 	private long elapsedTime = 0;
 	private long lastElapsedTimeCheckTimestamp;
+	@EJB
+	private FrontController frontController;
+	@EJB
+	private WeatherController weatherController;
+	@EJB
+	private EnergyController energyController;
+	@EJB
+	private TrafficController trafficController;
+	@EJB
+	private TrafficSensorController<TrafficEvent<?>> trafficSensorController;
+	@EJB
+	private EnergySensorController energySensorController;
+	@EJB
+	private TrafficServer<TrafficEvent<?>> trafficServer;
+	/**
+	 * copy of the start parameter to be able to resume controllers after being paused
+	 */
+	private TrafficStartParameter startParameter;
 
 	/**
 	 * Default constructor
@@ -93,36 +108,28 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	public void onPostContruct() {
 	}
 
+	/**
+	 * handles delegation of sensors to controllers which are managed by {@link SensorManagerController}s, others sensors are ignored
+	 * @param sensor
+	 * @throws SensorException 
+	 */
 	@Override
 	public void createSensor(Sensor<?, ?> sensor) throws SensorException {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"sensor"));
 		}
-
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
-				try {
-					((SensorManagerController) c).createSensor(sensor);
-					this.operationCenterController.createSensor(sensor);
-					return;
-				} catch (SensorException e) {
-					log.error(e.getLocalizedMessage(),
-						e);
-				}
-			}
+		if(sensor instanceof EnergySensor) {
+			energySensorController.createSensor((EnergySensor)sensor);
+		}else if(sensor instanceof StaticSensor) {
+			trafficServer.createSensor((StaticSensor)sensor);
+		}else if(sensor instanceof GpsSensor) {
+			trafficSensorController.createSensor((GpsSensor)sensor);
+		}else {
+			throw new IllegalArgumentException(String.format(
+			"Can't create sensor %s because no suitable controller was found!",
+			sensor));
 		}
-
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (c instanceof Controller) {
-				((Controller) c).reset();
-			}
-		}
-
-		throw new NoValidControllerForSensorException(String.format(
-			"Can't create sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
-			sensor.getId(),
-			sensor.getSensorType().toString()));
 	}
 
 	@Override
@@ -131,30 +138,19 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"sensor"));
 		}
-
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
-				try {
-					((SensorManagerController) c).deleteSensor(sensor);
-					this.operationCenterController.deleteSensor(sensor);
-					return;
-				} catch (SensorException e) {
-					log.error(e.getLocalizedMessage(),
-						e);
-				}
-			}
+		if(sensor instanceof EnergySensor) {
+			energySensorController.deleteSensor((EnergySensor)sensor);
+		}else if(sensor instanceof StaticSensor) {
+			trafficServer.deleteSensor((StaticSensor)sensor);
+		}else if(sensor instanceof GpsSensor) {
+			trafficSensorController.deleteSensor((GpsSensor)sensor);
+		}else {
+			throw new IllegalArgumentException(String.format(
+			"Can't delete sensor %s because no suitable controller was found!",
+			sensor));
 		}
-
-		throw new NoValidControllerForSensorException(String.format(
-			"Can't delete sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
-			sensor.getId(),
-			sensor.getSensorType().toString()));
 	}
-
-	public ServerSideOperationCenterController getOperationCenterController() {
-		return this.operationCenterController;
-	}
-
+	
 	/**
 	 * Determine the status of a sensor
 	 *
@@ -163,89 +159,32 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	 * @throws SensorException
 	 */
 	@Override
-	public boolean statusOfSensor(Sensor sensor) throws SensorException {
+	public boolean isActivated(Sensor<?,?> sensor) throws SensorException {
 		if (sensor == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"sensor"));
 		}
-
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (c instanceof SensorManagerController && !(c instanceof SimulationController)) {
-				try {
-					return ((SensorManagerController) c).statusOfSensor(sensor);
-				} catch (Exception e) {
-					log.error(e.getLocalizedMessage(),
-						e);
-				}
-			}
+		if(sensor instanceof EnergySensor) {
+			return energySensorController.isActivated((EnergySensor)sensor);
+		}else if(sensor instanceof StaticSensor) {
+			return trafficServer.isActivated((StaticSensor)sensor);
+		}else if(sensor instanceof GpsSensor) {
+			return trafficSensorController.isActivated((GpsSensor)sensor);
+		}else {
+			throw new IllegalArgumentException(String.format(
+			"Can't delete sensor %s because no suitable controller was found!",
+			sensor));
 		}
-
-		throw new NoValidControllerForSensorException(
-			String.format(
-				"Can't find status of sensor for sensor id: %d sensortype: %s because no suitable controller was found!",
-				sensor.getId(),
-				sensor.getSensorType().toString()));
 	}
-
+	
 	@Override
 	protected void onInit(final TrafficInitParameter param) throws InitializationException {
-		// init the operation center
-		this.operationCenterController.init(param);
-
-		// init the control center
-		this.controlCenterController.init(param);
-
 		// Delete all Sensors from database
 		this.sensorPersistenceService.clear();
-
-		final MutableBoolean exception = new MutableBoolean();
-		exception.setValue(false);
-
-//		serverConfigReader.read(
-//			param.getServerConfiguration(),
-//			new ServiceHandler<Controller<Event, StartParameter, InitParameter>>() {
-//				@Override
-//				public String getName() {
-//					return ServiceDictionary.FRONT_CONTROLLER;
-//				}
-//
-//				@Override
-//				public void handle(String server,
-//					Controller service) {
-//					log.info(String.format("Using %s on server %s",
-//							getName(),
-//							server));
-//					if (!(service instanceof SimulationController)) {
-//						try {
-//							if (service.getStatus() != StatusEnum.INIT) {
-//								service.reset();
-//							}
-//							service.init(param);
-//						} catch (IllegalStateException e) {
-//							exception.setValue(false);
-//							log.error("Could not inititialize FrontController",
-//								e);
-//						}
-//					}
-//					frontControllerList.add(service);
-//				}
-//			});
-		if (exception.getValue()) {
-			throw new InitializationException(
-				"An error occured during the initialization of the front controllers");
-		}
-
-		Collection<Service> controllers = this.serviceDictionary.getControllers();
-		log.debug(
-			controllers.size() + " Controller referenced by the ServiceDictionary");
-		// init controller
-		for (Service c : controllers) {
-			if (!(c instanceof SimulationController)) {
-				if (c instanceof Controller) {
-					((Controller) c).init(param);
-				}
-			}
-		}
+		
+		weatherController.init(param);
+		energyController.init(param);
+		trafficController.init(param);
 
 		// init the event initiator
 		this.eventInitiator.setFrontController(frontControllerList);
@@ -256,54 +195,26 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	protected void onReset() {
 		this.frontControllerList.clear();
 
-		// reset controller
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (!(c instanceof SimulationController)) {
-				if (c instanceof Controller) {
-					((Controller) c).reset();
-				}
-			}
-		}
-
-		for (Controller<?, ?, ?> c : frontControllerList) {
-			if (!(c instanceof SimulationController)) {
-				c.reset();
-			}
-		}
+		weatherController.reset();
+		trafficController.reset();
+		trafficSensorController.reset();
+		trafficServer.reset();
+		energyController.reset();
+		energySensorController.reset();
 
 		// reset the event initiator
 		this.eventInitiator.reset();
-
-		// reset the operation center
-		this.operationCenterController.reset();
-		this.controlCenterController.reset();
 	}
 
 	@Override
 	protected void onStart(TrafficStartParameter param) {
 		this.startParameter = param;
-
-		// start the controllers
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (!(c instanceof SimulationController)) {
-				if (c instanceof Controller) {
-					((Controller<?, StartParameter, ?>) c).start(param);
-				}
-			}
-
-		}
-
-		for (Controller<?, ?, ?> c : frontControllerList) {
-			if (!(c instanceof SimulationController)) {
-				if (c instanceof Controller) {
-					((Controller<?, StartParameter, ?>) c).start(param);
-				}
-			}
-		}
-
-		// start the operation center
-		this.operationCenterController.start(param);
-		this.controlCenterController.start(param);
+		weatherController.start(param);
+		trafficController.start(param);
+		trafficSensorController.start(param);
+		trafficServer.start(param);
+		energyController.start(param);
+		energySensorController.start(param);
 
 		// start the event initiator
 		this.eventInitiator.start(param);
@@ -316,52 +227,26 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 			this.eventInitiator.stop();
 		}
 
-		// stop the operation center
-		this.operationCenterController.stop();
-
-		// stop the control center
-		this.controlCenterController.stop();
-
-		// stop all controllers (without this controller type)
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (!(c instanceof SimulationController)) {
-				if (c instanceof Controller) {
-					((Controller) c).stop();
-				}
-			}
-		}
-
-		for (Controller<?, ?, ?> c : frontControllerList) {
-			if (!(c instanceof SimulationController)) {
-				c.stop();
-			}
-		}
+		weatherController.stop();
+		trafficController.stop();
+		trafficSensorController.stop();
+		trafficServer.stop();
+		energyController.stop();
+		energySensorController.stop();
 	}
 
 	@Override
 	protected void onResume() {
 		// start the controllers
-		for (Service c : this.serviceDictionary.getControllers()) {
-			if (!(c instanceof SimulationController)) {
-				if (c instanceof Controller) {
-					((Controller) c).start(this.startParameter);
-				}
-			}
-		}
-
-		for (Controller<?, ?, ?> c : frontControllerList) {
-			if (!(c instanceof SimulationController)) {
-				if (c instanceof Controller) {
-					((Controller) c).start(this.startParameter);
-				}
-			}
-		}
-
+		weatherController.start(startParameter);
+		trafficController.start(startParameter);
+		trafficSensorController.start(startParameter);
+		trafficServer.start(startParameter);
+		energyController.start(startParameter);
+		energySensorController.start(startParameter);
+		
 		// start the event initiator
 		this.eventInitiator.start(this.startParameter);
-
-		// start the operation center
-		this.operationCenterController.start(this.startParameter);
 	}
 
 	@Override
@@ -387,11 +272,6 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		return this.eventInitiator.getCurrentTimestamp();
 	}
 
-	protected void setOperationCenterController(
-		ServerSideOperationCenterController operationCenterController) {
-		this.operationCenterController = operationCenterController;
-	}
-
 	@Override
 	public EventInitiator getEventInitiator() {
 		return this.eventInitiator;
@@ -414,15 +294,6 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	/**
 	 * Only for J-Unit tests.
 	 *
-	 * @param serviceDictionary
-	 */
-	protected void setServiceDictionary(ServiceDictionary serviceDictionary) {
-		this.serviceDictionary = serviceDictionary;
-	}
-
-	/**
-	 * Only for J-Unit tests.
-	 *
 	 * @param eventInitiator
 	 */
 	protected void setEventInitiator(EventInitiator eventInitiator) {
@@ -437,20 +308,6 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	protected void setSensorPersistenceService(
 		EntityManager sensorPersistenceService) {
 		this.sensorPersistenceService = sensorPersistenceService;
-	}
-
-//	/**
-//	 * Only for J-Unit tests.
-//	 *
-//	 * @param serverConfigurationReader
-//	 */
-//	protected void setServerConfigurationReader(
-//		ServerConfigurationReader serverConfigurationReader) {
-//		this.serverConfigReader = serverConfigurationReader;
-//	}
-	protected void setControlCenterController(
-		ServerSideControlCenterController controlCenterController) {
-		this.controlCenterController = controlCenterController;
 	}
 
 	@Override

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.service.RandomSeedService;
 import java.util.Random;
 
 import de.pgalise.simulation.shared.event.EventType;
@@ -28,6 +29,7 @@ import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
+import javax.ejb.EJB;
 
 /**
  * If a vehicle passes a node a VEHICLE_PASSED_NODE event is thrown. This handler handles 
@@ -39,6 +41,8 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author Lena
  */
 public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleData,VehicleEvent> {
+	@EJB
+	private RandomSeedService randomSeedService;
 	
 	@Override
 	public EventType getTargetEventType() {
@@ -60,7 +64,7 @@ public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<Vehicl
 			if (n != null) {
 				int lastBusStop = ((BusData) event.getVehicle().getData()).getBusStopOrder().indexOf(n.getId());
 				((BusData) event.getVehicle().getData()).setLastBusStop(lastBusStop);
-				Random random = new Random(event.getServiceDictionary().getRandomSeedService()
+				Random random = new Random(randomSeedService
 						.getSeed(DefaultTrafficServer.class.getName()));
 				int max = ((BusData) event.getVehicle().getData()).getMaxPassengerCount();
 				BusData temp = (BusData) event.getVehicle().getData();

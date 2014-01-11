@@ -10,11 +10,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 /**
  *
  * @author richter
- * @param <N>
  * @param <E>
- * @param <D>
- * @param <V>
- * @param <F>  
  */
 public interface TrafficEvent<E extends TrafficEvent> extends Event {
 	

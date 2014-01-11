@@ -5,7 +5,6 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import java.net.URL;
@@ -25,7 +24,6 @@ public class TrafficInitParameter extends InitParameter {
 
 	public TrafficInitParameter(
 		CityInfrastructureData cityInfrastructureData,
-		ServerConfiguration serverConfiguration,
 		long startTimestamp,
 		long endTimestamp,
 		long interval,
@@ -34,7 +32,6 @@ public class TrafficInitParameter extends InitParameter {
 		URL controlCenterURL,
 		TrafficFuzzyData trafficFuzzyData) {
 		super(
-			serverConfiguration,
 			startTimestamp,
 			endTimestamp,
 			interval,
@@ -48,7 +45,6 @@ public class TrafficInitParameter extends InitParameter {
 
 	public TrafficInitParameter(
 		CityInfrastructureData cityInfrastructureData,
-		ServerConfiguration serverConfiguration,
 		long startTimestamp,
 		long endTimestamp,
 		long interval,
@@ -58,7 +54,6 @@ public class TrafficInitParameter extends InitParameter {
 		TrafficFuzzyData trafficFuzzyData,
 		int trafficServerCount) {
 		this(cityInfrastructureData,
-			serverConfiguration,
 			startTimestamp,
 			endTimestamp,
 			interval,

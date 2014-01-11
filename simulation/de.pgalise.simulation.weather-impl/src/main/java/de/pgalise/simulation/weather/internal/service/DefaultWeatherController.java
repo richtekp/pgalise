@@ -34,10 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
@@ -62,8 +60,6 @@ import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import java.util.Arrays;
-import java.util.HashSet;
 
 /**
  * The main interaction point of the component Weather is the interface
@@ -134,14 +130,12 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 	private WeatherService weatherservice;
 
 	@EJB
-	private ServiceDictionary serviceDictionary;
-
-	@EJB
 	private WeatherLoader weatherLoader;
 
 	/**
 	 * Random Seed Service
 	 */
+	@EJB
 	private RandomSeedService randomSeedService;
 
 	private InitParameter initParameter;
@@ -378,10 +372,6 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {
 		// Set random seed service
-		ServerConfiguration serverConfiguration = new ServerConfiguration(
-			new HashSet<>(Arrays.asList(ServiceDictionary.RANDOM_SEED_SERVICE)));
-		serviceDictionary.init(serverConfiguration);
-		this.randomSeedService = this.serviceDictionary.getRandomSeedService();
 		this.initParameter = param;
 	}
 

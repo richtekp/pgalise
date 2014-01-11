@@ -297,7 +297,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 	 * @throws de.pgalise.simulation.shared.exception.SensorException
 	 */
 	@Override
-	public boolean statusOfSensor(Sensor<?, ?> sensor) throws SensorException {
+	public boolean isActivated(Sensor<?, ?> sensor) throws SensorException {
 		/* Nothing to do */
 		return false;
 	}

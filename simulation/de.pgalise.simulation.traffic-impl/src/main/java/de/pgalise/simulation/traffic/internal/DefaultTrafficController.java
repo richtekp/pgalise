@@ -379,11 +379,11 @@ public class DefaultTrafficController<
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
 	@Override
-	public boolean statusOfSensor(StaticSensor sensor) throws SensorException {
+	public boolean isActivated(StaticSensor sensor) throws SensorException {
 		for (int i = 0; i < cityZones.size(); i++) {
 			JaxRSCoordinate pos = sensor.getPosition();
 			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos))) {
-				return serverList.get(i).statusOfSensor(sensor);
+				return serverList.get(i).isActivated(sensor);
 			}
 		}
 		throw new SensorException("Could not find sensor.");

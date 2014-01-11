@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
+import de.pgalise.simulation.service.RandomSeedService;
 import java.util.Random;
 
 import de.pgalise.simulation.shared.event.EventType;
@@ -36,6 +37,7 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleIt
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 import java.util.List;
+import javax.ejb.EJB;
 
 /**
  * If a vehicle reached its target a VEHICLE_REACHED_TARGET event is thrown. This handler handles 
@@ -49,6 +51,8 @@ import java.util.List;
  * @author Lena
  */
 public class VehicleReachedTargetHandler<D extends VehicleData> extends AbstractVehicleEventHandler<VehicleData,VehicleEvent> {
+	@EJB
+	private RandomSeedService randomSeedService;
 
 	@Override
 	public EventType getTargetEventType() {
@@ -68,7 +72,7 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
 					event.getVehicle().getCurrentNode());
 			// only at busstops the amount of passengers can change
 			if (n != null) {
-				Random random = new Random(event.getServiceDictionary().getRandomSeedService()
+				Random random = new Random(randomSeedService
 						.getSeed(DefaultTrafficServer.class.getName()));
 				int max = ((BusData) event.getVehicle().getData()).getMaxPassengerCount();
 				BusData temp = (BusData) event.getVehicle().getData();

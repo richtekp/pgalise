@@ -111,33 +111,6 @@ public class MainCtrlTest {
 	}
 
 	/**
-	 * Test of removeTrafficServerIP method, of class MainCtrl.
-	 */
-	@Test
-	@Ignore
-	public void testRemoveTrafficServerIP() {
-		System.out.println("removeTrafficServerIP");
-		String trafficServerIP = "";
-		MainCtrl instance = new MainCtrl();
-		instance.removeTrafficServerIP(trafficServerIP);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-
-	/**
-	 * Test of addTrafficServerIP method, of class MainCtrl.
-	 */
-	@Test
-	@Ignore
-	public void testAddTrafficServerIP() {
-		System.out.println("addTrafficServerIP");
-		MainCtrl instance = new MainCtrl();
-		instance.addTrafficServerIP();
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-
-	/**
 	 * Test of generateTree method, of class MainCtrl.
 	 */
 	@Test

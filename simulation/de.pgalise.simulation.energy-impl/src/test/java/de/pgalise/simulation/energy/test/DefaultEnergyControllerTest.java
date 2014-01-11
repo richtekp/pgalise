@@ -30,10 +30,8 @@ import org.junit.Test;
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.energy.internal.DefaultEnergyController;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
@@ -99,11 +97,6 @@ public class DefaultEnergyControllerTest {
 	 * Start parameters
 	 */
 	private static TrafficStartParameter startParameter;
-
-	/**
-	 * Service dictionary to e.g. find weather controller.
-	 */
-	private static ServiceDictionary serviceDictionary;
 
 	/**
 	 * Traffic information
@@ -206,17 +199,8 @@ public class DefaultEnergyControllerTest {
 			WeatherController.class);
 		EasyMock.replay(DefaultEnergyControllerTest.weather);
 
-		// Service Dictionary:
-		DefaultEnergyControllerTest.serviceDictionary = EasyMock.createNiceMock(
-			ServiceDictionary.class);
-		EasyMock.expect(DefaultEnergyControllerTest.serviceDictionary.getController(
-			WeatherController.class))
-			.andStubReturn(DefaultEnergyControllerTest.weather);
-		EasyMock.replay(DefaultEnergyControllerTest.serviceDictionary);
-
 		DefaultEnergyControllerTest.initParameter = new TrafficInitParameter(
 			null,
-			EasyMock.createNiceMock(ServerConfiguration.class),
 			DefaultEnergyControllerTest.startTime,
 			DefaultEnergyControllerTest.endTime,
 			interval,
@@ -245,8 +229,6 @@ public class DefaultEnergyControllerTest {
 		// Create class
 		DefaultEnergyControllerTest.testClass = new DefaultEnergyController(
 			information);
-		DefaultEnergyControllerTest.testClass.setServiceDictionary(
-			DefaultEnergyControllerTest.serviceDictionary);
 		DefaultEnergyControllerTest.testClass.setEnergyConsumptionManager(
 			energyConsumptionManager);
 		DefaultEnergyControllerTest.testClass.setEnergyEventStrategy(

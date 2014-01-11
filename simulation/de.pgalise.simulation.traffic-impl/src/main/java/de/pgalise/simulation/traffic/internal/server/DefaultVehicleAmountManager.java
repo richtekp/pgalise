@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server;
 
+import de.pgalise.simulation.service.RandomSeedService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -37,6 +38,7 @@ import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
+import javax.ejb.EJB;
 
 /**
  * This manager checks the informations of the TrafficGovernor and adapts the amount 
@@ -165,6 +167,9 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 	private int maxTrucks;
 
 	private Random rand;
+	
+	@EJB
+	private RandomSeedService randomSeedService;
 
 	/**
 	 * Constructor
@@ -212,7 +217,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 		this.oldPercentageValueTrucks = this.percentageValueTrucks;
 		this.oldPercentageValueMotorcycles = this.percentageValueMotorcycles;
 
-		this.rand = new Random(ts.getServiceDictionary().getRandomSeedService()
+		this.rand = new Random(randomSeedService
 				.getSeed(DefaultVehicleAmountManager.class.getName()));
 	}
 

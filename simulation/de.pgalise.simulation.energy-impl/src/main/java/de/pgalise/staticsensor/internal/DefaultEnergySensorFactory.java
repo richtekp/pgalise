@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergySensorFactory;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -48,12 +47,6 @@ public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory
 	 */
 	private static final Logger log = LoggerFactory.getLogger(
 		DefaultEnergySensorFactory.class);
-
-	/**
-	 * Service dictionary
-	 */
-	@EJB
-	private ServiceDictionary dic;
 
 	/**
 	 * Server config reader

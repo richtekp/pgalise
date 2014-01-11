@@ -33,10 +33,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.service.ServerConfigurationEntity;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
@@ -45,7 +43,6 @@ import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.weather.WeatherServiceDictionary;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -120,15 +117,6 @@ public class DefaultWeatherControllerTest {
 
 		System.setProperty("simulation.configuration.filepath",
 			"src/test/resources/simulation.conf");
-		Context ctx = CONTAINER.getContext();
-
-		/* Create simulation controller and init/start the simulation: */
-		ServiceDictionary serviceDictionary = (ServiceDictionary) ctx.lookup(
-			"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
-		//			"java:global/de.pgalise.simulation.services-impl/de.pgalise.simulation.service.ServiceDictionary"
-		);
-		serviceDictionary.init(DefaultWeatherControllerTest.
-			produceServerConfiguration());
 
 		// Create city
 		city = TestUtils.createDefaultTestCityInstance();
@@ -167,25 +155,6 @@ public class DefaultWeatherControllerTest {
 		CONTAINER = TestUtils.getContainer();
 	}
 
-	/**
-	 * Creates the server configuration. Change this for more traffic servers or
-	 * for distributed servers.
-	 *
-	 * @return
-	 */
-	private static ServerConfiguration produceServerConfiguration() {
-		ServerConfiguration conf = new ServerConfiguration();
-		List<ServerConfigurationEntity> entities = new ArrayList<>(2);
-		entities.add(new ServerConfigurationEntity(
-			ServiceDictionary.RANDOM_SEED_SERVICE));
-		entities.add(new ServerConfigurationEntity(
-			WeatherServiceDictionary.WEATHER_CONTROLLER));
-		conf.getConfiguration().put("127.0.0.1:8081",
-			entities);
-
-		return conf;
-	}
-
 	@Test
 	public void controllerTest() throws InterruptedException, IllegalArgumentException,
 		ExecutionException, IllegalStateException, InitializationException, NamingException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, RollbackException {
@@ -208,7 +177,6 @@ public class DefaultWeatherControllerTest {
 			valueTime);
 
 		InitParameter initParameter = new InitParameter(
-			ServerConfiguration.DEFAULT_SERVER_CONFIGURATION,
 			startTimestamp,
 			endTimestamp,
 			valueTime,

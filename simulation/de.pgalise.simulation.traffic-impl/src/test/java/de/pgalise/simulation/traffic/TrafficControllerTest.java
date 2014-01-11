@@ -266,7 +266,7 @@ public class TrafficControllerTest {
 		s1.setCityZone(anyObject(Geometry.class));
 		s1.start(startParam);
 		s1.createSensor(sensor);
-		expect(s1.statusOfSensor(sensor)).andReturn(true);
+		expect(s1.isActivated(sensor)).andReturn(true);
 		s1.deleteSensor(sensor);
 		replay(s1);
 
@@ -275,7 +275,7 @@ public class TrafficControllerTest {
 		s2.setCityZone(anyObject(Geometry.class));
 		s2.start(startParam);
 		s2.createSensor(sensor);
-		expect(s2.statusOfSensor(sensor2)).andReturn(false);
+		expect(s2.isActivated(sensor2)).andReturn(false);
 		s2.deleteSensor(sensor);
 		replay(s2);
 
@@ -287,8 +287,8 @@ public class TrafficControllerTest {
 		ctrl.init(initParam);
 		ctrl.start(startParam);
 		ctrl.createSensor(sensor);
-		assertTrue(ctrl.statusOfSensor(sensor));
-		assertFalse(ctrl.statusOfSensor(sensor2));
+		assertTrue(ctrl.isActivated(sensor));
+		assertFalse(ctrl.isActivated(sensor2));
 		ctrl.deleteSensor(sensor);
 
 		verify(s1);

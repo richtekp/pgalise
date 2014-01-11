@@ -53,17 +53,6 @@ public interface SimulationController extends
 
 	public long getElapsedTime();
 
-//	/**
-//	 * Use this only for testing.
-//	 * @param operationCenterController
-//	 */
-//	public void setOperationCenterController(ServerSideOperationCenterController operationCenterController);
-//	
-//	/**
-//	 * Use this only for testing.
-//	 * @param controlCenterController
-//	 */
-//	public void setControlCenterController(ServerSideControlCenterController controlCenterController);
 	/**
 	 * Use this only for testing.
 	 *

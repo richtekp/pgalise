@@ -273,7 +273,7 @@ public class DefaultGPSGateStrategy extends AbstractController<Event, TrafficSta
 	}
 
 	@Override
-	public boolean statusOfSensor(Sensor sensor) throws SensorException {
+	public boolean isActivated(Sensor sensor) throws SensorException {
 		return false;
 	}
 

@@ -52,7 +52,6 @@ import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.sensorFramework.Server;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
@@ -135,11 +134,6 @@ public class DefaultTrafficServerTest {
 	private static CityInfrastructureData city;
 
 	/**
-	 * Service dictionary
-	 */
-	private static ServiceDictionary sd;
-
-	/**
 	 * Bus stops file
 	 */
 	private static final String BUS_STOPS = System.getProperty("user.dir") + "/src/test/resources/stops.txt";
@@ -196,6 +190,12 @@ public class DefaultTrafficServerTest {
 	private IdGenerator idGenerator;
 	@EJB
 	private FileBasedCityInfrastructureDataService cityFactory;
+	@EJB
+	private WeatherController weatherController;
+	@EJB
+	private EnergyController energyController;
+	@EJB
+	private RandomSeedService randomSeedService;
 
 	public DefaultTrafficServerTest() throws NamingException, IOException {
 		container.getContext().bind("inject",
@@ -208,14 +208,6 @@ public class DefaultTrafficServerTest {
 		WeatherController wc = createNiceMock(WeatherController.class);
 		EnergyController ec = createNiceMock(EnergyController.class);
 
-		sd = createMock(ServiceDictionary.class);
-		expect(sd.getRandomSeedService()).andStubReturn(rss);
-		expect(sd.getController(WeatherController.class)).andStubReturn(wc);
-		expect(sd.getController(EnergyController.class)).andStubReturn(ec);
-
-		replay(sd,
-			wc);
-
 		EntityManager entityManager = EasyMock.createMock(EntityManager.class);
 		SENSOR_REGISTRY = new DefaultSensorRegistry(entityManager);
 
@@ -223,15 +215,15 @@ public class DefaultTrafficServerTest {
 			null,
 			6666);
 		server.open();
-		sensorFactory = new DefaultTrafficSensorFactory(sd.getRandomSeedService(),
+		sensorFactory = new DefaultTrafficSensorFactory(randomSeedService,
 			idGenerator,
-			sd.getController(WeatherController.class),
-			sd.getController(EnergyController.class),
+			weatherController,
+			energyController,
 			new AbstractTcpIpOutput("127.0.0.1",
 				6666,
 				new TcpIpKeepOpenStrategy()),
 			1);
-		DefaultTrafficServerTest.sd.getRandomSeedService().init(SIMULATION_START.
+		randomSeedService.init(SIMULATION_START.
 			getTime());
 	}
 
@@ -970,7 +962,6 @@ public class DefaultTrafficServerTest {
 				TrafficEventHandlerManager.class);
 		TrafficServerLocal<VehicleEvent> server0 = new DefaultTrafficServer(
 			referencePoint,
-			sd,
 			SENSOR_REGISTRY,
 			eventHandlerManager,
 			serverList,

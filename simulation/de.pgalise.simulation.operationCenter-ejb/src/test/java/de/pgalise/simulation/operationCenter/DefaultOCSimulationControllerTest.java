@@ -214,7 +214,6 @@ public class DefaultOCSimulationControllerTest {
 		/* Create init paramter: */
 		INIT_PARAMETER = new TrafficInitParameter(
 			null,
-			null,
 			0,
 			0,
 			0,

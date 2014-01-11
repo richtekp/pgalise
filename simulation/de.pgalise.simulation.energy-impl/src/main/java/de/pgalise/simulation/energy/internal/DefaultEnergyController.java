@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
-import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.EventList;
@@ -172,14 +171,14 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 	private EnergyConsumptionManager energyConsumptionManager;
 
 	@EJB
-	private ServiceDictionary serviceDictionary;
-
-	@EJB
 	private EnergyEventStrategy energyEventStrategy;
 
 	private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap;
 
 	private TrafficInitParameter initParameter;
+	
+	@EJB
+	private WeatherController weatherController;
 
 	protected DefaultEnergyController() {
 	}
@@ -250,10 +249,6 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 		return energyEventStrategy;
 	}
 
-	public ServiceDictionary getServiceDictionary() {
-		return serviceDictionary;
-	}
-
 	@Override
 	protected void onInit(TrafficInitParameter param) throws InitializationException {
 		this.buildingsMap.clear();
@@ -277,7 +272,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 		this.energyConsumptionManager.init(this.initParameter.getStartTimestamp().
 			getTime(),
 			this.initParameter.getEndTimestamp().getTime(),
-			this.serviceDictionary.getController(WeatherController.class));
+			weatherController);
 	}
 
 	@Override
@@ -318,10 +313,6 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 
 	public void setEnergyEventStrategy(EnergyEventStrategy energyEventStrategy) {
 		this.energyEventStrategy = energyEventStrategy;
-	}
-
-	public void setServiceDictionary(ServiceDictionary serviceDictionary) {
-		this.serviceDictionary = serviceDictionary;
 	}
 
 	@Override

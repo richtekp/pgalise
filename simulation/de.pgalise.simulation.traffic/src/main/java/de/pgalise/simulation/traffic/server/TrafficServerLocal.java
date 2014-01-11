@@ -20,10 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import de.pgalise.simulation.service.ServiceDictionary;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.traffic.TrafficEdge;
@@ -40,8 +38,6 @@ import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import java.util.Arrays;
@@ -107,13 +103,6 @@ public interface TrafficServerLocal<F extends TrafficEvent> extends
 	 * @return {@link BusFactory}
 	 */
 	public BusFactory getBusFactory();
-
-	/**
-	 * Returns the ServiceDictionary.
-	 *
-	 * @return {@link ServiceDictionary}
-	 */
-	public ServiceDictionary getServiceDictionary();
 
 	/**
 	 * @return update intervall of the simulation in ms
