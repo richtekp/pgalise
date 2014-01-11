@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -20,16 +19,18 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer
  *
  * @author richter
  */
-public class AbstractBusFactory extends AbstractVehicleFactory implements BusFactory {
-	
+public class AbstractBusFactory extends AbstractVehicleFactory implements
+	BusFactory {
+
 	private InfraredInterferer infraredInterferer;
-	
+
 	private TrafficGraphExtensions trafficGraphExtensions;
 
 	public AbstractBusFactory() {
 	}
 
-	public AbstractBusFactory(InfraredInterferer infraredInterferer, TrafficGraphExtensions trafficGraphExtensions) {
+	public AbstractBusFactory(InfraredInterferer infraredInterferer,
+		TrafficGraphExtensions trafficGraphExtensions) {
 		this.infraredInterferer = infraredInterferer;
 		this.trafficGraphExtensions = trafficGraphExtensions;
 	}
@@ -66,7 +67,7 @@ public class AbstractBusFactory extends AbstractVehicleFactory implements BusFac
 			gpsSensor,
 			infraredSensor);
 		return new DefaultBus(getIdGenerator().getNextId(),
-			"random bus", 
+			"random bus",
 			busData,
 			trafficGraphExtensions);
 	}

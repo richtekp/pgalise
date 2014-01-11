@@ -36,6 +36,37 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-resources</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-shared</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>weather-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>energy</artifactId>
+			<type>jar</type>
+		</dependency>
+		
 		<!-- 
 		<dependency>
 				<groupId>com.ibm.db2</groupId>
@@ -49,7 +80,7 @@
 		<dependency>
 			<groupId>org.ostermiller</groupId>
 			<artifactId>utils</artifactId>
-			<scope>test</scope>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -70,39 +101,27 @@
 			<artifactId>commons-collections4</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared-resources</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise</groupId>
-			<artifactId>testutils-shared</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
 		</dependency>
+<!--		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-spatial</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>-->
 		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared-impl</artifactId>
-			<scope>test</scope>
-			<type>ejb</type>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weather-impl</artifactId>
-			<scope>test</scope>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>energy</artifactId>
-			<type>jar</type>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
 		</dependency>
 	</dependencies>
 

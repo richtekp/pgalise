@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.traffic.model.vehicle.Truck;
@@ -34,23 +33,23 @@ import de.pgalise.simulation.traffic.model.vehicle.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 
 /**
- * Implements a factory for {@link Truck}. The vehicles are loaded by a XML file.
- * 
+ * Implements a factory for {@link Truck}. The vehicles are loaded by a XML
+ * file.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData> implements TruckFactory {
+public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
+	implements TruckFactory {
 
 	public XMLTruckFactory() {
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param randomSeedService
-	 *            Random Seed Service
-	 * @param document
-	 *            Document of the XML data
+	 *
+	 * @param randomSeedService Random Seed Service
+	 * @param document Document of the XML data
 	 * @param trafficGraphExtensions
 	 */
 	public XMLTruckFactory(IdGenerator idGenerator,
@@ -65,11 +64,9 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData> implem
 
 	/**
 	 * Constructor
-	 * 
-	 * @param stream
-	 *            Input stream of the XML data
-	 * @param randomSeedService
-	 *            Random Seed Service
+	 *
+	 * @param stream Input stream of the XML data
+	 * @param randomSeedService Random Seed Service
 	 * @param trafficGraphExtensions
 	 */
 	public XMLTruckFactory(IdGenerator idGenerator,
@@ -83,7 +80,7 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData> implem
 	}
 
 	@Override
-	public Truck createRandomTruck( Output output) {
+	public Truck createRandomTruck(Output output) {
 		TruckData data = getRandomVehicleData();
 		return new DefaultTruck(getIdGenerator().getNextId(),
 			null,
@@ -92,7 +89,9 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData> implem
 	}
 
 	@Override
-	public Truck createTruck( Color color, int trailercount, Output output) {
+	public Truck createTruck(Color color,
+		int trailercount,
+		Output output) {
 		return createRandomTruck(output);
 	}
 
@@ -108,16 +107,15 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData> implem
 
 	/**
 	 * Updates the {@link TruckData} with new information
-	 * 
-	 * @param data
-	 *            loaded {@link TruckData}
-	 * @param color
-	 *            new Color
-	 * @param trailercount
-	 *            Number of trailers
+	 *
+	 * @param data loaded {@link TruckData}
+	 * @param color new Color
+	 * @param trailercount Number of trailers
 	 * @return updated {@link TruckData} object
 	 */
-	private TruckData updateTruckData(TruckData data, Color color, int trailercount) {
+	private TruckData updateTruckData(TruckData data,
+		Color color,
+		int trailercount) {
 		data.setTrailerCount(trailercount);
 		data.setColor(color);
 
@@ -185,9 +183,23 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData> implem
 			}
 
 			// Add new vehicle
-			vehicles.put(typeid, new TruckData(color, wheelDistanceWidth, wheelbase1, wheelbase2, length, width,
-					height, weight, power, maxSpeed, axleCount, description, trailerCount, trailerDistance,
-					trailerLength, null));
+			vehicles.put(typeid,
+				new TruckData(color,
+					wheelDistanceWidth,
+					wheelbase1,
+					wheelbase2,
+					length,
+					width,
+					height,
+					weight,
+					power,
+					maxSpeed,
+					axleCount,
+					description,
+					trailerCount,
+					trailerDistance,
+					trailerLength,
+					null));
 		}
 
 		// Returns

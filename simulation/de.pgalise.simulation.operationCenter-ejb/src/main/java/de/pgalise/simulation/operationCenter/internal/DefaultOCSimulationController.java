@@ -43,7 +43,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
  * @author Timo
  */
 @Singleton
-public class DefaultOCSimulationController extends AbstractController<Event, InfrastructureStartParameter, TrafficInitParameter>
+public class DefaultOCSimulationController extends AbstractController<Event, TrafficStartParameter, TrafficInitParameter>
 	implements
 	OCSimulationController {
 
@@ -95,7 +95,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	private OCHQFDataStreamController ocHqfDataStreamController;
 	private SendSensorDataStrategy sendSensorDataStrategy;
 	private TrafficInitParameter initParameter;
-	private InfrastructureStartParameter startParameter;
+	private TrafficStartParameter startParameter;
 	private long currentTimestamp;
 	private Set<GpsSensor> currentGPSSensors;
 	/**
@@ -288,7 +288,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 		return startParameter;
 	}
 
-	public void setStartParameter(InfrastructureStartParameter startParameter) {
+	public void setStartParameter(TrafficStartParameter startParameter) {
 		this.startParameter = startParameter;
 	}
 
@@ -337,7 +337,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Inf
 	}
 
 	@Override
-	protected void onStart(InfrastructureStartParameter param) {
+	protected void onStart(TrafficStartParameter param) {
 		this.setStartParameter(param);
 		try {
 

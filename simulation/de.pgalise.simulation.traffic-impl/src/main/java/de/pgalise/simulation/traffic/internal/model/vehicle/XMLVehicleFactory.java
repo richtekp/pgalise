@@ -46,6 +46,7 @@ import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
  */
 public class XMLVehicleFactory extends AbstractVehicleFactory implements
 	CarFactory, BusFactory, TruckFactory, MotorcycleFactory, BicycleFactory {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -86,7 +87,8 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
 	 * @param xmlInputStream Input stream to the XML file
 	 * @param trafficGraphExtensions
 	 */
-	public XMLVehicleFactory(RandomSeedService randomSeedService,  IdGenerator idGenerator,
+	public XMLVehicleFactory(RandomSeedService randomSeedService,
+		IdGenerator idGenerator,
 		TrafficGraphExtensions trafficGraphExtensions,
 		InputStream xmlInputStream) {
 		super(

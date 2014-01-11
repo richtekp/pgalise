@@ -37,7 +37,7 @@ import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 
 /**
  * The oc simulation servlet receives simulation updates directly from the
@@ -166,7 +166,7 @@ public class OCSimulationServlet extends HttpServlet {
 
 				log.debug("start");
 				ocSimulationController.start(gson.fromJson(req.getParameter("json"),
-					InfrastructureStartParameter.class));
+					TrafficStartParameter.class));
 
 			} else if (req.getParameter("init") != null && req.getParameter("init").
 				equalsIgnoreCase("true")) {

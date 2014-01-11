@@ -7,14 +7,12 @@ package de.pgalise.testutils.traffic;
 
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficCity;
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -53,16 +51,8 @@ public class TrafficTestUtils {
 			throw new RuntimeException("could not load bus stop file");
 		}
 		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
-		TrafficInfrastructureData trafficInfrastructureData;
-		try {
-			trafficInfrastructureData = new OSMCityInfrastructureData(id,
-				osmFileInputStream,
-				busStopFileInputStream,
-				buildingEnergyProfileStrategy
-			);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
+		CityInfrastructureData trafficInfrastructureData;
+		trafficInfrastructureData = new CityInfrastructureData(id);
 		TrafficCity city = new TrafficCity(
 			"Berlin",
 			3375222,
@@ -72,5 +62,8 @@ public class TrafficTestUtils {
 			new BaseGeoInfo(referenceArea),
 			trafficInfrastructureData);
 		return city;
+	}
+
+	private TrafficTestUtils() {
 	}
 }

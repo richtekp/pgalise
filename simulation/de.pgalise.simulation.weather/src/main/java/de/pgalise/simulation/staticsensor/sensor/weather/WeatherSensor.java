@@ -22,6 +22,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.staticsensor.AbstractStaticSensor;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 
 /**
  * Super class for weather sensors
@@ -75,7 +76,9 @@ public abstract class WeatherSensor<X extends SensorData> extends AbstractStatic
 		}
 		if (weatherInterferer == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"weatherInterferer"));
+				"weatherInterferer") + String.format(
+					" Use %s in order to disable intererence",
+					WeatherNoInterferer.class));
 		}
 		this.weatherController = weatherController;
 		this.interferer = weatherInterferer;

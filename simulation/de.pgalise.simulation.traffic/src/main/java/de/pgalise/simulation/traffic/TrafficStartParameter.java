@@ -9,14 +9,14 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.util.List;
 
-public class InfrastructureStartParameter extends StartParameter<TrafficCity> {
+public class TrafficStartParameter extends StartParameter<TrafficCity> {
 
 	private static final long serialVersionUID = 1L;
 
-	public InfrastructureStartParameter() {
+	public TrafficStartParameter() {
 	}
 
-	public InfrastructureStartParameter(TrafficCity city,
+	public TrafficStartParameter(TrafficCity city,
 		boolean aggregatedWeatherDataEnabled,
 		List<WeatherEvent> weatherEventHelperList) {
 		super(

@@ -15,18 +15,32 @@
  */
 package de.pgalise.simulation.traffic;
 
+import com.vividsolutions.jts.geom.Envelope;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.city.SerializationBasedCityInfrastructureDataService;
+import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Stateful;
 
 import org.slf4j.Logger;
 
@@ -36,7 +50,8 @@ import org.slf4j.Logger;
  * @author Timo
  * @author Mustafa
  */
-public class DefaultOSMCityInfrastructureDataService {
+@Stateful
+public class DefaultSerializationBasedCityInfrastructureDataService implements SerializationBasedCityInfrastructureDataService {
 
 	/**
 	 * Pattern to get filenames without postfix.
@@ -47,29 +62,29 @@ public class DefaultOSMCityInfrastructureDataService {
 	 * Logger
 	 */
 	private static final Logger log = org.slf4j.LoggerFactory.getLogger(
-		DefaultOSMCityInfrastructureDataService.class);
+		DefaultSerializationBasedCityInfrastructureDataService.class);
 
-	@EJB
-	private IdGenerator idGenerator;
+	private CityInfrastructureData cityInfrastructureData;
 
 	/**
 	 * Default
 	 */
-	public DefaultOSMCityInfrastructureDataService() {
+	public DefaultSerializationBasedCityInfrastructureDataService() {
 	}
 
 	/**
-	 * Returns an instance of {@link CityInfrastructureData}. If the file is
+	 * Returns an instance of {@link CityInfrastructureDataService}. If the file is
 	 * already parsed and persistent, it can be loaded, otherwise it will be
 	 * parsed.
 	 *
 	 * @param osm OSM file
 	 * @param busstops bus stops file
 	 * @param buildingEnergyProfileStrategy BuildingEnergyProfileStrategy
-	 * @return CityInfrastructureData
+	 * @return CityInfrastructureDataService
 	 * @throws IOException
 	 */
-	public TrafficInfrastructureData createCityInfrastructureData(File osm,
+	@Override
+	public void parse(File osm,
 		File busstops,
 		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
 
@@ -91,7 +106,7 @@ public class DefaultOSMCityInfrastructureDataService {
 			try {
 				fis = new FileInputStream(cityInfrastructuraDataFile.getAbsolutePath());
 				ois = new ObjectInputStream(fis);
-				return (TrafficInfrastructureData) ois.readObject();
+				this.cityInfrastructureData= (CityInfrastructureData) ois.readObject();
 			} catch (Exception e) {
 				log.warn(e.getLocalizedMessage());
 			} finally {
@@ -110,12 +125,7 @@ public class DefaultOSMCityInfrastructureDataService {
 		if (cityInfrastructuraDataFile.exists()) {
 			cityInfrastructuraDataFile.delete();
 		}
-		TrafficInfrastructureData cityInfrastructureData = new OSMCityInfrastructureData(
-			idGenerator.getNextId(),
-			new FileInputStream(osm),
-			new FileInputStream(busstops),
-			buildingEnergyProfileStrategy);
-
+		
 		FileOutputStream fis = null;
 		ObjectOutputStream oos = null;
 		try {
@@ -134,7 +144,51 @@ public class DefaultOSMCityInfrastructureDataService {
 			} catch (Exception e) {
 			}
 		}
+	}
 
-		return cityInfrastructureData;
+	@Override
+	public Envelope getBoundary() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Map<EnergyProfileEnum, List<Building>> getBuildings(
+		JaxRSCoordinate geolocation,
+		int radiusInMeter) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public List<Building> getBuildingsInRadius(JaxRSCoordinate centerPoint,
+		int radiusInMeter) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public CityInfrastructureData createCityInfrastructureData()  {
+		return this.cityInfrastructureData;
+	}
+
+	@Override
+	public NavigationNode getNearestNode(double latitude,
+		double longitude) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public NavigationNode getNearestStreetNode(double latitude,
+		double longitude) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public NavigationNode getNearestJunctionNode(double latitude,
+		double longitude) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public List<NavigationNode> getNodesInBoundary(Envelope boundary) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 }

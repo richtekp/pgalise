@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.traffic.model.vehicle.Car;
@@ -36,19 +35,20 @@ import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 
 /**
  * Implements a factory for {@link Car}. The vehicles are loaded by a XML file.
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements CarFactory {
+public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
+	CarFactory {
 
 	@Override
-	public Car createCar( Output output) {
+	public Car createCar(Output output) {
 		return createRandomCar(output);
 	}
 
 	@Override
-	public Car createRandomCar( Output output) {
+	public Car createRandomCar(Output output) {
 		CarData data = getRandomVehicleData();
 		return new DefaultCar(getIdGenerator().getNextId(),
 			null,
@@ -61,11 +61,9 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
 
 	/**
 	 * Constructor
-	 * 
-	 * @param randomSeedService
-	 *            Random Seed Service
-	 * @param document
-	 *            Document of the XML data
+	 *
+	 * @param randomSeedService Random Seed Service
+	 * @param document Document of the XML data
 	 * @param trafficGraphExtensions
 	 */
 	public XMLCarFactory(IdGenerator idGenerator,
@@ -80,11 +78,9 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
 
 	/**
 	 * Constructor
-	 * 
-	 * @param stream
-	 *            Input stream of the XML data
-	 * @param randomSeedService
-	 *            Random Seed Service
+	 *
+	 * @param stream Input stream of the XML data
+	 * @param randomSeedService Random Seed Service
 	 * @param trafficGraphExtensions
 	 */
 	public XMLCarFactory(IdGenerator idGenerator,
@@ -99,13 +95,13 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
 
 	/**
 	 * Updates the {@link CarData} with new information
-	 * 
-	 * @param data
-	 *            loaded {@link CarData}
+	 *
+	 * @param data loaded {@link CarData}
 	 * @param color
 	 * @return updated {@link CarData} object
 	 */
-	private CarData updateCarData(CarData data, Color color) {
+	private CarData updateCarData(CarData data,
+		Color color) {
 		data.setColor(color);
 
 		return data;
@@ -113,7 +109,8 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
 
 	/**
 	 * Create new CarData
-	 * @return 
+	 *
+	 * @return
 	 */
 	@Override
 	public CarData getRandomVehicleData() {
@@ -177,8 +174,21 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
 			}
 
 			// Add new vehicle
-			vehicles.put(typeid, new CarData(color, wheelDistanceWidth, wheelbase1, wheelbase2, length, width, height,
-					weight, power, maxSpeed, axleCount, description, null, VehicleTypeEnum.CAR));
+			vehicles.put(typeid,
+				new CarData(color,
+					wheelDistanceWidth,
+					wheelbase1,
+					wheelbase2,
+					length,
+					width,
+					height,
+					weight,
+					power,
+					maxSpeed,
+					axleCount,
+					description,
+					null,
+					VehicleTypeEnum.CAR));
 		}
 
 		// Returns

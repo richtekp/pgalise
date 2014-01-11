@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
@@ -34,23 +33,23 @@ import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 
 /**
- * Implements a factory for {@link Motorcycle}. The vehicles are loaded by a XML file.
- * 
+ * Implements a factory for {@link Motorcycle}. The vehicles are loaded by a XML
+ * file.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleData> implements MotorcycleFactory {
+public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleData>
+	implements MotorcycleFactory {
 
 	public XMLMotorcycleFactory() {
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param randomSeedService
-	 *            Random Seed Service
-	 * @param document
-	 *            Document of the XML data
+	 *
+	 * @param randomSeedService Random Seed Service
+	 * @param document Document of the XML data
 	 * @param trafficGraphExtensions
 	 */
 	public XMLMotorcycleFactory(IdGenerator idGenerator,
@@ -65,11 +64,9 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
 
 	/**
 	 * Constructor
-	 * 
-	 * @param stream
-	 *            Input stream of the XML data
-	 * @param randomSeedService
-	 *            Random Seed Service
+	 *
+	 * @param stream Input stream of the XML data
+	 * @param randomSeedService Random Seed Service
 	 * @param trafficGraphExtensions
 	 */
 	public XMLMotorcycleFactory(IdGenerator idGenerator,
@@ -83,7 +80,7 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
 	}
 
 	@Override
-	public Motorcycle createRandomMotorcycle( Output output) {
+	public Motorcycle createRandomMotorcycle(Output output) {
 		MotorcycleData data = getRandomVehicleData();
 		return new DefaultMotorcycle(getIdGenerator().getNextId(),
 			null,
@@ -92,20 +89,19 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
 	}
 
 	@Override
-	public Motorcycle createMotorcycle( Output output) {
+	public Motorcycle createMotorcycle(Output output) {
 		return createRandomMotorcycle(output);
 	}
 
 	/**
 	 * Updates the {@link MotorcycleData} with new information
-	 * 
-	 * @param data
-	 *            loaded {@link MotorcycleData}
-	 * @param color
-	 *            new Color
+	 *
+	 * @param data loaded {@link MotorcycleData}
+	 * @param color new Color
 	 * @return updated {@link MotorcycleData} object
 	 */
-	private MotorcycleData updateMotorcycleData(MotorcycleData data, Color color) {
+	private MotorcycleData updateMotorcycleData(MotorcycleData data,
+		Color color) {
 		data.setColor(color);
 
 		return data;
@@ -168,8 +164,16 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
 			}
 
 			// Add new vehicle
-			vehicles.put(typeid, new MotorcycleData(color, weight, horsePower, length, maxSpeed, wheelbase, axleCount,
-					description, null));
+			vehicles.put(typeid,
+				new MotorcycleData(color,
+					weight,
+					horsePower,
+					length,
+					maxSpeed,
+					wheelbase,
+					axleCount,
+					description,
+					null));
 		}
 
 		// Returns

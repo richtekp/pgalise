@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.operationCenter.internal.strategy;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
@@ -25,18 +24,24 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 
 /**
  * Interface to handle gate messages.
+ *
  * @author Timo
  */
-public interface GPSGateStrategy extends Controller<Event, InfrastructureStartParameter, TrafficInitParameter>, SensorManagerController<Event, InfrastructureStartParameter, TrafficInitParameter,Sensor<?,?>> {
+public interface GPSGateStrategy extends
+	Controller<Event, TrafficStartParameter, TrafficInitParameter>,
+	SensorManagerController<Event, TrafficStartParameter, TrafficInitParameter, Sensor<?, ?>> {
+
 	/**
 	 * Handles a gate message.
-	 * @param gateInformationMap <Integer = sensor type, Double = percentage> e.g. 1, 0.8 means 80% of sensors from type 1.
-	 * @throws IOException 
-	 * @throws UnknownHostException 
+	 *
+	 * @param gateInformationMap <Integer = sensor type, Double = percentage> e.g.
+	 * 1, 0.8 means 80% of sensors from type 1.
+	 * @throws IOException
+	 * @throws UnknownHostException
 	 */
 	public void handleGateMessage(Map<Integer, Double> gateInformationMap) throws UnknownHostException, IOException;
 }

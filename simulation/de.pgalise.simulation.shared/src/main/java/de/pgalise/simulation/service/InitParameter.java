@@ -20,8 +20,11 @@ import de.pgalise.simulation.service.ServerConfiguration;
 import java.io.Serializable;
 
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.validation.constraints.NotNull;
 
@@ -97,6 +100,14 @@ public class InitParameter implements Serializable {
 	 * Default
 	 */
 	public InitParameter() {
+		try {
+			this.operationCenterURL = new URL("http://localhost:8080/operationCenter");
+			this.controlCenterURL = new URL("http://localhost:8080/controlCenter");
+		} catch (MalformedURLException ex) {
+			Logger.getLogger(InitParameter.class.getName()).log(Level.SEVERE,
+				null,
+				ex);
+		}
 		startTimestamp = new Date();
 		endTimestamp = new Date(startTimestamp.getTime() + 1000 * 60 * 60);
 	}
@@ -128,7 +139,7 @@ public class InitParameter implements Serializable {
 		this.serverConfiguration = serverConfiguration;
 		this.startTimestamp = new Date(startTimestamp);
 		this.endTimestamp = new Date(endTimestamp);
-		if (this.startTimestamp.before(this.endTimestamp)) {
+		if (this.startTimestamp.after(this.endTimestamp)) {
 			throw new IllegalArgumentException(String.format(
 				"endTimestamp %s lies before startTimestamp %s",
 				this.endTimestamp.toString(),
@@ -139,6 +150,7 @@ public class InitParameter implements Serializable {
 		this.operationCenterURL = operationCenterURL;
 		this.trafficFuzzyData = trafficFuzzyData;
 		this.cityBoundary = cityBoundary;
+		this.operationCenterURL = operationCenterURL;
 		this.controlCenterURL = controlCenterURL;
 	}
 

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.route;
 
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.server.route.BusStopParser;
@@ -33,26 +31,22 @@ import javax.persistence.TypedQuery;
 /**
  * @author Lena
  */
-@Singleton(name = "de.pgalise.simulation.traffic.server.route.DefaultBusStopParser", mappedName = "de.pgalise.simulation.traffic.server.route.DefaultBusStopParser")
+@Singleton
 public class DefaultBusStopParser implements BusStopParser {
-	private static final Logger log = LoggerFactory.getLogger(DefaultBusStopParser.class);
 
-	private CityInfrastructureData trafficInformation;
+	private static final Logger log = LoggerFactory.getLogger(
+		DefaultBusStopParser.class);
+
 	private List<BusStop> busStops;
 	@PersistenceContext(unitName = "pgalise-traffic")
 	private EntityManager entityManager;
 
-	protected DefaultBusStopParser() {
+	public DefaultBusStopParser() {
 	}
 
-	public DefaultBusStopParser(CityInfrastructureData trafficInformation) {
-		this.trafficInformation = trafficInformation;
-	}
-
-	
 	/**
 	 * Parses GTFS busstops to the graph (by use of FindNearestNode)
-	 * 
+	 *
 	 * @param graph
 	 * @return
 	 */
@@ -61,8 +55,10 @@ public class DefaultBusStopParser implements BusStopParser {
 		TypedQuery query = entityManager.createQuery("SELECT x FROM BusStop x",
 			BusStop.class);
 		List<BusStop> queriedBusStops = query.getResultList();
-		log.info("Number of parsed BusStops: %d", this.busStops.size());
-		log.info("Number of parsed BusStops being outside of the boundary: %d", queriedBusStops.size()-this.busStops.size());
+		log.info("Number of parsed BusStops: %d",
+			this.busStops.size());
+		log.info("Number of parsed BusStops being outside of the boundary: %d",
+			queriedBusStops.size() - this.busStops.size());
 		return this.busStops;
 	}
 
@@ -75,8 +71,7 @@ public class DefaultBusStopParser implements BusStopParser {
 	}
 
 	/**
-	 * @param busStops
-	 *            the busStops to set
+	 * @param busStops the busStops to set
 	 */
 	@Override
 	public void setBusStops(List<BusStop> busStops) {

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.route;
 
 import java.text.SimpleDateFormat;
@@ -29,13 +28,14 @@ import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
 
 /**
- * 
- * 
+ *
+ *
  * @author Lena
  * @author Timo
  * @author Mischa
  */
-public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGenerator {
+public class DefaultRandomVehicleTripGenerator implements
+	RandomVehicleTripGenerator {
 
 	/**
 	 * Date
@@ -89,18 +89,16 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 
 	/**
 	 * Constructor
-	 * 
-	 * @param timeInMs
-	 *            ...
-	 * @param hn
-	 *            All nodes from all servers
-	 * @param wn
-	 *            All work nodes from all servers
-	 * @param seedService
-	 *            Random seed service
+	 *
+	 * @param timeInMs ...
+	 * @param hn All nodes from all servers
+	 * @param wn All work nodes from all servers
+	 * @param seedService Random seed service
 	 */
-	public DefaultRandomVehicleTripGenerator(long timeInMs, List<TrafficNode> hn,
-			List<TrafficNode> wn, RandomSeedService seedService) {
+	public DefaultRandomVehicleTripGenerator(long timeInMs,
+		List<TrafficNode> hn,
+		List<TrafficNode> wn,
+		RandomSeedService seedService) {
 		this.randomSeedService = seedService;
 		this.date = new Date(timeInMs);
 
@@ -115,87 +113,95 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 
 	/**
 	 * Creates a trip for the given vehicle type.
-	 * 
-	 * @param vehicleType
-	 *            Vehicle type
+	 *
+	 * @param vehicleType Vehicle type
 	 * @return TrafficTrip
 	 */
 	@Override
 	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
-			List<TrafficNode> startWorkNodes, VehicleTypeEnum vehicleType, Date date,
-			int buffer) {
+		List<TrafficNode> startWorkNodes,
+		VehicleTypeEnum vehicleType,
+		Date date,
+		int buffer) {
 		this.startHomeNodes = startHomeNodes;
 		this.startWorkNodes = startWorkNodes;
 		// log.debug("Anzahl startHomeNodes vs allHomeNodes: " +
 		// startHomeNodes.size() + " : " + homeNodes.size());
 		switch (vehicleType) {
-		case TRUCK:
-			return this.createTruckTrip(date, buffer);
-		case BIKE:
-			return this.createBikeTrip(date, buffer);
-		default:
-			return this.createCarTrip(date, buffer);
+			case TRUCK:
+				return this.createTruckTrip(date,
+					buffer);
+			case BIKE:
+				return this.createBikeTrip(date,
+					buffer);
+			default:
+				return this.createCarTrip(date,
+					buffer);
 		}
 	}
 
 	/**
 	 * Create bike trips
-	 * 
-	 * @param date
-	 *            Date
-	 * @param buffer
-	 *            Buffer
+	 *
+	 * @param date Date
+	 * @param buffer Buffer
 	 * @return TrafficTrip
 	 */
-	private TrafficTrip createBikeTrip(Date date, int buffer) {
-		return this.createCarTrip(date, buffer);
+	private TrafficTrip createBikeTrip(Date date,
+		int buffer) {
+		return this.createCarTrip(date,
+			buffer);
 	}
 
 	/**
 	 * Creates a random trip for a car.
-	 * 
-	 * @param date
-	 *            Date
-	 * @param buffer
-	 *            Buffer
+	 *
+	 * @param date Date
+	 * @param buffer Buffer
 	 * @return TrafficTrip
 	 */
-	private TrafficTrip createCarTrip(Date date, int buffer) {
+	private TrafficTrip createCarTrip(Date date,
+		int buffer) {
 		String weekday = new SimpleDateFormat("E").format(this.date);
 
 		if (weekday.equals("Sa") || weekday.equals("So")) {
-			this.createFreeTimeTrip(date, buffer);
+			this.createFreeTimeTrip(date,
+				buffer);
 		} else {
 			int decisionMaker = this.random.nextInt(101);
 			if (decisionMaker <= 60) {
-				this.createWorkTrip(date, buffer);
+				this.createWorkTrip(date,
+					buffer);
 			} else {
-				this.createFreeTimeTrip(date, buffer);
+				this.createFreeTimeTrip(date,
+					buffer);
 			}
 		}
 
 		// log.debug(String.format("Created Trip (%s, %s)",
 		// startNode.getAttribute("position"),
 		// targetNode.getAttribute("position")));
-		return new TrafficTrip(this.startNode, this.targetNode,
-				this.startTimeWayThere);// ,this.startTimeWayBack);
+		return new TrafficTrip(this.startNode,
+			this.targetNode,
+			this.startTimeWayThere);// ,this.startTimeWayBack);
 	}
 
 	/**
 	 * Creates a random trip for a truck.
-	 * 
-	 * @param date
-	 *            Date
-	 * @param buffer
-	 *            Buffer
+	 *
+	 * @param date Date
+	 * @param buffer Buffer
 	 * @return TrafficTrip
 	 */
-	private TrafficTrip createTruckTrip(Date date, int buffer) {
+	private TrafficTrip createTruckTrip(Date date,
+		int buffer) {
 		// Amount of trucks just depends on fuzzy. Every trip is a work trip
-		this.createTruckWorkTrip(date, buffer);
+		this.createTruckWorkTrip(date,
+			buffer);
 
-		return new TrafficTrip(this.startNode, this.targetNode,
-				this.startTimeWayThere);// ,this.startTimeWayBack);
+		return new TrafficTrip(this.startNode,
+			this.targetNode,
+			this.startTimeWayThere);// ,this.startTimeWayBack);
 	}
 
 	public List<TrafficNode> getHomeNodes() {
@@ -213,8 +219,8 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 	@Override
 	public void init() {
 		this.random = new Random(
-				this.randomSeedService.getSeed(DefaultRandomVehicleTripGenerator.class
-						.getName()));
+			this.randomSeedService.getSeed(DefaultRandomVehicleTripGenerator.class
+				.getName()));
 	}
 
 	public void setHomeNodes(List<TrafficNode> homeNodes) {
@@ -231,16 +237,17 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 
 	/**
 	 * ...
-	 * 
+	 *
 	 * @param date
 	 * @param buffer
 	 */
-	@SuppressWarnings({ "deprecation" })
-	private void createFreeTimeTrip(Date date, int buffer) {
+	@SuppressWarnings({"deprecation"})
+	private void createFreeTimeTrip(Date date,
+		int buffer) {
 		this.startNode = this.startHomeNodes.get(this.random
-				.nextInt(this.startHomeNodes.size()));
+			.nextInt(this.startHomeNodes.size()));
 		this.targetNode = this.homeNodes.get(this.random.nextInt(this.homeNodes
-				.size()));
+			.size()));
 		if (date == null) {
 			int tempHour = this.random.nextInt(24);
 			int minute = this.random.nextInt(60);
@@ -264,12 +271,13 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 
 	/**
 	 * ...
-	 * 
+	 *
 	 * @param date
 	 * @param buffer
 	 */
 	@SuppressWarnings("deprecation")
-	private void createWorkTrip(Date date, int buffer) {
+	private void createWorkTrip(Date date,
+		int buffer) {
 		// this.startNode =
 		// this.startHomeNodes.get(this.random.nextInt(this.startHomeNodes.size()));
 		// this.targetNode =
@@ -288,9 +296,9 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 				this.startTimeWayThere = this.date.getTime();
 
 				this.startNode = this.startHomeNodes.get(this.random
-						.nextInt(this.startHomeNodes.size()));
+					.nextInt(this.startHomeNodes.size()));
 				this.targetNode = this.workNodes.get(this.random
-						.nextInt(this.workNodes.size()));
+					.nextInt(this.workNodes.size()));
 			} else {
 				int variance = this.random.nextInt(121 + 120) - 120;
 
@@ -303,9 +311,9 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 				this.startTimeWayThere = this.date.getTime();
 
 				this.startNode = this.startWorkNodes.get(this.random
-						.nextInt(this.startWorkNodes.size()));
+					.nextInt(this.startWorkNodes.size()));
 				this.targetNode = this.homeNodes.get(this.random
-						.nextInt(this.homeNodes.size()));
+					.nextInt(this.homeNodes.size()));
 
 			}
 		} else {
@@ -323,12 +331,14 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 
 	/**
 	 * ...
-	 * 
+	 *
 	 * @param date
 	 * @param buffer
 	 */
-	private void createTruckWorkTrip(Date date, int buffer) {
-		createFreeTimeTrip(date, buffer); // Trucks are driving from 0-24 Uhr
+	private void createTruckWorkTrip(Date date,
+		int buffer) {
+		createFreeTimeTrip(date,
+			buffer); // Trucks are driving from 0-24 Uhr
 	}
 
 	// // log.debug("WorkTrip am " + cal.get(Calendar.DATE) + "." +
@@ -383,54 +393,51 @@ public class DefaultRandomVehicleTripGenerator implements RandomVehicleTripGener
 	// // + cal.get(Calendar.MINUTE) + ":" + cal.get(Calendar.SECOND) +
 	// // ", Zielknoten: " + targetNode);
 	// }
-
 	/**
 	 * Create a traffic trip with given target node ID and time
-	 * 
-	 * @param startHomeNodes
-	 *            List with start home nodes
-	 * @param targetNode
-	 *            Target node ID
-	 * @param startTimestamp
-	 *            startTimeWayThere
+	 *
+	 * @param startHomeNodes List with start home nodes
+	 * @param targetNode Target node ID
+	 * @param startTimestamp startTimeWayThere
 	 * @return TrafficTrip
 	 */
 	@Override
 	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
-			TrafficNode targetNode, long startTimestamp) {
+		TrafficNode targetNode,
+		long startTimestamp) {
 		this.startHomeNodes = startHomeNodes;
 
 		// Calculate start node
 		this.startNode = this.startHomeNodes.get(this.random
-				.nextInt(this.startHomeNodes.size()));
+			.nextInt(this.startHomeNodes.size()));
 
 		// Set target node
-		return new TrafficTrip(this.startNode, targetNode,
-				startTimestamp);
+		return new TrafficTrip(this.startNode,
+			targetNode,
+			startTimestamp);
 	}
 
 	/**
 	 * Create a traffic trip with given start node ID and time
-	 * 
-	 * @param homeNodes
-	 *            List with target home nodes
-	 * @param startNode
-	 *            Start node ID
-	 * @param startTimestamp
-	 *            startTimeWayThere
+	 *
+	 * @param homeNodes List with target home nodes
+	 * @param startNode Start node ID
+	 * @param startTimestamp startTimeWayThere
 	 * @return TrafficTrip
 	 */
 	@Override
 	public TrafficTrip createVehicleTrip(TrafficNode startNode,
-			List<TrafficNode> homeNodes, long startTimestamp) {
+		List<TrafficNode> homeNodes,
+		long startTimestamp) {
 		this.homeNodes = homeNodes;
 
 		// Calculate target node
 		this.targetNode = this.homeNodes.get(this.random.nextInt(this.homeNodes
-				.size()));
+			.size()));
 
 		// Set target node
-		return new TrafficTrip(startNode, this.targetNode,
-				startTimestamp);
+		return new TrafficTrip(startNode,
+			this.targetNode,
+			startTimestamp);
 	}
 }

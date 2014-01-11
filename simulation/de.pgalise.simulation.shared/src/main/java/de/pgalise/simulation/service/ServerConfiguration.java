@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.service;
 
 import java.io.Serializable;
@@ -24,13 +23,16 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The ServerConfiguration is used to distribute services in the simulation 
- * on different servers by mapping one or more services (entities) to a specific server address.
+ * The ServerConfiguration is used to distribute services in the simulation on
+ * different servers by mapping one or more services (entities) to a specific
+ * server address.
+ *
  * @see de.pgalise.simulation.service.ServiceDictionary
  * @see Entity
  * @author Mustafa
  */
-public class ServerConfiguration implements Serializable {	
+public class ServerConfiguration implements Serializable {
+
 	/**
 	 * Serial
 	 */
@@ -39,8 +41,9 @@ public class ServerConfiguration implements Serializable {
 	 * Map with keys = ip:port and entities
 	 */
 	private Map<String, List<ServerConfigurationEntity>> configuration;
-	
-	public final static ServerConfiguration DEFAULT_SERVER_CONFIGURATION = new ServerConfiguration(ServiceDictionary.SERVICES);
+
+	public final static ServerConfiguration DEFAULT_SERVER_CONFIGURATION = new ServerConfiguration(
+		ServiceDictionary.SERVICES);
 
 	/**
 	 * Default constructor
@@ -52,21 +55,25 @@ public class ServerConfiguration implements Serializable {
 	public ServerConfiguration(
 		Set<String> serviceNames) {
 		this();
-		List<ServerConfigurationEntity> entities = new ArrayList<>(ServiceDictionary.SERVICES.size());
-		for(String serviceName : serviceNames) {
+		List<ServerConfigurationEntity> entities = new ArrayList<>(
+			ServiceDictionary.SERVICES.size());
+		for (String serviceName : serviceNames) {
 			entities.add(new ServerConfigurationEntity(serviceName));
-		} 
+		}
 		configuration.put("127.0.0.1:8081",
 			entities);
 	}
 
-	public void setConfiguration(Map<String, List<ServerConfigurationEntity>> configuration) {
+	public void setConfiguration(
+		Map<String, List<ServerConfigurationEntity>> configuration) {
 		this.configuration = configuration;
 	}
 
 	/**
-	 * a {@link Map} mapping path specifications in the form of <tt><IP>:<PORT></tt> to a list of {@link ServerConfigurationEntity}s
-	 * @return 
+	 * a {@link Map} mapping path specifications in the form of
+	 * <tt><IP>:<PORT></tt> to a list of {@link ServerConfigurationEntity}s
+	 *
+	 * @return
 	 */
 	public Map<String, List<ServerConfigurationEntity>> getConfiguration() {
 		return configuration;

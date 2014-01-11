@@ -6,18 +6,14 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.VehicleInformation;
-import javax.ejb.Local;
 
 /**
  *
  * @author richter
  */
-@Local
-public interface InformationBasedVehicleFactory  extends VehicleFactory 
-{
-	
-	public Vehicle<?> createVehicle(VehicleInformation vehicleInformation, Output output);
+public interface InformationBasedVehicleFactory extends VehicleFactory {
+
+	public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
+		Output output);
 }

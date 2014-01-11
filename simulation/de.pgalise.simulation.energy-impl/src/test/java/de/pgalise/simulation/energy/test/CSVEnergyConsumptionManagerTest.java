@@ -31,7 +31,7 @@ import org.junit.Test;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.profile.CSVProfileLoader;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Building;
@@ -83,7 +83,7 @@ public class CSVEnergyConsumptionManagerTest {
 			buildingList.add(new Building( new JaxRSCoordinate(53.136765, 8.216524), null));
 		}
 		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
-		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);
+		CityInfrastructureDataService citydata = EasyMock.createNiceMock(CityInfrastructureDataService.class);
 		EasyMock.expect(citydata.getBuildings(CSVEnergyConsumptionManagerTest.testLocationAsGL, 5)).andStubReturn(map);
 		EasyMock.replay(citydata);
 

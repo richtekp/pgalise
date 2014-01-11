@@ -31,7 +31,6 @@ import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.EventList;
@@ -41,8 +40,9 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
 
 /**
@@ -56,7 +56,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
  */
 @Singleton(name = "de.pgalise.simulation.energy.EnergyController")
 @Local(EnergyControllerLocal.class)
-public class DefaultEnergyController extends AbstractController<EnergyEvent, InfrastructureStartParameter, TrafficInitParameter>
+public class DefaultEnergyController extends AbstractController<EnergyEvent, TrafficStartParameter, TrafficInitParameter>
 	implements
 	EnergyControllerLocal {
 
@@ -157,7 +157,8 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 	/**
 	 * city Infrastructure
 	 */
-	private CityInfrastructureData cityInfrastructure;
+	@EJB
+	private CityInfrastructureDataService cityInfrastructure;
 
 	/**
 	 * Current timestamp
@@ -186,7 +187,8 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 	/**
 	 * Default
 	 */
-	public DefaultEnergyController(CityInfrastructureData cityInfrastructureData) {
+	public DefaultEnergyController(
+		CityInfrastructureDataService cityInfrastructureData) {
 		this.cityInfrastructure = cityInfrastructureData;
 		this.buildingsMap = new HashMap<>();
 	}
@@ -195,7 +197,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 		return this.city;
 	}
 
-	public CityInfrastructureData getCityInfrastructure() {
+	public CityInfrastructureDataService getCityInfrastructure() {
 		return this.cityInfrastructure;
 	}
 
@@ -270,9 +272,8 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 	}
 
 	@Override
-	protected void onStart(InfrastructureStartParameter param) {
+	protected void onStart(TrafficStartParameter param) {
 		this.city = param.getCity();
-		this.cityInfrastructure = this.initParameter.getCityInfrastructureData();
 		this.energyConsumptionManager.init(this.initParameter.getStartTimestamp().
 			getTime(),
 			this.initParameter.getEndTimestamp().getTime(),
@@ -301,7 +302,8 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Inf
 		this.city = city;
 	}
 
-	public void setCityInfrastructure(CityInfrastructureData cityInfrastructure) {
+	public void setCityInfrastructure(
+		CityInfrastructureDataService cityInfrastructure) {
 		this.cityInfrastructure = cityInfrastructure;
 	}
 

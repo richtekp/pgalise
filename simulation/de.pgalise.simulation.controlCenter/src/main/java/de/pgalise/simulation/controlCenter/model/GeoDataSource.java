@@ -5,13 +5,13 @@
 package de.pgalise.simulation.controlCenter.model;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+
 
 /**
  *
  * @author richter
  */
 public interface GeoDataSource {
-	
-	TrafficInfrastructureData generateInfrastructureData();
+
+	CityInfrastructureData generateInfrastructureData();
 }

@@ -50,12 +50,13 @@ import com.Ostermiller.util.CSVParser;
 import com.bbn.openmap.geo.Geo;
 import com.bbn.openmap.geo.OMGeo.Polygon;
 import com.vividsolutions.jts.geom.Envelope;
+import de.pgalise.simulation.service.IdGenerator;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.tag.AmenityTag;
 import de.pgalise.simulation.shared.tag.AttractionTag;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.tag.CraftTag;
 import de.pgalise.simulation.shared.tag.EmergencyServiceTag;
 import de.pgalise.simulation.shared.tag.GamblingTag;
@@ -63,6 +64,8 @@ import de.pgalise.simulation.shared.tag.LanduseTagEnum;
 import de.pgalise.simulation.shared.tag.LeisureTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.tag.PublicTransportTag;
 import de.pgalise.simulation.shared.tag.RepairTag;
 import de.pgalise.simulation.shared.tag.SchoolTag;
@@ -92,205 +95,40 @@ import de.pgalise.simulation.shared.tag.factory.WayTagFactory;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Arrays;
-import javax.persistence.Entity;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
+import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
 
 /**
- * The OSMCityInfrastructureData is the used {@link CityInfrastructureData} in
- * this prototype. It parsed the needed information from given openstreetmap and
- * busstop files. The methods {@link CityInfrastructureData#getNearestJunctionNode(double, double)},
- * {@link CityInfrastructureData#getNearestNode(double, double)}, {@link CityInfrastructureData#getNearestStreetNode(double, double)
- * and {@link CityInfrastructureData#getNodesInBoundary(Boundary) are implements with a PR-Tree.
+ * The DefaultFileBasedCityInfrastructureDataService is the used
+ * {@link CityInfrastructureDataService} in this prototype. It parsed the needed
+ * information from given openstreetmap and busstop files. The methods {@link CityInfrastructureDataService#getNearestJunctionNode(double, double)},
+ * {@link CityInfrastructureDataService#getNearestNode(double, double)}, {@link CityInfrastructureDataService#getNearestStreetNode(double, double)
+ * and {@link CityInfrastructureDataService#getNodesInBoundary(Boundary) are implements with a PR-Tree.
  * @author Timo
  */
 /*
  @TODO: separate logic from data
  */
-@Entity
-public class OSMCityInfrastructureData extends TrafficInfrastructureData<TrafficEdge, TrafficNode, TrafficWay> {
-
-	/**
-	 * Distance calculator for our buildings.
-	 *
-	 * @author Timo
-	 */
-	@SuppressWarnings("unused")
-	private static class BuildingDistance implements DistanceCalculator<Building> {
-
-		private static final long serialVersionUID = 7659553740208196204L;
-
-		@Override
-		public double distanceTo(Building b,
-			PointND p) {
-			/* euclidean distance */
-			return Math.sqrt(Math.pow((b.getPosition().getCenterPoint().getX() - p.
-				getOrd(0)),
-				2)
-				+ Math.pow((b.getPosition().getCenterPoint().getY() - p.getOrd(1)),
-					2));
-		}
-	}
-
-	/**
-	 * MBRConverter for our buildings.
-	 *
-	 * @author Timo
-	 */
-	private static class BuildingMBRConverter implements MBRConverter<Building> {
-
-		private static final long serialVersionUID = -4200086366401051943L;
-
-		@Override
-		public int getDimensions() {
-			return 2;
-		}
-
-		@Override
-		public double getMax(int arg0,
-			Building arg1) {
-			return arg0 == 0 ? arg1.getPosition().getCenterPoint().getX() : arg1.
-				getPosition().getCenterPoint().getY();
-		}
-
-		@Override
-		public double getMin(int arg0,
-			Building arg1) {
-			return arg0 == 0 ? arg1.getPosition().getCenterPoint().getX() : arg1.
-				getPosition().getCenterPoint().getY();
-		}
-	}
-
-	/**
-	 * Distance calculator for our nodes.
-	 *
-	 * @author Timo
-	 */
-	private static class NodeDistance implements
-		DistanceCalculator<NavigationNode> {
-
-		private static final long serialVersionUID = -1997875613977347848L;
-
-		@Override
-		public double distanceTo(NavigationNode n,
-			PointND p) {
-			/* euclidean distance */
-			return Math.sqrt(Math.pow((n.getGeoLocation().getX() - p.getOrd(0)),
-				2)
-				+ Math.pow((n.getGeoLocation().getY() - p.getOrd(1)),
-					2));
-		}
-	}
-
-	/**
-	 * MBRConverter for our nodes.
-	 *
-	 * @author Timo
-	 */
-	private static class NodeMBRConverter implements MBRConverter<NavigationNode> {
-
-		private static final long serialVersionUID = 4175774127701744257L;
-
-		@Override
-		public int getDimensions() {
-			return 2;
-		}
-
-		@Override
-		public double getMax(int arg0,
-			NavigationNode arg1) {
-			return arg0 == 0 ? arg1.getGeoLocation().getX() : arg1.getGeoLocation().
-				getY();
-		}
-
-		@Override
-		public double getMin(int arg0,
-			NavigationNode arg1) {
-			return arg0 == 0 ? arg1.getGeoLocation().getX() : arg1.getGeoLocation().
-				getY();
-		}
-	}
-
-	/**
-	 * Node filter for our buildings.
-	 *
-	 * @author Timo
-	 */
-	@SuppressWarnings("unused")
-	private static class PRTreeBuildingFilter implements NodeFilter<Building> {
-
-		private static final long serialVersionUID = -5316364560210465675L;
-
-		@Override
-		public boolean accept(Building arg0) {
-			return true;
-		}
-	}
-
-	/**
-	 * Node filter for our nodes.
-	 *
-	 * @author Timo
-	 */
-	private static class PRTreeNodeFilter implements NodeFilter<NavigationNode> {
-
-		private static final long serialVersionUID = -7994547301033310792L;
-
-		@Override
-		public boolean accept(NavigationNode arg0) {
-			return true;
-		}
-	}
-
-	/**
-	 * Holds the OSM way data, till everything is collected.
-	 *
-	 * @author Timo
-	 */
-	private static class TmpWay extends TrafficWay {
-
-		private static final long serialVersionUID = 2310070836622850662L;
-		private List<String> nodeReferenceList;
-		private double maxSpeed;
-
-		TmpWay() {
-			this.nodeReferenceList = new ArrayList<>();
-			super.applyOneWay(false);
-//			super.setBuildingTypeMap(new HashMap<String, String>());
-		}
-
-		public void addNodeID(String nodeID) {
-			this.nodeReferenceList.add(nodeID);
-		}
-
-		public List<String> getNodeReferenceList() {
-			return this.nodeReferenceList;
-		}
-
-		@SuppressWarnings("unused")
-		public void setNodeReferenceList(List<String> nodeReferenceList) {
-			this.nodeReferenceList = nodeReferenceList;
-		}
-
-		public void setMaxSpeed(double maxSpeed) {
-			this.maxSpeed = maxSpeed;
-		}
-
-		public double getMaxSpeed() {
-			return maxSpeed;
-		}
-	}
+@Stateful
+public class DefaultFileBasedCityInfrastructureDataService implements FileBasedCityInfrastructureDataService {
 	private static final Logger log = LoggerFactory.getLogger(
-		OSMCityInfrastructureData.class);
+		DefaultFileBasedCityInfrastructureDataService.class);
 	private static final Pattern MAX_SPEED_PATTERN = Pattern.compile(
 		"([0-9]+)([\\s]*)([a-zA-Z]+)");
 	private static final double MILE_TO_KM = 1.609344;
 	/**
 	 * OSM ways with these highway values will be ignored.
 	 *
-	 * @see OSMCityInfrastructureData.parseWays
+	 * @see DefaultFileBasedCityInfrastructureDataService.parseWays
 	 */
 	private static final Set<WayTag> NON_INTERESTING_HIGHWAYS = new HashSet<WayTag>(
 		Arrays.asList(WayTagEnum.BUS_STOP,
@@ -298,7 +136,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 	/**
 	 * OSM ways with these highway values will be ignored.
 	 *
-	 * @see OSMCityInfrastructureData.parseMotorWays
+	 * @see DefaultFileBasedCityInfrastructureDataService.parseMotorWays
 	 */
 	private static final Set<WayTag> NON_MOTOR_HIGHWAYS = new HashSet<WayTag>(
 		Arrays.asList(WayTagEnum.pedestrian,
@@ -317,6 +155,9 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 	 * Serial
 	 */
 	private static final long serialVersionUID = -4969795656547242552L;
+	private CityInfrastructureData cityInfrastructureData;
+	@EJB
+	private IdGenerator idGenerator;
 	private List<BusStop> busStops;
 	/**
 	 * Distance calculator for the pr-tree
@@ -339,41 +180,55 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 	 * PR-Tree to answer spatial queries for buildings
 	 */
 	private PRTree<Building> buildingTree;
-	private List<TrafficNode> usedNodes, streetNodes;
-	private List<TrafficNode> roundAbouts, junctionNodes;
-	private List<TrafficWay> ways, landUseWays, cycleWays;
-	private List<TrafficWay> motorWays, motorWaysWithBusstops, cycleAndMotorways;
-	private Envelope boundary;
 	private List<Building> buildings;
 	private BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
-	private final TrafficGraph trafficGraph;
-	@Transient
-	private final GraphConstructor graphConstructor = new GraphConstructor();
+	private TrafficGraph trafficGraph;
+	@EJB
+	private GraphConstructor graphConstructor ;
 
-	public OSMCityInfrastructureData(Long id) {
-		super(id);
-		this.trafficGraph = graphConstructor.createGraph(ways);
+	protected DefaultFileBasedCityInfrastructureDataService() {
 	}
 
 	/**
 	 * parses the passed input streams and initializes graph
 	 *
+	 * @param id
 	 * @param osmIN the opstreetmap file
 	 * @param busStopIN the gtfs stops.txt file
 	 * @param buildingEnergyProfileStrategy the strategy to find the best energy
 	 * profile for a buidling
 	 * @throws IOException
 	 */
-	public OSMCityInfrastructureData(Long id,
+	public DefaultFileBasedCityInfrastructureDataService(Long id,
 		InputStream osmIN,
 		InputStream busStopIN,
 		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy) throws IOException {
-		this(id);
 		this.buildingEnergyProfileStrategy = buildingEnergyProfileStrategy;
 		this.prTreeDistanceCalculator = new NodeDistance();
 		this.prTreeNodeFilter = new PRTreeNodeFilter();
 		this.parse(osmIN,
 			busStopIN);
+	}
+	
+	@PostConstruct
+	public void init() {
+		this.cityInfrastructureData = new CityInfrastructureData(idGenerator.getNextId());
+	}
+
+	public List<BusStop> getBusStops() {
+		return this.busStops;
+	}
+
+	protected void setBusStops(List<BusStop> busStops) {
+		this.busStops = busStops;
+	}
+
+	public List<Building> getBuildings() {
+		return buildings;
+	}
+
+	protected void setBuildings(List<Building> buildings) {
+		this.buildings = buildings;
 	}
 
 	/**
@@ -429,7 +284,6 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 				southWestLng));
 	}
 
-	@Override
 	public TrafficGraph getTrafficGraph() {
 		return trafficGraph;
 	}
@@ -478,8 +332,8 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 		/* Add busstops to ways as new nodes: */
 		class NodeDistanceWrapper {
 
-			private double distance;
-			private NavigationNode node;
+			private final double distance;
+			private final NavigationNode node;
 
 			private NodeDistanceWrapper(NavigationNode node,
 				double distance) {
@@ -589,7 +443,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 		 * are.
 		 */
 		Map<String, List<Polygon>> landUseMap = new HashMap<>();
-		for (Way<?, ?> landuse : this.landUseWays) {
+		for (Way<?, ?> landuse : this.cityInfrastructureData.getLandUseWays()) {
 			if (landuse.getLanduseTags().contains(LanduseTagEnum.INDUSTRY)) {
 				List<Polygon> polygonList = landUseMap.get("industrial");
 				if (polygonList == null) {
@@ -946,11 +800,6 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 	}
 
 	@Override
-	public Envelope getBoundary() {
-		return boundary;
-	}
-
-	@Override
 	public Map<EnergyProfileEnum, List<Building>> getBuildings(
 		JaxRSCoordinate geolocation,
 		int radiusInMeter) {
@@ -1005,15 +854,6 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 		}
 
 		return buildings0;
-	}
-
-	public List<BusStop> getBusStops() {
-		return this.busStops;
-	}
-
-	@Override
-	public List<TrafficWay> getCycleWays() {
-		return this.cycleWays;
 	}
 
 	/**
@@ -1111,18 +951,6 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 		return distance * 1000.0;
 	}
 
-	public List<TrafficWay> getLandUseWays() {
-		return this.landUseWays;
-	}
-
-	public List<TrafficWay> getMotorWays() {
-		return this.motorWays;
-	}
-
-	public List<TrafficWay> getMotorWaysWithBusstops() {
-		return this.motorWaysWithBusstops;
-	}
-
 	@Override
 	public NavigationNode getNearestNode(double latitude,
 		double longitude) {
@@ -1159,27 +987,12 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 			"No nearest node found for: latitude: " + latitude + " longitude: " + longitude);
 	}
 
-	@Override
-	public List<TrafficNode> getNodes() {
-		return this.usedNodes;
-	}
-
-	@Override
-	public List<TrafficNode> getRoundAbouts() {
-		return this.roundAbouts;
-	}
-
-	@Override
-	public List<TrafficWay> getWays() {
-		return this.ways;
-	}
-
 	/**
 	 * @param osmIN osm-file
 	 * @param busStopIN busstop file
 	 * @throws IOException
 	 */
-	private void parse(InputStream osmIN,
+	public void parse(InputStream osmIN,
 		InputStream busStopIN) throws IOException {
 		/* Holds the way data till we collected every node */
 		List<TmpWay> tmpWayList = new ArrayList<>();
@@ -1338,7 +1151,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 								} else if (kValue.equalsIgnoreCase("maxspeed")) {
 									try {
 										lastFoundWay.applyMaxSpeed(Integer.valueOf(vValue));
-									} catch (Exception e) {
+									} catch (NumberFormatException e) {
 										/* maxspeed with unit */
 										Matcher matcher = MAX_SPEED_PATTERN.matcher(vValue);
 										if (matcher.find()) {
@@ -1439,19 +1252,19 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 			}
 		}
 
-		this.usedNodes = new ArrayList<>(usedNodes0);
+		cityInfrastructureData.setNodes(new ArrayList<>(usedNodes0));
 
-		this.ways = wayList;
-		this.motorWays = this.extractMotorWays(wayList);
+		cityInfrastructureData.setWays(wayList);
+		cityInfrastructureData.setMotorWays(extractMotorWays(wayList));
 
 		/* Parse busstop file: */
 		List<BusStop> tmpBusStops = this.parseBusStops(busStopIN);
-		this.motorWaysWithBusstops = this.combineMotorWaysWithBusStops(
-			this.motorWays,
-			tmpBusStops);
+		cityInfrastructureData.setMotorWaysWithBusStops(this.combineMotorWaysWithBusStops(
+			this.cityInfrastructureData.getMotorWays(),
+			tmpBusStops));
 		this.busStops = new ArrayList<>();
 		OuterLoop:
-		for (Way<?, ?> way : this.motorWaysWithBusstops) {
+		for (Way<?, ?> way : this.cityInfrastructureData.getMotorWaysWithBusStops()) {
 			for (NavigationNode node : way.getNodeList()) {
 				if (node instanceof TrafficNode && ((TrafficNode) node).getBusStop() != null) {
 					this.busStops.add(((TrafficNode) node).getBusStop());
@@ -1460,18 +1273,18 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 			}
 		}
 
-		this.landUseWays = this.extractLanduseWays(wayList);
-		this.cycleWays = this.extractCycleWays(wayList);
-		this.roundAbouts = this.extractRoundAbouts(this.usedNodes);
+		cityInfrastructureData.setLandUseWays(this.extractLanduseWays(wayList));
+		cityInfrastructureData.setCycleWays(this.extractCycleWays(wayList));
+		cityInfrastructureData.setRoundAbouts(this.extractRoundAbouts(this.cityInfrastructureData.getNodes()));
 
-		Set<TrafficWay> cycleAndMotorwaySet = new HashSet<>(this.motorWays);
-		cycleAndMotorwaySet.addAll(this.motorWays);
-		this.cycleAndMotorways = new ArrayList<>(cycleAndMotorwaySet);
+		Set<TrafficWay> cycleAndMotorwaySet = new HashSet<>(this.cityInfrastructureData.getMotorWays());
+		cycleAndMotorwaySet.addAll(this.cityInfrastructureData.getMotorWays());
+		cityInfrastructureData.setCycleAndMotorways(new ArrayList<>(cycleAndMotorwaySet));
 
 		/* find used street nodes and junction nodes */
 		Set<TrafficNode> usedStreetNodes = new HashSet<>();
 		Map<TrafficNode, Set<Way<?, ?>>> junctionWayMap = new HashMap<>();
-		for (TrafficWay way : this.getMotorWaysWithBusstops()) {
+		for (TrafficWay way : this.cityInfrastructureData.getMotorWaysWithBusStops()) {
 			for (TrafficNode node : way.getNodeList()) {
 				/* comparison with size is much faster than contains. */
 				int sizeBefore = usedStreetNodes.size();
@@ -1489,13 +1302,13 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 			}
 		}
 
-		this.streetNodes = new ArrayList<>(usedStreetNodes);
+		cityInfrastructureData.setStreetNodes(new ArrayList<>(usedStreetNodes));
 
 		/* Check the junction nodes. They need at least three edges: */
-		this.junctionNodes = new LinkedList<>();
+		cityInfrastructureData.setJunctionNodes(new LinkedList<TrafficNode>());
 		for (Entry<TrafficNode, Set<Way<?, ?>>> entry : junctionWayMap.entrySet()) {
 			if (entry.getValue().size() >= 3) {
-				junctionNodes.add(entry.getKey());
+				cityInfrastructureData.getJunctionNodes().add(entry.getKey());
 				/* check if three or more edges (junction is not the last node on one of the ways): */
 			} else {
 				for (Way<?, ?> way : entry.getValue()) {
@@ -1503,7 +1316,7 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 						if (!way.getNodeList().get(0).equals(entry.getKey()) && !way.
 							getNodeList().get(way.getNodeList().size() - 1).equals(entry.
 								getKey())) {
-							junctionNodes.add(entry.getKey());
+							cityInfrastructureData.getJunctionNodes().add(entry.getKey());
 							break;
 						}
 					}
@@ -1514,20 +1327,20 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 		/* build the pr-trees for nodes */
 		this.allNodesTree = new PRTree<>(new NodeMBRConverter(),
 			prTreeBranchFactor);
-		this.allNodesTree.load(this.usedNodes);
+		this.allNodesTree.load(this.cityInfrastructureData.getNodes());
 		this.streetNodesTree = new PRTree<>(new NodeMBRConverter(),
 			prTreeBranchFactor);
-		this.streetNodesTree.load(this.streetNodes);
+		this.streetNodesTree.load(this.cityInfrastructureData.getStreetNodes());
 		this.junctionNodesTree = new PRTree<>(new NodeMBRConverter(),
 			prTreeBranchFactor);
-		this.junctionNodesTree.load(this.junctionNodes);
+		this.junctionNodesTree.load(this.cityInfrastructureData.getJunctionNodes());
 
 		if (northEastBoundary != null) {
-			this.boundary = new Envelope(new JaxRSCoordinate(northEastBoundary.
+			cityInfrastructureData.setBoundary(new Envelope(new JaxRSCoordinate(northEastBoundary.
 				getGeoLocation().getX(),
 				northEastBoundary.getGeoLocation().getY()),
 				new JaxRSCoordinate(southWestBoundary.getGeoLocation().getX(),
-					southWestBoundary.getGeoLocation().getY()));
+					southWestBoundary.getGeoLocation().getY())));
 		}
 
 		this.buildings = this.extractBuildings(wayList);
@@ -1623,10 +1436,6 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 		return new Polygon(geoArray);
 	}
 
-	public List<Building> getBuildings() {
-		return buildings;
-	}
-
 	@Override
 	public List<NavigationNode> getNodesInBoundary(Envelope boundary) {
 
@@ -1641,11 +1450,6 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 		}
 
 		return nodes;
-	}
-
-	@Override
-	public List<TrafficNode> getStreetNodes() {
-		return this.streetNodes;
 	}
 
 	@Override
@@ -1667,12 +1471,191 @@ public class OSMCityInfrastructureData extends TrafficInfrastructureData<Traffic
 	}
 
 	@Override
-	public List<TrafficNode> getJunctionNodes() {
-		return this.junctionNodes;
+	public Envelope getBoundary() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 	@Override
-	public List<TrafficWay> getCycleAndMotorways() {
-		return this.cycleAndMotorways;
+	public CityInfrastructureData createCityInfrastructureData() {
+		return cityInfrastructureData;
+	}
+
+	@Override
+	public void parse(File osmFile,
+		File busStopFile) throws IOException {
+		parse(new FileInputStream(osmFile),
+			new FileInputStream(busStopFile));
+	}
+	
+	
+	/**
+	 * Distance calculator for our buildings.
+	 *
+	 * @author Timo
+	 */
+	@SuppressWarnings("unused")
+	private static class BuildingDistance implements DistanceCalculator<Building> {
+
+		private static final long serialVersionUID = 7659553740208196204L;
+
+		@Override
+		public double distanceTo(Building b,
+			PointND p) {
+			/* euclidean distance */
+			return Math.sqrt(Math.pow((b.getPosition().getCenterPoint().getX() - p.
+				getOrd(0)),
+				2)
+				+ Math.pow((b.getPosition().getCenterPoint().getY() - p.getOrd(1)),
+					2));
+		}
+	}
+
+	/**
+	 * MBRConverter for our buildings.
+	 *
+	 * @author Timo
+	 */
+	private static class BuildingMBRConverter implements MBRConverter<Building> {
+
+		private static final long serialVersionUID = -4200086366401051943L;
+
+		@Override
+		public int getDimensions() {
+			return 2;
+		}
+
+		@Override
+		public double getMax(int arg0,
+			Building arg1) {
+			return arg0 == 0 ? arg1.getPosition().getCenterPoint().getX() : arg1.
+				getPosition().getCenterPoint().getY();
+		}
+
+		@Override
+		public double getMin(int arg0,
+			Building arg1) {
+			return arg0 == 0 ? arg1.getPosition().getCenterPoint().getX() : arg1.
+				getPosition().getCenterPoint().getY();
+		}
+	}
+
+	/**
+	 * Distance calculator for our nodes.
+	 *
+	 * @author Timo
+	 */
+	private static class NodeDistance implements
+		DistanceCalculator<NavigationNode> {
+
+		private static final long serialVersionUID = -1997875613977347848L;
+
+		@Override
+		public double distanceTo(NavigationNode n,
+			PointND p) {
+			/* euclidean distance */
+			return Math.sqrt(Math.pow((n.getGeoLocation().getX() - p.getOrd(0)),
+				2)
+				+ Math.pow((n.getGeoLocation().getY() - p.getOrd(1)),
+					2));
+		}
+	}
+
+	/**
+	 * MBRConverter for our nodes.
+	 *
+	 * @author Timo
+	 */
+	private static class NodeMBRConverter implements MBRConverter<NavigationNode> {
+
+		private static final long serialVersionUID = 4175774127701744257L;
+
+		@Override
+		public int getDimensions() {
+			return 2;
+		}
+
+		@Override
+		public double getMax(int arg0,
+			NavigationNode arg1) {
+			return arg0 == 0 ? arg1.getGeoLocation().getX() : arg1.getGeoLocation().
+				getY();
+		}
+
+		@Override
+		public double getMin(int arg0,
+			NavigationNode arg1) {
+			return arg0 == 0 ? arg1.getGeoLocation().getX() : arg1.getGeoLocation().
+				getY();
+		}
+	}
+
+	/**
+	 * Node filter for our buildings.
+	 *
+	 * @author Timo
+	 */
+	@SuppressWarnings("unused")
+	private static class PRTreeBuildingFilter implements NodeFilter<Building> {
+
+		private static final long serialVersionUID = -5316364560210465675L;
+
+		@Override
+		public boolean accept(Building arg0) {
+			return true;
+		}
+	}
+
+	/**
+	 * Node filter for our nodes.
+	 *
+	 * @author Timo
+	 */
+	private static class PRTreeNodeFilter implements NodeFilter<NavigationNode> {
+
+		private static final long serialVersionUID = -7994547301033310792L;
+
+		@Override
+		public boolean accept(NavigationNode arg0) {
+			return true;
+		}
+	}
+
+	/**
+	 * Holds the OSM way data, till everything is collected.
+	 *
+	 * @author Timo
+	 */
+	private static class TmpWay extends TrafficWay {
+
+		private static final long serialVersionUID = 2310070836622850662L;
+		private List<String> nodeReferenceList;
+		private double maxSpeed;
+
+		TmpWay() {
+			this.nodeReferenceList = new ArrayList<>();
+			super.applyOneWay(false);
+//			super.setBuildingTypeMap(new HashMap<String, String>());
+		}
+
+		public void addNodeID(String nodeID) {
+			this.nodeReferenceList.add(nodeID);
+		}
+
+		public List<String> getNodeReferenceList() {
+			return this.nodeReferenceList;
+		}
+
+		@SuppressWarnings("unused")
+		public void setNodeReferenceList(List<String> nodeReferenceList) {
+			this.nodeReferenceList = nodeReferenceList;
+		}
+
+		public void setMaxSpeed(double maxSpeed) {
+			this.maxSpeed = maxSpeed;
+		}
+
+		public double getMaxSpeed() {
+			return maxSpeed;
+		}
 	}
 }

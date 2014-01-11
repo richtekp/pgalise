@@ -4,9 +4,9 @@
  */
 package de.pgalise.simulation.traffic;
 
-import com.vividsolutions.jts.geom.Envelope;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import java.net.URL;
 import javax.faces.bean.ManagedBean;
@@ -17,13 +17,14 @@ import javax.faces.bean.SessionScoped;
 public class TrafficInitParameter extends InitParameter {
 
 	private static final long serialVersionUID = 1L;
-	private TrafficInfrastructureData trafficInfrastructureData;
+	private CityInfrastructureData cityInfrasturctureData;
+	private int TrafficServerCount = 2;
 
 	public TrafficInitParameter() {
 	}
 
 	public TrafficInitParameter(
-		TrafficInfrastructureData cityInfrastructureData,
+		CityInfrastructureData cityInfrastructureData,
 		ServerConfiguration serverConfiguration,
 		long startTimestamp,
 		long endTimestamp,
@@ -31,8 +32,7 @@ public class TrafficInitParameter extends InitParameter {
 		long clockGeneratorInterval,
 		URL operationCenterURL,
 		URL controlCenterURL,
-		TrafficFuzzyData trafficFuzzyData,
-		Envelope cityBoundary) {
+		TrafficFuzzyData trafficFuzzyData) {
 		super(
 			serverConfiguration,
 			startTimestamp,
@@ -42,17 +42,48 @@ public class TrafficInitParameter extends InitParameter {
 			operationCenterURL,
 			controlCenterURL,
 			trafficFuzzyData,
-			cityBoundary);
-		this.trafficInfrastructureData = cityInfrastructureData;
+			cityInfrastructureData.getBoundary());
+		this.cityInfrasturctureData = cityInfrastructureData;
+	}
+
+	public TrafficInitParameter(
+		CityInfrastructureData cityInfrastructureData,
+		ServerConfiguration serverConfiguration,
+		long startTimestamp,
+		long endTimestamp,
+		long interval,
+		long clockGeneratorInterval,
+		URL operationCenterURL,
+		URL controlCenterURL,
+		TrafficFuzzyData trafficFuzzyData,
+		int trafficServerCount) {
+		this(cityInfrastructureData,
+			serverConfiguration,
+			startTimestamp,
+			endTimestamp,
+			interval,
+			clockGeneratorInterval,
+			operationCenterURL,
+			controlCenterURL,
+			trafficFuzzyData);
+		this.TrafficServerCount = trafficServerCount;
 	}
 
 	public void setCityInfrastructureData(
-		TrafficInfrastructureData cityInfrastructureData) {
-		this.trafficInfrastructureData = cityInfrastructureData;
+		CityInfrastructureData cityInfrastructureData) {
+		this.cityInfrasturctureData = cityInfrastructureData;
 	}
 
-	public TrafficInfrastructureData getCityInfrastructureData() {
-		return trafficInfrastructureData;
+	public CityInfrastructureData getCityInfrastructureData() {
+		return cityInfrasturctureData;
+	}
+
+	public void setTrafficServerCount(int TrafficServerCount) {
+		this.TrafficServerCount = TrafficServerCount;
+	}
+
+	public int getTrafficServerCount() {
+		return TrafficServerCount;
 	}
 
 }

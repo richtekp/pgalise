@@ -17,14 +17,13 @@ package de.pgalise.simulation.traffic.server;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import java.util.Set;
 
 /**
@@ -39,7 +38,7 @@ import java.util.Set;
  * @author mustafa
  */
 public interface TrafficServer<E extends TrafficEvent> extends
-	SensorManagerController<E, InfrastructureStartParameter, TrafficInitParameter, StaticSensor> {
+	SensorManagerController<E, TrafficStartParameter, TrafficInitParameter, StaticSensor> {
 
 	/**
 	 * Sets the city zone this server is responsible for.
@@ -54,13 +53,13 @@ public interface TrafficServer<E extends TrafficEvent> extends
 	public Geometry getCityZone();
 
 	/**
-	 * Let this server take care of the passed vehicle which came from area of 
+	 * Let this server take care of the passed vehicle which came from area of
 	 * another server.
 	 *
 	 * @param vehicle
 	 * @param startNodeId
-	 * @param origin the server the vehicle came from or <code>null</code>
-	 * if the vehicle is passed to a server for the first time
+	 * @param origin the server the vehicle came from or <code>null</code> if the
+	 * vehicle is passed to a server for the first time
 	 * @param targetNodeId
 	 */
 	public void takeVehicle(Vehicle<?> vehicle,
@@ -75,4 +74,6 @@ public interface TrafficServer<E extends TrafficEvent> extends
 	public void processMovedVehicles();
 
 	public Set<Vehicle<?>> getManagedVehicles();
+
+	void setTrafficServers(Set<TrafficServerLocal<VehicleEvent>> trafficServer);
 }

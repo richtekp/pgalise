@@ -63,9 +63,9 @@ import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.energy.StaticSensorServiceDictionary;
 import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
-import de.pgalise.simulation.traffic.OSMCityInfrastructureDataService;
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
+import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficServiceDictionary;
 import de.pgalise.simulation.traffic.VehicleInformation;
@@ -156,7 +156,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 	 * serialize the file binary and reload it, if it's already parsed.
 	 */
 	@EJB
-	private OSMCityInfrastructureDataService osmCityInfrastructureDataService;
+	private CityInfrastructureDataService osmCityInfrastructureDataService;
 	/**
 	 * This service knows about all sensor interferers.
 	 */
@@ -178,7 +178,8 @@ public class DefaultControlCenterUser extends Endpoint implements
 	 * Lock to get sure that city infrastructure is parsed before called.
 	 */
 	private final Object cityInfrastructureDataLock = new Object();
-	private TrafficInfrastructureData cityInfrastructureData;
+	@EJB
+	private FileBasedCityInfrastructureDataService cityInfrastructureManager;
 	private Properties properties;
 	@EJB
 	private ControlCenterStartParameter simulationStartParameter;
@@ -258,37 +259,33 @@ public class DefaultControlCenterUser extends Endpoint implements
 								MapAndBusstopFileMessage.class);
 						String path = Thread.currentThread().getContextClassLoader().
 							getResource("/").getPath();
-						this.cityInfrastructureData
-							= osmCityInfrastructureDataService.
-							createCityInfrastructureData(
-								new File(path + osmAndBusstopFileMessage.
-									getContent().getOsmFileNames()),
-								new File(path + osmAndBusstopFileMessage.
-									getContent().getBusStopFileNames()),
-								buildingEnergyProfileStrategy,
-								null);
+						this.cityInfrastructureManager.parse(
+							new File(path + osmAndBusstopFileMessage.
+								getContent().getOsmFileNames()),
+							new File(path + osmAndBusstopFileMessage.
+								getContent().getBusStopFileNames()));
 						this.sendMessage(new OSMParsedMessage(ccWebSocketMessage.getId(),
-							this.cityInfrastructureData.getBoundary()));
+							this.cityInfrastructureManager.getBoundary()));
 						return;
 					}
 
 				case ASK_FOR_VALID_NODE:
 					synchronized (cityInfrastructureDataLock) {
-						if (this.cityInfrastructureData != null) {
+						if (this.cityInfrastructureManager != null) {
 							AskForValidNodeMessage askForValidNodeMessage = this.gson.
 								fromJson(message,
 									AskForValidNodeMessage.class);
 							NavigationNode node;
 							if (askForValidNodeMessage.getContent().isOnJunction()) {
-								node = this.cityInfrastructureData.getNearestJunctionNode(
+								node = this.cityInfrastructureManager.getNearestJunctionNode(
 									askForValidNodeMessage.getContent().getGeoLocation().getX(),
 									askForValidNodeMessage.getContent().getGeoLocation().getY());
 							} else if (askForValidNodeMessage.getContent().isOnStreet()) {
-								node = this.cityInfrastructureData.getNearestStreetNode(
+								node = this.cityInfrastructureManager.getNearestStreetNode(
 									askForValidNodeMessage.getContent().getGeoLocation().getX(),
 									askForValidNodeMessage.getContent().getGeoLocation().getY());
 							} else {
-								node = this.cityInfrastructureData.getNearestNode(
+								node = this.cityInfrastructureManager.getNearestNode(
 									askForValidNodeMessage.getContent().getGeoLocation().getX(),
 									askForValidNodeMessage.getContent().getGeoLocation().getY());
 							}
@@ -548,9 +545,9 @@ public class DefaultControlCenterUser extends Endpoint implements
 		return id;
 	}
 
-	private InfrastructureStartParameter lookupStartParameter() {
+	private TrafficStartParameter lookupStartParameter() {
 		try {
-			InfrastructureStartParameter retValue = (InfrastructureStartParameter) new InitialContext().
+			TrafficStartParameter retValue = (TrafficStartParameter) new InitialContext().
 				lookup(
 					"global:/de.pgalise.simulation/controlCenter/model/CCSimulationStartParameter");
 			return retValue;
@@ -718,7 +715,7 @@ public class DefaultControlCenterUser extends Endpoint implements
 			getSensors());
 
 		/* Create start parameters: */
-		InfrastructureStartParameter startParameter = lookupStartParameter();
+		TrafficStartParameter startParameter = lookupStartParameter();
 		startParameter.setCity(ccSimulationStartParameter.getCity());
 		startParameter.setAggregatedWeatherDataEnabled(
 			ccSimulationStartParameter.isAggregatedWeatherDataEnabled());

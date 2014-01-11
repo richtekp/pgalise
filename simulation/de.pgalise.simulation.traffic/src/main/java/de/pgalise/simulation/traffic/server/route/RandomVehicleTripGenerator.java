@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.server.route;
 
 import java.util.Date;
@@ -26,19 +25,26 @@ import de.pgalise.simulation.traffic.TrafficTrip;
 
 /**
  * Generates (random) trips.
- * 
+ *
  * @author Lena
  */
 public interface RandomVehicleTripGenerator {
 
 	/**
 	 * Creates a trip for the given vehicle type.
-	 * 
-	 * @param vehicleType
-	 *            Vehicle type
+	 *
+	 * @param startHomeNodes
+	 * @param startWorkNodes
+	 * @param vehicleType Vehicle type
+	 * @param date
+	 * @param buffer
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes, List<TrafficNode> startWorkNodes, VehicleTypeEnum vehicleType, Date date, int buffer);
+	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
+		List<TrafficNode> startWorkNodes,
+		VehicleTypeEnum vehicleType,
+		Date date,
+		int buffer);
 
 	public List<TrafficNode> getHomeNodes();
 
@@ -56,27 +62,25 @@ public interface RandomVehicleTripGenerator {
 
 	/**
 	 * Create a traffic trip with given target node ID and time
-	 * 
-	 * @param startHomeNodes
-	 *            List with start home nodes
-	 * @param targetNode
-	 *            Target node ID
-	 * @param startTimestamp
-	 *            startTimeWayThere
+	 *
+	 * @param startHomeNodes List with start home nodes
+	 * @param targetNode Target node ID
+	 * @param startTimestamp startTimeWayThere
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes, TrafficNode targetNode, long startTimestamp);
+	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
+		TrafficNode targetNode,
+		long startTimestamp);
 
 	/**
 	 * Create a traffic trip with given start node ID and time
-	 * 
-	 * @param homeNodes
-	 *            List with target home nodes
-	 * @param startNode
-	 *            Start node ID
-	 * @param startTimestamp
-	 *            startTimeWayThere
+	 *
+	 * @param homeNodes List with target home nodes
+	 * @param startNode Start node ID
+	 * @param startTimestamp startTimeWayThere
 	 * @return TrafficTrip
 	 */
-	public TrafficTrip createVehicleTrip(TrafficNode startNode, List<TrafficNode> homeNodes, long startTimestamp);
+	public TrafficTrip createVehicleTrip(TrafficNode startNode,
+		List<TrafficNode> homeNodes,
+		long startTimestamp);
 }

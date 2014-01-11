@@ -8,16 +8,17 @@ package de.pgalise.simulation.controlCenter.ctrl;
 import com.vividsolutions.jts.geom.Envelope;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.TrafficCity;
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.validation.constraints.Size;
@@ -75,6 +76,8 @@ public class CityCtrl implements Serializable {
 	@Size(min = 1)
 	private List<String> busStopFileNames = new LinkedList<>(
 		MainCtrlUtils.INITIAL_BUS_STOP_FILE_PATHS);
+	@EJB
+	private CityInfrastructureDataService cityInfrastructureManager;
 
 	/**
 	 * Creates a new instance of CityCtrl
@@ -354,9 +357,9 @@ public class CityCtrl implements Serializable {
 	 OSM shouldn't be parsed again
 	 */
 	public Envelope retrieveBoundaries(
-		TrafficInfrastructureData trafficInfrastructureData) {
+		) {
 		if (useFileBoundaries) {
-			return trafficInfrastructureData.getBoundary();
+			return cityInfrastructureManager.getBoundary();
 		} else {
 			return GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 				customFileBoundaries.toArray(new JaxRSCoordinate[customFileBoundaries.

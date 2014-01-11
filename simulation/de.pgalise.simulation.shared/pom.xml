@@ -19,6 +19,12 @@
 	<!-- Hier die Abh??ngigkeiten definieren -->
 	<dependencies>
 		<dependency>
+			<groupId>de.pgalise.util</groupId>
+			<artifactId>btree</artifactId>
+			<type>jar</type>
+		</dependency>
+		
+		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
@@ -66,28 +72,22 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>de.pgalise.util</groupId>
-			<artifactId>btree</artifactId>
-			<type>jar</type>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
-		<!--        <dependency>  
-				<groupId>org.apache.openejb</groupId>  
-				<artifactId>openejb-core</artifactId>  
-				<version>4.5.2</version>  
-				<exclusions>
-					<exclusion>
-						<groupId>org.apache.openejb</groupId>
-						<artifactId>javaee-api</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-jdk14</artifactId>
-					</exclusion>
-				</exclusions> 
+<!--		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-spatial</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hibernate</groupId>
+					<artifactId>hibernate-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>-->
 		<dependency>
 			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
+			<artifactId>hibernate-core</artifactId>
 		</dependency>
 	 <dependency>
 	  <groupId>org.javolution</groupId>

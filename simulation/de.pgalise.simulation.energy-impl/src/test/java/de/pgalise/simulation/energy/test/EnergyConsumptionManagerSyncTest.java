@@ -31,7 +31,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.testutils.TestUtils;
@@ -97,7 +97,7 @@ public class EnergyConsumptionManagerSyncTest {
 			buildingList.add(new Building(new JaxRSCoordinate(53.136765, 8.216524), null));
 		}
 
-		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);
+		CityInfrastructureDataService citydata = EasyMock.createNiceMock(CityInfrastructureDataService.class);
 		EasyMock.expect(citydata.getBuildings(EnergyConsumptionManagerSyncTest.testLocation, 5)).andStubReturn(map);
 		EasyMock.replay(citydata);
 

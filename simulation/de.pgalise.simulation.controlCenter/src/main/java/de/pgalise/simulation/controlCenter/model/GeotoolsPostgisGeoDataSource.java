@@ -4,7 +4,8 @@
  */
 package de.pgalise.simulation.controlCenter.model;
 
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+
 
 /**
  *
@@ -13,8 +14,8 @@ import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 public class GeotoolsPostgisGeoDataSource extends PostgisGeoDataSource {
 
 	@Override
-	public TrafficInfrastructureData generateInfrastructureData() {
+	public CityInfrastructureData generateInfrastructureData() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
-	
+
 }

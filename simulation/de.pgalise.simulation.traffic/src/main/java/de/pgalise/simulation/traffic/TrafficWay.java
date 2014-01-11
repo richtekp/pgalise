@@ -6,11 +6,13 @@ package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.Way;
 import java.util.List;
+import javax.persistence.Entity;
 
 /**
  *
  * @author richter
  */
+@Entity
 public class TrafficWay extends Way<TrafficEdge, TrafficNode> {
 
 	private static final long serialVersionUID = 1L;

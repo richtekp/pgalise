@@ -1,125 +1,81 @@
 <!-- INFRASTRUCTURE (INIT) -->
 <ui:composition template="/WEB-INF/templates/template.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui" >
+								xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:ui="http://java.sun.com/jsf/facelets" 
+								xmlns:h="http://xmlns.jcp.org/jsf/html"
+								xmlns:f="http://xmlns.jcp.org/jsf/core"
+								xmlns:p="http://primefaces.org/ui" >
 	<ui:define name="content">
 		<div class="contentDiv" >
+			<h2>Infrastructure</h2>
+			<h3>Controllers</h3>
+
 			<h:form>
-				<h2>Infrastructure</h2>
-				<div class="block">
-					<table class="noWrap">
-            <tr class="head">
-							<td colspan="2"><h3>Controllers</h3></td>
-            </tr>
-            <tr>
-							<td colspan="2">
-								<div>
-									The controller needs the IP address where the Simulation, Weather and Traffic Controller are.
-								</div>
-							</td>
-            </tr>
-            <tr>
-							<td>Simulation Controller:</td>
-							<td>
-								<h:inputText title="enter the simulation controller ip" value="#{mainCtrl.startParameter.ipSimulationController}">
-									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
-								</h:inputText>
-							</td>
-            </tr>
-            <tr>
-							<td>Traffic Controller:</td>
-							<td>
-								<h:inputText title="enter the traffic controller ip" value="#{mainCtrl.startParameter.ipTrafficController}">
-									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
-								</h:inputText>
-							</td>
-            </tr>
-            <tr>
-							<td>Weather Controller:</td>
-							<td>
-								<h:inputText title="enter the weather controller ip" value="#{mainCtrl.startParameter.ipWeatherController}">
-									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
-								</h:inputText>
-							</td>
-            </tr>
-            <tr>
-							<td>Static Sensor Controller:</td>
-							<td>
-								<h:inputText title="enter the sensor controller ip" value="#{mainCtrl.startParameter.ipStaticSensorController}">
-									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
-								</h:inputText>
-							</td>
-            </tr>
-            <tr>
-							<td>Energy Controller:</td>
-							<td>
-								<h:inputText title="enter the energy controller ip" value="#{mainCtrl.startParameter.ipEnergyController}">
-									<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
-								</h:inputText>
-							</td>
-            </tr>
-					</table>
+				<div>
+					The controller needs the IP address where the Simulation, Weather and Traffic Controller are.
 				</div>
-				<div class="block">
-					<table class="noWrap">
-            <tr class="head">
-							<td colspan="2">
-								<h3>Traffic Servers</h3>
-							</td>
-            </tr>
-            <tr>
-							<td colspan="2">
-								<div>
-									Decide how much Traffic Servers will be used in the Simulation.
-								</div>
-							</td>
-            </tr>
-            <tr>
-							<td colspan="2">
-								<span>
-									<h:commandButton action="#{mainCtrl.addTrafficServerIP}" value="add"/>
-								</span>
-							</td>
-            </tr>
-						<tr>
-							<h:dataTable value="#{mainCtrl.startParameter.trafficServerIPs}" var="trafficServerIP">
-								<h:column >
-									<f:facet name="header">IP</f:facet>
-									#{trafficServerIP}
-								</h:column>
-								<h:column>
-									<f:facet name="Remove">Remove</f:facet>
-									<h:commandButton action="#{mainCtrl.removeTrafficServerIP(trafficServerIP)}"/>
-								</h:column>
-							</h:dataTable>
-            </tr>
-					</table>
+				<h:outputLabel for="controllerIP" value="Simulation Controller:"/>
+				<h:inputText id="controllerIP" title="enter the simulation controller ip" value="#{mainCtrl.startParameter.ipSimulationController}">
+
+					<f:validator validatorId="IpValidator"/>
+					<f:ajax/>
+				</h:inputText>
+				Traffic Controller: 
+				<h:inputText title="enter the traffic controller ip" value="#{mainCtrl.startParameter.ipTrafficController}">
+
+					<f:validator validatorId="IpValidator"/>
+					<f:ajax/>
+				</h:inputText>
+				Weather Controller:<h:inputText title="enter the weather controller ip" value="#{mainCtrl.startParameter.ipWeatherController}">
+
+					<f:validator validatorId="IpValidator"/> 
+					<f:ajax/>
+				</h:inputText>
+				Static Sensor Controller:<h:inputText title="enter the sensor controller ip" value="#{mainCtrl.startParameter.ipStaticSensorController}">
+
+					<f:validator validatorId="IpValidator"/>
+					<f:ajax/>
+				</h:inputText>
+				Energy Controller:
+				<h:inputText validatorMessage="invalid IP" title="enter the energy controller ip" value="#{mainCtrl.startParameter.ipEnergyController}">
+					<f:validator validatorId="IpValidator"/>
+					<f:ajax/>
+				</h:inputText>
+			</h:form>
+			<h:form>
+				<h3>Traffic Servers</h3>
+				<div>
+					Decide how much Traffic Servers will be used in the Simulation.
 				</div>
-				<div class="block">
-					<table class="noWrap">
-            <tr class="head">
-							<td colspan="2">
-								<h3>User Interfaces</h3> 
-							</td>
-            </tr>
-            <tr>
-							<td colspan="2">
-								<div>
-									This defines the adresses of the user interfaces.
-								</div>
-							</td>
-            </tr>
-            <tr>
-							<td>Operation Center:</td>
-							<td>
-								<h:inputText value="#{mainCtrl.startParameter.operationCenterAddress}"/>
-							</td>
-            </tr>
-					</table>
+				<h:commandButton action="#{mainCtrl.addTrafficServerIP()}" value="add entry">
+					<f:ajax render="@form"/>
+				</h:commandButton>
+				<h:dataTable id="trafficServerIPTable" value="#{mainCtrl.startParameter.trafficServerIPs}" var="trafficServerIP">
+					<h:column >
+						<f:facet name="header">IP</f:facet>
+						<h:inputText value="#{trafficServerIP}">
+							<f:ajax/>
+							<f:validator validatorId="IpValidator"/>
+						</h:inputText>
+					</h:column>
+					<h:column>
+						<f:facet name="Remove">Remove</f:facet>
+						<h:commandButton value="Remove" action="#{mainCtrl.removeTrafficServerIP(trafficServerIP)}">
+							<f:ajax render="@form"/>
+						</h:commandButton>
+					</h:column>
+				</h:dataTable>
+			</h:form>
+			<h:form>
+				<h3>User Interfaces</h3> 
+				<div>
+					This defines the adresses of the user interfaces.
 				</div>
+				Operation Center:
+				<h:inputText value="#{mainCtrl.initParameter.operationCenterURL}">
+					<f:ajax/>
+					<f:validateRegex pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />  
+				</h:inputText>
 			</h:form>
 		</div>
 	</ui:define>

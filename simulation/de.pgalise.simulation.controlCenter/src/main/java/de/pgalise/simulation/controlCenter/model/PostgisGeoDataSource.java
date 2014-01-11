@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.controlCenter.model;
 
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 
 /**
  *

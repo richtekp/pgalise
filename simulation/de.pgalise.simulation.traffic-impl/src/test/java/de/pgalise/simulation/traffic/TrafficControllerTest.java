@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
@@ -49,25 +48,28 @@ import javax.ejb.EJB;
 
 /**
  * Tests the DefaultTrafficController
- * 
+ *
  * @author Mustafa
  * @version 1.0 (Feb 15, 2013)
  */
 public class TrafficControllerTest {
+
 	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 	@EJB
 	private IdGenerator idGenerator;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Test
 	/**
 	 * Test for initialization and start
+	 *
 	 * @throws IllegalStateException
 	 * @throws InitializationException
 	 */
 	public void initAndStartTest() throws IllegalStateException, InitializationException {
 		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
-		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
+		TrafficStartParameter startParam = createNiceMock(
+			TrafficStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
@@ -79,7 +81,9 @@ public class TrafficControllerTest {
 			public Object answer() throws Throwable {
 				Geometry g = (Geometry) getCurrentArguments()[0];
 
-				assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.getEnvelopeInternal().getMinY() == 0 && g.getEnvelopeInternal().getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
+				assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.
+					getEnvelopeInternal().getMinY() == 0 && g.getEnvelopeInternal().
+					getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
 				return null;
 			}
 
@@ -95,7 +99,9 @@ public class TrafficControllerTest {
 			@Override
 			public Object answer() throws Throwable {
 				Geometry g = (Geometry) getCurrentArguments()[0];
-				assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.getEnvelopeInternal().getMinY() == 500 && g.getEnvelopeInternal().getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
+				assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.
+					getEnvelopeInternal().getMinY() == 500 && g.getEnvelopeInternal().
+					getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
 				return null;
 			}
 
@@ -103,7 +109,10 @@ public class TrafficControllerTest {
 		s2.start(startParam);
 		replay(s2);
 
-		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}),new LinkedList<>(Arrays.asList(s1, s2)));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(
+			GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[]{}),
+			new LinkedList<>(Arrays.asList(s1,
+					s2)));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -115,12 +124,14 @@ public class TrafficControllerTest {
 	@Test
 	/**
 	 * Test for stop and resume
+	 *
 	 * @throws IllegalStateException
 	 * @throws InitializationException
 	 */
 	public void stopAndResumeTest() throws IllegalStateException, InitializationException {
 		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
-		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
+		TrafficStartParameter startParam = createNiceMock(
+			TrafficStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
@@ -139,7 +150,10 @@ public class TrafficControllerTest {
 		s2.start(null);
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.
+			createPolygon(new JaxRSCoordinate[]{}),
+			Arrays.asList(s1,
+				s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -153,7 +167,8 @@ public class TrafficControllerTest {
 	@Test
 	public void resetTest() throws IllegalStateException, InitializationException {
 		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
-		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
+		TrafficStartParameter startParam = createNiceMock(
+			TrafficStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
@@ -172,7 +187,10 @@ public class TrafficControllerTest {
 		s2.reset();
 		replay(s2);
 
-		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.
+			createPolygon(new JaxRSCoordinate[]{}),
+			Arrays.asList(s1,
+				s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -186,7 +204,8 @@ public class TrafficControllerTest {
 	@Test
 	public void updateTest() throws IllegalStateException, InitializationException {
 		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
-		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
+		TrafficStartParameter startParam = createNiceMock(
+			TrafficStartParameter.class);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
 
@@ -205,7 +224,10 @@ public class TrafficControllerTest {
 		s2.processMovedVehicles();
 		replay(s2);
 
-		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(
+			GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[]{}),
+			Arrays.asList(s1,
+				s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);
@@ -218,18 +240,24 @@ public class TrafficControllerTest {
 	@Test
 	/**
 	 * Test for creating, deleting and asking for status of sensors
+	 *
 	 * @throws IllegalStateException
 	 * @throws SensorException
 	 * @throws InitializationException
 	 */
 	public void sensorTests() throws IllegalStateException, SensorException, InitializationException {
 		TrafficInitParameter initParam = createNiceMock(TrafficInitParameter.class);
-		InfrastructureStartParameter startParam = createNiceMock(InfrastructureStartParameter.class);
+		TrafficStartParameter startParam = createNiceMock(
+			TrafficStartParameter.class);
 
 		// create sensors
-		StaticSensor sensor = new InductionLoopSensor(idGenerator.getNextId(),null,null,
-			null);	
-		StaticSensor sensor2 = new InductionLoopSensor(idGenerator.getNextId(),null,null,
+		StaticSensor sensor = new InductionLoopSensor(idGenerator.getNextId(),
+			null,
+			null,
+			null);
+		StaticSensor sensor2 = new InductionLoopSensor(idGenerator.getNextId(),
+			null,
+			null,
 			null);
 
 		TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
@@ -251,7 +279,10 @@ public class TrafficControllerTest {
 		s2.deleteSensor(sensor);
 		replay(s2);
 
-		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[] {}), Arrays.asList(s1, s2));
+		TrafficControllerLocal<?> ctrl = new DefaultTrafficController(
+			GEOMETRY_FACTORY.createPolygon(new JaxRSCoordinate[]{}),
+			Arrays.asList(s1,
+				s2));
 
 		ctrl.init(initParam);
 		ctrl.start(startParam);

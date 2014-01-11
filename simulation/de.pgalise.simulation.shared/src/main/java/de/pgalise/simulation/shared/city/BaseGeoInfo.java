@@ -8,21 +8,23 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
-import org.hibernate.annotations.Type;
 
 /**
- * This classes is used to share the code for boundary and centerPoint property between City and Building (which are in incompatible inheritance hierarchy)
+ * This classes is used to share the code for boundary and centerPoint property
+ * between City and Building (which are in incompatible inheritance hierarchy)
+ *
  * @author richter
  */
 @Entity
 public class BaseGeoInfo extends AbstractIdentifiable {
+
 	private static final long serialVersionUID = 1L;
-	@Type(type="org.hibernate.spatial.GeometryType")
-	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
+
+	//@TODO: re-enable hibernate-spatial as soon as hibernate spatial is compatible Java EE 7 and/or integrated in hibernate-orm 5.x
+//	@Type(type="org.hibernate.spatial.GeometryType")
+//	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
 	private Polygon boundaries;
 	@Transient
 	private JaxRSCoordinate centerPoint;
@@ -42,7 +44,7 @@ public class BaseGeoInfo extends AbstractIdentifiable {
 	}
 
 	public JaxRSCoordinate getCenterPoint() {
-		if(centerPoint == null) {
+		if (centerPoint == null) {
 			Point centroid = boundaries.getCentroid();
 			this.centerPoint = new JaxRSCoordinate(centroid.getX(),
 				centroid.getY());

@@ -5,19 +5,9 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.VehicleInformation;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
-import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateful;
 
@@ -28,8 +18,10 @@ import javax.ejb.Stateful;
  * @author richter
  */
 @Stateful
+@Local(InformationBasedVehicleFactory.class)
 public class RandomInformationBasedVehicleFactory extends AbstractInformationBasedVehicleFactory
 	implements InformationBasedVehicleFactory {
+
 	private static final long serialVersionUID = 1L;
 
 	public RandomInformationBasedVehicleFactory() {

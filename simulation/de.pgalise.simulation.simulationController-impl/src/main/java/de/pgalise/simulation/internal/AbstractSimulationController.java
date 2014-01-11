@@ -11,13 +11,11 @@ import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.manager.ServerConfigurationReader;
-import de.pgalise.simulation.service.manager.ServiceHandler;
+//import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;
@@ -26,7 +24,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
 import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
@@ -37,6 +35,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-public abstract class AbstractSimulationController extends AbstractController<Event, InfrastructureStartParameter, TrafficInitParameter>
+public abstract class AbstractSimulationController extends AbstractController<Event, TrafficStartParameter, TrafficInitParameter>
 	implements SimulationControllerLocal {
 
 	private static final String NAME = "SimulationController";
@@ -60,6 +59,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	 */
 	@EJB
 	private EventInitiator eventInitiator;
+	@PersistenceContext(unitName = "pgalise-simulationcontroller")
 	private EntityManager sensorPersistenceService;
 	@EJB
 	private ServerSideOperationCenterController operationCenterController;
@@ -67,8 +67,8 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	private ServerSideControlCenterController controlCenterController;
 	@EJB
 	private ServiceDictionary serviceDictionary;
-	@EJB
-	private ServerConfigurationReader serverConfigReader;
+//	@EJB
+//	private ServerConfigurationReader serverConfigReader;
 	@EJB
 	private ConfigReader configReader;
 	/**
@@ -201,36 +201,35 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		final MutableBoolean exception = new MutableBoolean();
 		exception.setValue(false);
 
-		serverConfigReader.read(
-			param.getServerConfiguration(),
-			new ServiceHandler<Controller<Event, StartParameter, InitParameter>>() {
-				@Override
-				public String getName() {
-					return ServiceDictionary.FRONT_CONTROLLER;
-				}
-
-				@Override
-				public void handle(String server,
-					Controller service) {
-					log.info(String.format("Using %s on server %s",
-							getName(),
-							server));
-					if (!(service instanceof SimulationController)) {
-						try {
-							if (service.getStatus() != StatusEnum.INIT) {
-								service.reset();
-							}
-							service.init(param);
-						} catch (IllegalStateException e) {
-							exception.setValue(false);
-							log.error("Could not inititialize FrontController",
-								e);
-						}
-					}
-					frontControllerList.add(service);
-				}
-			});
-
+//		serverConfigReader.read(
+//			param.getServerConfiguration(),
+//			new ServiceHandler<Controller<Event, StartParameter, InitParameter>>() {
+//				@Override
+//				public String getName() {
+//					return ServiceDictionary.FRONT_CONTROLLER;
+//				}
+//
+//				@Override
+//				public void handle(String server,
+//					Controller service) {
+//					log.info(String.format("Using %s on server %s",
+//							getName(),
+//							server));
+//					if (!(service instanceof SimulationController)) {
+//						try {
+//							if (service.getStatus() != StatusEnum.INIT) {
+//								service.reset();
+//							}
+//							service.init(param);
+//						} catch (IllegalStateException e) {
+//							exception.setValue(false);
+//							log.error("Could not inititialize FrontController",
+//								e);
+//						}
+//					}
+//					frontControllerList.add(service);
+//				}
+//			});
 		if (exception.getValue()) {
 			throw new InitializationException(
 				"An error occured during the initialization of the front controllers");
@@ -281,7 +280,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 	}
 
 	@Override
-	protected void onStart(InfrastructureStartParameter param) {
+	protected void onStart(TrafficStartParameter param) {
 		this.startParameter = param;
 
 		// start the controllers
@@ -440,16 +439,15 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 		this.sensorPersistenceService = sensorPersistenceService;
 	}
 
-	/**
-	 * Only for J-Unit tests.
-	 *
-	 * @param serverConfigurationReader
-	 */
-	protected void setServerConfigurationReader(
-		ServerConfigurationReader serverConfigurationReader) {
-		this.serverConfigReader = serverConfigurationReader;
-	}
-
+//	/**
+//	 * Only for J-Unit tests.
+//	 *
+//	 * @param serverConfigurationReader
+//	 */
+//	protected void setServerConfigurationReader(
+//		ServerConfigurationReader serverConfigurationReader) {
+//		this.serverConfigReader = serverConfigurationReader;
+//	}
 	protected void setControlCenterController(
 		ServerSideControlCenterController controlCenterController) {
 		this.controlCenterController = controlCenterController;

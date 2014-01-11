@@ -50,10 +50,10 @@ public class TestUtils {
 //			p.setProperty("pgaliseTest.UserName", "postgis");
 //			p.setProperty("pgaliseTest.Password", "postgis");
 //			p.setProperty("pgaliseTest.JtaManaged",	"true");
-			p.setProperty(
-				"hibernate.dialect",
-				"org.hibernate.spatial.dialect.postgis.PostgisDialect"
-			);
+//			p.setProperty(
+//				"hibernate.dialect",
+//				"org.hibernate.spatial.dialect.postgis.PostgisDialect"
+//			);
 			p.setProperty("openejb.classloader.forced-skip",
 				"org.xml.sax");
 			p.setProperty("openejb.validation.output.level",

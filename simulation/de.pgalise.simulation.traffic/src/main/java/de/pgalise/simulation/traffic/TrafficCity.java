@@ -6,6 +6,7 @@ package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -15,12 +16,12 @@ import javax.persistence.OneToOne;
  * @param <C>
  */
 @Entity
-public class TrafficCity<C extends TrafficInfrastructureData> extends City {
+public class TrafficCity extends City {
 
 	private static final long serialVersionUID = 1L;
 
 	@OneToOne
-	private C cityInfrastructureData;
+	private CityInfrastructureData cityInfrastructureData;
 
 	public TrafficCity() {
 	}
@@ -32,7 +33,7 @@ public class TrafficCity<C extends TrafficInfrastructureData> extends City {
 		boolean nearRiver,
 		boolean nearSea,
 		BaseGeoInfo position,
-		C cityInfrastructureData) {
+		CityInfrastructureData cityInfrastructureData) {
 		super(name,
 			population,
 			altitude,
@@ -43,11 +44,12 @@ public class TrafficCity<C extends TrafficInfrastructureData> extends City {
 		this.cityInfrastructureData = cityInfrastructureData;
 	}
 
-	public C getCityInfrastructureData() {
+	public CityInfrastructureData getCityInfrastructureData() {
 		return cityInfrastructureData;
 	}
 
-	public void setCityInfrastructureData(C cityInfrastructureData) {
+	public void setCityInfrastructureData(
+		CityInfrastructureData cityInfrastructureData) {
 		this.cityInfrastructureData = cityInfrastructureData;
 	}
 

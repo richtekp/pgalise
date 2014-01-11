@@ -16,7 +16,6 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import javax.ejb.Local;
 
 /**
  * Interface to provide methods to create different types of {@link Bus}.

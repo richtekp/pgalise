@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficCity;
 import javax.persistence.Entity;
 
@@ -14,7 +13,7 @@ import javax.persistence.Entity;
  * @author richter
  */
 @Entity
-public class OsmCity extends TrafficCity<OSMCityInfrastructureData> {
+public class OsmCity extends TrafficCity {
 
 	private static final long serialVersionUID = 1L;
 	private long osmId;
@@ -29,7 +28,7 @@ public class OsmCity extends TrafficCity<OSMCityInfrastructureData> {
 		boolean nearRiver,
 		boolean nearSea,
 		BaseGeoInfo position,
-		OSMCityInfrastructureData trafficInfrastructureData) {
+		CityInfrastructureData trafficInfrastructureData) {
 		super(name,
 			population,
 			altitude,

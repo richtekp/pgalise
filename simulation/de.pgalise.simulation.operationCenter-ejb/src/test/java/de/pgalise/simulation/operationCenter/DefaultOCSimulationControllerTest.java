@@ -37,8 +37,8 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficCity;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import de.pgalise.testutils.TestUtils;
@@ -169,7 +169,7 @@ public class DefaultOCSimulationControllerTest {
 	/**
 	 * Start parameter
 	 */
-	private InfrastructureStartParameter START_PARAMTER;
+	private TrafficStartParameter START_PARAMTER;
 
 	/**
 	 * List of sensor helper
@@ -221,12 +221,11 @@ public class DefaultOCSimulationControllerTest {
 			0,
 			new URL(""),
 			new URL(""),
-			null,
 			null);
 
 		/* Create start parameter: */
 		TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance();
-		START_PARAMTER = new InfrastructureStartParameter(
+		START_PARAMTER = new TrafficStartParameter(
 			city,
 			true,
 			null);

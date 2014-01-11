@@ -28,35 +28,35 @@
 		<module>de.pgalise.simulation.operationCenter-jar</module>
 		
 		<!-- Implementierungen -->
-    <module>de.pgalise.simulation.shared-impl</module>
+		<module>de.pgalise.simulation.shared-impl</module>
 		<module>de.pgalise.simulation.weather-impl</module>
 		<module>de.pgalise.simulation.energy-impl</module>
 		<module>de.pgalise.simulation.traffic-impl</module>
 		<module>de.pgalise.simulation.simulationController-impl</module>
 		<module>de.pgalise.simulation.controlCenter-ejb</module>
-    <module>de.pgalise.simulation.operationCenter-ejb</module>
+		<module>de.pgalise.simulation.operationCenter-ejb</module>
 		<!-- Web Module -->
 		<module>de.pgalise.simulation.controlCenter</module>
 		<module>de.pgalise.simulation.operationCenter</module>
-  </modules>
+	</modules>
 
 	<dependencies>
 		<dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>openejb-client</artifactId>
-				<scope>test</scope>
-				<exclusions>
-					<exclusion>
-						<groupId>org.apache.openejb</groupId>
-						<artifactId>javaee-api</artifactId>
-					</exclusion>
-				</exclusions> 
-        </dependency>
-	 <dependency>
-	  <groupId>javax</groupId>
-	  <artifactId>javaee-api</artifactId>
-	  <type>jar</type>
-		<scope>provided</scope>
-	 </dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-client</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.openejb</groupId>
+					<artifactId>javaee-api</artifactId>
+				</exclusion>
+			</exclusions> 
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 </project>

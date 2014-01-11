@@ -16,7 +16,6 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.easymock.EasyMock.expect;
@@ -66,10 +65,11 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.internal.DefaultSensorRegistry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
@@ -130,9 +130,9 @@ public class DefaultTrafficServerTest {
 		DefaultTrafficServerTest.class);
 
 	/**
-	 * CityInfrastructureData
+	 * CityInfrastructureDataService
 	 */
-	private static TrafficInfrastructureData city;
+	private static CityInfrastructureData city;
 
 	/**
 	 * Service dictionary
@@ -194,15 +194,16 @@ public class DefaultTrafficServerTest {
 	private static SensorRegistry SENSOR_REGISTRY;
 	@EJB
 	private IdGenerator idGenerator;
+	@EJB
+	private FileBasedCityInfrastructureDataService cityFactory;
 
 	public DefaultTrafficServerTest() throws NamingException, IOException {
 		container.getContext().bind("inject",
 			this);
 
-		DefaultOSMCityInfrastructureDataService cityFactory = new DefaultOSMCityInfrastructureDataService();
-		city = cityFactory.createCityInfrastructureData(new File(OSM),
-			new File(BUS_STOPS),
-			null);
+		cityFactory.parse(new File(OSM),
+			new File(BUS_STOPS));
+		city = cityFactory.createCityInfrastructureData();
 
 		WeatherController wc = createNiceMock(WeatherController.class);
 		EnergyController ec = createNiceMock(EnergyController.class);
@@ -292,7 +293,7 @@ public class DefaultTrafficServerTest {
 			1,
 			gs);
 
-		InfrastructureStartParameter startParam = new InfrastructureStartParameter();
+		TrafficStartParameter startParam = new TrafficStartParameter();
 
 		server1.start(startParam);
 		server2.start(startParam);
@@ -459,9 +460,7 @@ public class DefaultTrafficServerTest {
 
 		EventList eventList = new EventList(idGenerator.getNextId(),
 			Arrays.asList(createRandomVehicleEvent(
-					city,
 					carCount,
-					TrafficSensorTypeEnum.GPS,
 					VehicleTypeEnum.CAR,
 					VehicleModelEnum.CAR_BMW_1)),
 			SIMULATION_START.getTime());
@@ -490,9 +489,7 @@ public class DefaultTrafficServerTest {
 
 		EventList eventList = new EventList(idGenerator.getNextId(),
 			Arrays.asList(createRandomVehicleEvent(
-					city,
 					truckCount,
-					TrafficSensorTypeEnum.GPS,
 					VehicleTypeEnum.TRUCK,
 					VehicleModelEnum.TRUCK_COCA_COLA)),
 			SIMULATION_START.getTime());
@@ -1000,14 +997,12 @@ public class DefaultTrafficServerTest {
 	/**
 	 * Produce simulation event lists. E.g. for random cars.
 	 *
-	 * @param cityInfrastructureData CityInfrastructureData
+	 * @param cityInfrastructureData CityInfrastructureDataService
 	 * @param count Number of vehicles
 	 * @return CreateRandomVehiclesEvent
 	 */
 	private CreateRandomVehiclesEvent<?> createRandomVehicleEvent(
-		CityInfrastructureData cityInfrastructureData,
 		int count,
-		SensorType sensorType,
 		VehicleTypeEnum vehicleType,
 		VehicleModelEnum vehicleModel) {
 		/* create random cars */

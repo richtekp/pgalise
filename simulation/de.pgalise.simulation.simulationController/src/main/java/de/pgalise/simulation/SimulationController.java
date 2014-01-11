@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation;
 
 import de.pgalise.simulation.event.EventInitiator;
@@ -21,38 +20,39 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.visualizationcontroller.ServerSideControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.ServerSideOperationCenterController;
 
 /**
- * The simulation controller inits, starts, stops, resets and updates the whole simulation. 
- * It's the only touch point for the control center.
+ * The simulation controller inits, starts, stops, resets and updates the whole
+ * simulation. It's the only touch point for the control center.
+ *
  * @author Kamil
  * @auther Jens
  * @auther Timo
  */
-public interface SimulationController extends SensorManagerController<Event, InfrastructureStartParameter, TrafficInitParameter,Sensor<?,?>> {
+public interface SimulationController extends
+	SensorManagerController<Event, TrafficStartParameter, TrafficInitParameter, Sensor<?, ?>> {
 
 	/**
-	 * Adds an event list. The other controllers will be updated with the given events.
-	 * @param simulationEventList
-	 * 			an event list with a timestamp and events
+	 * Adds an event list. The other controllers will be updated with the given
+	 * events.
+	 *
+	 * @param simulationEventList an event list with a timestamp and events
 	 */
 	public void addSimulationEventList(EventList<?> simulationEventList);
 
 	/**
 	 * Returns the current simulation timestamp.
-	 * 
+	 *
 	 * @TODO: check usage (timestamps should be determined by System simply)
-	 * 
+	 *
 	 * @return
 	 */
 	public long getSimulationTimestamp();
-	
+
 	public long getElapsedTime();
-	
+
 //	/**
 //	 * Use this only for testing.
 //	 * @param operationCenterController
@@ -64,9 +64,9 @@ public interface SimulationController extends SensorManagerController<Event, Inf
 //	 * @param controlCenterController
 //	 */
 //	public void setControlCenterController(ServerSideControlCenterController controlCenterController);
-	
 	/**
 	 * Use this only for testing.
+	 *
 	 * @return
 	 */
 	public EventInitiator getEventInitiator();

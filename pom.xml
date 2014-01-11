@@ -15,6 +15,9 @@
 		<java.compiler.target>1.7</java.compiler.target>
 		<de.pgalise.openejb.version>4.6.0</de.pgalise.openejb.version>
 		<de.pgalise.geotools.version>9.3</de.pgalise.geotools.version>
+		<de.pgalise.hibernate.version>4.3.0.Final</de.pgalise.hibernate.version>
+		<!--4.3.0.Final is the only stable version which is compatible with Java EE 7, 
+	but also buggy -> used dev version -->
 	</properties>
 		
 	<modules>
@@ -79,7 +82,7 @@
 
 	<!-- Werden für alle Projekte als Abhängigkeit definiert -->
 	<dependencies>
-		<!-- Test dependencies -->
+		<!-- Test dependencies -->		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -335,21 +338,26 @@
 				<artifactId>commons-collections4</artifactId>
 				<version>4.0</version>
 			</dependency>
-			<dependency>
+<!--			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-spatial</artifactId>
-				<version>4.0-M1</version>
-			</dependency>
+				<version>4.0</version>
+			</dependency>-->
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
-				<version>4.2.5.Final</version>
+				<version>${de.pgalise.hibernate.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
-				<version>4.2.5.Final</version>
+				<version>${de.pgalise.hibernate.version}</version>
 			</dependency>
+<!--			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-search</artifactId>
+				<version>4.4.0.Final</version>
+			</dependency>-->
 			<dependency>
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
@@ -562,6 +570,12 @@
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-geometry</artifactId>
 				<version>${de.pgalise.geotools.version}</version>
+			</dependency>
+			<dependency>
+			 <groupId>org.geotools</groupId>
+			 <artifactId>gt-cql</artifactId>
+			 <version>${de.pgalise.geotools.version}</version>
+			 <type>jar</type>
 			</dependency>
 			<dependency>
 				<groupId>javax</groupId>

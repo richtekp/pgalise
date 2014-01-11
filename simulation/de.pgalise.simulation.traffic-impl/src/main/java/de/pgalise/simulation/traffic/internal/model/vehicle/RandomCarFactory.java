@@ -5,16 +5,8 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Car;
-import de.pgalise.simulation.traffic.model.vehicle.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import java.awt.Color;
+import javax.ejb.Local;
 import javax.ejb.Stateful;
 
 /**
@@ -22,8 +14,10 @@ import javax.ejb.Stateful;
  * @author richter
  */
 @Stateful
+@Local(CarFactory.class)
 public class RandomCarFactory extends AbstractCarFactory implements
 	CarFactory {
+
 	private static final long serialVersionUID = 1L;
 
 	public RandomCarFactory() {

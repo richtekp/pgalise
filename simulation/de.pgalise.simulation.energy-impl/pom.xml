@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -16,12 +16,41 @@
 
 	<name>de.pgalise.simulation.energy-impl</name>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>energy</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-shared</artifactId>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic-impl</artifactId>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-impl</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>de.pgalise.testutils-traffic</artifactId>
+			<version>2.0-SNAPSHOT</version>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+	 
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
@@ -30,47 +59,16 @@
 			<groupId>pcingola</groupId>
 			<artifactId>jfuzzy</artifactId>
 		</dependency>		
-	 <dependency>
-	  <groupId>com.javadocmd</groupId>
-	  <artifactId>simplelatlng</artifactId>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>traffic</artifactId>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>testutils-shared</artifactId>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>org.apache.openejb</groupId>
-	  <artifactId>openejb-core</artifactId>
-	  <scope>test</scope>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>traffic-impl</artifactId>
-	  <version>2.0-SNAPSHOT</version>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared-impl</artifactId>
-	  <version>2.0-SNAPSHOT</version>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>de.pgalise.testutils-traffic</artifactId>
-	  <version>2.0-SNAPSHOT</version>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
+		<dependency>
+			<groupId>com.javadocmd</groupId>
+			<artifactId>simplelatlng</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 	<build>

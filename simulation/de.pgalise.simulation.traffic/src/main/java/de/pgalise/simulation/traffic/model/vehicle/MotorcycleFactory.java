@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import javax.ejb.Local;
 
 /**
  * Interface to provide methods to create different types of {@link Motorcycle}.
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
@@ -29,17 +27,17 @@ public interface MotorcycleFactory extends VehicleFactory {
 
 	/**
 	 * Method to create a {@link Motorcycle} with the given typeId.
-	 * 
+	 *
 	 * @param output
 	 * @return created {@link Motorcycle}
 	 */
-	Motorcycle createMotorcycle(  Output output);
+	Motorcycle createMotorcycle(Output output);
 
 	/**
 	 * Method to create a random {@link Motorcycle}.
-	 * 
+	 *
 	 * @param output
 	 * @return created {@link Motorcycle}
 	 */
-	Motorcycle createRandomMotorcycle( Output output);
+	Motorcycle createRandomMotorcycle(Output output);
 }

@@ -22,8 +22,8 @@ import de.pgalise.simulation.shared.city.JaxbVector2d;
  *
  * @author richter
  */
-public abstract class AbstractVehicleFactory implements VehicleFactory
-{
+public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
+
 	private static final long serialVersionUID = 1L;
 	private TrafficGraphExtensions trafficGraphExtensions;
 	@EJB
@@ -32,11 +32,11 @@ public abstract class AbstractVehicleFactory implements VehicleFactory
 	private RandomSeedService randomSeedService;
 	@EJB
 	private TcpIpOutput output;
-	
+
 	public AbstractVehicleFactory() {
 	}
 
-	public AbstractVehicleFactory(		TrafficGraphExtensions trafficGraphExtensions,
+	public AbstractVehicleFactory(TrafficGraphExtensions trafficGraphExtensions,
 		IdGenerator idGenerator,
 		RandomSeedService randomSeedService) {
 		this.trafficGraphExtensions = trafficGraphExtensions;
@@ -61,22 +61,25 @@ public abstract class AbstractVehicleFactory implements VehicleFactory
 	public IdGenerator getIdGenerator() {
 		return idGenerator;
 	}
-	
+
 	public JaxRSCoordinate generateRandomPosition(Set<TrafficEdge> edges) {
 		int edgeCount = edges.size();
-		int chosenIndex = (int)(Math.random()*edgeCount);
-		int i=0;
+		int chosenIndex = (int) (Math.random() * edgeCount);
+		int i = 0;
 		Iterator<TrafficEdge> it = edges.iterator();
-		while(i<chosenIndex) {
+		while (i < chosenIndex) {
 			it.next();
 		}
 		TrafficEdge chosenEdge = it.next();
-		double chosenOffset = chosenEdge.getEdgeLength()*Math.random();
+		double chosenOffset = chosenEdge.getEdgeLength() * Math.random();
 		JaxbVector2d offsetVector = new JaxbVector2d(chosenEdge.getVector());
 		offsetVector.scale(chosenOffset);
-		JaxbVector2d positionVector = new JaxbVector2d(chosenEdge.getSource().getGeoLocation().getX(), chosenEdge.getSource().getGeoLocation().getY());
+		JaxbVector2d positionVector = new JaxbVector2d(chosenEdge.getSource().
+			getGeoLocation().getX(),
+			chosenEdge.getSource().getGeoLocation().getY());
 		positionVector.add(offsetVector);
-		return new JaxRSCoordinate(positionVector.getX(), positionVector.getY());
+		return new JaxRSCoordinate(positionVector.getX(),
+			positionVector.getY());
 	}
 
 	public void setRandomSeedService(RandomSeedService randomSeedService) {
@@ -87,15 +90,15 @@ public abstract class AbstractVehicleFactory implements VehicleFactory
 	public RandomSeedService getRandomSeedService() {
 		return randomSeedService;
 	}
-	
+
 	/**
-	 * 
-	 * @return 
+	 *
+	 * @return
 	 */
 	/*
-	encapsulating the access to GpsInterferer(s) allows to change the mechanism of retrieval later (e.g. get references from a pool)
-	*/
-	public GpsInterferer retrieveGpsInterferer(){
+	 encapsulating the access to GpsInterferer(s) allows to change the mechanism of retrieval later (e.g. get references from a pool)
+	 */
+	public GpsInterferer retrieveGpsInterferer() {
 		return new GpsClockInterferer(randomSeedService);
 	}
 

@@ -3,23 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.traffic.model.vehicle;
-
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.RandomSeedService;
-import java.io.Serializable;
 
 /**
  *
  * @author richter
  */
-public interface VehicleFactory  {
-	
-	IdGenerator getIdGenerator();
-	
-	RandomSeedService getRandomSeedService();
-	
-	TcpIpOutput getTcpIpOutput();
+public interface VehicleFactory extends BaseVehicleFactory {
+
 }

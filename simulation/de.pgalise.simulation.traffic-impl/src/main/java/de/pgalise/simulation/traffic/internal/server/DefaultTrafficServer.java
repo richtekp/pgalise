@@ -43,11 +43,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.sensorFramework.SensorRegistry;
 import de.pgalise.simulation.service.ServiceDictionary;
 import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.ServerConfigurationIdentifier;
-import de.pgalise.simulation.service.manager.ServerConfigurationReader;
-import de.pgalise.simulation.service.manager.ServiceHandler;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
@@ -59,7 +55,7 @@ import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.BusStop;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficNode;
@@ -67,7 +63,6 @@ import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.XMLVehicleFactory;
-import de.pgalise.simulation.traffic.internal.server.route.DefaultRouteConstructor;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersection;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
@@ -88,7 +83,6 @@ import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficServiceDictionary;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
@@ -121,7 +115,7 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 @Singleton(name = "de.pgalise.simulation.traffic.server.TrafficServer")
 @Local(TrafficServerLocal.class)
 public class DefaultTrafficServer extends AbstractController<
-	VehicleEvent, InfrastructureStartParameter, TrafficInitParameter>
+	VehicleEvent, TrafficStartParameter, TrafficInitParameter>
 	implements
 	TrafficServerLocal<VehicleEvent>,
 	ScheduleHandler,
@@ -256,9 +250,8 @@ public class DefaultTrafficServer extends AbstractController<
 	/**
 	 * Server configurations
 	 */
-	@EJB
-	private ServerConfigurationReader<TrafficServerLocal<VehicleEvent>> serverConfigReader;
-
+//	@EJB
+//	private ServerConfigurationReader<TrafficServerLocal<VehicleEvent>> serverConfigReader;
 	/**
 	 * Config reader
 	 */
@@ -289,6 +282,7 @@ public class DefaultTrafficServer extends AbstractController<
 	/**
 	 * Route constructor
 	 */
+	@EJB
 	private RouteConstructor routeConstructor;
 
 	/**
@@ -299,7 +293,7 @@ public class DefaultTrafficServer extends AbstractController<
 	/**
 	 * List of all known traffic servers
 	 */
-	private List<TrafficServerLocal<VehicleEvent>> serverList;
+	private Set<TrafficServerLocal<VehicleEvent>> trafficServers;
 
 	/**
 	 * All known other city zones
@@ -662,37 +656,36 @@ public class DefaultTrafficServer extends AbstractController<
 			this));
 	}
 
-	/**
-	 * Returns all known traffic servers from the server configuration
-	 *
-	 * @param serverConfig server configuration
-	 * @return List of all traffic servers
-	 */
-	private List<TrafficServerLocal<VehicleEvent>> getTrafficServer(
-		ServerConfiguration serverConfig) {
-		this.serverConfigReader.read(
-			serverConfig,
-			new ServiceHandler<TrafficServerLocal<VehicleEvent>>() {
-
-				@Override
-				public String getName() {
-					return DefaultTrafficServiceDictionary.TRAFFIC_SERVER;
-				}
-
-				@Override
-				public void handle(String server,
-					TrafficServerLocal<VehicleEvent> service) {
-					if (!server.equals(DefaultTrafficServer.this.configReader.getProperty(
-							ServerConfigurationIdentifier.SERVER_HOST))) {
-						log.debug("Found another traffic server on host: " + server);
-						DefaultTrafficServer.this.serverList.add(service);
-					}
-				}
-
-			});
-		return this.serverList;
-	}
-
+//	/**
+//	 * Returns all known traffic servers from the server configuration
+//	 *
+//	 * @param serverConfig server configuration
+//	 * @return List of all traffic servers
+//	 */
+//	private List<TrafficServerLocal<VehicleEvent>> getTrafficServer(
+//		ServerConfiguration serverConfig) {
+//		this.serverConfigReader.read(
+//			serverConfig,
+//			new ServiceHandler<TrafficServerLocal<VehicleEvent>>() {
+//
+//				@Override
+//				public String getName() {
+//					return DefaultTrafficServiceDictionary.TRAFFIC_SERVER;
+//				}
+//
+//				@Override
+//				public void handle(String server,
+//					TrafficServerLocal<VehicleEvent> service) {
+//					if (!server.equals(DefaultTrafficServer.this.configReader.getProperty(
+//							ServerConfigurationIdentifier.SERVER_HOST))) {
+//						log.debug("Found another traffic server on host: " + server);
+//						DefaultTrafficServer.this.trafficServers.add(service);
+//					}
+//				}
+//
+//			});
+//		return this.trafficServers;
+//	}
 	/**
 	 * Instanciate dependencies for the traffic server
 	 */
@@ -700,7 +693,7 @@ public class DefaultTrafficServer extends AbstractController<
 		this.trafficGraphExtensions.setRandomSeedService(this.serviceDictionary.
 			getRandomSeedService());
 		this.cityZones = new ArrayList<>();
-		this.serverList = new ArrayList<>();
+		this.trafficServers = new HashSet<>();
 		this.receivedVehicles = new ArrayList<>();
 		this.listedRoadBarriers = new HashSet<>();
 		this.eventForVehicle = new HashMap<>();
@@ -828,6 +821,8 @@ public class DefaultTrafficServer extends AbstractController<
 									VehicleEventTypeEnum.VEHICLE_PASSED_NODE));
 						} else {
 							// vehicle is driving out of boundaries
+							List<TrafficServerLocal<VehicleEvent>> trafficServerList = new ArrayList<>(
+								trafficServers);
 							for (int j = 0; j < this.cityZones.size(); j++) {
 								if (this.cityZones.get(j).covers(GEOMETRY_FACTORY.createPoint(
 									this.trafficGraphExtensions.getPosition(curNode)))) {
@@ -837,8 +832,8 @@ public class DefaultTrafficServer extends AbstractController<
 										this.getId()));
 									log.debug(String.format("Sending vehicle %s to server %s",
 										vehicle.getName(),
-										serverList.get(j)));
-									this.serverList.get(j).takeVehicle(
+										trafficServerList.get(j)));
+									trafficServerList.get(j).takeVehicle(
 										vehicle,
 										curNode,
 										vehicle.getNodePath()
@@ -888,16 +883,11 @@ public class DefaultTrafficServer extends AbstractController<
 	@Override
 	protected void onInit(TrafficInitParameter param) throws InitializationException {
 		try {
-			this.serverList = this.getTrafficServer(param.getServerConfiguration());
+//			this.trafficServers = this.getTrafficServer(param.getServerConfiguration());
 			this.loadSensorDependencies(param);
 			this.loadEventHandler();
 			this.sensorController.init(param);
 
-			this.routeConstructor = new DefaultRouteConstructor(this.coordinate,
-				param.getCityInfrastructureData(),
-				param.getStartTimestamp().getTime(),
-				this.serviceDictionary.getRandomSeedService(),
-				this.trafficGraphExtensions);
 			this.updateIntervall = param.getInterval();
 
 			this.vehicleFactory = new XMLVehicleFactory(this.serviceDictionary.
@@ -938,7 +928,7 @@ public class DefaultTrafficServer extends AbstractController<
 		this.listedRoadBarriers.clear();
 		this.trafficGraphExtensions.reset();
 		this.cityZones.clear();
-		this.serverList.clear();
+		this.trafficServers.clear();
 //		this.trafficEventHandlerManager.clear();
 		this.vehicleEventHandlerManager.clear();
 		this.sensorController.reset();
@@ -950,8 +940,8 @@ public class DefaultTrafficServer extends AbstractController<
 	}
 
 	@Override
-	protected void onStart(InfrastructureStartParameter param) {
-		for (TrafficServerLocal<VehicleEvent> server : this.serverList) {
+	protected void onStart(TrafficStartParameter param) {
+		for (TrafficServerLocal<VehicleEvent> server : this.trafficServers) {
 			this.cityZones.add(server.getCityZone());
 		}
 		// not working..
@@ -960,7 +950,7 @@ public class DefaultTrafficServer extends AbstractController<
 		// this.cityZones.add(this.cityZone);
 		// }
 		// else {
-		// this.cityZones.add(this.serverList.get(i).getCityZone());
+		// this.cityZones.add(this.trafficServers.get(i).getCityZone());
 		// }
 		// }
 		this.sensorController.start(param);
@@ -1026,7 +1016,7 @@ public class DefaultTrafficServer extends AbstractController<
 //	}
 	@Override
 	public int getServerListSize() {
-		return serverList.size();
+		return trafficServers.size();
 	}
 
 	public void updateRoadBarriers(long timestamp) {
@@ -1129,5 +1119,14 @@ public class DefaultTrafficServer extends AbstractController<
 	public void setManagedVehicles(
 		Set<Vehicle<?>> managedVehicles) {
 		this.managedVehicles = managedVehicles;
+	}
+
+	public void setTrafficServers(
+		Set<TrafficServerLocal<VehicleEvent>> trafficServers) {
+		this.trafficServers = trafficServers;
+	}
+
+	public Set<TrafficServerLocal<VehicleEvent>> getTrafficServers() {
+		return trafficServers;
 	}
 }

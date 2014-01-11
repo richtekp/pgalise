@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.route;
 
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.tag.LanduseTagEnum;
 import java.awt.Polygon;
 import java.util.ArrayList;
@@ -28,44 +29,39 @@ import de.pgalise.simulation.shared.tag.LanduseTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficWay;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.route.EnrichedPolygon;
 import java.util.Set;
 
 /**
  * @author Lena
  */
-public class RegionParser<D extends VehicleData> {
+public class DefaultRegionParser implements RegionParser {
 
 	/**
 	 * Log
 	 */
-	private static final Logger log = LoggerFactory.getLogger(RegionParser.class);
+	private static final Logger log = LoggerFactory.getLogger(
+		DefaultRegionParser.class);
 
-	public static boolean isInsidePolygon(Polygon p, int x, int y) {
-		if (p.contains(x, y)) {
-			return true;
-		} else {
-			return false;
-		}
+	public static boolean isInsidePolygon(Polygon p,
+		int x,
+		int y) {
+		return p.contains(x,
+			y);
 	}
 
 	private List<TrafficNode> homeNodes = new ArrayList<>();
-
-	private TrafficInfrastructureData trafficInformation;
 
 	private List<TrafficNode> workNodes = new ArrayList<>();
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param trafficInformation
 	 */
-	public RegionParser(TrafficInfrastructureData trafficInformation) {
-		this.trafficInformation = trafficInformation;
+	public DefaultRegionParser() {
 	}
 
 	public List<TrafficNode> getHomeNodes() {
@@ -76,12 +72,14 @@ public class RegionParser<D extends VehicleData> {
 		return this.workNodes;
 	}
 
-	public void parseLanduse(TrafficGraph graph) {
+	@Override
+	public void parseLanduse(TrafficGraph graph,
+		CityInfrastructureData trafficInformation) {
 		List<EnrichedPolygon> polygons = new ArrayList<>();
-		List<TrafficWay> ways = this.trafficInformation.getMotorWays();
-		List<Way<?,?>> landuses = this.trafficInformation.getLandUseWays();
+		List<TrafficWay> ways = trafficInformation.getMotorWays();
+		List<TrafficWay> landuses = trafficInformation.getLandUseWays();
 
-		for (Way<?,?> landuse : landuses) {
+		for (Way<?, ?> landuse : landuses) {
 			int npoints = landuse.getNodeList().size();
 			int[] xpoints = new int[npoints];
 			int[] ypoints = new int[npoints];
@@ -94,14 +92,18 @@ public class RegionParser<D extends VehicleData> {
 				ypoints[i] = ypoint;
 			}
 
-			polygons.add(new EnrichedPolygon(new Polygon(xpoints, ypoints, npoints), landuse.getLanduseTags()));
+			polygons.add(new EnrichedPolygon(new Polygon(xpoints,
+				ypoints,
+				npoints),
+				landuse.getLanduseTags()));
 		}
 
 		for (TrafficWay way : ways) {
 			for (TrafficNode node : way.getNodeList()) {
 				for (EnrichedPolygon p : polygons) {
-					if (p.getPolygon().contains((int) (node.getGeoLocation().getX()* 10000000),
-							(int) (node.getGeoLocation().getY()* 10000000))) {
+					if (p.getPolygon().contains(
+						(int) (node.getGeoLocation().getX() * 10000000),
+						(int) (node.getGeoLocation().getY() * 10000000))) {
 						Set<LanduseTag> landuse = p.getLanduse();
 						node.getLanduseTags().addAll(landuse);
 

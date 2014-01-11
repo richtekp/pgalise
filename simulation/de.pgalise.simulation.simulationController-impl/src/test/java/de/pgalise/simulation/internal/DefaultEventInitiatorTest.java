@@ -45,7 +45,7 @@ import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.staticsensor.StaticSensor;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -56,10 +56,13 @@ import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.TestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
+import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.ejb.LocalBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
 import org.junit.Before;
+import org.junit.Ignore;
 
 /**
  * J-Unit test for {@link DefaultEventInitiator}, which will test if every
@@ -68,6 +71,9 @@ import org.junit.Before;
  *
  * @author Timo
  */
+@LocalBean
+@ManagedBean
+@Ignore //@TODO: get it working
 public class DefaultEventInitiatorTest {
 
 	private EJBContainer container;
@@ -118,8 +124,8 @@ public class DefaultEventInitiatorTest {
 			endTimestamp,
 			INTERVAL,
 			CLOCK_GENERATOR_INTERVAL,
-			new URL(""),
-			new URL(""),
+			new URL("http://localhost:8080/operationCenter"),
+			new URL("http://localhost:8080/controlCenter"),
 			null,
 			null);
 
@@ -327,7 +333,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(InfrastructureStartParameter param) throws IllegalStateException {
+		public void start(TrafficStartParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -446,7 +452,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(InfrastructureStartParameter param) throws IllegalStateException {
+		public void start(TrafficStartParameter param) throws IllegalStateException {
 		}
 
 		@Override
@@ -521,7 +527,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void start(InfrastructureStartParameter param) throws IllegalStateException {
+		public void start(TrafficStartParameter param) throws IllegalStateException {
 		}
 
 		@Override

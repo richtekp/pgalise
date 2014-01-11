@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -20,7 +19,8 @@ import java.awt.Color;
  *
  * @author richter
  */
-public class AbstractCarFactory extends AbstractVehicleFactory implements CarFactory {
+public class AbstractCarFactory extends AbstractVehicleFactory implements
+	CarFactory {
 
 	public AbstractCarFactory() {
 	}

@@ -19,9 +19,9 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.BusRoute;
 import de.pgalise.simulation.traffic.TrafficCity;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensor;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -67,7 +67,7 @@ import javolution.xml.XMLSerializable;
 /*
  make this class a managed bean in order to specify validation constraints only once and to not be obliged to duplicate all fields in a start parameter controller
  */
-public class ControlCenterStartParameter extends InfrastructureStartParameter
+public class ControlCenterStartParameter extends TrafficStartParameter
 	implements XMLSerializable {
 
 	public final static Set<Class<? extends Sensor>> SUPPORTED_SENSOR_TYPES = new HashSet<Class<? extends Sensor>>(

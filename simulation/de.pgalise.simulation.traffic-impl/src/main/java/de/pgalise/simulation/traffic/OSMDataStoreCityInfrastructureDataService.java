@@ -5,15 +5,22 @@
 package de.pgalise.simulation.traffic;
 
 import com.vividsolutions.jts.geom.Envelope;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
 import org.geotools.data.DataStore;
 import org.geotools.data.Query;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -34,22 +41,34 @@ import org.opengis.filter.FilterFactory2;
  *
  * @author richter
  */
-public class OSMDataStoreCityInfrastructureData extends TrafficInfrastructureData<TrafficEdge, TrafficNode, TrafficWay> {
+@Stateful
+public class OSMDataStoreCityInfrastructureDataService implements CityInfrastructureDataService {
 
 	private DataStore dataStore;
-	private final TrafficGraph trafficGraph;
-	private final GraphConstructor graphConstructor = new GraphConstructor();
+	private TrafficGraph trafficGraph;
+	@EJB
+	private GraphConstructor graphConstructor ;
+	private CityInfrastructureData cityInfrastructureData;
+	@EJB
+	private IdGenerator idGenerator;
+
+	public OSMDataStoreCityInfrastructureDataService() {
+	}
+	
+	@PostConstruct
+	public void init() {
+		this.cityInfrastructureData = new CityInfrastructureData(idGenerator.getNextId());
+	}
 
 	/**
-	 * creates a <tt>OSMDataStoreCityInfrastructureData</tt> based on the OSM id
+	 * creates a <tt>OSMDataStoreCityInfrastructureManager</tt> based on the OSM id
 	 * of a postgis polygon referencing an OSM city (boundary = administrative)
 	 *
 	 * @param cityPolygonOsmId
 	 */
-	public OSMDataStoreCityInfrastructureData(Long id,
+	public OSMDataStoreCityInfrastructureDataService(
 		DataStore dataStore,
 		String cityBoundaryOsmId) throws IOException {
-		super(id);
 		try {
 			String typeName = "planet_osm_polygon";
 			SimpleFeatureSource featureSource = dataStore.getFeatureSource(typeName);
@@ -79,11 +98,10 @@ public class OSMDataStoreCityInfrastructureData extends TrafficInfrastructureDat
 		} catch (CQLException ex) {
 			throw new RuntimeException(ex);
 		}
-		this.trafficGraph = graphConstructor.createGraph(getWays());
+		this.trafficGraph = graphConstructor.createGraph(cityInfrastructureData.getWays());
 		throw new UnsupportedOperationException("not yet implemented");
 	}
 
-	@Override
 	public TrafficGraph getTrafficGraph() {
 		return trafficGraph;
 	}
@@ -120,6 +138,16 @@ public class OSMDataStoreCityInfrastructureData extends TrafficInfrastructureDat
 	@Override
 	public NavigationNode getNearestJunctionNode(double latitude,
 		double longitude) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public Envelope getBoundary() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public CityInfrastructureData createCityInfrastructureData()  {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

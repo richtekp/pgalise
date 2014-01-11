@@ -27,7 +27,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 
 /**
  * Ignores the gate messages. Only for testing or if you can not use InfoSphere
@@ -49,7 +49,7 @@ public class NoGPSGateStrategy extends AbstractIdentifiable implements
 	}
 
 	@Override
-	public void start(InfrastructureStartParameter param) throws IllegalStateException {
+	public void start(TrafficStartParameter param) throws IllegalStateException {
 	}
 
 	@Override

@@ -72,17 +72,6 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared-resources</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.primefaces</groupId>
-			<artifactId>primefaces</artifactId>
-			<version>4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.omnifaces</groupId>
-			<artifactId>omnifaces</artifactId>
-			<version>1.6.3</version>
-		</dependency>
 	</dependencies>
 
 	<build>

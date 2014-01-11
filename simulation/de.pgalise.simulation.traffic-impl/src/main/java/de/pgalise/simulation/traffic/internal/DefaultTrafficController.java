@@ -29,9 +29,7 @@ import javax.ejb.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.manager.ServerConfigurationReader;
-import de.pgalise.simulation.service.manager.ServiceHandler;
-import de.pgalise.simulation.service.ServerConfiguration;
+//import de.pgalise.simulation.service.manager.ServerConfigurationReader;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
@@ -43,7 +41,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
@@ -56,6 +54,12 @@ import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.disassembler.Disassembler;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  * Implementation of the traffic controller
@@ -67,7 +71,7 @@ import de.pgalise.util.graph.disassembler.Disassembler;
 @Singleton(name = "de.pgalise.simulation.traffic.TrafficController")
 @Local(TrafficControllerLocal.class)
 public class DefaultTrafficController<
-	D extends VehicleData> extends AbstractController<VehicleEvent, InfrastructureStartParameter, TrafficInitParameter>
+	D extends VehicleData> extends AbstractController<VehicleEvent, TrafficStartParameter, TrafficInitParameter>
 	implements TrafficControllerLocal<VehicleEvent> {
 
 	/**
@@ -78,12 +82,11 @@ public class DefaultTrafficController<
 	private static final String NAME = "TrafficController";
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Server configuration
-	 */
-	@EJB
-	private ServerConfigurationReader serverConfigReader;
-
+//	/**
+//	 * Server configuration
+//	 */
+//	@EJB
+//	private ServerConfigurationReader serverConfigReader;
 	/**
 	 * List with all traffic servers
 	 */
@@ -136,7 +139,26 @@ public class DefaultTrafficController<
 
 	@Override
 	protected void onInit(final TrafficInitParameter param) throws InitializationException {
-		serverList = getTrafficServer(param.getServerConfiguration());
+		int trafficServerCount = param.getTrafficServerCount();
+		serverList = new LinkedList<>();
+		for (int i = 0; i < trafficServerCount; i++) {
+			try {
+				Context localContext = new InitialContext();
+				TrafficServerLocal trafficServer = (TrafficServerLocal) localContext.
+					lookup(
+						TrafficServerLocal.class.getName());
+				serverList.add(trafficServer);
+			} catch (NamingException ex) {
+				throw new RuntimeException(ex);
+			}
+		}
+		//@TODO: doesn't make sense that TrafficServers know other instances of TrafficServers and manage boundary crossing if TrafficController can do this
+		for (TrafficServerLocal trafficServer : serverList) {
+			Set<TrafficServerLocal<VehicleEvent>> trafficServersClone = new HashSet<>(
+				serverList);
+			trafficServersClone.remove(trafficServer);
+			trafficServer.setTrafficServers(trafficServersClone);
+		}
 
 		// stadt in gleichgroße teile aufteilen
 		cityZones = createCityZones();
@@ -186,7 +208,7 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	protected void onStart(InfrastructureStartParameter param) {
+	protected void onStart(TrafficStartParameter param) {
 		for (TrafficServer<?> server : serverList) {
 			server.start(param);
 		}
@@ -367,37 +389,36 @@ public class DefaultTrafficController<
 		throw new SensorException("Could not find sensor.");
 	}
 
-	/**
-	 * Returns the traffic servers. Uses the server configurations
-	 *
-	 * @param serverConfig server configurations
-	 * @return List with traffic servers
-	 */
-	private List<TrafficServerLocal<VehicleEvent>> getTrafficServer(
-		ServerConfiguration serverConfig) {
-		final List<TrafficServerLocal<VehicleEvent>> serverList0 = new ArrayList<>(
-			16);
-		serverConfigReader.read(serverConfig,
-			new ServiceHandler<TrafficServerLocal<VehicleEvent>>() {
-
-				@Override
-				public String getName() {
-					return DefaultTrafficServiceDictionary.TRAFFIC_SERVER;
-				}
-
-				@Override
-				public void handle(String server,
-					TrafficServerLocal<VehicleEvent> service) {
-					log.info(String.format("Using %s on server %s",
-							getName(),
-							server));
-					serverList0.add(service);
-				}
-
-			});
-		return serverList0;
-	}
-
+//	/**
+//	 * Returns the traffic servers. Uses the server configurations
+//	 *
+//	 * @param serverConfig server configurations
+//	 * @return List with traffic servers
+//	 */
+//	private List<TrafficServerLocal<VehicleEvent>> getTrafficServer(
+//		ServerConfiguration serverConfig) {
+//		final List<TrafficServerLocal<VehicleEvent>> serverList0 = new ArrayList<>(
+//			16);
+//		serverConfigReader.read(serverConfig,
+//			new ServiceHandler<TrafficServerLocal<VehicleEvent>>() {
+//
+//				@Override
+//				public String getName() {
+//					return DefaultTrafficServiceDictionary.TRAFFIC_SERVER;
+//				}
+//
+//				@Override
+//				public void handle(String server,
+//					TrafficServerLocal<VehicleEvent> service) {
+//					log.info(String.format("Using %s on server %s",
+//							getName(),
+//							server));
+//					serverList0.add(service);
+//				}
+//
+//			});
+//		return serverList0;
+//	}
 	/**
 	 * Create city zones with the help of the disassembler
 	 *

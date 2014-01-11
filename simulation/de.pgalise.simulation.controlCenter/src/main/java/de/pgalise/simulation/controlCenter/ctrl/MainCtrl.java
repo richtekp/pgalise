@@ -13,10 +13,10 @@ import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
@@ -79,7 +79,7 @@ public class MainCtrl implements Serializable {
 	private List<ControlCenterMessage<?>> selectedUnsentMessages = new LinkedList<>();
 	@ManagedProperty(value = "#{controlCenterStartParameter}")
 	private ControlCenterStartParameter startParameter = new ControlCenterStartParameter();
-	@ManagedProperty(value = "#{trafficInitParameter")
+	@ManagedProperty(value = "#{trafficInitParameter}")
 	private TrafficInitParameter initParameter = new TrafficInitParameter();
 
 	private String connectionState = ConnectionStateEnum.DISCONNECTED.
@@ -92,6 +92,8 @@ public class MainCtrl implements Serializable {
 	@EJB
 	private StartParameterSerializerService startParameterSerializerService;
 	private CityCtrl cityCtrl;
+	@EJB
+	private FileBasedCityInfrastructureDataService cityInfrastructureManager;
 
 	public MainCtrl() {
 	}
@@ -128,17 +130,14 @@ public class MainCtrl implements Serializable {
 			busStopFileKey));
 		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
 
-		TrafficInfrastructureData trafficInfrastructureData = new OSMCityInfrastructureData(
-			idGenerator.getNextId(),
+		cityInfrastructureManager.parse(
 			osmFileBytes,
-			busStopFileBytes,
-			buildingEnergyProfileStrategy);
-		Long startTimestamp = startParameter.getStartTimestamp().getTime();
-		long endTimestamp = startParameter.getEndTimestamp().getTime();
-		ServerConfiguration serverConfiguration = ServerConfiguration.DEFAULT_SERVER_CONFIGURATION;
-		initParameter.setCityBoundary(cityCtrl.retrieveBoundaries(
-			trafficInfrastructureData));
-		initParameter.setCityInfrastructureData(trafficInfrastructureData);
+			busStopFileBytes);
+		CityInfrastructureData cityInfrastructureData = cityInfrastructureManager.
+			createCityInfrastructureData();
+		initParameter.setCityInfrastructureData(cityInfrastructureData);
+		initParameter.setServerConfiguration(
+			ServerConfiguration.DEFAULT_SERVER_CONFIGURATION);
 		simulationController.init(initParameter);
 		simulationController.start(startParameter);
 	}

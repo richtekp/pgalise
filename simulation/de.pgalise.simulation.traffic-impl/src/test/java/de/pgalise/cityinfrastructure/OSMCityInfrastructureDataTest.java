@@ -27,33 +27,38 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.city.Building;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.traffic.BusStop;
-import de.pgalise.simulation.traffic.OSMCityInfrastructureData;
+import de.pgalise.simulation.traffic.DefaultFileBasedCityInfrastructureDataService;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import org.junit.Before;
 
 /**
  * Several JUnit test cases for the OSMParser.
  *
  * @author Timo
  */
+@ManagedBean
+@LocalBean
 public class OSMCityInfrastructureDataTest {
 
 	/**
 	 * Test class
 	 */
-	private static OSMCityInfrastructureData osmParser;
+	@EJB
+	private DefaultFileBasedCityInfrastructureDataService osmParser;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		try {
-			osmParser = new OSMCityInfrastructureData(1L,
-				OSMCityInfrastructureData.class.getResourceAsStream("/oldenburg_pg.osm"),
-				OSMCityInfrastructureData.class.getResourceAsStream("/stops.txt"),
-				new DefaultBuildingEnergyProfileStrategy()
-			);
-		} catch (IOException e) {
-			assertTrue(false);
-			e.printStackTrace();
-		}
+	public OSMCityInfrastructureDataTest() {
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
+		osmParser.parse(DefaultFileBasedCityInfrastructureDataService.class.getResourceAsStream("/oldenburg_pg.osm"),
+			DefaultFileBasedCityInfrastructureDataService.class.getResourceAsStream("/stops.txt"));
 	}
 
 	/**
@@ -62,8 +67,8 @@ public class OSMCityInfrastructureDataTest {
 	@Test
 	public void getNearestNodeTest() {
 		/* Take one node and test, if it will be returned: */
-		NavigationNode givenNode = osmParser.getNodes().get(
-			(int) (Math.random() * osmParser.getNodes().size()));
+		NavigationNode givenNode = osmParser.createCityInfrastructureData().getNodes().get(
+			(int) (Math.random() * osmParser.createCityInfrastructureData().getNodes().size()));
 		NavigationNode returnedNode = osmParser.getNearestNode(givenNode.
 			getGeoLocation().getX(),
 			givenNode.getGeoLocation().getY());
@@ -83,7 +88,7 @@ public class OSMCityInfrastructureDataTest {
 			System.out.println("osmParser == null");
 		}
 		outerLoop:
-		for (Way<?, ?> way : osmParser.getMotorWaysWithBusstops()) {
+		for (Way<?, ?> way : osmParser.createCityInfrastructureData().getMotorWaysWithBusStops()) {
 			for (NavigationNode node : way.getNodeList()) {
 				if (node instanceof BusStop) {
 					foundBusstop = true;
@@ -98,8 +103,8 @@ public class OSMCityInfrastructureDataTest {
 	@Test
 	public void getBuildingsInRadiusTest() {
 		int radiusInMeter = 500;
-		NavigationNode tmpNode = osmParser.getNodes().get(
-			(int) (Math.random() * osmParser.getNodes().size()));
+		NavigationNode tmpNode = osmParser.createCityInfrastructureData().getNodes().get(
+			(int) (Math.random() * osmParser.createCityInfrastructureData().getNodes().size()));
 		JaxRSCoordinate centerPoint = new JaxRSCoordinate(tmpNode.getGeoLocation().
 			getX(),
 			tmpNode.getGeoLocation().getY());
@@ -116,7 +121,7 @@ public class OSMCityInfrastructureDataTest {
 	@Test
 	public void getNearestStreetNode() {
 		boolean isDifferent = false;
-		for (NavigationNode node : osmParser.getNodes()) {
+		for (NavigationNode node : osmParser.createCityInfrastructureData().getNodes()) {
 			if (!node.equals(osmParser.getNearestStreetNode(node.getGeoLocation().
 				getX(),
 				node.getGeoLocation().getY()))) {

@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.energy.test;
 
-import com.vividsolutions.jts.geom.Envelope;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -32,7 +31,7 @@ import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.energy.internal.DefaultEnergyController;
 import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.ServerConfiguration;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
@@ -44,7 +43,7 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficCity;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
@@ -99,7 +98,7 @@ public class DefaultEnergyControllerTest {
 	/**
 	 * Start parameters
 	 */
-	private static InfrastructureStartParameter startParameter;
+	private static TrafficStartParameter startParameter;
 
 	/**
 	 * Service dictionary to e.g. find weather controller.
@@ -109,7 +108,7 @@ public class DefaultEnergyControllerTest {
 	/**
 	 * Traffic information
 	 */
-	private static CityInfrastructureData information;
+	private static CityInfrastructureDataService information;
 
 	/**
 	 * The used energy consumption manager
@@ -164,7 +163,7 @@ public class DefaultEnergyControllerTest {
 		}
 
 		DefaultEnergyControllerTest.information = EasyMock.createNiceMock(
-			CityInfrastructureData.class);
+			CityInfrastructureDataService.class);
 		EasyMock.expect(
 			DefaultEnergyControllerTest.information.getBuildings(
 				DefaultEnergyControllerTest.testLocation,
@@ -224,12 +223,10 @@ public class DefaultEnergyControllerTest {
 			interval,
 			new URL("http://localhost:8080/operationCenter"),
 			new URL(""),
-			null,
-			new Envelope(new JaxRSCoordinate(),
-				new JaxRSCoordinate()));
+			null);
 
 		city = TrafficTestUtils.createDefaultTestCityInstance();
-		DefaultEnergyControllerTest.startParameter = new InfrastructureStartParameter(
+		DefaultEnergyControllerTest.startParameter = new TrafficStartParameter(
 			city,
 			true,
 			new ArrayList<WeatherEvent>());

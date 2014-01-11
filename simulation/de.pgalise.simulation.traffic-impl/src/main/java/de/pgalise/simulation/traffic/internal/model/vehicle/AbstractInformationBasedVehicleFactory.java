@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -24,7 +23,8 @@ import javax.ejb.EJB;
  *
  * @author richter
  */
-public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFactory implements InformationBasedVehicleFactory{
+public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFactory
+	implements InformationBasedVehicleFactory {
 
 	@EJB
 	private BicycleFactory bicycleFactory;
