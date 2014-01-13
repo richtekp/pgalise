@@ -41,6 +41,10 @@
 			<artifactId>testutils-traffic</artifactId>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-resources</artifactId>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -187,32 +191,6 @@
 			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.vividsolutions</groupId>
-					<artifactId>jts</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>-->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>		
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-		</dependency>
-<!--		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-search</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>

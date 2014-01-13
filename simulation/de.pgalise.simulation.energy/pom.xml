@@ -16,7 +16,6 @@
 
 	<name>de.pgalise.simulation.energy</name>
 
-
 	<dependencies>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>

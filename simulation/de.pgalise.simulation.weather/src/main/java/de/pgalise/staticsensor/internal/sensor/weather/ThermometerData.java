@@ -3,12 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Entity;
 
 /**
@@ -17,6 +14,7 @@ import javax.persistence.Entity;
  */
 @Entity
 public class ThermometerData extends SensorData {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -24,9 +22,12 @@ public class ThermometerData extends SensorData {
 	 */
 	private double temperature;
 
+	public ThermometerData() {
+	}
+
 	/**
 	 * Returns the temperature.
-	 * 
+	 *
 	 * @return temperature
 	 */
 	public double getTemperature() {
@@ -35,12 +36,11 @@ public class ThermometerData extends SensorData {
 
 	/**
 	 * Sets the temperature.
-	 * 
-	 * @param temperature
-	 *            Temperature
+	 *
+	 * @param temperature Temperature
 	 */
 	public void setTemperature(double temperature) {
 		this.temperature = temperature;
 	}
-	
+
 }

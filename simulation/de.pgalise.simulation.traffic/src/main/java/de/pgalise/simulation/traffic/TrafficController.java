@@ -16,7 +16,6 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
@@ -26,12 +25,6 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
  * traffic aspect of the simulation. For instance it processes incoming traffic
  * events and generates traffic sensor data.
  *
- *
- * @param <D>
- * @param <N>
- * @param <E>
- * @param <V>
- * @param <F>
  * @author Mustafa
  * @version 1.0 (Oct 23, 2012)
  */

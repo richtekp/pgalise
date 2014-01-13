@@ -13,6 +13,7 @@ import de.pgalise.simulation.shared.event.weather.WeatherEvent;
  *
  * @author richter
  */
-public interface WeatherSensorController extends SensorManagerController<WeatherEvent, StartParameter, InitParameter, WeatherSensor> {
-	
+public interface WeatherSensorController extends
+	SensorManagerController<WeatherEvent, StartParameter, InitParameter, WeatherSensor<?>> {
+
 }

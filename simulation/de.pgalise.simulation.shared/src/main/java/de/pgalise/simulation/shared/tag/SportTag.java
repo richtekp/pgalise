@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.shared.tag;
 
+import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
@@ -11,6 +12,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * @author richter
  */
 @XmlSeeAlso({SportTagCustom.class})
-public interface SportTag  extends BaseTag {
-	
+@Embeddable
+public interface SportTag extends BaseTag {
+
 }

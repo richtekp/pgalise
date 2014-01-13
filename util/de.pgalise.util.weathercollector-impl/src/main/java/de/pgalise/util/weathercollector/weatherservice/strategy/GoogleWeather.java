@@ -20,9 +20,9 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
@@ -61,8 +61,8 @@ public class GoogleWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
-		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
+	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager entityManagerFactory) {
+		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
 
 		// Read general informations
 		NodeList nodes = doc.getElementsByTagName("forecast_information");
@@ -96,7 +96,7 @@ public class GoogleWeather extends XMLAPIWeather {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
 			// Date
-			MyExtendedServiceDataCurrent condition = new MyExtendedServiceDataCurrent(new Date(weather.getMeasureTime().getTime()),
+			ExtendedServiceDataCurrent condition = new ExtendedServiceDataCurrent(new Date(weather.getMeasureTime().getTime()),
 					new Time(weather.getMeasureTime().getTime()), city,
 				null, 1.0f,
 				Float.NaN,
@@ -133,7 +133,7 @@ public class GoogleWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NodeList childnodes = nodes.item(i).getChildNodes();
 
-			MyExtendedServiceDataForecast condition = new MyExtendedServiceDataForecast(
+			ExtendedServiceDataForecast condition = new ExtendedServiceDataForecast(
 							new Date(System.currentTimeMillis()), 
 							new Time(System.currentTimeMillis()), 
 							city, 

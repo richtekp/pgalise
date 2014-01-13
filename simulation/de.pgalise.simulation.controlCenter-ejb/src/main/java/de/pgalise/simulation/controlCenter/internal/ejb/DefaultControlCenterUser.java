@@ -48,6 +48,7 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.ErrorMessageData;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -66,6 +67,7 @@ import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.staticsensor.StaticSensorController;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
@@ -204,13 +206,13 @@ public class DefaultControlCenterUser extends Endpoint implements
 	@EJB
 	private RandomSeedService randomSeedService;
 	@EJB
-	private TrafficController trafficController;
+	private TrafficControllerLocal trafficController;
 	@EJB
 	private StaticSensorController staticSensorController;
 	@EJB
 	private WeatherController weatherController;
 	@EJB
-	private EnergyController energyController;
+	private EnergyControllerLocal energyController;
 
 	public DefaultControlCenterUser() {
 	}

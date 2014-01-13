@@ -4,7 +4,6 @@
  */
 package de.pgalise.simulation.shared.city;
 
-import de.pgalise.simulation.shared.tag.BaseTag;
 import de.pgalise.simulation.shared.tag.RepairTag;
 import de.pgalise.simulation.shared.tag.SchoolTag;
 import de.pgalise.simulation.shared.tag.LanduseTag;
@@ -14,7 +13,7 @@ import de.pgalise.simulation.shared.tag.GamblingTag;
 import de.pgalise.simulation.shared.tag.AttractionTag;
 import de.pgalise.simulation.shared.tag.ServiceTag;
 import de.pgalise.simulation.shared.tag.PublicTransportTag;
-import de.pgalise.simulation.shared.tag.AmenityTag;
+import de.pgalise.simulation.shared.tag.AmenityBaseTag;
 import de.pgalise.simulation.shared.tag.SportTag;
 import de.pgalise.simulation.shared.tag.EmergencyServiceTag;
 import de.pgalise.simulation.shared.tag.TourismTag;
@@ -23,12 +22,11 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -48,36 +46,67 @@ public class NavigationNode extends AbstractIdentifiable {
 
 	@Embedded
 	private JaxRSCoordinate geoLocation;
-	@ElementCollection(targetClass = BaseTag.class)
+//	@ElementCollection
+//	private Set<TourismTag> tourismTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<ServiceTag> serviceTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<SportTag> sportTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<SchoolTag> schoolTags = new HashSet<>();
+//	@ElementCollection
+//	@XmlAnyElement
+//	private Set<RepairTag> repairTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<AttractionTag> attractionTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<ShopTag> shopTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<EmergencyServiceTag> emergencyServiceTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<CraftTag> craftTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<LeisureTag> leisureTags = new HashSet<>();
+//	private Boolean military = false;
+//	@ElementCollection
+//	private Set<PublicTransportTag> publicTransportTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<GamblingTag> gamblingTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<AmenityTag> amenityTags = new HashSet<>();
+//	@ElementCollection
+//	private Set<LanduseTag> landuseTags = new HashSet<>();
+
+	@Transient
 	private Set<TourismTag> tourismTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<ServiceTag> serviceTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<SportTag> sportTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<SchoolTag> schoolTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
-	@XmlAnyElement
+	@Transient
 	private Set<RepairTag> repairTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<AttractionTag> attractionTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<ShopTag> shopTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<EmergencyServiceTag> emergencyServiceTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<CraftTag> craftTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<LeisureTag> leisureTags = new HashSet<>();
 	private Boolean military = false;
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<PublicTransportTag> publicTransportTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
 	private Set<GamblingTag> gamblingTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
-	private Set<AmenityTag> amenityTags = new HashSet<>();
-	@ElementCollection(targetClass = BaseTag.class)
+	@Transient
+	private Set<AmenityBaseTag> amenityTags = new HashSet<>();
+	@Transient
 	private Set<LanduseTag> landuseTags = new HashSet<>();
+
 	private boolean office = false; // this should be in Building (research OSM specification what office is supposed to mean)
 
 	protected NavigationNode() {
@@ -100,7 +129,7 @@ public class NavigationNode extends AbstractIdentifiable {
 		Set<LeisureTag> leisureTags,
 		Set<PublicTransportTag> publicTransportTags,
 		Set<GamblingTag> gamblingTags,
-		Set<AmenityTag> amenityTags,
+		Set<AmenityBaseTag> amenityTags,
 		Set<LanduseTag> landuseTags,
 		boolean office,
 		boolean military) {
@@ -334,11 +363,11 @@ public class NavigationNode extends AbstractIdentifiable {
 	}
 
 	public void setAmenityTags(
-		Set<AmenityTag> amenityTags) {
+		Set<AmenityBaseTag> amenityTags) {
 		this.amenityTags = amenityTags;
 	}
 
-	public Set<AmenityTag> getAmenityTags() {
+	public Set<AmenityBaseTag> getAmenityTags() {
 		return amenityTags;
 	}
 

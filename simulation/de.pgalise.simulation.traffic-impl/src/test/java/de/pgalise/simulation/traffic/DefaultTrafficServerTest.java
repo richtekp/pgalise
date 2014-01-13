@@ -61,6 +61,7 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
@@ -192,7 +193,7 @@ public class DefaultTrafficServerTest {
 	@EJB
 	private WeatherController weatherController;
 	@EJB
-	private EnergyController energyController;
+	private EnergyControllerLocal energyController;
 	@EJB
 	private RandomSeedService randomSeedService;
 

@@ -7,6 +7,7 @@
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherController;
 import javax.ejb.EJB;
 
@@ -19,7 +20,7 @@ public class BaseEnergyWeatherSensorDialogCtrl extends BaseSensorDialogCtrl {
 	@EJB
 	private WeatherController weatherController;
 	@EJB
-	private EnergyController energyController;
+	private EnergyControllerLocal energyController;
 
 	/**
 	 * Creates a new instance of BaseEnergyWeatherSensorDialog
@@ -45,7 +46,7 @@ public class BaseEnergyWeatherSensorDialogCtrl extends BaseSensorDialogCtrl {
 	/**
 	 * @return the energyController
 	 */
-	public EnergyController getEnergyController() {
+	public EnergyControllerLocal getEnergyController() {
 		return energyController;
 	}
 
@@ -53,7 +54,7 @@ public class BaseEnergyWeatherSensorDialogCtrl extends BaseSensorDialogCtrl {
 	 * @param energyController the energyController to set
 	 */
 	public void setEnergyController(
-		EnergyController energyController) {
+		EnergyControllerLocal energyController) {
 		this.energyController = energyController;
 	}
 	

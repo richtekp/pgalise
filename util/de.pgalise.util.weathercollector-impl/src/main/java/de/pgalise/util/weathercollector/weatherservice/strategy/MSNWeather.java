@@ -28,9 +28,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import java.sql.Timestamp;
 import javax.measure.Measure;
@@ -57,8 +57,8 @@ public class MSNWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
+	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
+		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
 		Unit<Temperature> unit = SI.CELSIUS;
 
 		// Read global data
@@ -86,7 +86,7 @@ public class MSNWeather extends XMLAPIWeather {
 				if (childnode.getNodeName().equals("current")) {
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					MyExtendedServiceDataCurrent condition;
+					ExtendedServiceDataCurrent condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
@@ -95,7 +95,7 @@ public class MSNWeather extends XMLAPIWeather {
 						// Current date
 						Time time = DateConverter.convertTime(dateString, "yyyy-MM-dd h:mm:ss");
 						Date date = DateConverter.convertDate(dateString, "yyyy-MM-dd h:mm:ss");
-						condition = new MyExtendedServiceDataCurrent(
+						condition = new ExtendedServiceDataCurrent(
 							date, 
 							time, 
 							city, 
@@ -145,13 +145,13 @@ public class MSNWeather extends XMLAPIWeather {
 					// Forecast
 					NamedNodeMap attributes = childnode.getAttributes();
 
-					MyExtendedServiceDataForecast condition;
+					ExtendedServiceDataForecast condition;
 					try {
 						// Date
 						String dateString = attributes.getNamedItem("date").getTextContent();
 
 						// Current date
-						condition = new MyExtendedServiceDataForecast(
+						condition = new ExtendedServiceDataForecast(
 							DateConverter.convertDate(dateString, "yyyy-MM-dd"), 
 							new Time(System.currentTimeMillis()), 
 							city, 

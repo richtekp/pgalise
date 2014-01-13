@@ -71,11 +71,15 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
+		<!--		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
-<!--		<dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>-->
+		<!--		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-spatial</artifactId>
 			<exclusions>
@@ -85,21 +89,53 @@
 				</exclusion>
 			</exclusions>
 		</dependency>-->
+		<!--		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+		</dependency>-->
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
+			<groupId>org.javolution</groupId>
+			<artifactId>javolution</artifactId>
+			<version>5.2.3</version>
+			<type>jar</type>
 		</dependency>
-	 <dependency>
-	  <groupId>org.javolution</groupId>
-	  <artifactId>javolution</artifactId>
-	  <version>5.2.3</version>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
+		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa-maven-plugin</artifactId>
+				<version>2.2.0</version>
+				<configuration>
+					<excludes>**/*.class</excludes>
+					<includes>de/pgalise/simulation/shared/city/*.class</includes>
+					<addDefaultConstructor>true</addDefaultConstructor>               
+					<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>enhancer</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>enhance</goal>
+						</goals>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.openjpa</groupId>
+						<artifactId>openjpa</artifactId>
+						<!-- set the version to be the same as the level in your runtime -->
+						<version>2.2.2</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
 </project>

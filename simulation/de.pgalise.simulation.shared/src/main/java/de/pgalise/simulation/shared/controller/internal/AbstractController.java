@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.StatusEnum;
+import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
@@ -50,7 +50,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	/**
 	 * Current status
 	 */
-	private StatusEnum status = StatusEnum.INIT;
+	private ControllerStatusEnum status = ControllerStatusEnum.INIT;
 
 	@Override
 	public void init(I param) {
@@ -62,7 +62,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 				} catch (InitializationException ex) {
 					throw new RuntimeException(ex);
 				}
-				status = StatusEnum.INITIALIZED;
+				status = ControllerStatusEnum.INITIALIZED;
 
 				// Log
 				log.info(getName() + " initialized");
@@ -80,7 +80,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 			case STOPPED:
 //				log.info("Resetting "+getName()+" ...");
 				onReset();
-				status = StatusEnum.INIT;
+				status = ControllerStatusEnum.INIT;
 
 				// Log
 				log.info(getName() + " reset");
@@ -100,7 +100,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 			case INITIALIZED:
 //				log.info("Starting "+getName()+" ...");
 				onStart(param);
-				status = StatusEnum.STARTED;
+				status = ControllerStatusEnum.STARTED;
 
 				// Log
 				log.info(getName() + " started");
@@ -108,7 +108,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 			case STOPPED:
 //				log.info("Resuming "+getName()+" ...");
 				onResume();
-				status = StatusEnum.STARTED;
+				status = ControllerStatusEnum.STARTED;
 
 				// Log
 				log.info(getName() + " resumed");
@@ -125,7 +125,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 			case STARTED:
 //				log.info("Stopping "+getName()+" ...");
 				onStop();
-				status = StatusEnum.STOPPED;
+				status = ControllerStatusEnum.STOPPED;
 
 				// Log
 				log.info(getName() + " stopped");
@@ -137,7 +137,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	}
 
 	@Override
-	public StatusEnum getStatus() {
+	public ControllerStatusEnum getStatus() {
 		return status;
 	}
 
@@ -146,7 +146,7 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	 *
 	 * @param status
 	 */
-	public void setStatus(StatusEnum status) {
+	public void setStatus(ControllerStatusEnum status) {
 		this.status = status;
 	}
 

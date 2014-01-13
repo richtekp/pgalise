@@ -4,11 +4,15 @@
  */
 package de.pgalise.simulation.shared.tag;
 
+import javax.persistence.Embeddable;
+
 /**
  *
  * @author richter
  */
+@Embeddable
 public enum EmergencyServiceTagEnum implements EmergencyServiceTag {
+
 	;
 	
 	private final String stringValue;

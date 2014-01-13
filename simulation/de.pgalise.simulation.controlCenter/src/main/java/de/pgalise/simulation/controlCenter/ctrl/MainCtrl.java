@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.SimulationControllerLocal;
@@ -12,6 +13,7 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
 import de.pgalise.simulation.shared.city.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.event.AbstractEvent;
@@ -66,6 +68,11 @@ public class MainCtrl implements Serializable {
 	private IdGenerator idGenerator;
 	@EJB
 	private SimulationControllerLocal simulationController;
+	/**
+	 * a wrapper for {@link SimulationControllerLocal} which shouldn't be writable
+	 * in interface
+	 */
+	private ControllerStatusEnum simulationControllerState;
 	private Map<Date, ControlCenterMessage<?>> sentMessages = new HashMap<>();
 	private MapParsedStateEnum mapParsedStateEnum;
 	private MapAndBusstopFileData mapAndBusstopFileData;
@@ -83,7 +90,6 @@ public class MainCtrl implements Serializable {
 
 	private String connectionState = ConnectionStateEnum.DISCONNECTED.
 		getStringValue();
-	private String simulationState = SimulationStateEnum.STOPPED.getStringValue();
 	private Date simulationDate = new GregorianCalendar().getTime();
 	private String mapParsedState = MapParsedStateEnum.IN_PROGRESS.
 		getStringValue();
@@ -143,6 +149,15 @@ public class MainCtrl implements Serializable {
 		simulationController.stop();
 	}
 
+	public void setSimulationControllerState(
+		ControllerStatusEnum simulationControllerStatus) {
+		this.simulationControllerState = simulationControllerStatus;
+	}
+
+	public ControllerStatusEnum getSimulationControllerState() {
+		return simulationControllerState;
+	}
+
 	public TrafficInitParameter getInitParameter() {
 		return initParameter;
 	}
@@ -157,14 +172,6 @@ public class MainCtrl implements Serializable {
 
 	public void setConnectionState(String connectionState) {
 		this.connectionState = connectionState;
-	}
-
-	public void setSimulationState(String simulationState) {
-		this.simulationState = simulationState;
-	}
-
-	public String getSimulationState() {
-		return simulationState;
 	}
 
 	public void setSimulationDate(Date simulationDate) {

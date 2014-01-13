@@ -36,12 +36,7 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>traffic-impl</artifactId>
 			<scope>test</scope>
-			<type>jar</type>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared-impl</artifactId>
-			<type>jar</type>
+			<type>ejb</type>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise</groupId>

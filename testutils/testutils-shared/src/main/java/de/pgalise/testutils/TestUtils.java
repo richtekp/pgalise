@@ -31,25 +31,31 @@ public class TestUtils {
 			p = new Properties();
 			p.setProperty("java.naming.factory.initial",
 				"org.apache.openejb.client.LocalInitialContextFactory");
-			p.setProperty("pgalise",
+			p.setProperty("jdbc/pgalise",
 				"new://Resource?type=DataSource");
-			p.setProperty("pgalise.JdbcDriver",
+			p.setProperty("jdbc/pgalise.JdbcDriver",
 				"org.postgresql.Driver");
-			p.setProperty("pgalise.JdbcUrl",
+			p.setProperty("jdbc/pgalise.JdbcUrl",
 				"jdbc:postgresql://127.0.0.1:5201/pgalise_test");
-			p.setProperty("pgalise.UserName",
+			p.setProperty("jdbc/pgalise.UserName",
 				"pgalise");
-			p.setProperty("pgalise.Password",
+			p.setProperty("jdbc/pgalise.Password",
 				"somepw");
-			p.setProperty("pgalise.JtaManaged",
+			p.setProperty("jdbc/pgalise.JtaManaged",
 				"true");
 
-//			p.setProperty("pgaliseTest", "new://Resource?type=DataSource");
-//			p.setProperty("pgaliseTest.JdbcDriver", "org.postgresql.Driver");
-//			p.setProperty("pgaliseTest.JdbcUrl", "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
-//			p.setProperty("pgaliseTest.UserName", "postgis");
-//			p.setProperty("pgaliseTest.Password", "postgis");
-//			p.setProperty("pgaliseTest.JtaManaged",	"true");
+			p.setProperty("movieDatabaseUnmanaged",
+				"new://Resource?type=DataSource");
+			p.setProperty("movieDatabaseUnmanaged.JdbcDriver",
+				"org.postgresql.Driver");
+			p.setProperty("movieDatabaseUnmanaged.JdbcUrl",
+				"jdbc:postgresql://127.0.0.1:5201/pgalise_test");
+			p.setProperty("movieDatabaseUnmanaged.UserName",
+				"pgalise");
+			p.setProperty("movieDatabaseUnmanaged.Password",
+				"somepw");
+			p.setProperty("movieDatabaseUnmanaged.JtaManaged",
+				"false");
 //			p.setProperty(
 //				"hibernate.dialect",
 //				"org.hibernate.spatial.dialect.postgis.PostgisDialect"

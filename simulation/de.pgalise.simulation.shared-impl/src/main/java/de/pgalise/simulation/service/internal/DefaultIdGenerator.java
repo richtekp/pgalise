@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.service.internal;
 
-import com.hazelcast.core.AtomicNumber;
-import com.hazelcast.impl.AtomicNumberProxyImpl;
 import de.pgalise.simulation.service.IdGenerator;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.ejb.Local;
 import javax.ejb.Singleton;
-import javax.ejb.Stateful;
 
 /**
  *
@@ -21,11 +17,12 @@ import javax.ejb.Stateful;
 @Singleton
 @Local
 public class DefaultIdGenerator implements IdGenerator {
+
 	private AtomicLong atomicLong = new AtomicLong(0);
 
 	@Override
 	public Long getNextId() {
 		return atomicLong.incrementAndGet();
 	}
-	
+
 }

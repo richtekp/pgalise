@@ -30,7 +30,7 @@ import de.pgalise.simulation.shared.tag.EmergencyServiceTag;
 import de.pgalise.simulation.shared.tag.TourismTag;
 import de.pgalise.simulation.shared.tag.ShopTag;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.tag.AmenityTag;
+import de.pgalise.simulation.shared.tag.AmenityBaseTag;
 import de.pgalise.simulation.shared.city.NavigationNode;
 import de.pgalise.simulation.shared.city.BaseGeoInfo;
 import java.util.Set;
@@ -78,7 +78,7 @@ public class Building extends NavigationNode  {
 		Set<LeisureTag> leisureTags,
 		Set<PublicTransportTag> publicTransportTags,
 		Set<GamblingTag> gamblingTags,
-		Set<AmenityTag> amenityTags,
+		Set<AmenityBaseTag> amenityTags,
 		Set<LanduseTag> landuseTags,
 		boolean office,
 		boolean military,

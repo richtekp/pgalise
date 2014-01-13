@@ -11,11 +11,13 @@ import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import javax.ejb.Stateful;
 
 /**
  *
  * @author richter
  */
+@Stateful
 public class DefaultFrontController extends AbstractController<Event, StartParameter, InitParameter> implements FrontController {
 	private static final long serialVersionUID = 1L;
 

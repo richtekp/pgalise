@@ -8,6 +8,7 @@ package de.pgalise.simulation.controlCenter.ctrl.eventDialogs;
 
 import de.pgalise.simulation.controlCenter.ctrl.BaseMapDialogCtrl;
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
@@ -32,7 +33,7 @@ public class EnergyEventDialogCtrl extends BaseMapDialogCtrl {
 	private float chosenRatio;
 	private float chosenRadius;
 	@EJB
-	private EnergyController energyController;
+	private EnergyControllerLocal energyController;
 	@EJB
 	private IdGenerator idGenerator;
 

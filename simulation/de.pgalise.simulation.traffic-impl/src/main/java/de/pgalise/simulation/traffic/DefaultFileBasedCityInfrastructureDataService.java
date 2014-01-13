@@ -54,7 +54,7 @@ import de.pgalise.simulation.service.IdGenerator;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.tag.AmenityTag;
+import de.pgalise.simulation.shared.tag.AmenityBaseTag;
 import de.pgalise.simulation.shared.tag.AttractionTag;
 import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.tag.CraftTag;
@@ -514,7 +514,7 @@ public class DefaultFileBasedCityInfrastructureDataService implements FileBasedC
 			Set<ServiceTag> service = null;
 			Set<SchoolTag> school = null;
 			Set<RepairTag> repair = null;
-			Set<AmenityTag> amenity = null;
+			Set<AmenityBaseTag> amenity = null;
 			Set<AttractionTag> attraction = null;
 			Set<ShopTag> shop = null;
 			Set<EmergencyServiceTag> emergencyService = null;

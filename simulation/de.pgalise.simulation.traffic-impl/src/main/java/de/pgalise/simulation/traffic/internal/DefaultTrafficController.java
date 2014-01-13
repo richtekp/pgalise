@@ -17,14 +17,10 @@ package de.pgalise.simulation.traffic.internal;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +35,11 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
@@ -61,6 +57,7 @@ import de.pgalise.util.graph.disassembler.Disassembler;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import javax.ejb.Stateful;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -71,8 +68,7 @@ import javax.naming.NamingException;
  * @author Mustafa
  * @version 1.0 (Feb 11, 2013)
  */
-@Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.traffic.TrafficController")
+@Stateful
 @Local(TrafficControllerLocal.class)
 public class DefaultTrafficController<
 	D extends VehicleData> extends AbstractController<VehicleEvent, TrafficStartParameter, TrafficInitParameter>
@@ -107,8 +103,11 @@ public class DefaultTrafficController<
 	@EJB
 	private Disassembler disassembler;
 
-	private AsyncHandler asyncHandler;
+	private AsyncHandler asyncHandler = new ThreadPoolHandler();
 
+	/**
+	 * the complete area managed by this controller
+	 */
 	private Geometry area;
 	@EJB
 	private IdGenerator idGenerator;
@@ -150,7 +149,7 @@ public class DefaultTrafficController<
 				Context localContext = new InitialContext();
 				TrafficServerLocal trafficServer = (TrafficServerLocal) localContext.
 					lookup(
-						TrafficServerLocal.class.getName());
+						"java:global/PG_Alise_Component/traffic-impl-2.0-SNAPSHOT/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 				serverList.add(trafficServer);
 			} catch (NamingException ex) {
 				throw new RuntimeException(ex);
@@ -165,6 +164,8 @@ public class DefaultTrafficController<
 		}
 
 		// stadt in gleichgroße teile aufteilen
+		area = GeoToolsBootstrapping.createPolygon(
+			param.getCityInfrastructureData().getBoundary());
 		cityZones = createCityZones();
 
 		// server graphdaten übergeben
@@ -367,7 +368,7 @@ public class DefaultTrafficController<
 	}
 
 	@Override
-	public void createSensor(TrafficSensor sensor)  {
+	public void createSensor(TrafficSensor sensor) {
 		for (TrafficServer<?> server : serverList) {
 			server.createSensor(sensor);
 		}
@@ -384,28 +385,30 @@ public class DefaultTrafficController<
 
 	/**
 	 * {@link InfraredSensor}s are always actived in this implementation
+	 *
 	 * @param sensor
 	 * @return
-	 * @throws SensorException 
+	 * @throws SensorException
 	 */
 	@Override
 	public boolean isActivated(TrafficSensor sensor) {
 		for (int i = 0; i < cityZones.size(); i++) {
 			JaxRSCoordinate pos;
-			if(sensor instanceof StaticSensor) {
-				pos = ((StaticSensor)sensor).getPosition();
-			}else if(sensor instanceof GpsSensor) {
-				pos = ((GpsSensor)sensor).getSensorData().getPosition();
-			}else if(sensor instanceof InfraredSensor) {
+			if (sensor instanceof StaticSensor) {
+				pos = ((StaticSensor) sensor).getPosition();
+			} else if (sensor instanceof GpsSensor) {
+				pos = ((GpsSensor) sensor).getSensorData().getPosition();
+			} else if (sensor instanceof InfraredSensor) {
 				return true;
-			}else {
+			} else {
 				throw new IllegalArgumentException();
 			}
 			if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos))) {
 				return serverList.get(i).isActivated(sensor);
 			}
 		}
-		throw new IllegalArgumentException("sensor is not in any city zone of any server");
+		throw new IllegalArgumentException(
+			"sensor is not in any city zone of any server");
 	}
 
 //	/**
@@ -470,9 +473,9 @@ public class DefaultTrafficController<
 	@Override
 	public Set<TrafficSensor> getAllManagedSensors() {
 		Set<TrafficSensor> retValue = new HashSet<>();
-		for(TrafficServer<?> trafficServer : serverList) {
-			for(TrafficSensor sensor : trafficServer.getAllManagedSensors()) {
-				if(!retValue.contains(sensor)) {
+		for (TrafficServer<?> trafficServer : serverList) {
+			for (TrafficSensor sensor : trafficServer.getAllManagedSensors()) {
+				if (!retValue.contains(sensor)) {
 					retValue.add(sensor);
 				}
 			}

@@ -19,7 +19,6 @@ import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -33,9 +32,6 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,14 +41,12 @@ import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -96,10 +90,10 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SchedulerComposite;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
+import javax.ejb.Stateful;
 
 /**
  * Default implementation of the traffic server. Possible extension points:<br/>
@@ -113,8 +107,7 @@ import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
  * @author Lena
  * @version 1.0 (Feb 17, 2013)
  */
-@Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.traffic.server.TrafficServer")
+@Stateful(mappedName = "TrafficServerLocal")
 @Local(TrafficServerLocal.class)
 public class DefaultTrafficServer extends AbstractController<
 	VehicleEvent, TrafficStartParameter, TrafficInitParameter>
@@ -148,7 +141,7 @@ public class DefaultTrafficServer extends AbstractController<
 	@Override
 	public Set<TrafficSensor> getAllManagedSensors() {
 		Set<TrafficSensor> retValue = new HashSet<>();
-		for(Vehicle vehicle : managedVehicles) {
+		for (Vehicle vehicle : managedVehicles) {
 			retValue.add(vehicle.getGpsSensor());
 		}
 		return retValue;
@@ -205,7 +198,7 @@ public class DefaultTrafficServer extends AbstractController<
 	private static final Logger log = LoggerFactory.getLogger(
 		DefaultTrafficServer.class);
 	private static final String NAME = "TrafficServer";
-	
+
 	@EJB
 	private RandomSeedService randomSeedService;
 
@@ -624,7 +617,7 @@ public class DefaultTrafficServer extends AbstractController<
 	}
 
 	@Override
-	public boolean isActivated(TrafficSensor sensor)  {
+	public boolean isActivated(TrafficSensor sensor) {
 		return this.sensorController.isActivated(sensor);
 	}
 

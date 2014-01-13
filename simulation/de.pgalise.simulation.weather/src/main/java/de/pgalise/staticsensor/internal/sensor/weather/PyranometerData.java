@@ -3,12 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Entity;
 
 /**
@@ -17,6 +14,7 @@ import javax.persistence.Entity;
  */
 @Entity
 public class PyranometerData extends SensorData {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -24,9 +22,12 @@ public class PyranometerData extends SensorData {
 	 */
 	private double radiation;
 
+	public PyranometerData() {
+	}
+
 	/**
 	 * Returns the radiation.
-	 * 
+	 *
 	 * @return radiation
 	 */
 	public double getRadiation() {
@@ -35,12 +36,11 @@ public class PyranometerData extends SensorData {
 
 	/**
 	 * Sets the radiation.
-	 * 
-	 * @param radiation
-	 *            Radiation
+	 *
+	 * @param radiation Radiation
 	 */
 	public void setRadiation(double radiation) {
 		this.radiation = radiation;
 	}
-	
+
 }

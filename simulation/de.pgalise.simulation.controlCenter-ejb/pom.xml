@@ -77,27 +77,6 @@
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>test</scope>
-		</dependency>-->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib</artifactId>
@@ -117,9 +96,8 @@
 	  <type>jar</type>
 	 </dependency>
 	 <dependency>
-	  <groupId>javaee</groupId>
+	  <groupId>javax</groupId>
 	  <artifactId>javaee-api</artifactId>
-	  <version>5</version>
 	  <scope>provided</scope>
 	 </dependency>
 	</dependencies>

@@ -68,10 +68,14 @@
 			<artifactId>controlCenter</artifactId>
 			<type>war</type>
 		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared-resources</artifactId>
+<!--		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>		-->
 	</dependencies>
 
 	<build>

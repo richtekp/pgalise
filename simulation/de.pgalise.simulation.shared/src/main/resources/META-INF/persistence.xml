@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence"               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence   http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/persistence/persistence_2_1.xsd">
+<persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">
   <persistence-unit name="pgalise-shared" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>jdbc/pgalise</jta-data-source>
     <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData</class>
     <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData</class>
@@ -22,9 +22,9 @@
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-			<!--the following disabled portability of the app to servers other than 
+      <!--the following disabled portability of the app to servers other than 
 			glassfish, which is not really nice...-->
-			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform" />
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
     </properties>
   </persistence-unit>
 </persistence>

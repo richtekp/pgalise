@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>	
 	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<pattern>[%-5level] #%line (%d{HH:mm:ss}\) %logger{30} [%thread] - %msg%n</pattern>
 		</encoder>
 	</appender>
-
-	<logger name="org.hibernate" level="info"/>
-	<root level="info">
+	
+	<logger name="org.hibernate" level="OFF"/>
+	<logger name="org.apache.openejb" level="OFF"/>
+	<logger name="org.glassfish" level="OFF"/>
+	<logger name="org.hibernate" level="OFF"/>
+	<logger name="org.hibernate.SQL" level="OFF"/>
+	<logger name="org.hibernate.type" level="OFF"/>
+	<logger name="org.hibernate.hql.ast.AST" level="OFF"/>
+	<logger name="org.hibernate.tool.hbm2ddl" level="OFF"/>
+	<logger name="org.hibernate.hql" level="OFF"/>
+	<logger name="org.hibernate.cache" level="OFF"/>
+	<logger name="org.hibernate.jdbc" level="OFF"/>
+	
+	<root level="OFF">
 		<appender-ref ref="CONSOLE" />
 	</root>	
 </configuration>

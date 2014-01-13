@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.util.weathercollector.weatherstation;
+
+import de.pgalise.util.weathercollector.util.DatabaseManager;
 
 /**
  * Interface for the weather stations
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
@@ -26,9 +27,8 @@ public interface StationStrategy {
 
 	/**
 	 * Saves the informations of the weather station
-	 * 
-	 * @param saver
-	 *            WeatherStationSaver
+	 *
+	 * @param saver WeatherStationSaver
 	 */
-	public void saveWeather(WeatherStationSaver saver);
+	public void saveWeather(DatabaseManager saver);
 }

@@ -16,7 +16,6 @@
 package de.pgalise.simulation.traffic.internal.server.route;
 
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.tag.LanduseTagEnum;
 import java.awt.Polygon;
 import java.util.ArrayList;
@@ -33,10 +32,12 @@ import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficWay;
 import de.pgalise.simulation.traffic.server.route.EnrichedPolygon;
 import java.util.Set;
+import javax.ejb.Stateful;
 
 /**
  * @author Lena
  */
+@Stateful
 public class DefaultRegionParser implements RegionParser {
 
 	/**
@@ -64,10 +65,12 @@ public class DefaultRegionParser implements RegionParser {
 	public DefaultRegionParser() {
 	}
 
+	@Override
 	public List<TrafficNode> getHomeNodes() {
 		return this.homeNodes;
 	}
 
+	@Override
 	public List<TrafficNode> getWorkNodes() {
 		return this.workNodes;
 	}

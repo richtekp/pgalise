@@ -20,9 +20,7 @@ import de.pgalise.simulation.energy.sensor.EnergySensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 
 /**
  * Interface for controlling static sensors in the environment.

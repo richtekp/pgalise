@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.scheduler;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -22,13 +21,14 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 
 /**
  * An item represents a vehicle and its departure time.
- * 
- * @param <D> 
+ *
+ * @param <D>
  * @author Mustafa
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem, Comparable<ScheduleItem> {
+public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
+	Comparable<ScheduleItem> {
 
 	/**
 	 * Departure time
@@ -42,7 +42,7 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
 
 	/**
 	 * Point in time at which the vehicle got scheduled and starts driving.
-	 * (Needed for recognizing if a vehicle passed its startnode) 
+	 * (Needed for recognizing if a vehicle passed its startnode)
 	 */
 	private long scheduledAt;
 
@@ -53,15 +53,15 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
 
 	/**
 	 * Constructor
-	 * 
-	 * @param vehicle
-	 *            Vehicle
-	 * @param time
-	 *            Departure time
-	 * @param reversePath
-	 *            True if the vehicle's path shall be reversed before it begins its journey
+	 *
+	 * @param vehicle Vehicle
+	 * @param time Departure time
+	 * @param reversePath True if the vehicle's path shall be reversed before it
+	 * begins its journey
 	 */
-	public DefaultScheduleItem(Vehicle<D> vehicle, long time, long updateIntervall) {
+	public DefaultScheduleItem(Vehicle<D> vehicle,
+		long time,
+		long updateIntervall) {
 		this.vehicle = vehicle;
 		this.time = time;
 		this.lastUpdate = time - updateIntervall;
@@ -69,17 +69,20 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
 
 	/**
 	 * The time the vehicle should be departured.
-	 * 
+	 *
 	 * @return
 	 */
+	@Override
 	public long getDepartureTime() {
 		return this.time;
 	}
 
+	@Override
 	public void setDepartureTime(long time) {
 		this.time = time;
 	}
 
+	@Override
 	public Vehicle<D> getVehicle() {
 		return this.vehicle;
 	}
@@ -87,10 +90,12 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
 	/**
 	 * @return the time the vehicle of this items has been updated
 	 */
+	@Override
 	public long getLastUpdate() {
 		return this.lastUpdate;
 	}
 
+	@Override
 	public void setLastUpdate(long lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
@@ -102,11 +107,17 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
 
 	/**
 	 * First time the vehicle is driving.
-	 * 
+	 *
 	 * @return
 	 */
+	@Override
 	public long getScheduleTime() {
 		return scheduledAt;
+	}
+
+	@Override
+	public void setScheduleTime(long time) {
+		this.scheduledAt = time;
 	}
 
 	@Override
@@ -152,7 +163,7 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		DefaultScheduleItem other = (DefaultScheduleItem) obj;
+		DefaultScheduleItem<?> other = (DefaultScheduleItem) obj;
 		if (time != other.time) {
 			return false;
 		}
@@ -164,9 +175,5 @@ public class DefaultScheduleItem<D extends VehicleData> implements ScheduleItem,
 			return false;
 		}
 		return true;
-	}
-
-	public void setScheduleTime(long time) {
-		this.scheduledAt = time;
 	}
 }

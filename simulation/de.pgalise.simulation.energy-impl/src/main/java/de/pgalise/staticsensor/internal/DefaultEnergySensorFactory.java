@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergySensorFactory;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.configReader.ConfigReader;
@@ -60,7 +61,7 @@ public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory
 	public DefaultEnergySensorFactory(RandomSeedService rss,
 		IdGenerator idGenerator,
 		WeatherController wctrl,
-		EnergyController ectrl,
+		EnergyControllerLocal ectrl,
 		TcpIpOutput sensorOutput,
 		int updateLimit) {
 		super(rss,

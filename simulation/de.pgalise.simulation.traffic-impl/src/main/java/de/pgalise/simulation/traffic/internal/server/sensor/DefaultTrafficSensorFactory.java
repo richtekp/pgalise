@@ -7,6 +7,7 @@ package de.pgalise.simulation.traffic.internal.server.sensor;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
@@ -57,7 +58,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 	public DefaultTrafficSensorFactory(RandomSeedService rss,
 		IdGenerator idGenerator,
 		WeatherController wctrl,
-		EnergyController ectrl,
+		EnergyControllerLocal ectrl,
 		TcpIpOutput sensorOutput,
 		int updateLimit) {
 		super(rss,

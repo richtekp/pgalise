@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.staticsensor.sensors;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
@@ -30,17 +29,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.CompositeEnergyInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.EnergyBaseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.PhotovoltaikWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.SmartMeterWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.WindPowerWhiteNoiseInterferer;
+import javax.ejb.EJB;
 
 /**
  * Tests the all {@link EnergyInterferer}
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Nov 12, 2012)
  */
@@ -49,7 +48,8 @@ public class EnergyInterfererTest {
 	/**
 	 * Logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(EnergyInterfererTest.class);
+	private static final Logger log = LoggerFactory.getLogger(
+		EnergyInterfererTest.class);
 
 	/**
 	 * Test timestamp
@@ -69,7 +69,8 @@ public class EnergyInterfererTest {
 	/**
 	 * Random seed service
 	 */
-	public static final RandomSeedService service = new DefaultRandomSeedService();
+	@EJB
+	private RandomSeedService service;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -78,11 +79,17 @@ public class EnergyInterfererTest {
 		Calendar cal = new GregorianCalendar();
 
 		// Test timestamp
-		cal.set(2011, 2, 1, 14, 0, 0);
+		cal.set(2011,
+			2,
+			1,
+			14,
+			0,
+			0);
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new JaxRSCoordinate(1.0, 10.0);
+		testPosition = new JaxRSCoordinate(1.0,
+			10.0);
 	}
 
 	@Test
@@ -95,7 +102,9 @@ public class EnergyInterfererTest {
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
 		log.debug("WindPower - Reference: " + testValue + " - Changed: " + result);
 
@@ -112,7 +121,9 @@ public class EnergyInterfererTest {
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
 		log.debug("SmartMeter - Reference: " + testValue + " - Changed: " + result);
 
@@ -121,7 +132,8 @@ public class EnergyInterfererTest {
 
 	@Test
 	public void testPhotovoltaikWhiteNoiseInterferer() {
-		EnergyBaseInterferer testclass = new PhotovoltaikWhiteNoiseInterferer(service);
+		EnergyBaseInterferer testclass = new PhotovoltaikWhiteNoiseInterferer(
+			service);
 		testclass.setChangeProbability(1.0);
 
 		testValue = 100.0;
@@ -129,16 +141,20 @@ public class EnergyInterfererTest {
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
-		log.debug("Photovoltaik - Reference: " + testValue + " - Changed: " + result);
+		log.
+			debug("Photovoltaik - Reference: " + testValue + " - Changed: " + result);
 
 		assertTrue(testValue != result);
 	}
 
 	@Test
 	public void testCompositeEnergyInterferer() {
-		EnergyBaseInterferer interferer1 = new PhotovoltaikWhiteNoiseInterferer(service);
+		EnergyBaseInterferer interferer1 = new PhotovoltaikWhiteNoiseInterferer(
+			service);
 		interferer1.setChangeProbability(1.0);
 
 		List<EnergyInterferer> list = new ArrayList<>();
@@ -150,7 +166,9 @@ public class EnergyInterfererTest {
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
 		log.debug("Composite - Reference: " + testValue + " - Changed: " + result);
 

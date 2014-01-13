@@ -15,38 +15,40 @@
  */
 package de.pgalise.simulation.energy.test;
 
+import de.pgalise.simulation.energy.EnergyConsumptionManagerLocal;
+import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
+import de.pgalise.simulation.energy.internal.DefaultEnergyController;
+import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.shared.city.BaseGeoInfo;
+import de.pgalise.simulation.shared.city.Building;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.shared.event.weather.WeatherEvent;
+import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import de.pgalise.simulation.traffic.TrafficCity;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.traffic.TrafficTestUtils;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.pgalise.simulation.energy.EnergyConsumptionManager;
-import de.pgalise.simulation.energy.EnergyEventStrategy;
-import de.pgalise.simulation.energy.internal.DefaultEnergyController;
-import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
-import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.Building;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.BaseGeoInfo;
-import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.traffic.TrafficCity;
-import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.testutils.traffic.TrafficTestUtils;
-import java.net.URL;
+import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 
 /**
  * JUnit tests for {@link DefaultEnergyController}
@@ -55,6 +57,8 @@ import org.junit.Ignore;
  * @author Andreas
  */
 @Ignore //@TODO: usage of Mapping between coordinate and building is not clear (coordinate can be arbitraryly precise and be on the buildings surface or not
+@LocalClient
+@ManagedBean
 public class DefaultEnergyControllerTest {
 
 	/**
@@ -106,20 +110,25 @@ public class DefaultEnergyControllerTest {
 	/**
 	 * The used energy consumption manager
 	 */
-	private static EnergyConsumptionManager energyConsumptionManager;
+	@EJB
+	private EnergyConsumptionManagerLocal energyConsumptionManager;
 
 	/**
 	 * The used energy event strategy
 	 */
-	private static EnergyEventStrategy energyEventStrategy;
+	@EJB
+	private static EnergyEventStrategyLocal energyEventStrategy;
 
 	/**
 	 * Test time
 	 */
 	private static long testTime;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
+
 		Calendar cal = new GregorianCalendar();
 
 		// city
@@ -215,12 +224,9 @@ public class DefaultEnergyControllerTest {
 			true,
 			new ArrayList<WeatherEvent>());
 
-		// EnergyEventStrategy
-		energyEventStrategy = EasyMock.createNiceMock(EnergyEventStrategy.class);
-
 		// EnergyConsumptionManager
 		energyConsumptionManager = EasyMock.createNiceMock(
-			EnergyConsumptionManager.class);
+			EnergyConsumptionManagerLocal.class);
 		EasyMock.expect(energyConsumptionManager.getEnergyConsumptionInKWh(testTime,
 			EnergyProfileEnum.HOUSEHOLD,
 			testLocation)).andStubReturn(1.0);
@@ -243,7 +249,7 @@ public class DefaultEnergyControllerTest {
 		 */
 		DefaultEnergyControllerTest.testClass.init(
 			DefaultEnergyControllerTest.initParameter);
-		Assert.assertEquals(StatusEnum.INITIALIZED,
+		Assert.assertEquals(ControllerStatusEnum.INITIALIZED,
 			testClass.getStatus());
 
 		/*
@@ -251,7 +257,7 @@ public class DefaultEnergyControllerTest {
 		 */
 		DefaultEnergyControllerTest.testClass.start(
 			DefaultEnergyControllerTest.startParameter);
-		Assert.assertEquals(StatusEnum.STARTED,
+		Assert.assertEquals(ControllerStatusEnum.STARTED,
 			testClass.getStatus());
 
 
@@ -272,14 +278,14 @@ public class DefaultEnergyControllerTest {
 		 * Stop the controller
 		 */
 		DefaultEnergyControllerTest.testClass.stop();
-		Assert.assertEquals(StatusEnum.STOPPED,
+		Assert.assertEquals(ControllerStatusEnum.STOPPED,
 			testClass.getStatus());
 
 		/*
 		 * Reset the controller
 		 */
 		DefaultEnergyControllerTest.testClass.reset();
-		Assert.assertEquals(StatusEnum.INIT,
+		Assert.assertEquals(ControllerStatusEnum.INIT,
 			testClass.getStatus());
 	}
 }

@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.shared.tag;
 
+import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -11,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author richter
  */
 @XmlRootElement
+@Embeddable
 public enum ServiceTagEnum implements ServiceTag {
 
 	;
@@ -25,5 +27,5 @@ public enum ServiceTagEnum implements ServiceTag {
 	public String getStringValue() {
 		return stringValue;
 	}
-	
+
 }

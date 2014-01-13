@@ -45,6 +45,13 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared-impl</artifactId>
 			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>de.pgalise.testutils-weather</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>test</scope>
 			<type>jar</type>
 		</dependency>
 		
@@ -58,49 +65,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
-			<artifactId>openejb-client</artifactId>
+			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.openejb</groupId>
-			<artifactId>openejb-server</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.hsqldb</groupId>
-					<artifactId>hsqldb</artifactId>
-				</exclusion>
-			</exclusions>
-			<scope>test</scope>
-		</dependency>
-<!--		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>-->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

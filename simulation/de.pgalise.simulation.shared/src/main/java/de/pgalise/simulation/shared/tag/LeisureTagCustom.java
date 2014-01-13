@@ -8,6 +8,7 @@ import de.pgalise.simulation.shared.tag.AbstractCustomTag;
 import de.pgalise.simulation.shared.tag.LeisureTag;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author richter
  */
 @XmlRootElement
+@Embeddable
 public class LeisureTagCustom extends AbstractCustomTag implements LeisureTag {
 
 	private static final long serialVersionUID = 1L;

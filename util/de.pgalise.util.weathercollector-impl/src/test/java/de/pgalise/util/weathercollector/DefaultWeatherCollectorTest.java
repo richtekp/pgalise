@@ -15,15 +15,9 @@
  */
 package de.pgalise.util.weathercollector;
 
-import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
-import org.junit.Test;
-
-import de.pgalise.util.weathercollector.app.DefaultWeatherCollector;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.util.JTADatabaseManager;
-import de.pgalise.util.weathercollector.weatherstation.WeatherStationSaver;
+import de.pgalise.testutils.TestUtils;
+import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
@@ -31,9 +25,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.ManagedBean;
-import javax.ejb.LocalBean;
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.InitialContext;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -44,79 +37,80 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
-import static org.junit.Assert.*;
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Tests the weather collector. Doesn't inject BaseDatabaseManager in because
- * the injected test EntityManager factory can be passed as parameter in the
+ * Tests the weather collector. Doesn't inject DatabaseManager in because the
+ * injected test EntityManager factory can be passed as parameter in the
  * constructor.
  *
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-@LocalBean
+@LocalClient
 @ManagedBean
 public class DefaultWeatherCollectorTest {
 
-	private EJBContainer CONTAINER;
-	@PersistenceContext(unitName = "pgalise")
+	@PersistenceContext(unitName = "pgalise-weathercollector")
 	private EntityManager entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
+	@EJB
+	private DatabaseManager baseDatabaseManager;
+	@EJB
+	private WeatherCollector weatherCollector;
+	@Resource
+	private UserTransaction userTransaction;
 
 	public DefaultWeatherCollectorTest() {
-		this.baseDatabaseManager = new JTADatabaseManager(entityManager
-		);
 	}
 
 	@Before
-	public void setUpClass() throws NamingException {
-		CONTAINER = TestUtils.getContainer();
-		CONTAINER.getContext().bind("inject",
+	public void setUp() throws NamingException {
+		TestUtils.getContainer().getContext().bind("inject",
 			this);
 	}
 
 	@Test
 	public void testCollectServiceData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
-		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
-		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(
-			Arrays.asList(new YahooWeather()));
-		InitialContext initialContext = new InitialContext();
-		UserTransaction userTransaction = (UserTransaction) initialContext.lookup(
-			"java:comp/UserTransaction");
 		userTransaction.begin();
+		try {
+			Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(
+				Arrays.asList(new YahooWeather()));
 
-		City city = TestUtils.createDefaultTestCityInstance();
-		entityManager.persist(city);
-//		CONTAINER.getContext().unbind("inject");
-//		baseDatabaseManager = lookupJTADatabaseManagerBean();
-		weatherCollector.collectServiceData(baseDatabaseManager,
-			serviceStrategys);
-		Query query = entityManager.createQuery(
-			"SELECT x FROM DefaultServiceDataCurrent x");
-		assertFalse(query.getResultList().isEmpty());
-		userTransaction.commit();
+			City city = TestUtils.createDefaultTestCityInstance();
+			entityManager.merge(city.getPosition());
+			entityManager.merge(city);
+			weatherCollector.collectServiceData(baseDatabaseManager,
+				serviceStrategys);
+			Query query = entityManager.createQuery(
+				"SELECT x FROM ServiceDataCurrent x");
+			assertFalse(query.getResultList().isEmpty());
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 	@Test
 	public void testCollectStationData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
-		DefaultWeatherCollector weatherCollector = new DefaultWeatherCollector();
-		StationStrategy stationStrategy = createMock(StationStrategy.class);
-		stationStrategy.saveWeather(anyObject(WeatherStationSaver.class));
-		expectLastCall().once();
-		EasyMock.replay(stationStrategy);
-		InitialContext initialContext = new InitialContext();
-		UserTransaction userTransaction = (UserTransaction) initialContext.lookup(
-			"java:comp/UserTransaction");
 		userTransaction.begin();
-		City city = TestUtils.createDefaultTestCityInstance();
-		entityManager.persist(city);
-		userTransaction.commit();
-		weatherCollector.collectStationData(baseDatabaseManager,
-			new HashSet<>(Arrays.asList(stationStrategy)));
-		//only test that StationStrategy.saveWeather is invoked
+		try {
+			StationStrategy stationStrategy = createMock(StationStrategy.class);
+			stationStrategy.saveWeather(anyObject(DatabaseManager.class));
+			expectLastCall().once();
+			EasyMock.replay(stationStrategy);
+			City city = TestUtils.createDefaultTestCityInstance();
+			entityManager.merge(city.getPosition());
+			entityManager.merge(city);
+			weatherCollector.collectStationData(baseDatabaseManager,
+				new HashSet<>(Arrays.asList(stationStrategy)));
+			//only test that StationStrategy.saveWeather is invoked
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 }

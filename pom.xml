@@ -17,14 +17,22 @@
 		<de.pgalise.geotools.version>9.3</de.pgalise.geotools.version>
 		<de.pgalise.hibernate.version>4.3.0.Final</de.pgalise.hibernate.version>
 		<!--4.3.0.Final is the only stable version which is compatible with Java EE 7, 
-	but also buggy -> used dev version -->
+	but also buggy (NPE at 
+		org.hibernate.engine.transaction.internal.jta.JtaStatusHelper.getStatus(
+		JtaStatusHelper.java:73) only get fixed by adding non portable properties to 
+		persistence.xml (tolerable) and is not compatible with OpenEJB  embedded 
+		testing (for this project not tolerable) 
+		- dev version doesn't fix this
+		-> use OpenJPA and wait for hibernate-spatial to be included in Hibernate 5
+		-->
+		<de.pgalise.openjpa.version>2.2.2</de.pgalise.openjpa.version>
 	</properties>
 		
 	<modules>
 		<module>util</module>
 		<module>simulation</module>
-		<module>ear</module>
 		<module>testutils</module>
+		<module>ear</module>
 	</modules>
 	
 	<repositories>
@@ -86,13 +94,8 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.10</version>
+			<version>4.11</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.easymock</groupId>
@@ -100,6 +103,26 @@
 			<version>3.1</version>
 			<scope>test</scope>
 		</dependency>		
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.6.6</version>
+		</dependency> 
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.0.13</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 	</dependencies>
 
 	<!-- Werden in einem Modul als Abhängigkeit definiert, wenn sie da explizit eingetragen werden-->
@@ -122,11 +145,11 @@
 				<artifactId>testutils-shared</artifactId>
 				<version>2.0-SNAPSHOT</version>
 			</dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>testutils-traffic</artifactId>
-		<version>2.0-SNAPSHOT</version>
-	 </dependency>
+			<dependency>
+				<groupId>de.pgalise</groupId>
+				<artifactId>testutils-traffic</artifactId>
+				<version>2.0-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>shared-resources</artifactId>
@@ -338,25 +361,45 @@
 				<artifactId>commons-collections4</artifactId>
 				<version>4.0</version>
 			</dependency>
-<!--			<dependency>
+			<!--			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-spatial</artifactId>
 				<version>4.0</version>
 			</dependency>-->
-			<dependency>
+<!--			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
 				<version>${de.pgalise.hibernate.version}</version>
+				<exclusions>-->
+					<!--					<exclusion>
+						<groupId>org.jboss.logging</groupId>
+						<artifactId>jboss-logging</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.jboss.logging</groupId>
+						<artifactId>jboss-logging-annotations</artifactId>
+					</exclusion>-->
+<!--				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
 				<version>${de.pgalise.hibernate.version}</version>
-			</dependency>
-<!--			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-search</artifactId>
-				<version>4.4.0.Final</version>
+				<exclusions>-->
+					<!--					<exclusion>
+						<groupId>org.jboss.logging</groupId>
+						<artifactId>jboss-logging</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.jboss.logging</groupId>
+						<artifactId>jboss-logging-annotations</artifactId>
+					</exclusion>-->
+<!--				</exclusions>
+			</dependency>-->
+			<!--			<dependency>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa</artifactId>
+				<version>${de.pgalise.openjpa.version}</version>
 			</dependency>-->
 			<dependency>
 				<groupId>postgresql</groupId>
@@ -381,35 +424,58 @@
 			<dependency>
 				<groupId>javax.ejb</groupId>
 				<artifactId>ejb-api</artifactId>
-				<version>3.0</version>
+				<version>3.1</version>
 				<scope>provided</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.apache.openejb</groupId>
-				<artifactId>openejb-server</artifactId>
-				<version>${de.pgalise.openejb.version}</version>
-				<!--
-				<exclusions>
-					<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-					</exclusion>
-				</exclusions>
-				-->
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.openejb</groupId>
-				<artifactId>openejb-core</artifactId>
-				<version>${de.pgalise.openejb.version}</version>
-				<scope>test</scope>
+			<!--			<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-server</artifactId>
+			<version>${de.pgalise.openejb.version}</version>-->
+			<!--
+			<exclusions>
+				<exclusion>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
+			-->
+			<!--				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-client</artifactId>
 				<version>${de.pgalise.openejb.version}</version>
 				<scope>test</scope>
-			</dependency>	
+			</dependency>	-->
+			<dependency>
+				<groupId>org.apache.openejb</groupId>
+				<artifactId>openejb-core</artifactId>
+				<version>${de.pgalise.openejb.version}</version>
+				<scope>test</scope>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-jdk14</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+<!--					<exclusion>
+						<groupId>org.apache.openejb</groupId>
+						<artifactId>openejb-jpa-integration</artifactId>
+					</exclusion>-->
+<!--					<exclusion>
+						<groupId>org.apache.openejb.patch</groupId>
+						<artifactId>openjpa</artifactId>
+					</exclusion>-->
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.openjpa</groupId>
+				<artifactId>openjpa-all</artifactId>
+				<version>${de.pgalise.openjpa.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>javax.servlet</groupId>
@@ -572,10 +638,10 @@
 				<version>${de.pgalise.geotools.version}</version>
 			</dependency>
 			<dependency>
-			 <groupId>org.geotools</groupId>
-			 <artifactId>gt-cql</artifactId>
-			 <version>${de.pgalise.geotools.version}</version>
-			 <type>jar</type>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-cql</artifactId>
+				<version>${de.pgalise.geotools.version}</version>
+				<type>jar</type>
 			</dependency>
 			<dependency>
 				<groupId>javax</groupId>
@@ -615,6 +681,26 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.5.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0-alpha-2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>set-system-properties</goal>
+						</goals>
+						<configuration>
+							<properties>
+								<property>
+									<name>org.jboss.logging.provider</name>
+									<value>slf4j</value>
+								</property>
+							</properties>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 

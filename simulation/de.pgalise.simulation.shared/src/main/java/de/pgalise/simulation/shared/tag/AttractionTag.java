@@ -4,10 +4,13 @@
  */
 package de.pgalise.simulation.shared.tag;
 
+import javax.persistence.Embeddable;
+
 /**
  *
  * @author richter
  */
+@Embeddable
 public interface AttractionTag extends BaseTag {
-	
+
 }

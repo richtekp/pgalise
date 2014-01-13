@@ -13,48 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.util.weathercollector.app;
 
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.WeatherCollector;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
-import java.util.logging.Level;
-
+import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceManager;
+import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.util.weathercollector.weatherservice.WeatherServiceManager;
-import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
+import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import de.pgalise.util.weathercollector.weatherstation.WeatherStationManager;
 import java.util.Set;
+import java.util.logging.Level;
+import javax.ejb.Stateful;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * This is the entrance point of the weather collector.
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 2.1 (Jun 24, 2012)
  */
-public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceDataHelper> {
-	private final static Logger LOGGER = LoggerFactory.getLogger(DefaultWeatherCollector.class);
+@Stateful
+public class DefaultWeatherCollector implements
+	WeatherCollector {
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(
+		DefaultWeatherCollector.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 */
 	public DefaultWeatherCollector() {
 	}
-	
+
 	@Override
-	public void collectServiceData(BaseDatabaseManager<DefaultServiceDataHelper> weatherServiceSaver, Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys) {
-		WeatherServiceManager collector = new DefaultWeatherServiceManager(weatherServiceSaver, serviceStrategys);
+	public void collectServiceData(
+		DatabaseManager weatherServiceSaver,
+		Set<ServiceStrategy> serviceStrategys) {
+		WeatherServiceManager collector = new DefaultWeatherServiceManager(
+			weatherServiceSaver,
+			serviceStrategys);
 
 		// Get informations and save them
-		LOGGER.debug("### --- Wetterdienste --- ###", Level.INFO);
+		LOGGER.debug("### --- Wetterdienste --- ###",
+			Level.INFO);
 		collector.saveInformations(weatherServiceSaver);
 	}
 
@@ -62,17 +69,23 @@ public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceD
 	 * Collect weather informations of the weather services
 	 */
 	@Override
-	public void collectServiceData(BaseDatabaseManager<DefaultServiceDataHelper> weatherServiceSaver) {
+	public void collectServiceData(
+		DatabaseManager weatherServiceSaver) {
 		collectServiceData(weatherServiceSaver,
 			null);
 	}
-	
+
 	@Override
-	public void collectStationData(BaseDatabaseManager<DefaultServiceDataHelper> databaseManager, Set<StationStrategy> stationStrategys) {
-		WeatherStationManager collector = new DefaultWeatherStationManager(databaseManager, stationStrategys);
+	public void collectStationData(
+		DatabaseManager databaseManager,
+		Set<StationStrategy> stationStrategys) {
+		WeatherStationManager collector = new DefaultWeatherStationManager(
+			databaseManager,
+			stationStrategys);
 
 		// Get informations and save them
-		LOGGER.debug("### --- Wetterstationen --- ###", Level.INFO);
+		LOGGER.debug("### --- Wetterstationen --- ###",
+			Level.INFO);
 		collector.saveInformations();
 	}
 
@@ -80,7 +93,8 @@ public class DefaultWeatherCollector implements WeatherCollector<DefaultServiceD
 	 * Collect weather informations of the weather stations
 	 */
 	@Override
-	public void collectStationData(BaseDatabaseManager<DefaultServiceDataHelper> databaseManager) {
+	public void collectStationData(
+		DatabaseManager databaseManager) {
 		collectStationData(databaseManager,
 			null);
 	}

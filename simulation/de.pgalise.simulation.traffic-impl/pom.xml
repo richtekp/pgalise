@@ -21,20 +21,6 @@
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>traffic</artifactId>
-			<exclusions>
-				<!--				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-jdk14</artifactId>
-				</exclusion>-->
-				<exclusion>
-					<groupId>org.jboss.logging</groupId>
-					<artifactId>jboss-logging</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>ch.qos.logback</groupId>
-					<artifactId>logback-classic</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
@@ -43,6 +29,11 @@
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared-resources</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>energy</artifactId>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise</groupId>
@@ -60,11 +51,6 @@
 			<artifactId>weather-impl</artifactId>
 			<scope>test</scope>
 			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>energy</artifactId>
-			<type>jar</type>
 		</dependency>
 		
 		<!-- 
@@ -105,24 +91,11 @@
 			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-<!--		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>-->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-		</dependency>
+	 <dependency>
+	  <groupId>com.bbn</groupId>
+	  <artifactId>openmap</artifactId>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>

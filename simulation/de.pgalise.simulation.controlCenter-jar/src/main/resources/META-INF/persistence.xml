@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence"               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence   http://www.oracle.com/webfolder/technetwork/jsc/xml/ns/persistence/persistence_2_1.xsd">
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="pgalise-controlcenter" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>jdbc/pgalise</jta-data-source>
+    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData</class>
+    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData</class>
+    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.TrafficLightSensorData</class>
+    <class>de.pgalise.simulation.shared.city.BaseGeoInfo</class>
     <class>de.pgalise.simulation.shared.city.Building</class>
     <class>de.pgalise.simulation.shared.city.BusAgency</class>
     <class>de.pgalise.simulation.shared.city.BusCalendar</class>
     <class>de.pgalise.simulation.shared.city.City</class>
+    <class>de.pgalise.simulation.shared.city.CityInfrastructureData</class>
     <class>de.pgalise.simulation.shared.city.NavigationEdge</class>
     <class>de.pgalise.simulation.shared.city.NavigationNode</class>
-    <class>de.pgalise.simulation.shared.city.BaseGeoInfo</class>
+    <class>de.pgalise.simulation.shared.city.OsmCity</class>
     <class>de.pgalise.simulation.shared.city.Way</class>
     <class>de.pgalise.simulation.traffic.BusRoute</class>
     <class>de.pgalise.simulation.traffic.BusStop</class>
@@ -17,28 +22,20 @@
     <class>de.pgalise.simulation.traffic.BusStopTime</class>
     <class>de.pgalise.simulation.traffic.BusTrip</class>
     <class>de.pgalise.simulation.traffic.OSMBusStop</class>
+    <class>de.pgalise.simulation.traffic.TrafficCity</class>
     <class>de.pgalise.simulation.traffic.TrafficEdge</class>
     <class>de.pgalise.simulation.traffic.TrafficNode</class>
     <class>de.pgalise.simulation.traffic.TrafficTrip</class>
-    <class>de.pgalise.simulation.traffic.server.rules.TrafficRuleData</class>
-    <class>de.pgalise.simulation.shared.city.City</class>
-    <class>de.pgalise.simulation.weather.model.DefaultServiceDataCurrent</class>
-    <class>de.pgalise.simulation.weather.model.DefaultServiceDataForecast</class>
-    <class>de.pgalise.simulation.weather.model.WeatherCondition</class>
-    <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
-    <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
-    <class>de.pgalise.util.weathercollector.model.DefaultServiceDataHelper</class>
-    <class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent</class>
-    <class>de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast</class>
-    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData</class>
-    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData</class>
-    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.TrafficLightSensorData</class>
-    <class>de.pgalise.simulation.shared.city.OsmCity</class>
-    <class>de.pgalise.simulation.traffic.TrafficCity</class>
     <class>de.pgalise.simulation.traffic.TrafficWay</class>
     <class>de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensorData</class>
     <class>de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensorData</class>
     <class>de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensorData</class>
+    <class>de.pgalise.simulation.traffic.server.rules.TrafficRuleData</class>
+    <class>de.pgalise.simulation.weather.model.ServiceDataCurrent</class>
+    <class>de.pgalise.simulation.weather.model.ServiceDataForecast</class>
+    <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
+    <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
+    <class>de.pgalise.simulation.weather.model.WeatherCondition</class>
     <class>de.pgalise.staticsensor.internal.sensor.energy.PhotovoltaikSensorData</class>
     <class>de.pgalise.staticsensor.internal.sensor.energy.SmartMeterSensorData</class>
     <class>de.pgalise.staticsensor.internal.sensor.energy.WindPowerSensorData</class>
@@ -51,7 +48,9 @@
     <class>de.pgalise.staticsensor.internal.sensor.weather.ThermometerData</class>
     <class>de.pgalise.staticsensor.internal.sensor.weather.WeatherStationData</class>
     <class>de.pgalise.staticsensor.internal.sensor.weather.WindFlagSensorData</class>
-    <class>de.pgalise.simulation.shared.city.CityInfrastructureData</class>
+    <class>de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent</class>
+    <class>de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast</class>
+    <class>de.pgalise.util.weathercollector.model.ServiceDataHelper</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>
@@ -61,9 +60,9 @@
       <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>
       <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-			<!--the following disabled portability of the app to servers other than 
+      <!--the following disabled portability of the app to servers other than 
 			glassfish, which is not really nice...-->
-			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform" />
+      <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
     </properties>
   </persistence-unit>
 </persistence>

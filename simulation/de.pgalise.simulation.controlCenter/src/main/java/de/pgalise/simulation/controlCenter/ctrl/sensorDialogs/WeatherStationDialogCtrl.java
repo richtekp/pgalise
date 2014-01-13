@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
 import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensor;
-import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.WeatherStation;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +23,7 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class WeatherStationDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
+
 	private static final long serialVersionUID = 1L;
 	@EJB
 	private WeatherInterferer weatherInterferer;
@@ -46,11 +45,12 @@ public class WeatherStationDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl 
 	public List<WeatherSensor> getSelectedWeatherSensors() {
 		return selectedWeatherSensors;
 	}
-	
-	public Set<WeatherSensor> retrieveWeatherSensors() {
-		return simulationController.getWeatherSensorController().getAllManagedSensors();
+
+	public Set<WeatherSensor<?>> retrieveWeatherSensors() {
+		return simulationController.getWeatherSensorController().
+			getAllManagedSensors();
 	}
-	
+
 	public void saveSensor() throws SensorException {
 		getSensorManagerController().createSensor(
 			new WeatherStation(
@@ -60,7 +60,8 @@ public class WeatherStationDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl 
 				getWeatherController(),
 				weatherInterferer,
 				getChosenUpdateStep(),
-				selectedWeatherSensors.toArray(new WeatherSensor[selectedWeatherSensors.size()])));
+				selectedWeatherSensors.toArray(new WeatherSensor[selectedWeatherSensors.
+					size()])));
 	}
-	
+
 }

@@ -13,41 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
-
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.testutils.TestUtils;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
-
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
-import javax.naming.NamingException;
-
-import org.jfree.data.time.TimeSeries;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import org.junit.BeforeClass;
+import de.pgalise.simulation.weather.service.WeatherService;
+import de.pgalise.testutils.TestUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.naming.NamingException;
+import javax.transaction.UserTransaction;
+import org.jfree.data.time.TimeSeries;
+import org.junit.Before;
 
 /**
- * Abstract super class for chart tests. Theses tests are used to test the weather decorators.
- * 
+ * Abstract super class for chart tests. Theses tests are used to test the
+ * weather decorators.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 11, 2012)
  */
 public abstract class AbstractChartTest {
-	private static EJBContainer container;
 
 	/**
 	 * Title for decorator dataset
@@ -82,12 +75,14 @@ public abstract class AbstractChartTest {
 	/**
 	 * RandomSeedService
 	 */
+	@EJB
 	private RandomSeedService random;
 
 	/**
 	 * Service Class
 	 */
-	private DefaultWeatherService service;
+	@EJB
+	private WeatherService service;
 
 	/**
 	 * Start timestamp
@@ -97,22 +92,25 @@ public abstract class AbstractChartTest {
 	/**
 	 * Weather Loader
 	 */
+	@EJB
 	private WeatherLoader loader;
+
+	@Resource
+	private UserTransaction userTransaction;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param startdate
-	 *            Date as timestamp
-	 * @param enddate
-	 *            Date as timestamp
-	 * @param parameter
-	 *            WeatherParameterEnum
+	 *
+	 * @param startdate Date as timestamp
+	 * @param enddate Date as timestamp
+	 * @param parameter WeatherParameterEnum
 	 * @throws IOException
 	 * @throws NamingException
 	 */
-	public AbstractChartTest(long startdate, long enddate, WeatherParameterEnum parameter)
-			throws IOException, NamingException {
+	public AbstractChartTest(long startdate,
+		long enddate,
+		WeatherParameterEnum parameter)
+		throws IOException, NamingException {
 		this.random = new DefaultRandomSeedService();
 		this.startTimestamp = startdate;
 		this.endTimestamp = enddate;
@@ -121,33 +119,33 @@ public abstract class AbstractChartTest {
 		// Read props
 		try {
 			InputStream propInFile = AbstractChartTest.class
-					.getResourceAsStream(AbstractChartTest.PROPERTIES_FILE_PATH);
+				.getResourceAsStream(AbstractChartTest.PROPERTIES_FILE_PATH);
 			this.props = new Properties();
 			this.props.loadFromXML(propInFile);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
 
-		Context ctx = container.getContext();
+	@Before
+	public void setUp() throws Exception {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
 
 		// City
-		City city = TestUtils.createDefaultTestCityInstance();
+		userTransaction.begin();
+		try {
+			City city = TestUtils.createDefaultTestCityInstance();
+			service.setCity(city);
 
-		// Load EJB for Weather loader
-		this.loader = (WeatherLoader) ctx
-				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
-
-		// Create service
-		this.service = new DefaultWeatherService(city, this.loader);
-
-		// Get reference weather informations
-		this.service.addNewWeather(this.startTimestamp, this.endTimestamp, true, null);
-
-	}
-	
-	@BeforeClass
-	public static void setUpClass() {
-		container = TestUtils.getContainer();
+			// Get reference weather informations
+			this.service.addNewWeather(this.startTimestamp,
+				this.endTimestamp,
+				true,
+				null);
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 	public WeatherLoader getLoader() {
@@ -156,7 +154,7 @@ public abstract class AbstractChartTest {
 
 	/**
 	 * Get Timeserie for decorator values
-	 * 
+	 *
 	 * @return Timeserie
 	 * @throws Exception
 	 */
@@ -164,7 +162,7 @@ public abstract class AbstractChartTest {
 
 	/**
 	 * Get Timeserie for reference values
-	 * 
+	 *
 	 * @return Timeserie
 	 */
 	protected abstract TimeSeries getReferenceTimeSerie();
@@ -186,7 +184,7 @@ public abstract class AbstractChartTest {
 	/**
 	 * @return the service
 	 */
-	public DefaultWeatherService getService() {
+	public WeatherService getService() {
 		return service;
 	}
 

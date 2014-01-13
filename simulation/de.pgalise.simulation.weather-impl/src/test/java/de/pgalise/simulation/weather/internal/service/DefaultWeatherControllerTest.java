@@ -15,46 +15,35 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
+import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
-import javax.naming.NamingException;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.ServerConfigurationEntity;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -62,8 +51,11 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JUnit Testcases for WeatherController
@@ -73,12 +65,10 @@ import org.junit.Ignore;
  */
 @LocalClient
 @ManagedBean
-@Ignore
 public class DefaultWeatherControllerTest {
 
-	private static EJBContainer CONTAINER;
-	@PersistenceUnit(unitName = "pgalise-weather")
-	private EntityManagerFactory entityManagerFactory;
+	@PersistenceContext(unitName = "pgalise-weather")
+	private EntityManager entityManagerFactory;
 	/**
 	 * Logger
 	 */
@@ -109,17 +99,27 @@ public class DefaultWeatherControllerTest {
 	private UserTransaction userTransaction;
 	@EJB
 	private IdGenerator IdGenerator;
+	@EJB
+	private WeatherController ctrl;
 
-	@SuppressWarnings("LeakingThisInConstructor")
-	public DefaultWeatherControllerTest() throws NamingException {
-		CONTAINER.getContext().bind("inject",
+	public DefaultWeatherControllerTest() {
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		TestUtils.getContainer().getContext().bind("inject",
 			this);
 
 		System.setProperty("simulation.configuration.filepath",
 			"src/test/resources/simulation.conf");
 
-		// Create city
-		city = TestUtils.createDefaultTestCityInstance();
+		userTransaction.begin();
+		try {
+			// Create city
+			city = TestUtils.createDefaultTestCityInstance();
+		} finally {
+			userTransaction.commit();
+		}
 
 		// Start
 		Calendar cal = new GregorianCalendar();
@@ -150,165 +150,157 @@ public class DefaultWeatherControllerTest {
 		eventTimestamp = cal.getTimeInMillis();
 	}
 
-	@BeforeClass
-	public static void setUpClass() {
-		CONTAINER = TestUtils.getContainer();
-	}
-
 	@Test
 	public void controllerTest() throws InterruptedException, IllegalArgumentException,
 		ExecutionException, IllegalStateException, InitializationException, NamingException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, RollbackException {
-		WeatherController ctrl;
-		Number testNumber;
+		userTransaction.begin();
+		try {
+			Number testNumber;
 
-		// Local test variables
-		long valueTime = startTimestamp + 360000;
-		WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
-		JaxRSCoordinate testPosition = new JaxRSCoordinate(2,
-			3);
-		List<WeatherEvent> testEventList = new ArrayList<>(1);
-		testEventList.add(new ChangeWeatherEvent(IdGenerator.getNextId(),
-			WeatherEventTypeEnum.HOTDAY,
-			30.0f,
-			eventTimestamp,
-			6L));
-		EventList<WeatherEvent> testEvent = new EventList<>(IdGenerator.getNextId(),
-			testEventList,
-			valueTime);
+			// Local test variables
+			long valueTime = startTimestamp + 360000;
+			WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
+			JaxRSCoordinate testPosition = new JaxRSCoordinate(2,
+				3);
+			List<WeatherEvent> testEventList = new ArrayList<>(1);
+			testEventList.add(new ChangeWeatherEvent(IdGenerator.getNextId(),
+				WeatherEventTypeEnum.HOTDAY,
+				30.0f,
+				eventTimestamp,
+				6L));
+			EventList<WeatherEvent> testEvent = new EventList<>(IdGenerator.
+				getNextId(),
+				testEventList,
+				valueTime);
 
-		InitParameter initParameter = new InitParameter(
-			startTimestamp,
-			endTimestamp,
-			valueTime,
-			eventTimestamp,
-			null,
-			null,
-			null,
-			null);
-		initParameter.setStartTimestamp(new Date(startTimestamp));
-		initParameter.setEndTimestamp(new Date(endTimestamp));
-
-		StartParameter parameter = new StartParameter(
-			true,
-			null,
-			city);
-
-		// Create controller
-		Context ctx = CONTAINER.getContext();
-		ctrl = (WeatherController) ctx
-			.lookup(
-				"java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.service.WeatherController");
-
-		log.debug("Testmethod: init()");
-		ctrl.init(initParameter);
-		Assert.assertEquals(StatusEnum.INITIALIZED,
-			ctrl.getStatus());
-
-		// Test (normal) -> call onSuccess
-		log.debug("Testmethod: start()");
-		Map<Date, StationDataNormal> entities = WeatherTestUtils.
-			setUpWeatherStationData(startTimestamp,
+			InitParameter initParameter = new InitParameter(
+				startTimestamp,
 				endTimestamp,
-				userTransaction,
-				entityManagerFactory);
-		ctrl.start(parameter);
-		Assert.assertEquals(StatusEnum.STARTED,
-			ctrl.getStatus());
+				valueTime,
+				eventTimestamp,
+				null,
+				null,
+				null,
+				null);
+			initParameter.setStartTimestamp(new Date(startTimestamp));
+			initParameter.setEndTimestamp(new Date(endTimestamp));
 
-		// Test second start: can not started twice -> call onFailure
-		try {
+			StartParameter parameter = new StartParameter(
+				true,
+				null,
+				city);
+
+			log.debug("Testmethod: init()");
+			ctrl.init(initParameter);
+			Assert.assertEquals(ControllerStatusEnum.INITIALIZED,
+				ctrl.getStatus());
+
+			// Test (normal) -> call onSuccess
+			log.debug("Testmethod: start()");
+			Map<Date, StationDataNormal> entities = WeatherTestUtils.
+				setUpWeatherStationData(startTimestamp,
+					endTimestamp,
+					entityManagerFactory);
 			ctrl.start(parameter);
-			Assert.fail();
-		} catch (Exception expected) {
+			Assert.assertEquals(ControllerStatusEnum.STARTED,
+				ctrl.getStatus());
+
+			// Test second start: can not started twice -> call onFailure
+			try {
+				ctrl.start(parameter);
+				Assert.fail();
+			} catch (IllegalStateException expected) {
+			}
+			Assert.assertEquals(ControllerStatusEnum.STARTED,
+				ctrl.getStatus());
+
+			// Test (normal) -> call onSuccess
+			log.debug("Testmethod: getValue()");
+			try {
+				testNumber = ctrl.getValue(testParameter,
+					valueTime,
+					testPosition);
+				Assert.assertEquals(3.457,
+					testNumber.doubleValue(),
+					0.5);
+			} catch (Exception expected) {
+			}
+
+			// Test false parameters: null as key -> call onFailure
+			try {
+				testNumber = ctrl.getValue(null,
+					valueTime,
+					testPosition);
+				Assert.assertNull(testNumber);
+			} catch (Exception expected) {
+			}
+
+			// Test false parameters: wrong timestamp -> call onFailure
+			try {
+				testNumber = ctrl.getValue(testParameter,
+					0,
+					testPosition);
+				Assert.assertNull(testNumber);
+			} catch (Exception expected) {
+			}
+
+			// Test false parameters: wrong position -> call onFailure
+			try {
+				testNumber = ctrl.getValue(testParameter,
+					0,
+					new JaxRSCoordinate(-1,
+						-2));
+				Assert.assertNull(testNumber);
+			} catch (Exception expected) {
+			}
+
+			// Test (normal) -> call onSuccess
+			log.debug("Testmethod: update()");
+			try {
+				ctrl.update(testEvent);
+			} catch (IllegalStateException expected) {
+			}
+			Assert.assertEquals(ControllerStatusEnum.STARTED,
+				ctrl.getStatus());
+
+			// Test false parameter: no event -> call onFailure
+			try {
+				ctrl.update(null);
+				Assert.assertFalse(false);
+			} catch (IllegalStateException e) {
+				Assert.assertTrue(true);
+			}
+			Assert.assertEquals(ControllerStatusEnum.STARTED,
+				ctrl.getStatus());
+
+			/*
+			 * Log
+			 */
+			log.debug("Testmethod: stop()");
+
+			// Stops the controller. Validates the state enum to check, if the
+			// controller has the stopped state.
+			ctrl.stop();
+			Assert.assertEquals(ControllerStatusEnum.STOPPED,
+				ctrl.getStatus());
+
+			/*
+			 * Log
+			 */
+			log.debug("Testmethod: reset()");
+
+			// Init the controller. Validates the state enum to check, if the
+			// controller has the init state.
+			ctrl.reset();
+			Assert.assertEquals(ControllerStatusEnum.INIT,
+				ctrl.getStatus());
+
+			WeatherTestUtils.tearDownWeatherData(entities,
+				StationDataNormal.class,
+				entityManagerFactory);
+		} finally {
+			userTransaction.commit();
 		}
-		Assert.assertEquals(StatusEnum.STARTED,
-			ctrl.getStatus());
-
-		// Test (normal) -> call onSuccess
-		log.debug("Testmethod: getValue()");
-		try {
-			testNumber = ctrl.getValue(testParameter,
-				valueTime,
-				testPosition);
-			Assert.assertEquals(3.457,
-				testNumber.doubleValue(),
-				0.5);
-		} catch (Exception expected) {
-		}
-
-		// Test false parameters: null as key -> call onFailure
-		try {
-			testNumber = ctrl.getValue(null,
-				valueTime,
-				testPosition);
-			Assert.assertNull(testNumber);
-		} catch (Exception expected) {
-		}
-
-		// Test false parameters: wrong timestamp -> call onFailure
-		try {
-			testNumber = ctrl.getValue(testParameter,
-				0,
-				testPosition);
-			Assert.assertNull(testNumber);
-		} catch (Exception expected) {
-		}
-
-		// Test false parameters: wrong position -> call onFailure
-		try {
-			testNumber = ctrl.getValue(testParameter,
-				0,
-				new JaxRSCoordinate(-1,
-					-2));
-			Assert.assertNull(testNumber);
-		} catch (Exception expected) {
-		}
-
-		// Test (normal) -> call onSuccess
-		log.debug("Testmethod: update()");
-		try {
-			ctrl.update(testEvent);
-		} catch (Exception expected) {
-		}
-		Assert.assertEquals(StatusEnum.STARTED,
-			ctrl.getStatus());
-
-		// Test false parameter: no event -> call onFailure
-		try {
-			ctrl.update(null);
-			Assert.assertFalse(false);
-		} catch (Exception e) {
-			Assert.assertTrue(true);
-		}
-		Assert.assertEquals(StatusEnum.STARTED,
-			ctrl.getStatus());
-
-		/*
-		 * Log
-		 */
-		log.debug("Testmethod: stop()");
-
-		// Stops the controller. Validates the state enum to check, if the
-		// controller has the stopped state.
-		ctrl.stop();
-		Assert.assertEquals(StatusEnum.STOPPED,
-			ctrl.getStatus());
-
-		/*
-		 * Log
-		 */
-		log.debug("Testmethod: reset()");
-
-		// Init the controller. Validates the state enum to check, if the
-		// controller has the init state.
-		ctrl.reset();
-		Assert.assertEquals(StatusEnum.INIT,
-			ctrl.getStatus());
-
-		WeatherTestUtils.tearDownWeatherData(entities,
-			StationDataNormal.class,
-			userTransaction,
-			entityManagerFactory);
 	}
 
 }

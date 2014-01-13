@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.energy.internal;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
@@ -30,19 +29,25 @@ import de.pgalise.simulation.energy.EnergyConsumptionManagerLocal;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
 
 /**
- * Energy Consumption manager that uses fuzzy rules and maximum energy values to determine the current energy consumption.
- * The fuzzy rules can be changed in 'fuzzy/energy_fuzzy.fcl' and the maximum energy values in 'fuzzy/properties.props'.
- * 
+ * Energy Consumption manager that uses fuzzy rules and maximum energy values to
+ * determine the current energy consumption. The fuzzy rules can be changed in
+ * 'fuzzy/energy_fuzzy.fcl' and the maximum energy values in
+ * 'fuzzy/properties.props'.
+ *
  * @author Timo
  * @author Andreas
  */
-public class FuzzyEnergyConsumptionManager implements EnergyConsumptionManagerLocal {
-	
+@Stateful
+public class FuzzyEnergyConsumptionManager implements
+	EnergyConsumptionManagerLocal {
+
 	private static final String FUNCTION_BLOCK_NAME = "energy";
 	private static final String OUTPUT_VARIABLE_NAME = "percentage";
-	
+
 	/**
 	 * The energy fuzzy logic inference system
 	 */
@@ -57,33 +62,51 @@ public class FuzzyEnergyConsumptionManager implements EnergyConsumptionManagerLo
 	 * Contains the max energy consumption for every profile.
 	 */
 	private Map<EnergyProfileEnum, Double> maxEnergyConsumptionMap;
-	
+
+	@EJB
 	private WeatherController weatherController;
 
 	/**
 	 * Default
 	 */
-	public FuzzyEnergyConsumptionManager() {}
+	public FuzzyEnergyConsumptionManager() {
+	}
 
 	@Override
-	public double getEnergyConsumptionInKWh(long timestamp, EnergyProfileEnum key, JaxRSCoordinate position) {		
+	public double getEnergyConsumptionInKWh(long timestamp,
+		EnergyProfileEnum key,
+		JaxRSCoordinate position) {
 		Calendar calendar = new GregorianCalendar();
 		calendar.setTimeInMillis(timestamp);
 		double percentage = 0.0;
 		synchronized (this.energyFIS) {
-			RuleBlock ruleBlock = this.energyFIS.getFunctionBlock(FUNCTION_BLOCK_NAME).getFuzzyRuleBlock(key.getKey());
-			ruleBlock.setVariable("temperature", this.weatherController.
-					getValue(WeatherParameterEnum.TEMPERATURE, 
-					timestamp, position).doubleValue());	
-			ruleBlock.setVariable("brightness", this.weatherController.getValue(WeatherParameterEnum.LIGHT_INTENSITY, 
-					timestamp, position).doubleValue());
-			ruleBlock.setVariable("rain", this.weatherController.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT, 
-					timestamp, position).doubleValue());
-			ruleBlock.setVariable("storm", this.weatherController.getValue(WeatherParameterEnum.WIND_VELOCITY, 
-					timestamp, position).doubleValue());			
-			ruleBlock.setVariable("timeOfDay", calendar.get(Calendar.HOUR_OF_DAY));
-			ruleBlock.setVariable("dayOfWeek", calendar.get(Calendar.DAY_OF_WEEK) == 1 ? 6 : calendar.get(Calendar.DAY_OF_WEEK) - 1);
-			ruleBlock.setVariable("season", calendar.get(Calendar.MONTH) + 1);			
+			RuleBlock ruleBlock = this.energyFIS.getFunctionBlock(FUNCTION_BLOCK_NAME).
+				getFuzzyRuleBlock(key.getKey());
+			ruleBlock.setVariable("temperature",
+				this.weatherController.
+				getValue(WeatherParameterEnum.TEMPERATURE,
+					timestamp,
+					position).doubleValue());
+			ruleBlock.setVariable("brightness",
+				this.weatherController.getValue(WeatherParameterEnum.LIGHT_INTENSITY,
+					timestamp,
+					position).doubleValue());
+			ruleBlock.setVariable("rain",
+				this.weatherController.getValue(
+					WeatherParameterEnum.PRECIPITATION_AMOUNT,
+					timestamp,
+					position).doubleValue());
+			ruleBlock.setVariable("storm",
+				this.weatherController.getValue(WeatherParameterEnum.WIND_VELOCITY,
+					timestamp,
+					position).doubleValue());
+			ruleBlock.setVariable("timeOfDay",
+				calendar.get(Calendar.HOUR_OF_DAY));
+			ruleBlock.setVariable("dayOfWeek",
+				calendar.get(Calendar.DAY_OF_WEEK) == 1 ? 6 : calendar.get(
+					Calendar.DAY_OF_WEEK) - 1);
+			ruleBlock.setVariable("season",
+				calendar.get(Calendar.MONTH) + 1);
 			ruleBlock.evaluate();
 			percentage = ruleBlock.getVariable(OUTPUT_VARIABLE_NAME).defuzzify();
 			ruleBlock.reset();
@@ -93,25 +116,31 @@ public class FuzzyEnergyConsumptionManager implements EnergyConsumptionManagerLo
 	}
 
 	@Override
-	public void init(long start, long end, WeatherController weatherController) {
-		
+	public void init(long start,
+		long end,
+		WeatherController weatherController) {
+
 		this.weatherController = weatherController;
-		
+
 		// Read properties
 		try (InputStream inputStream = FuzzyEnergyConsumptionManager.class
-				.getResourceAsStream("/fuzzy/properties.properties")) {
+			.getResourceAsStream("/fuzzy/properties.properties")) {
 			this.properties = new Properties();
 			this.properties.load(inputStream);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		
-		this.energyFIS = FIS.load(FuzzyEnergyConsumptionManager.class.getResourceAsStream("/fuzzy/energy_fuzzy.fcl"), true);
+
+		this.energyFIS = FIS.load(FuzzyEnergyConsumptionManager.class.
+			getResourceAsStream("/fuzzy/energy_fuzzy.fcl"),
+			true);
 
 		/* fill max energy map*/
 		this.maxEnergyConsumptionMap = new HashMap<>();
-		for(EnergyProfileEnum energyProfile : EnergyProfileEnum.values()) {
-			this.maxEnergyConsumptionMap.put(energyProfile, Double.valueOf(this.properties.getProperty(energyProfile.getKey() +"-max")));
+		for (EnergyProfileEnum energyProfile : EnergyProfileEnum.values()) {
+			this.maxEnergyConsumptionMap.put(energyProfile,
+				Double.valueOf(this.properties.getProperty(
+						energyProfile.getKey() + "-max")));
 		}
 	}
 

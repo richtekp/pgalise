@@ -5,7 +5,6 @@
 package de.pgalise.simulation.shared.tag;
 
 import java.util.Set;
-import javax.persistence.Embeddable;
 
 /**
  * encapsulates a custom tag value to force efficient handling of otherwise
@@ -13,7 +12,6 @@ import javax.persistence.Embeddable;
  *
  * @author richter
  */
-@Embeddable
 public abstract class AbstractCustomTag implements BaseTag {
 
 	private static final long serialVersionUID = 1L;

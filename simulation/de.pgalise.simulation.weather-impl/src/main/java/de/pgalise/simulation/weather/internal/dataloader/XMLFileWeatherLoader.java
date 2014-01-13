@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.dataloader;
 
 import de.pgalise.simulation.shared.city.City;
@@ -30,15 +29,15 @@ import java.util.Properties;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
-import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.model.ServiceDataCurrent;
+import de.pgalise.simulation.weather.model.ServiceDataForecast;
 
 /**
  * This class loads the weather data from a xml file. <br />
  * <br />
- * The file weatherloader.properties provides the default file path of the {@link XMLFileWeatherLoader} in more detail.
- * 
+ * The file weatherloader.properties provides the default file path of the
+ * {@link XMLFileWeatherLoader} in more detail.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (17.09.2012)
  */
@@ -71,7 +70,7 @@ public class XMLFileWeatherLoader implements WeatherLoader {
 		// Read props
 		Properties prop = null;
 		try (InputStream propInFile = XMLFileWeatherLoader.class
-				.getResourceAsStream(XMLFileWeatherLoader.PROPERTIES_FILE_PATH)) {
+			.getResourceAsStream(XMLFileWeatherLoader.PROPERTIES_FILE_PATH)) {
 			prop = new Properties();
 			prop.loadFromXML(propInFile);
 		} catch (IOException e) {
@@ -90,9 +89,8 @@ public class XMLFileWeatherLoader implements WeatherLoader {
 
 	/**
 	 * Returns the file path
-	 * 
-	 * @param timestamp
-	 *            Timestamp
+	 *
+	 * @param timestamp Timestamp
 	 * @return file path
 	 */
 	public String getFilePath(long timestamp) {
@@ -103,12 +101,15 @@ public class XMLFileWeatherLoader implements WeatherLoader {
 	}
 
 	@Override
-	public DefaultServiceDataCurrent loadCurrentServiceWeatherData(long timestamp, City city)  {
+	public ServiceDataCurrent loadCurrentServiceWeatherData(long timestamp,
+		City city) {
 		throw new RuntimeException("Not implemented!");
 	}
 
 	@Override
-	public DefaultServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) {
+	public ServiceDataForecast loadForecastServiceWeatherData(
+		long timestamp,
+		City city) {
 		throw new RuntimeException("Not implemented!");
 	}
 
@@ -117,7 +118,8 @@ public class XMLFileWeatherLoader implements WeatherLoader {
 		// Deserialize
 		WeatherMap map = null;
 		long loadeddate;
-		try (XMLDecoder dec = new XMLDecoder(new FileInputStream(this.getFilePath(timestamp)))) {
+		try (XMLDecoder dec = new XMLDecoder(new FileInputStream(this.getFilePath(
+			timestamp)))) {
 			// Load map
 			loadeddate = (long) dec.readObject();
 			map = (WeatherMap) dec.readObject();
@@ -129,21 +131,24 @@ public class XMLFileWeatherLoader implements WeatherLoader {
 		if (loadeddate == timestamp) {
 			return map;
 		} else {
-			throw new IllegalStateException(String.format("loaded timestamp %d doesn't correspond to the requested timestamp %d", loadeddate, timestamp));
+			throw new IllegalStateException(String.format(
+				"loaded timestamp %d doesn't correspond to the requested timestamp %d",
+				loadeddate,
+				timestamp));
 		}
 	}
 
 	/**
 	 * Saves weather informations to XML
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @param map
-	 *            WeatherMap
+	 *
+	 * @param timestamp Timestamp
+	 * @param map WeatherMap
 	 */
-	public void saveWeatherMapToXML(WeatherMap map, long timestamp) {
+	public void saveWeatherMapToXML(WeatherMap map,
+		long timestamp) {
 		// Serialize
-		try (XMLEncoder enc = new XMLEncoder(new FileOutputStream(this.getFilePath(timestamp)))) {
+		try (XMLEncoder enc = new XMLEncoder(new FileOutputStream(this.getFilePath(
+			timestamp)))) {
 			// Save map
 			enc.writeObject(timestamp);
 			enc.writeObject(map);

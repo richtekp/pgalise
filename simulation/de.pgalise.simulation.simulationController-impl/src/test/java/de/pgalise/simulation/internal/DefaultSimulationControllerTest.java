@@ -1,4 +1,4 @@
-/* 
+ /* 
  * Copyright 2013 PG Alise (http://www.pg-alise.de/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.BeforeClass;
@@ -37,9 +36,8 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.StatusEnum;
+import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
@@ -47,8 +45,6 @@ import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.staticsensor.internal.sensor.weather.Anemometer;
-import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 import de.pgalise.testutils.TestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -119,7 +115,8 @@ public class DefaultSimulationControllerTest {
 //			ServerConfigurationReader.class);
 		EventInitiator eventInitiator = EasyMock.
 			createNiceMock(EventInitiator.class);
-		EasyMock.expect(eventInitiator.getStatus()).andReturn(StatusEnum.STARTED);
+		EasyMock.expect(eventInitiator.getStatus()).andReturn(
+			ControllerStatusEnum.STARTED);
 		cityInfrastructureData = EasyMock.createNiceMock(
 			CityInfrastructureData.class);
 
@@ -224,7 +221,8 @@ public class DefaultSimulationControllerTest {
 		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,null);
+			null,
+			null);
 		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,
@@ -267,7 +265,8 @@ public class DefaultSimulationControllerTest {
 		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,null);
+			null,
+			null);
 		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,
@@ -311,7 +310,8 @@ public class DefaultSimulationControllerTest {
 		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,null);
+			null,
+			null);
 		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,
@@ -353,7 +353,8 @@ public class DefaultSimulationControllerTest {
 		TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
 			getNextId(),
 			output,
-			null,null);
+			null,
+			null);
 		TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
 			idGenerator.getNextId(),
 			output,

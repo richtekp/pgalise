@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
 import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
-import de.pgalise.util.weathercollector.util.EntityDatabaseManager;
+import de.pgalise.util.weathercollector.util.DatabaseManager;
 
 /**
  * Helper for weather service strategies
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Apr 07, 2012)
  */
@@ -33,18 +31,18 @@ public class ServiceStrategyLib {
 
 	/**
 	 * Completes the ServiceData objects to one better object
-	 * 
+	 *
 	 * @param <A> enforces type security in the completion
 	 * @param <B> enforces type security in the completion
-	 * @param <C> 
-	 * @param <T> 
-	 * @param weather1
-	 *            Best ServiceData
-	 * @param weather2
-	 *            New ServiceData
+	 * @param <C>
+	 * @param <T>
+	 * @param weather1 Best ServiceData
+	 * @param weather2 New ServiceData
 	 * @return Better ServiceData
 	 */
-	public static <A extends ExtendedServiceDataCurrent, B extends ExtendedServiceDataForecast, T extends ServiceDataHelper<A,B>> T completeWeather(T weather1, T weather2) {
+	public static <A extends ExtendedServiceDataCurrent, B extends ExtendedServiceDataForecast, T extends ServiceDataHelper> T completeWeather(
+		T weather1,
+		T weather2) {
 		if (weather2 == null) {
 			return weather1;
 		}
@@ -52,7 +50,8 @@ public class ServiceStrategyLib {
 		// Get current ServiceData
 		T bestWeather;
 		T tempWeather;
-		if (weather1.getMeasureTime().getTime() > weather2.getMeasureTime().getTime()) {
+		if (weather1.getMeasureTime().getTime() > weather2.getMeasureTime().
+			getTime()) {
 			bestWeather = weather1;
 			tempWeather = weather2;
 		} else {
@@ -69,13 +68,13 @@ public class ServiceStrategyLib {
 
 	/**
 	 * Returns the condition code from the database
-	 * 
-	 * @param condition
-	 *            Condition
-	 * @param databaseManager 
+	 *
+	 * @param condition Condition
+	 * @param databaseManager
 	 * @return Condition code
 	 */
-	public static int getConditionCode(String condition, EntityDatabaseManager databaseManager) {
+	public static int getConditionCode(String condition,
+		DatabaseManager databaseManager) {
 		if ((condition == null) || condition.isEmpty()) {
 			return WeatherCondition.UNKNOWN_CONDITION_CODE;
 		}

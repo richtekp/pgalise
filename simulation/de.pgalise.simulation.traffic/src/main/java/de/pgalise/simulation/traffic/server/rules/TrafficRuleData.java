@@ -15,14 +15,11 @@ import javax.persistence.Transient;
 /**
  * Class that records all relevant data for a traffic rule 'transaction'
  *
- * @param <D> 
- * @param <N> 
- * @param <E> 
- * @param <V> 
  * @author Marcus
  */
 @Entity
 public class TrafficRuleData extends AbstractIdentifiable {
+
 	private static final long serialVersionUID = 1L;
 	private VehicleData vehicleData;
 	@ManyToOne
@@ -56,11 +53,11 @@ public class TrafficRuleData extends AbstractIdentifiable {
 	}
 
 	/**
-	 * Returns the {@link Edge} where the considered {@link Vehicle} is
-	 * coming from.
+	 * Returns the {@link Edge} where the considered {@link Vehicle} is coming
+	 * from.
 	 *
-	 * @return the {@link Edge} where the considered {@link Vehicle} is
-	 *         coming from
+	 * @return the {@link Edge} where the considered {@link Vehicle} is coming
+	 * from
 	 */
 	public TrafficEdge getFrom() {
 		return from;
@@ -71,21 +68,21 @@ public class TrafficRuleData extends AbstractIdentifiable {
 	 * planning to go.
 	 *
 	 * @return the {@link Edge} to which the considered {@link Vehicle} is
-	 *         planning to go
+	 * planning to go
 	 */
-	public TrafficEdge getTo(){
+	public TrafficEdge getTo() {
 		return to;
 	}
 
 	/**
-	 * Returns the {@link TrafficRuleCallback} which method are invoked on
-	 * certain events.
+	 * Returns the {@link TrafficRuleCallback} which method are invoked on certain
+	 * events.
 	 *
-	 * @return the {@link TrafficRuleCallback} which method are invoked on
-	 *         certain events
+	 * @return the {@link TrafficRuleCallback} which method are invoked on certain
+	 * events
 	 */
 	public TrafficRuleCallback getCallback() {
 		return trafficRuleCallback;
 	}
-	
+
 }

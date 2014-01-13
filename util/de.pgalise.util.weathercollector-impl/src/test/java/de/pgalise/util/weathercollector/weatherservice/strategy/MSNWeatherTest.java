@@ -4,26 +4,21 @@
  */
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
-import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.util.JTADatabaseManager;
+import de.pgalise.testutils.TestUtils;
 import de.pgalise.util.weathercollector.model.ServiceDataHelper;
-import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
+import de.pgalise.util.weathercollector.util.DatabaseManager;
 import javax.annotation.ManagedBean;
-import javax.ejb.embeddable.EJBContainer;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
@@ -32,37 +27,42 @@ import org.junit.BeforeClass;
 @LocalClient
 @ManagedBean
 public class MSNWeatherTest {
-	private static EJBContainer CONTAINER;
-	@PersistenceContext(unitName = "pgalise")
+
+	@PersistenceContext(unitName = "pgalise-weathercollector")
 	private EntityManager entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
-	
-	@SuppressWarnings("LeakingThisInConstructor")
+	@EJB
+	private DatabaseManager baseDatabaseManager;
+	@Resource
+	private UserTransaction userTransaction;
+
 	public MSNWeatherTest() throws NamingException {
-		CONTAINER.getContext().bind("inject",
-			this);
-		this.baseDatabaseManager = new JTADatabaseManager(
-		entityManager);
 	}
-	
-	@BeforeClass
-	public static void setUpClass() throws NamingException {
-		CONTAINER = TestUtils.getContainer();
+
+	@Before
+	public void setUp() throws NamingException {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
 	}
 
 	/**
 	 * Test of extractWeather method, of class MSNWeather.
-	 * 
-	 * @throws ReadServiceDataException 
+	 *
+	 * @throws Exception
 	 */
 	@Test
-	public void testgetWeather() throws ReadServiceDataException {
-		
-		City city = TestUtils.createDefaultTestCityInstance();
-		MSNWeather instance = new MSNWeather();
-		ServiceDataHelper<?,?> result = instance.getWeather(city,
-			baseDatabaseManager);
-		assertFalse(result.getForecastConditions().isEmpty());
+	public void testGetWeather() throws Exception {
+		userTransaction.begin();
+		try {
+			City city = TestUtils.createDefaultTestCityInstance();
+			entityManager.merge(city.getPosition());
+			entityManager.merge(city);
+			MSNWeather instance = new MSNWeather();
+			ServiceDataHelper result = instance.getWeather(city,
+				baseDatabaseManager);
+			assertFalse(result.getForecastConditions().isEmpty());
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 }

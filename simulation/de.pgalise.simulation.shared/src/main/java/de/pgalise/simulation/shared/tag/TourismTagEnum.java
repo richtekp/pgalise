@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.shared.tag;
 
+import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -11,6 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author richter
  */
 @XmlRootElement
+@Embeddable
 public enum TourismTagEnum implements TourismTag {
 
 	;
@@ -20,10 +22,10 @@ public enum TourismTagEnum implements TourismTag {
 	private TourismTagEnum(String value) {
 		this.value = value;
 	}
-	
+
 	@Override
 	public String getStringValue() {
 		return value;
 	}
-	
+
 }

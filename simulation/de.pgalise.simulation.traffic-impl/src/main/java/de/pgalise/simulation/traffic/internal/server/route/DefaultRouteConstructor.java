@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.shared.city.CityInfrastructureData;
@@ -38,10 +37,13 @@ import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.server.TrafficServer;
+import de.pgalise.simulation.traffic.server.route.BusStopParser;
 import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
 import de.pgalise.simulation.traffic.server.route.RouteConstructor;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.Stateful;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jgrapht.alg.DijkstraShortestPath;
@@ -58,6 +60,7 @@ import org.slf4j.LoggerFactory;
  * @author Andreas Rehfeldt
  * @version 1.1
  */
+@Stateful
 public class DefaultRouteConstructor implements RouteConstructor {
 
 	private static final Logger log = LoggerFactory.getLogger(
@@ -72,10 +75,10 @@ public class DefaultRouteConstructor implements RouteConstructor {
 	@EJB
 	private RegionParser regionParser;
 	@EJB
-	private DefaultBusStopParser busStopParser;
+	private BusStopParser busStopParser;
 	@EJB
 	private TrafficGraphExtensions trafficGraphExtensions;
-	private final List<BusStop> busStops;
+	private List<BusStop> busStops;
 
 	private final Map<TrafficServer<?>, List<TrafficNode>> startHomeNodesForServer = new HashMap<>();
 	private final Map<TrafficServer<?>, List<TrafficNode>> startWorkNodesForServer = new HashMap<>();
@@ -91,6 +94,10 @@ public class DefaultRouteConstructor implements RouteConstructor {
 			map.add(new MutablePair(false,
 				null));
 		}
+	}
+
+	@PostConstruct
+	public void init() {
 		this.busStops = parseBusStops();
 	}
 

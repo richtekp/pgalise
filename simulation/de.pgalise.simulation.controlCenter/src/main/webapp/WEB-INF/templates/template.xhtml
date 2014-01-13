@@ -14,8 +14,8 @@
 		<link rel="stylesheet" type="text/css" href="css//olStyle.css"/>
 		<!-- Enum access -->
 		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.ConnectionStateEnum" var="connectionStateEnum"/>
-		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.SimulationStateEnum" var="simulationStateEnum"/>
 		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.MapParsedStateEnum" var="mapParsedStateEnum"/>
+		<o:importConstants type="de.pgalise.simulation.service.ControllerStatusEnum" var="controllerStatusEnum"/>
 	</h:head>
 	<h:body>
 		<ui:include src="/partials/dialogs/consoleDialog.xhtml" />
@@ -31,7 +31,7 @@
 							<img src="img/console.png" id="consoleImg" onclick="consoleDialog.show()" />
 							<div id="layout_top">
 								Connection: <span class="connectionStateColor"><h:outputText value="#{mainCtrl.connectionState}"/></span>
-								Simulation: <span class="simulationStateColor"><h:outputText value="#{mainCtrl.simulationState}"/></span>
+								Simulation: <span class="simulationStateColor"><h:outputText value="#{mainCtrl.simulationControllerState}"/></span>
 								Simulation Time: <h:outputText value="#{mainCtrl.simulationDate}">
 									<f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
 								</h:outputText>
@@ -60,7 +60,7 @@
 				<p:layoutUnit position="west">
 					<h:form>
 						<p:menu>
-							<p:submenu >  
+							<p:submenu label="Initial state" rendered="#{mainCtrl.simulationControllerState ne controllerStatusEnum.STARTED}">  
 								<p:menuitem value="Bus System" outcome="/busSystem.xhtml" />
 								<p:menuitem value="City" outcome="/city.xhtml" />
 								<p:menuitem value="General" outcome="/general.xhtml" />
@@ -68,6 +68,12 @@
 								<p:menuitem value="Interaction" outcome="/interaction.xhtml" />
 								<p:menuitem value="Weather" outcome="/weather.xhtml" />
 								<p:menuitem value="Start" outcome="/start.xhtml" />
+							</p:submenu>
+							<p:submenu label="Runtime state" rendered="#{mainCtrl.simulationControllerState eq controllerStatusEnum.STARTED}">
+								<p:menuitem value="Message"/>
+								<p:menuitem value="Random vehicles"/>
+								<p:menuitem value="Sensor events"/>
+								<p:menuitem value="Status"/>
 							</p:submenu>
 						</p:menu>
 					</h:form>

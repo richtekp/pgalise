@@ -35,6 +35,12 @@
 			<artifactId>testutils-shared</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>weather-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
 	 
 <!--		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -46,14 +52,18 @@
 				</exclusion>
 			</exclusions>
 		</dependency>-->
-		<dependency>
+<!--		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-		</dependency>
+		</dependency>-->
+<!--		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+		</dependency>-->
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>

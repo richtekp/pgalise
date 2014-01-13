@@ -17,9 +17,8 @@ package de.pgalise.util.weathercollector;
 
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.city.City;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
-import de.pgalise.util.weathercollector.util.BaseDatabaseManager;
-import de.pgalise.util.weathercollector.util.JTADatabaseManager;
+import de.pgalise.util.weathercollector.util.DatabaseManager;
+import de.pgalise.util.weathercollector.util.DefaultDatabaseManager;
 import org.junit.Test;
 
 import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceManager;
@@ -29,9 +28,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.ManagedBean;
-import javax.ejb.LocalBean;
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.InitialContext;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -42,63 +40,63 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import org.apache.openejb.api.LocalClient;
 import static org.junit.Assert.assertFalse;
-import org.junit.BeforeClass;
+import org.junit.Before;
 
 /**
- * Tests the weather service manager. Doesn't inject BaseDatabaseManager in
- * because the injected test EntityManager factory can be passed as parameter in
- * the constructor.
+ * Tests the weather service manager. Doesn't inject DatabaseManager in because
+ * the injected test EntityManager factory can be passed as parameter in the
+ * constructor.
  *
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
  */
-@LocalBean
+@LocalClient
 @ManagedBean
 public class DefaultWeatherServiceManagerTest {
 
-	private static EJBContainer CONTAINER;
-	@PersistenceContext(unitName = "pgalise")
+	@PersistenceContext(unitName = "pgalise-weathercollector")
 	private EntityManager entityManager;
-	private BaseDatabaseManager<DefaultServiceDataHelper> baseDatabaseManager;
+	@EJB
+	private DatabaseManager baseDatabaseManager;
+	@Resource
+	private UserTransaction userTransaction;
 
-	@SuppressWarnings("LeakingThisInConstructor")
 	public DefaultWeatherServiceManagerTest() throws NamingException {
-		CONTAINER.getContext().bind("inject",
-			this);
-		this.baseDatabaseManager = new JTADatabaseManager(
+		this.baseDatabaseManager = new DefaultDatabaseManager(
 			entityManager);
 	}
 
-	@BeforeClass
-	public static void setUpClass() throws NamingException {
-		CONTAINER = TestUtils.getContainer();
+	@Before
+	public void setUp() throws NamingException {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
 	}
 
 	@Test
 	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
-		Set<ServiceStrategy<DefaultServiceDataHelper>> serviceStrategys = new HashSet<ServiceStrategy<DefaultServiceDataHelper>>(
-			Arrays.asList(new YahooWeather()));
-		DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(
-			baseDatabaseManager,
-			serviceStrategys);
-
-		InitialContext initialContext = new InitialContext();
-		UserTransaction userTransaction = (UserTransaction) initialContext.lookup(
-			"java:comp/UserTransaction");
 		userTransaction.begin();
-		entityManager.joinTransaction();
+		try {
+			Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(
+				Arrays.asList(new YahooWeather()));
+			DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(
+				baseDatabaseManager,
+				serviceStrategys);
 
-		City city = TestUtils.createDefaultTestCityInstance();
-		entityManager.persist(city);
-		instance.saveInformations(baseDatabaseManager);
-		Query queryCurrent = entityManager.createQuery(
-			"SELECT x FROM DefaultServiceDataCurrent x");
-		Query queryForecast = entityManager.createQuery(
-			"SELECT y FROM DefaultServiceDataForecast y");
-		assertFalse(queryCurrent.getResultList().isEmpty());
-		assertFalse(queryForecast.getResultList().isEmpty());
-		userTransaction.commit();
+			City city = TestUtils.createDefaultTestCityInstance();
+			entityManager.merge(city.getPosition());
+			entityManager.merge(city);
+			instance.saveInformations(baseDatabaseManager);
+			Query queryCurrent = entityManager.createQuery(
+				"SELECT x FROM ServiceDataCurrent x");
+			Query queryForecast = entityManager.createQuery(
+				"SELECT y FROM ServiceDataForecast y");
+			assertFalse(queryCurrent.getResultList().isEmpty());
+			assertFalse(queryForecast.getResultList().isEmpty());
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 }

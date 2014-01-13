@@ -6,6 +6,7 @@ package de.pgalise.simulation.shared.tag;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -13,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author richter
  */
 @XmlRootElement
+@Embeddable
 public class SportTagCustom extends AbstractCustomTag implements SportTag {
 
 	private static final long serialVersionUID = 1L;

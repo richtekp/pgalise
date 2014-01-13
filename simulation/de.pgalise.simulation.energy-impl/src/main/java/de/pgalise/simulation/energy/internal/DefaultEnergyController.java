@@ -15,34 +15,33 @@
  */
 package de.pgalise.simulation.energy.internal;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
+import de.pgalise.simulation.energy.EnergyConsumptionManagerLocal;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
+import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
+import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.shared.city.Building;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.service.StatusEnum;
-import de.pgalise.simulation.shared.city.Building;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.weather.service.WeatherController;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of an energy controller. It uses the specified
@@ -109,10 +108,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 			} else if (!geoLocation.equals(other.geoLocation)) {
 				return false;
 			}
-			if (measureRadiusInMeter != other.measureRadiusInMeter) {
-				return false;
-			}
-			return true;
+			return measureRadiusInMeter == other.measureRadiusInMeter;
 		}
 
 		public JaxRSCoordinate getGeoLocation() {
@@ -168,23 +164,25 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 	 * EnergyConsumptionManager
 	 */
 	@EJB
-	private EnergyConsumptionManager energyConsumptionManager;
+	private EnergyConsumptionManagerLocal energyConsumptionManager;
 
 	@EJB
-	private EnergyEventStrategy energyEventStrategy;
+	private EnergyEventStrategyLocal energyEventStrategy;
 
-	private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap;
+	private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap = new HashMap<>();
 
 	private TrafficInitParameter initParameter;
-	
+
 	@EJB
 	private WeatherController weatherController;
 
-	protected DefaultEnergyController() {
+	public DefaultEnergyController() {
 	}
 
 	/**
 	 * Default
+	 *
+	 * @param cityInfrastructureData
 	 */
 	public DefaultEnergyController(
 		CityInfrastructureDataService cityInfrastructureData) {
@@ -208,7 +206,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 	public double getEnergyConsumptionInKWh(long timestamp,
 		JaxRSCoordinate position,
 		int measureRadiusInMeter) {
-		if (this.getStatus() != StatusEnum.STARTED) {
+		if (this.getStatus() != ControllerStatusEnum.STARTED) {
 			throw new IllegalStateException(
 				"Controller is not in running state!");
 		}
@@ -241,11 +239,11 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 		return energyConsumption;
 	}
 
-	public EnergyConsumptionManager getEnergyConsumptionManager() {
+	public EnergyConsumptionManagerLocal getEnergyConsumptionManager() {
 		return this.energyConsumptionManager;
 	}
 
-	public EnergyEventStrategy getEnergyEventStrategy() {
+	public EnergyEventStrategyLocal getEnergyEventStrategy() {
 		return energyEventStrategy;
 	}
 
@@ -307,11 +305,12 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Tra
 	}
 
 	public void setEnergyConsumptionManager(
-		EnergyConsumptionManager energyConsumptionManager) {
+		EnergyConsumptionManagerLocal energyConsumptionManager) {
 		this.energyConsumptionManager = energyConsumptionManager;
 	}
 
-	public void setEnergyEventStrategy(EnergyEventStrategy energyEventStrategy) {
+	public void setEnergyEventStrategy(
+		EnergyEventStrategyLocal energyEventStrategy) {
 		this.energyEventStrategy = energyEventStrategy;
 	}
 

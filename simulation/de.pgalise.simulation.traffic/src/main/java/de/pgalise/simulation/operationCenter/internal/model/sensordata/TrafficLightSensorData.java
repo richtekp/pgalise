@@ -15,11 +15,6 @@
  */
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.traffic.internal.server.rules.TrafficLight;
-import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import javax.persistence.Entity;
 
 /**

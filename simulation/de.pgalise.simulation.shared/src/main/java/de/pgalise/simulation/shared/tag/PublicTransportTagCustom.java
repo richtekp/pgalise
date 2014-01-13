@@ -8,6 +8,7 @@ import de.pgalise.simulation.shared.tag.AbstractCustomTag;
 import de.pgalise.simulation.shared.tag.PublicTransportTag;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -15,6 +16,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author richter
  */
 @XmlRootElement
+@Embeddable
 public class PublicTransportTagCustom extends AbstractCustomTag implements
 	PublicTransportTag {
 

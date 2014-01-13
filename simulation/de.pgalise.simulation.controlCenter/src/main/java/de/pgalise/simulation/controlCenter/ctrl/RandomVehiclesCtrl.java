@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
@@ -80,12 +79,13 @@ public class RandomVehiclesCtrl {
 		setRandomBikes(0);
 		setRandomBikeGPSRatio(100);
 	}
-	
+
 	@PostConstruct
 	public void init() {
-		this.gpsInterferer = new GpsWhiteNoiseInterferer(randomSeedService, 1.0);
+		this.gpsInterferer = new GpsWhiteNoiseInterferer(randomSeedService,
+			1.0);
 	}
-	
+
 	/**
 	 * @return the randomCars
 	 */
@@ -204,10 +204,10 @@ public class RandomVehiclesCtrl {
 			Long id = idGenerator.getNextId();
 			CreateRandomVehicleData createRandomVehicleData = new CreateRandomBicycleData(
 				new GpsSensor(idGenerator.
-							getNextId(),
-							output,
-							null,
-							gpsInterferer),
+					getNextId(),
+					output,
+					null,
+					gpsInterferer),
 				new VehicleInformation(true,
 					VehicleTypeEnum.BIKE,
 					VehicleModelEnum.BIKE_RANDOM,
@@ -219,10 +219,10 @@ public class RandomVehiclesCtrl {
 			Long id = idGenerator.getNextId();
 			CreateRandomVehicleData createRandomVehicleData = new CreateRandomTruckData(
 				new GpsSensor(idGenerator.
-							getNextId(),
-							output,
-							null,
-							gpsInterferer),
+					getNextId(),
+					output,
+					null,
+					gpsInterferer),
 				new VehicleInformation(true,
 					VehicleTypeEnum.BIKE,
 					VehicleModelEnum.BIKE_RANDOM,
@@ -234,10 +234,10 @@ public class RandomVehiclesCtrl {
 			Long id = idGenerator.getNextId();
 			CreateRandomVehicleData createRandomVehicleData = new CreateRandomMotorcycleData(
 				new GpsSensor(idGenerator.
-							getNextId(),
-							output,
-							null,
-							gpsInterferer),
+					getNextId(),
+					output,
+					null,
+					gpsInterferer),
 				new VehicleInformation(true,
 					VehicleTypeEnum.BIKE,
 					VehicleModelEnum.BIKE_RANDOM,
@@ -249,10 +249,10 @@ public class RandomVehiclesCtrl {
 			Long id = idGenerator.getNextId();
 			CreateRandomVehicleData createRandomVehicleData = new CreateRandomCarData(
 				new GpsSensor(idGenerator.
-							getNextId(),
-							output,
-							null,
-							gpsInterferer),
+					getNextId(),
+					output,
+					null,
+					gpsInterferer),
 				new VehicleInformation(true,
 					VehicleTypeEnum.BIKE,
 					VehicleModelEnum.BIKE_RANDOM,

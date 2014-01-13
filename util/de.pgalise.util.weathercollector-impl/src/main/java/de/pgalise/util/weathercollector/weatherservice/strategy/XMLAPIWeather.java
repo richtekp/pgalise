@@ -28,7 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
+import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import javax.measure.quantity.Temperature;
@@ -40,7 +40,7 @@ import javax.measure.unit.Unit;
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public abstract class XMLAPIWeather implements ServiceStrategy<DefaultServiceDataHelper> {
+public abstract class XMLAPIWeather implements ServiceStrategy {
 
 	/**
 	 * Name of the strategy
@@ -78,7 +78,7 @@ public abstract class XMLAPIWeather implements ServiceStrategy<DefaultServiceDat
 	}
 
 	@Override
-	public DefaultServiceDataHelper getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
+	public ServiceDataHelper getWeather(City city, DatabaseManager databaseManager) throws ReadServiceDataException {
 		// No City can be found
 		if (city.getName().isEmpty()) {
 			throw new ReadServiceDataException("Stadt fuer die Api kann nicht gefunden werden.");
@@ -98,7 +98,7 @@ public abstract class XMLAPIWeather implements ServiceStrategy<DefaultServiceDat
 	 * @param databaseManager 
 	 * @return ServiceData object
 	 */
-	protected abstract DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager);
+	protected abstract ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager);
 
 	/**
 	 * Returns the weather service xml to the given city

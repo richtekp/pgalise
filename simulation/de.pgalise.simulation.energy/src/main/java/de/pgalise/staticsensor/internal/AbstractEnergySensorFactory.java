@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.energy.EnergyController;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergySensorFactory;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -100,7 +101,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 	@EJB
 	private WeatherController weatherController;
 	@EJB
-	private EnergyController energyController;
+	private EnergyControllerLocal energyController;
 
 	public AbstractEnergySensorFactory() {
 		super();
@@ -119,7 +120,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 	public AbstractEnergySensorFactory(RandomSeedService rss,
 		IdGenerator idGenerator,
 		WeatherController wctrl,
-		EnergyController ectrl,
+		EnergyControllerLocal ectrl,
 		TcpIpOutput sensorOutput,
 		int updateLimit) {
 		super(sensorOutput,
@@ -134,7 +135,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 		this.weatherController = weatherController;
 	}
 
-	public void setEnergyController(EnergyController energyController) {
+	public void setEnergyController(EnergyControllerLocal energyController) {
 		this.energyController = energyController;
 	}
 

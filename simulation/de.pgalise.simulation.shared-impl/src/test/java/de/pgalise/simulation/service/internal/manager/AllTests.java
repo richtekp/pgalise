@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.service.internal.manager;
 
 import org.junit.runner.RunWith;
@@ -22,13 +21,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Tests all active JUnit tests of the package
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Nov 22, 2012)
  */
 @RunWith(Suite.class)
-@SuiteClasses({ AbstractEventHandlerManagerTest.class,
-	DefaultServerConfigurationReaderTest.class})
+@SuiteClasses({AbstractEventHandlerManagerTest.class
+//	,	DefaultServerConfigurationReaderTest.class
+})
 public class AllTests {
 
 }

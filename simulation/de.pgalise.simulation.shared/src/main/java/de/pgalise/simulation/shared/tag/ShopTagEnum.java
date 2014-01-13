@@ -4,11 +4,15 @@
  */
 package de.pgalise.simulation.shared.tag;
 
+import javax.persistence.Embeddable;
+
 /**
  *
  * @author richter
  */
+@Embeddable
 public enum ShopTagEnum implements ShopTag {
+
 	;
 	
 	private final String stringValue;

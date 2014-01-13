@@ -55,7 +55,7 @@ public class DefaultFrontController extends AbstractController implements
 	private static final long serialVersionUID = 1L;
 
 	private Set<Sensor> sensorRegistry;
-	@PersistenceContext(unitName = "pgalise-simulationcontroller")
+	@PersistenceContext(unitName = "pgalise-simulationController")
 	private EntityManager sensorPersistenceService;
 
 	@EJB
@@ -76,21 +76,21 @@ public class DefaultFrontController extends AbstractController implements
 
 	@Override
 	protected void onStop() {
-		for(Sensor<?,?> sensor : sensorRegistry) {
+		for (Sensor<?, ?> sensor : sensorRegistry) {
 			sensor.setActivated(false);
 		}
 	}
 
 	@Override
 	protected void onUpdate(EventList simulationEventList) {
-		for(Sensor<?,?> sensor : sensorRegistry) {
+		for (Sensor<?, ?> sensor : sensorRegistry) {
 			sensor.update(simulationEventList);
 		}
 	}
 
 	@Override
 	protected void onResume() {
-		for(Sensor<?,?> sensor : sensorRegistry) {
+		for (Sensor<?, ?> sensor : sensorRegistry) {
 			sensor.setActivated(true);
 		}
 	}

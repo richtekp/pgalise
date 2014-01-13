@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.staticsensor.sensors;
 
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
@@ -31,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -45,10 +43,11 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherBaseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
+import javax.ejb.EJB;
 
 /**
  * Tests the all {@link WeatherInterferer}
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Nov 12, 2012)
  */
@@ -57,7 +56,8 @@ public class WeatherInterfererTest {
 	/**
 	 * Logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(WeatherInterfererTest.class);
+	private static final Logger log = LoggerFactory.getLogger(
+		WeatherInterfererTest.class);
 
 	/**
 	 * Weather controller
@@ -82,17 +82,24 @@ public class WeatherInterfererTest {
 	/**
 	 * Random seed service
 	 */
-	public static final RandomSeedService service = new DefaultRandomSeedService();
+	@EJB
+	private RandomSeedService service;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// Test timestamp
 		Calendar cal = new GregorianCalendar();
-		cal.set(2011, 2, 1, 14, 0, 0);
+		cal.set(2011,
+			2,
+			1,
+			14,
+			0,
+			0);
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new JaxRSCoordinate(1.0, 10.0);
+		testPosition = new JaxRSCoordinate(1.0,
+			10.0);
 
 		/*
 		 * Mock of the Weather Controller
@@ -100,22 +107,40 @@ public class WeatherInterfererTest {
 		weather = EasyMock.createNiceMock(WeatherController.class);
 
 		// Mock the requests to the Weather Controller
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.WIND_VELOCITY, testTimestamp, testPosition)).andReturn(
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.WIND_VELOCITY,
+			testTimestamp,
+			testPosition)).andReturn(
 				3.594);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.AIR_PRESSURE, testTimestamp, testPosition)).andReturn(
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.AIR_PRESSURE,
+			testTimestamp,
+			testPosition)).andReturn(
 				1032.0);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.RELATIV_HUMIDITY, testTimestamp, testPosition))
-				.andReturn(92.364);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.LIGHT_INTENSITY, testTimestamp, testPosition)).andReturn(
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.RELATIV_HUMIDITY,
+			testTimestamp,
+			testPosition))
+			.andReturn(92.364);
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.LIGHT_INTENSITY,
+			testTimestamp,
+			testPosition)).andReturn(
 				11952.411);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.RADIATION, testTimestamp, testPosition)).andReturn(113.0);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT, testTimestamp, testPosition))
-				.andReturn(1.0);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.WIND_DIRECTION, testTimestamp, testPosition)).andReturn(
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.RADIATION,
+			testTimestamp,
+			testPosition)).andReturn(113.0);
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT,
+			testTimestamp,
+			testPosition))
+			.andReturn(1.0);
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.WIND_DIRECTION,
+			testTimestamp,
+			testPosition)).andReturn(
 				302.0);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.TEMPERATURE, testTimestamp, testPosition)).andReturn(
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.TEMPERATURE,
+			testTimestamp,
+			testPosition)).andReturn(
 				3.679);
-		EasyMock.expect(weather.getValue(WeatherParameterEnum.TEMPERATURE, testTimestamp, testPosition)).andReturn(
+		EasyMock.expect(weather.getValue(WeatherParameterEnum.TEMPERATURE,
+			testTimestamp,
+			testPosition)).andReturn(
 				3.679);
 
 		EasyMock.replay(weather);
@@ -126,14 +151,19 @@ public class WeatherInterfererTest {
 		WeatherBaseInterferer testclass = new AnemometerWhiteNoiseInterferer(service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.WIND_VELOCITY, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.WIND_VELOCITY,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
-		log.debug("WIND_VELOCITY - Reference: " + testValue + " - Changed: " + result);
+		log.debug(
+			"WIND_VELOCITY - Reference: " + testValue + " - Changed: " + result);
 
 		assertTrue(testValue != result);
 	}
@@ -143,14 +173,19 @@ public class WeatherInterfererTest {
 		WeatherBaseInterferer testclass = new BarometerWhiteNoiseInterferer(service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.AIR_PRESSURE, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.AIR_PRESSURE,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
-		log.debug("AIR_PRESSURE - Reference: " + testValue + " - Changed: " + result);
+		log.
+			debug("AIR_PRESSURE - Reference: " + testValue + " - Changed: " + result);
 
 		assertTrue(testValue != result);
 	}
@@ -160,14 +195,19 @@ public class WeatherInterfererTest {
 		WeatherBaseInterferer testclass = new HygrometerWhiteNoiseInterferer(service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.RELATIV_HUMIDITY, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.RELATIV_HUMIDITY,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
-		log.debug("RELATIV_HUMIDITY - Reference: " + testValue + " - Changed: " + result);
+		log.debug(
+			"RELATIV_HUMIDITY - Reference: " + testValue + " - Changed: " + result);
 
 		assertTrue(testValue != result);
 	}
@@ -177,29 +217,39 @@ public class WeatherInterfererTest {
 		WeatherBaseInterferer testclass = new LuxmeterWhiteNoiseInterferer(service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.LIGHT_INTENSITY, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.LIGHT_INTENSITY,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
-		log.debug("LIGHT_INTENSITY - Reference: " + testValue + " - Changed: " + result);
+		log.debug(
+			"LIGHT_INTENSITY - Reference: " + testValue + " - Changed: " + result);
 
 		assertTrue(testValue != result);
 	}
 
 	@Test
 	public void testPyranometerWhiteNoiseInterferer() {
-		WeatherBaseInterferer testclass = new PyranometerWhiteNoiseInterferer(service);
+		WeatherBaseInterferer testclass = new PyranometerWhiteNoiseInterferer(
+			service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.RADIATION, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.RADIATION,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
 		log.debug("RADIATION - Reference: " + testValue + " - Changed: " + result);
 
@@ -211,15 +261,20 @@ public class WeatherInterfererTest {
 		WeatherBaseInterferer testclass = new RainsensorWhiteNoiseInterferer(service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT, testTimestamp, testPosition)
-				.doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.PRECIPITATION_AMOUNT,
+			testTimestamp,
+			testPosition)
+			.doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
-		log.debug("PRECIPITATION_AMOUNT - Reference: " + testValue + " - Changed: " + result);
+		log.debug(
+			"PRECIPITATION_AMOUNT - Reference: " + testValue + " - Changed: " + result);
 
 		assertTrue(testValue != result);
 	}
@@ -229,29 +284,39 @@ public class WeatherInterfererTest {
 		WeatherBaseInterferer testclass = new WindFlagWhiteNoiseInterferer(service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.WIND_DIRECTION, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.WIND_DIRECTION,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
-		log.debug("WIND_DIRECTION - Reference: " + testValue + " - Changed: " + result);
+		log.debug(
+			"WIND_DIRECTION - Reference: " + testValue + " - Changed: " + result);
 
 		assertTrue(testValue != result);
 	}
 
 	@Test
 	public void testThermometerWhiteNoiseInterferer() {
-		WeatherBaseInterferer testclass = new ThermometerWhiteNoiseInterferer(service);
+		WeatherBaseInterferer testclass = new ThermometerWhiteNoiseInterferer(
+			service);
 		testclass.setChangeProbability(1.0);
 
-		testValue = weather.getValue(WeatherParameterEnum.TEMPERATURE, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.TEMPERATURE,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
 		log.debug("TEMPERATURE - Reference: " + testValue + " - Changed: " + result);
 
@@ -260,19 +325,24 @@ public class WeatherInterfererTest {
 
 	@Test
 	public void testCompositeWeatherInterferer() {
-		WeatherBaseInterferer interferer1 = new ThermometerWhiteNoiseInterferer(service);
+		WeatherBaseInterferer interferer1 = new ThermometerWhiteNoiseInterferer(
+			service);
 		interferer1.setChangeProbability(1.0);
 
 		List<WeatherInterferer> list = new ArrayList<>();
 		list.add(interferer1);
 		WeatherInterferer testclass = new CompositeWeatherInterferer(list);
 
-		testValue = weather.getValue(WeatherParameterEnum.TEMPERATURE, testTimestamp, testPosition).doubleValue();
+		testValue = weather.getValue(WeatherParameterEnum.TEMPERATURE,
+			testTimestamp,
+			testPosition).doubleValue();
 
 		/*
 		 * Test value
 		 */
-		double result = testclass.interfere(testValue, testPosition, testTimestamp);
+		double result = testclass.interfere(testValue,
+			testPosition,
+			testTimestamp);
 
 		log.debug("Composite - Reference: " + testValue + " - Changed: " + result);
 

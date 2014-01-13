@@ -4,266 +4,295 @@
  */
 package de.pgalise.simulation.weather.internal.dataloader;
 
-import de.pgalise.testutils.TestUtils;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
+import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
-import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
-import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.StationDataMap;
-import de.pgalise.simulation.weather.model.StationDataNormal;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.model.ServiceDataCurrent;
 import de.pgalise.simulation.weather.model.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.model.StationDataMap;
+import de.pgalise.simulation.weather.model.StationDataNormal;
 import de.pgalise.simulation.weather.service.WeatherService;
-import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.simulation.weather.util.DateConverter;
+import de.pgalise.testutils.TestUtils;
 import java.sql.Date;
 import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
-import javax.ejb.embeddable.EJBContainer;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
 import javax.naming.NamingException;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.BeforeClass;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  * @author richter
  */
 @LocalClient
+@LocalBean
 @ManagedBean
 public class DatabaseWeatherLoaderTest {
-	@PersistenceUnit(unitName = "pgalise-weather")
-	private EntityManagerFactory entityManagerFactory;
-	private static EJBContainer container;
-	
-	private final City city;
-	
+
+	@PersistenceContext(unitName = "pgalise-weather")
+	private EntityManager entityManager;
+
+	private City city;
+	@EJB
+	private WeatherLoader instance;
+
 	@Resource
 	private UserTransaction userTransaction;
-	
-	@SuppressWarnings("LeakingThisInConstructor")
-	public DatabaseWeatherLoaderTest() throws NamingException {
-		container.getContext().bind("inject",
-			this);
-		
-		city = TestUtils.createDefaultTestCityInstance();
+
+	public DatabaseWeatherLoaderTest() {
 	}
-	
-	@BeforeClass
-	public static void setUpClass() {
-		container = TestUtils.getContainer();
+
+	@Before
+	public void setUp() throws NamingException, NotSupportedException, SystemException {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
 	}
 
 	/**
 	 * Test of checkStationDataForDay method, of class DatabaseWeatherLoader.
-	 * 
-	 * @throws Exception 
+	 *
+	 * @throws Exception
 	 */
 	@Test
 	public void testCheckStationDataForDay() throws Exception {
 		long timestamp = System.currentTimeMillis();
 		long startTimestamp = DateConverter.convertTimestampToMidnight(timestamp);
-		long endTimestamp = startTimestamp+DateConverter.ONE_DAY_IN_MILLIS;
-		DatabaseWeatherLoader instance = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
+		long endTimestamp = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS;
 		boolean expResult = false;
-		boolean result = instance.checkStationDataForDay(timestamp);
-		assertEquals(expResult,
-			result);
-		
-		WeatherService service = new DefaultWeatherService(city,
-			instance);
-		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
-			endTimestamp,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		service.addNewWeather(startTimestamp, endTimestamp, true,
+		userTransaction.begin();
+		try {
+			city = TestUtils.createDefaultTestCityInstance();
+			boolean result = instance.checkStationDataForDay(timestamp);
+			assertEquals(expResult,
+				result);
+
+			WeatherService service = new DefaultWeatherService(city,
+				instance);
+			Map<Date, StationDataNormal> entities = WeatherTestUtils.
+				setUpWeatherStationData(startTimestamp,
+					endTimestamp,
+					entityManager);
+			Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
+				setUpWeatherServiceDataCurrent(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
+				setUpWeatherServiceDataForecast(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			service.addNewWeather(startTimestamp,
+				endTimestamp,
+				true,
 				null);
-		
-		expResult = true;
-		result = instance.checkStationDataForDay(timestamp);
-		assertEquals(expResult,
-			result);
+
+			expResult = true;
+			result = instance.checkStationDataForDay(timestamp);
+			assertEquals(expResult,
+				result);
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 	/**
-	 * Test of loadCurrentServiceWeatherData method, of class DatabaseWeatherLoader.
-	 * 
-	 * @throws Exception 
+	 * Test of loadCurrentServiceWeatherData method, of class
+	 * DatabaseWeatherLoader.
+	 *
+	 * @throws Exception
 	 */
 	@Test
 	public void testLoadCurrentServiceWeatherData() throws Exception {
 		long timestamp = System.currentTimeMillis();
 		long startTimestamp = DateConverter.convertTimestampToMidnight(timestamp);
-		long endTimestamp = startTimestamp+DateConverter.ONE_DAY_IN_MILLIS;
-		DatabaseWeatherLoader instance = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
+		long endTimestamp = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS;
+		userTransaction.begin();
 		try {
-			instance.loadCurrentServiceWeatherData(timestamp, city);
-			fail();
-		}catch(NoWeatherDataFoundException expected) {
-		}
-		
-		WeatherService service = new DefaultWeatherService(city,
-			instance);
-		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
-			endTimestamp,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		service.addNewWeather(startTimestamp, endTimestamp, true,
+			try {
+				instance.loadCurrentServiceWeatherData(timestamp,
+					city);
+				fail();
+			} catch (NoWeatherDataFoundException expected) {
+			}
+
+			WeatherService service = new DefaultWeatherService(city,
+				instance);
+			Map<Date, StationDataNormal> entities = WeatherTestUtils.
+				setUpWeatherStationData(startTimestamp,
+					endTimestamp,
+					entityManager);
+			Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
+				setUpWeatherServiceDataCurrent(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
+				setUpWeatherServiceDataForecast(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			service.addNewWeather(startTimestamp,
+				endTimestamp,
+				true,
 				null);
-		
-		instance = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
-		ServiceDataCurrent expResult = null;
-		ServiceDataCurrent result = instance.loadCurrentServiceWeatherData(timestamp, city);
-		assertEquals(expResult, result);
-		
-		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities0,
-			DefaultServiceDataCurrent.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities1,
-			DefaultServiceDataForecast.class,
-			userTransaction,
-			entityManagerFactory);
+
+			ServiceDataCurrent expResult = null;
+			ServiceDataCurrent result = instance.
+				loadCurrentServiceWeatherData(timestamp,
+					city);
+			assertEquals(expResult,
+				result);
+
+			WeatherTestUtils.tearDownWeatherData(entities,
+				StationDataNormal.class,
+				entityManager);
+			WeatherTestUtils.tearDownWeatherData(entities0,
+				ServiceDataCurrent.class,
+				entityManager);
+			WeatherTestUtils.tearDownWeatherData(entities1,
+				ServiceDataForecast.class,
+				entityManager);
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 	/**
-	 * Test of loadForecastServiceWeatherData method, of class DatabaseWeatherLoader.
-	 * 
-	 * @throws Exception 
+	 * Test of loadForecastServiceWeatherData method, of class
+	 * DatabaseWeatherLoader.
+	 *
+	 * @throws Exception
 	 */
 	@Test
 	public void testLoadForecastServiceWeatherData() throws Exception {
 		long timestamp = System.currentTimeMillis();
 		long startTimestamp = DateConverter.convertTimestampToMidnight(timestamp);
-		long endTimestamp = startTimestamp+DateConverter.ONE_DAY_IN_MILLIS;
-		DatabaseWeatherLoader instance = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
+		long endTimestamp = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS;
+		userTransaction.begin();
 		try {
-			instance.loadForecastServiceWeatherData(timestamp, city);
-		}catch(NoWeatherDataFoundException expected) {
-		}
-		
-		WeatherService service = new DefaultWeatherService(city,
-			instance);
-		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
-			endTimestamp,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		service.addNewWeather(startTimestamp, endTimestamp, true,
+			try {
+				instance.loadForecastServiceWeatherData(timestamp,
+					city);
+			} catch (NoWeatherDataFoundException expected) {
+			}
+
+			WeatherService service = new DefaultWeatherService(city,
+				instance);
+			Map<Date, StationDataNormal> entities = WeatherTestUtils.
+				setUpWeatherStationData(startTimestamp,
+					endTimestamp,
+					entityManager);
+			Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
+				setUpWeatherServiceDataCurrent(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
+				setUpWeatherServiceDataForecast(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			service.addNewWeather(startTimestamp,
+				endTimestamp,
+				true,
 				null);
-		ServiceDataForecast expResult =  null;
-		ServiceDataForecast result = instance.loadForecastServiceWeatherData(timestamp, city);
-		assertEquals(expResult, result);
-		
-		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities0,
-			DefaultServiceDataCurrent.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities1,
-			DefaultServiceDataForecast.class,
-			userTransaction,
-			entityManagerFactory);
+			ServiceDataForecast expResult = null;
+			ServiceDataForecast result = instance.loadForecastServiceWeatherData(
+				timestamp,
+				city);
+			assertEquals(expResult,
+				result);
+
+			WeatherTestUtils.tearDownWeatherData(entities,
+				StationDataNormal.class,
+				entityManager);
+			WeatherTestUtils.tearDownWeatherData(entities0,
+				ServiceDataCurrent.class,
+				entityManager);
+			WeatherTestUtils.tearDownWeatherData(entities1,
+				ServiceDataForecast.class,
+				entityManager);
+		} finally {
+			userTransaction.commit();
+		}
 	}
 
 	/**
 	 * Test of loadStationData method, of class DatabaseWeatherLoader.
-	 * 
-	 * @throws Exception 
+	 *
+	 * @throws Exception
 	 */
 	@Test
 	public void testLoadStationData() throws Exception {
 		long timestamp = System.currentTimeMillis();
 		long startTimestamp = DateConverter.convertTimestampToMidnight(timestamp);
-		long endTimestamp = startTimestamp+DateConverter.ONE_DAY_IN_MILLIS;
-		DatabaseWeatherLoader instance = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
+		long endTimestamp = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS;
+		userTransaction.begin();
 		try {
-			instance.loadForecastServiceWeatherData(timestamp, city);
-		}catch(NoWeatherDataFoundException expected) {
-		}
-	
-		WeatherService service = new DefaultWeatherService(city,
-			instance);
-		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
-			endTimestamp,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		service.addNewWeather(startTimestamp, endTimestamp, true,
+			try {
+				instance.loadForecastServiceWeatherData(timestamp,
+					city);
+			} catch (NoWeatherDataFoundException expected) {
+			}
+
+			WeatherService service = new DefaultWeatherService(city,
+				instance);
+			Map<Date, StationDataNormal> entities = WeatherTestUtils.
+				setUpWeatherStationData(startTimestamp,
+					endTimestamp,
+					entityManager);
+			Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
+				setUpWeatherServiceDataCurrent(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
+				setUpWeatherServiceDataForecast(startTimestamp,
+					endTimestamp,
+					city,
+					entityManager);
+			service.addNewWeather(startTimestamp,
+				endTimestamp,
+				true,
 				null);
-		instance = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
-		WeatherMap expResult = new StationDataMap();
-		expResult.put(timestamp, null);
-		WeatherMap result = instance.loadStationData(timestamp);
-		assertFalse(result.isEmpty());
-		
-		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities0,
-			DefaultServiceDataCurrent.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities1,
-			DefaultServiceDataForecast.class,
-			userTransaction,
-			entityManagerFactory);
+			WeatherMap expResult = new StationDataMap();
+			expResult.put(timestamp,
+				null);
+			WeatherMap result = instance.loadStationData(timestamp);
+			assertFalse(result.isEmpty());
+
+			WeatherTestUtils.tearDownWeatherData(entities,
+				StationDataNormal.class,
+				entityManager);
+			WeatherTestUtils.tearDownWeatherData(entities0,
+				ServiceDataCurrent.class,
+				entityManager);
+			WeatherTestUtils.tearDownWeatherData(entities1,
+				ServiceDataForecast.class,
+				entityManager);
+		} finally {
+			userTransaction.commit();
+		}
 	}
-	
-	private boolean stationDataEqualsIgnoreTimestamp(StationData o1, StationData o2) {
+
+	private boolean stationDataEqualsIgnoreTimestamp(StationData o1,
+		StationData o2) {
 		return true;
 	}
 }

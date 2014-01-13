@@ -101,7 +101,7 @@ public interface Controller<E extends Event, S extends StartParameter, I extends
 	 *
 	 * @return current state
 	 */
-	public StatusEnum getStatus();
+	public ControllerStatusEnum getStatus();
 
 	/**
 	 * @return name of this controller

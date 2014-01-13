@@ -23,7 +23,8 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.traffic.BusStop;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.server.route.BusStopParser;
-import javax.ejb.Singleton;
+import java.util.LinkedList;
+import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -31,13 +32,13 @@ import javax.persistence.TypedQuery;
 /**
  * @author Lena
  */
-@Singleton
+@Stateful
 public class DefaultBusStopParser implements BusStopParser {
 
 	private static final Logger log = LoggerFactory.getLogger(
 		DefaultBusStopParser.class);
 
-	private List<BusStop> busStops;
+	private List<BusStop> busStops = new LinkedList<>();
 	@PersistenceContext(unitName = "pgalise-traffic")
 	private EntityManager entityManager;
 
@@ -50,9 +51,13 @@ public class DefaultBusStopParser implements BusStopParser {
 	 * @param graph
 	 * @return
 	 */
+	/*
+	 @TODO: no interaction with trafficGraph (check original version before JPA)
+	 */
 	@Override
 	public List<BusStop> parseBusStops(TrafficGraph graph) {
-		TypedQuery query = entityManager.createQuery("SELECT x FROM BusStop x",
+		TypedQuery<BusStop> query = entityManager.createQuery(
+			"SELECT x FROM BusStop x",
 			BusStop.class);
 		List<BusStop> queriedBusStops = query.getResultList();
 		log.info("Number of parsed BusStops: %d",

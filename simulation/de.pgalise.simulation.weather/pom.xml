@@ -29,14 +29,18 @@
 			<groupId>de.pgalise.util</groupId>
 			<artifactId>graph</artifactId>
 		</dependency>
-<!--	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>traffic</artifactId>
-	 </dependency>-->
-<!--	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>traffic</artifactId>
-	  <type>jar</type>
-	 </dependency>-->
+	 
+<!--		<dependency>
+			<groupId>org.apache.openjpa</groupId>
+			<artifactId>openjpa</artifactId>
+		</dependency>-->
+<!--		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+		</dependency>-->
 	</dependencies>
 </project>

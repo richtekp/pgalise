@@ -20,9 +20,9 @@ import de.pgalise.simulation.shared.city.City;
 import de.pgalise.simulation.weather.model.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.MyExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.MyExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.DefaultServiceDataHelper;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
+import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
+import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -66,8 +66,8 @@ public class YahooWeather extends XMLAPIWeather {
 	}
 
 	@Override
-	protected DefaultServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		DefaultServiceDataHelper weather = new DefaultServiceDataHelper(city, this.getApiname());
+	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
+		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
 		Unit<Temperature> unit = null;
 
 		// City (<yweather:location city="Oldenburg" region="NI" country="Germany"/>)
@@ -109,13 +109,13 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			MyExtendedServiceDataCurrent condition;
+			ExtendedServiceDataCurrent condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
 				Date date = DateConverter.convertDate(dateString, "E, dd MMM yyyy h:mm a z");
 				Time time = DateConverter.convertTime(dateString, "E, dd MMM yyyy h:mm a z");
-				condition = new MyExtendedServiceDataCurrent(
+				condition = new ExtendedServiceDataCurrent(
 							date, 
 							time, 
 							city, 
@@ -151,11 +151,11 @@ public class YahooWeather extends XMLAPIWeather {
 		for (int i = 0; i < nodes.getLength(); i++) {
 			NamedNodeMap attributes = nodes.item(i).getAttributes();
 
-			MyExtendedServiceDataForecast condition;
+			ExtendedServiceDataForecast condition;
 			try {
 				// Date
 				String dateString = attributes.getNamedItem("date").getTextContent();
-				condition = new MyExtendedServiceDataForecast(
+				condition = new ExtendedServiceDataForecast(
 							DateConverter.convertDate(
 								dateString, 
 								"dd MMM yyyy" //"yyyy-MM-dd"
@@ -204,7 +204,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:atmosphere");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				MyExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String humidity = attributes.getNamedItem("humidity").getTextContent();
 				if ((humidity != null) && !humidity.isEmpty()) {
@@ -221,7 +221,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:astronomy");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				MyExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				try {
 					// Sunset
@@ -245,7 +245,7 @@ public class YahooWeather extends XMLAPIWeather {
 			nodes = doc.getElementsByTagName("yweather:wind");
 			for (int i = 0; i < nodes.getLength(); i++) {
 				NamedNodeMap attributes = nodes.item(i).getAttributes();
-				MyExtendedServiceDataCurrent condition = weather.getCurrentCondition();
+				ExtendedServiceDataCurrent condition = weather.getCurrentCondition();
 
 				String direction = attributes.getNamedItem("direction").getTextContent();
 				if ((direction != null) && !direction.isEmpty()) {

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.operationCenter.internal.hqf.persistence;
 
 import java.io.Serializable;
@@ -33,23 +32,25 @@ public class HQFData implements Serializable {
 	 */
 	private static final long serialVersionUID = -1211059766938141064L;
 
-	@Id @GeneratedValue
-    private long id;
-	
+	@Id
+	@GeneratedValue
+	private long id;
+
 	@Column(name = "SIMULATIONTIMESTAMP")
 	private Timestamp simulationTimestamp;
-	
+
 	@Column(name = "SENSORTYPEID")
 	private int sensorTypeID;
-	
+
 	@Column(name = "AMOUNT")
 	private int amount;
-	
-	public HQFData(){
-		
+
+	public HQFData() {
 	}
-	
-	public HQFData(Timestamp timestamp, Integer sensorTypeID, Integer amount) {
+
+	public HQFData(Timestamp timestamp,
+		Integer sensorTypeID,
+		Integer amount) {
 		super();
 		this.simulationTimestamp = timestamp;
 		this.sensorTypeID = sensorTypeID;
@@ -79,8 +80,10 @@ public class HQFData implements Serializable {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
-	
-	public String toString(){
-		return "HQF DATA Instance [SimulationTimestamp: "+this.getSimulationTimestamp()+"; SensorTypeID:"+this.getSensorTypeID()+"; Amount:"+this.getAmount()+" ]";
+
+	public String toString() {
+		return "HQF DATA Instance [SimulationTimestamp: " + this.
+			getSimulationTimestamp() + "; SensorTypeID:" + this.getSensorTypeID() + "; Amount:" + this.
+			getAmount() + " ]";
 	}
 }

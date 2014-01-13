@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.shared.tag.factory;
 
-import de.pgalise.simulation.shared.tag.AmenityTag;
+import de.pgalise.simulation.shared.tag.AmenityBaseTag;
 import de.pgalise.simulation.shared.tag.AmenityTagCustom;
 import de.pgalise.simulation.shared.tag.AmenityTagEnum;
 import de.pgalise.simulation.shared.tag.TourismTag;
@@ -19,13 +19,13 @@ import java.util.Map;
  */
 public class AmenityTagFactory {
 	
-	private final static Map<String, AmenityTag> USED_VALUES = new HashMap<>();
+	private final static Map<String, AmenityBaseTag> USED_VALUES = new HashMap<>();
 
-	public static AmenityTag getInstance(String value) {
+	public static AmenityBaseTag getInstance(String value) {
 		if (USED_VALUES.keySet().contains(value)) {
 			return USED_VALUES.get(value);
 		}
-		AmenityTag retValue = null;
+		AmenityBaseTag retValue = null;
 		for (AmenityTagEnum tourismTagEnum : AmenityTagEnum.values()) {
 			if (tourismTagEnum.getStringValue().equals(value)) {
 				retValue = tourismTagEnum;

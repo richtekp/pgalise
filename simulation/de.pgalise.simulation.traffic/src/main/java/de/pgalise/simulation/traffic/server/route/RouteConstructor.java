@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.server.route;
 
 import java.util.Date;
@@ -31,24 +30,38 @@ import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 
 /**
- * Provides functionality to create a traffic graph based on an open street map. Generates also random routes between
- * the nodes.
- * 
- * @param <D> 
- * @param <E> 
- * @param <V> 
- * @param <B> 
+ * Provides functionality to create a traffic graph based on an open street map.
+ * Generates also random routes between the nodes.
+ *
+ * @param <D>
+ * @param <E>
+ * @param <V>
+ * @param <B>
  * @author Lena
  * @author mischa
  */
 public interface RouteConstructor {
-	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, VehicleTypeEnum vehicleType);
 
-	public TrafficTrip createTrip(TrafficServer<?> serverId, Geometry cityZone, TrafficNode  nodeID, long startTimestamp, boolean isStartNode);
+	public TrafficTrip createTrip(TrafficServer<?> serverId,
+		Geometry cityZone,
+		VehicleTypeEnum vehicleType);
 
-	public TrafficTrip createTrip(TrafficServer<?> serverId, TrafficNode  startNodeID, TrafficNode  targetNodeID, long startTimestamp);
+	public TrafficTrip createTrip(TrafficServer<?> serverId,
+		Geometry cityZone,
+		TrafficNode nodeID,
+		long startTimestamp,
+		boolean isStartNode);
 
-	public TrafficTrip createTimedTrip(TrafficServer<?> serverId, Geometry cityZone, VehicleTypeEnum vehicleType, Date date, int buffer);
+	public TrafficTrip createTrip(TrafficServer<?> serverId,
+		TrafficNode startNodeID,
+		TrafficNode targetNodeID,
+		long startTimestamp);
+
+	public TrafficTrip createTimedTrip(TrafficServer<?> serverId,
+		Geometry cityZone,
+		VehicleTypeEnum vehicleType,
+		Date date,
+		int buffer);
 
 	public TrafficGraph getGraph();
 
@@ -62,7 +75,8 @@ public interface RouteConstructor {
 
 	public List<BusStop> getBusStops();
 
-	public List<TrafficEdge> getShortestPath(TrafficNode start, TrafficNode dest);
+	public List<TrafficEdge> getShortestPath(TrafficNode start,
+		TrafficNode dest);
 
 	public GraphExtensions getTrafficGraphExtesions();
 

@@ -8,19 +8,15 @@ import de.pgalise.simulation.energy.EnergySensorControllerLocal;
 import de.pgalise.simulation.energy.sensor.EnergySensor;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.StatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.SensorException;
-import java.util.Collection;
 import java.util.Set;
-import javax.ejb.EJB;
+import javax.ejb.Stateful;
 
-
+@Stateful
 public class DefaultEnergySensorController extends AbstractController<EnergyEvent, StartParameter, InitParameter> implements EnergySensorControllerLocal {
 	private Set<EnergySensor> sensorRegistry;
 	

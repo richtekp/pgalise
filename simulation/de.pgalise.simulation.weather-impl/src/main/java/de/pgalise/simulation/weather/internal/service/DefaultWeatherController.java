@@ -15,38 +15,21 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Properties;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
-import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
+import de.pgalise.simulation.shared.event.weather.WeatherEventType;
+import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.HotDayEvent;
@@ -60,6 +43,17 @@ import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Properties;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The main interaction point of the component Weather is the interface
@@ -84,9 +78,7 @@ import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
  * @author Mustafa
  * @version 1.0 (Aug 24, 2012)
  */
-@Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.weather.service.WeatherController")
-@Local
+@Stateful
 public class DefaultWeatherController extends AbstractController<WeatherEvent, StartParameter, InitParameter>
 	implements WeatherController {
 
@@ -105,14 +97,15 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 	/**
 	 * File path for property file
 	 */
-	private static final String PROPERTIES_FILE_PATH = "/weather_decorators.properties";
+	private static final String PROPERTIES_FILE_PATH = "weather_decorators.properties";
 
 	private final static String JNDI_PROPERTIES_FILE_PATH = "/META-INF/jndi.properties";
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Properties for decorators
 	 */
-	private Properties decorator_props = null;
+	private Properties decoratorProps = null;
 
 	/**
 	 * First time on a new day.
@@ -127,6 +120,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 	/**
 	 * WeatherService
 	 */
+	@EJB
 	private WeatherService weatherservice;
 
 	@EJB
@@ -145,10 +139,10 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 	 */
 	public DefaultWeatherController() {
 		// Read propsInputStream propInFile
-		try (InputStream propInFile = WeatherLoader.class
+		try (InputStream propInFile = Thread.currentThread().getContextClassLoader()
 			.getResourceAsStream(DefaultWeatherController.PROPERTIES_FILE_PATH)) {
-			this.decorator_props = new Properties();
-			this.decorator_props.loadFromXML(propInFile);
+			this.decoratorProps = new Properties();
+			this.decoratorProps.loadFromXML(propInFile);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -196,7 +190,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 			return new RainDayEvent(this.randomSeedService.getSeed(RainDayEvent.class.
 				getName()),
 				timestamp,
-				this.decorator_props,
+				this.decoratorProps,
 				value,
 				duration,
 				this.weatherLoader);
@@ -204,7 +198,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 			return new ColdDayEvent(this.randomSeedService.getSeed(ColdDayEvent.class.
 				getName()),
 				timestamp,
-				this.decorator_props,
+				this.decoratorProps,
 				value,
 				duration,
 				this.weatherLoader);
@@ -212,7 +206,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 			return new HotDayEvent(this.randomSeedService.getSeed(HotDayEvent.class.
 				getName()),
 				timestamp,
-				this.decorator_props,
+				this.decoratorProps,
 				value,
 				duration,
 				this.weatherLoader);
@@ -220,7 +214,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 			return new StormDayEvent(this.randomSeedService.getSeed(
 				StormDayEvent.class.getName()),
 				timestamp,
-				this.decorator_props,
+				this.decoratorProps,
 				value,
 				duration,
 				this.weatherLoader);
@@ -228,13 +222,13 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 			// Events with -1 are not considered
 			return ((value != null) && (value < 0)) ? null : new CityClimateModifier(
 				this.randomSeedService.getSeed(CityClimateModifier.class.getName()),
-				this.decorator_props,
+				this.decoratorProps,
 				this.weatherLoader);
 		} else if (enumElement.equals(WeatherEventTypeEnum.REFERENCECITY)) {
 			// Events with -1 are not considered
 			return ((value != null) && (value < 0)) ? null : new ReferenceCityModifier(
 				this.randomSeedService.getSeed(ReferenceCityModifier.class.getName()),
-				this.decorator_props,
+				this.decoratorProps,
 				this.weatherLoader);
 		} else {
 			throw new IllegalArgumentException("No weather strategy found!");

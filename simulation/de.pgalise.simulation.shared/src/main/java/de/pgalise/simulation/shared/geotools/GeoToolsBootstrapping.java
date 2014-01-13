@@ -57,12 +57,16 @@ public class GeoToolsBootstrapping {
 	}
 
 	public static Polygon createPolygon(Envelope envelope) {
+		JaxRSCoordinate a = new JaxRSCoordinate(envelope.getMinX(),
+			envelope.getMinY());
+		JaxRSCoordinate b = new JaxRSCoordinate(envelope.getMinX(),
+			envelope.getMaxY());
+		JaxRSCoordinate c = new JaxRSCoordinate(envelope.getMaxX(),
+			envelope.getMaxY());
+		JaxRSCoordinate d = new JaxRSCoordinate(envelope.getMaxX(),
+			envelope.getMinY());
 		return getGEOMETRY_FACTORY().createPolygon(
-			new Coordinate[]{new JaxRSCoordinate(envelope.getMinX(),
-					envelope.getMinY()), new JaxRSCoordinate(envelope.getMinX(),
-					envelope.getMaxY()), new JaxRSCoordinate(envelope.getMaxX(),
-					envelope.getMaxY()), new JaxRSCoordinate(envelope.getMaxX(),
-					envelope.getMinY())});
+			new Coordinate[]{a, b, c, d, a});
 	}
 
 	private GeoToolsBootstrapping() {

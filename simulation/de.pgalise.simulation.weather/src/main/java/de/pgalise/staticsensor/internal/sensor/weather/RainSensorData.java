@@ -3,12 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
 import javax.persistence.Entity;
 
 /**
@@ -17,6 +14,7 @@ import javax.persistence.Entity;
  */
 @Entity
 public class RainSensorData extends SensorData {
+
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -24,9 +22,16 @@ public class RainSensorData extends SensorData {
 	 */
 	private double precipitationAmount;
 
+	public RainSensorData() {
+	}
+
+	public RainSensorData(double precipitationAmount) {
+		this.precipitationAmount = precipitationAmount;
+	}
+
 	/**
 	 * Returns the precipitation amount.
-	 * 
+	 *
 	 * @return precipitationAmount
 	 */
 	public double getPrecipitationAmount() {
@@ -35,12 +40,11 @@ public class RainSensorData extends SensorData {
 
 	/**
 	 * Sets the precipitation amount.
-	 * 
-	 * @param precipitationAmount
-	 *            precipitation amount
+	 *
+	 * @param precipitationAmount precipitation amount
 	 */
 	public void setPrecipitationAmount(double precipitationAmount) {
 		this.precipitationAmount = precipitationAmount;
 	}
-	
+
 }

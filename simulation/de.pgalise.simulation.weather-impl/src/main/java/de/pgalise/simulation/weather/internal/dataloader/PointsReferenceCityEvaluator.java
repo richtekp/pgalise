@@ -13,33 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.dataloader;
 
 import de.pgalise.simulation.shared.city.City;
-import java.util.Collections;
-import java.util.List;
-
 import de.pgalise.simulation.weather.dataloader.ReferenceCityEvaluator;
 import de.pgalise.simulation.weather.internal.util.comparator.CityComparator;
+import java.util.Collections;
+import java.util.List;
+import javax.ejb.Stateful;
 
 /**
  * Evaluator for reference cities.
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 17, 2012)
  */
+@Stateful
 public class PointsReferenceCityEvaluator implements ReferenceCityEvaluator {
 
 	@Override
-	public City evaluate(List<City> list, City simCity) {
+	public City evaluate(List<City> list,
+		City simCity) {
 		// Set Rate for Cities
 		for (City city : list) {
-			this.setRate(city, simCity);
+			this.setRate(city,
+				simCity);
 		}
 
 		// Get max
-		City resultCity = Collections.max(list, new CityComparator());
+		City resultCity = Collections.max(list,
+			new CityComparator());
 
 		// Return best city
 		return (resultCity.getRate() <= 0) ? null : resultCity;
@@ -47,13 +50,12 @@ public class PointsReferenceCityEvaluator implements ReferenceCityEvaluator {
 
 	/**
 	 * Rate the city against the simulation city
-	 * 
-	 * @param city
-	 *            City from database
-	 * @param simCity
-	 *            City of the simulation
+	 *
+	 * @param city City from database
+	 * @param simCity City of the simulation
 	 */
-	public void setRate(City city, City simCity) {
+	public void setRate(City city,
+		City simCity) {
 		int points = 0;
 
 		// Population

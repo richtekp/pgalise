@@ -12,13 +12,26 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
+ *//* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
 package de.pgalise.simulation.internal;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,11 +45,10 @@ import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.event.DefaultEventInitiator;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.StatusEnum;
+import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.shared.city.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
@@ -44,7 +56,6 @@ import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.controller.StartParameter;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
@@ -150,19 +161,19 @@ public class DefaultEventInitiatorTest {
 		long updateIntervals = ((endTimestamp - startTimestamp) / INTERVAL) + 1;
 
 		// Status test
-		assertEquals(StatusEnum.INIT,
+		assertEquals(ControllerStatusEnum.INIT,
 			eventInitiator.getStatus());
 
 		eventInitiator.init(initParameter);
 
 		// Status test
-		assertEquals(StatusEnum.INITIALIZED,
+		assertEquals(ControllerStatusEnum.INITIALIZED,
 			eventInitiator.getStatus());
 
 		eventInitiator.start(startParameter);
 
 		// Status test
-		assertEquals(StatusEnum.STARTED,
+		assertEquals(ControllerStatusEnum.STARTED,
 			eventInitiator.getStatus());
 
 		eventInitiator.getEventThread().join();
@@ -177,13 +188,13 @@ public class DefaultEventInitiatorTest {
 		eventInitiator.stop();
 
 		// Status test
-		assertEquals(StatusEnum.STOPPED,
+		assertEquals(ControllerStatusEnum.STOPPED,
 			eventInitiator.getStatus());
 
 		eventInitiator.reset();
 
 		// Status test
-		assertEquals(StatusEnum.INIT,
+		assertEquals(ControllerStatusEnum.INIT,
 			eventInitiator.getStatus());
 	}
 
@@ -244,7 +255,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public StatusEnum getStatus() {
+		public ControllerStatusEnum getStatus() {
 			return null;
 		}
 
@@ -303,7 +314,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public StatusEnum getStatus() {
+		public ControllerStatusEnum getStatus() {
 			return null;
 		}
 
@@ -368,7 +379,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public StatusEnum getStatus() {
+		public ControllerStatusEnum getStatus() {
 			return null;
 		}
 
@@ -443,7 +454,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public StatusEnum getStatus() {
+		public ControllerStatusEnum getStatus() {
 			return null;
 		}
 

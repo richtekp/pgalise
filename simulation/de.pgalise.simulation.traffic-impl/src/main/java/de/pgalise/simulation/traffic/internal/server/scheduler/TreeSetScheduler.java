@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.scheduler;
 
 import java.util.ArrayList;
@@ -30,12 +29,15 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 
 /**
- * Implements a scheduler for the traffic. Uses a sorted list to schedule the items.
- * 
+ * Implements a scheduler for the traffic. Uses a sorted list to schedule the
+ * items.
+ *
  * @author Andreas
  * @version 1.0 (Nov 8, 2012)
  */
 public class TreeSetScheduler extends BaseScheduler {
+
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Items of the scheduler
@@ -63,7 +65,7 @@ public class TreeSetScheduler extends BaseScheduler {
 
 	/**
 	 * Creates an Administration with this scheduler
-	 * 
+	 *
 	 * @return Administration
 	 */
 	public static Administration createInstance() {
@@ -188,7 +190,7 @@ public class TreeSetScheduler extends BaseScheduler {
 
 	/**
 	 * Sorted list for {@link Item}
-	 * 
+	 *
 	 * @author Andreas Rehfeldt
 	 * @version 1.0 (Feb 16, 2013)
 	 */
@@ -205,9 +207,11 @@ public class TreeSetScheduler extends BaseScheduler {
 		private ArrayList<E> internalList = new ArrayList<>();
 
 		@Override
-		public void add(int position, E e) {
+		public void add(int position,
+			E e) {
 			internalList.add(e);
-			Collections.sort(internalList, null);
+			Collections.sort(internalList,
+				null);
 		}
 
 		@Override
