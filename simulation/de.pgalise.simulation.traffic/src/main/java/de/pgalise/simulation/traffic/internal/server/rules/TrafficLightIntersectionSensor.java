@@ -5,7 +5,8 @@
  */
 package de.pgalise.simulation.traffic.internal.server.rules;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.traffic.entity.TrafficLightIntersectionSensorData;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;

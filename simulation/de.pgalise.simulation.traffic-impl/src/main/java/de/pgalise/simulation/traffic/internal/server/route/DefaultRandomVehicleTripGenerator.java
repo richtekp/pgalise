@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Random;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
 
 /**

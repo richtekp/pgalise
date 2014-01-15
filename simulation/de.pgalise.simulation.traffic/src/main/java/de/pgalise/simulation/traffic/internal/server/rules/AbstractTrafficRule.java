@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
-import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
+import de.pgalise.simulation.traffic.entity.TrafficRuleData;
 
 /**
  * Interface for traffic rules
  * 
  * @author Marcus
  */
-public abstract class AbstractTrafficRule extends AbstractIdentifiable implements 
+public abstract class AbstractTrafficRule extends Identifiable implements 
 TrafficRule {
 	private static final Logger log = LoggerFactory
 			.getLogger(AbstractTrafficRule.class);

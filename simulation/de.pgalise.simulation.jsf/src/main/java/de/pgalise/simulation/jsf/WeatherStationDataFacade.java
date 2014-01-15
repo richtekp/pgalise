@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.staticsensor.internal.sensor.weather.WeatherStationData;
+import de.pgalise.simulation.weather.entity.WeatherStationData;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

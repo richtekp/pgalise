@@ -15,7 +15,8 @@
  */
 package de.pgalise.util.weathercollector;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
@@ -56,61 +57,63 @@ import org.junit.Test;
 @ManagedBean
 public class DefaultWeatherCollectorTest {
 
-	@PersistenceContext(unitName = "pgalise-weathercollector")
-	private EntityManager entityManager;
-	@EJB
-	private DatabaseManager baseDatabaseManager;
-	@EJB
-	private WeatherCollector weatherCollector;
-	@Resource
-	private UserTransaction userTransaction;
+  @PersistenceContext(unitName = "pgalise-weathercollector")
+  private EntityManager entityManager;
+  @EJB
+  private DatabaseManager baseDatabaseManager;
+  @EJB
+  private WeatherCollector weatherCollector;
+  @Resource
+  private UserTransaction userTransaction;
+  @EJB
+  private IdGenerator idGenerator;
 
-	public DefaultWeatherCollectorTest() {
-	}
+  public DefaultWeatherCollectorTest() {
+  }
 
-	@Before
-	public void setUp() throws NamingException {
-		TestUtils.getContainer().getContext().bind("inject",
-			this);
-	}
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+  }
 
-	@Test
-	public void testCollectServiceData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
-		userTransaction.begin();
-		try {
-			Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(
-				Arrays.asList(new YahooWeather()));
+  @Test
+  public void testCollectServiceData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    userTransaction.begin();
+    try {
+      Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(
+        Arrays.asList(new YahooWeather()));
 
-			City city = TestUtils.createDefaultTestCityInstance();
-			entityManager.merge(city.getPosition());
-			entityManager.merge(city);
-			weatherCollector.collectServiceData(baseDatabaseManager,
-				serviceStrategys);
-			Query query = entityManager.createQuery(
-				"SELECT x FROM ServiceDataCurrent x");
-			assertFalse(query.getResultList().isEmpty());
-		} finally {
-			userTransaction.commit();
-		}
-	}
+      City city = TestUtils.createDefaultTestCityInstance(idGenerator);
+      entityManager.merge(city.getPosition());
+      entityManager.merge(city);
+      weatherCollector.collectServiceData(baseDatabaseManager,
+        serviceStrategys);
+      Query query = entityManager.createQuery(
+        "SELECT x FROM ServiceDataCurrent x");
+      assertFalse(query.getResultList().isEmpty());
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
-	@Test
-	public void testCollectStationData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
-		userTransaction.begin();
-		try {
-			StationStrategy stationStrategy = createMock(StationStrategy.class);
-			stationStrategy.saveWeather(anyObject(DatabaseManager.class));
-			expectLastCall().once();
-			EasyMock.replay(stationStrategy);
-			City city = TestUtils.createDefaultTestCityInstance();
-			entityManager.merge(city.getPosition());
-			entityManager.merge(city);
-			weatherCollector.collectStationData(baseDatabaseManager,
-				new HashSet<>(Arrays.asList(stationStrategy)));
-			//only test that StationStrategy.saveWeather is invoked
-		} finally {
-			userTransaction.commit();
-		}
-	}
+  @Test
+  public void testCollectStationData() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    userTransaction.begin();
+    try {
+      StationStrategy stationStrategy = createMock(StationStrategy.class);
+      stationStrategy.saveWeather(anyObject(DatabaseManager.class));
+      expectLastCall().once();
+      EasyMock.replay(stationStrategy);
+      City city = TestUtils.createDefaultTestCityInstance(idGenerator);
+      entityManager.merge(city.getPosition());
+      entityManager.merge(city);
+      weatherCollector.collectStationData(baseDatabaseManager,
+        new HashSet<>(Arrays.asList(stationStrategy)));
+      //only test that StationStrategy.saveWeather is invoked
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
 }

@@ -16,7 +16,7 @@
 package de.pgalise.util.weathercollector.app;
 
 import de.pgalise.util.weathercollector.WeatherCollector;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;

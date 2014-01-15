@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class SimulationExportedMessage extends AbstractIdentifiableControlCenterMessage<String> {
+public class SimulationExportedMessage extends IdentifiableControlCenterMessage<String> {
 	/**
 	 * Constructor
 	 * 

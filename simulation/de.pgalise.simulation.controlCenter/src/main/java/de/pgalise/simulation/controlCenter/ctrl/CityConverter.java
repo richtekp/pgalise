@@ -5,8 +5,8 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.shared.city.OsmCity;
-import de.pgalise.simulation.shared.persistence.Identifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.traffic.entity.OsmCity;
 import java.util.HashMap;
 import java.util.Map;
 import javax.faces.component.UIComponent;

@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;

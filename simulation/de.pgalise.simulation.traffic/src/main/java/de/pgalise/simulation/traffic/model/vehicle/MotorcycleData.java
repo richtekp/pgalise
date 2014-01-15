@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.awt.Color;
 
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;

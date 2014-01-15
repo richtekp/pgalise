@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class GenericNotificationMessage extends AbstractIdentifiableControlCenterMessage<String> {
+public class GenericNotificationMessage extends IdentifiableControlCenterMessage<String> {
 
 	/**
 	 * Constructor

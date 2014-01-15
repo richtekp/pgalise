@@ -4,14 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-
 /**
  *
  * @author richter
  */
-@Embeddable
-public enum SchoolTagEnum implements SchoolTag {
+public enum SchoolTagEnum {
 
 	;
 	
@@ -21,7 +18,6 @@ public enum SchoolTagEnum implements SchoolTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

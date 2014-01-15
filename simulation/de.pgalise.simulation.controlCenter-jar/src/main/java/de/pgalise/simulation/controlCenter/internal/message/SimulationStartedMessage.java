@@ -22,7 +22,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class SimulationStartedMessage extends AbstractIdentifiableControlCenterMessage<Void> {
+public class SimulationStartedMessage extends IdentifiableControlCenterMessage<Void> {
 
 	/**
 	 * Constructor

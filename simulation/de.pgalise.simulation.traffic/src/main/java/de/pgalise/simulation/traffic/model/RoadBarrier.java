@@ -16,9 +16,9 @@
  
 package de.pgalise.simulation.traffic.model;
 
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import java.util.Set;
 
 /**
@@ -27,7 +27,7 @@ import java.util.Set;
  * @author Andreas Rehfeldt
  * @version 1.0 (Feb 19, 2013)
  */
-public class RoadBarrier extends AbstractIdentifiable {
+public class RoadBarrier extends Identifiable {
 	private static final long serialVersionUID = 1L;
 
 	/**

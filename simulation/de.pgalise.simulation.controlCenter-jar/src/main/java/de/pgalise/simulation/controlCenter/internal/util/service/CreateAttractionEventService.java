@@ -18,9 +18,9 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 
 /**

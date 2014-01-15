@@ -15,9 +15,9 @@
  */
 package de.pgalise.simulation.weather.dataloader;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
-import de.pgalise.simulation.weather.model.ServiceDataForecast;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 
 /**
  * The aim and the purpose of the interface {@link WeatherLoader} is to get

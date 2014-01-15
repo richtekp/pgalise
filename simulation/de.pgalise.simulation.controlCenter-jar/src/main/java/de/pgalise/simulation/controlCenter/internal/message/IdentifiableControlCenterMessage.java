@@ -6,12 +6,33 @@
 
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.shared.persistence.Identifiable;
-
 /**
  *
  * @author richter
  */
-public interface IdentifiableControlCenterMessage<T> extends ControlCenterMessage<T>,Identifiable {
-	
+public class IdentifiableControlCenterMessage<T> extends ControlCenterMessage<T> {
+	private Long id;
+
+	public IdentifiableControlCenterMessage(Long id,
+		T content) {
+		super(
+			content);
+		this.id = id;
+	}
+
+	public IdentifiableControlCenterMessage(Long id,
+		MessageTypeEnum messageType,
+		T content) {
+		super(messageType,
+			content);
+		this.id = id;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	protected void setId(Long id) {
+		this.id = id;
+	}
 }

@@ -4,14 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-
 /**
  *
  * @author richter
  */
-@Embeddable
-public enum AttractionTagEnum implements AttractionTag {
+public enum AttractionTagEnum {
 
 	;
 	
@@ -21,7 +18,6 @@ public enum AttractionTagEnum implements AttractionTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

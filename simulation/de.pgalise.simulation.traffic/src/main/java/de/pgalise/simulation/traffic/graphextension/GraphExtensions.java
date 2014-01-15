@@ -16,13 +16,13 @@
  
 package de.pgalise.simulation.traffic.graphextension;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 
-import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
  * The TrafficGraphExtensions is an interface

@@ -22,11 +22,11 @@ import java.io.IOException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.Building;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.BusStop;
+import de.pgalise.simulation.shared.entity.Way;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.Building;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.DefaultFileBasedCityInfrastructureDataService;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;

@@ -39,7 +39,7 @@ import org.jfree.ui.RectangleInsets;
 import org.jfree.ui.RefineryUtilities;
 
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import javax.measure.unit.SI;
 
@@ -81,8 +81,8 @@ public class TimeSeriesChart extends ApplicationFrame {
 	 *            Map with weather objects
 	 * @return list with weather objects
 	 */
-	public static List<StationData> getList(WeatherMap map) {
-		List<StationData> list = new ArrayList<>();
+	public static List<AbstractStationData> getList(WeatherMap map) {
+		List<AbstractStationData> list = new ArrayList<>();
 		List<Long> times = new ArrayList<>(map.keySet());
 
 		Collections.sort(times);
@@ -104,11 +104,11 @@ public class TimeSeriesChart extends ApplicationFrame {
 	 *            WeatherParameterEnum
 	 * @return TimeSerie
 	 */
-	public static TimeSeries getTimeSerie(String title, List<StationData> list, WeatherParameterEnum key) {
+	public static TimeSeries getTimeSerie(String title, List<AbstractStationData> list, WeatherParameterEnum key) {
 		TimeSeries s1 = new TimeSeries(title);
 
 		// Add weather
-		for (StationData weather : list) {
+		for (AbstractStationData weather : list) {
 			try {
 				Timestamp time = new Timestamp(weather.getMeasureTime().getTime()+ 3600000);
 				s1.add(new Millisecond(time), TimeSeriesChart.getValue(key, weather));
@@ -144,7 +144,7 @@ public class TimeSeriesChart extends ApplicationFrame {
 	 *            Weather object
 	 * @return Value to the key
 	 */
-	private static double getValue(WeatherParameterEnum key, StationData weather) {
+	private static double getValue(WeatherParameterEnum key, AbstractStationData weather) {
 		double value;
 
 		switch (key) {

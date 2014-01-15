@@ -15,7 +15,8 @@
  */
 package de.pgalise.staticsensor.internal.sensor.energy;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.energy.entity.WindPowerSensorData;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;

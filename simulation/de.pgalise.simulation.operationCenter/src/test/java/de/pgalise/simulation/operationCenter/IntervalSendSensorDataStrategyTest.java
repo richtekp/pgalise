@@ -19,7 +19,7 @@ import de.pgalise.simulation.operationCenter.internal.OCWebSocketService;
 import de.pgalise.simulation.operationCenter.internal.message.OCWebSocketMessage;
 import de.pgalise.simulation.operationCenter.internal.message.SensorDataMessage;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData;
+import de.pgalise.simulation.shared.entity.SimpleSensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.IntervalSendSensorDataStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
 import de.pgalise.simulation.operationcenter.OCWebSocketUser;

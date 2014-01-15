@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.staticsensor.internal.grid.LinearGridDeployer;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 import org.junit.Ignore;
 
 /**

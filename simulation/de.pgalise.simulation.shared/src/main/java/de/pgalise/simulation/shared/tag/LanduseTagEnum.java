@@ -4,16 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  *
  * @author richter
  */
-@XmlRootElement
-@Embeddable
-public enum LanduseTagEnum implements LanduseTag {
+public enum LanduseTagEnum {
 
 	INDUSTRY("industry"), FARMLAND("farmland"), FARMYARD("farmyard"), RETAIL(
 		"retail"), MILITARY("military"), RESIDENTIAL("residential"), COMMERCIAL(
@@ -25,7 +20,6 @@ public enum LanduseTagEnum implements LanduseTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

@@ -5,18 +5,18 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsClockInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import java.util.Iterator;
 import java.util.Set;
 import javax.ejb.EJB;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
  *

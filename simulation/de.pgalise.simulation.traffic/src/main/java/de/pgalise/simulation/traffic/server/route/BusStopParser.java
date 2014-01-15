@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.traffic.server.route;
 
-import de.pgalise.simulation.traffic.BusStop;
+import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import java.util.List;
 

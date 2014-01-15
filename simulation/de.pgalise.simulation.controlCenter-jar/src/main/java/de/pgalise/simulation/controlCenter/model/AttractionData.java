@@ -16,15 +16,15 @@
  
 package de.pgalise.simulation.controlCenter.model;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 
 /**
  * Data to create an attraction event.
  * @author Timo
  */
-public class AttractionData extends AbstractIdentifiable {
+public class AttractionData extends Identifiable {
 	private static final long serialVersionUID = 1L;
 	
 	/**

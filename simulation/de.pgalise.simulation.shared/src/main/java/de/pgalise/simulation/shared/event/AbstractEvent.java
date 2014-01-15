@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.shared.event;
 
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.Date;
 import javolution.xml.XMLFormat;
 import javolution.xml.XMLSerializable;
@@ -29,7 +29,7 @@ import javolution.xml.stream.XMLStreamException;
  *
  * @author Timo
  */
-public abstract class AbstractEvent extends AbstractIdentifiable implements
+public abstract class AbstractEvent extends Identifiable implements
 	Event, XMLSerializable {
 
 	/**

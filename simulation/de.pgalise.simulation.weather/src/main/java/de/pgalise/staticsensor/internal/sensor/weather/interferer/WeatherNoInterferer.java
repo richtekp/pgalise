@@ -17,7 +17,7 @@
 package de.pgalise.staticsensor.internal.sensor.weather.interferer;
 
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 
 /**
  * Represents an interferer that shows no errors

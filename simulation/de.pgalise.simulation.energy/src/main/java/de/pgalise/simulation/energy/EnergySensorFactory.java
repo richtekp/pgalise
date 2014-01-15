@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.energy;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.staticsensor.internal.sensor.energy.PhotovoltaikSensor;

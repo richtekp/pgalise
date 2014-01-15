@@ -16,8 +16,8 @@
  
 package de.pgalise.simulation.service;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
  * Enum of directions

@@ -17,7 +17,7 @@ package de.pgalise.simulation.weather.positionconverter;
 
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 
 /**
  * Abstract super class for a {@link WeatherPositionConverter}. This class

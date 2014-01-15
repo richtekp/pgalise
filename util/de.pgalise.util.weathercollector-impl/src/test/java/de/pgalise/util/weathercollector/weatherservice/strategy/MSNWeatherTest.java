@@ -4,9 +4,10 @@
  */
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.testutils.TestUtils;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
@@ -28,41 +29,43 @@ import org.junit.Test;
 @ManagedBean
 public class MSNWeatherTest {
 
-	@PersistenceContext(unitName = "pgalise-weathercollector")
-	private EntityManager entityManager;
-	@EJB
-	private DatabaseManager baseDatabaseManager;
-	@Resource
-	private UserTransaction userTransaction;
+  @PersistenceContext(unitName = "pgalise-weathercollector")
+  private EntityManager entityManager;
+  @EJB
+  private DatabaseManager baseDatabaseManager;
+  @Resource
+  private UserTransaction userTransaction;
+  @EJB
+  private IdGenerator idGenerator;
 
-	public MSNWeatherTest() throws NamingException {
-	}
+  public MSNWeatherTest() throws NamingException {
+  }
 
-	@Before
-	public void setUp() throws NamingException {
-		TestUtils.getContainer().getContext().bind("inject",
-			this);
-	}
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+  }
 
-	/**
-	 * Test of extractWeather method, of class MSNWeather.
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetWeather() throws Exception {
-		userTransaction.begin();
-		try {
-			City city = TestUtils.createDefaultTestCityInstance();
-			entityManager.merge(city.getPosition());
-			entityManager.merge(city);
-			MSNWeather instance = new MSNWeather();
-			ServiceDataHelper result = instance.getWeather(city,
-				baseDatabaseManager);
-			assertFalse(result.getForecastConditions().isEmpty());
-		} finally {
-			userTransaction.commit();
-		}
-	}
+  /**
+   * Test of extractWeather method, of class MSNWeather.
+   *
+   * @throws Exception
+   */
+  @Test
+  public void testGetWeather() throws Exception {
+    userTransaction.begin();
+    try {
+      City city = TestUtils.createDefaultTestCityInstance(idGenerator);
+      entityManager.merge(city.getPosition());
+      entityManager.merge(city);
+      MSNWeather instance = new MSNWeather();
+      ServiceDataHelper result = instance.getWeather(city,
+        baseDatabaseManager);
+      assertFalse(result.getForecastConditions().isEmpty());
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
 }

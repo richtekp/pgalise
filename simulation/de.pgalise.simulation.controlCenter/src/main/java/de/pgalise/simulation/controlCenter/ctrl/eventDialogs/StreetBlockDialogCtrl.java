@@ -7,7 +7,7 @@
 package de.pgalise.simulation.controlCenter.ctrl.eventDialogs;
 
 import de.pgalise.simulation.controlCenter.ctrl.BaseMapDialogCtrl;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import java.util.Date;

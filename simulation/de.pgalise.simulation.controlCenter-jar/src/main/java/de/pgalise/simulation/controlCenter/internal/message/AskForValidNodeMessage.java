@@ -16,15 +16,15 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 
 /**
  * Will answer with a node with a valid position.
  * 
  * @author Timo
  */
-public class AskForValidNodeMessage extends AbstractIdentifiableControlCenterMessage<TrafficNode> {
+public class AskForValidNodeMessage extends IdentifiableControlCenterMessage<TrafficNode> {
 
 	/**
 	 * Constructor

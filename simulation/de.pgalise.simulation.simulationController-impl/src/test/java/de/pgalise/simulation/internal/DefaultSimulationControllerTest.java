@@ -37,7 +37,7 @@ import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.ControllerStatusEnum;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;

@@ -20,7 +20,7 @@ import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfere
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;

@@ -4,14 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-
 /**
  *
  * @author richter
  */
-@Embeddable
-public enum EmergencyServiceTagEnum implements EmergencyServiceTag {
+public enum EmergencyServiceTagEnum {
 
 	;
 	
@@ -21,7 +18,6 @@ public enum EmergencyServiceTagEnum implements EmergencyServiceTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

@@ -21,8 +21,6 @@ import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import java.util.Collection;
 import java.util.Set;
 
 
@@ -34,7 +32,8 @@ import java.util.Set;
  * @author Timo
  * @param <Y>
  */
-public interface SensorManagerController<E extends Event, S extends StartParameter, I extends InitParameter,Y extends Sensor> extends Controller<E,S,I>, Identifiable {
+public interface SensorManagerController<E extends Event, S extends StartParameter, I extends InitParameter,Y extends Sensor> extends Controller<E,S,I> {
+	
 	/**
 	 * Creates a new sensor.
 	 * @param sensor

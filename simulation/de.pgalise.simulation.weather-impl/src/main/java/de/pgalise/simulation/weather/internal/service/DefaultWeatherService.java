@@ -15,8 +15,8 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -26,7 +26,7 @@ import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.modifier.WeatherStrategyContext;
 import de.pgalise.simulation.weather.internal.positionconverter.LinearWeatherPositionConverter;
 import de.pgalise.simulation.weather.internal.util.comparator.WeatherStrategyComparator;
-import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
@@ -90,572 +90,560 @@ import javax.measure.unit.Unit;
 @Stateful
 public class DefaultWeatherService implements WeatherService {
 
-	/**
-	 * Map with cached parameters
-	 */
-	private HashMap<WeatherParameterEnum, Map<Long, Number>> cachedParameters = new HashMap<>();
-
-	/**
-	 * City of the simulation
-	 */
-	private City city;
-
-	/**
-	 * Helper for calculations with the grid
-	 */
-	@EJB
-	private WeatherPositionConverter gridConverter;
-
-	/**
-	 * Timestamp of the current loaded date
-	 */
-	private long loadedTimestamp = -1;
-
-	/**
-	 * Loader for weather data
-	 */
-	@EJB
-	private WeatherLoader loader;
-
-	/**
-	 * Map with all weather parameters
-	 */
-	private HashMap<WeatherParameterEnum, WeatherParameter> parameters = new HashMap<>();
-
-	/**
-	 * BaseGeoInfo of the reference point
-	 */
-	private JaxRSCoordinate referencePosition;
-
-	/**
-	 * Values linked to the reference point
-	 */
-	private WeatherMap referenceValues;
-
-	/**
-	 * Semaphore
-	 */
-	private final Semaphore semaphore = new Semaphore(1,
-		true);
-
-	/**
-	 * Timestamp for the simulation end
-	 */
-	private long simEndTimestamp = -1;
-
-	/**
-	 * Planned event modifier
-	 */
-	private List<WeatherStrategyHelper> plannedEventModifiers = new LinkedList<>();
-
-	public DefaultWeatherService() {
-	}
-
-	/**
-	 * Constructor
-	 *
-	 * @param city City
-	 * @param loader
-	 */
-	public DefaultWeatherService(City city,
-		WeatherLoader loader) {
-		if (city == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"city"));
-		}
-		this.referencePosition = city.getReferencePoint();
-		this.city = city;
-		this.loader = loader;
-
-		// Init maps
-		this.referenceValues = null;
-		this.parameters = new HashMap<>();
-		this.cachedParameters = new HashMap<>();
-		this.gridConverter = new LinearWeatherPositionConverter(city.getPosition().
-			getBoundaries());
-		this.plannedEventModifiers = new ArrayList<>();
-
-		// Add parameters
-		try {
-			this.initParameters();
-		} catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	@Override
-	public void addNewWeather(long startTimestamp,
-		long endTimestamp,
-		boolean takeNormalData,
-		List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
-		// We have only weather data after
-		if (startTimestamp < 1057528800000L) {
-			throw new IllegalArgumentException(ExceptionMessages.
-				getMessageForMustBetween("startTimestamp",
-					startTimestamp,
-					1057528800000.0));
-		} else if (endTimestamp < startTimestamp) {
-			throw new IllegalArgumentException(ExceptionMessages.
-				getMessageForMustBetween("endTimestamp",
-					endTimestamp,
-					startTimestamp));
-		}
-
-		// Add weather data
-		try {
-			// Only one thread can add new weather
-			this.semaphore.acquire();
-			this.internalAddNewWeather(startTimestamp,
-				endTimestamp,
-				takeNormalData,
-				strategyList);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} finally {
-			// Free semaphore
-			this.semaphore.release();
-		}
-	}
-
-	@Override
-	public void addNewNextDayWeather() throws NoWeatherDataFoundException {
-		// Has a date been simulated before?
-		if (this.loadedTimestamp < 1) {
-			throw new IllegalStateException(
-				"Weather hasn't been added before (you need to invoke addNewWeather once before you can invoke addNewNextDayWeather)!");
-		}
-
-		try {
-			// Only one thread can add new weather
-			this.semaphore.acquire();
-			this.internalAddNextWeather();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} finally {
-			// Free semaphore
-			this.semaphore.release();
-		}
-	}
-
-	@Override
-	public boolean checkDate(long timestamp) {
-		if (timestamp < 1) {
-			throw new IllegalArgumentException(ExceptionMessages.
-				getMessageForNotNegative("timestamp",
-					false));
-		}
-
-		// Check date
-		return this.loader.checkStationDataForDay(timestamp);
-	}
-
-	@Override
-	public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException {
-		// There is no weather data added
-		if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
-			throw new IllegalStateException("No weather data has been added so far");
-		}
-
-		if (WeatherEventTypeEnum.SIMULATION_EVENTS.contains(strategy.getType())) {
-			// Remember simulation Event?
-			if (!this.isPlannedEventType(strategy.getType())) {
-				// Execute
-				WeatherStrategyContext context = new WeatherStrategyContext(strategy);
-				context.execute(this.referenceValues,
-					this.city,
-					this.loadedTimestamp);
-
-				// Plan event for further days
-				this.plannedEventModifiers.add(new WeatherStrategyHelper(strategy,
-					this.loadedTimestamp));
-			}
-		} else {
-			WeatherDayEventModifier dayEvent = (WeatherDayEventModifier) strategy;
-
-			// Execute event?
-			if (DateConverter.isTheSameDay(dayEvent.getEventTimestamp(),
-				this.loadedTimestamp)) {
-				WeatherStrategyContext context = new WeatherStrategyContext(strategy);
-				context.execute(this.referenceValues,
-					this.city,
-					this.loadedTimestamp);
-			} else {
-				// Plan event for further days
-				this.plannedEventModifiers.add(new WeatherStrategyHelper(strategy,
-					dayEvent.getEventTimestamp()));
-			}
-		}
-
-	}
-
-	public HashMap<WeatherParameterEnum, Map<Long, Number>> getCachedParameters() {
-		return this.cachedParameters;
-	}
-
-	@Override
-	public long getLoadedTimestamp() {
-		return this.loadedTimestamp;
-	}
-
-	public HashMap<WeatherParameterEnum, WeatherParameter> getParameters() {
-		return this.parameters;
-	}
-
-	@Override
-	public JaxRSCoordinate getReferencePosition() {
-		return this.referencePosition;
-	}
-
-	@Override
-	public WeatherMap getReferenceValues() {
-		return this.referenceValues;
-	}
-
-	public long getSimEndTimestamp() {
-		return this.simEndTimestamp;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T extends Number> T getValue(WeatherParameterEnum key,
-		long time) throws IllegalArgumentException {
-		if (key == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"key"));
-		} else if (time <= 0) {
-			throw new IllegalArgumentException(ExceptionMessages.
-				getMessageForNotPositive("time",
-					false));
-		}
-
-		try {
-			this.semaphore.acquire(1);
-
-			// Is the correct weather data set?
-			if (!DateConverter.isTheSameDay(this.loadedTimestamp,
-				time)) {
-				// Load new data
-				this.internalAddNextWeather();
-			}
-
-			// Cached Value?
-			if (key.isCachedParameter()) {
-				Map<Long, Number> cache = this.cachedParameters.get(key);
-
-				// Is available?
-				if (!cache.isEmpty() && cache.containsKey(time)) {
-					return (T) cache.get(time);
-				}
-
-				// Add the new value
-				T value = this.parameters.get(key).getValue(time);
-				cache.put(time,
-					value);
-
-				return value;
-			}
-
-			// Return the value
-			return this.parameters.get(key).getValue(time);
-
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} finally {
-			this.semaphore.release();
-		}
-
-		// No return -> ERROR
-		throw new RuntimeException("Value can not be returned!");
-	}
-
-	@Override
-	public <T extends Number> T getValue(WeatherParameterEnum key,
-		long time,
-		JaxRSCoordinate position)
-		throws IllegalArgumentException, NoWeatherDataFoundException {
-		if (key == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"key"));
-		} else if ((position == null)) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"position"));
-		} else if ((position.getX() < 0) || (position.getY() < 0)) {
-			throw new IllegalArgumentException(ExceptionMessages.
-				getMessageForNotPositive("position (x or y)",
-					true));
-		} else if (time <= 0) {
-			throw new IllegalArgumentException(ExceptionMessages.
-				getMessageForNotPositive("time",
-					false));
-		}
-
-		// Get the reference value
-		T value = this.getValue(key,
-			time);
-
-		// Calculate a new value for the given position
-		return this.gridConverter.getValue(key,
-			time,
-			position,
-			value);
-	}
-
-	@Override
-	public void initValues() {
-		this.simEndTimestamp = -1;
-		this.plannedEventModifiers.clear();
-
-		// Clear the values for the date
-		this.clearValues();
-	}
-
-	@Override
-	public void setCity(City city) {
-		this.city = city;
-	}
-
-	public void setLoadedTimestamp(long loadedTimestamp) {
-		this.loadedTimestamp = loadedTimestamp;
-	}
-
-	public void setSimEndTimestamp(long simEndTimestamp) {
-		this.simEndTimestamp = simEndTimestamp;
-	}
-
-	/**
-	 * Changes the weather informations to the next day
-	 */
-	private void changeReferenceValuesToNextDay() {
-		WeatherMap map = new StationDataMap();
-
-		long nextDay;
-		for (MutableStationData weather : this.referenceValues.values()) {
-			nextDay = weather.getMeasureTime().getTime() + DateConverter.ONE_DAY_IN_MILLIS;
-			// Change date
-			weather.setMeasureTime(new Time(nextDay));
-			weather.setMeasureDate(new Date(nextDay));
-
-			// Add to new map
-			map.put(nextDay,
-				weather);
-		}
-
-		// Change
-		this.referenceValues = map;
-	}
-
-	/**
-	 * Clear all stored data to use new data
-	 */
-	@Override
-	public void clearValues() {
-		// Delete generel data
-		this.referenceValues = null;
-		this.loadedTimestamp = -1;
-
-		// Delete cached values
-		for (WeatherParameterEnum enumElement : this.cachedParameters.keySet()) {
-			this.cachedParameters.get(enumElement).clear();
-		}
-	}
-
-	/**
-	 * Initiate all parameters
-	 *
-	 * @throws Exception There is a parameter that can not be initiated.
-	 */
-	private void initParameters() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		for (WeatherParameterEnum enumElement : WeatherParameterEnum.values()) {
-			// Add parameter
-			WeatherParameterBase type = enumElement.getValueType().getConstructor(
-				WeatherService.class)
-				.newInstance(this);
-			this.parameters.put(enumElement,
-				type);
-
-			// Add cached parameter
-			if (enumElement.isCachedParameter()) {
-				this.cachedParameters.put(enumElement,
-					new HashMap<Long, Number>());
-			}
-		}
-	}
-
-	/**
-	 * Add new weather informations which have to be present in the database
-	 *
-	 * @param startTimestamp Start timestamp weather will be loaded from the next
-	 * morning after 00:00
-	 * @param endTimestamp End timestamp whether will be loaded until the next
-	 * morning after 00:00
-	 * @param takeNormalData Option to take normal data
-	 * @param strategyList List with strategies to modify the data
-	 * @throws NoWeatherDataFoundException No data found
-	 */
-	private void internalAddNewWeather(long startTimestamp,
-		long endTimestamp,
-		boolean takeNormalData,
-		List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
-		// Delete all values
-		this.initValues();
-
-		// Convert dates to 00:00:00
-		long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
-			startTimestamp);
-		this.simEndTimestamp = DateConverter.
-			convertTimestampToMidnight(endTimestamp)
-			+ DateConverter.ONE_DAY_IN_MILLIS;
-
-		// Change loader
-		this.loader.setLoadOption(takeNormalData);
-
-		// Save start strategies
-		if ((strategyList != null) && !strategyList.isEmpty()) {
-			this.plannedEventModifiers.addAll(strategyList);
-		}
-
-		// Add new weather data
-		this.loadWeather(startTimestampMidnight);
-	}
-
-	/**
-	 * Replace the weather information with data of the next day
-	 */
-	private void internalAddNextWeather() {
-		// Calculate next day
-		long nextday = this.loadedTimestamp + DateConverter.ONE_DAY_IN_MILLIS;
-
-		// Enddate?
-		if ((this.simEndTimestamp > 0) && (nextday > this.simEndTimestamp)) {
-			throw new RuntimeException(
-				"Timestamp for the simulation end is overstepped!");
-		}
-
-		// Check weather informations
-		if (!this.checkDate(nextday)) {
-
-			/*
-			 * Take existing map
-			 */
-			// Check existing map
-			if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
-				throw new IllegalStateException();
-			}
-
-			// Change map to next day
-			this.changeReferenceValuesToNextDay();
-			this.loadedTimestamp = nextday;
-
-		} else {
-			/*
-			 * Get new weather
-			 */
-			// Add new weather data
-			this.loadWeather(nextday);
-		}
-	}
-
-	/**
-	 * Returns true if the event type is planned for further events
-	 *
-	 * @param type WeatherEventEnum
-	 * @return true if the event type is planned for further events else false
-	 */
-	private boolean isPlannedEventType(WeatherEventType type) {
-		for (WeatherStrategyHelper helper : this.plannedEventModifiers) {
-			if (helper.getStrategy().getType().equals(type)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Loads new weather data for the given date
-	 *
-	 * @param timestamp Timestamp
-	 * @throws NoWeatherDataFoundException No data found for the given date
-	 */
-	private void loadWeather(long timestamp) throws NoWeatherDataFoundException {
-		/*
-		 * Load data
-		 */
-
-		// Zum Testen der Threads
-		// try {
-		// System.out.println("Wait");
-		// Thread.sleep(2000);
-		// System.out.println("End wait");
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// Get data from database
-		WeatherMap map = this.loader.loadStationData(timestamp);
-
-		/*
-		 * Use modifiers
-		 */
-		// Use strategy context
-		WeatherStrategyContext context = new WeatherStrategyContext();
-
-		if (!this.plannedEventModifiers.isEmpty()) {
-
-			// Get strategies for the current day
-			List<WeatherStrategy> dayStrategies = new ArrayList<>();
-			Iterator<WeatherStrategyHelper> iterator = this.plannedEventModifiers.
-				iterator();
-			while (iterator.hasNext()) {
-				WeatherStrategyHelper strategyHelper = iterator.next();
-				if (strategyHelper != null) {
-					if (WeatherEventTypeEnum.SIMULATION_EVENTS.contains(strategyHelper.
-						getStrategy().getType())) {
-						dayStrategies.add(strategyHelper.getStrategy());
-					} else if (DateConverter.isTheSameDay(strategyHelper.getTimestamp(),
-						timestamp)) {
-						dayStrategies.add(strategyHelper.getStrategy());
-						iterator.remove();
-					}
-				}
-			}
-
-			// Use strategies to modify data
-			if (!dayStrategies.isEmpty()) {
-				// Sort by orderID
-				Collections.sort(dayStrategies,
-					new WeatherStrategyComparator());
-
-				// Execute strategy
-				for (WeatherStrategy strategy : dayStrategies) {
-					context.setStrategy(strategy);
-					context.execute(map,
-						this.city,
-						timestamp);
-				}
-			}
-		}
-
-		/*
-		 * Save and clear all
-		 */
-		// Clear all values for that day
-		this.clearValues();
-		// Set new weather data
-		this.loadedTimestamp = timestamp;
-		this.referenceValues = map;
-
-		// Alle sortiert ausgeben (zum Testen)
-		// Vector<Long> times = new Vector<Long>(this.referenceValues.keySet());
-		// Collections.sort(times);
-		// for (Long time : times) {
-		// Weather w = this.referenceValues.get(time);
-		// System.out.println(new Date(w.getDate()) + " - " + new Time(w.getTime()) + " - "
-		// + new Timestamp(w.getTimestamp()));
-		// }
-	}
-
-	@Override
-	public Unit<Temperature> getTemperatureUnit() {
-		return SI.CELSIUS;
-	}
+  /**
+   * Map with cached parameters
+   */
+  private HashMap<WeatherParameterEnum, Map<Long, Number>> cachedParameters = new HashMap<>();
+
+  /**
+   * City of the simulation
+   */
+  private City city;
+
+  /**
+   * Helper for calculations with the grid
+   */
+  @EJB
+  private WeatherPositionConverter gridConverter;
+
+  /**
+   * Timestamp of the current loaded date
+   */
+  private long loadedTimestamp = -1;
+
+  /**
+   * Loader for weather data
+   */
+  @EJB
+  private WeatherLoader loader;
+
+  /**
+   * Map with all weather parameters
+   */
+  private HashMap<WeatherParameterEnum, WeatherParameter> parameters = new HashMap<>();
+
+  /**
+   * BaseGeoInfo of the reference point
+   */
+  private JaxRSCoordinate referencePosition;
+
+  /**
+   * Values linked to the reference point
+   */
+  private WeatherMap referenceValues;
+
+  /**
+   * Semaphore
+   */
+  private final Semaphore semaphore = new Semaphore(1,
+    true);
+
+  /**
+   * Timestamp for the simulation end
+   */
+  private long simEndTimestamp = -1;
+
+  /**
+   * Planned event modifier
+   */
+  private List<WeatherStrategyHelper> plannedEventModifiers = new LinkedList<>();
+
+  public DefaultWeatherService() {
+  }
+
+  /**
+   * Constructor
+   *
+   * @param city City
+   * @param loader
+   */
+  public DefaultWeatherService(City city,
+    WeatherLoader loader) {
+    if (city == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "city"));
+    }
+    this.referencePosition = city.getReferencePoint();
+    this.city = city;
+    this.loader = loader;
+
+    // Init maps
+    this.referenceValues = null;
+    this.parameters = new HashMap<>();
+    this.cachedParameters = new HashMap<>();
+    this.gridConverter = new LinearWeatherPositionConverter(city.getPosition().
+      getBoundaries());
+    this.plannedEventModifiers = new ArrayList<>();
+
+    // Add parameters
+    try {
+      this.initParameters();
+    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void addNewWeather(long startTimestamp,
+    long endTimestamp,
+    boolean takeNormalData,
+    List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
+    // We have only weather data after
+    if (startTimestamp < 1057528800000L) {
+      throw new IllegalArgumentException(ExceptionMessages.
+        getMessageForMustBetween("startTimestamp",
+          startTimestamp,
+          1057528800000.0));
+    } else if (endTimestamp < startTimestamp) {
+      throw new IllegalArgumentException(ExceptionMessages.
+        getMessageForMustBetween("endTimestamp",
+          endTimestamp,
+          startTimestamp));
+    }
+
+    // Add weather data
+    try {
+      // Only one thread can add new weather
+      this.semaphore.acquire();
+      this.internalAddNewWeather(startTimestamp,
+        endTimestamp,
+        takeNormalData,
+        strategyList);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    } finally {
+      // Free semaphore
+      this.semaphore.release();
+    }
+  }
+
+  @Override
+  public void addNewNextDayWeather() throws NoWeatherDataFoundException {
+    // Has a date been simulated before?
+    if (this.loadedTimestamp < 1) {
+      throw new IllegalStateException(
+        "Weather hasn't been added before (you need to invoke addNewWeather once before you can invoke addNewNextDayWeather)!");
+    }
+
+    try {
+      // Only one thread can add new weather
+      this.semaphore.acquire();
+      this.internalAddNextWeather();
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    } finally {
+      // Free semaphore
+      this.semaphore.release();
+    }
+  }
+
+  @Override
+  public boolean checkDate(long timestamp) {
+    if (timestamp < 1) {
+      throw new IllegalArgumentException(ExceptionMessages.
+        getMessageForNotNegative("timestamp",
+          false));
+    }
+
+    // Check date
+    return this.loader.checkStationDataForDay(timestamp);
+  }
+
+  @Override
+  public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException {
+    // There is no weather data added
+    if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
+      throw new IllegalStateException("No weather data has been added so far");
+    }
+
+    if (WeatherEventTypeEnum.SIMULATION_EVENTS.contains(strategy.getType())) {
+      // Remember simulation Event?
+      if (!this.isPlannedEventType(strategy.getType())) {
+        // Execute
+        WeatherStrategyContext context = new WeatherStrategyContext(strategy);
+        context.execute(this.referenceValues,
+          this.city,
+          this.loadedTimestamp);
+
+        // Plan event for further days
+        this.plannedEventModifiers.add(new WeatherStrategyHelper(strategy,
+          this.loadedTimestamp));
+      }
+    } else {
+      WeatherDayEventModifier dayEvent = (WeatherDayEventModifier) strategy;
+
+      // Execute event?
+      if (DateConverter.isTheSameDay(dayEvent.getEventTimestamp(),
+        this.loadedTimestamp)) {
+        WeatherStrategyContext context = new WeatherStrategyContext(strategy);
+        context.execute(this.referenceValues,
+          this.city,
+          this.loadedTimestamp);
+      } else {
+        // Plan event for further days
+        this.plannedEventModifiers.add(new WeatherStrategyHelper(strategy,
+          dayEvent.getEventTimestamp()));
+      }
+    }
+
+  }
+
+  public HashMap<WeatherParameterEnum, Map<Long, Number>> getCachedParameters() {
+    return this.cachedParameters;
+  }
+
+  @Override
+  public long getLoadedTimestamp() {
+    return this.loadedTimestamp;
+  }
+
+  public HashMap<WeatherParameterEnum, WeatherParameter> getParameters() {
+    return this.parameters;
+  }
+
+  @Override
+  public JaxRSCoordinate getReferencePosition() {
+    return this.referencePosition;
+  }
+
+  @Override
+  public WeatherMap getReferenceValues() {
+    return this.referenceValues;
+  }
+
+  public long getSimEndTimestamp() {
+    return this.simEndTimestamp;
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public <T extends Number> T getValue(WeatherParameterEnum key,
+    long time) throws IllegalArgumentException {
+    if (key == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "key"));
+    } else if (time <= 0) {
+      throw new IllegalArgumentException(ExceptionMessages.
+        getMessageForNotPositive("time",
+          false));
+    }
+
+    try {
+      this.semaphore.acquire(1);
+
+      // Is the correct weather data set?
+      if (!DateConverter.isTheSameDay(this.loadedTimestamp,
+        time)) {
+        // Load new data
+        this.internalAddNextWeather();
+      }
+
+      // Cached Value?
+      if (key.isCachedParameter()) {
+        Map<Long, Number> cache = this.cachedParameters.get(key);
+
+        // Is available?
+        if (!cache.isEmpty() && cache.containsKey(time)) {
+          return (T) cache.get(time);
+        }
+
+        // Add the new value
+        T value = this.parameters.get(key).getValue(time);
+        cache.put(time,
+          value);
+
+        return value;
+      }
+
+      // Return the value
+      return this.parameters.get(key).getValue(time);
+
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    } finally {
+      this.semaphore.release();
+    }
+  }
+
+  @Override
+  public <T extends Number> T getValue(WeatherParameterEnum key,
+    long time,
+    JaxRSCoordinate position)
+    throws IllegalArgumentException, NoWeatherDataFoundException {
+    if (key == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "key"));
+    } else if ((position == null)) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "position"));
+    } else if ((position.getX() < 0) || (position.getY() < 0)) {
+      throw new IllegalArgumentException(ExceptionMessages.
+        getMessageForNotPositive("position (x or y)",
+          true));
+    } else if (time <= 0) {
+      throw new IllegalArgumentException(ExceptionMessages.
+        getMessageForNotPositive("time",
+          false));
+    }
+
+    // Get the reference value
+    T value = this.getValue(key,
+      time);
+
+    // Calculate a new value for the given position
+    return this.gridConverter.getValue(key,
+      time,
+      position,
+      value);
+  }
+
+  @Override
+  public void initValues() {
+    this.simEndTimestamp = -1;
+    this.plannedEventModifiers.clear();
+
+    // Clear the values for the date
+    this.clearValues();
+  }
+
+  @Override
+  public void setCity(City city) {
+    this.city = city;
+  }
+
+  public void setLoadedTimestamp(long loadedTimestamp) {
+    this.loadedTimestamp = loadedTimestamp;
+  }
+
+  public void setSimEndTimestamp(long simEndTimestamp) {
+    this.simEndTimestamp = simEndTimestamp;
+  }
+
+  /**
+   * Changes the weather informations to the next day
+   */
+  private void changeReferenceValuesToNextDay() {
+    WeatherMap map = new StationDataMap();
+
+    long nextDay;
+    for (AbstractStationData weather : this.referenceValues.values()) {
+      nextDay = weather.getMeasureTime().getTime() + DateConverter.ONE_DAY_IN_MILLIS;
+      // Change date
+      weather.setMeasureTime(new Time(nextDay));
+      weather.setMeasureDate(new Date(nextDay));
+
+      // Add to new map
+      map.put(nextDay,
+        weather);
+    }
+
+    // Change
+    this.referenceValues = map;
+  }
+
+  /**
+   * Clear all stored data to use new data
+   */
+  @Override
+  public void clearValues() {
+    // Delete generel data
+    this.referenceValues = null;
+    this.loadedTimestamp = -1;
+
+    // Delete cached values
+    for (WeatherParameterEnum enumElement : this.cachedParameters.keySet()) {
+      this.cachedParameters.get(enumElement).clear();
+    }
+  }
+
+  /**
+   * Initiate all parameters
+   *
+   * @throws Exception There is a parameter that can not be initiated.
+   */
+  private void initParameters() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    for (WeatherParameterEnum enumElement : WeatherParameterEnum.values()) {
+      // Add parameter
+      WeatherParameterBase type = enumElement.getValueType().getConstructor(
+        WeatherService.class)
+        .newInstance(this);
+      this.parameters.put(enumElement,
+        type);
+
+      // Add cached parameter
+      if (enumElement.isCachedParameter()) {
+        this.cachedParameters.put(enumElement,
+          new HashMap<Long, Number>());
+      }
+    }
+  }
+
+  /**
+   * Add new weather informations which have to be present in the database
+   *
+   * @param startTimestamp Start timestamp weather will be loaded from the next
+   * morning after 00:00
+   * @param endTimestamp End timestamp whether will be loaded until the next
+   * morning after 00:00
+   * @param takeNormalData Option to take normal data
+   * @param strategyList List with strategies to modify the data
+   * @throws NoWeatherDataFoundException No data found
+   */
+  private void internalAddNewWeather(long startTimestamp,
+    long endTimestamp,
+    boolean takeNormalData,
+    List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
+    // Delete all values
+    this.initValues();
+
+    // Convert dates to 00:00:00
+    long startTimestampMidnight = DateConverter.convertTimestampToMidnight(
+      startTimestamp);
+    this.simEndTimestamp = DateConverter.
+      convertTimestampToMidnight(endTimestamp)
+      + DateConverter.ONE_DAY_IN_MILLIS;
+
+    // Change loader
+    this.loader.setLoadOption(takeNormalData);
+
+    // Save start strategies
+    if ((strategyList != null) && !strategyList.isEmpty()) {
+      this.plannedEventModifiers.addAll(strategyList);
+    }
+
+    // Add new weather data
+    this.loadWeather(startTimestampMidnight);
+  }
+
+  /**
+   * Replace the weather information with data of the next day
+   */
+  private void internalAddNextWeather() {
+    // Calculate next day
+    long nextday = this.loadedTimestamp + DateConverter.ONE_DAY_IN_MILLIS;
+
+    // Enddate?
+    if ((this.simEndTimestamp > 0) && (nextday > this.simEndTimestamp)) {
+      throw new RuntimeException(
+        "Timestamp for the simulation end is overstepped!");
+    }
+
+    // Check weather informations
+    if (!this.checkDate(nextday)) {
+
+      /*
+       * Take existing map
+       */
+      // Check existing map
+      if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
+        throw new IllegalStateException();
+      }
+
+      // Change map to next day
+      this.changeReferenceValuesToNextDay();
+      this.loadedTimestamp = nextday;
+
+    } else {
+      /*
+       * Get new weather
+       */
+      // Add new weather data
+      this.loadWeather(nextday);
+    }
+  }
+
+  /**
+   * Returns true if the event type is planned for further events
+   *
+   * @param type WeatherEventEnum
+   * @return true if the event type is planned for further events else false
+   */
+  private boolean isPlannedEventType(WeatherEventType type) {
+    for (WeatherStrategyHelper helper : this.plannedEventModifiers) {
+      if (helper.getStrategy().getType().equals(type)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Loads new weather data for the given date
+   *
+   * @param timestamp Timestamp
+   * @throws NoWeatherDataFoundException No data found for the given date
+   */
+  private void loadWeather(long timestamp) throws NoWeatherDataFoundException {
+    /*
+     * Load data
+     */
+    // Get data from database
+    WeatherMap map = this.loader.loadStationData(timestamp);
+
+    /*
+     * Use modifiers
+     */
+    // Use strategy context
+    WeatherStrategyContext context = new WeatherStrategyContext();
+
+    if (!this.plannedEventModifiers.isEmpty()) {
+
+      // Get strategies for the current day
+      List<WeatherStrategy> dayStrategies = new ArrayList<>();
+      Iterator<WeatherStrategyHelper> iterator = this.plannedEventModifiers.
+        iterator();
+      while (iterator.hasNext()) {
+        WeatherStrategyHelper strategyHelper = iterator.next();
+        if (strategyHelper != null) {
+          if (WeatherEventTypeEnum.SIMULATION_EVENTS.contains(strategyHelper.
+            getStrategy().getType())) {
+            dayStrategies.add(strategyHelper.getStrategy());
+          } else if (DateConverter.isTheSameDay(strategyHelper.getTimestamp(),
+            timestamp)) {
+            dayStrategies.add(strategyHelper.getStrategy());
+            iterator.remove();
+          }
+        }
+      }
+
+      // Use strategies to modify data
+      if (!dayStrategies.isEmpty()) {
+        // Sort by orderID
+        Collections.sort(dayStrategies,
+          new WeatherStrategyComparator());
+
+        // Execute strategy
+        for (WeatherStrategy strategy : dayStrategies) {
+          context.setStrategy(strategy);
+          context.execute(map,
+            this.city,
+            timestamp);
+        }
+      }
+    }
+
+    /*
+     * Save and clear all
+     */
+    // Clear all values for that day
+    this.clearValues();
+    // Set new weather data
+    this.loadedTimestamp = timestamp;
+    this.referenceValues = map;
+
+    // Alle sortiert ausgeben (zum Testen)
+    // Vector<Long> times = new Vector<Long>(this.referenceValues.keySet());
+    // Collections.sort(times);
+    // for (Long time : times) {
+    // Weather w = this.referenceValues.get(time);
+    // System.out.println(new Date(w.getDate()) + " - " + new Time(w.getTime()) + " - "
+    // + new Timestamp(w.getTimestamp()));
+    // }
+  }
+
+  @Override
+  public Unit<Temperature> getTemperatureUnit() {
+    return SI.CELSIUS;
+  }
 }

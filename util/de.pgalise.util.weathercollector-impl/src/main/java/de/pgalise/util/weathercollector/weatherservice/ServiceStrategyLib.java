@@ -15,10 +15,11 @@
  */
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.simulation.weather.model.WeatherCondition;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
+import de.pgalise.simulation.weather.entity.ExtendedServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ExtendedServiceDataForecast;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 
 /**
@@ -29,69 +30,71 @@ import de.pgalise.util.weathercollector.util.DatabaseManager;
  */
 public class ServiceStrategyLib {
 
-	/**
-	 * Completes the ServiceData objects to one better object
-	 *
-	 * @param <A> enforces type security in the completion
-	 * @param <B> enforces type security in the completion
-	 * @param <C>
-	 * @param <T>
-	 * @param weather1 Best ServiceData
-	 * @param weather2 New ServiceData
-	 * @return Better ServiceData
-	 */
-	public static <A extends ExtendedServiceDataCurrent, B extends ExtendedServiceDataForecast, T extends ServiceDataHelper> T completeWeather(
-		T weather1,
-		T weather2) {
-		if (weather2 == null) {
-			return weather1;
-		}
+  /**
+   * Completes the ServiceData objects to one better object
+   *
+   * @param <A> enforces type security in the completion
+   * @param <B> enforces type security in the completion
+   * @param <T>
+   * @param weather1 Best ServiceData
+   * @param weather2 New ServiceData
+   * @param idGenerator
+   * @return Better ServiceData
+   */
+  public static <A extends ExtendedServiceDataCurrent, B extends ExtendedServiceDataForecast, T extends ServiceDataHelper> T completeWeather(
+    T weather1,
+    T weather2,
+    IdGenerator idGenerator) {
+    if (weather2 == null) {
+      return weather1;
+    }
 
-		// Get current ServiceData
-		T bestWeather;
-		T tempWeather;
-		if (weather1.getMeasureTime().getTime() > weather2.getMeasureTime().
-			getTime()) {
-			bestWeather = weather1;
-			tempWeather = weather2;
-		} else {
-			bestWeather = weather2;
-			tempWeather = weather1;
-		}
+    // Get current ServiceData
+    T bestWeather;
+    T tempWeather;
+    if (weather1.getMeasureTime().getTime() > weather2.getMeasureTime().
+      getTime()) {
+      bestWeather = weather1;
+      tempWeather = weather2;
+    } else {
+      bestWeather = weather2;
+      tempWeather = weather1;
+    }
 
-		// Complete ServiceData
-		bestWeather.complete(tempWeather);
+    // Complete ServiceData
+    bestWeather.complete(tempWeather,
+      idGenerator);
 
-		// Return best ServiceData
-		return bestWeather;
-	}
+    // Return best ServiceData
+    return bestWeather;
+  }
 
-	/**
-	 * Returns the condition code from the database
-	 *
-	 * @param condition Condition
-	 * @param databaseManager
-	 * @return Condition code
-	 */
-	public static int getConditionCode(String condition,
-		DatabaseManager databaseManager) {
-		if ((condition == null) || condition.isEmpty()) {
-			return WeatherCondition.UNKNOWN_CONDITION_CODE;
-		}
+  /**
+   * Returns the condition code from the database
+   *
+   * @param condition Condition
+   * @param databaseManager
+   * @return Condition code
+   */
+  public static int getConditionCode(String condition,
+    DatabaseManager databaseManager) {
+    if ((condition == null) || condition.isEmpty()) {
+      return WeatherCondition.UNKNOWN_CONDITION_CODE;
+    }
 
-		// Prepare
-		String condition0 = condition.toLowerCase();
+    // Prepare
+    String condition0 = condition.toLowerCase();
 
-		// Get condition
-		WeatherCondition result = databaseManager.getCondition(condition0);
+    // Get condition
+    WeatherCondition result = databaseManager.getCondition(condition0);
 
-		if (result != null) {
-			return result.getCode();
-		} else {
-			return WeatherCondition.UNKNOWN_CONDITION_CODE;
-		}
-	}
+    if (result != null) {
+      return result.getCode();
+    } else {
+      return WeatherCondition.UNKNOWN_CONDITION_CODE;
+    }
+  }
 
-	private ServiceStrategyLib() {
-	}
+  private ServiceStrategyLib() {
+  }
 }

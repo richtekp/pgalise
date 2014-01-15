@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.entity.BusRoute;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;

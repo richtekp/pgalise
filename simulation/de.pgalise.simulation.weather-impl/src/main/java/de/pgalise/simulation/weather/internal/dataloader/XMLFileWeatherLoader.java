@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.dataloader;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.File;
@@ -29,8 +29,8 @@ import java.util.Properties;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
-import de.pgalise.simulation.weather.model.ServiceDataForecast;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 
 /**
  * This class loads the weather data from a xml file. <br />

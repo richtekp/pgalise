@@ -21,7 +21,7 @@ package de.pgalise.simulation.controlCenter.internal.message;
  * 
  * @author Timo
  */
-public class LoadSimulationStartParameterMessage extends AbstractIdentifiableControlCenterMessage<String> {
+public class LoadSimulationStartParameterMessage extends IdentifiableControlCenterMessage<String> {
 
 	/**
 	 * Constructor

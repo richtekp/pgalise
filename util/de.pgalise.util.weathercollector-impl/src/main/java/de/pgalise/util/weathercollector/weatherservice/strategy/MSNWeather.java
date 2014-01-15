@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
@@ -28,11 +28,12 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.ExtendedServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ExtendedServiceDataForecast;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import java.sql.Timestamp;
+import javax.ejb.EJB;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.SI;
@@ -42,158 +43,202 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Returns weather informations from MSN. Uses the strategy pattern.
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Apr 21, 2012)
  */
 public class MSNWeather extends XMLAPIWeather {
-	private final static Logger LOGGER = LoggerFactory.getLogger(MSNWeather.class);
 
-	/**
-	 * Constructor
-	 */
-	public MSNWeather() {
-		super("http://weather.service.msn.com/data.aspx?src=vista&weadegreetype=C&culture=en-US&weasearchstr=", "MSN",SI.CELSIUS);
-	}
+  private final static Logger LOGGER = LoggerFactory.getLogger(MSNWeather.class);
+  @EJB
+  private IdGenerator idGenerator;
 
-	@Override
-	protected ServiceDataHelper extractWeather(City city, Document doc, DatabaseManager databaseManager) {
-		ServiceDataHelper weather = new ServiceDataHelper(city, this.getApiname());
-		Unit<Temperature> unit = SI.CELSIUS;
+  /**
+   * Constructor
+   */
+  public MSNWeather() {
+    super(
+      "http://weather.service.msn.com/data.aspx?src=vista&weadegreetype=C&culture=en-US&weasearchstr=",
+      "MSN",
+      SI.CELSIUS);
+  }
 
-		// Read global data
-		NodeList nodes = doc.getElementsByTagName("weather");
-		Node node = nodes.item(0);
-		if (node != null) {
-			// City
-			weather.setApicity(node.getAttributes().getNamedItem("weatherlocationname").getTextContent());
+  @Override
+  protected ServiceDataHelper extractWeather(City city,
+    Document doc,
+    DatabaseManager databaseManager) {
+    ServiceDataHelper weather = new ServiceDataHelper(city,
+      this.getApiname());
+    Unit<Temperature> unit = SI.CELSIUS;
 
-			// Temperature unit
-			String temp = node.getAttributes().getNamedItem("degreetype").getTextContent();
-			if (temp != null && !temp.isEmpty()) {
-				if(temp.equals("C")) {
-					unit = SI.CELSIUS;
-				}else {
-					throw new IllegalArgumentException("degreetype is not C");
-				}
-			}
+    // Read global data
+    NodeList nodes = doc.getElementsByTagName("weather");
+    Node node = nodes.item(0);
+    if (node != null) {
+      // City
+      weather.setApicity(node.getAttributes().
+        getNamedItem("weatherlocationname").getTextContent());
 
-			NodeList childnodes = node.getChildNodes();
-			for (int j = 0; j < childnodes.getLength(); j++) {
-				Node childnode = childnodes.item(j);
+      // Temperature unit
+      String temp = node.getAttributes().getNamedItem("degreetype").
+        getTextContent();
+      if (temp != null && !temp.isEmpty()) {
+        if (temp.equals("C")) {
+          unit = SI.CELSIUS;
+        } else {
+          throw new IllegalArgumentException("degreetype is not C");
+        }
+      }
 
-				// CurrentCondition
-				if (childnode.getNodeName().equals("current")) {
-					NamedNodeMap attributes = childnode.getAttributes();
+      NodeList childnodes = node.getChildNodes();
+      for (int j = 0; j < childnodes.getLength(); j++) {
+        Node childnode = childnodes.item(j);
 
-					ExtendedServiceDataCurrent condition;
-					try {
-						// Date
-						String dateString = attributes.getNamedItem("date").getTextContent();
-						dateString = dateString + " " + attributes.getNamedItem("observationtime").getTextContent();
+        // CurrentCondition
+        if (childnode.getNodeName().equals("current")) {
+          NamedNodeMap attributes = childnode.getAttributes();
 
-						// Current date
-						Time time = DateConverter.convertTime(dateString, "yyyy-MM-dd h:mm:ss");
-						Date date = DateConverter.convertDate(dateString, "yyyy-MM-dd h:mm:ss");
-						condition = new ExtendedServiceDataCurrent(
-							date, 
-							time, 
-							city, 
-							Measure.valueOf(10.0f, SI.CELSIUS), 1.0f,  1.0f, 10.0f, 10.0f, WeatherCondition.UNKNOWN_CONDITION, new Time(1), new Time(2));
+          ExtendedServiceDataCurrent condition;
+          try {
+            // Date
+            String dateString = attributes.getNamedItem("date").getTextContent();
+            dateString = dateString + " " + attributes.getNamedItem(
+              "observationtime").getTextContent();
 
-						// Date
-						Timestamp convertedTimestamp = DateConverter.convertTimestamp(dateString, "yyyy-MM-dd h:mm:ss");
-						weather.setMeasureTime(new Time(convertedTimestamp.getTime()));
-						weather.setMeasureDate(new Date(convertedTimestamp.getTime()));
-					} catch (ParseException e) {
-						LOGGER.warn("see nested exception",
-							e);
-						return null;
-					}
+            // Current date
+            Time time = DateConverter.convertTime(dateString,
+              "yyyy-MM-dd h:mm:ss");
+            Date date = DateConverter.convertDate(dateString,
+              "yyyy-MM-dd h:mm:ss");
+            condition = new ExtendedServiceDataCurrent(idGenerator.getNextId(),
+              date,
+              time,
+              city,
+              Measure.valueOf(10.0f,
+                SI.CELSIUS),
+              1.0f,
+              1.0f,
+              10.0f,
+              10.0f,
+              WeatherCondition.retrieveCondition(idGenerator,
+                WeatherCondition.UNKNOWN_CONDITION_CODE),
+              new Time(1),
+              new Time(2));
 
-					String dataString;
-					// Temperature
-					dataString = attributes.getNamedItem("temperature").getTextContent();
-					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setTemperature(Measure.valueOf(Float.parseFloat(dataString), unit));
-					}
+            // Date
+            Timestamp convertedTimestamp = DateConverter.convertTimestamp(
+              dateString,
+              "yyyy-MM-dd h:mm:ss");
+            weather.setMeasureTime(new Time(convertedTimestamp.getTime()));
+            weather.setMeasureDate(new Date(convertedTimestamp.getTime()));
+          } catch (ParseException e) {
+            LOGGER.warn("see nested exception",
+              e);
+            return null;
+          }
 
-					// Condition
-					dataString = attributes.getNamedItem("skycode").getTextContent();
-					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
-					}
+          String dataString;
+          // Temperature
+          dataString = attributes.getNamedItem("temperature").getTextContent();
+          if ((dataString != null) && !dataString.isEmpty()) {
+            condition.setTemperature(Measure.valueOf(Float.
+              parseFloat(dataString),
+              unit));
+          }
 
-					// Relativ humidity
-					dataString = attributes.getNamedItem("humidity").getTextContent();
-					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setRelativHumidity(Float.parseFloat(dataString));
-					}
+          // Condition
+          dataString = attributes.getNamedItem("skycode").getTextContent();
+          if ((dataString != null) && !dataString.isEmpty()) {
+            condition.setCondition(WeatherCondition.retrieveCondition(
+              idGenerator,
+              Integer.
+              parseInt(dataString)));
+          }
 
-					// Temperature
-					dataString = attributes.getNamedItem("windspeed").getTextContent();
-					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setWindVelocity(Float.parseFloat(dataString));
-					}
+          // Relativ humidity
+          dataString = attributes.getNamedItem("humidity").getTextContent();
+          if ((dataString != null) && !dataString.isEmpty()) {
+            condition.setRelativHumidity(Float.parseFloat(dataString));
+          }
 
-					// City
-					condition.setCity(city);
+          // Temperature
+          dataString = attributes.getNamedItem("windspeed").getTextContent();
+          if ((dataString != null) && !dataString.isEmpty()) {
+            condition.setWindVelocity(Float.parseFloat(dataString));
+          }
 
-					// Save informations
-					weather.setCurrentCondition(condition);
-				} else if (childnode.getNodeName().equals("forecast")) {
-					// Forecast
-					NamedNodeMap attributes = childnode.getAttributes();
+          // City
+          condition.setCity(city);
 
-					ExtendedServiceDataForecast condition;
-					try {
-						// Date
-						String dateString = attributes.getNamedItem("date").getTextContent();
+          // Save informations
+          weather.setCurrentCondition(condition);
+        } else if (childnode.getNodeName().equals("forecast")) {
+          // Forecast
+          NamedNodeMap attributes = childnode.getAttributes();
 
-						// Current date
-						condition = new ExtendedServiceDataForecast(
-							DateConverter.convertDate(dateString, "yyyy-MM-dd"), 
-							new Time(System.currentTimeMillis()), 
-							city, 
-							Measure.valueOf(10.0f, SI.CELSIUS),  
-							Measure.valueOf(10.0f, SI.CELSIUS),
-							1.0f, 1.0f, 10.0f, WeatherCondition.UNKNOWN_CONDITION);
-					} catch (ParseException e) {
-						continue;
-					}
+          ExtendedServiceDataForecast condition;
+          try {
+            // Date
+            String dateString = attributes.getNamedItem("date").getTextContent();
 
-					String dataString;
+            // Current date
+            condition = new ExtendedServiceDataForecast(idGenerator.getNextId(),
+              DateConverter.convertDate(dateString,
+                "yyyy-MM-dd"),
+              new Time(System.currentTimeMillis()),
+              city,
+              Measure.valueOf(10.0f,
+                SI.CELSIUS),
+              Measure.valueOf(10.0f,
+                SI.CELSIUS),
+              1.0f,
+              1.0f,
+              10.0f,
+              WeatherCondition.retrieveCondition(idGenerator,
+                WeatherCondition.UNKNOWN_CONDITION_CODE));
+          } catch (ParseException e) {
+            continue;
+          }
 
-					// Temperature (low)
-					dataString = attributes.getNamedItem("low").getTextContent();
-					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setTemperatureLow(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
-					}
+          String dataString;
 
-					// Temperature (high)
-					dataString = attributes.getNamedItem("high").getTextContent();
-					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(dataString), SI.CELSIUS));
-					}
+          // Temperature (low)
+          dataString = attributes.getNamedItem("low").getTextContent();
+          if ((dataString != null) && !dataString.isEmpty()) {
+            condition.setTemperatureLow(Measure.valueOf(Float.parseFloat(
+              dataString),
+              SI.CELSIUS));
+          }
 
-					// Condition
-					dataString = attributes.getNamedItem("skycodeday").getTextContent();
-					if ((dataString != null) && !dataString.isEmpty()) {
-						condition.setCondition(WeatherCondition.retrieveCondition(Integer.parseInt(dataString)					));
-					}
+          // Temperature (high)
+          dataString = attributes.getNamedItem("high").getTextContent();
+          if ((dataString != null) && !dataString.isEmpty()) {
+            condition.setTemperatureHigh(Measure.valueOf(Float.parseFloat(
+              dataString),
+              SI.CELSIUS));
+          }
 
-					// City
-					condition.setCity(city);
+          // Condition
+          dataString = attributes.getNamedItem("skycodeday").getTextContent();
+          if ((dataString != null) && !dataString.isEmpty()) {
+            condition.setCondition(WeatherCondition.retrieveCondition(
+              idGenerator,
+              Integer.
+              parseInt(dataString)));
+          }
 
-					// Save informations
-					if (condition.getMeasureDate() != null) {
-						weather.getForecastConditions().add(condition);
-					}
-				}
-			}
-		}
+          // City
+          condition.setCity(city);
 
-		// Return informations
-		return weather;
-	}
+          // Save informations
+          if (condition.getMeasureDate() != null) {
+            weather.getForecastConditions().add(condition);
+          }
+        }
+      }
+    }
+
+    // Return informations
+    return weather;
+  }
 }

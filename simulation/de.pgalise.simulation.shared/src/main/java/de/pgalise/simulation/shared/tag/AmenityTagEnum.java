@@ -4,16 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  *
  * @author richter
  */
-@XmlRootElement
-@Embeddable
-public enum AmenityTagEnum implements AmenityBaseTag {
+public enum AmenityTagEnum {
 
 	KINDERGARTEN("kindergarten"), PHARMACY("pharmarcy"), RESTAURANT("restaurant"), PARKING(
 		"parking"), BICYKLE_PARKING("bicycle_parking"), CAR_RENTAL("car_rental");
@@ -27,7 +22,6 @@ public enum AmenityTagEnum implements AmenityBaseTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

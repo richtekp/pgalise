@@ -19,7 +19,7 @@ package de.pgalise.simulation.weather.parameter;
 import java.sql.Date;
 
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 
@@ -73,7 +73,7 @@ public abstract class WeatherParameterBase implements WeatherParameter {
 	 * @throws NoWeatherDataFoundException
 	 *             There is no value for the given time.
 	 */
-	protected StationData getWeather(long time) {
+	protected AbstractStationData getWeather(long time) {
 		// Check if it is the right date
 		if ((this.getWeatherService().getLoadedTimestamp() < 1)
 				|| !DateConverter.isTheSameDay(this.weatherService.getLoadedTimestamp(), time)) {
@@ -82,7 +82,7 @@ public abstract class WeatherParameterBase implements WeatherParameter {
 		}
 
 		// Get weather
-		StationData weather = this.getWeatherService().getReferenceValues().get(time);
+		AbstractStationData weather = this.getWeatherService().getReferenceValues().get(time);
 		if (weather == null) {
 
 			// Calculate next minute

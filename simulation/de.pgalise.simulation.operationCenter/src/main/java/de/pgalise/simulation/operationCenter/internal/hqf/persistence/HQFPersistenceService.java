@@ -19,6 +19,8 @@
  */
 package de.pgalise.simulation.operationCenter.internal.hqf.persistence;
 
+import de.pgalise.simulation.operationCenter.entity.HQFData;
+
 
 /**
  * Interface for HQFPersistenceService

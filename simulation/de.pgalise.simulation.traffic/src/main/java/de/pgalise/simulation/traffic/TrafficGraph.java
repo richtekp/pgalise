@@ -4,11 +4,13 @@
  */
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.util.Set;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;

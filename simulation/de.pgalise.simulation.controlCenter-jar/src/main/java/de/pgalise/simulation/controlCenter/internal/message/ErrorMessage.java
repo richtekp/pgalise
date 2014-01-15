@@ -23,7 +23,7 @@ import de.pgalise.simulation.controlCenter.model.ErrorMessageData;
  * 
  * @author Timo
  */
-public class ErrorMessage extends AbstractIdentifiableControlCenterMessage<ErrorMessageData> {
+public class ErrorMessage extends IdentifiableControlCenterMessage<ErrorMessageData> {
 	/**
 	 * Constructor
 	 * 

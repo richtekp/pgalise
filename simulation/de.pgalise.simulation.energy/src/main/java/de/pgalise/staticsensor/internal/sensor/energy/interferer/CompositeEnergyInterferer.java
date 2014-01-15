@@ -16,7 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.energy.interferer;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.util.LinkedList;
 import java.util.List;
 

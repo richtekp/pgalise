@@ -33,7 +33,7 @@ import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.ChangeEnergyConsumptionEvent;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import javax.ejb.Stateful;
 
 /**

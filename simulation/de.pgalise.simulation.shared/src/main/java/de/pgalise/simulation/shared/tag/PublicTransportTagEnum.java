@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -13,8 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author richter
  */
 @XmlRootElement
-@Embeddable
-public enum PublicTransportTagEnum implements PublicTransportTag {
+public enum PublicTransportTagEnum {
 
 	STOP_POSITION("stop_position");
 
@@ -24,7 +22,6 @@ public enum PublicTransportTagEnum implements PublicTransportTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

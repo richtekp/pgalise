@@ -6,7 +6,7 @@ package de.pgalise.simulation.weather.modifier;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 
 /**
  *

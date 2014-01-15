@@ -6,11 +6,12 @@
 package de.pgalise.testutils.traffic;
 
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.city.BaseGeoInfo;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseGeoInfo;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.traffic.TrafficCity;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import java.io.InputStream;
@@ -21,49 +22,52 @@ import java.io.InputStream;
  */
 public class TrafficTestUtils {
 
-	public static TrafficCity createDefaultTestCityInstance(Long id) {
+  public static TrafficCity createDefaultTestCityInstance(
+    IdGenerator idGenerator) {
 
-		JaxRSCoordinate referencePoint = new JaxRSCoordinate(52.516667,
-			13.4);
-		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
-			createPolygon(
-				new JaxRSCoordinate[]{
-					new JaxRSCoordinate(referencePoint.getX() - 1,
-						referencePoint.getY() - 1),
-					new JaxRSCoordinate(referencePoint.getX() - 1,
-						referencePoint.getY()),
-					new JaxRSCoordinate(referencePoint.getX(),
-						referencePoint.getY()),
-					new JaxRSCoordinate(referencePoint.getX(),
-						referencePoint.getY() - 1),
-					new JaxRSCoordinate(referencePoint.getX() - 1,
-						referencePoint.getY() - 1)
-				}
-			);
-		InputStream osmFileInputStream = Thread.currentThread().
-			getContextClassLoader().getResourceAsStream("oldenburg_pg.osm");
-		if (osmFileInputStream == null) {
-			throw new RuntimeException("could not load osm file");
-		}
-		InputStream busStopFileInputStream = Thread.currentThread().
-			getContextClassLoader().getResourceAsStream("stops.gtfs");
-		if (busStopFileInputStream == null) {
-			throw new RuntimeException("could not load bus stop file");
-		}
-		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
-		CityInfrastructureData trafficInfrastructureData;
-		trafficInfrastructureData = new CityInfrastructureData(id);
-		TrafficCity city = new TrafficCity(
-			"Berlin",
-			3375222,
-			80,
-			true,
-			true,
-			new BaseGeoInfo(referenceArea),
-			trafficInfrastructureData);
-		return city;
-	}
+    JaxRSCoordinate referencePoint = new JaxRSCoordinate(52.516667,
+      13.4);
+    Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+      createPolygon(
+        new JaxRSCoordinate[]{
+          new JaxRSCoordinate(referencePoint.getX() - 1,
+            referencePoint.getY() - 1),
+          new JaxRSCoordinate(referencePoint.getX() - 1,
+            referencePoint.getY()),
+          new JaxRSCoordinate(referencePoint.getX(),
+            referencePoint.getY()),
+          new JaxRSCoordinate(referencePoint.getX(),
+            referencePoint.getY() - 1),
+          new JaxRSCoordinate(referencePoint.getX() - 1,
+            referencePoint.getY() - 1)
+        }
+      );
+    InputStream osmFileInputStream = Thread.currentThread().
+      getContextClassLoader().getResourceAsStream("oldenburg_pg.osm");
+    if (osmFileInputStream == null) {
+      throw new RuntimeException("could not load osm file");
+    }
+    InputStream busStopFileInputStream = Thread.currentThread().
+      getContextClassLoader().getResourceAsStream("stops.gtfs");
+    if (busStopFileInputStream == null) {
+      throw new RuntimeException("could not load bus stop file");
+    }
+    BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
+    CityInfrastructureData trafficInfrastructureData;
+    trafficInfrastructureData = new CityInfrastructureData(idGenerator.
+      getNextId());
+    TrafficCity city = new TrafficCity(idGenerator.getNextId(),
+      "Berlin",
+      3375222,
+      80,
+      true,
+      true,
+      new BaseGeoInfo(idGenerator.getNextId(),
+        referenceArea),
+      trafficInfrastructureData);
+    return city;
+  }
 
-	private TrafficTestUtils() {
-	}
+  private TrafficTestUtils() {
+  }
 }

@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;

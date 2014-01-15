@@ -5,9 +5,9 @@
  */
 package de.pgalise.simulation.traffic.internal.server.route;
 
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import java.util.List;
 
 /**

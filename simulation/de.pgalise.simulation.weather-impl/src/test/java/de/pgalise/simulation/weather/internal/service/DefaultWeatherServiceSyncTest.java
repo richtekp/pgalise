@@ -15,11 +15,12 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
-import de.pgalise.simulation.weather.model.ServiceDataForecast;
-import de.pgalise.simulation.weather.model.StationDataNormal;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
+import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.testutils.weather.WeatherTestUtils;
@@ -55,165 +56,174 @@ import org.slf4j.LoggerFactory;
 @ManagedBean
 public class DefaultWeatherServiceSyncTest {
 
-	@PersistenceContext(unitName = "pgalise-weather")
-	private EntityManager entityManager;
+  @PersistenceContext(unitName = "pgalise-weather")
+  private EntityManager entityManager;
 
-	/**
-	 * End timestamp
-	 */
-	private long endTimestamp;
+  /**
+   * End timestamp
+   */
+  private long endTimestamp;
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(
-		DefaultWeatherServiceSyncTest.class);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    DefaultWeatherServiceSyncTest.class);
 
-	/**
-	 * Start timestamp
-	 */
-	private long startTimestamp;
+  /**
+   * Start timestamp
+   */
+  private long startTimestamp;
 
-	/**
-	 * Test class
-	 */
-	@EJB
-	private WeatherService testclass;
+  /**
+   * Test class
+   */
+  @EJB
+  private WeatherService testclass;
 
-	/**
-	 * Number of test threads
-	 */
-	private final int testNumberOfThreads = 100;
+  /**
+   * Number of test threads
+   */
+  private final int testNumberOfThreads = 100;
 
-	/**
-	 * Weather loader
-	 */
-	@EJB
-	private WeatherLoader loader;
+  /**
+   * Weather loader
+   */
+  @EJB
+  private WeatherLoader loader;
 
-	private City city;
+  private City city;
 
-	@Resource
-	private UserTransaction userTransaction;
+  @Resource
+  private UserTransaction userTransaction;
 
-	@Before
-	public void setUp() throws Exception {
-		TestUtils.getContainer().getContext().bind("inject",
-			this);
+  @EJB
+  private IdGenerator idGenerator;
 
-		userTransaction.begin();
-		try {
-			city = TestUtils.
-				createDefaultTestCityInstance();
-			testclass.setCity(city);
-		} finally {
-			userTransaction.commit();
-		}
+  @Before
+  public void setUp() throws Exception {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
 
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2011,
-			1,
-			1,
-			0,
-			0,
-			0);
-		startTimestamp = cal.getTimeInMillis();
+    userTransaction.begin();
+    try {
+      city = TestUtils.
+        createDefaultTestCityInstance(idGenerator);
+      testclass.setCity(city);
+    } finally {
+      userTransaction.commit();
+    }
 
-		// End
-		cal.set(2011,
-			1,
-			2,
-			0,
-			0,
-			0);
-		endTimestamp = cal.getTimeInMillis();
-	}
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2011,
+      1,
+      1,
+      0,
+      0,
+      0);
+    startTimestamp = cal.getTimeInMillis();
 
-	@Test
-	public void testGetValue() throws Exception {
-		// Test time
-		final long testTime = startTimestamp + (1000 * 60 * 60 * 5);
-		// All threads
-		final List<Thread> threads = new ArrayList<>();
-		userTransaction.begin();
-		try {
-			Map<Date, StationDataNormal> entities = WeatherTestUtils.
-				setUpWeatherStationData(startTimestamp,
-					endTimestamp,
-					entityManager);
-			Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
-				setUpWeatherServiceDataCurrent(startTimestamp,
-					endTimestamp,
-					city,
-					entityManager);
-			Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
-				setUpWeatherServiceDataForecast(startTimestamp,
-					endTimestamp,
-					city,
-					entityManager);
-			testclass.addNewWeather(startTimestamp,
-				endTimestamp,
-				true,
-				null);
+    // End
+    cal.set(2011,
+      1,
+      2,
+      0,
+      0,
+      0);
+    endTimestamp = cal.getTimeInMillis();
+  }
 
-			// Creates 50 Threads
-			for (int i = 0; i < testNumberOfThreads; i++) {
-				final int y = i;
-				Thread thread = new Thread(new Runnable() {
-					@Override
-					public void run() {
-						Number value;
+  @Test
+  public void testGetValue() throws Exception {
+    // Test time
+    final long testTime = startTimestamp + (1000 * 60 * 60 * 5);
+    // All threads
+    final List<Thread> threads = new ArrayList<>();
+    userTransaction.begin();
+    try {
+      Map<Date, StationDataNormal> entities;
+      Map<Date, ServiceDataCurrent> entities0;
+      Map<Date, ServiceDataForecast> entities1;
+      entities = WeatherTestUtils.
+        setUpWeatherStationData(startTimestamp,
+          endTimestamp,
+          entityManager,
+          idGenerator);
+      entities0 = WeatherTestUtils.
+        setUpWeatherServiceDataCurrent(startTimestamp,
+          endTimestamp,
+          city,
+          entityManager,
+          idGenerator);
+      entities1 = WeatherTestUtils.
+        setUpWeatherServiceDataForecast(startTimestamp,
+          endTimestamp,
+          city,
+          entityManager,
+          idGenerator);
+      testclass.addNewWeather(startTimestamp,
+        endTimestamp,
+        true,
+        null);
 
-						// Sleep with random value
-						try {
-							Thread.sleep((long) (Math.random() * 1000L));
-						} catch (InterruptedException e) {
-							throw new RuntimeException(e);
-						}
+      // Creates 50 Threads
+      for (int i = 0; i < testNumberOfThreads; i++) {
+        final int y = i;
+        Thread thread = new Thread(new Runnable() {
+          @Override
+          public void run() {
+            Number value;
 
-						if ((y % 20) == 0) {
-							// Every 20 thread add new weather
-							testclass.addNewWeather(startTimestamp,
-								endTimestamp,
-								true,
-								null);
-							log.debug("New weather added!");
+            // Sleep with random value
+            try {
+              Thread.sleep((long) (Math.random() * 1000L));
+            } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+            }
 
-						} else {
-							// Get test value
-							value = testclass.getValue(WeatherParameterEnum.TEMPERATURE,
-								testTime);
-							Assert.assertTrue(value != null);
-							log.debug("Thread (" + y + ") value: " + value.floatValue());
-						}
-					}
-				});
+            if ((y % 20) == 0) {
+              // Every 20 thread add new weather
+              testclass.addNewWeather(startTimestamp,
+                endTimestamp,
+                true,
+                null);
+              log.debug("New weather added!");
 
-				// Save thread
-				threads.add(thread);
+            } else {
+              // Get test value
+              value = testclass.getValue(WeatherParameterEnum.TEMPERATURE,
+                testTime);
+              Assert.assertTrue(value != null);
+              log.debug("Thread (" + y + ") value: " + value.floatValue());
+            }
+          }
+        });
 
-				// Start thread
-				thread.start();
-			}
+        // Save thread
+        threads.add(thread);
 
-			// Wait for threads
-			for (Thread thread : threads) {
-				thread.join();
-			}
+        // Start thread
+        thread.start();
+      }
 
-			WeatherTestUtils.tearDownWeatherData(entities,
-				StationDataNormal.class,
-				entityManager);
-			WeatherTestUtils.tearDownWeatherData(entities0,
-				ServiceDataCurrent.class,
-				entityManager);
-			WeatherTestUtils.tearDownWeatherData(entities1,
-				ServiceDataForecast.class,
-				entityManager);
+      // Wait for threads
+      for (Thread thread : threads) {
+        thread.join();
+      }
 
-		} finally {
-			userTransaction.commit();
-		}
-	}
+      WeatherTestUtils.tearDownWeatherData(entities,
+        StationDataNormal.class,
+        entityManager);
+      WeatherTestUtils.tearDownWeatherData(entities0,
+        ServiceDataCurrent.class,
+        entityManager);
+      WeatherTestUtils.tearDownWeatherData(entities1,
+        ServiceDataForecast.class,
+        entityManager);
+
+    } finally {
+      userTransaction.commit();
+    }
+  }
 }

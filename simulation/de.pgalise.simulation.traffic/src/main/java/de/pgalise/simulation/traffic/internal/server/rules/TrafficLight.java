@@ -17,9 +17,9 @@
 package de.pgalise.simulation.traffic.internal.server.rules;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.shared.entity.NavigationEdge;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 
 
@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.TrafficGraphExtensions;
  * 
  * @author Marcus
  */
-public class TrafficLight extends AbstractIdentifiable {
+public class TrafficLight extends Identifiable {
 
 	/**
 	 * Current state

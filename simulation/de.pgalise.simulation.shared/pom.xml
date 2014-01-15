@@ -71,28 +71,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!--		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-		</dependency>-->
-		<!--		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-spatial</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>-->
-		<!--		<dependency>
-			<groupId>org.apache.openjpa</groupId>
-			<artifactId>openjpa</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>org.javolution</groupId>
 			<artifactId>javolution</artifactId>
@@ -103,24 +81,23 @@
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.apache.openjpa</groupId>
 				<artifactId>openjpa-maven-plugin</artifactId>
 				<version>2.2.0</version>
 				<configuration>
 					<excludes>**/*.class</excludes>
-					<includes>de/pgalise/simulation/shared/city/*.class</includes>
+					<includes>de/pgalise/simulation/shared/entity/*.class</includes>
 					<addDefaultConstructor>true</addDefaultConstructor>               
 					<enforcePropertyRestrictions>true</enforcePropertyRestrictions>
 				</configuration>
 				<executions>
 					<execution>
-						<id>enhancer</id>
+						<id>enhancer-shared</id>
 						<phase>process-classes</phase>
 						<goals>
 							<goal>enhance</goal>
@@ -131,11 +108,11 @@
 					<dependency>
 						<groupId>org.apache.openjpa</groupId>
 						<artifactId>openjpa</artifactId>
-						<!-- set the version to be the same as the level in your runtime -->
-						<version>2.2.2</version>
+						 set the version to be the same as the level in your runtime 
+						<version>${de.pgalise.openjpa.version}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
+			</plugin>-->
 		</plugins>
 	</build>
 </project>

@@ -16,6 +16,8 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import java.util.Set;
 
 import de.pgalise.simulation.service.RandomSeedService;

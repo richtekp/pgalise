@@ -15,7 +15,8 @@
  */
 package de.pgalise.staticsensor.internal.sensor.energy;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.energy.entity.PhotovoltaikSensorData;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.sensorFramework.output.Output;

@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.dataloader;
 
 import java.util.List;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 
 /**
  * Interface for evaluating reference cities to the simulation city

@@ -23,12 +23,12 @@ import java.util.Queue;
 
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
-import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
+import de.pgalise.simulation.traffic.entity.TrafficRuleData;
 import java.util.ArrayList;
 import java.util.List;
 

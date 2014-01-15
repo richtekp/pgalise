@@ -17,8 +17,8 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.BusRoute;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.util.List;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import javax.xml.bind.annotation.XmlRootElement;

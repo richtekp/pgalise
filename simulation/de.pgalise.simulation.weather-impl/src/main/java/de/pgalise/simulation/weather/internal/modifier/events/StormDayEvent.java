@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.WeatherCondition;
-import de.pgalise.simulation.weather.model.MutableStationData;
-import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -166,7 +164,7 @@ public class StormDayEvent extends WeatherDayEventModifier {
 			this.setEventTimestamp(this.getRandomTimestamp(this.getSimulationTimestamp()));
 		}
 
-		StationData max = this.getNextWeatherForTimestamp(this.getEventTimestamp());
+		AbstractStationData max = this.getNextWeatherForTimestamp(this.getEventTimestamp());
 
 		// Calculate difference between max (reference) and max (event)
 		float maxDifference = this.maxValue - max.getWindVelocity();
@@ -203,7 +201,7 @@ public class StormDayEvent extends WeatherDayEventModifier {
 			float value, difference;
 			for (Long time : times) {
 				// Get weather
-				MutableStationData weather = this.getMap().get(time);
+				AbstractStationData weather = this.getMap().get(time);
 				actTime = weather.getMeasureTime().getTime();
 
 				// Between the interval?

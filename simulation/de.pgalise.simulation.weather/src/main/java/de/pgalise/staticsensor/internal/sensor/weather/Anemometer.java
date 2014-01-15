@@ -15,8 +15,9 @@
  */
 package de.pgalise.staticsensor.internal.sensor.weather;
 
+import de.pgalise.simulation.weather.entity.AnemometerData;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
@@ -34,7 +35,7 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.AnemometerWhit
  * @author marcus
  * @version 1.0
  */
-public class Anemometer extends WeatherSensor<AnemomenterData> {
+public class Anemometer extends WeatherSensor<AnemometerData> {
 
 	/**
 	 * Constructor
@@ -88,7 +89,7 @@ public class Anemometer extends WeatherSensor<AnemomenterData> {
 			weatherController,
 			updateLimit,
 			weatherInterferer,
-			new AnemomenterData());
+			new AnemometerData());
 		// if(!(weatherInterferer instanceof AnemometerWhiteNoiseInterferer)) {
 		// throw new IllegalArgumentException("Argument 'weatherInterferer' must be a type '" +
 		// AnemometerWhiteNoiseInterferer.class.getName() + "'");

@@ -21,11 +21,10 @@ import java.util.Comparator;
 import java.util.Properties;
 import java.util.Random;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.StationData;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 
 /**
  * Abstract super class for weather modifiers. (Decorator pattern (http://de.wikipedia.org/wiki/Decorator) and strategy
@@ -210,7 +209,7 @@ public abstract class AbstractWeatherMapModifier extends WeatherMap implements W
 	 *            Comparator
 	 * @return Max value
 	 */
-	protected StationData getMaxValue(Comparator<StationData> comparator) {
+	protected AbstractStationData getMaxValue(Comparator<AbstractStationData> comparator) {
 		return Collections.max(this.getMap().values(), comparator);
 	}
 
@@ -221,7 +220,7 @@ public abstract class AbstractWeatherMapModifier extends WeatherMap implements W
 	 *            Comparator
 	 * @return Min value
 	 */
-	protected StationData getMinValue(Comparator<StationData> comparator) {
+	protected AbstractStationData getMinValue(Comparator<AbstractStationData> comparator) {
 		return Collections.min(this.getMap().values(), comparator);
 	}
 

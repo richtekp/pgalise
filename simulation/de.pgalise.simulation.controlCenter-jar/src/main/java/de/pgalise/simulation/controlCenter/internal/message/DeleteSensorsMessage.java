@@ -27,7 +27,7 @@ import java.util.Set;
  * 
  * @author Timo
  */
-public class DeleteSensorsMessage extends AbstractIdentifiableControlCenterMessage<Set<Sensor<?,?>>> {
+public class DeleteSensorsMessage extends IdentifiableControlCenterMessage<Set<Sensor<?,?>>> {
 	/**
 	 * Constructor
 	 * 

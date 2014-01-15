@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.model;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 
 /**
  * Not used so far.

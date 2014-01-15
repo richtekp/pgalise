@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.shared.event;
 
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,7 +28,7 @@ import java.util.List;
  * @param <T>
  * @author Timo
  */
-public class EventList<T extends Event> extends AbstractIdentifiable {
+public class EventList<T extends Event> extends Identifiable {
 
 	/**
 	 * Serial

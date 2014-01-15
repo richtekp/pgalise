@@ -24,7 +24,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.staticsensor.grid.GridDeployer;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 import org.geotools.geometry.jts.JTS;
 
 /**

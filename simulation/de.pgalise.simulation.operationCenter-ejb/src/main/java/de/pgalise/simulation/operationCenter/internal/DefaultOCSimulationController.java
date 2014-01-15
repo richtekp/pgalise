@@ -30,7 +30,6 @@ import de.pgalise.simulation.operationCenter.internal.message.SimulationStartMes
 import de.pgalise.simulation.operationCenter.internal.message.SimulationStoppedMessage;
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationInitParameter;
 import de.pgalise.simulation.operationCenter.internal.model.OCSimulationStartParameter;
-import de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSGateStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.GPSSensorTimeoutStrategy;
 import de.pgalise.simulation.operationCenter.internal.strategy.SendSensorDataStrategy;
@@ -39,6 +38,7 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.entity.GPSSensorData;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
@@ -271,7 +271,7 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
 					e);
 			}
 
-			if (sensor instanceof GPSSensorData) {
+			if (sensor instanceof GpsSensor) {
 				log.debug("Add sensor: " + sensor
 					+ " to current gps sensors");
 				this.currentGPSSensors.add((GpsSensor) sensor);

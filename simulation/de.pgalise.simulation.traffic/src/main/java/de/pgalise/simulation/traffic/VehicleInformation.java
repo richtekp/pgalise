@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import java.io.Serializable;

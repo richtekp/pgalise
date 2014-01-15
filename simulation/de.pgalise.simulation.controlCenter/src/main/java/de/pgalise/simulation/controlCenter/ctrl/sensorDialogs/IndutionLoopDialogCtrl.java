@@ -8,7 +8,7 @@ package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
 import javax.ejb.EJB;

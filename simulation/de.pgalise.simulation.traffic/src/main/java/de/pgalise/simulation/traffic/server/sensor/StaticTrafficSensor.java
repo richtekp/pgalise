@@ -6,13 +6,10 @@
 
 package de.pgalise.simulation.traffic.server.sensor;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.persistence.Identifiable;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  *

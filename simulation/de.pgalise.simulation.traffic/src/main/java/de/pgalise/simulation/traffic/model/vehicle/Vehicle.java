@@ -16,18 +16,16 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.List;
-import javax.annotation.ManagedBean;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
-import de.pgalise.simulation.shared.traffic.VehicleType;
-import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.shared.JaxbVector2d;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
 
 /**
  * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).
@@ -37,8 +35,10 @@ import de.pgalise.simulation.traffic.TrafficTrip;
  * @version 1.0 (Nov 12, 2012)
  * @param <D>
  */
-public interface Vehicle<D extends VehicleData> extends Identifiable {
+public interface Vehicle<D extends VehicleData> {
 
+	public Long getId();
+	
 	/**
 	 * @return the velocity
 	 */

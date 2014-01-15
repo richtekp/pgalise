@@ -4,11 +4,11 @@
  */
 package de.pgalise.util.weathercollector.util;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.StationData;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +40,7 @@ public interface DatabaseManager {
 	 * @throws SaveStationDataException Will be thrown if the list can not be
 	 * saved
 	 */
-	public boolean saveStationDataSet(Set<StationData> list) throws SaveStationDataException;
+	public boolean saveStationDataSet(Set<AbstractStationData> list) throws SaveStationDataException;
 
 	WeatherCondition getCondition(String condition);
 }

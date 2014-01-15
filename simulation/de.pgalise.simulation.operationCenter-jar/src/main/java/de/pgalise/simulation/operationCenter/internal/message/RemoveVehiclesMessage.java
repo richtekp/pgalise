@@ -17,7 +17,7 @@
 package de.pgalise.simulation.operationCenter.internal.message;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.util.Collection;
 
 /**

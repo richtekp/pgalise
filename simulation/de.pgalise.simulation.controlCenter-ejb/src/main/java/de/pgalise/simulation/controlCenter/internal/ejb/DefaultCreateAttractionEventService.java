@@ -19,8 +19,8 @@ import de.pgalise.simulation.controlCenter.internal.util.service.CreateAttractio
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;

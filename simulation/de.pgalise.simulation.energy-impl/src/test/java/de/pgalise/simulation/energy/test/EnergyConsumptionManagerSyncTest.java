@@ -31,11 +31,11 @@ import org.junit.Test;
 
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
-import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.testutils.TestUtils;
-import de.pgalise.simulation.shared.city.Building;
+import de.pgalise.simulation.shared.entity.Building;
 import javax.annotation.ManagedBean;
 import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;

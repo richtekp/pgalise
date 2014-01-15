@@ -16,7 +16,7 @@
 package de.pgalise.simulation.traffic.internal.server.scheduler;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 
 /**

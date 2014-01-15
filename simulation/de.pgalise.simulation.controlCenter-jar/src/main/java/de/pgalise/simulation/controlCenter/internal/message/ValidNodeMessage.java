@@ -16,14 +16,14 @@
  
 package de.pgalise.simulation.controlCenter.internal.message;
 
-import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.entity.NavigationNode;
 
 /**
  * Returns a valid node.
  * 
  * @author Timo
  */
-public class ValidNodeMessage extends AbstractIdentifiableControlCenterMessage<NavigationNode> {
+public class ValidNodeMessage extends IdentifiableControlCenterMessage<NavigationNode> {
 
 	/**
 	 * Constructor

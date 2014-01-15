@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 

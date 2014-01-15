@@ -15,15 +15,14 @@
  */
 package de.pgalise.util.weathercollector;
 
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.testutils.TestUtils;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.util.DefaultDatabaseManager;
-import org.junit.Test;
-
 import de.pgalise.util.weathercollector.weatherservice.DefaultWeatherServiceManager;
-import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.util.weathercollector.weatherservice.strategy.YahooWeather;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,6 +42,7 @@ import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import static org.junit.Assert.assertFalse;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the weather service manager. Doesn't inject DatabaseManager in because
@@ -56,47 +56,49 @@ import org.junit.Before;
 @ManagedBean
 public class DefaultWeatherServiceManagerTest {
 
-	@PersistenceContext(unitName = "pgalise-weathercollector")
-	private EntityManager entityManager;
-	@EJB
-	private DatabaseManager baseDatabaseManager;
-	@Resource
-	private UserTransaction userTransaction;
+  @PersistenceContext(unitName = "pgalise-weathercollector")
+  private EntityManager entityManager;
+  @EJB
+  private DatabaseManager baseDatabaseManager;
+  @Resource
+  private UserTransaction userTransaction;
+  @EJB
+  private IdGenerator idGenerator;
 
-	public DefaultWeatherServiceManagerTest() throws NamingException {
-		this.baseDatabaseManager = new DefaultDatabaseManager(
-			entityManager);
-	}
+  public DefaultWeatherServiceManagerTest() throws NamingException {
+    this.baseDatabaseManager = new DefaultDatabaseManager(
+      entityManager);
+  }
 
-	@Before
-	public void setUp() throws NamingException {
-		TestUtils.getContainer().getContext().bind("inject",
-			this);
-	}
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+  }
 
-	@Test
-	public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
-		userTransaction.begin();
-		try {
-			Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(
-				Arrays.asList(new YahooWeather()));
-			DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(
-				baseDatabaseManager,
-				serviceStrategys);
+  @Test
+  public void testSaveInformations() throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException, NamingException {
+    userTransaction.begin();
+    try {
+      Set<ServiceStrategy> serviceStrategys = new HashSet<ServiceStrategy>(
+        Arrays.asList(new YahooWeather()));
+      DefaultWeatherServiceManager instance = new DefaultWeatherServiceManager(
+        baseDatabaseManager,
+        serviceStrategys);
 
-			City city = TestUtils.createDefaultTestCityInstance();
-			entityManager.merge(city.getPosition());
-			entityManager.merge(city);
-			instance.saveInformations(baseDatabaseManager);
-			Query queryCurrent = entityManager.createQuery(
-				"SELECT x FROM ServiceDataCurrent x");
-			Query queryForecast = entityManager.createQuery(
-				"SELECT y FROM ServiceDataForecast y");
-			assertFalse(queryCurrent.getResultList().isEmpty());
-			assertFalse(queryForecast.getResultList().isEmpty());
-		} finally {
-			userTransaction.commit();
-		}
-	}
+      City city = TestUtils.createDefaultTestCityInstance(idGenerator);
+      entityManager.merge(city.getPosition());
+      entityManager.merge(city);
+      instance.saveInformations(baseDatabaseManager);
+      Query queryCurrent = entityManager.createQuery(
+        "SELECT x FROM ServiceDataCurrent x");
+      Query queryForecast = entityManager.createQuery(
+        "SELECT y FROM ServiceDataForecast y");
+      assertFalse(queryCurrent.getResultList().isEmpty());
+      assertFalse(queryForecast.getResultList().isEmpty());
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
 }

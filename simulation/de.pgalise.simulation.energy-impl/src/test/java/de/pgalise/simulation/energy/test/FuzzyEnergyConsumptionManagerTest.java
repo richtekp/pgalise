@@ -28,7 +28,7 @@ import org.junit.Test;
 
 import de.pgalise.simulation.energy.internal.FuzzyEnergyConsumptionManager;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 

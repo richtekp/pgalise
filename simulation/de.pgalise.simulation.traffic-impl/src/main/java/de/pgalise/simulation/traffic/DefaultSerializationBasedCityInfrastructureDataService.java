@@ -16,14 +16,14 @@
 package de.pgalise.simulation.traffic;
 
 import com.vividsolutions.jts.geom.Envelope;
-import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.city.Building;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.shared.city.CityInfrastructureDataService;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.shared.city.SerializationBasedCityInfrastructureDataService;
+import de.pgalise.simulation.shared.entity.Building;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
+import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.service.SerializationBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;

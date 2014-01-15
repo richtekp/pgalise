@@ -15,9 +15,8 @@
  */
 package de.pgalise.util.weathercollector.util;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
-import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Date;
@@ -34,9 +33,10 @@ import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import de.pgalise.util.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent;
-import de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.ExtendedServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ExtendedServiceDataForecast;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -166,7 +166,7 @@ public class NonJTADatabaseManager implements DatabaseManager {
 	}
 
 	@Override
-	public boolean saveStationDataSet(Set<StationData> list) throws SaveStationDataException {
+	public boolean saveStationDataSet(Set<AbstractStationData> list) throws SaveStationDataException {
 		if ((list == null) || list.isEmpty()) {
 			throw new SaveStationDataException("No data available");
 		}
@@ -175,7 +175,7 @@ public class NonJTADatabaseManager implements DatabaseManager {
 		final EntityTransaction tx = em.getTransaction();
 
 		// Get the last station data
-		StationData lastData = this.getLastStationData(em);
+		AbstractStationData lastData = this.getLastStationData(em);
 		long lastTime = (lastData == null) ? 1 : lastData.getMeasureDate().getTime() + lastData.
 			getMeasureTime().getTime();
 
@@ -184,7 +184,7 @@ public class NonJTADatabaseManager implements DatabaseManager {
 		boolean result = true;
 		int count = 0;
 		long actTime;
-		for (StationData station_data : list) {
+		for (AbstractStationData station_data : list) {
 			actTime = station_data.getMeasureDate().getTime() + station_data.
 				getMeasureTime().getTime();
 			// Check if there is any data
@@ -273,7 +273,7 @@ public class NonJTADatabaseManager implements DatabaseManager {
 	 * @param em EntityManager
 	 * @return last entry of station data
 	 */
-	private StationData getLastStationData(EntityManager em) {
+	private AbstractStationData getLastStationData(EntityManager em) {
 		if (em == null) {
 			throw new IllegalArgumentException("em");
 		}
@@ -282,11 +282,11 @@ public class NonJTADatabaseManager implements DatabaseManager {
 		tx.begin();
 
 		// Get station data
-		TypedQuery<StationData> query = em.createNamedQuery(
+		TypedQuery<AbstractStationData> query = em.createNamedQuery(
 			"StationData.findLastData",
-			StationData.class);
+			AbstractStationData.class);
 		query.setMaxResults(1);
-		StationData result = query.getSingleResult();
+		AbstractStationData result = query.getSingleResult();
 
 		tx.commit();
 

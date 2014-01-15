@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +38,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
@@ -46,7 +46,7 @@ import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;

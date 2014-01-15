@@ -4,14 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-
 /**
  *
  * @author richter
  */
-@Embeddable
-public enum CraftTagEnum implements CraftTag {
+public enum CraftTagEnum {
 
 	;
 	
@@ -21,7 +18,6 @@ public enum CraftTagEnum implements CraftTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

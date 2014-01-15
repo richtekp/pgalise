@@ -16,7 +16,8 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.entity.ExtendedServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 
 /**
  * Interface to complete weather service data

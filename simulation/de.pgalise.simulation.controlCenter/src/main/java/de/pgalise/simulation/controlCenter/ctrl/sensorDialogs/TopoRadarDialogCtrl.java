@@ -8,7 +8,7 @@ package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensor;
 import java.util.concurrent.ExecutionException;
 import javax.ejb.EJB;

@@ -4,6 +4,8 @@
  */
 package de.pgalise.util.weathercollector.model;
 
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
+
 /**
  *
  * @author richter

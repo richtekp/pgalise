@@ -25,7 +25,7 @@ import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 
 /**
  * Skeleton class for the implementation of a Controller. When using this class
@@ -38,7 +38,7 @@ import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
  * @version 1.0
  */
 public abstract class AbstractController<E extends Event, S extends StartParameter, I extends InitParameter>
-	extends AbstractIdentifiable implements Controller<E, S, I> {
+	extends Identifiable implements Controller<E, S, I> {
 
 	/**
 	 * Logger

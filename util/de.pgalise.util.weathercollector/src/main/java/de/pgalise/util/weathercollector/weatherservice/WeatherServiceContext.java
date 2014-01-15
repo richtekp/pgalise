@@ -4,9 +4,9 @@
  */
 package de.pgalise.util.weathercollector.weatherservice;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 
 /**

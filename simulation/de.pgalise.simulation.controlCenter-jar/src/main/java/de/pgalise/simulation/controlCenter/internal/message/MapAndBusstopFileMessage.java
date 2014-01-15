@@ -24,7 +24,7 @@ import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
  *
  * @author Timo
  */
-public class MapAndBusstopFileMessage extends AbstractIdentifiableControlCenterMessage<MapAndBusstopFileData> {
+public class MapAndBusstopFileMessage extends IdentifiableControlCenterMessage<MapAndBusstopFileData> {
 
 	/**
 	 * Constructor

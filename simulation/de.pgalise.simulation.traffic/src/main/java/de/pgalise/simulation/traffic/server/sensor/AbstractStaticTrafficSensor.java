@@ -18,7 +18,7 @@ package de.pgalise.simulation.traffic.server.sensor;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.staticsensor.AbstractStaticSensor;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**

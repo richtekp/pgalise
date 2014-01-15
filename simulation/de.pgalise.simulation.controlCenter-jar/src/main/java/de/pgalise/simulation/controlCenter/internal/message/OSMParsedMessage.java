@@ -22,7 +22,7 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @author Timo
  */
-public class OSMParsedMessage extends AbstractIdentifiableControlCenterMessage<Envelope> {
+public class OSMParsedMessage extends IdentifiableControlCenterMessage<Envelope> {
 
 	/**
 	 * Constructor

@@ -16,8 +16,8 @@
  
 package de.pgalise.util.weathercollector.weatherservice.strategy;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -28,7 +28,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 
 import de.pgalise.util.weathercollector.exceptions.ReadServiceDataException;
-import de.pgalise.util.weathercollector.model.ServiceDataHelper;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
 import de.pgalise.util.weathercollector.weatherservice.ServiceStrategy;
 import javax.measure.quantity.Temperature;

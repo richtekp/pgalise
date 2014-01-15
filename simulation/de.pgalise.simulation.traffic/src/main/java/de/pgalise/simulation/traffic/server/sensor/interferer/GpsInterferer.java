@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.server.sensor.interferer;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**

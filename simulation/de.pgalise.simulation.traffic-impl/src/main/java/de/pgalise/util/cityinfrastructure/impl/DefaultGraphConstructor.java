@@ -15,11 +15,11 @@
  */
 package de.pgalise.util.cityinfrastructure.impl;
 
-import de.pgalise.simulation.shared.city.Way;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.entity.Way;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficWay;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficWay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

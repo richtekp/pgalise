@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.dataloader;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.ReferenceCityEvaluator;
 import de.pgalise.simulation.weather.internal.util.comparator.CityComparator;
 import java.util.Collections;

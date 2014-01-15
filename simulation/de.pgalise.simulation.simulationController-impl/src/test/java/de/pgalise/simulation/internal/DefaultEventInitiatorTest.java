@@ -49,7 +49,7 @@ import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.Event;
@@ -269,12 +269,12 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public Long getId() {
+		public Set<TrafficSensor> getAllManagedSensors() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 
 		@Override
-		public Set<TrafficSensor> getAllManagedSensors() {
+		public Long getId() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}
@@ -342,6 +342,11 @@ public class DefaultEventInitiatorTest {
 		public String getName() {
 			return "EventInitiator";
 		}
+
+		@Override
+		public Long getId() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
 	}
 
 	/**
@@ -397,6 +402,11 @@ public class DefaultEventInitiatorTest {
 		@Override
 		public String getName() {
 			return "EnergyController";
+		}
+
+		@Override
+		public Long getId() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}
 
@@ -478,11 +488,6 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public Long getId() {
-			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-		}
-
-		@Override
 		public long getElapsedTime() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
@@ -504,6 +509,11 @@ public class DefaultEventInitiatorTest {
 
 		@Override
 		public TrafficSensorController getTrafficSensorController() {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+
+		@Override
+		public Long getId() {
 			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 		}
 	}

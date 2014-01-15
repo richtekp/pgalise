@@ -26,6 +26,8 @@ import de.pgalise.simulation.shared.event.EventList;
  * @author Timo
  */
 public interface SimulationComponent<E extends Event> {
+	
+	Long getId();
 
 	/**
 	 * Updates the SimulationComponent
@@ -33,5 +35,5 @@ public interface SimulationComponent<E extends Event> {
 	 * @param simulationEventList
 	 *            list with the current timestamp and possible events.
 	 */
-	public void update(EventList<E> simulationEventList);
+	void update(EventList<E> simulationEventList);
 }

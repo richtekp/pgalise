@@ -16,7 +16,7 @@
 package de.pgalise.util.cityinfrastructure;
 
 import de.pgalise.simulation.shared.tag.AmenityTagEnum;
-import de.pgalise.simulation.shared.city.Building;
+import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.tag.LanduseTagEnum;
 import de.pgalise.simulation.shared.tag.PublicTransportTagEnum;
 import java.io.IOException;

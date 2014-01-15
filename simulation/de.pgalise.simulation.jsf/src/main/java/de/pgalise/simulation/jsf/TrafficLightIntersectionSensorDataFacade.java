@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensorData;
+import de.pgalise.simulation.traffic.entity.TrafficLightIntersectionSensorData;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -4,14 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-
 /**
  *
  * @author richter
  */
-@Embeddable
-public enum LeisureTagEnum implements LeisureTag {
+public enum LeisureTagEnum {
 
 	;
 	
@@ -21,7 +18,6 @@ public enum LeisureTagEnum implements LeisureTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

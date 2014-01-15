@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
  * @author richter
  */
 @Embeddable
-public enum SportTagEnum implements SportTag {
+public enum SportTagEnum {
 
 	;
 	
@@ -21,7 +21,6 @@ public enum SportTagEnum implements SportTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

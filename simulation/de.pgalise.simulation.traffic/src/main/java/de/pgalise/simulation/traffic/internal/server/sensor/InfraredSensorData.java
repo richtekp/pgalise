@@ -7,7 +7,7 @@
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 
 /**
  *

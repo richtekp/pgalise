@@ -11,7 +11,7 @@ import de.pgalise.simulation.traffic.TrafficInitParameter;
  *
  * @author richter
  */
-public class SimulationInitParameterMessage extends AbstractIdentifiableControlCenterMessage<TrafficInitParameter> {
+public class SimulationInitParameterMessage extends IdentifiableControlCenterMessage<TrafficInitParameter> {
 
 	public SimulationInitParameterMessage(Long messageID,
 		TrafficInitParameter ccSimulationStartParameter) {

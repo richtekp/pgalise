@@ -4,16 +4,16 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.shared.city.NavigationEdge;
-import de.pgalise.simulation.shared.city.NavigationNode;
+import de.pgalise.simulation.shared.entity.NavigationEdge;
+import de.pgalise.simulation.shared.entity.NavigationNode;
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.util.Set;
 import org.jgrapht.EdgeFactory;
 

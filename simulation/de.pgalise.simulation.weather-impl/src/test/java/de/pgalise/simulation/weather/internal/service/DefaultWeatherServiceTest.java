@@ -15,16 +15,17 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
-import de.pgalise.simulation.weather.model.ServiceDataForecast;
-import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationDataMap;
-import de.pgalise.simulation.weather.model.StationDataNormal;
+import de.pgalise.simulation.weather.entity.StationDataNormal;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.testutils.weather.WeatherTestUtils;
@@ -68,449 +69,465 @@ import org.junit.Test;
 @ManagedBean
 public class DefaultWeatherServiceTest {
 
-	@PersistenceContext(unitName = "pgalise-weather")
-	private EntityManager em;
-	/**
-	 * End timestamp
-	 */
-	private long endTimestamp;
+  @PersistenceContext(unitName = "pgalise-weather")
+  private EntityManager em;
+  /**
+   * End timestamp
+   */
+  private long endTimestamp;
 
-	/**
-	 * Start timestamp
-	 */
-	private long startTimestamp;
+  /**
+   * Start timestamp
+   */
+  private long startTimestamp;
 
-	/**
-	 * Weather loader
-	 */
-	@EJB
-	private WeatherLoader loader;
+  /**
+   * Weather loader
+   */
+  @EJB
+  private WeatherLoader loader;
 
-	@EJB
-	private WeatherService service;
+  @EJB
+  private WeatherService service;
 
-	private City city;
+  private City city;
 
-	@Resource
-	private UserTransaction utx;
+  @Resource
+  private UserTransaction utx;
 
-	public DefaultWeatherServiceTest() {
-	}
+  @EJB
+  private IdGenerator idGenerator;
 
-	@Before
-	public void setUp() throws NamingException {
-		TestUtils.getContainer().getContext().bind("inject",
-			this);
+  public DefaultWeatherServiceTest() {
+  }
 
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2012,
-			11,
-			1,
-			20,
-			0,
-			0);
-		startTimestamp = cal.getTimeInMillis();
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
 
-		// End
-		cal.set(2012,
-			11,
-			2,
-			20,
-			14,
-			0);
-		endTimestamp = cal.getTimeInMillis();
-	}
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2012,
+      11,
+      1,
+      20,
+      0,
+      0);
+    startTimestamp = cal.getTimeInMillis();
 
-	@Test
-	public void testAddNewNextDayWeather() throws NamingException, NotSupportedException,
-		SystemException,
-		HeuristicMixedException, HeuristicRollbackException, IllegalStateException,
-		RollbackException {
-		utx.begin();
-		try {
-			city = TestUtils.createDefaultTestCityInstance();
+    // End
+    cal.set(2012,
+      11,
+      2,
+      20,
+      14,
+      0);
+    endTimestamp = cal.getTimeInMillis();
+  }
 
-			// Test no prior call to Service.addNewWeather
-			try {
-				service.addNewNextDayWeather();
-				fail();
-			} catch (Exception expected) {
-				//throws ejb related exception
-				assertTrue(!(expected.getCause() instanceof IllegalArgumentException));
-			}
+  @Test
+  public void testAddNewNextDayWeather() throws NamingException, NotSupportedException,
+    SystemException,
+    HeuristicMixedException, HeuristicRollbackException, IllegalStateException,
+    RollbackException {
+    utx.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
-			Map<Date, StationDataNormal> entities = WeatherTestUtils.
-				setUpWeatherStationData(
-					startTimestamp,
-					endTimestamp,
-					em);
+      // Test no prior call to Service.addNewWeather
+      try {
+        service.addNewNextDayWeather();
+        fail();
+      } catch (Exception expected) {
+        //throws ejb related exception
+        assertTrue(!(expected.getCause() instanceof IllegalArgumentException));
+      }
 
-			service.addNewWeather(startTimestamp,
-				endTimestamp,
-				true,
-				null);
-			//the acutal test
-			service.addNewNextDayWeather();
+      Map<Date, StationDataNormal> entities = WeatherTestUtils.
+        setUpWeatherStationData(
+          startTimestamp,
+          endTimestamp,
+          em,
+          idGenerator);
 
-			WeatherTestUtils.tearDownWeatherData(entities,
-				StationDataNormal.class,
-				em);
-		} finally {
-			utx.commit();
-		}
-	}
+      service.addNewWeather(startTimestamp,
+        endTimestamp,
+        true,
+        null);
+      //the acutal test
+      service.addNewNextDayWeather();
 
-	@Test
-	public void testAddNewWeather() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
-		List<WeatherStrategyHelper> strategyList = new ArrayList<>(1);
-		strategyList.add(new WeatherStrategyHelper(new ReferenceCityModifier(
-			startTimestamp,
-			loader),
-			startTimestamp));
-		utx.begin();
-		try {
-			city = TestUtils.createDefaultTestCityInstance();
+      WeatherTestUtils.tearDownWeatherData(entities,
+        StationDataNormal.class,
+        em);
+    } finally {
+      utx.commit();
+    }
+  }
 
-			// Test false Date
-			try {
-				service.addNewWeather(0,
-					0,
-					true,
-					null);
-				fail();
-			} catch (IllegalArgumentException excepted) {
-			}
+  @Test
+  public void testAddNewWeather() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+    List<WeatherStrategyHelper> strategyList = new ArrayList<>(1);
+    strategyList.add(new WeatherStrategyHelper(new ReferenceCityModifier(
+      startTimestamp,
+      loader),
+      startTimestamp));
+    utx.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
-			// Test (normal)
-			Map<Date, ServiceDataCurrent> prequisites = WeatherTestUtils.
-				setUpWeatherServiceDataCurrent(
-					startTimestamp,
-					endTimestamp,
-					city,
-					em);
-			Map<Date, StationDataNormal> prequisites0 = WeatherTestUtils.
-				setUpWeatherStationData(startTimestamp,
-					endTimestamp,
-					em);
-			Map<Date, ServiceDataForecast> prequisites1 = WeatherTestUtils.
-				setUpWeatherServiceDataForecast(startTimestamp,
-					endTimestamp,
-					city,
-					em);
+      // Test false Date
+      try {
+        service.addNewWeather(0,
+          0,
+          true,
+          null);
+        fail();
+      } catch (IllegalArgumentException excepted) {
+      }
 
-			service.addNewWeather(startTimestamp,
-				endTimestamp,
-				true,
-				strategyList);
+      // Test (normal)
+      Map<Date, ServiceDataCurrent> prequisites = WeatherTestUtils.
+        setUpWeatherServiceDataCurrent(
+          startTimestamp,
+          endTimestamp,
+          city,
+          em,
+          idGenerator);
+      Map<Date, StationDataNormal> prequisites0 = WeatherTestUtils.
+        setUpWeatherStationData(startTimestamp,
+          endTimestamp,
+          em,
+          idGenerator);
+      Map<Date, ServiceDataForecast> prequisites1 = WeatherTestUtils.
+        setUpWeatherServiceDataForecast(startTimestamp,
+          endTimestamp,
+          city,
+          em,
+          idGenerator);
 
-			WeatherTestUtils.tearDownWeatherData(prequisites,
-				ServiceDataCurrent.class,
-				em);
-			WeatherTestUtils.tearDownWeatherData(prequisites0,
-				StationDataNormal.class,
-				em);
-			WeatherTestUtils.tearDownWeatherData(prequisites1,
-				ServiceDataForecast.class,
-				em);
+      service.addNewWeather(startTimestamp,
+        endTimestamp,
+        true,
+        strategyList);
 
-		} finally {
-			utx.commit();
-		}
-	}
+      WeatherTestUtils.tearDownWeatherData(prequisites,
+        ServiceDataCurrent.class,
+        em);
+      WeatherTestUtils.tearDownWeatherData(prequisites0,
+        StationDataNormal.class,
+        em);
+      WeatherTestUtils.tearDownWeatherData(prequisites1,
+        ServiceDataForecast.class,
+        em);
 
-	@Test
-	public void testCheckDate() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
-		long testFalseDate = DateConverter.convertDate("12.03.2002",
-			"dd.mm.yyyy").getTime(); //before simulation
-		utx.begin();
-		try {
-			city = TestUtils.createDefaultTestCityInstance();
+    } finally {
+      utx.commit();
+    }
+  }
 
-			//test negative result
-			boolean expResult = false;
-			boolean result = service.checkDate(startTimestamp);
-			assertEquals(expResult,
-				result);
+  @Test
+  public void testCheckDate() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+    long testFalseDate = DateConverter.convertDate("12.03.2002",
+      "dd.mm.yyyy").getTime(); //before simulation
+    utx.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
-			//test positive result (need to set up for the exact date, the preceeding and the following date at the same hour of the day)
-			MutableStationData weather = new StationDataNormal(
-				new Date(startTimestamp),
-				new Time(startTimestamp),
-				1,
-				1,
-				1.0f,
-				Measure.valueOf(1.0f,
-					SI.CELSIUS),
-				1.0f,
-				1,
-				1.0f,
-				1.0f,
-				1.0f);
-			MutableStationData weatherPreceeding = new StationDataNormal(new Date(
-				startTimestamp - DateConverter.ONE_DAY_IN_MILLIS),
-				new Time(startTimestamp - DateConverter.ONE_DAY_IN_MILLIS),
-				1,
-				1,
-				1.0f,
-				Measure.valueOf(1.0f,
-					SI.CELSIUS),
-				1.0f,
-				1,
-				1.0f,
-				1.0f,
-				1.0f);
-			MutableStationData weatherFollowing = new StationDataNormal(new Date(
-				startTimestamp + DateConverter.ONE_DAY_IN_MILLIS),
-				new Time(startTimestamp + DateConverter.ONE_DAY_IN_MILLIS),
-				1,
-				1,
-				1.0f,
-				Measure.valueOf(1.0f,
-					SI.CELSIUS),
-				1.0f,
-				1,
-				1.0f,
-				1.0f,
-				1.0f);
-			em.persist(weather);
-			em.persist(weatherFollowing);
-			em.persist(weatherPreceeding);
-			expResult = true;
-			result = service.checkDate(startTimestamp);
-			assertEquals(expResult,
-				result);
-			em.remove(weather);
-			em.remove(weatherFollowing);
-			em.remove(weatherPreceeding);
+      //test negative result
+      boolean expResult = false;
+      boolean result = service.checkDate(startTimestamp);
+      assertEquals(expResult,
+        result);
 
-			// Test false Date
-			try {
-				service.checkDate(0);
-				fail();
-			} catch (IllegalArgumentException expected) {
-			}
+      //test positive result (need to set up for the exact date, the preceeding and the following date at the same hour of the day)
+      AbstractStationData weather = new StationDataNormal(idGenerator.
+        getNextId(),
+        new Date(startTimestamp),
+        new Time(startTimestamp),
+        1,
+        1,
+        1.0f,
+        Measure.valueOf(1.0f,
+          SI.CELSIUS),
+        1.0f,
+        1,
+        1.0f,
+        1.0f,
+        1.0f);
+      AbstractStationData weatherPreceeding = new StationDataNormal(idGenerator.
+        getNextId(),
+        new Date(
+          startTimestamp - DateConverter.ONE_DAY_IN_MILLIS),
+        new Time(startTimestamp - DateConverter.ONE_DAY_IN_MILLIS),
+        1,
+        1,
+        1.0f,
+        Measure.valueOf(1.0f,
+          SI.CELSIUS),
+        1.0f,
+        1,
+        1.0f,
+        1.0f,
+        1.0f);
+      AbstractStationData weatherFollowing = new StationDataNormal(idGenerator.
+        getNextId(),
+        new Date(
+          startTimestamp + DateConverter.ONE_DAY_IN_MILLIS),
+        new Time(startTimestamp + DateConverter.ONE_DAY_IN_MILLIS),
+        1,
+        1,
+        1.0f,
+        Measure.valueOf(1.0f,
+          SI.CELSIUS),
+        1.0f,
+        1,
+        1.0f,
+        1.0f,
+        1.0f);
+      em.persist(weather);
+      em.persist(weatherFollowing);
+      em.persist(weatherPreceeding);
+      expResult = true;
+      result = service.checkDate(startTimestamp);
+      assertEquals(expResult,
+        result);
+      em.remove(weather);
+      em.remove(weatherFollowing);
+      em.remove(weatherPreceeding);
 
-			// Test false Date (future)
-			assertTrue(!(service.checkDate(System.currentTimeMillis())));
+      // Test false Date
+      try {
+        service.checkDate(0);
+        fail();
+      } catch (IllegalArgumentException expected) {
+      }
 
-			// Test false Date (no data available)
-			assertTrue(!(service.checkDate(testFalseDate)));
-		} finally {
-			utx.commit();
-		}
-	}
+      // Test false Date (future)
+      assertTrue(!(service.checkDate(System.currentTimeMillis())));
 
-	@Test
-	public void testGetValueWeatherParameterEnumLong() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
-		utx.begin();
-		try {
-			city = TestUtils.createDefaultTestCityInstance();
+      // Test false Date (no data available)
+      assertTrue(!(service.checkDate(testFalseDate)));
+    } finally {
+      utx.commit();
+    }
+  }
 
-			/*
-			 * Test preparations
-			 */
-			Map<Date, StationDataNormal> prequisites = WeatherTestUtils.
-				setUpWeatherStationData(
-					startTimestamp,
-					endTimestamp,
-					em);
+  @Test
+  public void testGetValueWeatherParameterEnumLong() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+    utx.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
-			// Get weather
-			service.addNewWeather(startTimestamp,
-				endTimestamp,
-				true,
-				null);
+      /*
+       * Test preparations
+       */
+      Map<Date, StationDataNormal> prequisites = WeatherTestUtils.
+        setUpWeatherStationData(
+          startTimestamp,
+          endTimestamp,
+          em,
+          idGenerator);
 
-			/*
-			 * Test variables
-			 */
-			// Test Parameter
-			WeatherParameterEnum testParameter = WeatherParameterEnum.AIR_PRESSURE;
-			Time time = DateConverter.convertTime("18:00:00",
-				"hh:mm:ss");
-			long timestamp = startTimestamp + time.getTime();
+      // Get weather
+      service.addNewWeather(startTimestamp,
+        endTimestamp,
+        true,
+        null);
 
-			/*
-			 * Test cases
-			 */
-			Number value;
+      /*
+       * Test variables
+       */
+      // Test Parameter
+      WeatherParameterEnum testParameter = WeatherParameterEnum.AIR_PRESSURE;
+      Time time = DateConverter.convertTime("18:00:00",
+        "hh:mm:ss");
+      long timestamp = startTimestamp + time.getTime();
 
-			// Test (normal)
-			value = service.getValue(testParameter,
-				timestamp);
-			assertEquals(1008.0,
-				value.doubleValue(),
-				10.0); // Aggregate 1008
+      /*
+       * Test cases
+       */
+      Number value;
 
-			// Test false timestamp
-			try {
-				service.getValue(testParameter,
-					0);
-				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
+      // Test (normal)
+      value = service.getValue(testParameter,
+        timestamp);
+      assertEquals(1008.0,
+        value.doubleValue(),
+        10.0); // Aggregate 1008
 
-			// Test false key
-			try {
-				service.getValue(null,
-					0);
-				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
+      // Test false timestamp
+      try {
+        service.getValue(testParameter,
+          0);
+        fail();
+      } catch (IllegalArgumentException e) {
+        //expected
+      }
 
-			WeatherTestUtils.tearDownWeatherData(prequisites,
-				StationDataNormal.class,
-				em);
-		} finally {
-			utx.commit();
-		}
-	}
+      // Test false key
+      try {
+        service.getValue(null,
+          0);
+        fail();
+      } catch (IllegalArgumentException e) {
+        //expected
+      }
 
-	@Test
-	public void testGetValueWeatherParameterEnumLongVector2d() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
-		WeatherParameterEnum testParameter = WeatherParameterEnum.LIGHT_INTENSITY;
+      WeatherTestUtils.tearDownWeatherData(prequisites,
+        StationDataNormal.class,
+        em);
+    } finally {
+      utx.commit();
+    }
+  }
 
-		Time time = DateConverter.convertTime("18:00:00",
-			"hh:mm:ss");
-		long timestamp = startTimestamp + time.getTime();
-		long timestamp2 = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS + time.
-			getTime();
+  @Test
+  public void testGetValueWeatherParameterEnumLongVector2d() throws ParseException, NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
+    WeatherParameterEnum testParameter = WeatherParameterEnum.LIGHT_INTENSITY;
 
-		JaxRSCoordinate position = new JaxRSCoordinate(2,
-			3);
+    Time time = DateConverter.convertTime("18:00:00",
+      "hh:mm:ss");
+    long timestamp = startTimestamp + time.getTime();
+    long timestamp2 = startTimestamp + DateConverter.ONE_DAY_IN_MILLIS + time.
+      getTime();
 
-		utx.begin();
-		try {
-			city = TestUtils.createDefaultTestCityInstance();
+    JaxRSCoordinate position = new JaxRSCoordinate(2,
+      3);
 
-			/*
-			 * Test preparations
-			 */
-			Map<Date, StationDataNormal> entities = WeatherTestUtils.
-				setUpWeatherStationData(
-					startTimestamp,
-					endTimestamp,
-					em);
-			// Get weather
-			service.addNewWeather(startTimestamp,
-				endTimestamp,
-				true,
-				null);
+    utx.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
-			/*
-			 * Test cases
-			 */
-			Number value;
+      /*
+       * Test preparations
+       */
+      Map<Date, StationDataNormal> entities = WeatherTestUtils.
+        setUpWeatherStationData(
+          startTimestamp,
+          endTimestamp,
+          em,
+          idGenerator);
+      // Get weather
+      service.addNewWeather(startTimestamp,
+        endTimestamp,
+        true,
+        null);
 
-			// Test (normal)
-			WeatherMap weatherMap = new StationDataMap();
-			MutableStationData weather = new StationDataNormal(
-				new Date(startTimestamp),
-				new Time(startTimestamp),
-				1,
-				1,
-				1.0f,
-				Measure.valueOf(1.0f,
-					SI.CELSIUS),
-				1.0f,
-				1,
-				1.0f,
-				1.0f,
-				1.0f);
-			weatherMap.put(timestamp,
-				weather);
-			value = service.getValue(testParameter,
-				timestamp,
-				position);
-			assertEquals(11000.000,
-				value.doubleValue(),
-				5000);
+      /*
+       * Test cases
+       */
+      Number value;
 
-			// Test false key
-			try {
-				service.getValue(null,
-					0,
-					position);
-				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
+      // Test (normal)
+      WeatherMap weatherMap = new StationDataMap();
+      AbstractStationData weather = new StationDataNormal(idGenerator.
+        getNextId(),
+        new Date(startTimestamp),
+        new Time(startTimestamp),
+        1,
+        1,
+        1.0f,
+        Measure.valueOf(1.0f,
+          SI.CELSIUS),
+        1.0f,
+        1,
+        1.0f,
+        1.0f,
+        1.0f);
+      weatherMap.put(timestamp,
+        weather);
+      value = service.getValue(testParameter,
+        timestamp,
+        position);
+      assertEquals(11000.000,
+        value.doubleValue(),
+        5000);
 
-			// Test false timestamp
-			try {
-				service.getValue(testParameter,
-					0,
-					position);
-				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
+      // Test false key
+      try {
+        service.getValue(null,
+          0,
+          position);
+        fail();
+      } catch (IllegalArgumentException e) {
+        //expected
+      }
 
-			// Test false position
-			try {
-				service.getValue(testParameter,
-					timestamp,
-					null);
-				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
+      // Test false timestamp
+      try {
+        service.getValue(testParameter,
+          0,
+          position);
+        fail();
+      } catch (IllegalArgumentException e) {
+        //expected
+      }
 
-			// Test false position
-			try {
-				service.getValue(testParameter,
-					timestamp,
-					new JaxRSCoordinate(-1,
-						-1));
-				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
+      // Test false position
+      try {
+        service.getValue(testParameter,
+          timestamp,
+          null);
+        fail();
+      } catch (IllegalArgumentException e) {
+        //expected
+      }
 
-			//keep entities in database until here
-			WeatherTestUtils.tearDownWeatherData(entities,
-				StationDataNormal.class,
-				em);
+      // Test false position
+      try {
+        service.getValue(testParameter,
+          timestamp,
+          new JaxRSCoordinate(-1,
+            -1));
+        fail();
+      } catch (IllegalArgumentException e) {
+        //expected
+      }
 
-			// Test (normal) other date
-			weatherMap = new StationDataMap();
-			weather = new StationDataNormal(new Date(startTimestamp),
-				new Time(startTimestamp),
-				1,
-				1,
-				1.0f,
-				Measure.valueOf(1.0f,
-					SI.CELSIUS),
-				1.0f,
-				1,
-				1.0f,
-				1.0f,
-				1.0f);
-			weatherMap.put(timestamp2,
-				weather);
-			value = service.getValue(testParameter,
-				timestamp2,
-				position);
-			assertEquals(11000.000,
-				value.doubleValue(),
-				6000);
+      //keep entities in database until here
+      WeatherTestUtils.tearDownWeatherData(entities,
+        StationDataNormal.class,
+        em);
 
-			// Test false timestamp
-			try {
-				service.getValue(testParameter,
-					endTimestamp
-					+ DateConverter.ONE_DAY_IN_MILLIS + time.getTime(),
-					position);
-				fail();
-			} catch (IllegalArgumentException e) {
-				//expected
-			}
+      // Test (normal) other date
+      weatherMap = new StationDataMap();
+      weather = new StationDataNormal(idGenerator.getNextId(),
+        new Date(startTimestamp),
+        new Time(startTimestamp),
+        1,
+        1,
+        1.0f,
+        Measure.valueOf(1.0f,
+          SI.CELSIUS),
+        1.0f,
+        1,
+        1.0f,
+        1.0f,
+        1.0f);
+      weatherMap.put(timestamp2,
+        weather);
+      value = service.getValue(testParameter,
+        timestamp2,
+        position);
+      assertEquals(11000.000,
+        value.doubleValue(),
+        6000);
 
-		} finally {
-			utx.commit();
-		}
-	}
+      // Test false timestamp
+      try {
+        service.getValue(testParameter,
+          endTimestamp
+          + DateConverter.ONE_DAY_IN_MILLIS + time.getTime(),
+          position);
+        fail();
+      } catch (IllegalArgumentException e) {
+        //expected
+      }
+
+    } finally {
+      utx.commit();
+    }
+  }
 }

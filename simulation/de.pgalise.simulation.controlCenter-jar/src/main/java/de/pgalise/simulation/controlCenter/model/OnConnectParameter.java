@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.controlCenter.model;
 
-import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.entity.BusRoute;
 import java.util.List;
 import java.util.Map;
 

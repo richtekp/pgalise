@@ -5,7 +5,9 @@
  */
 package de.pgalise.testutils.traffic;
 
-import de.pgalise.simulation.traffic.TrafficCity;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,22 +18,27 @@ import org.junit.Test;
  */
 public class TrafficTestUtilsTest {
 
-	public TrafficTestUtilsTest() {
-	}
+  public TrafficTestUtilsTest() {
+  }
 
-	@BeforeClass
-	public static void setUpClass() {
-	}
+  @BeforeClass
+  public static void setUpClass() {
+  }
 
-	/**
-	 * Test of createDefaultTestCityInstance method, of class TrafficTestUtils.
-	 */
-	@Test
-	public void testCreateDefaultTestCityInstance() {
-		System.out.println("createDefaultTestCityInstance");
-		Long id = 1L;
-		TrafficCity result = TrafficTestUtils.createDefaultTestCityInstance(id);
-		Assert.assertNotNull(result);
-	}
+  /**
+   * Test of createDefaultTestCityInstance method, of class TrafficTestUtils.
+   */
+  @Test
+  public void testCreateDefaultTestCityInstance() {
+    System.out.println("createDefaultTestCityInstance");
+    IdGenerator idGenerator = EasyMock.createNiceMock(IdGenerator.class);
+    final Long id = 1L;
+    EasyMock.expect(idGenerator.getNextId()).andReturn(id);
+    TrafficCity result = TrafficTestUtils.createDefaultTestCityInstance(
+      idGenerator);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(id,
+      result.getId());
+  }
 
 }

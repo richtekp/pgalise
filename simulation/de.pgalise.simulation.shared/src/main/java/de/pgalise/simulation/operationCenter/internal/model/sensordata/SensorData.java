@@ -16,7 +16,7 @@
 package de.pgalise.simulation.operationCenter.internal.model.sensordata;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
 
@@ -30,7 +30,7 @@ import javax.faces.bean.ManagedBean;
 SensorData doesn't know it's owning sensor because this just complicates garbage collection
 */
 @ManagedBean
-public abstract class SensorData extends AbstractIdentifiable {
+public abstract class SensorData extends Identifiable {
 
 	/**
 	 * Serial

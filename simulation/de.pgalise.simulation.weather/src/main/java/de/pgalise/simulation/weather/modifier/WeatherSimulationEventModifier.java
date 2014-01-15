@@ -20,7 +20,7 @@ import java.util.Properties;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 
 /**
  * The {@link WeatherMap} serves as the root for the weather modifiers that are all derived from the class

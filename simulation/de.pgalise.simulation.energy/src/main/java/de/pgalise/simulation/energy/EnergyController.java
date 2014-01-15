@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.energy;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.traffic.TrafficInitParameter;

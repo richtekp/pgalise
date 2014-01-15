@@ -5,7 +5,7 @@
 package de.pgalise.util.cityinfrastructure.impl;
 
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficWay;
+import de.pgalise.simulation.traffic.entity.TrafficWay;
 import java.util.List;
 
 /**

@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.server.route;
 
-import de.pgalise.simulation.shared.tag.LanduseTag;
 import java.awt.Polygon;
 import java.util.Set;
 
 /**
  * The enriched wraps a polygon with its landuse tag.
+ *
  * @author Timo
  */
 public class EnrichedPolygon {
-	private Set<LanduseTag> landuse;
+
+	private Set<String> landuse;
 	private Polygon polygon;
 
-	public EnrichedPolygon(Polygon p, Set<LanduseTag> l) {
+	public EnrichedPolygon(Polygon p,
+		Set<String> l) {
 		this.polygon = p;
 		this.landuse = l;
 	}
 
-	public Set<LanduseTag> getLanduse() {
+	public Set<String> getLanduse() {
 		return this.landuse;
 	}
 
@@ -41,7 +42,7 @@ public class EnrichedPolygon {
 		return this.polygon;
 	}
 
-	public void setLanduse(Set<LanduseTag> landuse) {
+	public void setLanduse(Set<String> landuse) {
 		this.landuse = landuse;
 	}
 

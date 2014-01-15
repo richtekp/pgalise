@@ -10,7 +10,7 @@ import de.pgalise.simulation.controlCenter.ctrl.BaseMapDialogCtrl;
 import de.pgalise.simulation.controlCenter.ctrl.RandomVehiclesCtrl;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import java.util.Arrays;

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.pgalise.simulation.staticsensor.grid.GridDeployer;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
  * Create random positions for sensors

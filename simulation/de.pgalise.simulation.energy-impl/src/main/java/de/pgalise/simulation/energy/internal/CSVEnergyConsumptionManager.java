@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.energy.internal;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;

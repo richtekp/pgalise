@@ -16,13 +16,13 @@
  
 package de.pgalise.simulation.weather.internal.modifier.simulationevents;
 
+import de.pgalise.simulation.shared.CityLocationEnum;
 import java.util.Properties;
 
-import de.pgalise.simulation.shared.city.CityLocationEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.modifier.WeatherSimulationEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.util.DateConverter;
@@ -121,11 +121,11 @@ public class CityClimateModifier extends WeatherSimulationEventModifier {
 	public void deployChanges() {
 		// Calculate general informations
 		float temperaturDiff = (float) this.getUHI(this.getCity().getPopulation());
-		de.pgalise.simulation.shared.city.CityLocationEnum cityEnum = (this.getCity().isNearRiver() || this.getCity().isNearSea()) ? CityLocationEnum.DOWNTOWN_RIVER
+		CityLocationEnum cityEnum = (this.getCity().isNearRiver() || this.getCity().isNearSea()) ? CityLocationEnum.DOWNTOWN_RIVER
 				: CityLocationEnum.DOWNTOWN_NORIVER;
 
 		// Change all values
-		for (MutableStationData weather : this.getMap().values()) {
+		for (AbstractStationData weather : this.getMap().values()) {
 			long time = weather.getMeasureTime().getTime();
 
 			float temp = weather.getTemperature().floatValue(SI.CELSIUS);

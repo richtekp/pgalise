@@ -3,16 +3,17 @@
   <persistence-unit name="pgalise-shared" transaction-type="JTA">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>jdbc/pgalise</jta-data-source>
-    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData</class>
-    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData</class>
-    <class>de.pgalise.simulation.shared.city.BaseGeoInfo</class>
-    <class>de.pgalise.simulation.shared.city.Building</class>
-    <class>de.pgalise.simulation.shared.city.BusAgency</class>
-    <class>de.pgalise.simulation.shared.city.BusCalendar</class>
-    <class>de.pgalise.simulation.shared.city.City</class>
-    <class>de.pgalise.simulation.shared.city.NavigationEdge</class>
-    <class>de.pgalise.simulation.shared.city.NavigationNode</class>
-    <class>de.pgalise.simulation.shared.city.Way</class>
+    <class>de.pgalise.simulation.shared.entity.BaseGeoInfo</class>
+    <class>de.pgalise.simulation.shared.entity.Building</class>
+    <class>de.pgalise.simulation.shared.entity.BusAgency</class>
+    <class>de.pgalise.simulation.shared.entity.BusCalendar</class>
+    <class>de.pgalise.simulation.shared.entity.City</class>
+    <class>de.pgalise.simulation.shared.entity.GPSSensorData</class>
+    <class>de.pgalise.simulation.shared.entity.NavigationEdge</class>
+    <class>de.pgalise.simulation.shared.entity.NavigationNode</class>
+    <class>de.pgalise.simulation.shared.entity.SimpleSensorData</class>
+    <class>de.pgalise.simulation.shared.entity.Way</class>
+    <class>de.pgalise.simulation.shared.entity.Identifiable</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>

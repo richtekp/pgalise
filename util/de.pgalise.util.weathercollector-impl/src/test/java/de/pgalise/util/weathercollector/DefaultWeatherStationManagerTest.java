@@ -15,11 +15,10 @@
  */
 package de.pgalise.util.weathercollector;
 
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.testutils.TestUtils;
-import de.pgalise.simulation.shared.city.City;
 import de.pgalise.util.weathercollector.util.DatabaseManager;
-import org.junit.Test;
-
 import de.pgalise.util.weathercollector.weatherstation.DefaultWeatherStationManager;
 import de.pgalise.util.weathercollector.weatherstation.StationStrategy;
 import java.util.Arrays;
@@ -42,11 +41,12 @@ import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
- * Tests the weather station manager. Doesn't inject DatabaseManager in
- because the injected test EntityManager factory can be passed as parameter in
- the constructor.
+ * Tests the weather station manager. Doesn't inject DatabaseManager in because
+ * the injected test EntityManager factory can be passed as parameter in the
+ * constructor.
  *
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 14, 2012)
@@ -56,45 +56,47 @@ import org.junit.Before;
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class DefaultWeatherStationManagerTest {
 
-	@PersistenceContext(unitName = "pgalise-weathercollector")
-	private EntityManager entityManager;
-	@EJB
-	private DatabaseManager baseDatabaseManager;
-	@Resource
-	private UserTransaction userTransaction;
+  @PersistenceContext(unitName = "pgalise-weathercollector")
+  private EntityManager entityManager;
+  @EJB
+  private DatabaseManager baseDatabaseManager;
+  @Resource
+  private UserTransaction userTransaction;
+  @EJB
+  private IdGenerator idGenerator;
 
-	public DefaultWeatherStationManagerTest() throws NamingException {
-	}
+  public DefaultWeatherStationManagerTest() throws NamingException {
+  }
 
-	@Before
-	public void setUp() throws NamingException {
-		TestUtils.getContainer().getContext().bind("inject",
-			this);
-	}
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+  }
 
-	@Test
-	public void testSaveInformations() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
-		userTransaction.begin();
-		try {
-			StationStrategy strategyMock = EasyMock.createStrictMock(
-				StationStrategy.class); // mock because StationOldenburg doesn't work or needs credentials
-			Set<StationStrategy> serviceStrategys = new HashSet<>(Arrays.asList(
-				strategyMock));
-			DefaultWeatherStationManager instance = new DefaultWeatherStationManager(
-				baseDatabaseManager,
-				serviceStrategys);
-			strategyMock.saveWeather(baseDatabaseManager);
-			EasyMock.expectLastCall().once();
-			EasyMock.replay(strategyMock);
+  @Test
+  public void testSaveInformations() throws NamingException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    userTransaction.begin();
+    try {
+      StationStrategy strategyMock = EasyMock.createStrictMock(
+        StationStrategy.class); // mock because StationOldenburg doesn't work or needs credentials
+      Set<StationStrategy> serviceStrategys = new HashSet<>(Arrays.asList(
+        strategyMock));
+      DefaultWeatherStationManager instance = new DefaultWeatherStationManager(
+        baseDatabaseManager,
+        serviceStrategys);
+      strategyMock.saveWeather(baseDatabaseManager);
+      EasyMock.expectLastCall().once();
+      EasyMock.replay(strategyMock);
 
-			City city = TestUtils.createDefaultTestCityInstance();
-			entityManager.merge(city.getPosition());
-			entityManager.merge(city);
-			instance.saveInformations();
-			//only test that StationStrategy.saveWeather is invoked
-		} finally {
-			userTransaction.commit();
-		}
-	}
+      City city = TestUtils.createDefaultTestCityInstance(idGenerator);
+      entityManager.merge(city.getPosition());
+      entityManager.merge(city);
+      instance.saveInformations();
+      //only test that StationStrategy.saveWeather is invoked
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
 }

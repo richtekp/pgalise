@@ -20,7 +20,7 @@ import java.util.List;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 
 /**
  * An energy event strategy changes the energy consumption by considering given instances of {@link EnergyEvent}.

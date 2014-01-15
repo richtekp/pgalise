@@ -3,33 +3,6 @@
   <persistence-unit name="pgalise-weathercollector" transaction-type="JTA">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <jta-data-source>jdbc/pgalise</jta-data-source>
-    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.GPSSensorData</class>
-    <class>de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData</class>
-    <class>de.pgalise.simulation.shared.city.BaseGeoInfo</class>
-    <class>de.pgalise.simulation.shared.city.Building</class>
-    <class>de.pgalise.simulation.shared.city.BusAgency</class>
-    <class>de.pgalise.simulation.shared.city.BusCalendar</class>
-    <class>de.pgalise.simulation.shared.city.City</class>
-    <class>de.pgalise.simulation.shared.city.NavigationEdge</class>
-    <class>de.pgalise.simulation.shared.city.NavigationNode</class>
-    <class>de.pgalise.simulation.shared.city.Way</class>
-    <class>de.pgalise.simulation.weather.model.ServiceDataCurrent</class>
-    <class>de.pgalise.simulation.weather.model.ServiceDataForecast</class>
-    <class>de.pgalise.simulation.weather.model.StationDataAggregate</class>
-    <class>de.pgalise.simulation.weather.model.StationDataNormal</class>
-    <class>de.pgalise.simulation.weather.model.WeatherCondition</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.AnemomenterData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.BarometerData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.HygrometerData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.LuxmeterData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.PyranometerData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.RainSensorData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.ThermometerData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.WeatherStationData</class>
-    <class>de.pgalise.staticsensor.internal.sensor.weather.WindFlagSensorData</class>
-    <class>de.pgalise.util.weathercollector.model.ExtendedServiceDataCurrent</class>
-    <class>de.pgalise.util.weathercollector.model.ExtendedServiceDataForecast</class>
-    <class>de.pgalise.util.weathercollector.model.ServiceDataHelper</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>

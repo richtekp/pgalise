@@ -16,10 +16,10 @@
  
 package de.pgalise.util.graph;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultGraphVisualizer;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import org.junit.Ignore;

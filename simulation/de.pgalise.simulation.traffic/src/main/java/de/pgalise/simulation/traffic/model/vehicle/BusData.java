@@ -15,14 +15,15 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.BusStop;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.BusStop;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 

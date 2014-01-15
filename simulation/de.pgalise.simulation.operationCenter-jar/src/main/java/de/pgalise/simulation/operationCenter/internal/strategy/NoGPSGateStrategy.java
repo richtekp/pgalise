@@ -36,7 +36,7 @@ import java.util.Map;
 
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -51,7 +51,7 @@ import java.util.Set;
  * @author Timo
  *
  */
-public class NoGPSGateStrategy extends AbstractIdentifiable implements
+public class NoGPSGateStrategy extends Identifiable implements
 	GPSGateStrategy {
 
 	@Override

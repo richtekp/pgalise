@@ -19,10 +19,9 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import java.util.List;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +36,8 @@ import org.slf4j.LoggerFactory;
  * @version 1.0
  * @param <X>
  */
-@MappedSuperclass
 public abstract class AbstractSensor<E extends Event, X extends SensorData>
-	extends AbstractIdentifiable
+	extends Identifiable
 	implements Sensor<E, X> {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(

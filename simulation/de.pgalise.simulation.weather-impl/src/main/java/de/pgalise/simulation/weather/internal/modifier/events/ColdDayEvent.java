@@ -25,8 +25,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.MutableStationData;
-import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -171,7 +170,7 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 				getSimulationTimestamp()));
 		}
 
-		StationData min = this.getNextWeatherForTimestamp(this.getEventTimestamp());
+		AbstractStationData min = this.getNextWeatherForTimestamp(this.getEventTimestamp());
 
 		// Calculate difference between min (reference) and min (event)
 		float maxDifference = this.minValue - min.getTemperature().floatValue(
@@ -216,7 +215,7 @@ public class ColdDayEvent extends WeatherDayEventModifier {
 			float value, difference;
 			for (Long time : times) {
 				// Get weather
-				MutableStationData weather = this.getMap().get(time);
+				AbstractStationData weather = this.getMap().get(time);
 				actTime = weather.getMeasureTime().getTime();
 
 				// Between the interval?

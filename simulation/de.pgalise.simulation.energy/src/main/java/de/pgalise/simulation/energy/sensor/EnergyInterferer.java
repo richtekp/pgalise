@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.energy.sensor;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**

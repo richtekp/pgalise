@@ -4,14 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-
 /**
  *
  * @author richter
  */
-@Embeddable
-public enum RepairTagEnum implements RepairTag {
+public enum RepairTagEnum {
 
 	;
 	
@@ -21,7 +18,6 @@ public enum RepairTagEnum implements RepairTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

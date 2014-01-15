@@ -1,9 +1,9 @@
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import org.jgrapht.EdgeFactory;
-
-
 
 /**
  *

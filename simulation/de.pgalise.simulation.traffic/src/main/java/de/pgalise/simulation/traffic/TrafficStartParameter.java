@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.util.List;

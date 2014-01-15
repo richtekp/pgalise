@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.staticsensor.internal.sensor.weather.AnemomenterData;
+import de.pgalise.simulation.weather.entity.AnemometerData;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author richter
  */
 @Stateless
-public class AnemomenterDataFacade extends AbstractFacade<AnemomenterData> {
+public class AnemomenterDataFacade extends AbstractFacade<AnemometerData> {
 	@PersistenceContext(unitName = "pgalise-jsf")
 	private EntityManager em;
 
@@ -26,7 +26,7 @@ public class AnemomenterDataFacade extends AbstractFacade<AnemomenterData> {
 	}
 
 	public AnemomenterDataFacade() {
-		super(AnemomenterData.class);
+		super(AnemometerData.class);
 	}
 	
 }

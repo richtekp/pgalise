@@ -15,16 +15,17 @@
  */
 package de.pgalise.simulation.weather.internal.modifier;
 
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
-import de.pgalise.simulation.weather.model.ServiceDataForecast;
-import de.pgalise.simulation.weather.model.StationData;
-import de.pgalise.simulation.weather.model.StationDataNormal;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
+import de.pgalise.simulation.weather.entity.StationDataNormal;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
@@ -57,159 +58,164 @@ import org.junit.Test;
 @LocalClient
 public class ReferenceCityTest {
 
-	@PersistenceContext(unitName = "pgalise-weather")
-	private EntityManager entityManagerFactory;
+  @PersistenceContext(unitName = "pgalise-weather")
+  private EntityManager entityManagerFactory;
 
-	/**
-	 * End timestamp
-	 */
-	private static long endTimestamp;
+  /**
+   * End timestamp
+   */
+  private static long endTimestamp;
 
-	/**
-	 * Start timestamp
-	 */
-	private static long startTimestamp;
+  /**
+   * Start timestamp
+   */
+  private static long startTimestamp;
 
-	/**
-	 * Service Class
-	 */
-	@EJB
-	private static WeatherService service;
+  /**
+   * Service Class
+   */
+  @EJB
+  private static WeatherService service;
 
-	private City city;
+  private City city;
 
-	@Resource
-	private UserTransaction userTransaction;
+  @Resource
+  private UserTransaction userTransaction;
 
-	/**
-	 * Weather Loader
-	 */
-	@EJB
-	private WeatherLoader loader;
+  /**
+   * Weather Loader
+   */
+  @EJB
+  private WeatherLoader loader;
+  @EJB
+  private IdGenerator idGenerator;
 
-	public ReferenceCityTest() {
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2012,
-			8,
-			20,
-			0,
-			0,
-			0);
-		ReferenceCityTest.startTimestamp = cal.getTimeInMillis();
+  public ReferenceCityTest() {
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2012,
+      8,
+      20,
+      0,
+      0,
+      0);
+    ReferenceCityTest.startTimestamp = cal.getTimeInMillis();
 
-		// End
-		cal.set(2012,
-			8,
-			21,
-			0,
-			0,
-			0);
-		ReferenceCityTest.endTimestamp = cal.getTimeInMillis();
-	}
+    // End
+    cal.set(2012,
+      8,
+      21,
+      0,
+      0,
+      0);
+    ReferenceCityTest.endTimestamp = cal.getTimeInMillis();
+  }
 
-	@Before
-	public void setUp() throws Exception {
-		TestUtils.getContainer().getContext().bind("inject",
-			this);
-		userTransaction.begin();
-		try {
-			city = TestUtils.createDefaultTestCityInstance();
-			service.setCity(city);
-		} finally {
-			userTransaction.commit();
-		}
-	}
+  @Before
+  public void setUp() throws Exception {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+    userTransaction.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
+      service.setCity(city);
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
-	@Test
-	public void testDeployChanges() throws Exception {
-		userTransaction.begin();
-		try {
-			Calendar cal = new GregorianCalendar();
-			cal.setTimeInMillis(startTimestamp);
-			cal.add(Calendar.DATE,
-				-1);
-			Map<Date, StationDataNormal> entities = WeatherTestUtils.
-				setUpWeatherStationData(startTimestamp,
-					endTimestamp,
-					entityManagerFactory);
-			Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
-				setUpWeatherServiceDataCurrent(startTimestamp,
-					endTimestamp,
-					city,
-					entityManagerFactory);
-			Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
-				setUpWeatherServiceDataForecast(startTimestamp,
-					endTimestamp,
-					city,
-					entityManagerFactory);
-			service.addNewWeather(startTimestamp,
-				endTimestamp,
-				true,
-				null);
+  @Test
+  public void testDeployChanges() throws Exception {
+    userTransaction.begin();
+    try {
+      Calendar cal = new GregorianCalendar();
+      cal.setTimeInMillis(startTimestamp);
+      cal.add(Calendar.DATE,
+        -1);
+      Map<Date, StationDataNormal> entities = WeatherTestUtils.
+        setUpWeatherStationData(startTimestamp,
+          endTimestamp,
+          entityManagerFactory,
+          idGenerator);
+      Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
+        setUpWeatherServiceDataCurrent(startTimestamp,
+          endTimestamp,
+          city,
+          entityManagerFactory,
+          idGenerator);
+      Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
+        setUpWeatherServiceDataForecast(startTimestamp,
+          endTimestamp,
+          city,
+          entityManagerFactory,
+          idGenerator);
+      service.addNewWeather(startTimestamp,
+        endTimestamp,
+        true,
+        null);
 
-			// Get reference values
-			WeatherMap referenceValues = ReferenceCityTest.service.
-				getReferenceValues();
+      // Get reference values
+      WeatherMap referenceValues = ReferenceCityTest.service.
+        getReferenceValues();
 
-			// Get max of reference values
-			StationData refmax = Collections.max(referenceValues.values(),
-				new TemperatureComparator());
-			float refvalue1 = refmax.getTemperature().floatValue(SI.CELSIUS);
-			float refvalue2 = refmax.getPerceivedTemperature();
-			float refvalue3 = refmax.getRelativHumidity();
-			float refvalue4 = refmax.getWindVelocity();
-			long reftime = refmax.getMeasureTime().getTime();
+      // Get max of reference values
+      AbstractStationData refmax = Collections.max(referenceValues.values(),
+        new TemperatureComparator());
+      float refvalue1 = refmax.getTemperature().floatValue(SI.CELSIUS);
+      float refvalue2 = refmax.getPerceivedTemperature();
+      float refvalue3 = refmax.getRelativHumidity();
+      float refvalue4 = refmax.getWindVelocity();
+      long reftime = refmax.getMeasureTime().getTime();
 
-			// Deploy strategy
-			ReferenceCityModifier modifier = new ReferenceCityModifier(
-				new DefaultRandomSeedService().getSeed(ReferenceCityTest.class.
-					toString()),
-				loader);
-			ReferenceCityTest.service.deployStrategy(modifier);
+      // Deploy strategy
+      ReferenceCityModifier modifier = new ReferenceCityModifier(
+        new DefaultRandomSeedService().getSeed(ReferenceCityTest.class.
+          toString()),
+        loader);
+      ReferenceCityTest.service.deployStrategy(modifier);
 
-			// Get modifier values
-			WeatherMap modifierValues = ReferenceCityTest.service.getReferenceValues();
+      // Get modifier values
+      WeatherMap modifierValues = ReferenceCityTest.service.getReferenceValues();
 
-			// Get max of modifier values
-			StationData decmax = modifierValues.get(reftime);
+      // Get max of modifier values
+      AbstractStationData decmax = modifierValues.get(reftime);
 
-			/*
-			 * Testcase 1 : Temperature
-			 */
-			// Test 1: Max are not equals
-			Assert.assertTrue(refvalue1 != decmax.getTemperature().
-				floatValue(SI.CELSIUS));
+      /*
+       * Testcase 1 : Temperature
+       */
+      // Test 1: Max are not equals
+      Assert.assertTrue(refvalue1 != decmax.getTemperature().
+        floatValue(SI.CELSIUS));
 
-			/*
-			 * Testcase 2 : Perceived Temperature
-			 */
-			// Test 1: Max are not equals
-			Assert.assertTrue(refvalue2 != decmax.getPerceivedTemperature());
+      /*
+       * Testcase 2 : Perceived Temperature
+       */
+      // Test 1: Max are not equals
+      Assert.assertTrue(refvalue2 != decmax.getPerceivedTemperature());
 
-			/*
-			 * Testcase 3 : RelativHumidity
-			 */
-			// Test 1: Max are not equals
-			Assert.assertTrue(refvalue3 != decmax.getRelativHumidity());
+      /*
+       * Testcase 3 : RelativHumidity
+       */
+      // Test 1: Max are not equals
+      Assert.assertTrue(refvalue3 != decmax.getRelativHumidity());
 
-			/*
-			 * Testcase 4 : WindVelocity
-			 */
-			// Test 1: Max are not equals
-			Assert.assertTrue(refvalue4 != decmax.getWindVelocity());
+      /*
+       * Testcase 4 : WindVelocity
+       */
+      // Test 1: Max are not equals
+      Assert.assertTrue(refvalue4 != decmax.getWindVelocity());
 
-			WeatherTestUtils.tearDownWeatherData(entities,
-				StationDataNormal.class,
-				entityManagerFactory);
-			WeatherTestUtils.tearDownWeatherData(entities0,
-				ServiceDataCurrent.class,
-				entityManagerFactory);
-			WeatherTestUtils.tearDownWeatherData(entities1,
-				ServiceDataForecast.class,
-				entityManagerFactory);
-		} finally {
-			userTransaction.commit();
-		}
-	}
+      WeatherTestUtils.tearDownWeatherData(entities,
+        StationDataNormal.class,
+        entityManagerFactory);
+      WeatherTestUtils.tearDownWeatherData(entities0,
+        ServiceDataCurrent.class,
+        entityManagerFactory);
+      WeatherTestUtils.tearDownWeatherData(entities1,
+        ServiceDataForecast.class,
+        entityManagerFactory);
+    } finally {
+      userTransaction.commit();
+    }
+  }
 }

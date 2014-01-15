@@ -23,7 +23,7 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
  *
  * @author Timo
  */
-public class SimulationStartParameterMessage extends AbstractIdentifiableControlCenterMessage<ControlCenterStartParameter>
+public class SimulationStartParameterMessage extends IdentifiableControlCenterMessage<ControlCenterStartParameter>
 {
 
 	/**

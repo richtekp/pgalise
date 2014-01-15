@@ -20,7 +20,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.traffic.BusStop;
+import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.server.route.BusStopParser;
 import java.util.LinkedList;

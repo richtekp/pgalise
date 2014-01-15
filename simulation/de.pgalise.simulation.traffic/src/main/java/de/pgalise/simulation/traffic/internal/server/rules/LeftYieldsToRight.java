@@ -32,16 +32,16 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
-import de.pgalise.simulation.traffic.server.rules.TrafficRuleData;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
+import de.pgalise.simulation.traffic.entity.TrafficRuleData;
+import de.pgalise.simulation.shared.JaxbVector2d;
 import javax.vecmath.Vector3d;
 
 /**
@@ -50,6 +50,7 @@ import javax.vecmath.Vector3d;
  * @author Marcus
  */
 public class LeftYieldsToRight extends AbstractTrafficRule {
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * maps the right {@link Edge} for each {@link Edge}

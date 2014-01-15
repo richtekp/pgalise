@@ -4,14 +4,11 @@
  */
 package de.pgalise.simulation.shared.tag;
 
-import javax.persistence.Embeddable;
-
 /**
  *
  * @author richter
  */
-@Embeddable
-public enum ShopTagEnum implements ShopTag {
+public enum ShopTagEnum {
 
 	;
 	
@@ -21,7 +18,6 @@ public enum ShopTagEnum implements ShopTag {
 		this.stringValue = stringValue;
 	}
 
-	@Override
 	public String getStringValue() {
 		return stringValue;
 	}

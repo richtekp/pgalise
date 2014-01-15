@@ -16,8 +16,8 @@
  
 package de.pgalise.util.GTFS.service;
 
-import de.pgalise.simulation.traffic.BusRoute;
-import de.pgalise.simulation.traffic.BusTrip;
+import de.pgalise.simulation.traffic.entity.BusRoute;
+import de.pgalise.simulation.traffic.entity.BusTrip;
 import java.util.List;
 
 

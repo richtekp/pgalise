@@ -30,7 +30,7 @@ import com.Ostermiller.util.CSVParse;
 import com.Ostermiller.util.CSVParser;
 
 import de.pgalise.simulation.operationCenter.internal.hqf.persistence.DefaultHQFPersistenceService;
-import de.pgalise.simulation.operationCenter.internal.hqf.persistence.HQFData;
+import de.pgalise.simulation.operationCenter.entity.HQFData;
 import de.pgalise.simulation.operationCenter.internal.hqf.persistence.HQFPersistenceService;
 
 /**

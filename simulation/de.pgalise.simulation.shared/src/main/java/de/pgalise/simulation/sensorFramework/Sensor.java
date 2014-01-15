@@ -21,8 +21,6 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.persistence.Identifiable;
-import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import java.util.List;
 
@@ -38,7 +36,7 @@ import java.util.List;
 /*
 position is managed in position field of StaticTrafficSensor (belongs to permanent properties) or in SensorData of mobile sensors (belongs to properties changing in every update step)
 */
-public interface Sensor<E extends Event, X extends SensorData> extends Identifiable, SimulationComponent<E> {
+public interface Sensor<E extends Event, X extends SensorData> extends SimulationComponent<E> {
 
 	/**
 	 * returns the number of measured values of the sensor

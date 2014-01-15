@@ -16,7 +16,7 @@
 package de.pgalise.simulation.weather.internal.positionconverter;
 
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.DateConverter;

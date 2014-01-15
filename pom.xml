@@ -13,7 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.compiler.source>1.7</java.compiler.source>
 		<java.compiler.target>1.7</java.compiler.target>
-		<de.pgalise.openejb.version>4.6.0</de.pgalise.openejb.version>
+		<de.pgalise.openejb.version>4.6.1-SNAPSHOT</de.pgalise.openejb.version>
 		<de.pgalise.geotools.version>9.3</de.pgalise.geotools.version>
 		<de.pgalise.hibernate.version>4.3.0.Final</de.pgalise.hibernate.version>
 		<!--4.3.0.Final is the only stable version which is compatible with Java EE 7, 
@@ -366,41 +366,16 @@
 				<artifactId>hibernate-spatial</artifactId>
 				<version>4.0</version>
 			</dependency>-->
-<!--			<dependency>
+			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-core</artifactId>
 				<version>${de.pgalise.hibernate.version}</version>
-				<exclusions>-->
-					<!--					<exclusion>
-						<groupId>org.jboss.logging</groupId>
-						<artifactId>jboss-logging</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.jboss.logging</groupId>
-						<artifactId>jboss-logging-annotations</artifactId>
-					</exclusion>-->
-<!--				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
 				<version>${de.pgalise.hibernate.version}</version>
-				<exclusions>-->
-					<!--					<exclusion>
-						<groupId>org.jboss.logging</groupId>
-						<artifactId>jboss-logging</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.jboss.logging</groupId>
-						<artifactId>jboss-logging-annotations</artifactId>
-					</exclusion>-->
-<!--				</exclusions>
-			</dependency>-->
-			<!--			<dependency>
-				<groupId>org.apache.openjpa</groupId>
-				<artifactId>openjpa</artifactId>
-				<version>${de.pgalise.openjpa.version}</version>
-			</dependency>-->
+			</dependency>
 			<dependency>
 				<groupId>postgresql</groupId>
 				<artifactId>postgresql</artifactId>
@@ -427,26 +402,6 @@
 				<version>3.1</version>
 				<scope>provided</scope>
 			</dependency>
-			<!--			<dependency>
-			<groupId>org.apache.openejb</groupId>
-			<artifactId>openejb-server</artifactId>
-			<version>${de.pgalise.openejb.version}</version>-->
-			<!--
-			<exclusions>
-				<exclusion>
-				<groupId>log4j</groupId>
-				<artifactId>log4j</artifactId>
-				</exclusion>
-			</exclusions>
-			-->
-			<!--				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.openejb</groupId>
-				<artifactId>openejb-client</artifactId>
-				<version>${de.pgalise.openejb.version}</version>
-				<scope>test</scope>
-			</dependency>	-->
 			<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-core</artifactId>
@@ -472,18 +427,11 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.openjpa</groupId>
-				<artifactId>openjpa-all</artifactId>
-				<version>${de.pgalise.openjpa.version}</version>
-			</dependency>
-
-			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>2.5</version>
 				<scope>provided</scope>
 			</dependency>			
-
 			<!--			<dependency>
 			 <groupId>org.apache.tomcat</groupId>
 			 <artifactId>tomcat-catalina</artifactId>

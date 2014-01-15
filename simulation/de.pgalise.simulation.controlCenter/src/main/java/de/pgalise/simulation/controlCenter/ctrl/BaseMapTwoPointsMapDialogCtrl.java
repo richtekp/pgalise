@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import org.primefaces.event.map.MarkerDragEvent;

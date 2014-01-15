@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.weather.internal.util.comparator;
 
-import de.pgalise.simulation.weather.model.StationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import java.io.Serializable;
 import java.util.Comparator;
 import javax.measure.unit.SI;
@@ -27,7 +27,7 @@ import javax.measure.unit.SI;
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
-public class TemperatureComparator implements Comparator<StationData>, Serializable {
+public class TemperatureComparator implements Comparator<AbstractStationData>, Serializable {
 
 	/**
 	 * Serial
@@ -35,7 +35,7 @@ public class TemperatureComparator implements Comparator<StationData>, Serializa
 	private static final long serialVersionUID = -3365797876211189282L;
 
 	@Override
-	public int compare(StationData o1, StationData o2) {
+	public int compare(AbstractStationData o1, AbstractStationData o2) {
 		float thisValue = o1.getTemperature().floatValue(SI.CELSIUS);
 		float anotherValue = o2.getTemperature().floatValue(SI.CELSIUS);
 

@@ -5,7 +5,7 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import java.net.URL;
 import javax.faces.bean.ManagedBean;

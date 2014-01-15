@@ -22,8 +22,7 @@ import java.util.Properties;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.StationData;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.util.DateConverter;
 
 /**
@@ -206,9 +205,9 @@ public abstract class WeatherDayEventModifier extends AbstractWeatherMapModifier
 	 *            Event time
 	 * @return weather object
 	 */
-	protected StationData getNextWeatherForTimestamp(long timestamp) {
+	protected AbstractStationData getNextWeatherForTimestamp(long timestamp) {
 		// Get weather
-		StationData weather = this.getMap().get(timestamp);
+		AbstractStationData weather = this.getMap().get(timestamp);
 		if (weather == null) {
 
 			// Calculate next minute
@@ -251,8 +250,8 @@ public abstract class WeatherDayEventModifier extends AbstractWeatherMapModifier
 	 *            Minimal hour
 	 * @return weather object
 	 */
-	protected StationData getNextWeatherForTimestamp(long timestamp, int maxTimeValue, int minTimeValue) {
-		StationData weather;
+	protected AbstractStationData getNextWeatherForTimestamp(long timestamp, int maxTimeValue, int minTimeValue) {
+		AbstractStationData weather;
 		int hour = DateConverter.getHourOfDay(timestamp);
 		if ((hour >= 0) && (hour < minTimeValue)) {
 			// Between 0 and min?

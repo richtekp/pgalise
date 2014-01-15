@@ -7,7 +7,7 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.io.Serializable;
 import javax.ejb.EJB;
 import org.primefaces.event.map.MarkerDragEvent;

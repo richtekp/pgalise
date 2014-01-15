@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.simulation.operationCenter.internal.model.sensordata.SimpleSensorData;
+import de.pgalise.simulation.shared.entity.SimpleSensorData;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

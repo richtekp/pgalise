@@ -15,7 +15,7 @@
  */
 package de.pgalise.staticsensor.internal;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;

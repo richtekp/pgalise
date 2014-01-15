@@ -26,7 +26,7 @@ import de.pgalise.simulation.energy.internal.DefaultEnergyEventStrategy;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.energy.PercentageChangeEnergyEvent;
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 
 /**
  * JUnit test for the {@link DefaultEventStrategy}.<br />

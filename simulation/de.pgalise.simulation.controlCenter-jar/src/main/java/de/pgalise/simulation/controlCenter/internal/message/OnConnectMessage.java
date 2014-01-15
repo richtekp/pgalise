@@ -39,14 +39,14 @@ import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.BusRoute;
+import de.pgalise.simulation.traffic.entity.BusRoute;
 
 /**
  * Message send on connect. It will Send the {@link OnConnectParameter} to the user.
  * 
  * @author Timo
  */
-public class OnConnectMessage extends AbstractControlCenterMessage<OnConnectParameter> {
+public class OnConnectMessage extends ControlCenterMessage<OnConnectParameter> {
 
 	/**
 	 * Logger

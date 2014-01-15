@@ -16,24 +16,24 @@
  
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.service.Orientation;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
-import de.pgalise.simulation.shared.city.JaxbVector2d;
-import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.shared.JaxbVector2d;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
 
 /**
  * Superclass for vehicles
@@ -43,7 +43,7 @@ import de.pgalise.simulation.traffic.TrafficTrip;
  * @author Marina
  * @version 1.0 (Nov 1, 2012)
  */
-public abstract class BaseVehicle<D extends VehicleData> extends AbstractIdentifiable implements Vehicle<D> {
+public abstract class BaseVehicle<D extends VehicleData> extends Identifiable implements Vehicle<D> {
 	/**
 	 * Serial
 	 */

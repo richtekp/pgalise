@@ -15,7 +15,7 @@
  */
 package de.pgalise.staticsensor.sensors;
 
-import de.pgalise.simulation.shared.city.JaxRSCoordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
