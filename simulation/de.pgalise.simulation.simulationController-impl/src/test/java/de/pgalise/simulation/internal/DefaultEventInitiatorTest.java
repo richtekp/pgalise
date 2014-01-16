@@ -52,6 +52,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -65,6 +66,7 @@ import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.testutils.TestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -99,7 +101,7 @@ public class DefaultEventInitiatorTest {
 	private static WeatherControllerMock weatherController;
 	private static TrafficControllerMock trafficController;
 	private static long startTimestamp, endTimestamp;
-	private static InitParameter initParameter;
+	private static SimulationInitParameter initParameter;
 	private static StartParameter startParameter;
 	private static SimulationController simulationController;
 
@@ -129,14 +131,13 @@ public class DefaultEventInitiatorTest {
 			0);
 		endTimestamp = cal.getTimeInMillis();
 
-		initParameter = new InitParameter(
+		initParameter = new SimulationInitParameter(
 			startTimestamp,
 			endTimestamp,
 			INTERVAL,
 			CLOCK_GENERATOR_INTERVAL,
 			new URL("http://localhost:8080/operationCenter"),
 			new URL("http://localhost:8080/controlCenter"),
-			null,
 			null);
 
 		startParameter = new StartParameter(true,
@@ -293,7 +294,7 @@ public class DefaultEventInitiatorTest {
 		}
 
 		@Override
-		public void init(InitParameter param) throws IllegalStateException {
+		public void init(WeatherInitParameter param) throws IllegalStateException {
 		}
 
 		@Override

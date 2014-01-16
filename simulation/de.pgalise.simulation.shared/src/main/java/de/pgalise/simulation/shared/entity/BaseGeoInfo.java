@@ -7,6 +7,7 @@ package de.pgalise.simulation.shared.entity;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
 
@@ -53,4 +54,32 @@ public class BaseGeoInfo extends Identifiable {
   public void setBoundaries(Polygon boundaries) {
     this.boundaries = boundaries;
   }
+
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 17 * hash + Objects.hashCode(this.boundaries);
+		hash = 17 * hash + Objects.hashCode(this.centerPoint);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final BaseGeoInfo other = (BaseGeoInfo) obj;
+		if (!Objects.equals(this.boundaries,
+			other.boundaries)) {
+			return false;
+		}
+		if (!Objects.equals(this.centerPoint,
+			other.centerPoint)) {
+			return false;
+		}
+		return true;
+	}
 }

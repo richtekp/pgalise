@@ -15,8 +15,8 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
@@ -79,373 +79,387 @@ import org.slf4j.LoggerFactory;
  * @version 1.0 (Aug 24, 2012)
  */
 @Stateful
-public class DefaultWeatherController extends AbstractController<WeatherEvent, StartParameter, InitParameter>
-	implements WeatherController {
+public class DefaultWeatherController extends AbstractController<WeatherEvent, StartParameter, WeatherInitParameter>
+  implements WeatherController {
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(
-		DefaultWeatherController.class);
-	private static final String NAME = "WeatherController";
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    DefaultWeatherController.class);
+  private static final String NAME = "WeatherController";
 
-	/**
-	 * 1 day in millis.
-	 */
-	private static final long ONE_DAY_IN_MILLIS = 86400000;
+  /**
+   * 1 day in millis.
+   */
+  private static final long ONE_DAY_IN_MILLIS = 86400000;
 
-	/**
-	 * File path for property file
-	 */
-	private static final String PROPERTIES_FILE_PATH = "weather_decorators.properties";
+  /**
+   * File path for property file
+   */
+  private static final String PROPERTIES_FILE_PATH = "weather_decorators.properties";
 
-	private final static String JNDI_PROPERTIES_FILE_PATH = "/META-INF/jndi.properties";
-	private static final long serialVersionUID = 1L;
+  private final static String JNDI_PROPERTIES_FILE_PATH = "/META-INF/jndi.properties";
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Properties for decorators
-	 */
-	private Properties decoratorProps = null;
+  /**
+   * Properties for decorators
+   */
+  private Properties decoratorProps = null;
 
-	/**
-	 * First time on a new day.
-	 */
-	private long nextNewDayInMillis;
+  /**
+   * First time on a new day.
+   */
+  private long nextNewDayInMillis;
 
-	/**
-	 * The start timestamp.
-	 */
-	private long startTimestamp;
+  /**
+   * The start timestamp.
+   */
+  private long startTimestamp;
 
-	/**
-	 * WeatherService
-	 */
-	@EJB
-	private WeatherService weatherservice;
+  /**
+   * WeatherService
+   */
+  @EJB
+  private WeatherService weatherservice;
 
-	@EJB
-	private WeatherLoader weatherLoader;
+  @EJB
+  private WeatherLoader weatherLoader;
 
-	/**
-	 * Random Seed Service
-	 */
-	@EJB
-	private RandomSeedService randomSeedService;
+  /**
+   * Random Seed Service
+   */
+  @EJB
+  private RandomSeedService randomSeedService;
 
-	private InitParameter initParameter;
+  private WeatherInitParameter initParameter;
+  private City city;
 
-	/**
-	 * Constructor
-	 */
-	public DefaultWeatherController() {
-		// Read propsInputStream propInFile
-		try (InputStream propInFile = Thread.currentThread().getContextClassLoader()
-			.getResourceAsStream(DefaultWeatherController.PROPERTIES_FILE_PATH)) {
-			this.decoratorProps = new Properties();
-			this.decoratorProps.loadFromXML(propInFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
-	}
+  /**
+   * Constructor
+   */
+  public DefaultWeatherController() {
+    // Read propsInputStream propInFile
+    try (InputStream propInFile = Thread.currentThread().getContextClassLoader()
+      .getResourceAsStream(DefaultWeatherController.PROPERTIES_FILE_PATH)) {
+      this.decoratorProps = new Properties();
+      this.decoratorProps.loadFromXML(propInFile);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-	@Override
-	public void checkDate(long timestamp) {
-		// Check date
-		if (!this.weatherservice.checkDate(timestamp)) {
-			throw new IllegalArgumentException("There is no data available.");
-		}
-	}
+  @Override
+  public void checkDate(long timestamp) {
+    // Check date
+    if (!this.weatherservice.checkDate(timestamp)) {
+      throw new IllegalArgumentException("There is no data available.");
+    }
+  }
 
-	public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
-		long timestamp,
-		long duration) throws IllegalArgumentException {
-		throw new UnsupportedOperationException(
-			"no use case for weather events without value check class architecture");
-	}
+  public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
+    long timestamp,
+    long duration) throws IllegalArgumentException {
+    throw new UnsupportedOperationException(
+      "no use case for weather events without value check class architecture");
+  }
 
-	/**
-	 * Creates a weather strategy from the given enum element
-	 *
-	 * @param enumElement WeatherEventTypeEnum
-	 * @param timestamp Timestamp
-	 * @param value Specified value for event
-	 * @param duration Duration of the event
-	 * @return weather strategy
-	 * @throws IllegalArgumentException enumElement is null or weather strategy is
-	 * not implemented
-	 */
-	public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
-		long timestamp,
-		Float value,
-		long duration) throws IllegalArgumentException {
-		if (enumElement == null) {
+  /**
+   * Creates a weather strategy from the given enum element
+   *
+   * @param enumElement WeatherEventTypeEnum
+   * @param timestamp Timestamp
+   * @param value Specified value for event
+   * @param duration Duration of the event
+   * @return weather strategy
+   * @throws IllegalArgumentException enumElement is null or weather strategy is
+   * not implemented
+   */
+  public WeatherStrategy createStrategyFromEnum(WeatherEventType enumElement,
+    long timestamp,
+    Float value,
+    long duration) throws IllegalArgumentException {
+    if (enumElement == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "enumElement"));
+    }
+
+    /*
+     * INFO: You have to add new weather strategies here!
+     */
+    if (enumElement.equals(WeatherEventTypeEnum.RAINDAY)) {
+      return new RainDayEvent(city,
+        this.randomSeedService.getSeed(RainDayEvent.class.
+          getName()),
+        timestamp,
+        this.decoratorProps,
+        value,
+        duration,
+        this.weatherLoader);
+    } else if (enumElement.equals(WeatherEventTypeEnum.COLDDAY)) {
+      return new ColdDayEvent(city,
+        this.randomSeedService.getSeed(ColdDayEvent.class.
+          getName()),
+        timestamp,
+        this.decoratorProps,
+        value,
+        duration,
+        this.weatherLoader);
+    } else if (enumElement.equals(WeatherEventTypeEnum.HOTDAY)) {
+      return new HotDayEvent(city,
+        this.randomSeedService.getSeed(HotDayEvent.class.
+          getName()),
+        timestamp,
+        this.decoratorProps,
+        value,
+        duration,
+        this.weatherLoader);
+    } else if (enumElement.equals(WeatherEventTypeEnum.STORMDAY)) {
+      return new StormDayEvent(city,
+        this.randomSeedService.getSeed(
+          StormDayEvent.class.getName()),
+        timestamp,
+        this.decoratorProps,
+        value,
+        duration,
+        this.weatherLoader);
+    } else if (enumElement.equals(WeatherEventTypeEnum.CITYCLIMATE)) {
+      // Events with -1 are not considered
+      return ((value != null) && (value < 0)) ? null : new CityClimateModifier(
+        initParameter.getCity(),
+        this.randomSeedService.getSeed(CityClimateModifier.class.getName()),
+        this.decoratorProps,
+        this.weatherLoader);
+    } else if (enumElement.equals(WeatherEventTypeEnum.REFERENCECITY)) {
+      // Events with -1 are not considered
+      return ((value != null) && (value < 0)) ? null : new ReferenceCityModifier(
+        initParameter.getCity(),
+        this.randomSeedService.getSeed(ReferenceCityModifier.class.getName()),
+        this.decoratorProps,
+        this.weatherLoader);
+    } else {
+      throw new IllegalArgumentException("No weather strategy found!");
+    }
+  }
+
+  /**
+   * Creates a list of weather strategies from the given enum list
+   *
+   * @param eventList List of WeatherEvent
+   * @return list of weather strategies
+   * @throws IllegalArgumentException
+   */
+  public List<WeatherStrategyHelper> createStrategyList(
+    List<WeatherEvent> eventList)
+    throws IllegalArgumentException {
+    if (eventList == null) {
+      return null;
+    }
+
+    // Create strategies
+    List<WeatherStrategyHelper> strategies = new ArrayList<>(eventList.size());
+    for (WeatherEvent event : eventList) {
+      WeatherStrategy strategy;
+      if (event instanceof ChangeWeatherEvent) {
+        strategy = this.createStrategyFromEnum(event.getType(),
+          event.getTimestamp(),
+          ((ChangeWeatherEvent) event).getValue(),
+          event.getDuration());
+      } else {
+        strategy = this.createStrategyFromEnum(event.getType(),
+          event.getTimestamp(),
+          event.getDuration());
+      }
+      if (strategy != null) {
+        strategies.add(new WeatherStrategyHelper(strategy,
+          event.getTimestamp()));
+      }
+    }
+
+    // Return
+    return strategies;
+  }
+
+  public long getNextNewDayInMillis() {
+    return this.nextNewDayInMillis;
+  }
+
+  public long getStartTimestamp() {
+    return this.startTimestamp;
+  }
+
+  @Override
+  public Number getValue(final WeatherParameterEnum key,
+    final long timestamp,
+    final JaxRSCoordinate position) {
+    return DefaultWeatherController.this.weatherservice.getValue(key,
+      timestamp,
+      position,
+      initParameter.getCity());
+  }
+
+  public WeatherService getWeatherservice() {
+    return this.weatherservice;
+  }
+
+  public void setNextNewDayInMillis(long nextNewDayInMillis) {
+    this.nextNewDayInMillis = nextNewDayInMillis;
+  }
+
+  public void setStartTimestamp(long startTimestamp) {
+    this.startTimestamp = startTimestamp;
+  }
+
+  /**
+   * Start the weather service or initialize this service
+   *
+   * @param city City
+   */
+  private void startWeatherService(City city) {
+    if (this.weatherservice == null) {
+      this.weatherservice = new DefaultWeatherService(city,
+        this.weatherLoader);
+    } else {
+      this.weatherservice.initValues();
+      this.weatherservice.init(initParameter);
+    }
+  }
+
+  /**
+   * Returns the first new date after the timestamp. e.g. for 2012-11-09
+   * 14:44:00.0 and interval of 7 seconds it will return 2012-11-10 00:00:02.0
+   *
+   * @param timestamp in millis
+   * @param interval in millis
+   * @return Timestamp of the next date
+   */
+  @SuppressWarnings("unused")
+  private long getNextNewDateTimestamp(long timestamp,
+    long interval) {
+    long timestamp0 = timestamp;
+    if (timestamp0 == this.startTimestamp) {
+      GregorianCalendar calendar = new GregorianCalendar();
+      calendar.setTimeInMillis(timestamp0);
+
+      int currentHour = calendar.get(Calendar.HOUR);
+      int currentMin = calendar.get(Calendar.MINUTE);
+      int currentSec = calendar.get(Calendar.SECOND);
+      int currentMillis = calendar.get(Calendar.MILLISECOND);
+
+      while (true) {
+        timestamp0 += interval;
+        calendar.setTimeInMillis(timestamp0);
+
+        int tmpHour = calendar.get(Calendar.HOUR);
+        int tmpMin = calendar.get(Calendar.MINUTE);
+        int tmpSec = calendar.get(Calendar.SECOND);
+        int tmpMillis = calendar.get(Calendar.MILLISECOND);
+
+        if ((tmpHour <= currentHour) && (tmpMin <= currentMin) && (tmpSec <= currentSec)
+          && (tmpMillis <= currentMillis)) {
+          return calendar.getTimeInMillis();
+
+        } else {
+          currentHour = tmpHour;
+          currentMin = tmpMin;
+          currentSec = tmpSec;
+          currentMillis = tmpMillis;
+        }
+      }
+    } else {
+      return timestamp0 + DefaultWeatherController.ONE_DAY_IN_MILLIS;
+    }
+  }
+
+  @Override
+  protected void onInit(WeatherInitParameter param) throws InitializationException {
+    // Set random seed service
+    this.initParameter = param;
+    this.city = initParameter.getCity();
+  }
+
+  @Override
+  protected void onReset() {
+    // Do nothing
+  }
+
+  @Override
+  protected void onResume() {
+    // Nothing to do
+  }
+
+  @Override
+  protected void onStart(StartParameter param) {
+    // Save values
+    this.startWeatherService(param.getCity());
+
+    // Log
+    DefaultWeatherController.log
+      .debug(
+        "Start: " + this.initParameter.getStartTimestamp() + " - End: " + this.initParameter.
+        getEndTimestamp());
+
+    // Add new weather data
+    this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp().
+      getTime(),
+      this.initParameter.getEndTimestamp().getTime(),
+      !param.isAggregatedWeatherDataEnabled(),
+      this.createStrategyList(param.getWeatherEvents()));
+
+    // Set start date
+    this.setStartTimestamp(this.initParameter.getStartTimestamp().getTime());
+    this.setNextNewDayInMillis(this.initParameter.getStartTimestamp().getTime());
+  }
+
+  @Override
+  protected void onStop() {
+    // Nothing to do
+  }
+
+  @Override
+  protected void onUpdate(EventList<WeatherEvent> simulationEventList) throws IllegalArgumentException {
+    // Handle events
+		if(simulationEventList == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"enumElement"));
+				"simulationEventList"));
 		}
+    for (AbstractEvent event : simulationEventList.getEventList()) {
+      // DefaultWeatherController.log.debug("Event: " + event.getEventType());
+      if (event instanceof ChangeWeatherEvent) {
+        // Change the current weather data
+        try {
+          ChangeWeatherEvent cevent = (ChangeWeatherEvent) event;
+          WeatherStrategy strategy = DefaultWeatherController.this.
+            createStrategyFromEnum(cevent.getType(),
+              cevent.getTimestamp(),
+              cevent.getValue(),
+              cevent.getDuration());
+          DefaultWeatherController.log.debug("Prepare modifier: " + cevent.
+            getType());
+          if (strategy != null) {
+            // Log
+            DefaultWeatherController.log.debug("Deploy modifier: " + cevent.
+              getType());
+            DefaultWeatherController.this.weatherservice.
+              deployStrategy(strategy,
+                initParameter.getCity());
+          }
+        } catch (IllegalArgumentException e) {
+          log.warn("see nested exception",
+            e);
+          throw new RuntimeException(e);
+        }
+      }
+    }
+  }
 
-		/*
-		 * INFO: You have to add new weather strategies here!
-		 */
-		if (enumElement.equals(WeatherEventTypeEnum.RAINDAY)) {
-			return new RainDayEvent(this.randomSeedService.getSeed(RainDayEvent.class.
-				getName()),
-				timestamp,
-				this.decoratorProps,
-				value,
-				duration,
-				this.weatherLoader);
-		} else if (enumElement.equals(WeatherEventTypeEnum.COLDDAY)) {
-			return new ColdDayEvent(this.randomSeedService.getSeed(ColdDayEvent.class.
-				getName()),
-				timestamp,
-				this.decoratorProps,
-				value,
-				duration,
-				this.weatherLoader);
-		} else if (enumElement.equals(WeatherEventTypeEnum.HOTDAY)) {
-			return new HotDayEvent(this.randomSeedService.getSeed(HotDayEvent.class.
-				getName()),
-				timestamp,
-				this.decoratorProps,
-				value,
-				duration,
-				this.weatherLoader);
-		} else if (enumElement.equals(WeatherEventTypeEnum.STORMDAY)) {
-			return new StormDayEvent(this.randomSeedService.getSeed(
-				StormDayEvent.class.getName()),
-				timestamp,
-				this.decoratorProps,
-				value,
-				duration,
-				this.weatherLoader);
-		} else if (enumElement.equals(WeatherEventTypeEnum.CITYCLIMATE)) {
-			// Events with -1 are not considered
-			return ((value != null) && (value < 0)) ? null : new CityClimateModifier(
-				this.randomSeedService.getSeed(CityClimateModifier.class.getName()),
-				this.decoratorProps,
-				this.weatherLoader);
-		} else if (enumElement.equals(WeatherEventTypeEnum.REFERENCECITY)) {
-			// Events with -1 are not considered
-			return ((value != null) && (value < 0)) ? null : new ReferenceCityModifier(
-				this.randomSeedService.getSeed(ReferenceCityModifier.class.getName()),
-				this.decoratorProps,
-				this.weatherLoader);
-		} else {
-			throw new IllegalArgumentException("No weather strategy found!");
-		}
-	}
+  @Override
+  public String getName() {
+    return NAME;
+  }
 
-	/**
-	 * Creates a list of weather strategies from the given enum list
-	 *
-	 * @param eventList List of WeatherEvent
-	 * @return list of weather strategies
-	 * @throws IllegalArgumentException
-	 */
-	public List<WeatherStrategyHelper> createStrategyList(
-		List<WeatherEvent> eventList)
-		throws IllegalArgumentException {
-		if (eventList == null) {
-			return null;
-		}
-
-		// Create strategies
-		List<WeatherStrategyHelper> strategies = new ArrayList<>(eventList.size());
-		for (WeatherEvent event : eventList) {
-			WeatherStrategy strategy;
-			if (event instanceof ChangeWeatherEvent) {
-				strategy = this.createStrategyFromEnum(event.getType(),
-					event.getTimestamp(),
-					((ChangeWeatherEvent) event).getValue(),
-					event.getDuration());
-			} else {
-				strategy = this.createStrategyFromEnum(event.getType(),
-					event.getTimestamp(),
-					event.getDuration());
-			}
-			if (strategy != null) {
-				strategies.add(new WeatherStrategyHelper(strategy,
-					event.getTimestamp()));
-			}
-		}
-
-		// Return
-		return strategies;
-	}
-
-	public long getNextNewDayInMillis() {
-		return this.nextNewDayInMillis;
-	}
-
-	public long getStartTimestamp() {
-		return this.startTimestamp;
-	}
-
-	@Override
-	public Number getValue(final WeatherParameterEnum key,
-		final long timestamp,
-		final JaxRSCoordinate position) {
-		return DefaultWeatherController.this.weatherservice.getValue(key,
-			timestamp,
-			position);
-	}
-
-	public WeatherService getWeatherservice() {
-		return this.weatherservice;
-	}
-
-	public void setNextNewDayInMillis(long nextNewDayInMillis) {
-		this.nextNewDayInMillis = nextNewDayInMillis;
-	}
-
-	public void setStartTimestamp(long startTimestamp) {
-		this.startTimestamp = startTimestamp;
-	}
-
-	/**
-	 * Start the weather service or initialize this service
-	 *
-	 * @param city City
-	 */
-	public void startWeatherService(City city) {
-		if (this.weatherservice == null) {
-			this.weatherservice = new DefaultWeatherService(city,
-				this.weatherLoader);
-		} else {
-			this.weatherservice.initValues();
-			this.weatherservice.setCity(city);
-		}
-	}
-
-	/**
-	 * Returns the first new date after the timestamp. e.g. for 2012-11-09
-	 * 14:44:00.0 and interval of 7 seconds it will return 2012-11-10 00:00:02.0
-	 *
-	 * @param timestamp in millis
-	 * @param interval in millis
-	 * @return Timestamp of the next date
-	 */
-	@SuppressWarnings("unused")
-	private long getNextNewDateTimestamp(long timestamp,
-		long interval) {
-		long timestamp0 = timestamp;
-		if (timestamp0 == this.startTimestamp) {
-			GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTimeInMillis(timestamp0);
-
-			int currentHour = calendar.get(Calendar.HOUR);
-			int currentMin = calendar.get(Calendar.MINUTE);
-			int currentSec = calendar.get(Calendar.SECOND);
-			int currentMillis = calendar.get(Calendar.MILLISECOND);
-
-			while (true) {
-				timestamp0 += interval;
-				calendar.setTimeInMillis(timestamp0);
-
-				int tmpHour = calendar.get(Calendar.HOUR);
-				int tmpMin = calendar.get(Calendar.MINUTE);
-				int tmpSec = calendar.get(Calendar.SECOND);
-				int tmpMillis = calendar.get(Calendar.MILLISECOND);
-
-				if ((tmpHour <= currentHour) && (tmpMin <= currentMin) && (tmpSec <= currentSec)
-					&& (tmpMillis <= currentMillis)) {
-					return calendar.getTimeInMillis();
-
-				} else {
-					currentHour = tmpHour;
-					currentMin = tmpMin;
-					currentSec = tmpSec;
-					currentMillis = tmpMillis;
-				}
-			}
-		} else {
-			return timestamp0 + DefaultWeatherController.ONE_DAY_IN_MILLIS;
-		}
-	}
-
-	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
-		// Set random seed service
-		this.initParameter = param;
-	}
-
-	@Override
-	protected void onReset() {
-		// Do nothing
-	}
-
-	@Override
-	protected void onResume() {
-		// Nothing to do
-	}
-
-	@Override
-	protected void onStart(StartParameter param) {
-		// Save values
-		this.startWeatherService(param.getCity());
-
-		// Log
-		DefaultWeatherController.log
-			.debug(
-				"Start: " + this.initParameter.getStartTimestamp() + " - End: " + this.initParameter.
-				getEndTimestamp());
-
-		// Add new weather data
-		this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp().
-			getTime(),
-			this.initParameter.getEndTimestamp().getTime(),
-			!param.isAggregatedWeatherDataEnabled(),
-			this.createStrategyList(param.getWeatherEvents()));
-
-		// Set start date
-		this.setStartTimestamp(this.initParameter.getStartTimestamp().getTime());
-		this.setNextNewDayInMillis(this.initParameter.getStartTimestamp().getTime());
-	}
-
-	@Override
-	protected void onStop() {
-		// Nothing to do
-	}
-
-	@Override
-	protected void onUpdate(EventList<WeatherEvent> simulationEventList) {
-		// Handle events
-		for (AbstractEvent event : simulationEventList.getEventList()) {
-			// DefaultWeatherController.log.debug("Event: " + event.getEventType());
-			if (event instanceof ChangeWeatherEvent) {
-				// Change the current weather data
-				try {
-					ChangeWeatherEvent cevent = (ChangeWeatherEvent) event;
-					WeatherStrategy strategy = DefaultWeatherController.this.
-						createStrategyFromEnum(cevent.getType(),
-							cevent.getTimestamp(),
-							cevent.getValue(),
-							cevent.getDuration());
-					DefaultWeatherController.log.debug("Prepare modifier: " + cevent.
-						getType());
-					if (strategy != null) {
-						// Log
-						DefaultWeatherController.log.debug("Deploy modifier: " + cevent.
-							getType());
-						DefaultWeatherController.this.weatherservice.
-							deployStrategy(strategy);
-					}
-				} catch (IllegalArgumentException e) {
-					log.warn("see nested exception",
-						e);
-					throw new RuntimeException(e);
-				}
-			}
-		}
-	}
-
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
-	@Override
-	public JaxRSCoordinate getReferencePosition() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  @Override
+  public JaxRSCoordinate getReferencePosition() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

@@ -15,25 +15,32 @@ import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.entity.AbstractStationData;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.testutils.TestUtils;
 import java.sql.Date;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.openejb.api.LocalClient;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -64,6 +71,7 @@ public class DatabaseWeatherLoaderTest {
   public void setUp() throws NamingException, NotSupportedException, SystemException {
     TestUtils.getContainer().getContext().bind("inject",
       this);
+    city = TestUtils.createDefaultTestCityInstance(idGenerator);
   }
 
   /**
@@ -112,6 +120,16 @@ public class DatabaseWeatherLoaderTest {
       result = instance.checkStationDataForDay(timestamp);
       assertEquals(expResult,
         result);
+
+      WeatherTestUtils.tearDownWeatherData(entities,
+        StationDataNormal.class,
+        entityManager);
+      WeatherTestUtils.tearDownWeatherData(entities0,
+        ServiceDataCurrent.class,
+        entityManager);
+      WeatherTestUtils.tearDownWeatherData(entities1,
+        ServiceDataForecast.class,
+        entityManager);
     } finally {
       userTransaction.commit();
     }
@@ -165,8 +183,11 @@ public class DatabaseWeatherLoaderTest {
       ServiceDataCurrent result = instance.
         loadCurrentServiceWeatherData(timestamp,
           city);
-      assertEquals(expResult,
-        result);
+      assertNotNull(result);
+      assertEquals(DateUtils.truncate(new Date(timestamp),
+        Calendar.DATE),
+        result.getMeasureDate()
+      );
 
       WeatherTestUtils.tearDownWeatherData(entities,
         StationDataNormal.class,
@@ -189,6 +210,7 @@ public class DatabaseWeatherLoaderTest {
    * @throws Exception
    */
   @Test
+	@Ignore //@TODO: who to test values -> mock retrieval service ??
   public void testLoadForecastServiceWeatherData() throws Exception {
     long timestamp = System.currentTimeMillis();
     long startTimestamp = DateConverter.convertTimestampToMidnight(timestamp);
@@ -224,12 +246,35 @@ public class DatabaseWeatherLoaderTest {
         endTimestamp,
         true,
         null);
-      ServiceDataForecast expResult = null;
+      ServiceDataForecast expResult = new ServiceDataForecast(idGenerator.getNextId(),DateUtils.truncate(new Date(timestamp),Calendar.DATE),
+				new Time(timestamp),
+				city,
+				Measure.valueOf(20f,SI.CELSIUS),
+				Measure.valueOf(20f,SI.CELSIUS),
+				1.0f,
+				2.0f,
+				2.0f,
+				WeatherCondition.retrieveCondition(idGenerator,
+				2));
       ServiceDataForecast result = instance.loadForecastServiceWeatherData(
         timestamp,
         city);
-      assertEquals(expResult,
-        result);
+      assertEquals(expResult.getMeasureDate(),
+        result.getMeasureDate());
+      assertEquals(expResult.getCity(),
+        result.getCity());
+      assertEquals(expResult.getCondition(),
+        result.getCondition());
+      assertEquals(expResult.getRelativHumidity(),
+        result.getRelativHumidity());
+      assertEquals(expResult.getTemperatureHigh(),
+        result.getTemperatureHigh());
+      assertEquals(expResult.getTemperatureLow(),
+        result.getTemperatureLow());
+      assertEquals(expResult.getWindDirection(),
+        result.getWindDirection());
+      assertEquals(expResult.getWindVelocity(),
+        result.getWindVelocity());
 
       WeatherTestUtils.tearDownWeatherData(entities,
         StationDataNormal.class,

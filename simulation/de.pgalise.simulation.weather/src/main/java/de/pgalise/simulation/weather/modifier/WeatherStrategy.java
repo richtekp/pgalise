@@ -13,62 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.modifier;
 
-import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 
 /**
  * Interface for weather strategies
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
 public interface WeatherStrategy {
 
-	/**
-	 * Deploy changes to the map (Decorator-Pattern)
-	 */
-	public void deployChanges();
+  /**
+   * Deploy changes to the map (Decorator-Pattern)
+   */
+  public void deployChanges();
 
-	/**
-	 * Returns the order id
-	 * 
-	 * @return order ID
-	 */
-	public int getOrderID();
+  /**
+   * Returns the order id
+   *
+   * @return order ID
+   */
+  public int getOrderID();
 
-	/**
-	 * Returns the type of the weather event
-	 * 
-	 * @return WeatherEventTypeEnum
-	 */
-	public WeatherEventTypeEnum getType();
+  /**
+   * Returns the type of the weather event
+   *
+   * @return WeatherEventTypeEnum
+   */
+  public WeatherEventTypeEnum getType();
 
-	/**
-	 * Set the city
-	 * 
-	 * @param city
-	 *            City
-	 */
-	public void setCity(City city);
+  /**
+   * Set the map
+   *
+   * @param map WeatherMap
+   */
+  public void setMap(WeatherMap map);
 
-	/**
-	 * Set the map
-	 * 
-	 * @param map
-	 *            WeatherMap
-	 */
-	public void setMap(WeatherMap map);
-
-	/**
-	 * Set the simulation timestamp
-	 * 
-	 * @param timestamp
-	 *            Current simulation timestamp
-	 */
-	public void setSimulationTimestamp(long timestamp);
+  /**
+   * Set the simulation timestamp
+   *
+   * @param timestamp Current simulation timestamp
+   */
+  public void setSimulationTimestamp(long timestamp);
 
 }

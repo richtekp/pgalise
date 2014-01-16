@@ -17,7 +17,6 @@ package de.pgalise.simulation.weather.service;
 
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -37,36 +36,36 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
  * @version 1.0 (Aug 24, 2012)
  */
 public interface WeatherController extends
-	Controller<WeatherEvent, StartParameter, InitParameter> {
+  Controller<WeatherEvent, StartParameter, WeatherInitParameter> {
 
-	/**
-	 * Checks if the weather data can be loaded for the given date.
-	 *
-	 * @param timestamp Timestamp
-	 * @throws IllegalArgumentException
-	 */
-	public void checkDate(long timestamp) throws IllegalArgumentException;
+  /**
+   * Checks if the weather data can be loaded for the given date.
+   *
+   * @param timestamp Timestamp
+   * @throws IllegalArgumentException
+   */
+  public void checkDate(long timestamp) throws IllegalArgumentException;
 
-	/**
-	 * Returns the position of the reference point
-	 *
-	 * @return
-	 */
-	public JaxRSCoordinate getReferencePosition();
+  /**
+   * Returns the position of the reference point
+   *
+   * @return
+   */
+  public JaxRSCoordinate getReferencePosition();
 
-	/**
-	 * Get the reference value for the given timestamp and position. If the value
-	 * can be cached the method looks into the cached parameters. The weather
-	 * values are stored with a specific time interval (see
-	 * {@link Weather#INTERPOLATE_INTERVAL}). If you want to get a value between
-	 * this interval, you will get the value to the next reference timestamp.
-	 *
-	 * @param key WeatherParameterEnum
-	 * @param timestamp Timestamp
-	 * @param position Position of the sensor
-	 * @return Number
-	 */
-	public Number getValue(WeatherParameterEnum key,
-		long timestamp,
-		JaxRSCoordinate position);
+  /**
+   * Get the reference value for the given timestamp and position. If the value
+   * can be cached the method looks into the cached parameters. The weather
+   * values are stored with a specific time interval (see
+   * {@link Weather#INTERPOLATE_INTERVAL}). If you want to get a value between
+   * this interval, you will get the value to the next reference timestamp.
+   *
+   * @param key WeatherParameterEnum
+   * @param timestamp Timestamp
+   * @param position Position of the sensor
+   * @return Number
+   */
+  public Number getValue(WeatherParameterEnum key,
+    long timestamp,
+    JaxRSCoordinate position);
 }

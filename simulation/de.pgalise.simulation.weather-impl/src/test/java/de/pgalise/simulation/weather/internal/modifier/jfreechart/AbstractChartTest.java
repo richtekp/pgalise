@@ -100,6 +100,7 @@ public abstract class AbstractChartTest {
   private UserTransaction userTransaction;
   @EJB
   private IdGenerator idGenerator;
+  private City city;
 
   /**
    * Constructor
@@ -138,8 +139,7 @@ public abstract class AbstractChartTest {
     // City
     userTransaction.begin();
     try {
-      City city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      service.setCity(city);
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
       // Get reference weather informations
       this.service.addNewWeather(this.startTimestamp,
@@ -262,5 +262,9 @@ public abstract class AbstractChartTest {
    */
   public void setEndTimestamp(long endTimestamp) {
     this.endTimestamp = endTimestamp;
+  }
+
+  public City getCity() {
+    return city;
   }
 }

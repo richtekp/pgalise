@@ -143,7 +143,6 @@ public class RainDayEventTest {
     userTransaction.begin();
     try {
       city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      service.setCity(city);
     } finally {
       userTransaction.commit();
     }
@@ -182,10 +181,11 @@ public class RainDayEventTest {
       // Get extrema of reference values		
       float refvalue = service.getValue(
         WeatherParameterEnum.PRECIPITATION_AMOUNT,
-        testTimestamp).floatValue();
+        testTimestamp,
+        city).floatValue();
 
       // Deploy strategy
-      RainDayEvent event = new RainDayEvent(
+      RainDayEvent event = new RainDayEvent(city,
         new DefaultRandomSeedService().
         getSeed(ColdDayEventTest.class.toString()),
         testTimestamp,
@@ -193,12 +193,14 @@ public class RainDayEventTest {
         RainDayEventTest.testValue,
         RainDayEventTest.testDuration,
         RainDayEventTest.loader);
-      service.deployStrategy(event);
+      service.deployStrategy(event,
+        city);
 
       // Get extrema of decorator values
       float decvalue = service.getValue(
         WeatherParameterEnum.PRECIPITATION_AMOUNT,
-        testTimestamp).floatValue();
+        testTimestamp,
+        city).floatValue();
 
       /*
        * Testcase 1

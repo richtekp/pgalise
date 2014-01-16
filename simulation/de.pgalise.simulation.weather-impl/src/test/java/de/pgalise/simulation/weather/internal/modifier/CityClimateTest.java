@@ -119,7 +119,6 @@ public class CityClimateTest {
     userTransaction.begin();
     try {
       city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      service.setCity(city);
     } finally {
       userTransaction.commit();
     }
@@ -171,11 +170,12 @@ public class CityClimateTest {
       long reftime = refmax.getMeasureTime().getTime();
 
       // Deploy strategy
-      CityClimateModifier modifier = new CityClimateModifier(
+      CityClimateModifier modifier = new CityClimateModifier(city,
         new DefaultRandomSeedService().getSeed(CityClimateTest.class.toString()),
         loader
       );
-      service.deployStrategy(modifier);
+      service.deployStrategy(modifier,
+        city);
 
       // Get modifier values
       WeatherMap modifierValues = service.getReferenceValues();

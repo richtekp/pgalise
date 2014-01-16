@@ -44,7 +44,7 @@ public class StationDataNormal extends AbstractStationData {
   }
 
   public StationDataNormal(Long id,
-    java.sql.Date date,
+    java.util.Date date,
     java.sql.Time time,
     Integer airPressure,
     Integer lightIntensity,

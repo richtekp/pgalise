@@ -17,7 +17,6 @@ package de.pgalise.simulation.weather.internal.service;
 
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
@@ -29,6 +28,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
 import java.sql.Date;
@@ -173,12 +173,11 @@ public class DefaultWeatherControllerTest {
         testEventList,
         valueTime);
 
-      InitParameter initParameter = new InitParameter(
+      WeatherInitParameter initParameter = new WeatherInitParameter(city,
         startTimestamp,
         endTimestamp,
         valueTime,
         eventTimestamp,
-        null,
         null,
         null,
         null);
@@ -267,9 +266,8 @@ public class DefaultWeatherControllerTest {
       // Test false parameter: no event -> call onFailure
       try {
         ctrl.update(null);
-        Assert.assertFalse(false);
-      } catch (IllegalStateException e) {
-        Assert.assertTrue(true);
+        Assert.fail();
+      } catch (IllegalArgumentException expected) {
       }
       Assert.assertEquals(ControllerStatusEnum.STARTED,
         ctrl.getStatus());

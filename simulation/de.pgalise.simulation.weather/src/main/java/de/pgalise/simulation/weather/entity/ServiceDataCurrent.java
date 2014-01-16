@@ -16,6 +16,7 @@
 package de.pgalise.simulation.weather.entity;
 
 import de.pgalise.simulation.shared.entity.City;
+import java.util.Objects;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.persistence.Column;
@@ -46,7 +47,7 @@ public class ServiceDataCurrent extends AbstractServiceData {
   }
 
   public ServiceDataCurrent(Long id,
-    java.sql.Date measureDate,
+    java.util.Date measureDate,
     java.sql.Time measureTime,
     City city,
     Float relativHumidity,
@@ -72,5 +73,35 @@ public class ServiceDataCurrent extends AbstractServiceData {
   public void setTemperature(Measure<Float, Temperature> temperature) {
     this.temperature = temperature;
   }
+	
+	protected boolean equalsTransitive(ServiceDataCurrent other) {
+		if(!super.equalsTransitive(other)) {
+			return false;
+		}
+		if (!Objects.equals(this.temperature,
+			other.temperature)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 71 * super.hashCode();
+		hash = 71 * hash + Objects.hashCode(this.temperature);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ServiceDataCurrent other = (ServiceDataCurrent) obj;
+		return equalsTransitive(other);
+	}
 
 }

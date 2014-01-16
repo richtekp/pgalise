@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.modifier.simulationevents;
 
+import de.pgalise.simulation.shared.entity.City;
 import java.util.Properties;
 
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
@@ -33,225 +33,246 @@ import javax.measure.Measure;
 import javax.measure.unit.SI;
 
 /**
- * Changes the values to reference cities ({@link WeatherMapModifier} and {@link WeatherStrategy}).<br />
+ * Changes the values to reference cities ({@link WeatherMapModifier} and
+ * {@link WeatherStrategy}).<br />
  * <br />
- * The file weather_decorators.properties describes the default properties for the implemented modifier. If no
- * parameters are given in the constructor of an implemented modifier, the standard properties of the file will be used.
- * 
+ * The file weather_decorators.properties describes the default properties for
+ * the implemented modifier. If no parameters are given in the constructor of an
+ * implemented modifier, the standard properties of the file will be used.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (02.07.2012)
  */
 public class ReferenceCityModifier extends WeatherSimulationEventModifier {
 
-	/**
-	 * Event type
-	 */
-	public static final WeatherEventTypeEnum TYPE = WeatherEventTypeEnum.REFERENCECITY;
+  /**
+   * Event type
+   */
+  public static final WeatherEventTypeEnum TYPE = WeatherEventTypeEnum.REFERENCECITY;
 
-	/**
-	 * Order id
-	 */
-	public static final int ORDER_ID = 1;
+  /**
+   * Order id
+   */
+  public static final int ORDER_ID = 1;
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -2545514269078129147L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -2545514269078129147L;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param props
-	 *            Properties
-	 * @param seed
-	 *            Seed for random generators
-	 * @param weatherLoader  
-	 */
-	public ReferenceCityModifier(long seed, Properties props, WeatherLoader weatherLoader) {
-		super(seed, props, weatherLoader);
-	}
+  /**
+   * Constructor
+   *
+   * @param props Properties
+   * @param seed Seed for random generators
+   * @param weatherLoader
+   */
+  public ReferenceCityModifier(City city,
+    long seed,
+    Properties props,
+    WeatherLoader weatherLoader) {
+    super(city,
+      seed,
+      props,
+      weatherLoader);
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param seed
-	 *            Seed for random generators
-	 * @param weatherLoader  
-	 */
-	public ReferenceCityModifier(long seed, WeatherLoader weatherLoader) {
-		super(seed, weatherLoader);
-	}
+  /**
+   * Constructor
+   *
+   * @param seed Seed for random generators
+   * @param weatherLoader
+   */
+  public ReferenceCityModifier(City city,
+    long seed,
+    WeatherLoader weatherLoader) {
+    super(city,
+      seed,
+      weatherLoader);
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param map
-	 *            WeatherMap
-	 * @param seed
-	 *            Seed for random generators
-	 * @param weatherLoader  
-	 */
-	public ReferenceCityModifier(WeatherMap map, long seed, WeatherLoader weatherLoader) {
-		super(map, seed, weatherLoader);
-	}
+  /**
+   * Constructor
+   *
+   * @param map WeatherMap
+   * @param seed Seed for random generators
+   * @param weatherLoader
+   */
+  public ReferenceCityModifier(City city,
+    WeatherMap map,
+    long seed,
+    WeatherLoader weatherLoader) {
+    super(city,
+      map,
+      seed,
+      weatherLoader);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.pgalise.simulation.weather.database.Weather#deployChanges()
-	 */
-	@Override
-	public void deployChanges() {
-		if (this.getCity() != null) {
-			
-			// Get values from weather services
-			ServiceDataForecast serviceForecast = this.getWeatherLoader().loadForecastServiceWeatherData(
-					this.getSimulationTimestamp(), this.getCity());
-			ServiceDataCurrent serviceCurrent = this.getWeatherLoader().loadCurrentServiceWeatherData(
-					this.getSimulationTimestamp(), this.getCity());
+  /*
+   * (non-Javadoc)
+   * @see de.pgalise.simulation.weather.database.Weather#deployChanges()
+   */
+  @Override
+  public void deployChanges() {
+    if (this.getCity() != null) {
 
-			// Temperature
-			this.changeTemperature(serviceForecast.getTemperatureLow().floatValue(SI.CELSIUS), serviceForecast.getTemperatureHigh().floatValue(SI.CELSIUS));
+      // Get values from weather services
+      ServiceDataForecast serviceForecast = this.getWeatherLoader().
+        loadForecastServiceWeatherData(
+          this.getSimulationTimestamp(),
+          this.getCity());
+      ServiceDataCurrent serviceCurrent = this.getWeatherLoader().
+        loadCurrentServiceWeatherData(
+          this.getSimulationTimestamp(),
+          this.getCity());
 
-			// Relativ humidity
-			this.changeRelativHumidity(serviceCurrent.getRelativHumidity());
+      // Temperature
+      this.changeTemperature(serviceForecast.getTemperatureLow().floatValue(
+        SI.CELSIUS),
+        serviceForecast.getTemperatureHigh().floatValue(SI.CELSIUS));
 
-			// wind velocity
-			this.changeWindVelocity(serviceCurrent.getWindVelocity());
-		}
+      // Relativ humidity
+      this.changeRelativHumidity(serviceCurrent.getRelativHumidity());
 
-		// Super class
-		super.deployChanges();
-	}
+      // wind velocity
+      this.changeWindVelocity(serviceCurrent.getWindVelocity());
+    }
 
-	@Override
-	public WeatherEventTypeEnum getType() {
-		return ReferenceCityModifier.TYPE;
-	}
+    // Super class
+    super.deployChanges();
+  }
 
-	/**
-	 * Changes the relativ humidity
-	 * 
-	 * @param relativHumidity
-	 *            relativ humidity of the weather service
-	 */
-	private void changeRelativHumidity(Float relativHumidity) {
-		AbstractStationData max = this.getMaxValue(new RelativHumidityComparator());
+  @Override
+  public WeatherEventTypeEnum getType() {
+    return ReferenceCityModifier.TYPE;
+  }
 
-		// Values exists?
-		if ((max == null) || (relativHumidity == null)) {
-			return;
-		}
+  /**
+   * Changes the relativ humidity
+   *
+   * @param relativHumidity relativ humidity of the weather service
+   */
+  private void changeRelativHumidity(Float relativHumidity) {
+    AbstractStationData max = this.getMaxValue(new RelativHumidityComparator());
 
-		// Calculate difference between service and reference
-		float difference = relativHumidity - max.getRelativHumidity();
+    // Values exists?
+    if ((max == null) || (relativHumidity == null)) {
+      return;
+    }
 
-		// If there is a difference
-		if (difference != 0) {
-			// Changes all data
-			float value;
-			for (AbstractStationData weather : this.getMap().values()) {
-				value = weather.getRelativHumidity() + difference;
-				if (value < 0) {
-					weather.setRelativHumidity(0.0f);
-				} else if (value > 100) {
-					weather.setRelativHumidity(100.0f);
-				} else {
-					weather.setRelativHumidity(value);
-				}
-			}
-		}
-	}
+    // Calculate difference between service and reference
+    float difference = relativHumidity - max.getRelativHumidity();
 
-	/**
-	 * Changes the temperature
-	 * 
-	 * @param temperatureLow
-	 *            Temperature (low) of the weather service
-	 * @param temperatureHigh
-	 *            Temperature (high) of the weather service
-	 */
-	private void changeTemperature(Float temperatureLow, Float temperatureHigh) {
-		// Temperature values exists?
-		if ((temperatureLow == null) || (temperatureHigh == null)) {
-			return;
-		}
+    // If there is a difference
+    if (difference != 0) {
+      // Changes all data
+      float value;
+      for (AbstractStationData weather : this.getMap().values()) {
+        value = weather.getRelativHumidity() + difference;
+        if (value < 0) {
+          weather.setRelativHumidity(0.0f);
+        } else if (value > 100) {
+          weather.setRelativHumidity(100.0f);
+        } else {
+          weather.setRelativHumidity(value);
+        }
+      }
+    }
+  }
 
-		// Get limits
-		AbstractStationData min = this.getMinValue(new TemperatureComparator());
-		AbstractStationData max = this.getMaxValue(new TemperatureComparator());
+  /**
+   * Changes the temperature
+   *
+   * @param temperatureLow Temperature (low) of the weather service
+   * @param temperatureHigh Temperature (high) of the weather service
+   */
+  private void changeTemperature(Float temperatureLow,
+    Float temperatureHigh) {
+    // Temperature values exists?
+    if ((temperatureLow == null) || (temperatureHigh == null)) {
+      return;
+    }
 
-		// Calculate difference between service and reference
-		float differenceMin = temperatureLow - min.getTemperature().floatValue(SI.CELSIUS);
-		// Calculate difference between service and reference
-		float differenceMax = temperatureHigh - max.getTemperature().floatValue(SI.CELSIUS);
+    // Get limits
+    AbstractStationData min = this.getMinValue(new TemperatureComparator());
+    AbstractStationData max = this.getMaxValue(new TemperatureComparator());
 
-		// If there is a difference
-		if ((differenceMin != 0) || (differenceMax != 0)) {
+    // Calculate difference between service and reference
+    float differenceMin = temperatureLow - min.getTemperature().floatValue(
+      SI.CELSIUS);
+    // Calculate difference between service and reference
+    float differenceMax = temperatureHigh - max.getTemperature().floatValue(
+      SI.CELSIUS);
 
-			// Changes all data
-			float value1, value2;
-			long timeMin, timeMax;
-			for (AbstractStationData weather : this.getMap().values()) {
-				timeMin = Math.abs(weather.getMeasureTime().getTime()- min.getMeasureTime().getTime());
-				timeMax = Math.abs(weather.getMeasureTime().getTime()- max.getMeasureTime().getTime());
+    // If there is a difference
+    if ((differenceMin != 0) || (differenceMax != 0)) {
 
-				// Calculate value
-				if (timeMax > timeMin) {
-					value1 = weather.getTemperature().floatValue(SI.CELSIUS) + differenceMin;
-					value2 = weather.getPerceivedTemperature() + differenceMin;
-				} else {
-					value1 = weather.getTemperature().floatValue(SI.CELSIUS) + differenceMax;
-					value2 = weather.getPerceivedTemperature() + differenceMax;
-				}
+      // Changes all data
+      float value1, value2;
+      long timeMin, timeMax;
+      for (AbstractStationData weather : this.getMap().values()) {
+        timeMin = Math.abs(weather.getMeasureTime().getTime() - min.
+          getMeasureTime().getTime());
+        timeMax = Math.abs(weather.getMeasureTime().getTime() - max.
+          getMeasureTime().getTime());
 
-				// Set value
-				weather.setTemperature(Measure.valueOf(value1, SI.CELSIUS));
-				weather.setPerceivedTemperature(value2);
-			}
-		}
+        // Calculate value
+        if (timeMax > timeMin) {
+          value1 = weather.getTemperature().floatValue(SI.CELSIUS) + differenceMin;
+          value2 = weather.getPerceivedTemperature() + differenceMin;
+        } else {
+          value1 = weather.getTemperature().floatValue(SI.CELSIUS) + differenceMax;
+          value2 = weather.getPerceivedTemperature() + differenceMax;
+        }
 
-	}
+        // Set value
+        weather.setTemperature(Measure.valueOf(value1,
+          SI.CELSIUS));
+        weather.setPerceivedTemperature(value2);
+      }
+    }
 
-	/**
-	 * Changes the wind velocity
-	 * 
-	 * @param windVelocity
-	 *            Wind velocity of the weather service
-	 */
-	private void changeWindVelocity(Float windVelocity) {
-		// Get limit
-		AbstractStationData max = this.getMaxValue(new WindComparator());
+  }
 
-		// Wind velocity values exists?
-		if ((max == null) || (windVelocity == null)) {
-			return;
-		}
+  /**
+   * Changes the wind velocity
+   *
+   * @param windVelocity Wind velocity of the weather service
+   */
+  private void changeWindVelocity(Float windVelocity) {
+    // Get limit
+    AbstractStationData max = this.getMaxValue(new WindComparator());
 
-		// Calculate difference between service and reference
-		float difference = windVelocity - max.getWindVelocity();
+    // Wind velocity values exists?
+    if ((max == null) || (windVelocity == null)) {
+      return;
+    }
 
-		// If there is a difference
-		if (difference != 0) {
-			// Changes all data
-			float value;
-			for (AbstractStationData weather : this.getMap().values()) {
-				value = (float) ((weather.getWindVelocity() + difference) / 3.6);
-				if (value < 0) {
-					weather.setWindVelocity(0.0f);
-				} else {
-					weather.setWindVelocity(value);
-				}
-			}
-		}
-	}
+    // Calculate difference between service and reference
+    float difference = windVelocity - max.getWindVelocity();
 
-	@Override
-	protected void initDecorator() {
-		if (this.getProps() != null) {
-			this.setOrderID(Integer.parseInt(this.getProps().
-				getProperty("referencecity_order_id")));
-		} else {
-			this.setOrderID(ReferenceCityModifier.ORDER_ID);
-		}
-	}
+    // If there is a difference
+    if (difference != 0) {
+      // Changes all data
+      float value;
+      for (AbstractStationData weather : this.getMap().values()) {
+        value = (float) ((weather.getWindVelocity() + difference) / 3.6);
+        if (value < 0) {
+          weather.setWindVelocity(0.0f);
+        } else {
+          weather.setWindVelocity(value);
+        }
+      }
+    }
+  }
+
+  @Override
+  protected void initDecorator() {
+    if (this.getProps() != null) {
+      this.setOrderID(Integer.parseInt(this.getProps().
+        getProperty("referencecity_order_id")));
+    } else {
+      this.setOrderID(ReferenceCityModifier.ORDER_ID);
+    }
+  }
 }

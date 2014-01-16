@@ -36,6 +36,17 @@ import javax.annotation.PostConstruct;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import javax.ejb.EJB;
+import javax.annotation.PostConstruct;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import de.pgalise.simulation.weather.service.WeatherController;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -181,7 +192,14 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 
 	@Override
 	protected void onInit(final TrafficInitParameter param) throws InitializationException {
-		weatherController.init(param);
+		weatherController.init(new WeatherInitParameter(param.getCity(),
+			param.getStartTimestamp().getTime(),
+			param.getEndTimestamp().getTime(),
+			param.getInterval(),
+			param.getClockGeneratorInterval(),
+			param.getOperationCenterURL(),
+			param.getControlCenterURL(),
+			param.getCity().getPosition().getBoundaries().getEnvelopeInternal()));
 		energyController.init(param);
 		trafficController.init(param);
 		weatherSensorController.init(param);

@@ -17,7 +17,7 @@ package de.pgalise.simulation.weather.entity;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
-import java.sql.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.persistence.CascadeType;
@@ -44,8 +44,8 @@ public class ServiceDataHelper extends AbstractTimeSensitive {
    * @return true if the date is the same day
    */
   @SuppressWarnings("deprecation")
-  public static boolean checkDate(Date date1,
-    Date date2) {
+  public static boolean checkDate(java.util.Date date1,
+    java.util.Date date2) {
     if ((date1.getDay() == date2.getDay()) && (date1.getMonth() == date2.
       getMonth())
       && (date1.getYear() == date2.getYear())) {
@@ -65,7 +65,7 @@ public class ServiceDataHelper extends AbstractTimeSensitive {
    */
   public static <T extends ExtendedServiceDataForecast> T getForecastFromDate(
     Set<T> forecasts,
-    Date date) {
+    java.util.Date date) {
     for (T forecastCondition : forecasts) {
       if (checkDate(forecastCondition.getMeasureDate(),
         date)) {
@@ -210,4 +210,54 @@ public class ServiceDataHelper extends AbstractTimeSensitive {
   public void setSource(String source) {
     this.source = source;
   }
+
+	@Override
+	public int hashCode() {
+		int hash = 89 * super.hashCode();
+		hash = 89 * hash + Objects.hashCode(this.apicity);
+		hash = 89 * hash + Objects.hashCode(this.city);
+		hash = 89 * hash + Objects.hashCode(this.currentCondition);
+		hash = 89 * hash + Objects.hashCode(this.forecastConditions);
+		hash = 89 * hash + Objects.hashCode(this.source);
+		return hash;
+	}
+	
+	protected boolean equalsTransitive(ServiceDataHelper other) {
+		if(!super.equalsTransitive(other)) {
+			return false;
+		}
+		if (!Objects.equals(this.apicity,
+			other.apicity)) {
+			return false;
+		}
+		if (!Objects.equals(this.city,
+			other.city)) {
+			return false;
+		}
+		if (!Objects.equals(this.currentCondition,
+			other.currentCondition)) {
+			return false;
+		}
+		if (!Objects.equals(this.forecastConditions,
+			other.forecastConditions)) {
+			return false;
+		}
+		if (!Objects.equals(this.source,
+			other.source)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ServiceDataHelper other = (ServiceDataHelper) obj;
+		return equalsTransitive(other);
+	}
 }

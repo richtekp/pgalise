@@ -84,7 +84,8 @@ public class DefaultWeatherServiceSyncTest {
   /**
    * Number of test threads
    */
-  private final int testNumberOfThreads = 100;
+  private final static int NUMBER_OF_THREADS = 20;
+  private final static long THREAD_WAIT_MILLIS = 0;
 
   /**
    * Weather loader
@@ -109,7 +110,6 @@ public class DefaultWeatherServiceSyncTest {
     try {
       city = TestUtils.
         createDefaultTestCityInstance(idGenerator);
-      testclass.setCity(city);
     } finally {
       userTransaction.commit();
     }
@@ -168,7 +168,7 @@ public class DefaultWeatherServiceSyncTest {
         null);
 
       // Creates 50 Threads
-      for (int i = 0; i < testNumberOfThreads; i++) {
+      for (int i = 0; i < NUMBER_OF_THREADS; i++) {
         final int y = i;
         Thread thread = new Thread(new Runnable() {
           @Override
@@ -177,7 +177,7 @@ public class DefaultWeatherServiceSyncTest {
 
             // Sleep with random value
             try {
-              Thread.sleep((long) (Math.random() * 1000L));
+              Thread.sleep((long) (Math.random() * THREAD_WAIT_MILLIS));
             } catch (InterruptedException e) {
               throw new RuntimeException(e);
             }
@@ -193,7 +193,8 @@ public class DefaultWeatherServiceSyncTest {
             } else {
               // Get test value
               value = testclass.getValue(WeatherParameterEnum.TEMPERATURE,
-                testTime);
+                testTime,
+                city);
               Assert.assertTrue(value != null);
               log.debug("Thread (" + y + ") value: " + value.floatValue());
             }

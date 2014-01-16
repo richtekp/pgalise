@@ -55,6 +55,7 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;
@@ -85,7 +86,7 @@ import de.pgalise.simulation.weather.service.WeatherController;
 @Singleton(
 	name = "de.pgalise.simulation.simulationController.event.EventInitiator")
 @Local
-public class DefaultEventInitiator extends AbstractController<Event, StartParameter, InitParameter>
+public class DefaultEventInitiator extends AbstractController<Event, StartParameter, SimulationInitParameter>
 	implements EventInitiator {
 
 	private static final String NAME = "EventInitiator";
@@ -441,7 +442,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
 	}
 
 	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
+	protected void onInit(SimulationInitParameter param) throws InitializationException {
 		this.endTimestamp = param.getEndTimestamp().getTime();
 		this.interval = param.getInterval();
 		this.clockGeneratorInterval = param.getClockGeneratorInterval();

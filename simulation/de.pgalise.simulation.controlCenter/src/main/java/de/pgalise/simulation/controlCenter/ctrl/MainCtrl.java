@@ -14,11 +14,14 @@ import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import java.io.ByteArrayInputStream;
@@ -140,7 +143,15 @@ public class MainCtrl implements Serializable {
 			busStopFileBytes);
 		CityInfrastructureData cityInfrastructureData = cityInfrastructureManager.
 			createCityInfrastructureData();
-		initParameter.setCityInfrastructureData(cityInfrastructureData);
+		TrafficCity city = new TrafficCity(idGenerator.getNextId(),
+			cityCtrl.getChosenName(),
+			cityCtrl.getChosenPopulation(),
+			cityCtrl.getChosenAltitude(),
+			cityCtrl.getNearRiver(),
+			cityCtrl.getNearSea(),
+			new BaseGeoInfo(idGenerator.getNextId(),
+			GeoToolsBootstrapping.createPolygon(cityInfrastructureData.getBoundary())), cityInfrastructureData);
+		initParameter.setCity(city);
 		simulationController.init(initParameter);
 		simulationController.start(startParameter);
 	}

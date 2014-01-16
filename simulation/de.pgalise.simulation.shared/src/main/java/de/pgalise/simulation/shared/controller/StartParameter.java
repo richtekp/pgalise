@@ -6,12 +6,13 @@
 package de.pgalise.simulation.shared.controller;
 
 import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-public class StartParameter<C extends City> extends InitParameter {
+public class StartParameter<C extends City> extends SimulationInitParameter {
 
 	private static final long serialVersionUID = 1L;
 	private List<WeatherEvent> weatherEvents = new LinkedList<>();

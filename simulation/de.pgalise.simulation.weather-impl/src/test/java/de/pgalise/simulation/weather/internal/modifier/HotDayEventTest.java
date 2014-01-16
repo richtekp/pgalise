@@ -140,7 +140,6 @@ public class HotDayEventTest {
     userTransaction.begin();
     try {
       city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      service.setCity(city);
     } finally {
       userTransaction.commit();
     }
@@ -179,10 +178,12 @@ public class HotDayEventTest {
 
       // Get extrema of reference values
       float refvalue = service.getValue(WeatherParameterEnum.TEMPERATURE,
-        HotDayEventTest.testTimestamp).floatValue();
+        HotDayEventTest.testTimestamp,
+        city).floatValue();
 
       // Deploy strategy
-      HotDayEvent event = new HotDayEvent(new DefaultRandomSeedService().
+      HotDayEvent event = new HotDayEvent(city,
+        new DefaultRandomSeedService().
         getSeed(
           ColdDayEventTest.class.toString()),
         HotDayEventTest.testTimestamp,
@@ -190,11 +191,13 @@ public class HotDayEventTest {
         HotDayEventTest.testValue,
         HotDayEventTest.testDuration,
         loader);
-      service.deployStrategy(event);
+      service.deployStrategy(event,
+        city);
 
       // Get extrema of decorator values
       float decvalue = service.getValue(WeatherParameterEnum.TEMPERATURE,
-        HotDayEventTest.testTimestamp).floatValue();
+        HotDayEventTest.testTimestamp,
+        city).floatValue();
 
       /*
        * Testcase 1

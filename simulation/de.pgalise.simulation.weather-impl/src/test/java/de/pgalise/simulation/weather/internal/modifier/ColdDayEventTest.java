@@ -20,7 +20,6 @@ import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
-import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
@@ -37,7 +36,6 @@ import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
@@ -104,7 +102,7 @@ public class ColdDayEventTest {
   @EJB
   private IdGenerator idGenerator;
 
-  public ColdDayEventTest() throws NamingException {
+  public ColdDayEventTest() {
     Calendar cal = new GregorianCalendar();
     cal.set(2010,
       6,
@@ -140,7 +138,6 @@ public class ColdDayEventTest {
     userTransaction.begin();
     try {
       city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      service.setCity(city);
     } finally {
       userTransaction.commit();
     }
@@ -151,8 +148,6 @@ public class ColdDayEventTest {
     userTransaction.begin();
     try {
       //preparation
-      service = new DefaultWeatherService(city,
-        loader);
       Calendar cal = new GregorianCalendar();
       cal.setTimeInMillis(startTimestamp);
       cal.add(Calendar.DATE,
@@ -181,10 +176,11 @@ public class ColdDayEventTest {
 
       // Get extrema of reference values
       float refvalue = service.getValue(WeatherParameterEnum.TEMPERATURE,
-        testTimestamp).floatValue();
+        testTimestamp,
+        city).floatValue();
 
       // Deploy strategy
-      ColdDayEvent event = new ColdDayEvent(
+      ColdDayEvent event = new ColdDayEvent(city,
         new DefaultRandomSeedService().
         getSeed(ColdDayEventTest.class.toString()),
         testTimestamp,
@@ -192,11 +188,13 @@ public class ColdDayEventTest {
         testValue,
         testDuration,
         loader);
-      service.deployStrategy(event);
+      service.deployStrategy(event,
+        city);
 
       // Get extrema of decorator values
       float decvalue = service.getValue(WeatherParameterEnum.TEMPERATURE,
-        testTimestamp).floatValue();
+        testTimestamp,
+        city).floatValue();
 
       /*
        * Testcase 1

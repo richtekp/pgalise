@@ -16,6 +16,7 @@
 package de.pgalise.simulation.weather.entity;
 
 import de.pgalise.simulation.shared.entity.City;
+import java.util.Objects;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.persistence.Column;
@@ -53,7 +54,7 @@ public class ServiceDataForecast extends AbstractServiceData implements
   }
 
   public ServiceDataForecast(Long id,
-    java.sql.Date measureDate,
+    java.util.Date measureDate,
     java.sql.Time measureTime,
     City city,
     Measure<Float, Temperature> temperatureHigh,
@@ -91,20 +92,44 @@ public class ServiceDataForecast extends AbstractServiceData implements
     this.temperatureLow = temperature;
   }
 
-  /*
-   * (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString() {
-    return "ServiceData [id=" + this.getId() + ", city=" + this.getCity() + ", measureDate=" + this.
-      getMeasureDate()
-      + ", temperatureLow=" + this.temperatureLow + ", temperatureHigh=" + this.temperatureHigh + "]";
-  }
-
   @Override
   public int compareTo(ServiceDataForecast o) {
     return this.getMeasureTime().compareTo(o.getMeasureTime());
   }
+	
+	protected boolean equalsTransitive(ServiceDataForecast other) {
+		if(!super.equalsTransitive(other)) {
+			return false;
+		}
+		if (!Objects.equals(this.temperatureHigh,
+			other.temperatureHigh)) {
+			return false;
+		}
+		if (!Objects.equals(this.temperatureLow,
+			other.temperatureLow)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 23 * super.hashCode();
+		hash = 23 * hash + Objects.hashCode(this.temperatureHigh);
+		hash = 23 * hash + Objects.hashCode(this.temperatureLow);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ServiceDataForecast other = (ServiceDataForecast) obj;
+		return equalsTransitive(other);
+	}
 
 }

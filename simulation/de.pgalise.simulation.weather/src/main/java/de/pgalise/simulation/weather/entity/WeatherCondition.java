@@ -8,6 +8,7 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.persistence.Entity;
 
 /**
@@ -101,5 +102,36 @@ public class WeatherCondition extends Identifiable {
   public int getCode() {
     return code;
   }
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 31 * hash + this.code;
+		hash = 31 * hash + Objects.hashCode(this.stringRepresentation);
+		return hash;
+	}
+	
+	protected boolean equalsTransitive(WeatherCondition other) {
+		if (this.code != other.code) {
+			return false;
+		}
+		if (!Objects.equals(this.stringRepresentation,
+			other.stringRepresentation)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final WeatherCondition other = (WeatherCondition) obj;
+		return equalsTransitive(other);
+	}
 
 }

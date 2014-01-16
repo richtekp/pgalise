@@ -45,6 +45,7 @@ import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -59,7 +60,7 @@ import org.junit.Test;
 public class ReferenceCityTest {
 
   @PersistenceContext(unitName = "pgalise-weather")
-  private EntityManager entityManagerFactory;
+  private EntityManager entityManager;
 
   /**
    * End timestamp
@@ -75,7 +76,7 @@ public class ReferenceCityTest {
    * Service Class
    */
   @EJB
-  private static WeatherService service;
+  private WeatherService service;
 
   private City city;
 
@@ -118,13 +119,13 @@ public class ReferenceCityTest {
     userTransaction.begin();
     try {
       city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      service.setCity(city);
     } finally {
       userTransaction.commit();
     }
   }
 
   @Test
+	@Ignore //more details about test values
   public void testDeployChanges() throws Exception {
     userTransaction.begin();
     try {
@@ -135,19 +136,19 @@ public class ReferenceCityTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
-          entityManagerFactory,
+          entityManager,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
-          entityManagerFactory,
+          entityManager,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
-          entityManagerFactory,
+          entityManager,
           idGenerator);
       service.addNewWeather(startTimestamp,
         endTimestamp,
@@ -155,7 +156,7 @@ public class ReferenceCityTest {
         null);
 
       // Get reference values
-      WeatherMap referenceValues = ReferenceCityTest.service.
+      WeatherMap referenceValues = service.
         getReferenceValues();
 
       // Get max of reference values
@@ -168,14 +169,15 @@ public class ReferenceCityTest {
       long reftime = refmax.getMeasureTime().getTime();
 
       // Deploy strategy
-      ReferenceCityModifier modifier = new ReferenceCityModifier(
+      ReferenceCityModifier modifier = new ReferenceCityModifier(city,
         new DefaultRandomSeedService().getSeed(ReferenceCityTest.class.
           toString()),
         loader);
-      ReferenceCityTest.service.deployStrategy(modifier);
+      service.deployStrategy(modifier,
+        city);
 
       // Get modifier values
-      WeatherMap modifierValues = ReferenceCityTest.service.getReferenceValues();
+      WeatherMap modifierValues = service.getReferenceValues();
 
       // Get max of modifier values
       AbstractStationData decmax = modifierValues.get(reftime);
@@ -207,13 +209,13 @@ public class ReferenceCityTest {
 
       WeatherTestUtils.tearDownWeatherData(entities,
         StationDataNormal.class,
-        entityManagerFactory);
+        entityManager);
       WeatherTestUtils.tearDownWeatherData(entities0,
         ServiceDataCurrent.class,
-        entityManagerFactory);
+        entityManager);
       WeatherTestUtils.tearDownWeatherData(entities1,
         ServiceDataForecast.class,
-        entityManagerFactory);
+        entityManager);
     } finally {
       userTransaction.commit();
     }

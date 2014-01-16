@@ -16,6 +16,7 @@
 package de.pgalise.simulation.shared.entity;
 
 import de.pgalise.simulation.shared.JaxRSCoordinate;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -182,4 +183,61 @@ public class City extends Identifiable {
   public JaxRSCoordinate getReferencePoint() {
     return referencePoint;
   }
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 29 * hash + this.altitude;
+		hash = 29 * hash + Objects.hashCode(this.name);
+		hash = 29 * hash + (this.nearRiver ? 1 : 0);
+		hash = 29 * hash + (this.nearSea ? 1 : 0);
+		hash = 29 * hash + this.population;
+		hash = 29 * hash + this.rate;
+		hash = 29 * hash + Objects.hashCode(this.position);
+		hash = 29 * hash + Objects.hashCode(this.referencePoint);
+		return hash;
+	}
+	
+	protected boolean equalsTransitive(City other) {
+		if (this.altitude != other.altitude) {
+			return false;
+		}
+		if (!Objects.equals(this.name,
+			other.name)) {
+			return false;
+		}
+		if (this.nearRiver != other.nearRiver) {
+			return false;
+		}
+		if (this.nearSea != other.nearSea) {
+			return false;
+		}
+		if (this.population != other.population) {
+			return false;
+		}
+		if (this.rate != other.rate) {
+			return false;
+		}
+		if (!Objects.equals(this.position,
+			other.position)) {
+			return false;
+		}
+		if (!Objects.equals(this.referencePoint,
+			other.referencePoint)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final City other = (City) obj;
+		return equalsTransitive(other);
+	}
 }

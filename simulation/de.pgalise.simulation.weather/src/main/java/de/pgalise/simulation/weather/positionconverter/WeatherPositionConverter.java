@@ -16,7 +16,11 @@
 package de.pgalise.simulation.weather.positionconverter;
 
 import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherService;
 
@@ -31,22 +35,23 @@ import de.pgalise.simulation.weather.service.WeatherService;
  */
 public interface WeatherPositionConverter {
 
-	/**
-	 * Returns the modified reference value for the given position
-	 *
-	 * @param <T>
-	 * @param key WeatherParameterEnum
-	 * @param time Timestamp
-	 * @param position Position
-	 * @param refValue Reference value
-	 * @return Modified value
-	 */
-	public <T extends Number> T getValue(WeatherParameterEnum key,
-		long time,
-		JaxRSCoordinate position,
-		T refValue);
+  /**
+   * Returns the modified reference value for the given position
+   *
+   * @param <T>
+   * @param key WeatherParameterEnum
+   * @param time Timestamp
+   * @param position Position
+   * @param refValue Reference value
+   * @param grid
+   * @throws IllegalStateException if the grid hasn't been specified before
+   * @return Modified value
+   */
+  public <T extends Number> T getValue(WeatherParameterEnum key,
+    long time,
+    JaxRSCoordinate position,
+    T refValue,
+    Polygon grid) throws IllegalStateException;
 
-	Polygon getGrid();
-
-	void setGrid(Polygon grid);
+  void init(WeatherPositionInitParameter initParameter);
 }

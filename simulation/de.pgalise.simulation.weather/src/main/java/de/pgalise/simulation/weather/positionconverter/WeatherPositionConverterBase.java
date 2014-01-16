@@ -27,72 +27,78 @@ import de.pgalise.simulation.shared.JaxRSCoordinate;
  * @version 1.0 (Aug 12, 2012)
  */
 public abstract class WeatherPositionConverterBase implements
-	WeatherPositionConverter {
+  WeatherPositionConverter {
 
-	/**
-	 * Round the value
-	 *
-	 * @param value Value
-	 * @param digits Number of decimal places
-	 * @return rounded value
-	 */
-	public static double round(double value,
-		int digits) {
-		double rValue = Math.round(value * Math.pow(10d,
-			digits));
-		return rValue / Math.pow(10d,
-			digits);
-	}
+  /**
+   * Round the value
+   *
+   * @param value Value
+   * @param digits Number of decimal places
+   * @return rounded value
+   */
+  public static double round(double value,
+    int digits) {
+    double rValue = Math.round(value * Math.pow(10d,
+      digits));
+    return rValue / Math.pow(10d,
+      digits);
+  }
 
-	/**
-	 * Distance from the reference point to the grid
-	 */
-	private double gridDistance;
+  /**
+   * Distance from the reference point to the grid
+   */
+  private double gridDistance;
 
-	/**
-	 * Position of the reference values
-	 */
-	private Polygon grid;
+  /**
+   * Position of the reference values
+   */
+  private Polygon grid;
 
-	public WeatherPositionConverterBase() {
-	}
+  public WeatherPositionConverterBase() {
+  }
 
-	/**
-	 * Constructor
-	 *
-	 *
-	 * @param grid
-	 */
-	public WeatherPositionConverterBase(Polygon grid) {
-		this.grid = grid;
-	}
+  /**
+   * Constructor
+   *
+   *
+   * @param grid
+   */
+  public WeatherPositionConverterBase(Polygon grid) {
+    this.grid = grid;
+  }
 
-	public double getGridDistance() {
-		double retValue = Double.MIN_VALUE;
-		JaxRSCoordinate referncePoint = getReferencePosition();
-		for (com.vividsolutions.jts.geom.Coordinate coordinate : grid.
-			getCoordinates()) {
-			double distance = referncePoint.distance(coordinate);
-			if (distance > retValue) {
-				retValue = distance;
-			}
+  public double getGridDistance() {
+    double retValue = Double.MIN_VALUE;
+    JaxRSCoordinate referncePoint = getReferencePosition();
+    for (com.vividsolutions.jts.geom.Coordinate coordinate : grid.
+      getCoordinates()) {
+      double distance = referncePoint.distance(coordinate);
+      if (distance > retValue) {
+        retValue = distance;
+      }
+    }
+    return retValue;
+  }
+
+  public JaxRSCoordinate getReferencePosition() throws IllegalStateException{
+		if(grid == null) {
+			throw new IllegalStateException("grid has not been set (is null). Init the converter before invoking methods");
 		}
-		return retValue;
-	}
+    Point centroid = this.grid.getCentroid();
+    return new JaxRSCoordinate(centroid.getX(),
+      centroid.getY());
+  }
 
-	public JaxRSCoordinate getReferencePosition() {
-		Point centroid = this.grid.getCentroid();
-		return new JaxRSCoordinate(centroid.getX(),
-			centroid.getY());
-	}
+  public Polygon getGrid() {
+    return grid;
+  }
+
+  public void setGrid(Polygon grid) {
+    this.grid = grid;
+  }
 
 	@Override
-	public Polygon getGrid() {
-		return grid;
-	}
-
-	@Override
-	public void setGrid(Polygon grid) {
-		this.grid = grid;
+	public void init(WeatherPositionInitParameter initParameter) {
+		this.grid = initParameter.getGrid();
 	}
 }

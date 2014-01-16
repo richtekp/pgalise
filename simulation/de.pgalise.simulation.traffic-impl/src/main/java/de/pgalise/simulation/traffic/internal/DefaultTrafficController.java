@@ -165,7 +165,7 @@ public class DefaultTrafficController<
 
 		// stadt in gleichgroße teile aufteilen
 		area = GeoToolsBootstrapping.createPolygon(
-			param.getCityInfrastructureData().getBoundary());
+			param.getCity().getCityInfrastructureData().getBoundary());
 		cityZones = createCityZones();
 
 		// server graphdaten übergeben

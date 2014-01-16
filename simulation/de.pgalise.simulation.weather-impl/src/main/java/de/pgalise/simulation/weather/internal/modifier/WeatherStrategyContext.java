@@ -13,70 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.modifier;
 
-import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.service.WeatherService;
 
 /**
- * Strategy context for the weather modifier (Strategy pattern). This class is used in the {@link WeatherService}.
- * 
+ * Strategy context for the weather modifier (Strategy pattern). This class is
+ * used in the {@link WeatherService}.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
 public class WeatherStrategyContext {
 
-	/**
-	 * Strategy
-	 */
-	private WeatherStrategy strategy = null;
+  /**
+   * Strategy
+   */
+  private WeatherStrategy strategy = null;
 
-	/**
-	 * Default constructor
-	 */
-	public WeatherStrategyContext() {
-	}
+  /**
+   * Default constructor
+   */
+  public WeatherStrategyContext() {
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param strategy
-	 *            Strategy
-	 */
-	public WeatherStrategyContext(WeatherStrategy strategy) {
-		this.strategy = strategy;
-	}
+  /**
+   * Constructor
+   *
+   * @param strategy Strategy
+   */
+  public WeatherStrategyContext(WeatherStrategy strategy) {
+    this.strategy = strategy;
+  }
 
-	/**
-	 * Execute the current strategy
-	 * 
-	 * @param map
-	 *            WeatherMap
-	 * @param city
-	 *            City
-	 * @param timestamp
-	 *            Timestamp
-	 */
-	public void execute(WeatherMap map, City city, long timestamp) {
-		if (this.strategy != null) {
-			this.strategy.setMap(map);
-			this.strategy.setCity(city);
-			this.strategy.setSimulationTimestamp(timestamp);
+  /**
+   * Execute the current strategy
+   *
+   * @param map WeatherMap
+   * @param timestamp Timestamp
+   */
+  public void execute(WeatherMap map,
+    long timestamp) {
+    if (this.strategy != null) {
+      this.strategy.setMap(map);
+      this.strategy.setSimulationTimestamp(timestamp);
 
-			// Deploy changes
-			this.strategy.deployChanges();
-		}
-	}
+      // Deploy changes
+      this.strategy.deployChanges();
+    }
+  }
 
-	public WeatherStrategy getStrategy() {
-		return this.strategy;
-	}
+  public WeatherStrategy getStrategy() {
+    return this.strategy;
+  }
 
-	public void setStrategy(WeatherStrategy strategy) {
-		this.strategy = strategy;
-	}
+  public void setStrategy(WeatherStrategy strategy) {
+    this.strategy = strategy;
+  }
 
 }

@@ -4,26 +4,30 @@
  */
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
+import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import java.net.URL;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class TrafficInitParameter extends InitParameter {
-
+public class TrafficInitParameter extends SimulationInitParameter {
 	private static final long serialVersionUID = 1L;
-	private CityInfrastructureData cityInfrasturctureData;
+	private TrafficCity ctiy;
 	private int TrafficServerCount = 2;
+
+	/**
+	 * Traffic fuzzy data
+	 */
+	private TrafficFuzzyData trafficFuzzyData;
 
 	public TrafficInitParameter() {
 	}
 
 	public TrafficInitParameter(
-		CityInfrastructureData cityInfrastructureData,
+		TrafficCity city,
 		long startTimestamp,
 		long endTimestamp,
 		long interval,
@@ -38,13 +42,13 @@ public class TrafficInitParameter extends InitParameter {
 			clockGeneratorInterval,
 			operationCenterURL,
 			controlCenterURL,
-			trafficFuzzyData,
-			cityInfrastructureData.getBoundary());
-		this.cityInfrasturctureData = cityInfrastructureData;
+			city.getCityInfrastructureData().getBoundary());
+		this.ctiy = city;
+		this.trafficFuzzyData = trafficFuzzyData;
 	}
 
 	public TrafficInitParameter(
-		CityInfrastructureData cityInfrastructureData,
+		TrafficCity city,
 		long startTimestamp,
 		long endTimestamp,
 		long interval,
@@ -53,7 +57,7 @@ public class TrafficInitParameter extends InitParameter {
 		URL controlCenterURL,
 		TrafficFuzzyData trafficFuzzyData,
 		int trafficServerCount) {
-		this(cityInfrastructureData,
+		this(city,
 			startTimestamp,
 			endTimestamp,
 			interval,
@@ -64,13 +68,13 @@ public class TrafficInitParameter extends InitParameter {
 		this.TrafficServerCount = trafficServerCount;
 	}
 
-	public void setCityInfrastructureData(
-		CityInfrastructureData cityInfrastructureData) {
-		this.cityInfrasturctureData = cityInfrastructureData;
+	public void setCity(
+		TrafficCity city) {
+		this.ctiy = city;
 	}
 
-	public CityInfrastructureData getCityInfrastructureData() {
-		return cityInfrasturctureData;
+	public TrafficCity getCity() {
+		return ctiy;
 	}
 
 	public void setTrafficServerCount(int TrafficServerCount) {
@@ -79,6 +83,14 @@ public class TrafficInitParameter extends InitParameter {
 
 	public int getTrafficServerCount() {
 		return TrafficServerCount;
+	}
+
+	public void setTrafficFuzzyData(TrafficFuzzyData trafficFuzzyData) {
+		this.trafficFuzzyData = trafficFuzzyData;
+	}
+
+	public TrafficFuzzyData getTrafficFuzzyData() {
+		return trafficFuzzyData;
 	}
 
 }

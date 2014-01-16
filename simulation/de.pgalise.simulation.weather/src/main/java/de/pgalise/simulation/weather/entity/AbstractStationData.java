@@ -4,8 +4,8 @@
  */
 package de.pgalise.simulation.weather.entity;
 
-import java.sql.Date;
 import java.sql.Time;
+import java.util.Objects;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
 import javax.persistence.Column;
@@ -97,7 +97,7 @@ public abstract class AbstractStationData extends AbstractTimeSensitive
    * @param windVelocity wind velocity
    */
   public AbstractStationData(Long id,
-    Date date,
+    java.util.Date date,
     Time time,
     Integer airPressure,
     Integer lightIntensity,
@@ -203,4 +203,75 @@ public abstract class AbstractStationData extends AbstractTimeSensitive
   public void setWindVelocity(Float windVelocity) {
     this.windVelocity = windVelocity;
   }
+
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 83 * super.hashCode();
+		hash = 83 * hash + Objects.hashCode(this.airPressure);
+		hash = 83 * hash + Objects.hashCode(this.lightIntensity);
+		hash = 83 * hash + Objects.hashCode(this.perceivedTemperature);
+		hash = 83 * hash + Objects.hashCode(this.precipitationAmount);
+		hash = 83 * hash + Objects.hashCode(this.radiation);
+		hash = 83 * hash + Objects.hashCode(this.relativHumidity);
+		hash = 83 * hash + Objects.hashCode(this.temperature);
+		hash = 83 * hash + Objects.hashCode(this.windDirection);
+		hash = 83 * hash + Objects.hashCode(this.windVelocity);
+		return hash;
+	}
+	
+	protected boolean equalsTransitive(AbstractStationData other) {
+		if(!super.equalsTransitive(other)) {
+			return false;
+		}
+		if (!Objects.equals(this.airPressure,
+			other.airPressure)) {
+			return false;
+		}
+		if (!Objects.equals(this.lightIntensity,
+			other.lightIntensity)) {
+			return false;
+		}
+		if (!Objects.equals(this.perceivedTemperature,
+			other.perceivedTemperature)) {
+			return false;
+		}
+		if (!Objects.equals(this.precipitationAmount,
+			other.precipitationAmount)) {
+			return false;
+		}
+		if (!Objects.equals(this.radiation,
+			other.radiation)) {
+			return false;
+		}
+		if (!Objects.equals(this.relativHumidity,
+			other.relativHumidity)) {
+			return false;
+		}
+		if (!Objects.equals(this.temperature,
+			other.temperature)) {
+			return false;
+		}
+		if (!Objects.equals(this.windDirection,
+			other.windDirection)) {
+			return false;
+		}
+		if (!Objects.equals(this.windVelocity,
+			other.windVelocity)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final AbstractStationData other = (AbstractStationData) obj;
+		return equalsTransitive(other);
+	}
 }

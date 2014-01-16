@@ -35,6 +35,7 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterBase;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.parameter.WindStrength;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
@@ -49,6 +50,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.measure.quantity.Temperature;
@@ -90,15 +93,12 @@ import javax.measure.unit.Unit;
 @Stateful
 public class DefaultWeatherService implements WeatherService {
 
+  public final static long MIN_ADD_WEATHER_TIMESTAMP = 1057528800000L;
+
   /**
    * Map with cached parameters
    */
   private HashMap<WeatherParameterEnum, Map<Long, Number>> cachedParameters = new HashMap<>();
-
-  /**
-   * City of the simulation
-   */
-  private City city;
 
   /**
    * Helper for calculations with the grid
@@ -148,6 +148,10 @@ public class DefaultWeatherService implements WeatherService {
    */
   private List<WeatherStrategyHelper> plannedEventModifiers = new LinkedList<>();
 
+  /**
+   *
+   * @throws IllegalArgumentException
+   */
   public DefaultWeatherService() {
   }
 
@@ -159,12 +163,12 @@ public class DefaultWeatherService implements WeatherService {
    */
   public DefaultWeatherService(City city,
     WeatherLoader loader) {
+    this();
     if (city == null) {
       throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
         "city"));
     }
     this.referencePosition = city.getReferencePoint();
-    this.city = city;
     this.loader = loader;
 
     // Init maps
@@ -174,26 +178,19 @@ public class DefaultWeatherService implements WeatherService {
     this.gridConverter = new LinearWeatherPositionConverter(city.getPosition().
       getBoundaries());
     this.plannedEventModifiers = new ArrayList<>();
-
-    // Add parameters
-    try {
-      this.initParameters();
-    } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   @Override
   public void addNewWeather(long startTimestamp,
     long endTimestamp,
     boolean takeNormalData,
-    List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException {
+    List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException, IllegalArgumentException {
     // We have only weather data after
-    if (startTimestamp < 1057528800000L) {
+    if (startTimestamp < MIN_ADD_WEATHER_TIMESTAMP) {
       throw new IllegalArgumentException(ExceptionMessages.
         getMessageForMustBetween("startTimestamp",
           startTimestamp,
-          1057528800000.0));
+          MIN_ADD_WEATHER_TIMESTAMP));
     } else if (endTimestamp < startTimestamp) {
       throw new IllegalArgumentException(ExceptionMessages.
         getMessageForMustBetween("endTimestamp",
@@ -204,21 +201,31 @@ public class DefaultWeatherService implements WeatherService {
     // Add weather data
     try {
       // Only one thread can add new weather
-      this.semaphore.acquire();
+      long wait = 10;
+      while (!this.semaphore.tryAcquire(1,
+        wait,
+        TimeUnit.MILLISECONDS)) {
+        wait++;
+      }
       this.internalAddNewWeather(startTimestamp,
         endTimestamp,
         takeNormalData,
         strategyList);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    } catch (InterruptedException ex) {
+      throw new RuntimeException(ex);
     } finally {
       // Free semaphore
       this.semaphore.release();
     }
   }
 
+  @PostConstruct
+  public void init() {
+    this.initParameters();
+  }
+
   @Override
-  public void addNewNextDayWeather() throws NoWeatherDataFoundException {
+  public void addNewNextDayWeather() throws NoWeatherDataFoundException, IllegalStateException {
     // Has a date been simulated before?
     if (this.loadedTimestamp < 1) {
       throw new IllegalStateException(
@@ -227,10 +234,15 @@ public class DefaultWeatherService implements WeatherService {
 
     try {
       // Only one thread can add new weather
-      this.semaphore.acquire();
+      long wait = 10;
+      while (!this.semaphore.tryAcquire(1,
+        wait,
+        TimeUnit.MILLISECONDS)) {
+        wait++;
+      }
       this.internalAddNextWeather();
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    } catch (InterruptedException ex) {
+      throw new RuntimeException(ex);
     } finally {
       // Free semaphore
       this.semaphore.release();
@@ -250,7 +262,8 @@ public class DefaultWeatherService implements WeatherService {
   }
 
   @Override
-  public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException {
+  public void deployStrategy(WeatherStrategy strategy,
+    City city) throws NoWeatherDataFoundException {
     // There is no weather data added
     if ((this.referenceValues == null) || this.referenceValues.isEmpty()) {
       throw new IllegalStateException("No weather data has been added so far");
@@ -262,7 +275,6 @@ public class DefaultWeatherService implements WeatherService {
         // Execute
         WeatherStrategyContext context = new WeatherStrategyContext(strategy);
         context.execute(this.referenceValues,
-          this.city,
           this.loadedTimestamp);
 
         // Plan event for further days
@@ -277,7 +289,6 @@ public class DefaultWeatherService implements WeatherService {
         this.loadedTimestamp)) {
         WeatherStrategyContext context = new WeatherStrategyContext(strategy);
         context.execute(this.referenceValues,
-          this.city,
           this.loadedTimestamp);
       } else {
         // Plan event for further days
@@ -318,7 +329,8 @@ public class DefaultWeatherService implements WeatherService {
   @Override
   @SuppressWarnings("unchecked")
   public <T extends Number> T getValue(WeatherParameterEnum key,
-    long time) throws IllegalArgumentException {
+    long time,
+    City city) throws IllegalArgumentException {
     if (key == null) {
       throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
         "key"));
@@ -329,7 +341,12 @@ public class DefaultWeatherService implements WeatherService {
     }
 
     try {
-      this.semaphore.acquire(1);
+      long wait = 10;
+      while (!this.semaphore.tryAcquire(1,
+        wait,
+        TimeUnit.MILLISECONDS)) {
+        wait++;
+      }
 
       // Is the correct weather data set?
       if (!DateConverter.isTheSameDay(this.loadedTimestamp,
@@ -358,8 +375,8 @@ public class DefaultWeatherService implements WeatherService {
       // Return the value
       return this.parameters.get(key).getValue(time);
 
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+    } catch (InterruptedException ex) {
+      throw new RuntimeException(ex);
     } finally {
       this.semaphore.release();
     }
@@ -368,7 +385,8 @@ public class DefaultWeatherService implements WeatherService {
   @Override
   public <T extends Number> T getValue(WeatherParameterEnum key,
     long time,
-    JaxRSCoordinate position)
+    JaxRSCoordinate position,
+    City city)
     throws IllegalArgumentException, NoWeatherDataFoundException {
     if (key == null) {
       throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
@@ -388,13 +406,16 @@ public class DefaultWeatherService implements WeatherService {
 
     // Get the reference value
     T value = this.getValue(key,
-      time);
+      time,
+      city);
 
     // Calculate a new value for the given position
     return this.gridConverter.getValue(key,
       time,
       position,
-      value);
+      value,
+      city.getPosition().getBoundaries()
+    );
   }
 
   @Override
@@ -404,11 +425,6 @@ public class DefaultWeatherService implements WeatherService {
 
     // Clear the values for the date
     this.clearValues();
-  }
-
-  @Override
-  public void setCity(City city) {
-    this.city = city;
   }
 
   public void setLoadedTimestamp(long loadedTimestamp) {
@@ -461,14 +477,18 @@ public class DefaultWeatherService implements WeatherService {
    *
    * @throws Exception There is a parameter that can not be initiated.
    */
-  private void initParameters() throws NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+  private void initParameters() {
     for (WeatherParameterEnum enumElement : WeatherParameterEnum.values()) {
       // Add parameter
-      WeatherParameterBase type = enumElement.getValueType().getConstructor(
-        WeatherService.class)
-        .newInstance(this);
-      this.parameters.put(enumElement,
-        type);
+      try {
+        WeatherParameterBase type = enumElement.getValueType().getConstructor(
+          WeatherService.class)
+          .newInstance(this);
+        this.parameters.put(enumElement,
+          type);
+      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        throw new RuntimeException(ex);
+      }
 
       // Add cached parameter
       if (enumElement.isCachedParameter()) {
@@ -617,7 +637,6 @@ public class DefaultWeatherService implements WeatherService {
         for (WeatherStrategy strategy : dayStrategies) {
           context.setStrategy(strategy);
           context.execute(map,
-            this.city,
             timestamp);
         }
       }
@@ -645,5 +664,10 @@ public class DefaultWeatherService implements WeatherService {
   @Override
   public Unit<Temperature> getTemperatureUnit() {
     return SI.CELSIUS;
+  }
+
+  @Override
+  public void init(WeatherInitParameter initParameter) {
+
   }
 }

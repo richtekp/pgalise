@@ -207,9 +207,10 @@ public abstract class AbstractController<E extends Event, S extends StartParamet
 	 * this controller.
 	 *
 	 * @param simulationEventList
+	 * @throws IllegalArgumentException if <tt>simulationEventList</tt> is <code>null</code>
 	 * @see Controller#update(SimulationEventList)
 	 */
-	protected abstract void onUpdate(EventList<E> simulationEventList);
+	protected abstract void onUpdate(EventList<E> simulationEventList) throws IllegalArgumentException;
 
 	@Override
 	public String getName() {

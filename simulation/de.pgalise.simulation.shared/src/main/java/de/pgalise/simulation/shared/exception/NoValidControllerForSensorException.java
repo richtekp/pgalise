@@ -13,37 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.exception;
 
+import javax.ejb.ApplicationException;
+
 /**
- * This exception can be thrown, if no valid controller could be found
- * to create a sensor.
- * 
+ * This exception can be thrown, if no valid controller could be found to create
+ * a sensor.
+ *
  * @author Kamil Knefel
  */
+@ApplicationException
 public class NoValidControllerForSensorException extends RuntimeException {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = 4336527983767575416L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = 4336527983767575416L;
 
-	/**
-	 * Constructor
-	 */
-	public NoValidControllerForSensorException() {
-		super("No valid controller found.");
-	}
+  /**
+   * Constructor
+   */
+  public NoValidControllerForSensorException() {
+    super("No valid controller found.");
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param text
-	 *            text for exception
-	 */
-	public NoValidControllerForSensorException(String text) {
-		super(text);
-	}
+  /**
+   * Constructor
+   *
+   * @param text text for exception
+   */
+  public NoValidControllerForSensorException(String text) {
+    super(text);
+  }
 
 }

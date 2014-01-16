@@ -15,6 +15,7 @@ import de.pgalise.simulation.weather.entity.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.measure.Measure;
@@ -25,6 +26,7 @@ import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
+import org.apache.commons.lang3.time.DateUtils;
 
 /**
  *
@@ -69,7 +71,8 @@ public class WeatherTestUtils {
     while (start < endTimestampMidnight + DateConverter.ONE_DAY_IN_MILLIS) {
       ServiceDataForecast serviceDataForecast = new ServiceDataForecast(
         idGenerator.getNextId(),
-        new Date(start),
+        DateUtils.truncate(new Date(start),
+          Calendar.DATE),
         new Time(start),
         city,
         Measure.valueOf(10.0f,
@@ -82,7 +85,8 @@ public class WeatherTestUtils {
         WeatherCondition.retrieveCondition(idGenerator,
           WeatherCondition.UNKNOWN_CONDITION_CODE)
       );
-      entityManager.merge(serviceDataForecast);
+      entityManager.merge(
+        serviceDataForecast);
       retValue.put(new Date(start),
         serviceDataForecast);
       start += DateConverter.ONE_DAY_IN_MILLIS;
@@ -128,7 +132,8 @@ public class WeatherTestUtils {
     while (start < endTimestampMidnight + DateConverter.ONE_DAY_IN_MILLIS) {
       ServiceDataCurrent serviceDataCurrent = new ServiceDataCurrent(
         idGenerator.getNextId(),
-        new Date(start),
+        DateUtils.truncate(new Date(start),
+          Calendar.DATE),
         new Time(start),
         city,
         1.0f,
@@ -185,7 +190,8 @@ public class WeatherTestUtils {
     while (start < endTimestampMidnight + DateConverter.ONE_DAY_IN_MILLIS) {
       StationDataNormal stationDataNormal = new StationDataNormal(idGenerator.
         getNextId(),
-        new Date(start),
+        DateUtils.truncate(new Date(start),
+          Calendar.DATE),
         new Time(start),
         1,
         1,

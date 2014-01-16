@@ -41,10 +41,12 @@ import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.testutils.TestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -85,7 +87,7 @@ public class DefaultSimulationControllerTest {
 	private static WeatherController weatherController;
 	private static EntityManager sensorPersistenceService;
 //	private static ServerConfigurationReader serverConfigurationReader;
-	private static CityInfrastructureData cityInfrastructureData;
+	private static TrafficCity cityInfrastructureData;
 	@EJB
 	private IdGenerator idGenerator;
 	@EJB
@@ -118,7 +120,7 @@ public class DefaultSimulationControllerTest {
 		EasyMock.expect(eventInitiator.getStatus()).andReturn(
 			ControllerStatusEnum.STARTED);
 		cityInfrastructureData = EasyMock.createNiceMock(
-			CityInfrastructureData.class);
+			TrafficCity.class);
 
 		/* Prepare service dictionary: */
 		Collection<Service> controllerCollection = new LinkedList<>();
@@ -155,7 +157,14 @@ public class DefaultSimulationControllerTest {
 		trafficController.reset();
 		EasyMock.replay(trafficController);
 
-		weatherController.init(initParameter);
+		weatherController.init(new WeatherInitParameter(initParameter.getCity(),
+			initParameter.getStartTimestamp().getTime(),
+			initParameter.getEndTimestamp().getTime(),
+			initParameter.getInterval(),
+			initParameter.getClockGeneratorInterval(),
+			initParameter.getControlCenterURL(),
+			initParameter.getOperationCenterURL(),
+			initParameter.getCityBoundary()));
 		weatherController.start(startParameter);
 		weatherController.stop();
 		weatherController.reset();

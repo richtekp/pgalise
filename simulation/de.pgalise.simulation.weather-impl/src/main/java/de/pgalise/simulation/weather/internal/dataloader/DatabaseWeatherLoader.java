@@ -54,6 +54,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import org.apache.commons.lang3.time.DateUtils;
 
 /**
  * This class loads the weather station data from the database. <br />
@@ -222,12 +223,13 @@ public class DatabaseWeatherLoader implements WeatherLoader {
   public ServiceDataForecast loadForecastServiceWeatherData(long timestamp,
     City city) throws NoWeatherDataFoundException {
     //check that city has been persisted to avoid exception query in following method invocations
+    this.entityManager.merge(city.getPosition());
     this.entityManager.merge(city);
 
     // Get the data
     ServiceDataForecast data;
     TypedQuery<ServiceDataForecast> query = this.entityManager.
-      createNamedQuery("DefaultServiceDataForecast.findByDate",
+      createNamedQuery("ServiceDataForecast.findByDate",
         ServiceDataForecast.class);
     query.setParameter("date",
       new Date(timestamp));
@@ -346,12 +348,16 @@ public class DatabaseWeatherLoader implements WeatherLoader {
       AbstractStationData max = list.get(i);
 
       // Set times and delete seconds and milliseconds
-      long minTime = min.getMeasureDate().getTime() + min.getMeasureTime().
-        getTime() + DateConverter.ONE_HOUR_IN_MILLIS;
+      long minTime = min.getMeasureDate().getTime()
+        + DateUtils.getFragmentInMilliseconds(min.getMeasureTime(),
+          Calendar.HOUR_OF_DAY)
+        + DateConverter.ONE_HOUR_IN_MILLIS;
       minTime -= minTime % DateConverter.ONE_MINUTE_IN_MILLIS;
       long actTime = minTime + interval;
-      long maxTime = max.getMeasureDate().getTime() + max.getMeasureTime().
-        getTime() + DateConverter.ONE_HOUR_IN_MILLIS;
+      long maxTime = max.getMeasureDate().getTime()
+        + DateUtils.getFragmentInMilliseconds(max.getMeasureTime(),
+          Calendar.HOUR_OF_DAY)
+        + DateConverter.ONE_HOUR_IN_MILLIS;
       maxTime -= maxTime % DateConverter.ONE_MINUTE_IN_MILLIS;
 
       // Add min to map
@@ -630,7 +636,8 @@ public class DatabaseWeatherLoader implements WeatherLoader {
           stationDataClass.getSimpleName()),
         this.stationDataClass);
     query.setParameter("date",
-      new Date(timestamp),
+      DateUtils.truncate(new Date(timestamp),
+        Calendar.DATE),
       TemporalType.DATE);
     query.setMaxResults(1);
     try {

@@ -43,126 +43,128 @@ import javax.measure.unit.Unit;
  */
 public interface WeatherService {
 
-	/**
-	 * Clear all stored data to use new data
-	 */
-	public void clearValues();
+  /**
+   * Clear all stored data to use new data
+   */
+  public void clearValues();
 
-	/**
-	 * Get new weather informations for the given timestamp from the database
-	 * which have to be present in the database. In case they're not present
-	 * throws a {@link NoWeatherDataFoundException}.
-	 *
-	 * @param startTimestamp Timestamp (from 2003-07-07 to today)
-	 * @param endTimestamp Timestamp (from 2003-07-07 to today)
-	 * @param takeNormalData Option to take normal data
-	 * @param strategyList List with weather strategies to modify the data.
-	 * @throws NoWeatherDataFoundException There is no data for the given date in
-	 * the database
-	 */
-	public void addNewWeather(long startTimestamp,
-		long endTimestamp,
-		boolean takeNormalData,
-		List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException;
+  /**
+   * Get new weather informations for the given timestamp from the database
+   * which have to be present in the database. In case they're not present
+   * throws a {@link NoWeatherDataFoundException}.
+   *
+   * @param startTimestamp Timestamp (from 2003-07-07 to today)
+   * @param endTimestamp Timestamp (from 2003-07-07 to today)
+   * @param takeNormalData Option to take normal data
+   * @param strategyList List with weather strategies to modify the data.
+   * @throws NoWeatherDataFoundException There is no data for the given date in
+   * the database
+   */
+  public void addNewWeather(long startTimestamp,
+    long endTimestamp,
+    boolean takeNormalData,
+    List<WeatherStrategyHelper> strategyList) throws NoWeatherDataFoundException, IllegalArgumentException;
 
-	/**
-	 * Get new weather informations for the next day of the simulation date from
-	 * the database which have to be present in the database. In case they're not
-	 * present throws a {@link NoWeatherDataFoundException}.
-	 *
-	 * @throws NoWeatherDataFoundException There is no data for the given date in
-	 * the database
-	 * @throws IllegalStateException if there's been no weather added for any day
-	 * (which dertermines the next day used by this method)
-	 */
-	public void addNewNextDayWeather() throws NoWeatherDataFoundException;
+  /**
+   * Get new weather informations for the next day of the simulation date from
+   * the database which have to be present in the database. In case they're not
+   * present throws a {@link NoWeatherDataFoundException}.
+   *
+   * @param city
+   * @throws NoWeatherDataFoundException There is no data for the given date in
+   * the database
+   * @throws IllegalStateException if there's been no weather added for any day
+   * (which dertermines the next day used by this method)
+   */
+  public void addNewNextDayWeather() throws NoWeatherDataFoundException, IllegalStateException;
 
-	/**
-	 * Checks if the weather data can be loaded for the given date.
-	 *
-	 * @param timestamp Timestamp
-	 * @return
-	 */
-	public boolean checkDate(long timestamp);
+  /**
+   * Checks if the weather data can be loaded for the given date.
+   *
+   * @param timestamp Timestamp
+   * @return
+   */
+  public boolean checkDate(long timestamp);
 
-	/**
-	 * Modifies the current weather data with the given weather strategy
-	 *
-	 * @param strategy Weather strategy to modify the current weather data
-	 * @throws NoWeatherDataFoundException There is no data for the given date in
-	 * the database
-	 */
-	public void deployStrategy(WeatherStrategy strategy) throws NoWeatherDataFoundException;
+  /**
+   * Modifies the current weather data with the given weather strategy
+   *
+   * @param strategy Weather strategy to modify the current weather data
+   * @param city
+   * @throws NoWeatherDataFoundException There is no data for the given date in
+   * the database
+   */
+  public void deployStrategy(WeatherStrategy strategy,
+    City city) throws NoWeatherDataFoundException;
 
-	/**
-	 * Returns the current loaded timestamp
-	 *
-	 * @return loadedTimestamp
-	 */
-	public long getLoadedTimestamp();
+  /**
+   * Returns the current loaded timestamp
+   *
+   * @return loadedTimestamp
+   */
+  public long getLoadedTimestamp();
 
-	/**
-	 * Returns the position of the reference values
-	 *
-	 * @return referencePosition
-	 */
-	public JaxRSCoordinate getReferencePosition();
+  /**
+   * Returns the position of the reference values
+   *
+   * @return referencePosition
+   */
+  public JaxRSCoordinate getReferencePosition();
 
-	/**
-	 * Returns the reference values
-	 *
-	 * @return referenceValues
-	 */
-	public WeatherMap getReferenceValues();
+  /**
+   * Returns the reference values
+   *
+   * @return referenceValues
+   */
+  public WeatherMap getReferenceValues();
 
-	/**
-	 * Get the reference value for the given timestamp. If the value can be cached
-	 * the method looks into the cached parameters. The weather values are stored
-	 * with a specific time interval (see {@link Weather#INTERPOLATE_INTERVAL} ).
-	 * If you want to get a value between this interval, you will get the value to
-	 * the next reference timestamp.
-	 *
-	 * @param <T>
-	 * @param key WeatherParameterEnum
-	 * @param time Timestamp
-	 * @return Return value of the WeatherParameterEnum
-	 * @throws IllegalArgumentException There is no value linked to the timestamp
-	 * (e.g. perhaps wrong date)
-	 */
-	public <T extends Number> T getValue(WeatherParameterEnum key,
-		long time) throws IllegalArgumentException;
+  /**
+   * Get the reference value for the given timestamp. If the value can be cached
+   * the method looks into the cached parameters. The weather values are stored
+   * with a specific time interval (see {@link Weather#INTERPOLATE_INTERVAL} ).
+   * If you want to get a value between this interval, you will get the value to
+   * the next reference timestamp.
+   *
+   * @param <T>
+   * @param key WeatherParameterEnum
+   * @param time Timestamp
+   * @param city
+   * @return Return value of the WeatherParameterEnum
+   * @throws IllegalArgumentException There is no value linked to the timestamp
+   * (e.g. perhaps wrong date)
+   */
+  public <T extends Number> T getValue(WeatherParameterEnum key,
+    long time,
+    City city) throws IllegalArgumentException;
 
-	/**
-	 * Get the reference value for the given timestamp and position. If the value
-	 * can be cached the method looks into the cached parameters. The weather
-	 * values are stored with a specific time interval (see
-	 * {@link Weather#INTERPOLATE_INTERVAL}). If you want to get a value between
-	 * this interval, you will get the value to the next reference timestamp.
-	 *
-	 * @param <T>
-	 * @param key WeatherParameterEnum
-	 * @param time Timestamp
-	 * @param position Position of the sensor
-	 * @return Return value of the WeatherParameterEnum
-	 * @throws IllegalArgumentException There is no value linked to the timestamp
-	 * or wrong position (e.g. perhaps wrong date)
-	 */
-	public <T extends Number> T getValue(WeatherParameterEnum key,
-		long time,
-		JaxRSCoordinate position)
-		throws IllegalArgumentException;
+  /**
+   * Get the reference value for the given timestamp and position. If the value
+   * can be cached the method looks into the cached parameters. The weather
+   * values are stored with a specific time interval (see
+   * {@link Weather#INTERPOLATE_INTERVAL}). If you want to get a value between
+   * this interval, you will get the value to the next reference timestamp.
+   *
+   * @param <T>
+   * @param key WeatherParameterEnum
+   * @param time Timestamp
+   * @param position Position of the sensor
+   * @param city
+   * @return Return value of the WeatherParameterEnum
+   * @throws IllegalArgumentException There is no value linked to the timestamp
+   * or wrong position (e.g. perhaps wrong date)
+   */
+  public <T extends Number> T getValue(WeatherParameterEnum key,
+    long time,
+    JaxRSCoordinate position,
+    City city)
+    throws IllegalArgumentException;
 
-	/**
-	 * Clear all stored data to use new data
-	 */
-	public void initValues();
+  /**
+   * Clear all stored data to use new data
+   */
+  public void initValues();
 
-	/**
-	 * Set new City
-	 *
-	 * @param city City
-	 */
-	public void setCity(City city);
+  Unit<Temperature> getTemperatureUnit();
 
-	Unit<Temperature> getTemperatureUnit();
+  void init(WeatherInitParameter initParameter);
 }

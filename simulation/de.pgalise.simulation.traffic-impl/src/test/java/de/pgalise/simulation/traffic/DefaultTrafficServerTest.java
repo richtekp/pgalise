@@ -74,6 +74,7 @@ import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomBusData;
 import de.pgalise.simulation.traffic.event.CreateRandomCarData;
@@ -101,6 +102,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerMana
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.testutils.traffic.TrafficTestUtils;
 import de.pgalise.util.graph.disassembler.Disassembler;
 import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import java.util.Date;
@@ -123,7 +125,6 @@ import org.geotools.geometry.jts.JTS;
 @LocalClient
 public class DefaultTrafficServerTest {
 
-	private static EJBContainer container;
 	@EJB
 	private RandomSeedService rss;
 	/**
@@ -135,7 +136,7 @@ public class DefaultTrafficServerTest {
 	/**
 	 * CityInfrastructureDataService
 	 */
-	private static CityInfrastructureData city;
+	private static TrafficCity city;
 
 	/**
 	 * Bus stops file
@@ -202,12 +203,8 @@ public class DefaultTrafficServerTest {
 	private RandomSeedService randomSeedService;
 
 	public DefaultTrafficServerTest() throws NamingException, IOException {
-		container.getContext().bind("inject",
-			this);
-
 		cityFactory.parse(new File(OSM),
 			new File(BUS_STOPS));
-		city = cityFactory.createCityInfrastructureData();
 
 		WeatherController wc = createNiceMock(WeatherController.class);
 		EnergyController ec = createNiceMock(EnergyController.class);
@@ -231,11 +228,6 @@ public class DefaultTrafficServerTest {
 			getTime());
 	}
 
-	@BeforeClass
-	public static void init() throws IOException {
-		container = TestUtils.getContainer();
-	}
-
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		log.debug("CLEAR ALL");
@@ -251,7 +243,10 @@ public class DefaultTrafficServerTest {
 	}
 
 	@Before
-	public void setUp() throws IOException {
+	public void setUp() throws IOException, NamingException {
+		TestUtils.getContainer().getContext().bind("inject",
+			this);
+		city = TrafficTestUtils.createDefaultTestCityInstance(idGenerator);
 	}
 
 	@After
@@ -1000,7 +995,7 @@ public class DefaultTrafficServerTest {
 			200)));
 
 		TrafficInitParameter initParam = new TrafficInitParameter();
-		initParam.setCityInfrastructureData(city);
+		initParam.setCity(city);
 		initParam.setStartTimestamp(SIMULATION_START);
 		initParam.setEndTimestamp(SIMULATION_END);
 		initParam.setInterval(1000);

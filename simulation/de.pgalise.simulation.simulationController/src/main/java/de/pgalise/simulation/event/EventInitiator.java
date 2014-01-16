@@ -18,6 +18,7 @@ package de.pgalise.simulation.event;
 
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
@@ -34,7 +35,7 @@ import java.util.List;
  * 
  * @author Timo
  */
-public interface EventInitiator extends Controller<Event, StartParameter, InitParameter> {
+public interface EventInitiator extends Controller<Event, StartParameter, SimulationInitParameter> {
 
 	/**
 	 * Returns the event thread. Use this only for testing.
