@@ -7,7 +7,7 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.entity.BusData;
 
 /**
  *

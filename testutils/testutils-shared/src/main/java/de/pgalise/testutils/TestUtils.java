@@ -48,6 +48,8 @@ public class TestUtils {
 //				"hibernate.dialect",
 //				"org.hibernate.spatial.dialect.postgis.PostgisDialect"
 //			);
+      p.setProperty("hibernate.transaction.jta.platform",
+        "org.apache.openejb.hibernate.OpenEJBJtaPlatform2");
       p.setProperty("openejb.classloader.forced-skip",
         "org.xml.sax");
 //      p.setProperty("openejb.validation.output.level",

@@ -56,7 +56,10 @@ public class CityCtrl implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private final static Logger LOGGER = LoggerFactory.getLogger(CityCtrl.class);
-  private String chosenName;
+  /*
+   should be initialized with a default value in order to avoid nececity to check if simulation is started immediately (without reviewing settings) (will be passed to weather collector which needs city.name)
+   */
+  private String chosenName = "Berlin";
   private int chosenPopulation = 1;
   private int chosenAltitude = 4;
   private boolean nearSea;

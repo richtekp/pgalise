@@ -32,7 +32,7 @@ import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;

@@ -32,79 +32,83 @@ import javax.persistence.Transient;
 @Entity
 public class Building extends NavigationNode {
 
-	private static final long serialVersionUID = 5874106158590082263L;
+  private static final long serialVersionUID = 5874106158590082263L;
 
-	@Transient
-	private Double squareMeter;
-	private BaseGeoInfo position;
+  @Transient
+  private Double squareMeter;
+  private BaseGeoInfo position;
 
-	protected Building() {
-	}
+  protected Building() {
+  }
 
-	/**
-	 *
-	 * @param geoLocation the center position of the building which will be used
-	 * for navigation
-	 * @param tags
-	 * @param boundary an optional boundary which is not used in the simulation
-	 */
-	public Building(JaxRSCoordinate geoLocation,
-		BaseGeoInfo position) {
-		super(geoLocation);
-		this.position = position;
-	}
+  /**
+   *
+   * @param geoLocation the center position of the building which will be used
+   * for navigation
+   * @param tags
+   * @param boundary an optional boundary which is not used in the simulation
+   */
+  public Building(Long id,
+    JaxRSCoordinate geoLocation,
+    BaseGeoInfo position) {
+    super(id,
+      geoLocation);
+    this.position = position;
+  }
 
-	public Building(JaxRSCoordinate geoLocation,
-		Set<String> tourismTags,
-		Set<String> serviceTags,
-		Set<String> sportTags,
-		Set<String> schoolTags,
-		Set<String> repairTags,
-		Set<String> attractionTags,
-		Set<String> shopTags,
-		Set<String> emergencyServiceTags,
-		Set<String> craftTags,
-		Set<String> leisureTags,
-		Set<String> publicTransportTags,
-		Set<String> gamblingTags,
-		Set<String> amenityTags,
-		Set<String> landuseTags,
-		boolean office,
-		boolean military,
-		BaseGeoInfo position) {
-		super(geoLocation,
-			tourismTags,
-			serviceTags,
-			sportTags,
-			schoolTags,
-			repairTags,
-			attractionTags,
-			shopTags,
-			emergencyServiceTags,
-			craftTags,
-			leisureTags,
-			publicTransportTags,
-			gamblingTags,
-			amenityTags,
-			landuseTags,
-			office,
-			military);
-		this.position = position;
-	}
+  public Building(Long id,
+    JaxRSCoordinate geoLocation,
+    Set<String> tourismTags,
+    Set<String> serviceTags,
+    Set<String> sportTags,
+    Set<String> schoolTags,
+    Set<String> repairTags,
+    Set<String> attractionTags,
+    Set<String> shopTags,
+    Set<String> emergencyServiceTags,
+    Set<String> craftTags,
+    Set<String> leisureTags,
+    Set<String> publicTransportTags,
+    Set<String> gamblingTags,
+    Set<String> amenityTags,
+    Set<String> landuseTags,
+    boolean office,
+    boolean military,
+    BaseGeoInfo position) {
+    super(id,
+      geoLocation,
+      tourismTags,
+      serviceTags,
+      sportTags,
+      schoolTags,
+      repairTags,
+      attractionTags,
+      shopTags,
+      emergencyServiceTags,
+      craftTags,
+      leisureTags,
+      publicTransportTags,
+      gamblingTags,
+      amenityTags,
+      landuseTags,
+      office,
+      military);
+    this.position = position;
+  }
 
-	public double getSquareMeter() {
-		if (squareMeter == null) {
-			squareMeter = position.getBoundaries().getArea();
-		}
-		return squareMeter;
-	}
+  public double getSquareMeter() {
+    if (squareMeter == null) {
+      squareMeter = position.getBoundaries().getArea();
+    }
+    return squareMeter;
+  }
 
-	public void setPosition(BaseGeoInfo position) {
-		this.position = position;
-	}
+  public void setPosition(BaseGeoInfo position) {
+    this.position = position;
+  }
 
-	public BaseGeoInfo getPosition() {
-		return position;
-	}
+  public BaseGeoInfo getPosition() {
+    return position;
+  }
 
 }

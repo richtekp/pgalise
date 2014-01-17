@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buses>
+		<bus>
+			<typeid>bus001</typeid>
+			<wheelbase1>5845</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>11950</length>
+			<width>2550</width>
+			<height>3076</height>
+			<weight>10770</weight>
+			<power>210</power>
+			<maxSpeed>110</maxSpeed>	
+			<description>Mercedes-Benz - Citaro</description>
+			<maxPassengerCount>106</maxPassengerCount>
+			<axleCount>2</axleCount>
+		</bus>
+		<bus>
+			<typeid>bus002</typeid>
+			<wheelbase1>5990</wheelbase1>
+			<wheelbase2>5990</wheelbase2>
+			<length>17940</length>
+			<width>2550</width>
+			<height>3076</height>
+			<weight>15200</weight>
+			<power>220</power>
+			<maxSpeed>110</maxSpeed>	
+			<description>Mercedes-Benz - Citaro G</description>
+			<maxPassengerCount>158</maxPassengerCount>
+			<axleCount>3</axleCount>
+		</bus>
+		<bus>
+			<typeid>bus003</typeid>
+			<wheelbase1>4398</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>10503</length>
+			<width>2550</width>
+			<height>3076</height>
+			<weight>10037</weight>
+			<power>210</power>
+			<maxSpeed>110</maxSpeed>	
+			<description>Mercedes-Benz - Citaro K</description>
+			<maxPassengerCount>87</maxPassengerCount>
+			<axleCount>2</axleCount>
+		</bus>
+		<bus>
+			<typeid>bus004</typeid>
+			<wheelbase1>7290</wheelbase1>
+			<wheelbase2>1600</wheelbase2>
+			<length>14995</length>
+			<width>2550</width>
+			<height>3076</height>
+			<weight>13800</weight>
+			<power>220</power>
+			<maxSpeed>110</maxSpeed>	
+			<description>Mercedes-Benz - Citaro L</description>
+			<maxPassengerCount>138</maxPassengerCount>
+			<axleCount>3</axleCount>
+		</bus>
+		<bus>
+			<typeid>bus005</typeid>
+			<wheelbase1>6035</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>12040</length>
+			<width>2550</width>
+			<height>3076</height>
+			<weight>11125</weight>
+			<power>220</power>
+			<maxSpeed>110</maxSpeed>	
+			<description>Mercedes-Benz - Citaro LE</description>
+			<maxPassengerCount>101</maxPassengerCount>
+			<axleCount>2</axleCount>
+		</bus>
+	</buses>

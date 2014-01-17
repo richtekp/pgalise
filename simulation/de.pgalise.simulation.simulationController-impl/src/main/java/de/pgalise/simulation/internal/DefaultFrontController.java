@@ -16,24 +16,19 @@
 package de.pgalise.simulation.internal;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import javax.ejb.EJB;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.FrontController;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.staticsensor.SensorFactory;
 import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.ejb.Stateful;
 
 /**
  * The Front Controller exists on every server and inits the
@@ -41,10 +36,9 @@ import javax.persistence.PersistenceContext;
  *
  * @author Mustafa
  */
-@Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.FrontController")
-public class DefaultFrontController extends AbstractController implements
-	Controller {
+@Stateful
+public class DefaultFrontController extends AbstractController<Event, StartParameter, InitParameter> implements
+	FrontController {
 
 	/**
 	 * Logger
@@ -55,11 +49,6 @@ public class DefaultFrontController extends AbstractController implements
 	private static final long serialVersionUID = 1L;
 
 	private Set<Sensor> sensorRegistry;
-	@PersistenceContext(unitName = "pgalise-simulationController")
-	private EntityManager sensorPersistenceService;
-
-	@EJB
-	private SensorFactory sensorFactory;
 
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {

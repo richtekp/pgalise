@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.traffic.model.vehicle.TruckData;
+import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 
 /**

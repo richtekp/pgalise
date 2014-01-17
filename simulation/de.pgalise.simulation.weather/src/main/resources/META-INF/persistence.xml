@@ -46,7 +46,7 @@
       <!--the following disabled portability of the app to servers other than 
 			glassfish, which is not really nice...-->
 			<property name="hibernate.transaction.jta.platform" 
-			value="org.apache.openejb.hibernate.OpenEJBJtaPlatform2"/>
+			value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform"/>
     </properties>
   </persistence-unit>
 </persistence>

@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.measure.quantity.Temperature;
@@ -153,6 +152,9 @@ public class DefaultWeatherService implements WeatherService {
    * @throws IllegalArgumentException
    */
   public DefaultWeatherService() {
+    this.parameters = new HashMap<>();
+    this.cachedParameters = new HashMap<>();
+    this.initParameters();
   }
 
   /**
@@ -173,8 +175,6 @@ public class DefaultWeatherService implements WeatherService {
 
     // Init maps
     this.referenceValues = null;
-    this.parameters = new HashMap<>();
-    this.cachedParameters = new HashMap<>();
     this.gridConverter = new LinearWeatherPositionConverter(city.getPosition().
       getBoundaries());
     this.plannedEventModifiers = new ArrayList<>();
@@ -217,11 +217,6 @@ public class DefaultWeatherService implements WeatherService {
       // Free semaphore
       this.semaphore.release();
     }
-  }
-
-  @PostConstruct
-  public void init() {
-    this.initParameters();
   }
 
   @Override

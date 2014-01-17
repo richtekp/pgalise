@@ -220,6 +220,11 @@
 			<version>6626</version>
 			<type>jar</type>
 		</dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>weathercollector</artifactId>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<finalName>de.pgalise.simulation.controlCenter</finalName>

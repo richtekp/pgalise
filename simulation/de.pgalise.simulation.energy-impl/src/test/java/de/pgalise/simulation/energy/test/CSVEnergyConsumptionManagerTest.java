@@ -13,136 +13,181 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.energy.test;
 
+import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
+import de.pgalise.simulation.energy.internal.profile.CSVProfileLoader;
+import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.shared.entity.Building;
+import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
+import de.pgalise.testutils.TestUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-
-import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
-import de.pgalise.simulation.energy.internal.profile.CSVProfileLoader;
-import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
-import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.shared.entity.Building;
 
 /**
  * Tests the public methods of the CSVEnergyConsumptionManager.
- * 
+ *
  * @author Andreas Rehfeldt
  * @author Timo
  * @version 1.0 (Oct 28, 2012)
  */
+@LocalClient
+@ManagedBean
 public class CSVEnergyConsumptionManagerTest {
 
-	/**
-	 * End timestamp
-	 */
-	private static long endTimestamp;
+  /**
+   * End timestamp
+   */
+  private static long endTimestamp;
 
-	/**
-	 * Start timestamp
-	 */
-	private static long startTimestamp;
+  /**
+   * Start timestamp
+   */
+  private static long startTimestamp;
 
-	/**
-	 * Test location as GeoLocation
-	 */
-	private static final JaxRSCoordinate testLocationAsGL = new JaxRSCoordinate(53.136765, 8.216524);
+  /**
+   * Test location as GeoLocation
+   */
+  private static final JaxRSCoordinate testLocationAsGL = new JaxRSCoordinate(
+    53.136765,
+    8.216524);
 
-	/**
-	 * Test location as Vector2d
-	 */
-	private static final JaxRSCoordinate testLocation = CSVEnergyConsumptionManagerTest.testLocationAsGL;
-	
-	/**
-	 * The used energy profile loader.
-	 */
-	private static final EnergyProfileLoader energyProfileLoader = new CSVProfileLoader();
+  /**
+   * Test location as Vector2d
+   */
+  private static final JaxRSCoordinate testLocation = CSVEnergyConsumptionManagerTest.testLocationAsGL;
 
-	/**
-	 * Test class
-	 */
-	public static CSVEnergyConsumptionManager testclass;
+  /**
+   * The used energy profile loader.
+   */
+  private static final EnergyProfileLoader energyProfileLoader = new CSVProfileLoader();
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
-		List<Building> buildingList = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			buildingList.add(new Building( new JaxRSCoordinate(53.136765, 8.216524), null));
-		}
-		map.put(EnergyProfileEnum.HOUSEHOLD, buildingList);
-		CityInfrastructureDataService citydata = EasyMock.createNiceMock(CityInfrastructureDataService.class);
-		EasyMock.expect(citydata.getBuildings(CSVEnergyConsumptionManagerTest.testLocationAsGL, 5)).andStubReturn(map);
-		EasyMock.replay(citydata);
+  @EJB
+  private IdGenerator idGenerator;
 
-		CSVEnergyConsumptionManagerTest.testclass = new CSVEnergyConsumptionManager();
-		testclass.setLoader(energyProfileLoader);
-		
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2012, 1, 1, 20, 0, 0);
-		CSVEnergyConsumptionManagerTest.startTimestamp = cal.getTimeInMillis();
+  public CSVEnergyConsumptionManagerTest() {
+  }
 
-		// End
-		cal.set(2012, 1, 3, 20, 14, 0);
-		CSVEnergyConsumptionManagerTest.endTimestamp = cal.getTimeInMillis();
-	}
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+    Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
+    List<Building> buildingList = new ArrayList<>();
+    for (int i = 0; i < 100; i++) {
+      buildingList.add(new Building(idGenerator.getNextId(),
+        new JaxRSCoordinate(53.136765,
+          8.216524),
+        null));
+    }
+    map.put(EnergyProfileEnum.HOUSEHOLD,
+      buildingList);
+    CityInfrastructureDataService citydata = EasyMock.createNiceMock(
+      CityInfrastructureDataService.class);
+    EasyMock.expect(citydata.getBuildings(
+      CSVEnergyConsumptionManagerTest.testLocationAsGL,
+      5)).andStubReturn(map);
+    EasyMock.replay(citydata);
 
-	@Test
-	public void testGetEnergyConsumptionInKWhTimestamp() {
-		/*
-		 * Test preparations
-		 */
-		if (CSVEnergyConsumptionManagerTest.
-				testclass.
-				getProfiles().
-				get(EnergyProfileEnum.HOUSEHOLD) == null) {
-			CSVEnergyConsumptionManagerTest.testclass.init(CSVEnergyConsumptionManagerTest.startTimestamp,
-					CSVEnergyConsumptionManagerTest.endTimestamp, null);
-		}
+    CSVEnergyConsumptionManagerTest.testclass = new CSVEnergyConsumptionManager();
+    testclass.setLoader(energyProfileLoader);
 
-		Calendar cal = new GregorianCalendar();
-		cal.set(2012, 1, 1, 20, 14, 0);
-		long testTime = cal.getTimeInMillis();
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2012,
+      1,
+      1,
+      20,
+      0,
+      0);
+    CSVEnergyConsumptionManagerTest.startTimestamp = cal.getTimeInMillis();
 
-		/*
-		 * TEST RUN
-		 */
-		double actValue = CSVEnergyConsumptionManagerTest.testclass.getEnergyConsumptionInKWh(testTime,
-				EnergyProfileEnum.HOUSEHOLD, CSVEnergyConsumptionManagerTest.testLocation);
+    // End
+    cal.set(2012,
+      1,
+      3,
+      20,
+      14,
+      0);
+    CSVEnergyConsumptionManagerTest.endTimestamp = cal.getTimeInMillis();
+  }
 
-		/*
-		 * Test 1 : Test the testTime
-		 */
-		Assert.assertEquals(0.05381885854844445, actValue, 0.001);
-	}
+  /**
+   * Test class
+   */
+  public static CSVEnergyConsumptionManager testclass;
 
-	@Test
-	public void testLoadEnergyProfiles() {
-		/*
-		 * TEST RUN
-		 */
-		CSVEnergyConsumptionManagerTest.testclass.init(CSVEnergyConsumptionManagerTest.startTimestamp,
-				CSVEnergyConsumptionManagerTest.endTimestamp, null);
+  @Test
+  public void testGetEnergyConsumptionInKWhTimestamp() {
+    /*
+     * Test preparations
+     */
+    if (CSVEnergyConsumptionManagerTest.testclass.
+      getProfiles().
+      get(EnergyProfileEnum.HOUSEHOLD) == null) {
+      CSVEnergyConsumptionManagerTest.testclass.init(
+        CSVEnergyConsumptionManagerTest.startTimestamp,
+        CSVEnergyConsumptionManagerTest.endTimestamp,
+        null);
+    }
 
-		/*
-		 * Test 1 : load all profiles correctly
-		 */
-		for (EnergyProfileEnum profileEnum : EnergyProfileEnum.values()) {
-			Assert.assertNotNull(CSVEnergyConsumptionManagerTest.testclass.getProfiles().get(profileEnum));
-		}
-	}
+    Calendar cal = new GregorianCalendar();
+    cal.set(2012,
+      1,
+      1,
+      20,
+      14,
+      0);
+    long testTime = cal.getTimeInMillis();
+
+    /*
+     * TEST RUN
+     */
+    double actValue = CSVEnergyConsumptionManagerTest.testclass.
+      getEnergyConsumptionInKWh(testTime,
+        EnergyProfileEnum.HOUSEHOLD,
+        CSVEnergyConsumptionManagerTest.testLocation);
+
+    /*
+     * Test 1 : Test the testTime
+     */
+    Assert.assertEquals(0.05381885854844445,
+      actValue,
+      0.001);
+  }
+
+  @Test
+  public void testLoadEnergyProfiles() {
+    /*
+     * TEST RUN
+     */
+    CSVEnergyConsumptionManagerTest.testclass.init(
+      CSVEnergyConsumptionManagerTest.startTimestamp,
+      CSVEnergyConsumptionManagerTest.endTimestamp,
+      null);
+
+    /*
+     * Test 1 : load all profiles correctly
+     */
+    for (EnergyProfileEnum profileEnum : EnergyProfileEnum.values()) {
+      Assert.assertNotNull(CSVEnergyConsumptionManagerTest.testclass.
+        getProfiles().get(profileEnum));
+    }
+  }
 
 }

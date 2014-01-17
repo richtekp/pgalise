@@ -13,27 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.scheduler;
 
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
@@ -44,242 +41,308 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
+import de.pgalise.testutils.TestUtils;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
 import org.jgrapht.alg.DijkstraShortestPath;
 
 /**
  * Tests the implementations of the {@link Scheduler}
- * 
+ *
  * @author Mustafa
  * @version 1.0 (Nov 22, 2012)
  */
+@LocalClient
+@ManagedBean
 public class SchedulerTest {
-	private static TrafficNode a = new TrafficNode(new JaxRSCoordinate( 0, 0));
-	private static TrafficNode b = new TrafficNode(new JaxRSCoordinate( 2, 0));
-	private static TrafficNode c = new TrafficNode(new JaxRSCoordinate( 2, 2));
 
-	/**
-	 * Graph
-	 */
-	private static TrafficGraph graph;
+  @EJB
+  private IdGenerator idGenerator;
+  private TrafficNode a;
+  private TrafficNode b;
+  private TrafficNode c;
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(SchedulerTest.class);
+  /**
+   * Graph
+   */
+  private static TrafficGraph graph;
 
-	/**
-	 * Creates for vehicles for the test
-	 * 
-	 * @param ee
-	 *            TrafficGraphExtensions
-	 * @return List with four vehicles
-	 */
-	public static List<Vehicle<?>> createVehicles(TrafficGraphExtensions ee) {
-		DijkstraShortestPath<TrafficNode, TrafficEdge> algo = new DijkstraShortestPath<>(graph, a, c, Double.POSITIVE_INFINITY);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(SchedulerTest.class);
 
-		List<TrafficEdge> shortestPath = algo.getPathEdgeList();
+  /**
+   * Creates for vehicles for the test
+   *
+   * @param ee TrafficGraphExtensions
+   * @return List with four vehicles
+   */
+  public List<Vehicle<?>> createVehicles(TrafficGraphExtensions ee) {
+    DijkstraShortestPath<TrafficNode, TrafficEdge> algo = new DijkstraShortestPath<>(
+      graph,
+      a,
+      c,
+      Double.POSITIVE_INFINITY);
 
-		List<Vehicle<?>> vehicles = new ArrayList<>();
+    List<TrafficEdge> shortestPath = algo.getPathEdgeList();
 
-		Vehicle<?> a = new DefaultCar(1L,"a", null,ee);
-		a.setPath(shortestPath);
-		vehicles.add(a);
+    List<Vehicle<?>> vehicles = new ArrayList<>();
 
-		Vehicle<?> b = new DefaultCar(2L,"b",null,ee);
-		b.setPath(shortestPath);
-		vehicles.add(b);
+    Vehicle<?> a = new DefaultCar(1L,
+      "a",
+      null,
+      ee);
+    a.setPath(shortestPath);
+    vehicles.add(a);
 
-		Vehicle<?> c = new DefaultCar(3L,"c",null,ee);
-		c.setPath(shortestPath);
-		vehicles.add(c);
+    Vehicle<?> b = new DefaultCar(2L,
+      "b",
+      null,
+      ee);
+    b.setPath(shortestPath);
+    vehicles.add(b);
 
-		Vehicle<?> d = new DefaultCar(4L,"d",null,ee);
-		d.setPath(shortestPath);
-		vehicles.add(d);
+    Vehicle<?> c = new DefaultCar(3L,
+      "c",
+      null,
+      ee);
+    c.setPath(shortestPath);
+    vehicles.add(c);
 
-		return vehicles;
-	}
+    Vehicle<?> d = new DefaultCar(4L,
+      "d",
+      null,
+      ee);
+    d.setPath(shortestPath);
+    vehicles.add(d);
 
-	@BeforeClass
-	public static void init() {
-		SchedulerTest.graph = SchedulerTest.createGraph();
-	}
+    return vehicles;
+  }
 
-	/**
-	 * Tests the scheduler implementation
-	 * 
-	 * @param scheduler
-	 *            Scheduler
-	 * @param startTime
-	 *            Start time of the vehicles
-	 */
-	public static void testScheduler(Scheduler scheduler, long startTime) {
-		List<ScheduleItem> vehicles = null;
-		vehicles = scheduler.getExpiredItems(startTime);
-		Assert.assertNotNull(vehicles);
-		Assert.assertEquals(0, vehicles.size());
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+    TrafficGraph graph = new DefaultTrafficGraph();
+    a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(0,
+        0));
+    b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(2,
+        0));
+    c = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(2,
+        2));
+    graph.addVertex(a);
+    graph.addVertex(b);
+    graph.addVertex(c);
+    TrafficEdge ab = graph.addEdge(a,
+      b);
+    graph.setEdgeWeight(ab,
+      1.0);
+    TrafficEdge bc = graph.addEdge(b,
+      c);
+    graph.setEdgeWeight(bc,
+      1.0);
+    SchedulerTest.graph = graph;
+  }
 
-		List<ScheduleItem> items = null;
-		items = scheduler.getScheduledItems();
-		Assert.assertNotNull(items);
-		Assert.assertEquals(4, items.size());
+  /**
+   * Tests the scheduler implementation
+   *
+   * @param scheduler Scheduler
+   * @param startTime Start time of the vehicles
+   */
+  /*
+   called from withing a @Test method
+   */
+  public void testScheduler(Scheduler scheduler,
+    long startTime) {
+    List<ScheduleItem> vehicles = null;
+    vehicles = scheduler.getExpiredItems(startTime);
+    Assert.assertNotNull(vehicles);
+    Assert.assertEquals(0,
+      vehicles.size());
 
-		// 1000ms
-		vehicles = scheduler.getExpiredItems(startTime + 1000);
-		Assert.assertEquals(1, vehicles.size());
-		Assert.assertEquals("(a)", SchedulerTest.getVehicles(vehicles));
+    List<ScheduleItem> items = null;
+    items = scheduler.getScheduledItems();
+    Assert.assertNotNull(items);
+    Assert.assertEquals(4,
+      items.size());
 
-		items = scheduler.getScheduledItems();
-		Assert.assertEquals(3, items.size());
+    // 1000ms
+    vehicles = scheduler.getExpiredItems(startTime + 1000);
+    Assert.assertEquals(1,
+      vehicles.size());
+    Assert.assertEquals("(a)",
+      SchedulerTest.getVehicles(vehicles));
 
-		// 2000ms
-		vehicles = scheduler.getExpiredItems(startTime + 2000);
-		Assert.assertEquals(2, vehicles.size());
-		Assert.assertEquals("(a,b)", SchedulerTest.getVehicles(vehicles));
+    items = scheduler.getScheduledItems();
+    Assert.assertEquals(3,
+      items.size());
 
-		items = scheduler.getScheduledItems();
-		Assert.assertEquals(2, items.size());
+    // 2000ms
+    vehicles = scheduler.getExpiredItems(startTime + 2000);
+    Assert.assertEquals(2,
+      vehicles.size());
+    Assert.assertEquals("(a,b)",
+      SchedulerTest.getVehicles(vehicles));
 
-		// 3000ms
-		vehicles = scheduler.getExpiredItems(startTime + 3000);
-		Assert.assertEquals(3, vehicles.size());
-		Assert.assertEquals("(a,b,c)", SchedulerTest.getVehicles(vehicles));
-		Assert.assertEquals("[a, b, c]", vehicles.get(2).getVehicle().getPath().toString());
+    items = scheduler.getScheduledItems();
+    Assert.assertEquals(2,
+      items.size());
 
-		items = scheduler.getScheduledItems();
-		Assert.assertEquals(1, items.size());
+    // 3000ms
+    vehicles = scheduler.getExpiredItems(startTime + 3000);
+    Assert.assertEquals(3,
+      vehicles.size());
+    Assert.assertEquals("(a,b,c)",
+      SchedulerTest.getVehicles(vehicles));
+    Assert.assertEquals("[a, b, c]",
+      vehicles.get(2).getVehicle().getPath().toString());
 
-		// 4000ms
-		vehicles = scheduler.getExpiredItems(startTime + 4000);
-		Assert.assertEquals(4, vehicles.size());
-		Assert.assertEquals("(a,b,c,d)", SchedulerTest.getVehicles(vehicles));
+    items = scheduler.getScheduledItems();
+    Assert.assertEquals(1,
+      items.size());
 
-		items = scheduler.getScheduledItems();
-		Assert.assertEquals(0, items.size());
-	}
+    // 4000ms
+    vehicles = scheduler.getExpiredItems(startTime + 4000);
+    Assert.assertEquals(4,
+      vehicles.size());
+    Assert.assertEquals("(a,b,c,d)",
+      SchedulerTest.getVehicles(vehicles));
 
-	/**
-	 * Create a test graph
-	 * 
-	 * @return Graph
-	 */
-	private static TrafficGraph createGraph() {
+    items = scheduler.getScheduledItems();
+    Assert.assertEquals(0,
+      items.size());
+  }
 
-		TrafficGraph graph = new DefaultTrafficGraph();
+  /**
+   * Returns the list of vehicle names in such a manner: (x1, x2,...)
+   *
+   * @param vehicles List with vehicles
+   * @return List of vehicles names as String
+   */
+  private static String getVehicles(List<ScheduleItem> vehicles) {
+    StringBuilder str = new StringBuilder();
+    str.append("(");
+    for (int i = 0; i < vehicles.size(); i++) {
+      if (i != (vehicles.size() - 1)) {
+        str.append(vehicles.get(i).getVehicle().getName() + ",");
+      } else {
+        str.append(vehicles.get(i).getVehicle().getName());
+      }
+    }
+    str.append(")");
 
-		TrafficEdge ab = graph.addEdge(a,
-			b);
-		graph.setEdgeWeight(ab,
-			1);
-		TrafficEdge bc = graph.addEdge(b,
-			c);
-		graph.setEdgeWeight(bc,
-			1);
+    return str.toString();
+  }
 
-		return graph;
-	}
+  /**
+   * TrafficGraphExtensions
+   */
+  @EJB
+  private TrafficGraphExtensions ee;
 
-	/**
-	 * Returns the list of vehicle names in such a manner: (x1, x2,...)
-	 * 
-	 * @param vehicles
-	 *            List with vehicles
-	 * @return List of vehicles names as String
-	 */
-	private static String getVehicles(List<ScheduleItem> vehicles) {
-		StringBuilder str = new StringBuilder();
-		str.append("(");
-		for (int i = 0; i < vehicles.size(); i++) {
-			if (i != (vehicles.size() - 1)) {
-				str.append(vehicles.get(i).getVehicle().getName() + ",");
-			} else {
-				str.append(vehicles.get(i).getVehicle().getName());
-			}
-		}
-		str.append(")");
+  @Test
+  public void listSchedulerTest() throws IllegalAccessException {
+    List<Vehicle<?>> vehicles = createVehicles(this.ee);
 
-		return str.toString();
-	}
+    long startTime = System.currentTimeMillis();
 
-	/**
-	 * TrafficGraphExtensions
-	 */
-	private TrafficGraphExtensions ee;
+    Administration admin = ListScheduler.createInstance();
+    admin.changeModus(ScheduleModus.WRITE);
+    Scheduler scheduler = admin.getScheduler();
 
-	@Test
-	public void listSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<?>> vehicles = SchedulerTest.createVehicles(this.ee);
+    long scheduleDuration = System.currentTimeMillis();
 
-		long startTime = System.currentTimeMillis();
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0),
+      startTime + 1000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1),
+      startTime + 2000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2),
+      startTime + 3000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3),
+      startTime + 4000,
+      1000));
 
-		Administration admin = ListScheduler.createInstance();
-		admin.changeModus(ScheduleModus.WRITE);
-		Scheduler scheduler = admin.getScheduler();
+    SchedulerTest.log.info("Duration (in millis) of the ListScheduler: "
+      + (System.currentTimeMillis() - scheduleDuration));
 
-		long scheduleDuration = System.currentTimeMillis();
+    // test
+    testScheduler(scheduler,
+      startTime);
+  }
 
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+  @Test
+  public void sortedListSchedulerTest() throws IllegalAccessException {
+    List<Vehicle<?>> vehicles = createVehicles(this.ee);
 
-		SchedulerTest.log.info("Duration (in millis) of the ListScheduler: "
-				+ (System.currentTimeMillis() - scheduleDuration));
+    long startTime = System.currentTimeMillis();
 
-		// test
-		SchedulerTest.testScheduler(scheduler, startTime);
-	}
+    Administration admin = SortedListScheduler.createInstance();
+    admin.changeModus(ScheduleModus.WRITE);
+    Scheduler scheduler = admin.getScheduler();
 
-	@Test
-	public void sortedListSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<?>> vehicles = SchedulerTest.createVehicles(this.ee);
+    long scheduleDuration = System.currentTimeMillis();
 
-		long startTime = System.currentTimeMillis();
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0),
+      startTime + 1000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1),
+      startTime + 2000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2),
+      startTime + 3000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3),
+      startTime + 4000,
+      1000));
 
-		Administration admin = SortedListScheduler.createInstance();
-		admin.changeModus(ScheduleModus.WRITE);
-		Scheduler scheduler = admin.getScheduler();
+    SchedulerTest.log.info("Duration (in millis) of the SortedListScheduler: "
+      + (System.currentTimeMillis() - scheduleDuration));
 
-		long scheduleDuration = System.currentTimeMillis();
+    // test
+    testScheduler(scheduler,
+      startTime);
+  }
 
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
+  @Test
+  public void treeSetSchedulerTest() throws IllegalAccessException {
+    List<Vehicle<?>> vehicles = createVehicles(this.ee);
 
-		SchedulerTest.log.info("Duration (in millis) of the SortedListScheduler: "
-				+ (System.currentTimeMillis() - scheduleDuration));
+    long startTime = System.currentTimeMillis();
 
-		// test
-		SchedulerTest.testScheduler(scheduler, startTime);
-	}
+    Administration admin = TreeSetScheduler.createInstance();
+    admin.changeModus(ScheduleModus.WRITE);
+    Scheduler scheduler = admin.getScheduler();
 
-	@Test
-	public void treeSetSchedulerTest() throws IllegalAccessException {
-		List<Vehicle<?>> vehicles = SchedulerTest.createVehicles(this.ee);
+    long scheduleDuration = System.currentTimeMillis();
 
-		long startTime = System.currentTimeMillis();
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0),
+      startTime + 1000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1),
+      startTime + 2000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2),
+      startTime + 3000,
+      1000));
+    scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3),
+      startTime + 4000,
+      1000));
 
-		Administration admin = TreeSetScheduler.createInstance();
-		admin.changeModus(ScheduleModus.WRITE);
-		Scheduler scheduler = admin.getScheduler();
+    SchedulerTest.log.info("Duration (in millis) of the TreeSetScheduler: "
+      + (System.currentTimeMillis() - scheduleDuration));
 
-		long scheduleDuration = System.currentTimeMillis();
-
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(0), startTime + 1000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(1), startTime + 2000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(2), startTime + 3000, 1000));
-		scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(3), startTime + 4000, 1000));
-
-		SchedulerTest.log.info("Duration (in millis) of the TreeSetScheduler: "
-				+ (System.currentTimeMillis() - scheduleDuration));
-
-		// test
-		SchedulerTest.testScheduler(scheduler, startTime);
-	}
-
-	@Before
-	public void setUp() {
-		this.ee = new DefaultTrafficGraphExtensions(new DefaultRandomSeedService(), graph);
-	}
+    // test
+    testScheduler(scheduler,
+      startTime);
+  }
 }

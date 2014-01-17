@@ -41,7 +41,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Properties;
 import javax.ejb.EJB;
-import javax.ejb.Stateful;
 import javax.measure.Measure;
 import javax.measure.unit.SI;
 import javax.persistence.EntityManager;
@@ -78,7 +77,7 @@ import org.apache.commons.lang3.time.DateUtils;
  * @author Marcus
  * @version 1.0 (01.07.2012)
  */
-@Stateful
+//@Stateful currently DBBackedServiceWeatherLoader in use
 public class DatabaseWeatherLoader implements WeatherLoader {
 
   @PersistenceContext(unitName = "pgalise-weather")
@@ -90,9 +89,9 @@ public class DatabaseWeatherLoader implements WeatherLoader {
   private static final String PROPERTIES_FILE_PATH = "/weatherloader.properties";
 
   /**
-   * Option to take normal station data
+   * Option to load station data
    */
-  private boolean loadOption = true;
+  private boolean loadOption = false;
 
   /**
    * Properties

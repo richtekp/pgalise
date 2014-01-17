@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.SimulationControllerLocal;
@@ -11,17 +10,18 @@ import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage
 import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
+import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
-import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
-import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
+import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.weathercollector.ServiceStrategyManager;
+import de.pgalise.simulation.weathercollector.WeatherCollector;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import java.io.ByteArrayInputStream;
@@ -41,6 +41,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -49,11 +54,14 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.geotools.geometry.jts.JTS;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -64,367 +72,410 @@ import org.primefaces.model.TreeNode;
 //@Path("/mainCtrl")
 public class MainCtrl implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	@EJB
-	private GsonService gsonService;
-	@EJB
-	private IdGenerator idGenerator;
-	@EJB
-	private SimulationControllerLocal simulationController;
-	/**
-	 * a wrapper for {@link SimulationControllerLocal} which shouldn't be writable
-	 * in interface
-	 */
-	private ControllerStatusEnum simulationControllerState;
-	private Map<Date, ControlCenterMessage<?>> sentMessages = new HashMap<>();
-	private MapParsedStateEnum mapParsedStateEnum;
-	private MapAndBusstopFileData mapAndBusstopFileData;
-	private ControlCenterStartParameter importedStartParameter;
-	private InitDialogCtrlInitialType chosenInitialType = InitDialogCtrlInitialTypeEnum.create;
-	private boolean automaticallyOpenSensorDialog = false;
-	private List<AbstractEvent> uncommittedEvents = new LinkedList<>();
-	private List<AbstractEvent> selectedUncommittedEvents = new LinkedList<>();
-	private List<ControlCenterMessage<?>> unsentMessages = new LinkedList<>();
-	private List<ControlCenterMessage<?>> selectedUnsentMessages = new LinkedList<>();
-	@ManagedProperty(value = "#{controlCenterStartParameter}")
-	private ControlCenterStartParameter startParameter = new ControlCenterStartParameter();
-	@ManagedProperty(value = "#{trafficInitParameter}")
-	private TrafficInitParameter initParameter = new TrafficInitParameter();
+  private static final long serialVersionUID = 1L;
+  private final static Logger LOGGER = LoggerFactory.getLogger(MainCtrl.class);
+  @EJB
+  private GsonService gsonService;
+  @EJB
+  private IdGenerator idGenerator;
+  @EJB
+  private SimulationControllerLocal simulationController;
+  /**
+   * a wrapper for {@link SimulationControllerLocal} which shouldn't be writable
+   * in interface
+   */
+  private ControllerStatusEnum simulationControllerState;
+  private Map<Date, ControlCenterMessage<?>> sentMessages = new HashMap<>();
+  private MapParsedStateEnum mapParsedStateEnum;
+  private MapAndBusstopFileData mapAndBusstopFileData;
+  private ControlCenterStartParameter importedStartParameter;
+  private InitDialogCtrlInitialType chosenInitialType = InitDialogCtrlInitialTypeEnum.create;
+  private boolean automaticallyOpenSensorDialog = false;
+  private List<AbstractEvent> uncommittedEvents = new LinkedList<>();
+  private List<AbstractEvent> selectedUncommittedEvents = new LinkedList<>();
+  private List<ControlCenterMessage<?>> unsentMessages = new LinkedList<>();
+  private List<ControlCenterMessage<?>> selectedUnsentMessages = new LinkedList<>();
+  @ManagedProperty(value = "#{controlCenterStartParameter}")
+  private ControlCenterStartParameter startParameter = new ControlCenterStartParameter();
+  @ManagedProperty(value = "#{trafficInitParameter}")
+  private TrafficInitParameter initParameter = new TrafficInitParameter();
 
-	private String connectionState = ConnectionStateEnum.DISCONNECTED.
-		getStringValue();
-	private Date simulationDate = new GregorianCalendar().getTime();
-	private String mapParsedState = MapParsedStateEnum.IN_PROGRESS.
-		getStringValue();
-	private TreeNode startParameterTreeRoot;
-	@EJB
-	private StartParameterSerializerService startParameterSerializerService;
-	private CityCtrl cityCtrl;
-	@EJB
-	private FileBasedCityInfrastructureDataService cityInfrastructureManager;
+  private String connectionState = ConnectionStateEnum.DISCONNECTED.
+    getStringValue();
+  private Date simulationDate = new GregorianCalendar().getTime();
+  private String mapParsedState = MapParsedStateEnum.IN_PROGRESS.
+    getStringValue();
+  private TreeNode startParameterTreeRoot;
+  @EJB
+  private StartParameterSerializerService startParameterSerializerService;
+  private CityCtrl cityCtrl;
+  @EJB
+  private FileBasedCityInfrastructureDataService cityInfrastructureManager;
+  @EJB
+  private WeatherCollector weatherCollector;
+  @EJB
+  private ServiceStrategyManager serviceStrategyManager;
 
-	public MainCtrl() {
-	}
+  public MainCtrl() {
+  }
 
-	@PostConstruct
-	public void init() {
-		startParameterTreeRoot = new DefaultTreeNode("StartParameter",
-			null);
-		cityCtrl = (CityCtrl) FacesContext.getCurrentInstance().
-			getELContext()
-			.getELResolver().
-			getValue(FacesContext.getCurrentInstance().getELContext(),
-				null,
-				"cityCtrl");
-	}
+  @PostConstruct
+  public void init() {
+    startParameterTreeRoot = new DefaultTreeNode("StartParameter",
+      null);
+    cityCtrl = (CityCtrl) FacesContext.getCurrentInstance().
+      getELContext()
+      .getELResolver().
+      getValue(FacesContext.getCurrentInstance().getELContext(),
+        null,
+        "cityCtrl");
+  }
 
-	public void startSimulation() throws IOException {
-		if (cityCtrl.getOsmFileNames().size() > 1) {
-			throw new UnsupportedOperationException(
-				"multiple osm files not supported yet");
-		}
-		if (cityCtrl.getBusStopFileNames().size() > 1) {
-			throw new UnsupportedOperationException(
-				"multiple bus stop files not supported yet");
-		}
-		String osmFileKey = cityCtrl.getOsmFileNames().
-			iterator().next();
-		String busStopFileKey = cityCtrl.getBusStopFileNames().iterator().next();
-		InputStream osmFileBytes = new FileInputStream(new File(
-			MainCtrlUtils.CACHE_DATA_DIR,
-			osmFileKey));
-		InputStream busStopFileBytes = new FileInputStream(new File(
-			MainCtrlUtils.CACHE_DATA_DIR,
-			busStopFileKey));
-		BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
+  public void startSimulation() throws IOException {
+    if (cityCtrl.getOsmFileNames().size() > 1) {
+      throw new UnsupportedOperationException(
+        "multiple osm files not supported yet");
+    }
+    if (cityCtrl.getBusStopFileNames().size() > 1) {
+      throw new UnsupportedOperationException(
+        "multiple bus stop files not supported yet");
+    }
+    final TrafficCity city = new TrafficCity(idGenerator.getNextId(),
+      cityCtrl.getChosenName(),
+      cityCtrl.getChosenPopulation(),
+      cityCtrl.getChosenAltitude(),
+      cityCtrl.getNearRiver(),
+      cityCtrl.getNearSea(),
+      null,
+      null);
+    Thread weatherCollectorThread = new Thread() {
+      @Override
+      public void run() {
+        MainCtrl.this.weatherCollector.retrieveServiceDataCurrent(
+          serviceStrategyManager.getPrimaryServiceStrategy(),
+          city);
+      }
+    };
+    FutureTask<CityInfrastructureData> oSMParseFuture = new FutureTask<>(
+      new Callable<CityInfrastructureData>() {
+        @Override
+        public CityInfrastructureData call() throws Exception {
+          String osmFileKey = cityCtrl.getOsmFileNames().
+          iterator().next();
+          String busStopFileKey = cityCtrl.getBusStopFileNames().iterator().
+          next();
+          InputStream osmFileBytes = new FileInputStream(new File(
+              MainCtrlUtils.CACHE_DATA_DIR,
+              osmFileKey));
+          InputStream busStopFileBytes = new FileInputStream(new File(
+              MainCtrlUtils.CACHE_DATA_DIR,
+              busStopFileKey));
+          BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
 
-		cityInfrastructureManager.parse(
-			osmFileBytes,
-			busStopFileBytes);
-		CityInfrastructureData cityInfrastructureData = cityInfrastructureManager.
-			createCityInfrastructureData();
-		TrafficCity city = new TrafficCity(idGenerator.getNextId(),
-			cityCtrl.getChosenName(),
-			cityCtrl.getChosenPopulation(),
-			cityCtrl.getChosenAltitude(),
-			cityCtrl.getNearRiver(),
-			cityCtrl.getNearSea(),
-			new BaseGeoInfo(idGenerator.getNextId(),
-			GeoToolsBootstrapping.createPolygon(cityInfrastructureData.getBoundary())), cityInfrastructureData);
-		initParameter.setCity(city);
-		simulationController.init(initParameter);
-		simulationController.start(startParameter);
-	}
+          cityInfrastructureManager.parse(
+            osmFileBytes,
+            busStopFileBytes);
+          CityInfrastructureData cityInfrastructureData = cityInfrastructureManager.
+          createCityInfrastructureData();
+          return cityInfrastructureData;
+        }
+      });
+    ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+    executor.execute(weatherCollectorThread);
+    executor.execute(oSMParseFuture);
+    LOGGER.info("started weather collector thread");
+    LOGGER.info("stared OSM parse thread");
 
-	public void stopSimulation() {
-		simulationController.stop();
-	}
+    try {
+      executor.awaitTermination(-1,
+        TimeUnit.DAYS);
+    } catch (InterruptedException ex) {
+      throw new RuntimeException(ex);
+    }
+    CityInfrastructureData cityInfrastructureData;
+    try {
+      cityInfrastructureData = oSMParseFuture.get();
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    }
 
-	public void setSimulationControllerState(
-		ControllerStatusEnum simulationControllerStatus) {
-		this.simulationControllerState = simulationControllerStatus;
-	}
+    city.setPosition(new BaseGeoInfo(idGenerator.getNextId(),
+      JTS.toGeometry(cityInfrastructureData.getBoundary())));
+    city.setCityInfrastructureData(cityInfrastructureData);
+    initParameter.setCity(city);
+    simulationController.init(initParameter);
+    simulationController.start(startParameter);
+  }
 
-	public ControllerStatusEnum getSimulationControllerState() {
-		return simulationControllerState;
-	}
+  public void stopSimulation() {
+    simulationController.stop();
+  }
 
-	public TrafficInitParameter getInitParameter() {
-		return initParameter;
-	}
+  public void setSimulationControllerState(
+    ControllerStatusEnum simulationControllerStatus) {
+    this.simulationControllerState = simulationControllerStatus;
+  }
 
-	public void setInitParameter(TrafficInitParameter initParameter) {
-		this.initParameter = initParameter;
-	}
+  public ControllerStatusEnum getSimulationControllerState() {
+    return simulationControllerState;
+  }
 
-	public String getConnectionState() {
-		return connectionState;
-	}
+  public TrafficInitParameter getInitParameter() {
+    return initParameter;
+  }
 
-	public void setConnectionState(String connectionState) {
-		this.connectionState = connectionState;
-	}
+  public void setInitParameter(TrafficInitParameter initParameter) {
+    this.initParameter = initParameter;
+  }
 
-	public void setSimulationDate(Date simulationDate) {
-		this.simulationDate = simulationDate;
-	}
+  public String getConnectionState() {
+    return connectionState;
+  }
 
-	public Date getSimulationDate() {
-		return simulationDate;
-	}
+  public void setConnectionState(String connectionState) {
+    this.connectionState = connectionState;
+  }
 
-	public void setMapParsedState(String oSMParsedState) {
-		this.mapParsedState = oSMParsedState;
-	}
+  public void setSimulationDate(Date simulationDate) {
+    this.simulationDate = simulationDate;
+  }
 
-	public String getMapParsedState() {
-		return mapParsedState;
-	}
+  public Date getSimulationDate() {
+    return simulationDate;
+  }
 
-	public void setStartParameter(ControlCenterStartParameter startParameter) {
-		this.startParameter = startParameter;
-	}
+  public void setMapParsedState(String oSMParsedState) {
+    this.mapParsedState = oSMParsedState;
+  }
 
-	public ControlCenterStartParameter getStartParameter() {
-		return startParameter;
-	}
+  public String getMapParsedState() {
+    return mapParsedState;
+  }
 
-	public void setUnsentMessages(
-		List<ControlCenterMessage<?>> unsentMessages) {
-		this.unsentMessages = unsentMessages;
-	}
+  public void setStartParameter(ControlCenterStartParameter startParameter) {
+    this.startParameter = startParameter;
+  }
 
-	public List<ControlCenterMessage<?>> getUnsentMessages() {
-		return unsentMessages;
-	}
+  public ControlCenterStartParameter getStartParameter() {
+    return startParameter;
+  }
 
-	public void setSelectedUnsentMessages(
-		List<ControlCenterMessage<?>> selectedUnsentMessages) {
-		this.selectedUnsentMessages = selectedUnsentMessages;
-	}
+  public void setUnsentMessages(
+    List<ControlCenterMessage<?>> unsentMessages) {
+    this.unsentMessages = unsentMessages;
+  }
 
-	public List<ControlCenterMessage<?>> getSelectedUnsentMessages() {
-		return selectedUnsentMessages;
-	}
+  public List<ControlCenterMessage<?>> getUnsentMessages() {
+    return unsentMessages;
+  }
 
-	public void commitEvents() {
-		throw new UnsupportedOperationException();
-	}
+  public void setSelectedUnsentMessages(
+    List<ControlCenterMessage<?>> selectedUnsentMessages) {
+    this.selectedUnsentMessages = selectedUnsentMessages;
+  }
 
-	public void setSelectedUncommittedEvents(
-		List<AbstractEvent> selectedUncommittedEvents) {
-		this.selectedUncommittedEvents = selectedUncommittedEvents;
-	}
+  public List<ControlCenterMessage<?>> getSelectedUnsentMessages() {
+    return selectedUnsentMessages;
+  }
 
-	public List<AbstractEvent> getSelectedUncommittedEvents() {
-		return selectedUncommittedEvents;
-	}
+  public void commitEvents() {
+    throw new UnsupportedOperationException();
+  }
 
-	public void setUncommittedEvents(List<AbstractEvent> uncommittedEvents) {
-		this.uncommittedEvents = uncommittedEvents;
-	}
+  public void setSelectedUncommittedEvents(
+    List<AbstractEvent> selectedUncommittedEvents) {
+    this.selectedUncommittedEvents = selectedUncommittedEvents;
+  }
 
-	public List<AbstractEvent> getUncommittedEvents() {
-		return uncommittedEvents;
-	}
+  public List<AbstractEvent> getSelectedUncommittedEvents() {
+    return selectedUncommittedEvents;
+  }
 
-	public void setAutomaticallyOpenSensorDialog(
-		boolean automaticallyOpenSensorDialog) {
-		this.automaticallyOpenSensorDialog = automaticallyOpenSensorDialog;
-	}
+  public void setUncommittedEvents(List<AbstractEvent> uncommittedEvents) {
+    this.uncommittedEvents = uncommittedEvents;
+  }
 
-	public boolean getAutomaticallyOpenSensorDialog() {
-		return automaticallyOpenSensorDialog;
-	}
+  public List<AbstractEvent> getUncommittedEvents() {
+    return uncommittedEvents;
+  }
 
-	public void setSentMessages(
-		Map<Date, ControlCenterMessage<?>> sentMessages) {
-		this.sentMessages = sentMessages;
-	}
+  public void setAutomaticallyOpenSensorDialog(
+    boolean automaticallyOpenSensorDialog) {
+    this.automaticallyOpenSensorDialog = automaticallyOpenSensorDialog;
+  }
 
-	public Map<Date, ControlCenterMessage<?>> getSentMessages() {
-		return sentMessages;
-	}
+  public boolean getAutomaticallyOpenSensorDialog() {
+    return automaticallyOpenSensorDialog;
+  }
 
-	public void setChosenInitialType(InitDialogCtrlInitialType chosenInitialType) {
-		this.chosenInitialType = chosenInitialType;
-	}
+  public void setSentMessages(
+    Map<Date, ControlCenterMessage<?>> sentMessages) {
+    this.sentMessages = sentMessages;
+  }
 
-	public InitDialogCtrlInitialType getChosenInitialType() {
-		return chosenInitialType;
-	}
+  public Map<Date, ControlCenterMessage<?>> getSentMessages() {
+    return sentMessages;
+  }
 
-	/**
-	 * @return the mapParsedStateEnum
-	 */
-	public MapParsedStateEnum getMapParsedStateEnum() {
-		return mapParsedStateEnum;
-	}
+  public void setChosenInitialType(InitDialogCtrlInitialType chosenInitialType) {
+    this.chosenInitialType = chosenInitialType;
+  }
 
-	/**
-	 * @param mapParsedStateEnum the mapParsedStateEnum to set
-	 */
-	public void setMapParsedStateEnum(
-		MapParsedStateEnum mapParsedStateEnum) {
-		this.mapParsedStateEnum = mapParsedStateEnum;
-	}
+  public InitDialogCtrlInitialType getChosenInitialType() {
+    return chosenInitialType;
+  }
 
-	/**
-	 * @return the mapAndBusstopFileData
-	 */
-	public MapAndBusstopFileData getMapAndBusstopFileData() {
-		return mapAndBusstopFileData;
-	}
+  /**
+   * @return the mapParsedStateEnum
+   */
+  public MapParsedStateEnum getMapParsedStateEnum() {
+    return mapParsedStateEnum;
+  }
 
-	/**
-	 * @param mapAndBusstopFileData the mapAndBusstopFileData to set
-	 */
-	public void setMapAndBusstopFileData(
-		MapAndBusstopFileData mapAndBusstopFileData) {
-		this.mapAndBusstopFileData = mapAndBusstopFileData;
-	}
+  /**
+   * @param mapParsedStateEnum the mapParsedStateEnum to set
+   */
+  public void setMapParsedStateEnum(
+    MapParsedStateEnum mapParsedStateEnum) {
+    this.mapParsedStateEnum = mapParsedStateEnum;
+  }
 
-	/**
-	 * @return the importedStartParameter
-	 */
-	public ControlCenterStartParameter getImportedStartParameter() {
-		return importedStartParameter;
-	}
+  /**
+   * @return the mapAndBusstopFileData
+   */
+  public MapAndBusstopFileData getMapAndBusstopFileData() {
+    return mapAndBusstopFileData;
+  }
 
-	/**
-	 * @param importedStartParameter the importedStartParameter to set
-	 */
-	public void setImportedStartParameter(
-		ControlCenterStartParameter importedStartParameter) {
-		this.importedStartParameter = importedStartParameter;
-	}
+  /**
+   * @param mapAndBusstopFileData the mapAndBusstopFileData to set
+   */
+  public void setMapAndBusstopFileData(
+    MapAndBusstopFileData mapAndBusstopFileData) {
+    this.mapAndBusstopFileData = mapAndBusstopFileData;
+  }
+
+  /**
+   * @return the importedStartParameter
+   */
+  public ControlCenterStartParameter getImportedStartParameter() {
+    return importedStartParameter;
+  }
+
+  /**
+   * @param importedStartParameter the importedStartParameter to set
+   */
+  public void setImportedStartParameter(
+    ControlCenterStartParameter importedStartParameter) {
+    this.importedStartParameter = importedStartParameter;
+  }
 
 //	@GET()
 //	@Produces("text/plain")
 //	@Path("/parseOSMAndBusstop/")	
-	public void parseOSMAndBusstop() {
-		System.out.println("kfldjs222");
-	}
+  public void parseOSMAndBusstop() {
+    System.out.println("kfldjs222");
+  }
 
-	private String parameterUploadData;
+  private String parameterUploadData;
 
-	public void setParameterUploadData(String parameterUploadData) {
-		this.parameterUploadData = parameterUploadData;
-	}
+  public void setParameterUploadData(String parameterUploadData) {
+    this.parameterUploadData = parameterUploadData;
+  }
 
-	public String getParameterUploadData() {
-		return parameterUploadData;
-	}
+  public String getParameterUploadData() {
+    return parameterUploadData;
+  }
 
-	public void onStartParameterUpload(FileUploadEvent event) {
-		throw new UnsupportedOperationException(
-			"implement start parameter deserialization");
-	}
+  public void onStartParameterUpload(FileUploadEvent event) {
+    throw new UnsupportedOperationException(
+      "implement start parameter deserialization");
+  }
 
-	private String parameterDownloadData;
+  private String parameterDownloadData;
 
-	public void prepareExport() {
-		this.parameterDownloadData = null;
-		throw new UnsupportedOperationException("serialize");
-	}
+  public void prepareExport() {
+    this.parameterDownloadData = null;
+    throw new UnsupportedOperationException("serialize");
+  }
 
-	public void deleteUncommittedEvent(Event event) {
-		uncommittedEvents.remove(event);
-	}
+  public void deleteUncommittedEvent(Event event) {
+    uncommittedEvents.remove(event);
+  }
 
-	public void deleteUnSentMessage(ControlCenterMessage<?> unsentMessage) {
-	}
+  public void deleteUnSentMessage(ControlCenterMessage<?> unsentMessage) {
+  }
 
-	public void sendMessages() {
+  public void sendMessages() {
 
-	}
+  }
 
-	public void generateTree() {
-		if (startParameter == null) {
-			return;
-		}
-		Set<Field> visitedFields = new HashSet<>();
-		Queue<Pair<TreeNode, Field>> queue = new LinkedList<>();
-		for (Field field : startParameter.getClass().getDeclaredFields()) {
-			queue.add(new MutablePair<>(startParameterTreeRoot,
-				field));
-		}
-		while (!queue.isEmpty()) {
-			Pair<TreeNode, Field> current = queue.poll();
-			if (visitedFields.contains(current.getRight())) {
-				continue;
-			}
-			TreeNode node = new DefaultTreeNode(current.getRight().getName(),
-				current.getLeft());
-			for (Field field : current.getRight().getDeclaringClass().
-				getDeclaredFields()) {
-				queue.add(new MutablePair<>(current.getLeft(),
-					field));
-			}
-			visitedFields.add(current.getRight());
-		}
-	}
+  public void generateTree() {
+    if (startParameter == null) {
+      return;
+    }
+    Set<Field> visitedFields = new HashSet<>();
+    Queue<Pair<TreeNode, Field>> queue = new LinkedList<>();
+    for (Field field : startParameter.getClass().getDeclaredFields()) {
+      queue.add(new MutablePair<>(startParameterTreeRoot,
+        field));
+    }
+    while (!queue.isEmpty()) {
+      Pair<TreeNode, Field> current = queue.poll();
+      if (visitedFields.contains(current.getRight())) {
+        continue;
+      }
+      TreeNode node = new DefaultTreeNode(current.getRight().getName(),
+        current.getLeft());
+      for (Field field : current.getRight().getDeclaringClass().
+        getDeclaredFields()) {
+        queue.add(new MutablePair<>(current.getLeft(),
+          field));
+      }
+      visitedFields.add(current.getRight());
+    }
+  }
 
-	/*
-	 @TODO: implements PropertyChangeListener for StartParameter and regenerate tree lazily on change
-	 */
-	public TreeNode getStartParameterTreeRoot() {
-		startParameterTreeRoot = new DefaultTreeNode("StartParameter",
-			null);
-		generateTree();
-		return startParameterTreeRoot;
-	}
+  /*
+   @TODO: implements PropertyChangeListener for StartParameter and regenerate tree lazily on change
+   */
+  public TreeNode getStartParameterTreeRoot() {
+    startParameterTreeRoot = new DefaultTreeNode("StartParameter",
+      null);
+    generateTree();
+    return startParameterTreeRoot;
+  }
 
-	public void setStartParameterTreeRoot(TreeNode startParameterTreeRoot) {
-		this.startParameterTreeRoot = startParameterTreeRoot;
-	}
+  public void setStartParameterTreeRoot(TreeNode startParameterTreeRoot) {
+    this.startParameterTreeRoot = startParameterTreeRoot;
+  }
 
-	/**
-	 *
-	 * @return
-	 */
-	/*
-	 @TODO: make async
-	 @TODO: improve streaming
-	 */
-	public StreamedContent retrieveExportDownloadLink() {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		startParameterSerializerService.serialize(startParameter,
-			outputStream);
-		InputStream inputStream = new ByteArrayInputStream(outputStream.
-			toByteArray());
-		return new DefaultStreamedContent(inputStream,
-			"xml",
-			String.format("pgalise_start_parameter-%s.xml",
-				new Date().toString()));
-	}
+  /**
+   *
+   * @return
+   */
+  /*
+   @TODO: make async
+   @TODO: improve streaming
+   */
+  public StreamedContent retrieveExportDownloadLink() {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    startParameterSerializerService.serialize(startParameter,
+      outputStream);
+    InputStream inputStream = new ByteArrayInputStream(outputStream.
+      toByteArray());
+    return new DefaultStreamedContent(inputStream,
+      "xml",
+      String.format("pgalise_start_parameter-%s.xml",
+        new Date().toString()));
+  }
 
-	public StartParameterSerializerService getStartParameterSerializerService() {
-		return startParameterSerializerService;
-	}
+  public StartParameterSerializerService getStartParameterSerializerService() {
+    return startParameterSerializerService;
+  }
 
-	protected void setStartParameterSerializerService(
-		StartParameterSerializerService startParameterSerializerService) {
-		this.startParameterSerializerService = startParameterSerializerService;
-	}
+  protected void setStartParameterSerializerService(
+    StartParameterSerializerService startParameterSerializerService) {
+    this.startParameterSerializerService = startParameterSerializerService;
+  }
 }

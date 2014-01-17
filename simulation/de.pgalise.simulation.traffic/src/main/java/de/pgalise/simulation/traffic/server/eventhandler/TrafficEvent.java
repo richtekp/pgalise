@@ -12,13 +12,13 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
  * @author richter
  * @param <E>
  */
-public interface TrafficEvent<E extends TrafficEvent> extends Event {
-	
-	TrafficServerLocal<E> getResponsibleServer() ;
-	
-	void setResponsibleServer(TrafficServerLocal<E> responsibleServer);
-	
-	long getSimulationTime()  ;
+public interface TrafficEvent<E extends TrafficEvent<?>> extends Event {
 
-	long getElapsedTime()  ;
+  TrafficServerLocal<E> getResponsibleServer();
+
+  void setResponsibleServer(TrafficServerLocal<E> responsibleServer);
+
+  long getSimulationTime();
+
+  long getElapsedTime();
 }

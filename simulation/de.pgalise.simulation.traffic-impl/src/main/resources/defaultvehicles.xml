@@ -3,7 +3,6 @@
 <vehicles>
 	<cars>
 		<car>
-			<typeid>car001</typeid>
 			<wheelDistanceWidth>1535</wheelDistanceWidth>
 			<wheelbase1>2690</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -17,7 +16,6 @@
 			<description>BMW 120i</description>
 		</car>
 		<car>
-			<typeid>car002</typeid>
 			<wheelDistanceWidth>1531</wheelDistanceWidth>
 			<wheelbase1>2810</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -31,7 +29,6 @@
 			<description>BMW 320i</description>
 		</car>
 		<car>
-			<typeid>car003</typeid>
 			<wheelDistanceWidth>1600</wheelDistanceWidth>
 			<wheelbase1>2968</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -45,7 +42,6 @@
 			<description>BMW 520i</description>
 		</car>
 		<car>
-			<typeid>car004</typeid>
 			<wheelDistanceWidth>1611</wheelDistanceWidth>
 			<wheelbase1>3070</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -59,7 +55,6 @@
 			<description>BMW 740i</description>
 		</car>
 		<car>
-			<typeid>car005</typeid>
 			<wheelDistanceWidth>1644</wheelDistanceWidth>
 			<wheelbase1>2933</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -73,7 +68,6 @@
 			<description>BMW X5</description>
 		</car>
 		<car>
-			<typeid>car006</typeid>
 			<wheelDistanceWidth>1511</wheelDistanceWidth>
 			<wheelbase1>2496</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -87,7 +81,6 @@
 			<description>BMW Z4</description>
 		</car>
 		<car>
-			<typeid>car007</typeid>
 			<wheelDistanceWidth>1541</wheelDistanceWidth>
 			<wheelbase1>2575</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -101,7 +94,6 @@
 			<description>Golf 6 1.4 TSI</description>
 		</car>
 		<car>
-			<typeid>car008</typeid>
 			<wheelDistanceWidth>1549</wheelDistanceWidth>
 			<wheelbase1>2637</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -117,7 +109,6 @@
 	</cars>
 	<trucks>
 		<truck>
-			<typeid>truck001</typeid>
 			<wheelDistanceWidth>1511</wheelDistanceWidth>
 			<wheelbase1>2496</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -134,7 +125,6 @@
 			<trailerLength>1000</trailerLength>
 		</truck>
 		<truck>
-			<typeid>truck002</typeid>
 			<wheelDistanceWidth>3150</wheelDistanceWidth>
 			<wheelbase1>3800</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -151,7 +141,6 @@
 			<trailerLength>8500</trailerLength>
 		</truck>
 		<truck>
-			<typeid>truck003</typeid>
 			<wheelDistanceWidth>3150</wheelDistanceWidth>
 			<wheelbase1>3500</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -168,7 +157,6 @@
 			<trailerLength>8000</trailerLength>
 		</truck>
 		<truck>
-			<typeid>truck004</typeid>
 			<wheelDistanceWidth>3150</wheelDistanceWidth>
 			<wheelbase1>3600</wheelbase1>
 			<wheelbase2>0</wheelbase2>
@@ -187,7 +175,6 @@
 	</trucks>
 	<bicycles>
 		<bicycle>
-			<typeid>bicycle001</typeid>
 			<description>Children Bike</description>
 			<weight>9.5</weight>
 			<maxSpeed>14</maxSpeed>
@@ -196,7 +183,6 @@
 			<wheelbase>730</wheelbase>
 		</bicycle>
 		<bicycle>
-			<typeid>bicycle002</typeid>
 			<description>Gazelle Bike</description>
 			<weight>18.9</weight>
 			<maxSpeed>20</maxSpeed>
@@ -205,7 +191,6 @@
 			<wheelbase>1009</wheelbase>
 		</bicycle>
 		<bicycle>
-			<typeid>bicycle003</typeid>
 			<description>Mountain Bike</description>
 			<weight>13.25</weight>
 			<maxSpeed>16</maxSpeed>
@@ -214,7 +199,6 @@
 			<wheelbase>1166</wheelbase>
 		</bicycle>
 		<bicycle>
-			<typeid>bicycle004</typeid>
 			<description>Recument Bike</description>
 			<weight>15.3</weight>
 			<maxSpeed>17</maxSpeed>
@@ -225,7 +209,6 @@
 	</bicycles>
 	<motorcycles>
 		<motorcycle>
-			<typeid>motorcycle001</typeid>
 			<weight>191</weight>
 			<horsePower>178</horsePower>
 			<length>2085</length>	
@@ -235,7 +218,6 @@
 			<description>Kawasaki Ninja</description>
 		</motorcycle>
 		<motorcycle>
-			<typeid>motorcycle002</typeid>
 			<weight>185</weight>
 			<horsePower>140</horsePower>
 			<length>2140</length>	
@@ -245,7 +227,6 @@
 			<description>Suzuki Hayabusa</description>
 		</motorcycle>
 		<motorcycle>
-			<typeid>motorcycle003</typeid>
 			<weight>177</weight>
 			<horsePower>134</horsePower>
 			<length>2040</length>	
@@ -257,7 +238,6 @@
 	</motorcycles>
 	<buses>
 		<bus>
-			<typeid>bus001</typeid>
 			<wheelbase1>5845</wheelbase1>
 			<wheelbase2>0</wheelbase2>
 			<length>11950</length>
@@ -271,7 +251,6 @@
 			<axleCount>2</axleCount>
 		</bus>
 		<bus>
-			<typeid>bus002</typeid>
 			<wheelbase1>5990</wheelbase1>
 			<wheelbase2>5990</wheelbase2>
 			<length>17940</length>
@@ -285,7 +264,6 @@
 			<axleCount>3</axleCount>
 		</bus>
 		<bus>
-			<typeid>bus003</typeid>
 			<wheelbase1>4398</wheelbase1>
 			<wheelbase2>0</wheelbase2>
 			<length>10503</length>
@@ -299,7 +277,6 @@
 			<axleCount>2</axleCount>
 		</bus>
 		<bus>
-			<typeid>bus004</typeid>
 			<wheelbase1>7290</wheelbase1>
 			<wheelbase2>1600</wheelbase2>
 			<length>14995</length>
@@ -313,7 +290,6 @@
 			<axleCount>3</axleCount>
 		</bus>
 		<bus>
-			<typeid>bus005</typeid>
 			<wheelbase1>6035</wheelbase1>
 			<wheelbase2>0</wheelbase2>
 			<length>12040</length>

@@ -12,22 +12,24 @@ import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import java.util.Map;
 
 /**
- * An event concerning one vehicle (general traffic event are described using {@link TrafficEvent}
+ * An event concerning one vehicle (general traffic event are described using
+ * {@link TrafficEvent}
+ *
  * @author richter
  */
 public interface VehicleEvent extends TrafficEvent<VehicleEvent> {
-	
-	Vehicle<?> getVehicle()  ;
 
-	/**
-	 * @return shallow copy of currently driving vehicles
-	 */
-	Scheduler getDrivingVehicles() ;
+  Vehicle<?> getVehicle();
 
-	TrafficGraph getGraph()  ;
+  /**
+   * @return shallow copy of currently driving vehicles
+   */
+  Scheduler getDrivingVehicles();
 
-	TrafficGraphExtensions getTrafficGraphExtensions()  ;
-	
-	Map<Long, VehicleEvent> getEventForVehicleMap()  ;
-	
+  TrafficGraph getGraph();
+
+  TrafficGraphExtensions getTrafficGraphExtensions();
+
+  Map<Long, VehicleEvent> getEventForVehicleMap();
+
 }

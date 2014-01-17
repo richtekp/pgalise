@@ -91,18 +91,27 @@
 			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
 		</dependency>
-	 <dependency>
-	  <groupId>com.bbn</groupId>
-	  <artifactId>openmap</artifactId>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>testutils-traffic</artifactId>
-	  <version>2.0-SNAPSHOT</version>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
+		<dependency>
+			<groupId>com.bbn</groupId>
+			<artifactId>openmap</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-traffic</artifactId>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2</version>
+		</dependency>
 	</dependencies>
 
 	<build>

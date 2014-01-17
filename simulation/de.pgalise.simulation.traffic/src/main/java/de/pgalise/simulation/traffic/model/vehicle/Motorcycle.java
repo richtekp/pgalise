@@ -5,6 +5,8 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
+
 /**
  *
  * @author richter

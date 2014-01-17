@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  * @author marcus
  */
-public class VehicleAddedHandler extends AbstractVehicleEventHandler<VehicleData,VehicleEvent> {
+public class VehicleAddedHandler extends AbstractVehicleEventHandler<VehicleData, VehicleEvent> {
 
-	@Override
-	public EventType getTargetEventType() {
-		return VehicleEventTypeEnum.VEHICLE_ADDED;
-	}
+  public VehicleAddedHandler() {
+  }
 
-	@Override
-	public void handleEvent(VehicleEvent event) {
+  @Override
+  public EventType getTargetEventType() {
+    return VehicleEventTypeEnum.VEHICLE_ADDED;
+  }
 
-	}
+  @Override
+  public void handleEvent(VehicleEvent event) {
+
+  }
 }

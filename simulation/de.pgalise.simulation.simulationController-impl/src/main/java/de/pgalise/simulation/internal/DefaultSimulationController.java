@@ -40,10 +40,14 @@ import javax.ejb.Stateful;
  */
 @Stateful
 public class DefaultSimulationController extends AbstractSimulationController
-	implements SimulationControllerLocal {
+  implements SimulationControllerLocal {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public DefaultSimulationController() {
-	}
+  public DefaultSimulationController() {
+  }
+
+  @Override
+  public void onPostContruct() {
+  }
 }

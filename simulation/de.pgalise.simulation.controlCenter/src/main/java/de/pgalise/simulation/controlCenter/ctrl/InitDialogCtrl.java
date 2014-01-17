@@ -12,31 +12,20 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
-import de.pgalise.simulation.traffic.model.vehicle.CarData;
+import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.awt.Color;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
-import org.geotools.data.Query;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.data.simple.SimpleFeatureSource;
-import org.geotools.factory.CommonFactoryFinder;
-import org.opengis.feature.type.FeatureType;
-import org.opengis.filter.Filter;
-import org.opengis.filter.FilterFactory2;
 
 /**
  *
@@ -46,113 +35,118 @@ import org.opengis.filter.FilterFactory2;
 @SessionScoped
 public class InitDialogCtrl implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
 //	private String chosenInitialType;
-	/**
-	 * maps pathes to deserialized instances of {@link ControlCenterStartParameter}
-	 */
-	private Map<String, ControlCenterStartParameter> recentScenarioMap;
-	private ControlCenterStartParameter chosenRecentScenario;
-	private String chosenRecentScenarioPath;
-	private String importedXML;
-	private int chosenInitialType ;
-	
-	@EJB
-	private InformationBasedVehicleFactory vehicleFactory;
-	@EJB
-	private TcpIpOutput output;
-	private Queue<VehicleData> uiVehicles;
-	@EJB
-	private IdGenerator idGenerator;
+  /**
+   * maps pathes to deserialized instances of
+   * {@link ControlCenterStartParameter}
+   */
+  private Map<String, ControlCenterStartParameter> recentScenarioMap;
+  private ControlCenterStartParameter chosenRecentScenario;
+  private String chosenRecentScenarioPath;
+  private String importedXML;
+  private int chosenInitialType;
 
-	public InitDialogCtrl() {
-	}
+  @EJB
+  private InformationBasedVehicleFactory vehicleFactory;
+  @EJB
+  private TcpIpOutput output;
+  private Queue<VehicleData> uiVehicles;
+  @EJB
+  private IdGenerator idGenerator;
 
-	public InitDialogCtrl(
-		String chosenInitialType,
-		String importedXML,
-		InformationBasedVehicleFactory vehicleFactory,
-		TcpIpOutput output) {
-		this.importedXML = importedXML;
-		this.vehicleFactory = vehicleFactory;
-		this.output = output;
-	}
-	
-	@PostConstruct
-	public void init() {
-		chosenInitialType = InitDialogCtrlInitialTypeEnum.create.ordinal();
-		recentScenarioMap = new HashMap<>();
-		uiVehicles = new LinkedList<VehicleData>(Arrays.asList(new CarData(
-			Color.yellow,
-			2000,
-			500,
-			3500,
-			4000,
-			2000,
-			1000,
-			1300,
-			100,
-			200,
-			2,
-			"name",
-			new GpsSensor(idGenerator.getNextId(), output,
-				null,
-				new GpsNoInterferer()),
-			VehicleTypeEnum.CAR)));
-	}
+  public InitDialogCtrl() {
+  }
 
-	/**
-	 * @param initialTypeEnum
-	 */
-	public void setChosenInitialType(int initialTypeEnum) {
-		this.chosenInitialType = initialTypeEnum;
-	}
+  public InitDialogCtrl(
+    String chosenInitialType,
+    String importedXML,
+    InformationBasedVehicleFactory vehicleFactory,
+    TcpIpOutput output) {
+    this.importedXML = importedXML;
+    this.vehicleFactory = vehicleFactory;
+    this.output = output;
+  }
 
-	public int getChosenInitialType() {
-		return chosenInitialType;
-	}
+  @PostConstruct
+  public void init() {
+    chosenInitialType = InitDialogCtrlInitialTypeEnum.create.ordinal();
+    recentScenarioMap = new HashMap<>();
+    uiVehicles = new LinkedList<VehicleData>(
+      Arrays.asList(
+        new CarData(idGenerator.getNextId(),
+          Color.yellow,
+          2000,
+          500,
+          3500,
+          4000,
+          2000,
+          1000,
+          1300,
+          100,
+          200,
+          2,
+          "name",
+          new GpsSensor(idGenerator.getNextId(),
+            output,
+            null,
+            new GpsNoInterferer()),
+          VehicleTypeEnum.CAR)));
+  }
 
-	/**
-	 * @return the importedXML
-	 */
-	public String getImportedXML() {
-		return importedXML;
-	}
+  /**
+   * @param initialTypeEnum
+   */
+  public void setChosenInitialType(int initialTypeEnum) {
+    this.chosenInitialType = initialTypeEnum;
+  }
 
-	/**
-	 * @param importedXML the importedXML to set
-	 */
-	public void setImportedXML(String importedXML) {
-		this.importedXML = importedXML;
-	}
+  public int getChosenInitialType() {
+    return chosenInitialType;
+  }
 
-	public void setChosenRecentScenarioPath(String chosenRecentScenarioPath) {
-		this.chosenRecentScenarioPath = chosenRecentScenarioPath;
-	}
+  /**
+   * @return the importedXML
+   */
+  public String getImportedXML() {
+    return importedXML;
+  }
 
-	public String getChosenRecentScenarioPath() {
-		return chosenRecentScenarioPath;
-	}
+  /**
+   * @param importedXML the importedXML to set
+   */
+  public void setImportedXML(String importedXML) {
+    this.importedXML = importedXML;
+  }
 
-	public void setChosenRecentScenario(
-		ControlCenterStartParameter chosenRecentScenario) {
-		this.chosenRecentScenario = chosenRecentScenario;
-	}
+  public void setChosenRecentScenarioPath(String chosenRecentScenarioPath) {
+    this.chosenRecentScenarioPath = chosenRecentScenarioPath;
+  }
 
-	public ControlCenterStartParameter getChosenRecentScenario() {
-		return chosenRecentScenario;
-	}
+  public String getChosenRecentScenarioPath() {
+    return chosenRecentScenarioPath;
+  }
 
-	public String getNextGpsSensor() {
-		JaxRSCoordinate peekCoordinate = uiVehicles.peek().getGpsSensor().getSensorData().
-			getPosition();
-		peekCoordinate = new JaxRSCoordinate(45,
-			55);
-		return String.format("[%f,%f]",
-			peekCoordinate.getX(),
-			peekCoordinate.getY());
-	}
+  public void setChosenRecentScenario(
+    ControlCenterStartParameter chosenRecentScenario) {
+    this.chosenRecentScenario = chosenRecentScenario;
+  }
+
+  public ControlCenterStartParameter getChosenRecentScenario() {
+    return chosenRecentScenario;
+  }
+
+  public String getNextGpsSensor() {
+    JaxRSCoordinate peekCoordinate = uiVehicles.peek().getGpsSensor().
+      getSensorData().
+      getPosition();
+    peekCoordinate = new JaxRSCoordinate(45,
+      55);
+    return String.format("[%f,%f]",
+      peekCoordinate.getX(),
+      peekCoordinate.getY());
+  }
 
 //	public void confirmInitialDialog(StartParameterOriginEnum chosenInitialType) {
 //		switch (chosenInitialType) {
@@ -562,13 +556,12 @@ public class InitDialogCtrl implements Serializable {
 //		});
 //	}
 //;
+  public Map<String, ControlCenterStartParameter> getRecentScenarios() {
+    return recentScenarioMap;
+  }
 
-	public Map<String, ControlCenterStartParameter> getRecentScenarios() {
-		return recentScenarioMap;
-	}
-
-	public void setRecentScenarios(
-		Map<String, ControlCenterStartParameter> recentScenarios) {
-		this.recentScenarioMap = recentScenarios;
-	}
+  public void setRecentScenarios(
+    Map<String, ControlCenterStartParameter> recentScenarios) {
+    this.recentScenarioMap = recentScenarios;
+  }
 }

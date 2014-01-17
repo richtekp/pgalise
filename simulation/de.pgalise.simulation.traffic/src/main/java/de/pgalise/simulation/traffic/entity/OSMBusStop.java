@@ -15,25 +15,30 @@ import javax.persistence.Entity;
  */
 @Entity
 public class OSMBusStop extends BusStop {
-	private static final long serialVersionUID = 1L;
-	private String osmId;
 
-	protected OSMBusStop() {
-	}
+  private static final long serialVersionUID = 1L;
+  private String osmId;
 
-	public OSMBusStop(String osmId,
-		String stopName,
-		BusStopInformation busStopInformation, JaxRSCoordinate geoLocation) {
-		super(stopName,
-			busStopInformation, geoLocation);
-		this.osmId = osmId;
-	}
+  protected OSMBusStop() {
+  }
 
-	public void setOsmId(String osmId) {
-		this.osmId = osmId;
-	}
+  public OSMBusStop(Long id,
+    String osmId,
+    String stopName,
+    BusStopInformation busStopInformation,
+    JaxRSCoordinate geoLocation) {
+    super(id,
+      stopName,
+      busStopInformation,
+      geoLocation);
+    this.osmId = osmId;
+  }
 
-	public String getOsmId() {
-		return osmId;
-	}
+  public void setOsmId(String osmId) {
+    this.osmId = osmId;
+  }
+
+  public String getOsmId() {
+    return osmId;
+  }
 }

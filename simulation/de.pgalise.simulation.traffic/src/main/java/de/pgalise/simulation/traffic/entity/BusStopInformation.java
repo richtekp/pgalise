@@ -13,51 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.entity;
 
 import de.pgalise.simulation.shared.entity.Identifiable;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Wraps a stop name and its first stop time in millis.
+ *
  * @author Lena
  */
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class BusStopInformation extends Identifiable {
-	private static final long serialVersionUID = 1L;
-	@OneToOne
-	private BusStop busStop;
-	private long firstStopTimeInMillis;
 
-	protected BusStopInformation() {
-	}
-	
-	public BusStopInformation(BusStop busStop, long time) {
-		this.busStop = busStop;
-		this.firstStopTimeInMillis = time;
-	}
+  private static final long serialVersionUID = 1L;
+  @OneToOne
+  @XmlTransient
+  private BusStop busStop;
+  private long firstStopTimeInMillis;
 
-	public void setBusStop(BusStop busStop) {
-		this.busStop = busStop;
-	}
+  protected BusStopInformation() {
+  }
 
-	public BusStop getBusStop() {
-		return busStop;
-	}
+  public BusStopInformation(BusStop busStop,
+    long time) {
+    this.busStop = busStop;
+    this.firstStopTimeInMillis = time;
+  }
 
-	/**
-	 * @return the stopTimeInMillis
-	 */
-	public long getFirstStopTimeInMillis() {
-		return firstStopTimeInMillis;
-	}
+  public void setBusStop(BusStop busStop) {
+    this.busStop = busStop;
+  }
 
-	/**
-	 * @param stopTimeInMillis the stopTimeInMillis to set
-	 */
-	public void setFirstStopTimeInMillis(long stopTimeInMillis) {
-		this.firstStopTimeInMillis = stopTimeInMillis;
-	}
+  public BusStop getBusStop() {
+    return busStop;
+  }
+
+  /**
+   * @return the stopTimeInMillis
+   */
+  public long getFirstStopTimeInMillis() {
+    return firstStopTimeInMillis;
+  }
+
+  /**
+   * @param stopTimeInMillis the stopTimeInMillis to set
+   */
+  public void setFirstStopTimeInMillis(long stopTimeInMillis) {
+    this.firstStopTimeInMillis = stopTimeInMillis;
+  }
 }

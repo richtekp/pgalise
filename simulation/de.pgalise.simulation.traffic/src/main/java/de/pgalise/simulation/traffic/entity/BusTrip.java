@@ -23,7 +23,6 @@ import java.util.Map;
 import de.pgalise.simulation.shared.entity.BusCalendar;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import javax.persistence.Column;
 import javax.persistence.Entity;

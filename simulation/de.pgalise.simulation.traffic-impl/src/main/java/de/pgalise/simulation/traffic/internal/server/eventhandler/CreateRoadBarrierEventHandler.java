@@ -35,7 +35,7 @@ import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;

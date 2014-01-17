@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<!-- Here are all strategies of the weather stations -->
-<strategies>
-	<strategy>de.pgalise.util.weathercollector.weatherstation.strategy.StationOldenburg</strategy>
-</strategies>

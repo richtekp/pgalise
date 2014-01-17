@@ -13,23 +13,26 @@ import javax.persistence.Entity;
  */
 @Entity
 public class OSMNavigationNode extends TrafficNode {
-	private static final long serialVersionUID = 1L;
-	private String OSMId;
 
-	protected OSMNavigationNode() {
-	}
+  private static final long serialVersionUID = 1L;
+  private String OSMId;
 
-	public OSMNavigationNode(String OSMId,
-		JaxRSCoordinate geoLocation) {
-		super(geoLocation);
-		this.OSMId = OSMId;
-	}
+  protected OSMNavigationNode() {
+  }
 
-	public void setOSMId(String OSMId) {
-		this.OSMId = OSMId;
-	}
-	
-	public String getOSMId() {
-		return OSMId;
-	}
+  public OSMNavigationNode(Long id,
+    String OSMId,
+    JaxRSCoordinate geoLocation) {
+    super(id,
+      geoLocation);
+    this.OSMId = OSMId;
+  }
+
+  public void setOSMId(String OSMId) {
+    this.OSMId = OSMId;
+  }
+
+  public String getOSMId() {
+    return OSMId;
+  }
 }

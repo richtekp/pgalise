@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.service.internal.manager;
 
 import de.pgalise.simulation.service.event.EventHandler;
@@ -34,74 +33,79 @@ import de.pgalise.simulation.shared.event.EventTypeEnum;
 
 /**
  * Tests the {@link DefaultSimulationEventHandlerManager}
- * 
+ *
  * @author Mustafa
  * @version 1.0 (Feb 15, 2013)
  */
 public class AbstractEventHandlerManagerTest {
-	@Test
-	public void initializationTest() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-			IOException {
-		AbstractEventHandlerManager<EventHandler<Event>,Event> manager = new AbstractEventHandlerManagerImpl();
-		String handlerName = DummyEventHandler.class.getName();
-		InputStream in = new ByteArrayInputStream(handlerName.getBytes());
-		manager.init(in, DummyEventHandler.class);
 
-		EventHandler<Event> handler = manager.getEventHandler(EventTypeEnum.CHANGE_WEATHER_EVENT);
-		assertNotNull(handler);
-		assertTrue(handler instanceof DummyEventHandler);
-	}
+  @Test
+  public void initializationTest() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+    IOException {
+    AbstractEventHandlerManager<EventHandler<Event>, Event> manager = new AbstractEventHandlerManagerImpl();
+    String handlerName = DummyEventHandler.class.getName();
+    InputStream in = new ByteArrayInputStream(handlerName.getBytes());
+    manager.init(in,
+      DummyEventHandler.class.getClassLoader());
 
-	@Test
-	public void handleEventTest() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-			IOException {
+    EventHandler<Event> handler = manager.getEventHandler(
+      EventTypeEnum.CHANGE_WEATHER_EVENT);
+    assertNotNull(handler);
+    assertTrue(handler instanceof DummyEventHandler);
+  }
 
-		AbstractEvent event = EasyMock.createNiceMock(AbstractEvent.class);
-		EasyMock.expect(event.getType()).andReturn(EventTypeEnum.CHANGE_WEATHER_EVENT);
-		EasyMock.replay(event);
+  @Test
+  public void handleEventTest() throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+    IOException {
 
-		AbstractEventHandler<Event> handler = EasyMock.createMock(AbstractEventHandler.class);
-		EasyMock.expect(handler.getTargetEventType()).andStubReturn(EventTypeEnum.CHANGE_WEATHER_EVENT);
-		handler.handleEvent(event);
-		EasyMock.replay(handler);
+    AbstractEvent event = EasyMock.createNiceMock(AbstractEvent.class);
+    EasyMock.expect(event.getType()).andReturn(
+      EventTypeEnum.CHANGE_WEATHER_EVENT);
+    EasyMock.replay(event);
 
-		AbstractEventHandlerManager<EventHandler<Event>,Event> manager = new AbstractEventHandlerManagerImpl();
-		manager.addHandler(handler);
-		manager.handleEvent(event);
+    AbstractEventHandler<Event> handler = EasyMock.createMock(
+      AbstractEventHandler.class);
+    EasyMock.expect(handler.getTargetEventType()).andStubReturn(
+      EventTypeEnum.CHANGE_WEATHER_EVENT);
+    handler.handleEvent(event);
+    EasyMock.replay(handler);
 
-		EasyMock.verify(handler);
-	}
+    AbstractEventHandlerManager<EventHandler<Event>, Event> manager = new AbstractEventHandlerManagerImpl();
+    manager.addHandler(handler);
+    manager.handleEvent(event);
 
-	/**
-	 * Mock of the SimulationEventHandler
-	 * 
-	 * @author Andreas Rehfeldt
-	 * @version 1.0 (Mar 20, 2013)
-	 */
-	private static class DummyEventHandler extends AbstractEventHandler<Event> {
+    EasyMock.verify(handler);
+  }
 
-		DummyEventHandler() {
-			super(EventTypeEnum.CHANGE_WEATHER_EVENT);
-		}
+  /**
+   * Mock of the SimulationEventHandler
+   *
+   * @author Andreas Rehfeldt
+   * @version 1.0 (Mar 20, 2013)
+   */
+  private static class DummyEventHandler extends AbstractEventHandler<Event> {
 
+    DummyEventHandler() {
+      super(EventTypeEnum.CHANGE_WEATHER_EVENT);
+    }
 
-		@Override
-		public EventTypeEnum getTargetEventType() {
-			return EventTypeEnum.CHANGE_WEATHER_EVENT;
-}
+    @Override
+    public EventTypeEnum getTargetEventType() {
+      return EventTypeEnum.CHANGE_WEATHER_EVENT;
+    }
 
-		@Override
-		public void handleEvent(Event event) {
-			throw new UnsupportedOperationException("Not supported yet."); 
-		}
-	}
-	
-	private class AbstractEventHandlerManagerImpl extends AbstractEventHandlerManager<EventHandler<Event>,Event> {
+    @Override
+    public void handleEvent(Event event) {
+      throw new UnsupportedOperationException("Not supported yet.");
+    }
+  }
 
-		@Override
-		public boolean responsibleFor(EventHandler<Event> handler,
-			Event event) {
-			return true;
-		}
-	}
+  private class AbstractEventHandlerManagerImpl extends AbstractEventHandlerManager<EventHandler<Event>, Event> {
+
+    @Override
+    public boolean responsibleFor(EventHandler<Event> handler,
+      Event event) {
+      return true;
+    }
+  }
 }

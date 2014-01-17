@@ -131,7 +131,6 @@ public class DefaultFileBasedCityInfrastructureDataService implements
   private CityInfrastructureData cityInfrastructureData;
   @EJB
   private IdGenerator idGenerator;
-  private List<BusStop> busStops;
   /**
    * Distance calculator for the pr-tree
    */
@@ -153,13 +152,12 @@ public class DefaultFileBasedCityInfrastructureDataService implements
    * PR-Tree to answer spatial queries for buildings
    */
   private PRTree<Building> buildingTree;
-  private List<Building> buildings;
   private BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
   private TrafficGraph trafficGraph;
   @EJB
   private GraphConstructor graphConstructor;
 
-  protected DefaultFileBasedCityInfrastructureDataService() {
+  public DefaultFileBasedCityInfrastructureDataService() {
   }
 
   /**
@@ -187,22 +185,6 @@ public class DefaultFileBasedCityInfrastructureDataService implements
   public void init() {
     this.cityInfrastructureData = new CityInfrastructureData(idGenerator.
       getNextId());
-  }
-
-  public List<BusStop> getBusStops() {
-    return this.busStops;
-  }
-
-  protected void setBusStops(List<BusStop> busStops) {
-    this.busStops = busStops;
-  }
-
-  public List<Building> getBuildings() {
-    return buildings;
-  }
-
-  protected void setBuildings(List<Building> buildings) {
-    this.buildings = buildings;
   }
 
   /**
@@ -662,7 +644,7 @@ public class DefaultFileBasedCityInfrastructureDataService implements
               maxLng), new JaxRSCoordinate(minLat,
               minLng)}));
       buildingList.add(
-        new Building(
+        new Building(idGenerator.getNextId(),
           buildingPosition.getCenterPoint(),
           tourism,
           service,
@@ -1013,8 +995,9 @@ public class DefaultFileBasedCityInfrastructureDataService implements
               }
 
               if ((id != null) && (lat != null) && (lon != null)) {
-                lastNode = new TrafficNode(new JaxRSCoordinate(lat,
-                  lon));
+                lastNode = new TrafficNode(idGenerator.getNextId(),
+                  new JaxRSCoordinate(lat,
+                    lon));
                 nodeMap.put(id,
                   lastNode);
 
@@ -1038,7 +1021,8 @@ public class DefaultFileBasedCityInfrastructureDataService implements
 
               if (kValue.equalsIgnoreCase("highway")) {
                 if (vValue.equalsIgnoreCase("bus_stop")) {
-                  lastBusstop = new BusStop("",
+                  lastBusstop = new BusStop(idGenerator.getNextId(),
+                    "",
                     null,
                     new JaxRSCoordinate(lastNode.getGeoLocation().getX(),
                       lastNode.getGeoLocation().getY()));
@@ -1227,12 +1211,13 @@ public class DefaultFileBasedCityInfrastructureDataService implements
       combineMotorWaysWithBusStops(
         this.cityInfrastructureData.getMotorWays(),
         tmpBusStops));
-    this.busStops = new ArrayList<>();
     OuterLoop:
-    for (Way<?, ?> way : this.cityInfrastructureData.getMotorWaysWithBusStops()) {
+    for (TrafficWay way : this.cityInfrastructureData.getMotorWaysWithBusStops()) {
       for (NavigationNode node : way.getNodeList()) {
         if (node instanceof TrafficNode && ((TrafficNode) node).getBusStop() != null) {
-          this.busStops.add(((TrafficNode) node).getBusStop());
+          this.cityInfrastructureData.getBusStops().add(((TrafficNode) node).
+            getBusStop());
+          this.cityInfrastructureData.getMotorWaysWithBusStops().add(way);
           continue OuterLoop;
         }
       }
@@ -1312,11 +1297,11 @@ public class DefaultFileBasedCityInfrastructureDataService implements
           southWestBoundary.getGeoLocation().getY())));
     }
 
-    this.buildings = this.extractBuildings(wayList);
+    this.cityInfrastructureData.setBuildings(this.extractBuildings(wayList));
     /* build the pr-tree for buildings */
     this.buildingTree = new PRTree<>(new BuildingMBRConverter(),
       prTreeBranchFactor);
-    this.buildingTree.load(this.buildings);
+    this.buildingTree.load(this.cityInfrastructureData.getBuildings());
   }
 
   /**
@@ -1360,7 +1345,8 @@ public class DefaultFileBasedCityInfrastructureDataService implements
       /* Parse other: */
       for (String[] text = csvParser.getLine(); text != null; text = csvParser.
         getLine()) {
-        busStopList.add(new OSMBusStop(text[idColumn],
+        busStopList.add(new OSMBusStop(idGenerator.getNextId(),
+          text[idColumn],
           text[nameColumn],
           null,
           new JaxRSCoordinate(Double.valueOf(text[latColumn]),

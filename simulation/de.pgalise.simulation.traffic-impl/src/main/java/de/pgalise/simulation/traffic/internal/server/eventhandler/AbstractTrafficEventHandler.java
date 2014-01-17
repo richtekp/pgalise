@@ -5,7 +5,7 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -13,48 +13,60 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 
 /**
  *
- * @param <D> 
+ * @param <D>
  * @author richter
  */
-public class AbstractTrafficEventHandler<D extends VehicleData,E extends TrafficEvent> implements TrafficEventHandler<E> {
-	/**
-	 * Traffic server
-	 */
-	private TrafficServerLocal<E> responsibleServer;
-	
-	private Output output;
+public abstract class AbstractTrafficEventHandler<D extends VehicleData, E extends TrafficEvent>
+  implements TrafficEventHandler<E> {
 
-	public Output getOutput() {
-		return output;
-	}
+  private RandomSeedService randomSeedService;
 
-	public void setOutput(Output output) {
-		this.output = output;
-	}
+  /**
+   * Traffic server
+   */
+  private TrafficServerLocal<E> responsibleServer;
 
-	@Override
-	public void init(TrafficServerLocal<E>  server) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  private Output output;
 
-	@Override
-	public EventType getTargetEventType() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  public Output getOutput() {
+    return output;
+  }
 
-	@Override
-	public void handleEvent(
-		E event) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  public void setOutput(Output output) {
+    this.output = output;
+  }
 
-	@Override
-	public TrafficServerLocal<E>  getResponsibleServer() {
-		return responsibleServer;
-	}
+  public AbstractTrafficEventHandler() {
+  }
 
-	public void setResponsibleServer(TrafficServerLocal<E>  responsibleServer) {
-		this.responsibleServer = responsibleServer;
-	}
-	
+  public AbstractTrafficEventHandler(RandomSeedService randomSeedService,
+    TrafficServerLocal<E> responsibleServer,
+    Output output) {
+    this.randomSeedService = randomSeedService;
+    this.responsibleServer = responsibleServer;
+    this.output = output;
+  }
+
+  @Override
+  public void init(RandomSeedService randomSeedService,
+    TrafficServerLocal responsibleServer,
+    Output output) {
+    this.randomSeedService = randomSeedService;
+    this.responsibleServer = responsibleServer;
+    this.output = output;
+  }
+
+  public RandomSeedService getRandomSeedService() {
+    return randomSeedService;
+  }
+
+  @Override
+  public TrafficServerLocal<E> getResponsibleServer() {
+    return responsibleServer;
+  }
+
+  public void setResponsibleServer(TrafficServerLocal<E> responsibleServer) {
+    this.responsibleServer = responsibleServer;
+  }
+
 }

@@ -15,23 +15,21 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.traffic.model.vehicle.Car;
-import java.awt.Color;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.model.vehicle.CarData;
+import de.pgalise.simulation.traffic.model.vehicle.Car;
+import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
+import de.pgalise.simulation.traffic.model.vehicle.xml.CarDataList;
+import java.awt.Color;
+import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * Implements a factory for {@link Car}. The vehicles are loaded by a XML file.
@@ -39,160 +37,170 @@ import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
+/*
+ use XML serialization framework (currently the usage of typeid as Identifiable.id is possibly not correct
+ */
 public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
-	CarFactory {
+  CarFactory {
 
-	@Override
-	public Car createCar(Output output) {
-		return createRandomCar(output);
-	}
+  @Override
+  public Car createCar(Output output) {
+    return createRandomCar(output);
+  }
 
-	@Override
-	public Car createRandomCar(Output output) {
-		CarData data = getRandomVehicleData();
-		return new DefaultCar(getIdGenerator().getNextId(),
-			null,
-			data,
-			getTrafficGraphExtensions());
-	}
+  @Override
+  public Car createRandomCar(Output output) {
+    CarData data = getRandomVehicleData();
+    return new DefaultCar(getIdGenerator().getNextId(),
+      "name",
+      data,
+      getTrafficGraphExtensions());
+  }
 
-	public XMLCarFactory() {
-	}
+  public XMLCarFactory() {
+  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param randomSeedService Random Seed Service
-	 * @param document Document of the XML data
-	 * @param trafficGraphExtensions
-	 */
-	public XMLCarFactory(IdGenerator idGenerator,
-		TrafficGraphExtensions trafficGraphExtensions,
-		RandomSeedService randomSeedService,
-		InputStream stream) {
-		super(trafficGraphExtensions,
-			idGenerator,
-			randomSeedService,
-			stream);
-	}
+  /**
+   * Constructor
+   *
+   * @param idGenerator
+   * @param randomSeedService Random Seed Service
+   * @param stream Input stream of the XML data
+   * @param trafficGraphExtensions
+   */
+  public XMLCarFactory(IdGenerator idGenerator,
+    TrafficGraphExtensions trafficGraphExtensions,
+    RandomSeedService randomSeedService,
+    InputStream stream) {
+    super(trafficGraphExtensions,
+      idGenerator,
+      randomSeedService,
+      stream);
+  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param stream Input stream of the XML data
-	 * @param randomSeedService Random Seed Service
-	 * @param trafficGraphExtensions
-	 */
-	public XMLCarFactory(IdGenerator idGenerator,
-		TrafficGraphExtensions trafficGraphExtensions,
-		RandomSeedService randomSeedService,
-		Document stream) {
-		super(trafficGraphExtensions,
-			idGenerator,
-			randomSeedService,
-			stream);
-	}
+  public XMLCarFactory(IdGenerator idGenerator,
+    TrafficGraphExtensions trafficGraphExtensions,
+    RandomSeedService randomSeedService,
+    Set<CarData> randomVehicleDataPool) {
+    super(trafficGraphExtensions,
+      idGenerator,
+      randomSeedService,
+      randomVehicleDataPool);
+  }
 
-	/**
-	 * Updates the {@link CarData} with new information
-	 *
-	 * @param data loaded {@link CarData}
-	 * @param color
-	 * @return updated {@link CarData} object
-	 */
-	private CarData updateCarData(CarData data,
-		Color color) {
-		data.setColor(color);
+  /**
+   * Updates the {@link CarData} with new information
+   *
+   * @param data loaded {@link CarData}
+   * @param color
+   * @return updated {@link CarData} object
+   */
+  private CarData updateCarData(CarData data,
+    Color color) {
+    data.setColor(color);
 
-		return data;
-	}
+    return data;
+  }
 
-	/**
-	 * Create new CarData
-	 *
-	 * @return
-	 */
-	@Override
-	public CarData getRandomVehicleData() {
-		CarData referenceData = super.getRandomVehicleData();
+  /**
+   * Create new CarData
+   *
+   * @return
+   */
+  @Override
+  public CarData getRandomVehicleData() {
+    CarData referenceData = super.getRandomVehicleData();
 
-		return new CarData(referenceData);
-	}
+    return new CarData(referenceData);
+  }
 
-	@Override
-	protected Map<String, CarData> readVehicleData(Document doc) {
-		Map<String, CarData> vehicles = new HashMap<>();
+  @Override
+  protected Set<CarData> readVehicleData(InputStream doc) {
 
-		// Get strategies node
-		NodeList nList = doc.getElementsByTagName("car");
+    try {
+      JAXBContext jaxbContext = JAXBContext.newInstance(CarDataList.class);
 
-		// Get all strategies
-		for (int i = 0; i < nList.getLength(); i++) {
-			/* Vehicle item */
-			Node vehicleItem = nList.item(i);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-			NodeList vehicleChildrens = vehicleItem.getChildNodes();
+      CarDataList carDataList = (CarDataList) jaxbUnmarshaller.
+        unmarshal(doc);
+      return new HashSet<>(carDataList.getList());
 
-			// Init variables
-			Color color = Color.WHITE;
-			String typeid = "" + COUNTER, description = null;
-			int axleCount = 0, wheelbase1 = 0, wheelbase2 = 0, height = 0, maxSpeed = 0, weight = 0, wheelDistanceWidth = 0, width = 0, length = 0;
-			double power = 0;
-
-			// Get properties of the vehicle
-			for (int y = 0; y < vehicleChildrens.getLength(); y++) {
-				/* Property item */
-				Node propertyItem = vehicleChildrens.item(y);
-				String nodeName = propertyItem.getNodeName();
-
-				/* Check */
-				if (nodeName.equals("typeid")) {
-					typeid = propertyItem.getTextContent();
-				} else if (nodeName.equals("wheelDistanceWidth")) {
-					wheelDistanceWidth = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("wheelbase1")) {
-					wheelbase1 = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("wheelbase2")) {
-					wheelbase2 = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("length")) {
-					length = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("width")) {
-					width = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("height")) {
-					height = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("weight")) {
-					weight = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("power")) {
-					power = Double.parseDouble(propertyItem.getTextContent());
-				} else if (nodeName.equals("maxSpeed")) {
-					maxSpeed = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("axleCount")) {
-					axleCount = Integer.parseInt(propertyItem.getTextContent());
-				} else if (nodeName.equals("description")) {
-					description = propertyItem.getTextContent();
-				}
-			}
-
-			// Add new vehicle
-			vehicles.put(typeid,
-				new CarData(color,
-					wheelDistanceWidth,
-					wheelbase1,
-					wheelbase2,
-					length,
-					width,
-					height,
-					weight,
-					power,
-					maxSpeed,
-					axleCount,
-					description,
-					null,
-					VehicleTypeEnum.CAR));
-		}
-
-		// Returns
-		return vehicles;
-	}
+//    Map<String, CarData> vehicles = new HashMap<>();
+//
+//    // Get strategies node
+//    NodeList nList = doc.getElementsByTagName("car");
+//
+//    // Get all strategies
+//    for (int i = 0; i < nList.getLength(); i++) {
+//      /* Vehicle item */
+//      Node vehicleItem = nList.item(i);
+//
+//      NodeList vehicleChildrens = vehicleItem.getChildNodes();
+//
+//      // Init variables
+//      Color color = Color.WHITE;
+//      String typeid = "" + COUNTER, description = null;
+//      int axleCount = 0, wheelbase1 = 0, wheelbase2 = 0, height = 0, maxSpeed = 0, weight = 0, wheelDistanceWidth = 0, width = 0, length = 0;
+//      double power = 0;
+//
+//      // Get properties of the vehicle
+//      for (int y = 0; y < vehicleChildrens.getLength(); y++) {
+//        /* Property item */
+//        Node propertyItem = vehicleChildrens.item(y);
+//        String nodeName = propertyItem.getNodeName();
+//
+//        /* Check */
+//        if (nodeName.equals("typeid")) {
+//          typeid = propertyItem.getTextContent();
+//        } else if (nodeName.equals("wheelDistanceWidth")) {
+//          wheelDistanceWidth = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("wheelbase1")) {
+//          wheelbase1 = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("wheelbase2")) {
+//          wheelbase2 = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("length")) {
+//          length = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("width")) {
+//          width = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("height")) {
+//          height = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("weight")) {
+//          weight = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("power")) {
+//          power = Double.parseDouble(propertyItem.getTextContent());
+//        } else if (nodeName.equals("maxSpeed")) {
+//          maxSpeed = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("axleCount")) {
+//          axleCount = Integer.parseInt(propertyItem.getTextContent());
+//        } else if (nodeName.equals("description")) {
+//          description = propertyItem.getTextContent();
+//        }
+//      }
+//
+//      // Add new vehicle
+//      vehicles.put(typeid,
+//        new CarData(color,
+//          wheelDistanceWidth,
+//          wheelbase1,
+//          wheelbase2,
+//          length,
+//          width,
+//          height,
+//          weight,
+//          power,
+//          maxSpeed,
+//          axleCount,
+//          description,
+//          null,
+//          VehicleTypeEnum.CAR));
+//    }
+//
+//    // Returns
+//    return vehicles;
+    } catch (JAXBException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
 
 }

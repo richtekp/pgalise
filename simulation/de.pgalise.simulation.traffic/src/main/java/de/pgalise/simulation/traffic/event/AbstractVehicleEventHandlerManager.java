@@ -1,0 +1,30 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package de.pgalise.simulation.traffic.event;
+
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
+
+/**
+ *
+ * @author richter
+ */
+public class AbstractVehicleEventHandlerManager extends AbstractTrafficEventHandlerManager<VehicleEventHandler<VehicleEvent>, VehicleEvent>
+  implements VehicleEventHandlerManager {
+
+  public AbstractVehicleEventHandlerManager(RandomSeedService randomSeedService,
+    TrafficServerLocal trafficServerLocal,
+    TcpIpOutput tcpIpOutput) {
+    super(randomSeedService,
+      trafficServerLocal,
+      tcpIpOutput);
+  }
+
+}

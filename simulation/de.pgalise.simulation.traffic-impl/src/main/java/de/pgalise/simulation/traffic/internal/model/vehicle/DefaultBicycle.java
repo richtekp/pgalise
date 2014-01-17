@@ -18,7 +18,7 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
+import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

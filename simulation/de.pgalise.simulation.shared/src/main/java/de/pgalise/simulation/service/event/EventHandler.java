@@ -13,30 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.service.event;
 
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventType;
 
-
 /**
- * An EventHandler is responsible for processing a particular event.
- * An event itself is recognized by its event type.
- * 
+ * An EventHandler is responsible for processing a particular event. An event
+ * itself is recognized by its event type.
+ *
  * @see EventHandlerManager
  * @author mustafa
  *
  * @param <E> event to be processed by this handler
  */
 public interface EventHandler<E extends Event> {
-	
-	public EventType getTargetEventType();
-	
-	/**
-	 * Handles the incoming event.
-	 * 
-	 * @param event event to be handled
-	 */
-	public void handleEvent(E event);
+
+  public EventType getTargetEventType();
+
+  /**
+   * Handles the incoming event.
+   *
+   * @param event event to be handled
+   */
+  public void handleEvent(E event);
 }

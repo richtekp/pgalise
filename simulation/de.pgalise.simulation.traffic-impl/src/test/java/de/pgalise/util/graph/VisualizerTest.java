@@ -13,86 +13,131 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.util.graph;
 
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultGraphVisualizer;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.testutils.TestUtils;
+import de.pgalise.util.generic.MutableBoolean;
+import de.pgalise.util.generic.function.Function;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import de.pgalise.util.generic.MutableBoolean;
-import de.pgalise.util.generic.function.Function;
-
 /**
  * Tests the {@link GraphVisualizer}
- * 
+ *
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 22, 2012)
  */
 @Ignore
+@LocalClient
+@ManagedBean
 public class VisualizerTest {
-	@Test
-	public void visualizeTest() throws InterruptedException {
-		final MutableBoolean exit = new MutableBoolean(false);
+
+  @EJB
+  private IdGenerator idGenerator;
+
+  public VisualizerTest() {
+  }
+
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+  }
+
+  @Test
+  public void visualizeTest() throws InterruptedException {
+    final MutableBoolean exit = new MutableBoolean(false);
 		// Thread t = new Thread(new Runnable() {
-		// @Override
-		// public void run() {
-		// while(!exit.getValue()) {
-		// }
-		// }
-		// });
-		// t.start();
+    // @Override
+    // public void run() {
+    // while(!exit.getValue()) {
+    // }
+    // }
+    // });
+    // t.start();
 
-		TrafficGraph graph = createGraph();
+    TrafficGraph graph = createGraph();
 
-		GraphVisualizer viz = new DefaultGraphVisualizer(400, 400, graph);
-		viz.addWindowCloseListener(new Function() {
+    GraphVisualizer viz = new DefaultGraphVisualizer(400,
+      400,
+      graph);
+    viz.addWindowCloseListener(new Function() {
 
-			@Override
-			public void delegate() {
-				System.out.println("EXIT");
-				exit.setValue(true);
-			}
+      @Override
+      public void delegate() {
+        System.out.println("EXIT");
+        exit.setValue(true);
+      }
 
-		});
-		viz.scale(30, 30);
+    });
+    viz.scale(30,
+      30);
 
-		while (!exit.getValue()) {
-			viz.draw();
-		}
+    while (!exit.getValue()) {
+      viz.draw();
+    }
 
-		// t.join();
-	}
+    // t.join();
+  }
 
-	/**
-	 * Create test graph
-	 * 
-	 * @return graph
-	 */
-	private TrafficGraph createGraph() {
-		TrafficGraph graph = new DefaultTrafficGraph();
-		TrafficNode a = new TrafficNode(new JaxRSCoordinate(1,1));
-		TrafficNode b = new TrafficNode(new JaxRSCoordinate(2,2));
-		TrafficNode c = new TrafficNode(new JaxRSCoordinate(4, 7));
-		TrafficNode d = new TrafficNode(new JaxRSCoordinate(9, 4));
-		TrafficNode e = new TrafficNode(new JaxRSCoordinate(11, 7));
-		TrafficNode f = new TrafficNode(new JaxRSCoordinate(2, 10));
-		TrafficEdge e1 = graph.addEdge(a,b);
-		TrafficEdge e2 = graph.addEdge(b,c);
-		TrafficEdge e3 = graph.addEdge(c,d);
-		TrafficEdge e4 = graph.addEdge(d,e);
-		TrafficEdge e5 = graph.addEdge(f,c);
-		graph.setEdgeWeight(e1,1);
-		graph.setEdgeWeight(e2,1);
-		graph.setEdgeWeight(e3,1);
-		graph.setEdgeWeight(e4,1);
-		graph.setEdgeWeight(e5,1);
-		return graph;
-	}
+  /**
+   * Create test graph
+   *
+   * @return graph
+   */
+  private TrafficGraph createGraph() {
+    TrafficGraph graph = new DefaultTrafficGraph();
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(1,
+        1));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(2,
+        2));
+    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(4,
+        7));
+    TrafficNode d = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(9,
+        4));
+    TrafficNode e = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(11,
+        7));
+    TrafficNode f = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(2,
+        10));
+    TrafficEdge e1 = graph.addEdge(a,
+      b);
+    TrafficEdge e2 = graph.addEdge(b,
+      c);
+    TrafficEdge e3 = graph.addEdge(c,
+      d);
+    TrafficEdge e4 = graph.addEdge(d,
+      e);
+    TrafficEdge e5 = graph.addEdge(f,
+      c);
+    graph.setEdgeWeight(e1,
+      1);
+    graph.setEdgeWeight(e2,
+      1);
+    graph.setEdgeWeight(e3,
+      1);
+    graph.setEdgeWeight(e4,
+      1);
+    graph.setEdgeWeight(e5,
+      1);
+    return graph;
+  }
 }

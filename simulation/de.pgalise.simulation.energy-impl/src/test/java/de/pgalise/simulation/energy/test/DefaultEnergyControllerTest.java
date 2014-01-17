@@ -145,7 +145,7 @@ public class DefaultEnergyControllerTest {
       buildingList);
     for (int i = 0; i < 100; i++) {
       buildingList.add(
-        new Building(
+        new Building(idGenerator.getNextId(),
           new JaxRSCoordinate(53.136765,
             8.216524),
           new BaseGeoInfo(idGenerator.getNextId(),

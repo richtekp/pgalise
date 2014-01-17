@@ -33,7 +33,6 @@
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared</artifactId>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise</groupId>
@@ -50,7 +49,13 @@
 			<groupId>org.apache.openjpa</groupId>
 			<artifactId>openjpa</artifactId>
 		</dependency>-->
-		<dependency>
+	 <dependency>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>testutils-traffic</artifactId>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<type>jar</type>

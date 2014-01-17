@@ -8,7 +8,7 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
-import de.pgalise.simulation.traffic.model.vehicle.MotorcycleData;
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
 
 /**
  *

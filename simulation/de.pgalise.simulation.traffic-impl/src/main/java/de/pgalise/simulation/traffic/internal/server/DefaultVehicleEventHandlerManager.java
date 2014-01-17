@@ -13,38 +13,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server;
 
-import de.pgalise.simulation.service.internal.event.AbstractEventHandlerManager;
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.traffic.event.AbstractVehicleEventHandlerManager;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
 
 /**
  * ...
- * 
- * @param <D> 
+ *
  * @author Mustafa
  * @version 1.0 (Feb 17, 2013)
  */
-@Local(VehicleEventHandlerManager.class)
-@Stateless
-	//(name = "de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager")
+/*
+ can't be an EJB due to resulting cyclic reference with TrafficServerLocal
+ */
 public class DefaultVehicleEventHandlerManager extends
-AbstractEventHandlerManager<
-	VehicleEventHandler<VehicleEvent>, 
-	VehicleEvent> implements VehicleEventHandlerManager {
-	
-	
-	@Override
-	public boolean responsibleFor(
-		VehicleEventHandler<VehicleEvent> handler,
-		VehicleEvent event) {
-		return handler.getTargetEventType().equals(event.getType());
-	}
+  AbstractVehicleEventHandlerManager
+  implements VehicleEventHandlerManager {
+
+  public DefaultVehicleEventHandlerManager(RandomSeedService randomSeedService,
+    TrafficServerLocal trafficServerLocal,
+    TcpIpOutput tcpIpOutput) {
+    super(randomSeedService,
+      trafficServerLocal,
+      tcpIpOutput);
+  }
+
+  @Override
+  public boolean responsibleFor(
+    VehicleEventHandler<VehicleEvent> handler,
+    VehicleEvent event) {
+    return handler.getTargetEventType().equals(event.getType());
+  }
 
 }

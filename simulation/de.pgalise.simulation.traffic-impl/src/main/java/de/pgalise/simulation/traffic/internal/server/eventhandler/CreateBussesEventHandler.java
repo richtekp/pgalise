@@ -34,7 +34,7 @@ import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.event.CreateRandomBusData;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.internal.model.vehicle.RandomBusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
+import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;

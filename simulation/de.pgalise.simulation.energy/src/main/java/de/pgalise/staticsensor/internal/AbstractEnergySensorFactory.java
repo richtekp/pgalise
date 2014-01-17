@@ -96,434 +96,432 @@ import javax.ejb.EJB;
  * @version 1.0 (Apr 5, 2013)
  */
 public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?, ?>>
-	implements EnergySensorFactory {
+  implements EnergySensorFactory {
 
-	@EJB
-	private WeatherController weatherController;
-	@EJB
-	private EnergyControllerLocal energyController;
+  @EJB
+  private WeatherController weatherController;
+  @EJB
+  private EnergyControllerLocal energyController;
 
-	public AbstractEnergySensorFactory() {
-		super();
-	}
+  public AbstractEnergySensorFactory() {
+    super();
+  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param rss Random seed service
-	 * @param idGenerator
-	 * @param wctrl Weather controller
-	 * @param ectrl Energy controller
-	 * @param sensorOutput Sensor output
-	 * @param updateLimit
-	 */
-	public AbstractEnergySensorFactory(RandomSeedService rss,
-		IdGenerator idGenerator,
-		WeatherController wctrl,
-		EnergyControllerLocal ectrl,
-		TcpIpOutput sensorOutput,
-		int updateLimit) {
-		super(sensorOutput,
-			idGenerator,
-			rss,
-			updateLimit);
-		this.energyController = ectrl;
-		this.weatherController = wctrl;
-	}
+  /**
+   * Constructor
+   *
+   * @param rss Random seed service
+   * @param idGenerator
+   * @param wctrl Weather controller
+   * @param ectrl Energy controller
+   * @param sensorOutput Sensor output
+   * @param updateLimit
+   */
+  public AbstractEnergySensorFactory(RandomSeedService rss,
+    IdGenerator idGenerator,
+    WeatherController wctrl,
+    EnergyControllerLocal ectrl,
+    TcpIpOutput sensorOutput,
+    int updateLimit) {
+    super(
+      updateLimit);
+    this.energyController = ectrl;
+    this.weatherController = wctrl;
+  }
 
-	public void setWeatherController(WeatherController weatherController) {
-		this.weatherController = weatherController;
-	}
+  public void setWeatherController(WeatherController weatherController) {
+    this.weatherController = weatherController;
+  }
 
-	public void setEnergyController(EnergyControllerLocal energyController) {
-		this.energyController = energyController;
-	}
+  public void setEnergyController(EnergyControllerLocal energyController) {
+    this.energyController = energyController;
+  }
 
-	public EnergyController getEnergyController() {
-		return energyController;
-	}
+  public EnergyController getEnergyController() {
+    return energyController;
+  }
 
-	public WeatherController getWeatherController() {
-		return weatherController;
-	}
+  public WeatherController getWeatherController() {
+    return weatherController;
+  }
 
-	public final static int PHOTOVOLTAIK_AREA_MIN = 5;
-	public final static int PHOTOVOLTAIK_AREA_MAX = 500;
-	public final static int WIND_POWER_ROTOR_LENGTH_MIN = 15;
-	public final static int WIND_POWER_ROTOR_LENGTH_MAX = 40;
-	public final static int ACTIVITY_VALUE_MIN = 15;
-	public final static int ACTIVITY_VALUE_MAX = 40;
-	public final static int SMART_METER_MEASURE_RADIUS_MIN = 1;
-	public final static int SMART_METER_MEASURE_RADIUS_MAX = 10;
+  public final static int PHOTOVOLTAIK_AREA_MIN = 5;
+  public final static int PHOTOVOLTAIK_AREA_MAX = 500;
+  public final static int WIND_POWER_ROTOR_LENGTH_MIN = 15;
+  public final static int WIND_POWER_ROTOR_LENGTH_MAX = 40;
+  public final static int ACTIVITY_VALUE_MIN = 15;
+  public final static int ACTIVITY_VALUE_MAX = 40;
+  public final static int SMART_METER_MEASURE_RADIUS_MIN = 1;
+  public final static int SMART_METER_MEASURE_RADIUS_MAX = 10;
 
-	private int middle(int a,
-		int b) {
-		return (int) (a + (b - a) * Math.random());
-	}
+  private int middle(int a,
+    int b) {
+    return (int) (a + (b - a) * Math.random());
+  }
 
-	@Override
-	public PhotovoltaikSensor createPhotovoltaikSensor(JaxRSCoordinate position,
-		List<SensorInterfererType> sensorInterfererTypes,
-		int area) throws InterruptedException, ExecutionException {
-		return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
-			this.getSensorOutput(),
-			position,
-			this.getWeatherController(),
-			this.getEnergyController(),
-			this.getRandomSeedService(),
-			area,
-			getUpdateLimit(),
-			this.createEnergyInterferer(sensorInterfererTypes));
-	}
+  @Override
+  public PhotovoltaikSensor createPhotovoltaikSensor(JaxRSCoordinate position,
+    List<SensorInterfererType> sensorInterfererTypes,
+    int area) throws InterruptedException, ExecutionException {
+    return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
+      this.getSensorOutput(),
+      position,
+      this.getWeatherController(),
+      this.getEnergyController(),
+      this.getRandomSeedService(),
+      area,
+      getUpdateLimit(),
+      this.createEnergyInterferer(sensorInterfererTypes));
+  }
 
-	@Override
-	public PhotovoltaikSensor createPhotovoltaikSensor(
-		List<SensorInterfererType> sensorInterfererTypes,
-		int area) throws InterruptedException, ExecutionException {
-		JaxRSCoordinate randomPosition = null;
-		return createPhotovoltaikSensor(randomPosition,
-			sensorInterfererTypes,
-			area);
-	}
+  @Override
+  public PhotovoltaikSensor createPhotovoltaikSensor(
+    List<SensorInterfererType> sensorInterfererTypes,
+    int area) throws InterruptedException, ExecutionException {
+    JaxRSCoordinate randomPosition = null;
+    return createPhotovoltaikSensor(randomPosition,
+      sensorInterfererTypes,
+      area);
+  }
 
-	@Override
-	public Sensor<?, ?> createSensor(SensorType sensorType,
-		List<SensorInterfererType> sensorInterfererTypes)
-		throws InterruptedException, ExecutionException {
-		if (sensorType.equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
-			JaxRSCoordinate position = createRandomPositionEnergySensor();
-			return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				this.getEnergyController(),
-				this.getRandomSeedService(),
-				middle(PHOTOVOLTAIK_AREA_MIN,
-					PHOTOVOLTAIK_AREA_MAX),
-				getUpdateLimit(),
-				this.createEnergyInterferer(sensorInterfererTypes));
+  @Override
+  public Sensor<?, ?> createSensor(SensorType sensorType,
+    List<SensorInterfererType> sensorInterfererTypes)
+    throws InterruptedException, ExecutionException {
+    if (sensorType.equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
+      JaxRSCoordinate position = createRandomPositionEnergySensor();
+      return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        this.getEnergyController(),
+        this.getRandomSeedService(),
+        middle(PHOTOVOLTAIK_AREA_MIN,
+          PHOTOVOLTAIK_AREA_MAX),
+        getUpdateLimit(),
+        this.createEnergyInterferer(sensorInterfererTypes));
 
-		} else if (sensorType.equals(
-			EnergySensorTypeEnum.WINDPOWERSENSOR)) {
-			JaxRSCoordinate position = createRandomPositionEnergySensor();
-			return new WindPowerSensor(this.getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				this.getEnergyController(),
-				this.getRandomSeedService(),
-				middle(WIND_POWER_ROTOR_LENGTH_MIN,
-					WIND_POWER_ROTOR_LENGTH_MAX),
-				middle(ACTIVITY_VALUE_MIN,
-					ACTIVITY_VALUE_MAX),
-				getUpdateLimit(),
-				this.createEnergyInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(
+      EnergySensorTypeEnum.WINDPOWERSENSOR)) {
+      JaxRSCoordinate position = createRandomPositionEnergySensor();
+      return new WindPowerSensor(this.getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        this.getEnergyController(),
+        this.getRandomSeedService(),
+        middle(WIND_POWER_ROTOR_LENGTH_MIN,
+          WIND_POWER_ROTOR_LENGTH_MAX),
+        middle(ACTIVITY_VALUE_MIN,
+          ACTIVITY_VALUE_MAX),
+        getUpdateLimit(),
+        this.createEnergyInterferer(sensorInterfererTypes));
 
-		} else if (sensorType.equals(WeatherSensorTypeEnum.THERMOMETER)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Thermometer(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(WeatherSensorTypeEnum.WINDFLAG)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new WindFlagSensor(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(WeatherSensorTypeEnum.BAROMETER)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Barometer(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(WeatherSensorTypeEnum.HYGROMETER)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Hygrometer(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(WeatherSensorTypeEnum.PYRANOMETER)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Pyranometer(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(WeatherSensorTypeEnum.RAIN)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new RainSensor(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(WeatherSensorTypeEnum.ANEMOMETER)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Anemometer(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(WeatherSensorTypeEnum.LUXMETER)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new Luxmeter(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				getUpdateLimit(),
-				this.createWeatherInterferer(sensorInterfererTypes));
-		} else if (sensorType.equals(EnergySensorTypeEnum.SMARTMETER)) {
-			JaxRSCoordinate position = createRandomPositionWeatherSensor();
-			return new SmartMeterSensor(this.getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				position,
-				this.getWeatherController(),
-				this.getEnergyController(),
-				this.getRandomSeedService(),
-				middle(SMART_METER_MEASURE_RADIUS_MIN,
-					SMART_METER_MEASURE_RADIUS_MAX),
-				getUpdateLimit(),
-				this.createEnergyInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.THERMOMETER)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new Thermometer(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.WINDFLAG)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new WindFlagSensor(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.BAROMETER)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new Barometer(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.HYGROMETER)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new Hygrometer(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.PYRANOMETER)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new Pyranometer(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.RAIN)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new RainSensor(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.ANEMOMETER)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new Anemometer(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(WeatherSensorTypeEnum.LUXMETER)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new Luxmeter(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        getUpdateLimit(),
+        this.createWeatherInterferer(sensorInterfererTypes));
+    } else if (sensorType.equals(EnergySensorTypeEnum.SMARTMETER)) {
+      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      return new SmartMeterSensor(this.getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        position,
+        this.getWeatherController(),
+        this.getEnergyController(),
+        this.getRandomSeedService(),
+        middle(SMART_METER_MEASURE_RADIUS_MIN,
+          SMART_METER_MEASURE_RADIUS_MAX),
+        getUpdateLimit(),
+        this.createEnergyInterferer(sensorInterfererTypes));
 
-		} else if (sensorType.equals(
-			TrafficSensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
-			// Can't be returned here, because of missing dependencies
-			return null;
-		} else if (sensorType.equals(TrafficSensorTypeEnum.INFRARED)) { // Infrared
-			InfraredInterferer infraredInterferer;
-			if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
-				List<InfraredInterferer> infraredInterferers = new ArrayList<>();
-				infraredInterferer = new CompositeInfraredInterferer(infraredInterferers);
+    } else if (sensorType.equals(
+      TrafficSensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
+      // Can't be returned here, because of missing dependencies
+      return null;
+    } else if (sensorType.equals(TrafficSensorTypeEnum.INFRARED)) { // Infrared
+      InfraredInterferer infraredInterferer;
+      if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+        List<InfraredInterferer> infraredInterferers = new ArrayList<>();
+        infraredInterferer = new CompositeInfraredInterferer(infraredInterferers);
 
-				for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
-					switch (sensorInterfererType) {
-						case INFRARED_WHITE_NOISE_INTERFERER:
-							infraredInterferers.add(new InfraredWhiteNoiseInterferer(this.
-								getRandomSeedService()));
-							break;
-						default:
-							break;
-					}
-				}
-			} else {
-				infraredInterferer = new InfraredNoInterferer();
-			}
+        for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
+          switch (sensorInterfererType) {
+            case INFRARED_WHITE_NOISE_INTERFERER:
+              infraredInterferers.add(new InfraredWhiteNoiseInterferer(this.
+                getRandomSeedService()));
+              break;
+            default:
+              break;
+          }
+        }
+      } else {
+        infraredInterferer = new InfraredNoInterferer();
+      }
 
-			JaxRSCoordinate position = createRandomPositionInfraredSensor();
-			return new InfraredSensor(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				null,
-				position,
-				getUpdateLimit(),
-				infraredInterferer);
+      JaxRSCoordinate position = createRandomPositionInfraredSensor();
+      return new InfraredSensor(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        null,
+        position,
+        getUpdateLimit(),
+        infraredInterferer);
 
-		} else if (sensorType.equals(TrafficSensorTypeEnum.INDUCTIONLOOP)) { // Inductionloop
+    } else if (sensorType.equals(TrafficSensorTypeEnum.INDUCTIONLOOP)) { // Inductionloop
 
-			InductionLoopInterferer inductionLoopInterferer;
-			if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
-				List<InductionLoopInterferer> inductionLoopInterfers = new ArrayList<>();
-				inductionLoopInterferer = new CompositeInductionLoopInterferer(
-					inductionLoopInterfers);
-				for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
-					switch (sensorInterfererType) {
-						case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
-							inductionLoopInterfers.add(new InductionLoopWhiteNoiseInterferer(
-								this.getRandomSeedService()));
-							break;
-						default:
-							break;
-					}
-				}
-			} else {
-				inductionLoopInterferer = new InductionLoopNoInterferer();
-			}
+      InductionLoopInterferer inductionLoopInterferer;
+      if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+        List<InductionLoopInterferer> inductionLoopInterfers = new ArrayList<>();
+        inductionLoopInterferer = new CompositeInductionLoopInterferer(
+          inductionLoopInterfers);
+        for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
+          switch (sensorInterfererType) {
+            case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
+              inductionLoopInterfers.add(new InductionLoopWhiteNoiseInterferer(
+                this.getRandomSeedService()));
+              break;
+            default:
+              break;
+          }
+        }
+      } else {
+        inductionLoopInterferer = new InductionLoopNoInterferer();
+      }
 
-			JaxRSCoordinate position = createRandomPositionInductionLoopSensor();
-			return new InductionLoopSensor(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				null,
-				getUpdateLimit(),
-				inductionLoopInterferer);
+      JaxRSCoordinate position = createRandomPositionInductionLoopSensor();
+      return new InductionLoopSensor(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        null,
+        getUpdateLimit(),
+        inductionLoopInterferer);
 
-		} else if (sensorType.equals(TrafficSensorTypeEnum.TOPORADAR)) { // Toporadar
+    } else if (sensorType.equals(TrafficSensorTypeEnum.TOPORADAR)) { // Toporadar
 
-			TopoRadarInterferer toporadarInterferer;
-			if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
-				List<TopoRadarInterferer> toporadarInterfers = new ArrayList<>();
-				toporadarInterferer = new CompositeTopoRadarInterferer(
-					toporadarInterfers);
+      TopoRadarInterferer toporadarInterferer;
+      if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+        List<TopoRadarInterferer> toporadarInterfers = new ArrayList<>();
+        toporadarInterferer = new CompositeTopoRadarInterferer(
+          toporadarInterfers);
 
-				for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
-					switch (sensorInterfererType) {
-						case TOPO_RADAR_WHITE_NOISE_INTERFERER:
-							toporadarInterfers.add(new TopoRadarWhiteNoiseInterferer(this.
-								getRandomSeedService()));
-							break;
-						default:
-							break;
-					}
-				}
-			} else {
-				toporadarInterferer = new TopoRadarNoInterferer();
-			}
+        for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
+          switch (sensorInterfererType) {
+            case TOPO_RADAR_WHITE_NOISE_INTERFERER:
+              toporadarInterfers.add(new TopoRadarWhiteNoiseInterferer(this.
+                getRandomSeedService()));
+              break;
+            default:
+              break;
+          }
+        }
+      } else {
+        toporadarInterferer = new TopoRadarNoInterferer();
+      }
 
-			JaxRSCoordinate position = createRandomPositionTopoRadarSensor();
-			return new TopoRadarSensor(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				null,
-				getUpdateLimit(),
-				toporadarInterferer);
+      JaxRSCoordinate position = createRandomPositionTopoRadarSensor();
+      return new TopoRadarSensor(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        null,
+        getUpdateLimit(),
+        toporadarInterferer);
 
-		} else if (sensorType.equals(TrafficSensorTypeEnum.GPS)) {
+    } else if (sensorType.equals(TrafficSensorTypeEnum.GPS)) {
 
-			GpsInterferer gpsInterferer;
-			if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+      GpsInterferer gpsInterferer;
+      if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
 
-				List<GpsInterferer> gpsInterferes = new ArrayList<>();
-				gpsInterferer = new CompositeGpsInterferer(gpsInterferes);
+        List<GpsInterferer> gpsInterferes = new ArrayList<>();
+        gpsInterferer = new CompositeGpsInterferer(gpsInterferes);
 
-				for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
-					switch (sensorInterfererType) {
-						case GPS_ATMOSPHERE_INTERFERER:
-							gpsInterferes.add(new GpsAtmosphereInterferer(this.
-								getRandomSeedService(),
-								this.getWeatherController()));
-							break;
-						case GPS_CLOCK_INTERFERER:
-							gpsInterferes.add(new GpsClockInterferer(this.
-								getRandomSeedService()));
-							break;
-						case GPS_RECEIVER_INTERFERER:
-							gpsInterferes.add(new GpsReceiverInterferer(this.
-								getRandomSeedService()));
-							break;
-						case GPS_WHITE_NOISE_INTERFERER:
-							gpsInterferes.add(new GpsWhiteNoiseInterferer(this.
-								getRandomSeedService()));
-							break;
-						default:
-							break;
-					}
-				}
+        for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
+          switch (sensorInterfererType) {
+            case GPS_ATMOSPHERE_INTERFERER:
+              gpsInterferes.add(new GpsAtmosphereInterferer(this.
+                getRandomSeedService(),
+                this.getWeatherController()));
+              break;
+            case GPS_CLOCK_INTERFERER:
+              gpsInterferes.add(new GpsClockInterferer(this.
+                getRandomSeedService()));
+              break;
+            case GPS_RECEIVER_INTERFERER:
+              gpsInterferes.add(new GpsReceiverInterferer(this.
+                getRandomSeedService()));
+              break;
+            case GPS_WHITE_NOISE_INTERFERER:
+              gpsInterferes.add(new GpsWhiteNoiseInterferer(this.
+                getRandomSeedService()));
+              break;
+            default:
+              break;
+          }
+        }
 
-			} else {
-				gpsInterferer = new GpsNoInterferer();
-			}
+      } else {
+        gpsInterferer = new GpsNoInterferer();
+      }
 
-			return new GpsSensor(getIdGenerator().getNextId(),
-				this.getSensorOutput(),
-				null,
-				getUpdateLimit(),
-				gpsInterferer);
-		} else {
-			throw new NoValidControllerForSensorException(String.format(
-				"%s is not a known SensorType!",
-				sensorType.toString()));
-		}
-	}
+      return new GpsSensor(getIdGenerator().getNextId(),
+        this.getSensorOutput(),
+        null,
+        getUpdateLimit(),
+        gpsInterferer);
+    } else {
+      throw new NoValidControllerForSensorException(String.format(
+        "%s is not a known SensorType!",
+        sensorType.toString()));
+    }
+  }
 
-	private EnergyInterferer createEnergyInterferer(
-		List<SensorInterfererType> sensorInterfererTypes) {
-		if (sensorInterfererTypes.isEmpty()) {
-			return new EnergyNoInterferer();
-		}
-		if (sensorInterfererTypes.size() == 1) {
-			return (EnergyInterferer) this.createSensorInterferer(
-				sensorInterfererTypes.get(0));
-		}
-		CompositeEnergyInterferer compositeEnergyInterferer = new CompositeEnergyInterferer();
-		for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
-			compositeEnergyInterferer.attach((EnergyInterferer) this.
-				createSensorInterferer(sensorInterfererType));
-		}
-		return compositeEnergyInterferer;
-	}
+  private EnergyInterferer createEnergyInterferer(
+    List<SensorInterfererType> sensorInterfererTypes) {
+    if (sensorInterfererTypes.isEmpty()) {
+      return new EnergyNoInterferer();
+    }
+    if (sensorInterfererTypes.size() == 1) {
+      return (EnergyInterferer) this.createSensorInterferer(
+        sensorInterfererTypes.get(0));
+    }
+    CompositeEnergyInterferer compositeEnergyInterferer = new CompositeEnergyInterferer();
+    for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
+      compositeEnergyInterferer.attach((EnergyInterferer) this.
+        createSensorInterferer(sensorInterfererType));
+    }
+    return compositeEnergyInterferer;
+  }
 
-	private WeatherInterferer createWeatherInterferer(
-		List<SensorInterfererType> sensorInterfererTypes) {
-		if (sensorInterfererTypes.isEmpty()) {
-			return new WeatherNoInterferer();
-		}
-		if (sensorInterfererTypes.size() == 1) {
-			return (WeatherInterferer) this.createSensorInterferer(
-				sensorInterfererTypes.get(0));
-		}
-		CompositeWeatherInterferer compositeEnergyInterferer = new CompositeWeatherInterferer();
-		for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
-			compositeEnergyInterferer.attach((WeatherInterferer) this.
-				createSensorInterferer(sensorInterfererType));
-		}
-		return compositeEnergyInterferer;
-	}
+  private WeatherInterferer createWeatherInterferer(
+    List<SensorInterfererType> sensorInterfererTypes) {
+    if (sensorInterfererTypes.isEmpty()) {
+      return new WeatherNoInterferer();
+    }
+    if (sensorInterfererTypes.size() == 1) {
+      return (WeatherInterferer) this.createSensorInterferer(
+        sensorInterfererTypes.get(0));
+    }
+    CompositeWeatherInterferer compositeEnergyInterferer = new CompositeWeatherInterferer();
+    for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
+      compositeEnergyInterferer.attach((WeatherInterferer) this.
+        createSensorInterferer(sensorInterfererType));
+    }
+    return compositeEnergyInterferer;
+  }
 
-	/**
-	 * @param sensorInterfererType
-	 * @return
-	 */
-	/*
-	 * TODO INDUCTION_LOOP_WHITE_NOISE_INTERFERER und INFRARED_WHITE_NOISE_INTERFERER wieder einabuen -> Interferer sind
-	 * im Traffic.internal package. Muss Marcus ordentlicher machen
-	 */
-	private SensorInterferer createSensorInterferer(
-		SensorInterfererType sensorInterfererType) {
-		if (sensorInterfererType.equals(
-			SensorInterfererType.ANEMOMETER_WHITE_NOISE_INTERFERER)) {
-			return new AnemometerWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.BAROMETER_WHITE_NOISE_INTERFERER)) {
-			return new BarometerWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.HYGROMETER_WHITE_NOISE_INTERFERER)) {
-			return new HygrometerWhiteNoiseInterferer(this.getRandomSeedService());
+  /**
+   * @param sensorInterfererType
+   * @return
+   */
+  /*
+   * TODO INDUCTION_LOOP_WHITE_NOISE_INTERFERER und INFRARED_WHITE_NOISE_INTERFERER wieder einabuen -> Interferer sind
+   * im Traffic.internal package. Muss Marcus ordentlicher machen
+   */
+  private SensorInterferer createSensorInterferer(
+    SensorInterfererType sensorInterfererType) {
+    if (sensorInterfererType.equals(
+      SensorInterfererType.ANEMOMETER_WHITE_NOISE_INTERFERER)) {
+      return new AnemometerWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.BAROMETER_WHITE_NOISE_INTERFERER)) {
+      return new BarometerWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.HYGROMETER_WHITE_NOISE_INTERFERER)) {
+      return new HygrometerWhiteNoiseInterferer(this.getRandomSeedService());
 			// case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
-			// return new InductionLoopWhiteNoiseInterferer(this.getRandomSeedService());
-			// case INFRARED_WHITE_NOISE_INTERFERER:
-			// return new InfraredWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.LUXMETER_WHITE_NOISE_INTERFERER)) {
-			return new LuxmeterWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.PHOTOVOLTAIK_WHITE_NOISE_INTERFERER)) {
-			return new PhotovoltaikWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.PYRANOMETER_WHITE_NOISE_INTERFERER)) {
-			return new PyranometerWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.RAINSENSOR_WHITE_NOISE_INTERFERER)) {
-			return new RainsensorWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.SMART_METER_WHITE_NOISE_INTERFERER)) {
-			return new SmartMeterWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.THERMOMETER_WHITE_NOISE_INTERFERER)) {
-			return new ThermometerWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.WIND_FLAG_WHITE_NOISE_INTERFERER)) {
-			return new WindFlagWhiteNoiseInterferer(this.getRandomSeedService());
-		} else if (sensorInterfererType.equals(
-			SensorInterfererType.WIND_POWER_WHITE_NOISE_INTERFERER)) {
-			return new WindPowerWhiteNoiseInterferer(this.getRandomSeedService());
-		} else {
-			throw new RuntimeException();
-		}
+      // return new InductionLoopWhiteNoiseInterferer(this.getRandomSeedService());
+      // case INFRARED_WHITE_NOISE_INTERFERER:
+      // return new InfraredWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.LUXMETER_WHITE_NOISE_INTERFERER)) {
+      return new LuxmeterWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.PHOTOVOLTAIK_WHITE_NOISE_INTERFERER)) {
+      return new PhotovoltaikWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.PYRANOMETER_WHITE_NOISE_INTERFERER)) {
+      return new PyranometerWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.RAINSENSOR_WHITE_NOISE_INTERFERER)) {
+      return new RainsensorWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.SMART_METER_WHITE_NOISE_INTERFERER)) {
+      return new SmartMeterWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.THERMOMETER_WHITE_NOISE_INTERFERER)) {
+      return new ThermometerWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.WIND_FLAG_WHITE_NOISE_INTERFERER)) {
+      return new WindFlagWhiteNoiseInterferer(this.getRandomSeedService());
+    } else if (sensorInterfererType.equals(
+      SensorInterfererType.WIND_POWER_WHITE_NOISE_INTERFERER)) {
+      return new WindPowerWhiteNoiseInterferer(this.getRandomSeedService());
+    } else {
+      throw new RuntimeException();
+    }
 
-	}
+  }
 
-	@Override
-	public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
-		List<SensorInterfererType> sensorInterfererTypes) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  @Override
+  public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
+    List<SensorInterfererType> sensorInterfererTypes) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 
 }

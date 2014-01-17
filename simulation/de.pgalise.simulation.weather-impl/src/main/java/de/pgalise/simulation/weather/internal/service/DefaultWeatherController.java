@@ -121,7 +121,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
    * WeatherService
    */
   @EJB
-  private WeatherService weatherservice;
+  private WeatherService weatherService;
 
   @EJB
   private WeatherLoader weatherLoader;
@@ -152,7 +152,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   @Override
   public void checkDate(long timestamp) {
     // Check date
-    if (!this.weatherservice.checkDate(timestamp)) {
+    if (!this.weatherService.checkDate(timestamp)) {
       throw new IllegalArgumentException("There is no data available.");
     }
   }
@@ -292,14 +292,14 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   public Number getValue(final WeatherParameterEnum key,
     final long timestamp,
     final JaxRSCoordinate position) {
-    return DefaultWeatherController.this.weatherservice.getValue(key,
+    return DefaultWeatherController.this.weatherService.getValue(key,
       timestamp,
       position,
       initParameter.getCity());
   }
 
   public WeatherService getWeatherservice() {
-    return this.weatherservice;
+    return this.weatherService;
   }
 
   public void setNextNewDayInMillis(long nextNewDayInMillis) {
@@ -316,12 +316,12 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
    * @param city City
    */
   private void startWeatherService(City city) {
-    if (this.weatherservice == null) {
-      this.weatherservice = new DefaultWeatherService(city,
+    if (this.weatherService == null) {
+      this.weatherService = new DefaultWeatherService(city,
         this.weatherLoader);
     } else {
-      this.weatherservice.initValues();
-      this.weatherservice.init(initParameter);
+      this.weatherService.initValues();
+      this.weatherService.init(initParameter);
     }
   }
 
@@ -400,7 +400,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
         getEndTimestamp());
 
     // Add new weather data
-    this.weatherservice.addNewWeather(this.initParameter.getStartTimestamp().
+    this.weatherService.addNewWeather(this.initParameter.getStartTimestamp().
       getTime(),
       this.initParameter.getEndTimestamp().getTime(),
       !param.isAggregatedWeatherDataEnabled(),
@@ -440,7 +440,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
             // Log
             DefaultWeatherController.log.debug("Deploy modifier: " + cevent.
               getType());
-            DefaultWeatherController.this.weatherservice.
+            DefaultWeatherController.this.weatherService.
               deployStrategy(strategy,
                 initParameter.getCity());
           }

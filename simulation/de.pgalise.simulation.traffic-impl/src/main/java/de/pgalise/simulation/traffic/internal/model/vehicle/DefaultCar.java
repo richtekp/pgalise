@@ -7,7 +7,7 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
-import de.pgalise.simulation.traffic.model.vehicle.CarData;
+import de.pgalise.simulation.traffic.entity.CarData;
 
 /**
  *

@@ -13,124 +13,134 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.entity;
 
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Contains all information for a bus stop.
- * The id, name and the graph {@link Node}.
+ * Contains all information for a bus stop. The id, name and the graph
+ * {@link Node}.
+ *
  * @author Lena
  */
 @Entity
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class BusStop extends TrafficNode {
-	private static final long serialVersionUID = 1L;
-	private String stopName;
-	@OneToOne(mappedBy = "busStop")
-	private BusStopInformation busStopInformation;
-	
-	@Column(name = "STOP_CODE")
-	private String stopCode;
-	
-	@Column(name = "ZONE_ID")
-	private String zoneId;
-	
-	@Column(name = "STOP_URL")
-	private String stopUrl;
-	
-	@Column(name = "LOCATION_TYPE")
-	private String locationType;
-	
-	@Column(name = "PARENT_STATION")
-	private String parentStation;
-	
-	@Column(name = "STOP_TIMEZONE")
-	private String stopTimezone;
-	
-	@Column(name = "WHEELCHAIR_BOARDING")
-	private String wheelchairBoarding;
 
-	protected BusStop() {
-	}
-	
-	public BusStop(String name, BusStopInformation busStopInformation, JaxRSCoordinate geoLocation) {
-		super(geoLocation);
-		this.stopName = name;
-		this.busStopInformation = busStopInformation;
-	}
+  private static final long serialVersionUID = 1L;
+  private String stopName;
+  @OneToOne(mappedBy = "busStop")
+  private BusStopInformation busStopInformation;
 
-	/**
-	 * @return the stopName
-	 */
-	public String getStopName() {
-		return stopName;
-	}
+  @Column(name = "STOP_CODE")
+  private String stopCode;
 
-	/**
-	 * @param stopName the stopName to set
-	 */
-	public void setStopName(String stopName) {
-		this.stopName = stopName;
-	}
+  @Column(name = "ZONE_ID")
+  private String zoneId;
 
-	public String getStopCode() {
-		return stopCode;
-	}
+  @Column(name = "STOP_URL")
+  private String stopUrl;
 
-	public void setStopCode(String stopCode) {
-		this.stopCode = stopCode;
-	}
+  @Column(name = "LOCATION_TYPE")
+  private String locationType;
 
-	public String getZoneId() {
-		return zoneId;
-	}
+  @Column(name = "PARENT_STATION")
+  private String parentStation;
 
-	public void setZoneId(String zoneId) {
-		this.zoneId = zoneId;
-	}
+  @Column(name = "STOP_TIMEZONE")
+  private String stopTimezone;
 
-	public String getStopUrl() {
-		return stopUrl;
-	}
+  @Column(name = "WHEELCHAIR_BOARDING")
+  private String wheelchairBoarding;
 
-	public void setStopUrl(String stopUrl) {
-		this.stopUrl = stopUrl;
-	}
+  protected BusStop() {
+  }
 
-	public String getLocationType() {
-		return locationType;
-	}
+  public BusStop(Long id,
+    String name,
+    BusStopInformation busStopInformation,
+    JaxRSCoordinate geoLocation) {
+    super(id,
+      geoLocation);
+    this.stopName = name;
+    this.busStopInformation = busStopInformation;
+  }
 
-	public void setLocationType(String locationType) {
-		this.locationType = locationType;
-	}
+  /**
+   * @return the stopName
+   */
+  public String getStopName() {
+    return stopName;
+  }
 
-	public String getParentStation() {
-		return parentStation;
-	}
+  /**
+   * @param stopName the stopName to set
+   */
+  public void setStopName(String stopName) {
+    this.stopName = stopName;
+  }
 
-	public void setParentStation(String parentStation) {
-		this.parentStation = parentStation;
-	}
+  public String getStopCode() {
+    return stopCode;
+  }
 
-	public String getStopTimezone() {
-		return stopTimezone;
-	}
+  public void setStopCode(String stopCode) {
+    this.stopCode = stopCode;
+  }
 
-	public void setStopTimezone(String stopTimezone) {
-		this.stopTimezone = stopTimezone;
-	}
+  public String getZoneId() {
+    return zoneId;
+  }
 
-	public String getWheelchairBoarding() {
-		return wheelchairBoarding;
-	}
+  public void setZoneId(String zoneId) {
+    this.zoneId = zoneId;
+  }
 
-	public void setWheelchairBoarding(String wheelchairBoarding) {
-		this.wheelchairBoarding = wheelchairBoarding;
-	}
-	
+  public String getStopUrl() {
+    return stopUrl;
+  }
+
+  public void setStopUrl(String stopUrl) {
+    this.stopUrl = stopUrl;
+  }
+
+  public String getLocationType() {
+    return locationType;
+  }
+
+  public void setLocationType(String locationType) {
+    this.locationType = locationType;
+  }
+
+  public String getParentStation() {
+    return parentStation;
+  }
+
+  public void setParentStation(String parentStation) {
+    this.parentStation = parentStation;
+  }
+
+  public String getStopTimezone() {
+    return stopTimezone;
+  }
+
+  public void setStopTimezone(String stopTimezone) {
+    this.stopTimezone = stopTimezone;
+  }
+
+  public String getWheelchairBoarding() {
+    return wheelchairBoarding;
+  }
+
+  public void setWheelchairBoarding(String wheelchairBoarding) {
+    this.wheelchairBoarding = wheelchairBoarding;
+  }
+
 }

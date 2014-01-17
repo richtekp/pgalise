@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.entity;
 import de.pgalise.simulation.traffic.entity.TransportLineInformation;
 import de.pgalise.simulation.shared.entity.BusAgency;
 import de.pgalise.simulation.traffic.TransportLineTypeEnum;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.persistence.Column;

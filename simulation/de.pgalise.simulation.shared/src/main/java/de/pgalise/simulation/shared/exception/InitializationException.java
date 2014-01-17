@@ -23,7 +23,7 @@ import javax.ejb.ApplicationException;
  * @author Mustafa
  */
 @ApplicationException
-public class InitializationException extends Exception {
+public class InitializationException extends RuntimeException {
 
   /**
    * Serial

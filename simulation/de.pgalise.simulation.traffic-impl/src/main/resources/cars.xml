@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cars>
+		<car>
+			<typeid>car001</typeid>
+			<wheelDistanceWidth>1535</wheelDistanceWidth>
+			<wheelbase1>2690</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4324</length>
+			<width>1765</width>
+			<height>1421</height>
+			<weight>1360</weight>
+			<power>75</power>
+			<maxSpeed>195</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>BMW 120i</description>
+		</car>
+		<car>
+			<typeid>car002</typeid>
+			<wheelDistanceWidth>1531</wheelDistanceWidth>
+			<wheelbase1>2810</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4624</length>
+			<width>1811</width>
+			<height>1429</height>
+			<weight>1475</weight>
+			<power>135</power>
+			<maxSpeed>235</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>BMW 320i</description>
+		</car>
+		<car>
+			<typeid>car003</typeid>
+			<wheelDistanceWidth>1600</wheelDistanceWidth>
+			<wheelbase1>2968</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4899</length>
+			<width>1860</width>
+			<height>1464</height>
+			<weight>1670</weight>
+			<power>135</power>
+			<maxSpeed>227</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>BMW 520i</description>
+		</car>
+		<car>
+			<typeid>car004</typeid>
+			<wheelDistanceWidth>1611</wheelDistanceWidth>
+			<wheelbase1>3070</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>5079</length>
+			<width>1902</width>
+			<height>1471</height>
+			<weight>1900</weight>
+			<power>235</power>
+			<maxSpeed>250</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>BMW 740i</description>
+		</car>
+		<car>
+			<typeid>car005</typeid>
+			<wheelDistanceWidth>1644</wheelDistanceWidth>
+			<wheelbase1>2933</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4857</length>
+			<width>1933</width>
+			<height>1776</height>
+			<weight>2145</weight>
+			<power>225</power>
+			<maxSpeed>235</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>BMW X5</description>
+		</car>
+		<car>
+			<typeid>car006</typeid>
+			<wheelDistanceWidth>1511</wheelDistanceWidth>
+			<wheelbase1>2496</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4239</length>
+			<width>1790</width>
+			<height>1291</height>
+			<weight>1470</weight>
+			<power>135</power>
+			<maxSpeed>235</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>BMW Z4</description>
+		</car>
+		<car>
+			<typeid>car007</typeid>
+			<wheelDistanceWidth>1541</wheelDistanceWidth>
+			<wheelbase1>2575</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4199</length>
+			<width>1786</width>
+			<height>1512</height>
+			<weight>1131</weight>
+			<power>118</power>
+			<maxSpeed>220</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>Golf 6 1.4 TSI</description>
+		</car>
+		<car>
+			<typeid>car008</typeid>
+			<wheelDistanceWidth>1549</wheelDistanceWidth>
+			<wheelbase1>2637</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4255</length>
+			<width>1799</width>
+			<height>1452</height>
+			<weight>1354</weight>
+			<power>110</power>
+			<maxSpeed>216</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>Golf 7 2.0</description>
+		</car>
+	</cars>
