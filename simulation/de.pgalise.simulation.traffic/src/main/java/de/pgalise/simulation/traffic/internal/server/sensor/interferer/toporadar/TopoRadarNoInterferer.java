@@ -13,24 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar;
 
 import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import java.util.List;
+import org.jgroups.util.Triple;
 
 /**
  * Represents an interferer that shows no errors
- * 
+ *
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
 public class TopoRadarNoInterferer implements TopoRadarInterferer {
-	private static final long serialVersionUID = 1L;
 
-	@Override
-	public int[] interfere(final int mutableAxleCount, final int mutableLength, final int mutableWheelbase1,
-			final int mutableWheelbase2, final long simTime) {
-		// Returns with no change
-		return new int[] { mutableAxleCount, mutableLength, mutableWheelbase1, mutableWheelbase2 };
-	}
+  private static final long serialVersionUID = 1L;
+
+  @Override
+  public Triple<Integer, Integer, List<Integer>> interfere(int mutableAxleCount,
+    final int mutableLength,
+    List<Integer> wheelbases,
+    final long simTime) {
+    // Returns with no change
+    return new Triple<>(mutableAxleCount,
+      mutableLength,
+      wheelbases);
+  }
 }

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.traffic.internal.model.vehicle;
+package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractInformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
@@ -20,10 +21,15 @@ import javax.ejb.Stateful;
 @Stateful
 @Local(InformationBasedVehicleFactory.class)
 public class RandomInformationBasedVehicleFactory extends AbstractInformationBasedVehicleFactory
-	implements InformationBasedVehicleFactory {
+  implements InformationBasedVehicleFactory {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public RandomInformationBasedVehicleFactory() {
-	}
+  public RandomInformationBasedVehicleFactory() {
+  }
+
+  @Override
+  public Vehicle<?> createVehicle(VehicleInformation vehicleInformation) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

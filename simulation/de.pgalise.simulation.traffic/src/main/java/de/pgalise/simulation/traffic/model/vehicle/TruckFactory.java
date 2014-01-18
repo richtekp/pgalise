@@ -17,8 +17,6 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import java.awt.Color;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
-
 /**
  * Interface to provide methods to create different types of {@link Truck}.
  *
@@ -27,25 +25,23 @@ import de.pgalise.simulation.sensorFramework.output.Output;
  */
 public interface TruckFactory extends VehicleFactory {
 
-	/**
-	 * Method to create a {@link Truck} with the given typeId.All position related
-	 * data is <code>null</code>
-	 *
-	 * @param color Color of the {@link Truck}
-	 * @param trailercount Number of trailers
-	 * @param output
-	 * @return created {@link Truck}
-	 */
-	public Truck createTruck(Color color,
-		int trailercount,
-		Output output);
+  /**
+   * Method to create a {@link Truck} with the given typeId.All position related
+   * data is <code>null</code>
+   *
+   * @param color Color of the {@link Truck}
+   * @param trailercount Number of trailers
+   * @return created {@link Truck}
+   */
+  public Truck createTruck(Color color,
+    int trailercount
+  );
 
-	/**
-	 * Method to create a random {@link Truck}.All position related data is
-	 * <code>null</code>
-	 *
-	 * @param output
-	 * @return created {@link Truck}
-	 */
-	public Truck createRandomTruck(Output output);
+  /**
+   * Method to create a random {@link Truck}.All position related data is
+   * <code>null</code>
+   *
+   * @return created {@link Truck}
+   */
+  public Truck createRandomTruck();
 }

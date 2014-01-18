@@ -33,7 +33,7 @@ import de.pgalise.simulation.traffic.entity.BusTrip;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.event.CreateRandomBusData;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
-import de.pgalise.simulation.traffic.internal.model.vehicle.RandomBusFactory;
+import de.pgalise.simulation.traffic.internal.model.factory.RandomBusFactory;
 import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -53,177 +53,175 @@ import java.util.Date;
  */
 public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusData, CreateBussesEvent<BusData>> {
 
-	/**
-	 * Log
-	 */
-	private static final Logger log = LoggerFactory.getLogger(
-		CreateBussesEventHandler.class);
+  /**
+   * Log
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    CreateBussesEventHandler.class);
 
-	/**
-	 * Simulation event type
-	 */
-	private static final EventType type = TrafficEventTypeEnum.CREATE_BUSSES_EVENT;
+  /**
+   * Simulation event type
+   */
+  private static final EventType type = TrafficEventTypeEnum.CREATE_BUSSES_EVENT;
 
-	/**
-	 * Traffic server
-	 */
-	private TrafficServerLocal server;
+  /**
+   * Traffic server
+   */
+  private TrafficServerLocal server;
 
-	/**
-	 *
-	 */
-	private long lastUpdate;
+  /**
+   *
+   */
+  private long lastUpdate;
 
-	private Calendar cal;
+  private Calendar cal;
 
-	private Calendar tempCal;
-	
-	private BusService bs ;
+  private Calendar tempCal;
 
-	/**
-	 * Default constructor
-	 */
-	public CreateBussesEventHandler() {
-		cal = new GregorianCalendar();
-		tempCal = new GregorianCalendar();
-	}
+  private BusService bs;
 
-	/**
-	 * Creates busses with bus trips
-	 *
-	 * @param busTrips List with bus trips
-	 */
-	public void createBusses(List<BusTrip> busTrips) {
-		int c = 1;
-		for (int i = 0; i < busTrips.size(); i++) {
-			BusTrip trip = busTrips.get(i);
-			if (trip.getBusStops().size() > 0) {
-				List<TrafficEdge> path = this.server.getBusRoute(trip.getBusStops());
-				if (path != null) {
-					Vehicle<BusData> b = this.server.getBusFactory().createRandomBus(
-						getOutput());
-					b.getData().setBusStopOrder(trip.getBusStops());
-					b.setName(trip.getRouteShortName() + " " + trip.getRouteLongName());
-					b.setPath(path);
-					b.getData().setBusStops(this.server.
-						getBusStopNodes(trip.getBusStops()));
+  /**
+   * Default constructor
+   */
+  public CreateBussesEventHandler() {
+    cal = new GregorianCalendar();
+    tempCal = new GregorianCalendar();
+  }
 
-					// Correct the bus stop order
-					for (Iterator<BusStop> l = b.getData().getBusStopOrder().iterator(); l.
-						hasNext();) {
-						if (!b.getData().getBusStops().containsKey(l.next())) {
-							l.remove();
-						}
-					}
+  /**
+   * Creates busses with bus trips
+   *
+   * @param busTrips List with bus trips
+   */
+  public void createBusses(List<BusTrip> busTrips) {
+    int c = 1;
+    for (int i = 0; i < busTrips.size(); i++) {
+      BusTrip trip = busTrips.get(i);
+      if (trip.getBusStops().size() > 0) {
+        List<TrafficEdge> path = this.server.getBusRoute(trip.getBusStops());
+        if (path != null) {
+          Vehicle<BusData> b = this.server.getBusFactory().createRandomBus();
+          b.getData().setBusStopOrder(trip.getBusStops());
+          b.setName(trip.getRouteShortName() + " " + trip.getRouteLongName());
+          b.setPath(path);
+          b.getData().setBusStopOrder(trip.getBusStops());
 
-					// Map mp = b.getData().getBusStops();
-					// Iterator it = mp.entrySet().iterator();
-					// while (it.hasNext()) {
-					// Map.Entry pairs = (Map.Entry)it.next();
-					// System.out.println(pairs.getKey() + " = " + pairs.getValue());
-					// it.remove(); // avoids a ConcurrentModificationException
-					// }
-					Date arrivalTime = trip.getBusStopStopTimes().get(trip.getBusStops().
-						get(0)).getArrivalTime();
+          // Correct the bus stop order
+          for (Iterator<BusStop> l = b.getData().getBusStopOrder().iterator(); l.
+            hasNext();) {
+            if (!b.getData().getBusStopOrder().contains(l.next())) {
+              l.remove();
+            }
+          }
 
-					cal.setTimeInMillis(this.lastUpdate);
+          // Map mp = b.getData().getBusStops();
+          // Iterator it = mp.entrySet().iterator();
+          // while (it.hasNext()) {
+          // Map.Entry pairs = (Map.Entry)it.next();
+          // System.out.println(pairs.getKey() + " = " + pairs.getValue());
+          // it.remove(); // avoids a ConcurrentModificationException
+          // }
+          Date arrivalTime = trip.getBusStopStopTimes().get(trip.getBusStops().
+            get(0)).getArrivalTime();
 
-					tempCal.setTime(arrivalTime);
+          cal.setTimeInMillis(this.lastUpdate);
 
-					cal.set(Calendar.HOUR_OF_DAY,
-						tempCal.get(Calendar.HOUR_OF_DAY));
-					cal.set(Calendar.MINUTE,
-						tempCal.get(Calendar.MINUTE));
-					cal.set(Calendar.SECOND,
-						tempCal.get(Calendar.SECOND));
-					cal.set(Calendar.MILLISECOND,
-						0);
+          tempCal.setTime(arrivalTime);
 
-					CreateBussesEventHandler.log.debug("Calculating route " + trip.
-						getRouteShortName() + " of trip " + c + "; Starttime: "
-						+ cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":"
-						+ cal.get(Calendar.SECOND) + "." + cal.get(Calendar.MILLISECOND) + " "
-						+ cal.get(Calendar.DAY_OF_MONTH) + "." + cal.get(Calendar.MONTH) + "."
-						+ cal.get(Calendar.YEAR));
+          cal.set(Calendar.HOUR_OF_DAY,
+            tempCal.get(Calendar.HOUR_OF_DAY));
+          cal.set(Calendar.MINUTE,
+            tempCal.get(Calendar.MINUTE));
+          cal.set(Calendar.SECOND,
+            tempCal.get(Calendar.SECOND));
+          cal.set(Calendar.MILLISECOND,
+            0);
 
-					ScheduleItem item = new DefaultScheduleItem(b,
-						cal.getTimeInMillis(),
-						this.server.getUpdateIntervall());
-					// item.setLastUpdate(cal.getTimeInMillis() - this.server.getUpdateIntervall());
-					this.server.getScheduler().scheduleItem(item);
-					// try {
-					// this.createGpsSensor(trip.getGpsSensor(), b);
-					// b.setHasGPS(true);
-					// } catch (SensorException e) {
-					// e.printStackTrace();
-					// }
-				}
-				c++;
-			}
-		}
-	}
+          CreateBussesEventHandler.log.debug("Calculating route " + trip.
+            getRouteShortName() + " of trip " + c + "; Starttime: "
+            + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE) + ":"
+            + cal.get(Calendar.SECOND) + "." + cal.get(Calendar.MILLISECOND) + " "
+            + cal.get(Calendar.DAY_OF_MONTH) + "." + cal.get(Calendar.MONTH) + "."
+            + cal.get(Calendar.YEAR));
 
-	@Override
-	public EventType getTargetEventType() {
-		return CreateBussesEventHandler.type;
-	}
+          ScheduleItem item = new DefaultScheduleItem(b,
+            cal.getTimeInMillis(),
+            this.server.getUpdateIntervall());
+          // item.setLastUpdate(cal.getTimeInMillis() - this.server.getUpdateIntervall());
+          this.server.getScheduler().scheduleItem(item);
+          // try {
+          // this.createGpsSensor(trip.getGpsSensor(), b);
+          // b.setHasGPS(true);
+          // } catch (SensorException e) {
+          // e.printStackTrace();
+          // }
+        }
+        c++;
+      }
+    }
+  }
 
-	@Override
-	public void handleEvent(CreateBussesEvent<BusData> cbe) {
-		log.info("Processing CREATE_BUSSES_EVENT");
-		this.lastUpdate = cbe.getSimulationTime();
+  @Override
+  public EventType getTargetEventType() {
+    return CreateBussesEventHandler.type;
+  }
 
-		List<Bus> buses = new ArrayList<>();
+  @Override
+  public void handleEvent(CreateBussesEvent<BusData> cbe) {
+    log.info("Processing CREATE_BUSSES_EVENT");
+    this.lastUpdate = cbe.getSimulationTime();
 
-		// Create busses
-		for (CreateRandomBusData vehicleData : cbe.
-			getCreateRandomVehicleDataList()) {
-			GpsSensor gpsSensor = vehicleData.getGpsSensor();
-			InfraredSensor infraredSensor = vehicleData.getInfraredSensor();
-			Bus bus = new RandomBusFactory().createRandomBus(getOutput());
-			buses.add(bus);
-		}
+    List<Bus> buses = new ArrayList<>();
 
-		// Create all trips
-		List<BusTrip> allTrips = new ArrayList<>();
-		for (BusRoute busRoute : cbe.getBusRoutes()) {
-			allTrips.addAll(bs.getBusLineData(busRoute,
-				cbe.getSimulationTime()));
-		}
+    // Create busses
+    for (CreateRandomBusData vehicleData : cbe.
+      getCreateRandomVehicleDataList()) {
+      GpsSensor gpsSensor = vehicleData.getGpsSensor();
+      InfraredSensor infraredSensor = vehicleData.getInfraredSensor();
+      Bus bus = new RandomBusFactory().createRandomBus();
+      buses.add(bus);
+    }
 
-		// Combine busses, other sensors with trips
-		List<BusTrip> trips = new ArrayList<>();
-		for (int i = 0; i < allTrips.size(); i++) {
-			BusTrip t = allTrips.get(i);
-			Bus bus = buses.get(i);
-			t.setBus(bus);
-			t.setGpsSensor(bus.getGpsSensor());
-			t.setInfraredSensor(bus.getInfraredSensor());
+    // Create all trips
+    List<BusTrip> allTrips = new ArrayList<>();
+    for (BusRoute busRoute : cbe.getBusRoutes()) {
+      allTrips.addAll(bs.getBusLineData(busRoute,
+        cbe.getSimulationTime()));
+    }
 
-			tempCal.setTime(t.getBusStopStopTimes().get(t.getBusStops().get(0)).
-				getArrivalTime());
+    // Combine busses, other sensors with trips
+    List<BusTrip> trips = new ArrayList<>();
+    for (int i = 0; i < allTrips.size(); i++) {
+      BusTrip t = allTrips.get(i);
+      Bus bus = buses.get(i);
+      t.setBus(bus);
+      t.setGpsSensor(bus.getGpsSensor());
+      t.setInfraredSensor(bus.getInfraredSensor());
 
-			cal.setTimeInMillis(cbe.getSimulationTime());
-			cal.set(Calendar.HOUR_OF_DAY,
-				tempCal.get(Calendar.HOUR_OF_DAY));
-			cal.set(Calendar.MINUTE,
-				tempCal.get(Calendar.MINUTE));
-			cal.set(Calendar.SECOND,
-				tempCal.get(Calendar.SECOND));
-			cal.set(Calendar.MILLISECOND,
-				0);
+      tempCal.setTime(t.getBusStopStopTimes().get(t.getBusStops().get(0)).
+        getArrivalTime());
 
-			if (cal.getTimeInMillis() > cbe.getSimulationTime()) {
-				trips.add(t);
-			}
-		}
+      cal.setTimeInMillis(cbe.getSimulationTime());
+      cal.set(Calendar.HOUR_OF_DAY,
+        tempCal.get(Calendar.HOUR_OF_DAY));
+      cal.set(Calendar.MINUTE,
+        tempCal.get(Calendar.MINUTE));
+      cal.set(Calendar.SECOND,
+        tempCal.get(Calendar.SECOND));
+      cal.set(Calendar.MILLISECOND,
+        0);
 
-		// Create busses
-		this.createBusses(trips);
-	}
+      if (cal.getTimeInMillis() > cbe.getSimulationTime()) {
+        trips.add(t);
+      }
+    }
 
-	@Override
-	public void init(TrafficServerLocal<CreateBussesEvent<BusData>> server) {
-		this.server = server;
-	}
+    // Create busses
+    this.createBusses(trips);
+  }
+
+  @Override
+  public void init(TrafficServerLocal<CreateBussesEvent<BusData>> server) {
+    this.server = server;
+  }
 }

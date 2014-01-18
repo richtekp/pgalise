@@ -5,17 +5,13 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
-import de.pgalise.simulation.traffic.entity.CarData;
-import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.entity.VehicleData;
-import java.awt.Color;
+import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
+import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,6 +51,8 @@ public class InitDialogCtrl implements Serializable {
   private Queue<VehicleData> uiVehicles;
   @EJB
   private IdGenerator idGenerator;
+  @EJB
+  private CarFactory carFactory;
 
   public InitDialogCtrl() {
   }
@@ -75,24 +73,7 @@ public class InitDialogCtrl implements Serializable {
     recentScenarioMap = new HashMap<>();
     uiVehicles = new LinkedList<VehicleData>(
       Arrays.asList(
-        new CarData(idGenerator.getNextId(),
-          Color.yellow,
-          2000,
-          500,
-          3500,
-          4000,
-          2000,
-          1000,
-          1300,
-          100,
-          200,
-          2,
-          "name",
-          new GpsSensor(idGenerator.getNextId(),
-            output,
-            null,
-            new GpsNoInterferer()),
-          VehicleTypeEnum.CAR)));
+        carFactory.createCar().getData()));
   }
 
   /**

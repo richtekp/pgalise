@@ -15,13 +15,12 @@
  */
 package de.pgalise.simulation.traffic.server.route;
 
-import java.util.Date;
-import java.util.List;
-
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Generates (random) trips.
@@ -30,57 +29,57 @@ import de.pgalise.simulation.traffic.entity.TrafficTrip;
  */
 public interface RandomVehicleTripGenerator {
 
-	/**
-	 * Creates a trip for the given vehicle type.
-	 *
-	 * @param startHomeNodes
-	 * @param startWorkNodes
-	 * @param vehicleType Vehicle type
-	 * @param date
-	 * @param buffer
-	 * @return TrafficTrip
-	 */
-	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
-		List<TrafficNode> startWorkNodes,
-		VehicleTypeEnum vehicleType,
-		Date date,
-		int buffer);
+  /**
+   * Creates a trip for the given vehicle type.
+   *
+   * @param startHomeNodes
+   * @param startWorkNodes
+   * @param vehicleType Vehicle type
+   * @param date
+   * @param buffer
+   * @return TrafficTrip
+   */
+  public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
+    List<TrafficNode> startWorkNodes,
+    VehicleType vehicleType,
+    Date date,
+    int buffer);
 
-	public List<TrafficNode> getHomeNodes();
+  public List<TrafficNode> getHomeNodes();
 
-	public RandomSeedService getRandomSeedService();
+  public RandomSeedService getRandomSeedService();
 
-	public List<TrafficNode> getWorkNodes();
+  public List<TrafficNode> getWorkNodes();
 
-	public void init();
+  public void init();
 
-	public void setHomeNodes(List<TrafficNode> homeNodes);
+  public void setHomeNodes(List<TrafficNode> homeNodes);
 
-	public void setRandomSeedService(RandomSeedService randomSeedService);
+  public void setRandomSeedService(RandomSeedService randomSeedService);
 
-	public void setWorkNodes(List<TrafficNode> workNodes);
+  public void setWorkNodes(List<TrafficNode> workNodes);
 
-	/**
-	 * Create a traffic trip with given target node ID and time
-	 *
-	 * @param startHomeNodes List with start home nodes
-	 * @param targetNode Target node ID
-	 * @param startTimestamp startTimeWayThere
-	 * @return TrafficTrip
-	 */
-	public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
-		TrafficNode targetNode,
-		long startTimestamp);
+  /**
+   * Create a traffic trip with given target node ID and time
+   *
+   * @param startHomeNodes List with start home nodes
+   * @param targetNode Target node ID
+   * @param startTimestamp startTimeWayThere
+   * @return TrafficTrip
+   */
+  public TrafficTrip createVehicleTrip(List<TrafficNode> startHomeNodes,
+    TrafficNode targetNode,
+    long startTimestamp);
 
-	/**
-	 * Create a traffic trip with given start node ID and time
-	 *
-	 * @param homeNodes List with target home nodes
-	 * @param startNode Start node ID
-	 * @param startTimestamp startTimeWayThere
-	 * @return TrafficTrip
-	 */
-	public TrafficTrip createVehicleTrip(TrafficNode startNode,
-		List<TrafficNode> homeNodes,
-		long startTimestamp);
+  /**
+   * Create a traffic trip with given start node ID and time
+   *
+   * @param homeNodes List with target home nodes
+   * @param startNode Start node ID
+   * @param startTimestamp startTimeWayThere
+   * @return TrafficTrip
+   */
+  public TrafficTrip createVehicleTrip(TrafficNode startNode,
+    List<TrafficNode> homeNodes,
+    long startTimestamp);
 }

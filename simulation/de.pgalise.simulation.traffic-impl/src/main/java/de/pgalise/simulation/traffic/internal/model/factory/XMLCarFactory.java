@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.internal.model.vehicle;
+package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.model.vehicle.Bus;
-import de.pgalise.simulation.traffic.entity.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.xml.BusDataList;
+import de.pgalise.simulation.traffic.model.vehicle.Car;
+import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
+import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
+import de.pgalise.simulation.traffic.model.vehicle.xml.CarDataList;
+import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +33,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 /**
- * Implements a factory for {@link Bus}. The vehicles are loaded by a XML file.
+ * Implements a factory for {@link Car}. The vehicles are loaded by a XML file.
  *
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
@@ -39,21 +41,35 @@ import javax.xml.bind.Unmarshaller;
 /*
  use XML serialization framework (currently the usage of typeid as Identifiable.id is possibly not correct
  */
-public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
-  implements BusFactory {
+public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
+  CarFactory {
 
-  public XMLBusFactory() {
+  @Override
+  public Car createCar() {
+    return createRandomCar();
+  }
+
+  @Override
+  public Car createRandomCar() {
+    CarData data = getRandomVehicleData();
+    return new DefaultCar(getIdGenerator().getNextId(),
+      "name",
+      data,
+      getTrafficGraphExtensions());
+  }
+
+  public XMLCarFactory() {
   }
 
   /**
    * Constructor
    *
    * @param idGenerator
-   * @param trafficGraphExtensions
-   * @param stream Input stream of the XML data
    * @param randomSeedService Random Seed Service
+   * @param stream Input stream of the XML data
+   * @param trafficGraphExtensions
    */
-  public XMLBusFactory(IdGenerator idGenerator,
+  public XMLCarFactory(IdGenerator idGenerator,
     TrafficGraphExtensions trafficGraphExtensions,
     RandomSeedService randomSeedService,
     InputStream stream) {
@@ -63,10 +79,10 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
       stream);
   }
 
-  public XMLBusFactory(IdGenerator idGenerator,
+  public XMLCarFactory(IdGenerator idGenerator,
     TrafficGraphExtensions trafficGraphExtensions,
     RandomSeedService randomSeedService,
-    Set<BusData> randomVehicleDataPool) {
+    Set<CarData> randomVehicleDataPool) {
     super(trafficGraphExtensions,
       idGenerator,
       randomSeedService,
@@ -74,45 +90,46 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
   }
 
   /**
-   * Create new BicycleData
+   * Updates the {@link CarData} with new information
+   *
+   * @param data loaded {@link CarData}
+   * @param color
+   * @return updated {@link CarData} object
+   */
+  private CarData updateCarData(CarData data,
+    Color color) {
+    data.setColor(color);
+
+    return data;
+  }
+
+  /**
+   * Create new CarData
+   *
+   * @return
    */
   @Override
-  public BusData getRandomVehicleData() {
-    BusData referenceData = super.getRandomVehicleData();
-
-    return new BusData(referenceData);
+  public CarData getRandomVehicleData() {
+    CarData referenceData = super.getRandomVehicleData();
+    return new CarData(referenceData);
   }
 
   @Override
-  public Bus createRandomBus(Output output) {
-    BusData data = getRandomVehicleData();
-    return new DefaultBus(getIdGenerator().getNextId(),
-      "bus" + getNextCounter(),
-      data,
-      this.getTrafficGraphExtensions());
-  }
-
-  @Override
-  public Bus createBus(Output output) {
-    return createRandomBus(output);
-  }
-
-  @Override
-  protected Set<BusData> readVehicleData(InputStream doc) {
+  protected Set<CarData> readVehicleData(InputStream doc) {
 
     try {
-      JAXBContext jaxbContext = JAXBContext.newInstance(BusDataList.class);
+      JAXBContext jaxbContext = JAXBContext.newInstance(CarDataList.class);
 
       Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-      BusDataList retValue = (BusDataList) jaxbUnmarshaller.
+      CarDataList carDataList = (CarDataList) jaxbUnmarshaller.
         unmarshal(doc);
-      return new HashSet<>(retValue.getList());
+      return new HashSet<>(carDataList.getList());
 
-//    Map<VehicleType, BusData> vehicles = new HashMap<>();
+//    Map<String, CarData> vehicles = new HashMap<>();
 //
 //    // Get strategies node
-//    NodeList nList = doc.getElementsByTagName("bus");
+//    NodeList nList = doc.getElementsByTagName("car");
 //
 //    // Get all strategies
 //    for (int i = 0; i < nList.getLength(); i++) {
@@ -122,10 +139,10 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
 //      NodeList vehicleChildrens = vehicleItem.getChildNodes();
 //
 //      // Init variables
-//      String typeidValue = "" + COUNTER, description = null;
-//      int length = 0, axleCount = 0, wheelbase1 = 0, wheelbase2 = 0, height = 0, maxSpeed = 0, weight = 0, width = 0, maxPassengerCount = 0;
+//      Color color = Color.WHITE;
+//      String typeid = "" + COUNTER, description = null;
+//      int axleCount = 0, wheelbase1 = 0, wheelbase2 = 0, height = 0, maxSpeed = 0, weight = 0, wheelDistanceWidth = 0, width = 0, length = 0;
 //      double power = 0;
-//      VehicleType vehicleType = null;
 //
 //      // Get properties of the vehicle
 //      for (int y = 0; y < vehicleChildrens.getLength(); y++) {
@@ -135,9 +152,9 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
 //
 //        /* Check */
 //        if (nodeName.equals("typeid")) {
-//          typeidValue = propertyItem.getTextContent();
-//          vehicleType = VehicleTypeEnum.getForVehicleTypeId(Integer.parseInt(
-//            typeidValue));
+//          typeid = propertyItem.getTextContent();
+//        } else if (nodeName.equals("wheelDistanceWidth")) {
+//          wheelDistanceWidth = Integer.parseInt(propertyItem.getTextContent());
 //        } else if (nodeName.equals("wheelbase1")) {
 //          wheelbase1 = Integer.parseInt(propertyItem.getTextContent());
 //        } else if (nodeName.equals("wheelbase2")) {
@@ -158,19 +175,14 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
 //          axleCount = Integer.parseInt(propertyItem.getTextContent());
 //        } else if (nodeName.equals("description")) {
 //          description = propertyItem.getTextContent();
-//        } else if (nodeName.equals("maxPassengerCount")) {
-//          maxPassengerCount = Integer.parseInt(propertyItem.getTextContent());
 //        }
-//      }
-//      if (vehicleType == null) {
-//        throw new IllegalArgumentException(String.format(
-//          "document contains illegal vehilce type id %s",
-//          typeidValue));
 //      }
 //
 //      // Add new vehicle
-//      vehicles.put(vehicleType,
-//        new BusData(wheelbase1,
+//      vehicles.put(typeid,
+//        new CarData(color,
+//          wheelDistanceWidth,
+//          wheelbase1,
 //          wheelbase2,
 //          length,
 //          width,
@@ -178,12 +190,10 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
 //          weight,
 //          power,
 //          maxSpeed,
-//          description,
-//          maxPassengerCount,
-//          0,
 //          axleCount,
+//          description,
 //          null,
-//          null));
+//          VehicleTypeEnum.CAR));
 //    }
 //
 //    // Returns

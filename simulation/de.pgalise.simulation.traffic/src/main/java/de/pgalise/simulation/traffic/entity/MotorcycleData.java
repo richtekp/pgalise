@@ -15,17 +15,15 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
+import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.model.vehicle.xml.ColorAdapter;
 import java.awt.Color;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * Informations about the motorcycle
@@ -35,134 +33,77 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-public class MotorcycleData extends VehicleData {
+public class MotorcycleData extends MotorizedVehicleData {
 
   /**
    * Serial
    */
   private static final long serialVersionUID = -97081705088299060L;
 
-  /**
-   * Color
-   */
-  @XmlJavaTypeAdapter(ColorAdapter.class)
-  @XmlElement
-  private Color color;
-
-  /**
-   * Maximum speed in kmh
-   */
-  private int maxSpeed;
-
-  /**
-   * Weight in kg
-   */
-  private int weight;
-
-  /**
-   * Horse power
-   */
-  private double horsePower;
-
-  /**
-   * Description of the motorcycle
-   */
-  private String description;
-
   public MotorcycleData() {
-    this.maxSpeed = 0;
-    this.weight = 0;
-    this.horsePower = 0;
-    this.description = null;
   }
 
   /**
    * Constructor
    *
+   * @param power
    * @param id
+   * @param vehicleLength
    * @param color Color of the vehicle
+   * @param wheelbases
+   * @param type
    * @param weight Weight in kg
+   * @param width
    * @param horsePower Horse power
    * @param length Length in mm
+   * @param height
    * @param maxSpeed Maximum speed in kmh
    * @param wheelbase Wheelbase in mm
    * @param axleCount Number of axles
    * @param description Description of the motorcycle
    * @param gpsSensor
    */
-  public MotorcycleData(Long id,
-    Color color,
-    int weight,
-    double horsePower,
-    int length,
+  public MotorcycleData(double power,
+    int vehicleLength,
+    List<Integer> wheelbases,
+    GpsSensor gpsSensor,
     int maxSpeed,
-    int wheelbase,
-    int axleCount,
+    int weight,
+    int width,
+    Color color,
     String description,
-    GpsSensor gpsSensor) {
-    super(id,
-      length,
-      wheelbase,
-      0,
-      axleCount,
-      VehicleTypeEnum.MOTORCYCLE,
-      gpsSensor);
-    this.color = color;
-    this.weight = weight;
-    this.maxSpeed = maxSpeed;
-    this.horsePower = horsePower;
-    this.description = description;
+    int height,
+    Long id) {
+    super(power,
+      vehicleLength,
+      wheelbases,
+      gpsSensor,
+      maxSpeed,
+      weight,
+      width,
+      color,
+      description,
+      height,
+      id);
   }
 
-  /**
-   * Constructor
-   *
-   * @param referenceData MotorcycleData
-   */
   public MotorcycleData(MotorcycleData referenceData) {
-    super(referenceData.getId(),
+    this(referenceData.getPower(),
       referenceData.getVehicleLength(),
-      referenceData.getWheelbase1(),
-      referenceData.getWheelbase2(),
-      referenceData
-      .getAxleCount(),
-      referenceData.getType(),
-      referenceData.getGpsSensor());
-    this.color = referenceData.getColor();
-    this.weight = referenceData.getWeight();
-    this.maxSpeed = referenceData.getMaxSpeed();
-    this.horsePower = referenceData.getHorsePower();
-    this.description = referenceData.getDescription();
-  }
-
-  public int getMaxSpeed() {
-    return this.maxSpeed;
-  }
-
-  public int getWeight() {
-    return this.weight;
-  }
-
-  public double getHorsePower() {
-    return this.horsePower;
-  }
-
-  public Color getColor() {
-    return color;
-  }
-
-  public void setColor(Color color) {
-    this.color = color;
-  }
-
-  public String getDescription() {
-    return description;
+      referenceData.getWheelbases(),
+      referenceData.getGpsSensor(),
+      referenceData.getMaxSpeed(),
+      referenceData.getWeight(),
+      referenceData.getWidth(),
+      referenceData.getColor(),
+      referenceData.getDescription(),
+      referenceData.getHeight(),
+      referenceData.getId());
   }
 
   @Override
-  public String toString() {
-    return "MotorcycleData [color=" + color + ", maxSpeed=" + maxSpeed + ", weight=" + weight + ", horsePower="
-      + horsePower + ", description=" + description + "]";
+  public VehicleType getType() {
+    return VehicleTypeEnum.MOTORCYCLE;
   }
 
 }

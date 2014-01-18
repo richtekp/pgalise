@@ -57,7 +57,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import javax.ejb.Stateful;
-import org.geotools.geometry.jts.JTS;
 
 /**
  * Implementation of the traffic controller
@@ -167,8 +166,7 @@ public class DefaultTrafficController<
 //      trafficServer.setTrafficServers(trafficServersClone);
 //    }
     // stadt in gleichgroße teile aufteilen
-    area = JTS.toGeometry(param.getCity().getCityInfrastructureData().
-      getBoundary());
+    area = param.getCity().getPosition().getBoundaries();
     cityZones = createCityZones();
 
     // server graphdaten übergeben

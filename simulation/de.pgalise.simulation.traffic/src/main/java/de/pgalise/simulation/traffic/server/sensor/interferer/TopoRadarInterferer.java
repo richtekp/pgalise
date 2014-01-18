@@ -13,35 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.server.sensor.interferer;
 
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
+import java.util.List;
+import org.jgroups.util.Triple;
 
 /**
  * Interface for an interferer which manipulates the toporadar input
- * 
+ *
  * @author Marcus
  * @author Andreas
  * @version 1.0
  */
 public interface TopoRadarInterferer extends SensorInterferer {
 
-	/**
-	 * Interferes the sensor value
-	 * 
-	 * @param mutableAxleCount
-	 *            axle value to change
-	 * @param mutableLength
-	 *            length value to change
-	 * @param mutableWheelbase1
-	 *            wheelbase1 value to change
-	 * @param mutableWheelbase2
-	 *            wheelbase2 value to change
-	 * @param simTime
-	 *            Simulation timestamp
-	 * @return array with new values
-	 */
-	int[] interfere(final int mutableAxleCount, final int mutableLength, final int mutableWheelbase1,
-			final int mutableWheelbase2, final long simTime);
+  /**
+   * Interferes the sensor value
+   *
+   * @param mutableAxleCount axle value to change
+   * @param mutableLength length value to change
+   * @param mutableWheelbases wheelbase1 value to change
+   * @param simTime Simulation timestamp
+   * @return array with new values
+   */
+  Triple<Integer, Integer, List<Integer>> interfere(final int mutableAxleCount,
+    final int mutableLength,
+    List<Integer> mutableWheelbases,
+    final long simTime);
 }

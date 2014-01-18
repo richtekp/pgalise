@@ -14,83 +14,99 @@ import javax.faces.bean.SessionScoped;
 @ManagedBean
 @SessionScoped
 public class TrafficInitParameter extends SimulationInitParameter {
-	private static final long serialVersionUID = 1L;
-	private TrafficCity ctiy;
-	private int TrafficServerCount = 2;
 
-	/**
-	 * Traffic fuzzy data
-	 */
-	private TrafficFuzzyData trafficFuzzyData;
+  private static final long serialVersionUID = 1L;
+  private TrafficCity city;
+  private int TrafficServerCount = 2;
 
-	public TrafficInitParameter() {
-	}
+  /**
+   * Traffic fuzzy data
+   */
+  private TrafficFuzzyData trafficFuzzyData;
 
-	public TrafficInitParameter(
-		TrafficCity city,
-		long startTimestamp,
-		long endTimestamp,
-		long interval,
-		long clockGeneratorInterval,
-		URL operationCenterURL,
-		URL controlCenterURL,
-		TrafficFuzzyData trafficFuzzyData) {
-		super(
-			startTimestamp,
-			endTimestamp,
-			interval,
-			clockGeneratorInterval,
-			operationCenterURL,
-			controlCenterURL,
-			city.getCityInfrastructureData().getBoundary());
-		this.ctiy = city;
-		this.trafficFuzzyData = trafficFuzzyData;
-	}
+  public TrafficInitParameter() {
+    super();
+  }
 
-	public TrafficInitParameter(
-		TrafficCity city,
-		long startTimestamp,
-		long endTimestamp,
-		long interval,
-		long clockGeneratorInterval,
-		URL operationCenterURL,
-		URL controlCenterURL,
-		TrafficFuzzyData trafficFuzzyData,
-		int trafficServerCount) {
-		this(city,
-			startTimestamp,
-			endTimestamp,
-			interval,
-			clockGeneratorInterval,
-			operationCenterURL,
-			controlCenterURL,
-			trafficFuzzyData);
-		this.TrafficServerCount = trafficServerCount;
-	}
+  /**
+   * Initializes a TrafficInitParamter with default values of {@link SimulationInitParameter#SimulationInitParameter()
+   * }
+   *
+   * @param city
+   * @param trafficFuzzyData
+   */
+  public TrafficInitParameter(TrafficCity city,
+    TrafficFuzzyData trafficFuzzyData) {
+    super();
+    this.city = city;
+    this.trafficFuzzyData = trafficFuzzyData;
+  }
 
-	public void setCity(
-		TrafficCity city) {
-		this.ctiy = city;
-	}
+  public TrafficInitParameter(
+    TrafficCity city,
+    long startTimestamp,
+    long endTimestamp,
+    long interval,
+    long clockGeneratorInterval,
+    URL operationCenterURL,
+    URL controlCenterURL,
+    TrafficFuzzyData trafficFuzzyData) {
+    super(
+      startTimestamp,
+      endTimestamp,
+      interval,
+      clockGeneratorInterval,
+      operationCenterURL,
+      controlCenterURL,
+      city.getPosition().getBoundaries().getEnvelopeInternal());
+    this.city = city;
+    this.trafficFuzzyData = trafficFuzzyData;
+  }
 
-	public TrafficCity getCity() {
-		return ctiy;
-	}
+  public TrafficInitParameter(
+    TrafficCity city,
+    long startTimestamp,
+    long endTimestamp,
+    long interval,
+    long clockGeneratorInterval,
+    URL operationCenterURL,
+    URL controlCenterURL,
+    TrafficFuzzyData trafficFuzzyData,
+    int trafficServerCount) {
+    this(city,
+      startTimestamp,
+      endTimestamp,
+      interval,
+      clockGeneratorInterval,
+      operationCenterURL,
+      controlCenterURL,
+      trafficFuzzyData);
+    this.TrafficServerCount = trafficServerCount;
+  }
 
-	public void setTrafficServerCount(int TrafficServerCount) {
-		this.TrafficServerCount = TrafficServerCount;
-	}
+  public void setCity(
+    TrafficCity city) {
+    this.city = city;
+  }
 
-	public int getTrafficServerCount() {
-		return TrafficServerCount;
-	}
+  public TrafficCity getCity() {
+    return city;
+  }
 
-	public void setTrafficFuzzyData(TrafficFuzzyData trafficFuzzyData) {
-		this.trafficFuzzyData = trafficFuzzyData;
-	}
+  public void setTrafficServerCount(int TrafficServerCount) {
+    this.TrafficServerCount = TrafficServerCount;
+  }
 
-	public TrafficFuzzyData getTrafficFuzzyData() {
-		return trafficFuzzyData;
-	}
+  public int getTrafficServerCount() {
+    return TrafficServerCount;
+  }
+
+  public void setTrafficFuzzyData(TrafficFuzzyData trafficFuzzyData) {
+    this.trafficFuzzyData = trafficFuzzyData;
+  }
+
+  public TrafficFuzzyData getTrafficFuzzyData() {
+    return trafficFuzzyData;
+  }
 
 }

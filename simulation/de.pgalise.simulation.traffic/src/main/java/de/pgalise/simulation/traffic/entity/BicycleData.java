@@ -15,21 +15,24 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
+import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import java.awt.Color;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javolution.xml.XMLFormat;
-import javolution.xml.stream.XMLStreamException;
 
 /**
  * Attributes of bicycles
  *
  * @author Marcus
  * @author Sabrina
+ */
+/*
+ bicycles have different width e.g. when tricycle, differnt height when laying high speed bike
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -46,61 +49,31 @@ public class BicycleData extends VehicleData {
    */
   private String material;
 
-  /**
-   * Description of the bicycle
-   */
-  private String description;
-
-  /**
-   * Maximum speed
-   */
-  private int maxSpeed;
-
-  /**
-   * Weight
-   */
-  private double weight;
-
-  /**
-   * Wheelbase
-   */
-  private int wheelbase;
-
   public BicycleData() {
   }
 
-  /**
-   * Constructor
-   *
-   * @param id
-   * @param weight Weight
-   * @param maxSpeed Maximum speed
-   * @param material Material
-   * @param length Length in mm
-   * @param wheelbase Wheelbase
-   * @param description
-   * @param gpsSensor
-   */
-  public BicycleData(Long id,
-    double weight,
+  public BicycleData(String material,
+    int vehicleLength,
+    List<Integer> wheelbases,
+    GpsSensor gpsSensor,
     int maxSpeed,
-    String material,
-    int length,
-    int wheelbase,
+    int weight,
+    int width,
+    Color color,
     String description,
-    GpsSensor gpsSensor) {
-    super(id,
-      length,
-      wheelbase,
-      0,
-      2,
-      VehicleTypeEnum.BIKE,
-      gpsSensor);
-    this.weight = weight;
-    this.maxSpeed = maxSpeed;
-    this.description = description;
+    int height,
+    Long id) {
+    super(vehicleLength,
+      wheelbases,
+      gpsSensor,
+      maxSpeed,
+      weight,
+      width,
+      color,
+      description,
+      height,
+      id);
     this.material = material;
-    this.wheelbase = wheelbase;
   }
 
   /**
@@ -109,70 +82,30 @@ public class BicycleData extends VehicleData {
    * @param referenceData BicycleData
    */
   public BicycleData(BicycleData referenceData) {
-    this(referenceData.getId(),
-      referenceData.getWeight(),
+    this(referenceData.getMaterial(),
+      referenceData.getVehicleLength(),
+      referenceData.getWheelbases(),
+      referenceData.getGpsSensor(),
       referenceData.getMaxSpeed(),
-      referenceData.getMaterial(),
-      referenceData
-      .getVehicleLength(),
-      referenceData.getWheelbase(),
+      referenceData.getWeight(),
+      referenceData.getWidth(),
+      referenceData.getColor(),
       referenceData.getDescription(),
-      referenceData
-      .getGpsSensor());
-  }
-
-  public String getDescription() {
-    return this.description;
+      referenceData.getHeight(),
+      referenceData.getId()
+    );
   }
 
   public String getMaterial() {
     return this.material;
   }
 
-  public int getMaxSpeed() {
-    return this.maxSpeed;
-  }
-
-  public double getWeight() {
-    return this.weight;
-  }
-
-  public int getWheelbase() {
-    return this.wheelbase;
+  public void setMaterial(String material) {
+    this.material = material;
   }
 
   @Override
-  public String toString() {
-    return "BicycleData [material=" + material + ", description=" + description + ", maxSpeed=" + maxSpeed
-      + ", weight=" + weight + ", wheelbase=" + wheelbase + "]";
+  public VehicleType getType() {
+    return VehicleTypeEnum.BIKE;
   }
-
-  protected static final XMLFormat<BicycleData> GRAPHIC_XML = new XMLFormat<BicycleData>(
-    BicycleData.class) {
-      @Override
-      public void write(BicycleData g,
-        OutputElement xml) throws XMLStreamException {
-        xml.setAttribute("material",
-          g.material);
-        xml.add(g.description,
-          "description");
-        xml.add(g.maxSpeed,
-          "maxSpeed");
-        xml.add(g.weight,
-          "weight");
-        xml.add(g.wheelbase,
-          "wheelbase");
-      }
-
-      @Override
-      public void read(InputElement xml,
-        BicycleData g) throws XMLStreamException {
-        g.material = xml.getAttribute("material",
-          "");
-        g.description = xml.get("description");
-        g.maxSpeed = xml.get("maxSpeed");
-        g.weight = xml.get("weight");
-        g.wheelbase = xml.get("wheelbase");
-      }
-    };
 }

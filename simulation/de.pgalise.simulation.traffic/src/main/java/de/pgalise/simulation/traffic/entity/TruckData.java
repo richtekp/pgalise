@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
+import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.awt.Color;
@@ -24,6 +25,7 @@ import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.persistence.OneToMany;
 
 /**
  * Information about a truck
@@ -34,13 +36,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-public class TruckData extends CarData {
+public class TruckData extends MotorizedVehicleData {
 
   /**
    * Serial
    */
   private static final long serialVersionUID = 6626940882630925074L;
 
+  @OneToMany //@ElementCollection @TODO: make an ElementCollection again if hibernate bug HHH-8860 is fixed
   private List<TruckTrailerData> truckTrailerDatas = new LinkedList<>();
 
   public TruckData() {
@@ -49,7 +52,10 @@ public class TruckData extends CarData {
   /**
    * Constructor
    *
+   * @param truckTrailerDatas
    * @param id
+   * @param vehicleLength
+   * @param wheelbases
    * @param color Color
    * @param wheelDistanceWidth width of the wheel distance in mm
    * @param wheelbase1
@@ -67,41 +73,30 @@ public class TruckData extends CarData {
    * @param trailerLength Length of each trailer
    * @param gpsSensor
    */
-  public TruckData(Long id,
-    Color color,
-    int wheelDistanceWidth,
-    int wheelbase1,
-    int wheelbase2,
-    int length,
-    int width,
-    int height,
-    int weight,
+  public TruckData(List<TruckTrailerData> truckTrailerDatas,
     double power,
+    int vehicleLength,
+    List<Integer> wheelbases,
+    GpsSensor gpsSensor,
     int maxSpeed,
-    int axleCount,
+    int weight,
+    int width,
+    Color color,
     String description,
-    int trailerCount,
-    int trailerDistance,
-    int trailerLength,
-    GpsSensor gpsSensor) {
-    super(id,
-      color,
-      wheelDistanceWidth,
-      wheelbase1,
-      wheelbase2,
-      length,
-      width,
-      height,
-      weight,
-      power,
-      maxSpeed,
-      axleCount,
-      description,
+    int height,
+    Long id) {
+    super(power,
+      vehicleLength,
+      wheelbases,
       gpsSensor,
-      VehicleTypeEnum.TRUCK);
-    this.trailerCount = trailerCount;
-    this.trailerDistance = trailerDistance;
-    this.trailerLength = trailerLength;
+      maxSpeed,
+      weight,
+      width,
+      color,
+      description,
+      height,
+      id);
+    this.truckTrailerDatas = truckTrailerDatas;
   }
 
   /**
@@ -110,63 +105,31 @@ public class TruckData extends CarData {
    * @param referenceData TruckData
    */
   public TruckData(TruckData referenceData) {
-    this(referenceData.getId(),
-      referenceData.getColor(),
-      referenceData.getWheelDistanceWidth(),
-      referenceData.getWheelbase1(),
-      referenceData.getWheelbase2(),
-      referenceData.getVehicleLength(),
-      referenceData.getWidth(),
-      referenceData
-      .getHeight(),
-      referenceData.getWeight(),
+    this(referenceData.truckTrailerDatas,
       referenceData.getPower(),
+      referenceData.getVehicleLength(),
+      referenceData.getWheelbases(),
+      referenceData.getGpsSensor(),
       referenceData.getMaxSpeed(),
-      referenceData.getAxleCount(),
+      referenceData.getWeight(),
+      referenceData.getWidth(),
+      referenceData.getColor(),
       referenceData.getDescription(),
-      referenceData.getTrailerCount(),
-      referenceData.getTrailerDistance(),
-      referenceData.getTrailerLength(),
-      referenceData.getGpsSensor());
+      referenceData.getHeight(),
+      referenceData.getId());
   }
 
-  public int getTrailerCount() {
-    return this.trailerCount;
+  public void setTruckTrailerDatas(List<TruckTrailerData> truckTrailerDatas) {
+    this.truckTrailerDatas = truckTrailerDatas;
   }
 
-  public void setTrailerCount(int trailerCount) {
-    this.trailerCount = trailerCount;
-  }
-
-  public int getTrailerDistance() {
-    return this.trailerDistance;
-  }
-
-  public void setTrailerDistance(int trailerDistance) {
-    this.trailerDistance = trailerDistance;
-  }
-
-  public int getTrailerLength() {
-    return this.trailerLength;
-  }
-
-  public void setTrailerLength(int trailerLength) {
-    this.trailerLength = trailerLength;
-  }
-
-  /**
-   * Overrides the length of the vehicle with the length of vehicle plus the
-   * trailers
-   */
-  @Override
-  public int getVehicleLength() {
-    return (super.getVehicleLength() + (this.trailerCount * (this.trailerDistance + this.trailerLength)));
+  public List<TruckTrailerData> getTruckTrailerDatas() {
+    return truckTrailerDatas;
   }
 
   @Override
-  public String toString() {
-    return "TruckData [trailerCount=" + trailerCount + ", trailerDistance=" + trailerDistance + ", trailerLength="
-      + trailerLength + "]";
+  public VehicleType getType() {
+    return VehicleTypeEnum.TRUCK;
   }
 
 }

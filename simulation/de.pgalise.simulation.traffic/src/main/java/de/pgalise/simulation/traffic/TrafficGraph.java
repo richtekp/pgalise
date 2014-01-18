@@ -11,24 +11,35 @@ import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.VehicleData;
+import java.util.HashMap;
 import java.util.Set;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import org.jgrapht.DirectedGraph;
 import org.jgrapht.EdgeFactory;
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.AsWeightedGraph;
+import org.jgrapht.graph.DefaultDirectedGraph;
 
 /**
  *
  * @author richter
  */
-public abstract class TrafficGraph extends DefaultDirectedWeightedGraph<TrafficNode, TrafficEdge> {
+public abstract class TrafficGraph extends AsWeightedGraph<TrafficNode, TrafficEdge>
+  implements DirectedGraph<TrafficNode, TrafficEdge> {
 
   private static final long serialVersionUID = 1L;
 
   private Long id;
+  private Graph<TrafficNode, TrafficEdge> delegator;
 
   public TrafficGraph(EdgeFactory<TrafficNode, TrafficEdge> edgeFactory) {
-    super(edgeFactory);
+    super(
+      new DefaultDirectedGraph<TrafficNode, TrafficEdge>(edgeFactory),
+      new HashMap<TrafficEdge, Double>());
+    //Don't use a subclass of WeightedGraph because the implementation will 
+    //check the assertion that the edges are instances of DefaultDirectedEdge 
+    //which is pure nonsense
   }
 
   /**

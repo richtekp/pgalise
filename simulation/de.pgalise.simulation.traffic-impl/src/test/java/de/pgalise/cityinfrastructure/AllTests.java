@@ -27,7 +27,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @version 1.0 (Nov 22, 2012)
  */
 @RunWith(Suite.class)
-@SuiteClasses({ OSMCityInfrastructureDataTest.class })
+@SuiteClasses({ DefaultFileBasedCityInfrastructureDataService.class })
 public class AllTests {
 
 }

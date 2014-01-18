@@ -18,11 +18,10 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.model.vehicle.XMLTruckFactory;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLTruckFactory;
 import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -53,6 +52,8 @@ public class XMLTruckFactoryTest {
   public static final String FILEPATH = "/trucks.xml";
   @EJB
   private TcpIpOutput tcpIpOutput;
+  @EJB
+  private IdGenerator idGenerator;
 
   public XMLTruckFactoryTest() {
   }
@@ -75,7 +76,6 @@ public class XMLTruckFactoryTest {
      * Test case
      */
     TrafficGraph graph = new DefaultTrafficGraph();
-    IdGenerator idGenerator = new DefaultIdGenerator();
     TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(
       TrafficGraphExtensions.class);
     TruckFactory factory = new XMLTruckFactory(idGenerator,
@@ -83,17 +83,16 @@ public class XMLTruckFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<TruckData> vehicle1 = factory.createRandomTruck(tcpIpOutput);
+    Vehicle<TruckData> vehicle1 = factory.createRandomTruck();
     Assert.assertNotNull(vehicle1);
 
     Vehicle<TruckData> vehicle2 = factory.createTruck(Color.GRAY,
-      2,
-      null);
+      2);
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,
       vehicle2.getData().getColor());
     Assert.assertEquals(2,
-      vehicle2.getData().getTrailerCount(),
+      vehicle2.getData().getTruckTrailerDatas().size(),
       0);
   }
 

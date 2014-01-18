@@ -17,36 +17,34 @@ package de.pgalise.simulation.traffic.scheduler;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
+import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.scheduler.Administration;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
-import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
+import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 import de.pgalise.testutils.TestUtils;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.jgrapht.alg.DijkstraShortestPath;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the implementations of the {@link Scheduler}
@@ -63,6 +61,8 @@ public class SchedulerTest {
   private TrafficNode a;
   private TrafficNode b;
   private TrafficNode c;
+  @EJB
+  private CarFactory carFactory;
 
   /**
    * Graph
@@ -91,31 +91,19 @@ public class SchedulerTest {
 
     List<Vehicle<?>> vehicles = new ArrayList<>();
 
-    Vehicle<?> a = new DefaultCar(1L,
-      "a",
-      null,
-      ee);
+    Vehicle<?> a = carFactory.createCar();
     a.setPath(shortestPath);
     vehicles.add(a);
 
-    Vehicle<?> b = new DefaultCar(2L,
-      "b",
-      null,
-      ee);
+    Vehicle<?> b = carFactory.createCar();
     b.setPath(shortestPath);
     vehicles.add(b);
 
-    Vehicle<?> c = new DefaultCar(3L,
-      "c",
-      null,
-      ee);
+    Vehicle<?> c = carFactory.createCar();
     c.setPath(shortestPath);
     vehicles.add(c);
 
-    Vehicle<?> d = new DefaultCar(4L,
-      "d",
-      null,
-      ee);
+    Vehicle<?> d = carFactory.createCar();
     d.setPath(shortestPath);
     vehicles.add(d);
 

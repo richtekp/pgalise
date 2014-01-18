@@ -15,19 +15,22 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.traffic.internal.model.factory.XMLBicycleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * Tests the {@link XMLBicycleFactoryTest}
@@ -35,12 +38,16 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 27, 2012)
  */
+@LocalClient
+@ManagedBean
 public class XMLBicycleFactoryTest {
 
   /**
    * Path to the XML file
    */
   public static final String FILEPATH = "/bicycles.xml";
+  @EJB
+  private IdGenerator idGenerator;
 
   @Test
   public void test() {
@@ -49,7 +56,6 @@ public class XMLBicycleFactoryTest {
      */
     RandomSeedService random = EasyMock.createMock(RandomSeedService.class);
     EasyMock.expect(random.getSeed("XMLAbstractFactory")).andReturn(1000L);
-    IdGenerator idGenerator = new DefaultIdGenerator();
     TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(
       TrafficGraphExtensions.class);
 
@@ -63,10 +69,10 @@ public class XMLBicycleFactoryTest {
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH)
     );
 
-    Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle(null);
+    Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle();
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<BicycleData> vehicle2 = factory.createBicycle(null);
+    Vehicle<BicycleData> vehicle2 = factory.createBicycle();
     Assert.assertNotNull(vehicle2);
   }
 

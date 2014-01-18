@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.internal.model.vehicle;
+package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -123,59 +122,56 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Bicycle createBicycle(Output output) {
-    return this.bicycleFactory.createBicycle(output);
+  public Bicycle createBicycle() {
+    return this.bicycleFactory.createBicycle();
   }
 
   @Override
-  public Bus createBus(Output output) {
-    return this.busFactory.createBus(output);
+  public Bus createBus() {
+    return this.busFactory.createBus();
   }
 
   @Override
-  public Car createCar(Output output) {
-    return this.carFactory.createCar(output);
+  public Car createCar() {
+    return this.carFactory.createCar();
   }
 
   @Override
-  public Motorcycle createMotorcycle(
-    Output output) {
-    return this.motorcycleFactory.createMotorcycle(
-      output);
+  public Motorcycle createMotorcycle() {
+    return this.motorcycleFactory.createMotorcycle();
   }
 
   @Override
-  public Bicycle createRandomBicycle(Output output) {
-    return this.bicycleFactory.createRandomBicycle(output);
+  public Bicycle createRandomBicycle() {
+    return this.bicycleFactory.createRandomBicycle();
   }
 
   @Override
-  public Bus createRandomBus(Output output) {
-    return this.busFactory.createRandomBus(output);
+  public Bus createRandomBus() {
+    return this.busFactory.createRandomBus();
   }
 
   @Override
-  public Car createRandomCar(Output output) {
-    return this.carFactory.createRandomCar(output);
+  public Car createRandomCar() {
+    return this.carFactory.createRandomCar();
   }
 
   @Override
-  public Motorcycle createRandomMotorcycle(Output output) {
-    return this.motorcycleFactory.createRandomMotorcycle(output);
+  public Motorcycle createRandomMotorcycle() {
+    return this.motorcycleFactory.createRandomMotorcycle();
   }
 
   @Override
-  public Truck createRandomTruck(Output output) {
-    return this.truckFactory.createRandomTruck(output);
+  public Truck createRandomTruck() {
+    return this.truckFactory.createRandomTruck();
   }
 
   @Override
   public Truck createTruck(Color color,
-    int trailercount,
-    Output output) {
+    int trailercount
+  ) {
     return this.truckFactory.createTruck(color,
-      trailercount,
-      output);
+      trailercount);
   }
 
   public BicycleFactory getBicycleFactory() {

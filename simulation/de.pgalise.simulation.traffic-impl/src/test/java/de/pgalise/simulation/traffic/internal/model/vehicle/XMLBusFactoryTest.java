@@ -21,14 +21,16 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.model.vehicle.XMLBusFactory;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLBusFactory;
 import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * Tests the {@link XMLBusFactoryTest}
@@ -36,12 +38,16 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 27, 2012)
  */
+@LocalClient
+@ManagedBean
 public class XMLBusFactoryTest {
 
   /**
    * Path to the XML file
    */
   public static final String FILEPATH = "/buses.xml";
+  @EJB
+  private IdGenerator idGenerator;
 
   @Test
   public void test() {
@@ -55,7 +61,6 @@ public class XMLBusFactoryTest {
      * Test case
      */
     TrafficGraph graph = new DefaultTrafficGraph();
-    IdGenerator idGenerator = new DefaultIdGenerator();
     TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(
       TrafficGraphExtensions.class);
     BusFactory factory = new XMLBusFactory(idGenerator,
@@ -63,10 +68,10 @@ public class XMLBusFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<BusData> vehicle1 = factory.createRandomBus(null);
+    Vehicle<BusData> vehicle1 = factory.createRandomBus();
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<BusData> vehicle2 = factory.createBus(null);
+    Vehicle<BusData> vehicle2 = factory.createBus();
     Assert.assertNotNull(vehicle2);
   }
 

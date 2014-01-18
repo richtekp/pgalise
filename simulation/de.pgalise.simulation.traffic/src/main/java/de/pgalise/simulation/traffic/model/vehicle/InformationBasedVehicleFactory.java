@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.VehicleInformation;
 
 /**
@@ -14,6 +13,5 @@ import de.pgalise.simulation.traffic.VehicleInformation;
  */
 public interface InformationBasedVehicleFactory extends VehicleFactory {
 
-	public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
-		Output output);
+  public Vehicle<?> createVehicle(VehicleInformation vehicleInformation);
 }

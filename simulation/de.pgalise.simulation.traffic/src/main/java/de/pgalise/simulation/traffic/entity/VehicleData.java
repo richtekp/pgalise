@@ -16,13 +16,21 @@
 package de.pgalise.simulation.traffic.entity;
 
 import de.pgalise.simulation.shared.entity.Identifiable;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.model.vehicle.xml.ColorAdapter;
+import java.awt.Color;
+import java.util.List;
 import javax.faces.bean.ManagedBean;
+import javax.persistence.ElementCollection;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlList;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  * General information about a vehicle.
@@ -33,8 +41,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @MappedSuperclass
 @ManagedBean
 @XmlAccessorType(XmlAccessType.FIELD)
-@MappedSuperclass
-public class VehicleData extends Identifiable {
+public abstract class VehicleData extends Identifiable {
 
   /**
    * Serial
@@ -50,98 +57,87 @@ public class VehicleData extends Identifiable {
   private int vehicleLength; // MM
 
   /**
-   * Number of axle
+   * wheelbases in mm (between 1st and 2nd, 2nd and 3rd, etc. wheel)
    */
-  private int axleCount;
-
-  /**
-   * Wheelbase in mm (Distance between axe 1 and 2)
-   */
-  private int wheelbase1; // MM
-
-  /**
-   * Wheelbase in mm (Distance between axe 2 and 3)
-   */
-  private int wheelbase2; // MM
-
-  /**
-   * Vehicle type
-   */
-  private VehicleTypeEnum type;
+  @XmlList
+  @ElementCollection
+  private List<Integer> wheelbases;
 
   /**
    * SensorHelper of the GPS sensor
    */
   @XmlTransient
+  @Transient
   private GpsSensor gpsSensor;
+  /**
+   * Maximal speed of the bus.
+   */
+  private int maxSpeed;
+  /**
+   * Weight of the bus in kg.
+   */
+  private int weight;
+  /**
+   * Width of the bus in mm.
+   */
+  private int width;
+
+  /**
+   * Color
+   */
+  @XmlJavaTypeAdapter(ColorAdapter.class)
+  @XmlElement
+  private Color color;
+  /**
+   * Description
+   */
+  private String description;
+  /**
+   * Height in mm
+   */
+  private int height; // MM
 
   public VehicleData() {
   }
 
-  /**
-   * Constructor
-   *
-   * @param length Length in mm
-   * @param wheelbase1
-   * @param wheelbase2
-   * @param type
-   * @param axleCount Number of axle
-   * @param gpsSensor
-   */
-  public VehicleData(Long id,
-    int length,
-    int wheelbase1,
-    int wheelbase2,
-    int axleCount,
-    VehicleTypeEnum type,
-    GpsSensor gpsSensor) {
+  public VehicleData(int vehicleLength,
+    List<Integer> wheelbases,
+    GpsSensor gpsSensor,
+    int maxSpeed,
+    int weight,
+    int width,
+    Color color,
+    String description,
+    int height,
+    Long id) {
     super(id);
-    this.vehicleLength = length;
-    this.wheelbase1 = wheelbase1;
-    this.wheelbase2 = wheelbase2;
-    this.axleCount = axleCount;
-    this.type = type;
+    this.vehicleLength = vehicleLength;
+    this.wheelbases = wheelbases;
     this.gpsSensor = gpsSensor;
+    this.maxSpeed = maxSpeed;
+    this.weight = weight;
+    this.width = width;
+    this.color = color;
+    this.description = description;
+    this.height = height;
   }
 
   public int getVehicleLength() {
     return this.vehicleLength;
   }
 
-  public int getWheelbase1() {
-    return this.wheelbase1;
-  }
-
-  public int getWheelbase2() {
-    return this.wheelbase2;
-  }
-
-  public int getAxleCount() {
-    return this.axleCount;
-  }
-
-  public VehicleTypeEnum getType() {
-    return this.type;
-  }
+  public abstract VehicleType getType();
 
   public void setVehicleLength(int vehicleLength) {
     this.vehicleLength = vehicleLength;
   }
 
-  public void setWheelbase2(int wheelbase2) {
-    this.wheelbase2 = wheelbase2;
+  public void setWheelbases(List<Integer> wheelbases) {
+    this.wheelbases = wheelbases;
   }
 
-  public void setWheelbase1(int wheelbase1) {
-    this.wheelbase1 = wheelbase1;
-  }
-
-  public void setType(VehicleTypeEnum type) {
-    this.type = type;
-  }
-
-  public void setAxleCount(int axleCount) {
-    this.axleCount = axleCount;
+  public List<Integer> getWheelbases() {
+    return wheelbases;
   }
 
   public GpsSensor getGpsSensor() {
@@ -152,13 +148,6 @@ public class VehicleData extends Identifiable {
     this.gpsSensor = gpsSensor;
   }
 
-//	@Override
-//	public String toString() {
-//		return "VehicleData [length=" + vehicleLength + ", axleCount=" + axleCount
-//					 + ", wheelbase1=" + wheelbase1
-//									 + ", wheelbase2=" + wheelbase2 + ", type=" + type
-//					 + ", gpsSensor=" + gpsSensor + "]";
-//	}
   /**
    * make visible in order to be overwritable in XML vehicle factories
    *
@@ -166,6 +155,90 @@ public class VehicleData extends Identifiable {
    */
   @Override
   public void setId(Long id) {
-    super.setId(id); //To change body of generated methods, choose Tools | Templates.
+    super.setId(id);
+  }
+
+  /**
+   * @return the maxSpeed
+   */
+  public int getMaxSpeed() {
+    return maxSpeed;
+  }
+
+  /**
+   * @param maxSpeed the maxSpeed to set
+   */
+  public void setMaxSpeed(int maxSpeed) {
+    this.maxSpeed = maxSpeed;
+  }
+
+  /**
+   * @return the weight
+   */
+  public int getWeight() {
+    return weight;
+  }
+
+  /**
+   * @param weight the weight to set
+   */
+  public void setWeight(int weight) {
+    this.weight = weight;
+  }
+
+  /**
+   * @return the width
+   */
+  public int getWidth() {
+    return width;
+  }
+
+  /**
+   * @param width the width to set
+   */
+  public void setWidth(int width) {
+    this.width = width;
+  }
+
+  /**
+   * @return the color
+   */
+  public Color getColor() {
+    return color;
+  }
+
+  /**
+   * @param color the color to set
+   */
+  public void setColor(Color color) {
+    this.color = color;
+  }
+
+  /**
+   * @return the description
+   */
+  public String getDescription() {
+    return description;
+  }
+
+  /**
+   * @param description the description to set
+   */
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  /**
+   * @return the height
+   */
+  public int getHeight() {
+    return height;
+  }
+
+  /**
+   * @param height the height to set
+   */
+  public void setHeight(int height) {
+    this.height = height;
   }
 }

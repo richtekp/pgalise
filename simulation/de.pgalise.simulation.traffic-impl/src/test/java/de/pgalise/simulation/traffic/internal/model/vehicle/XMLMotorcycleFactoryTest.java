@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.traffic.internal.model.factory.XMLMotorcycleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import java.awt.Color;
 
@@ -23,13 +24,15 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import org.apache.openejb.api.LocalClient;
 
 /**
  * Tests the {@link XMLMotorcycleFactoryTest}
@@ -37,12 +40,16 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 27, 2012)
  */
+@LocalClient
+@ManagedBean
 public class XMLMotorcycleFactoryTest {
 
   /**
    * Path to the XML file
    */
   public static final String FILEPATH = "/motorcycles.xml";
+  @EJB
+  private IdGenerator idGenerator;
 
   @Test
   public void test() {
@@ -56,7 +63,6 @@ public class XMLMotorcycleFactoryTest {
      * Test case
      */
     TrafficGraph graph = new DefaultTrafficGraph();
-    IdGenerator idGenerator = new DefaultIdGenerator();
     TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(
       TrafficGraphExtensions.class);
     MotorcycleFactory factory = new XMLMotorcycleFactory(idGenerator,
@@ -64,10 +70,10 @@ public class XMLMotorcycleFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<MotorcycleData> vehicle1 = factory.createRandomMotorcycle(null);
+    Vehicle<MotorcycleData> vehicle1 = factory.createRandomMotorcycle();
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<MotorcycleData> vehicle2 = factory.createMotorcycle(null);
+    Vehicle<MotorcycleData> vehicle2 = factory.createMotorcycle();
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,
       vehicle2.getData().getColor());

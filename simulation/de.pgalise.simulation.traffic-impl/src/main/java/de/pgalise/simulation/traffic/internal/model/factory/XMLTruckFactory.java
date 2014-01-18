@@ -13,20 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.internal.model.vehicle;
+package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.model.vehicle.Truck;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.entity.TruckData;
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
+import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultTruck;
+import de.pgalise.simulation.traffic.model.vehicle.Truck;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.TruckDataList;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
+import javax.ejb.EJB;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -40,6 +43,9 @@ import javax.xml.bind.Unmarshaller;
  */
 public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
   implements TruckFactory {
+
+  @EJB
+  private TrafficSensorFactory sensorFactory;
 
   public XMLTruckFactory() {
   }
@@ -73,7 +79,7 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
   }
 
   @Override
-  public Truck createRandomTruck(Output output) {
+  public Truck createRandomTruck() {
     TruckData data = getRandomVehicleData();
     return new DefaultTruck(getIdGenerator().getNextId(),
       null,
@@ -83,9 +89,12 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
 
   @Override
   public Truck createTruck(Color color,
-    int trailercount,
-    Output output) {
-    return createRandomTruck(output);
+    int trailercount
+  ) {
+    Truck retValue = createRandomTruck();
+    retValue.getData().setColor(color);
+    retValue.setGpsSensor(sensorFactory.createGpsSensor(false));
+    return retValue;
   }
 
   /**
@@ -96,23 +105,6 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
     TruckData referenceData = super.getRandomVehicleData();
 
     return new TruckData(referenceData);
-  }
-
-  /**
-   * Updates the {@link TruckData} with new information
-   *
-   * @param data loaded {@link TruckData}
-   * @param color new Color
-   * @param trailercount Number of trailers
-   * @return updated {@link TruckData} object
-   */
-  private TruckData updateTruckData(TruckData data,
-    Color color,
-    int trailercount) {
-    data.setTrailerCount(trailercount);
-    data.setColor(color);
-
-    return data;
   }
 
   @Override

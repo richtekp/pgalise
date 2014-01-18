@@ -15,19 +15,18 @@
  */
 package de.pgalise.simulation.traffic.server.route;
 
+import com.vividsolutions.jts.geom.Geometry;
+import de.pgalise.simulation.shared.traffic.VehicleType;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.entity.BusStop;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
+import de.pgalise.simulation.traffic.server.TrafficServer;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.entity.BusStop;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.entity.TrafficNode;
-import de.pgalise.simulation.traffic.entity.TrafficTrip;
-import de.pgalise.simulation.traffic.server.TrafficServer;
 
 /**
  * Provides functionality to create a traffic graph based on an open street map.
@@ -42,45 +41,45 @@ import de.pgalise.simulation.traffic.server.TrafficServer;
  */
 public interface RouteConstructor {
 
-	public TrafficTrip createTrip(TrafficServer<?> serverId,
-		Geometry cityZone,
-		VehicleTypeEnum vehicleType);
+  public TrafficTrip createTrip(TrafficServer<?> serverId,
+    Geometry cityZone,
+    VehicleType vehicleType);
 
-	public TrafficTrip createTrip(TrafficServer<?> serverId,
-		Geometry cityZone,
-		TrafficNode nodeID,
-		long startTimestamp,
-		boolean isStartNode);
+  public TrafficTrip createTrip(TrafficServer<?> serverId,
+    Geometry cityZone,
+    TrafficNode nodeID,
+    long startTimestamp,
+    boolean isStartNode);
 
-	public TrafficTrip createTrip(TrafficServer<?> serverId,
-		TrafficNode startNodeID,
-		TrafficNode targetNodeID,
-		long startTimestamp);
+  public TrafficTrip createTrip(TrafficServer<?> serverId,
+    TrafficNode startNodeID,
+    TrafficNode targetNodeID,
+    long startTimestamp);
 
-	public TrafficTrip createTimedTrip(TrafficServer<?> serverId,
-		Geometry cityZone,
-		VehicleTypeEnum vehicleType,
-		Date date,
-		int buffer);
+  public TrafficTrip createTimedTrip(TrafficServer<?> serverId,
+    Geometry cityZone,
+    VehicleType vehicleType,
+    Date date,
+    int buffer);
 
-	public TrafficGraph getGraph();
+  public TrafficGraph getGraph();
 
-	public List<TrafficNode> getStartHomeNodes(Geometry cityZone);
+  public List<TrafficNode> getStartHomeNodes(Geometry cityZone);
 
-	public List<TrafficNode> getStartWorkNodes(Geometry cityZone);
+  public List<TrafficNode> getStartWorkNodes(Geometry cityZone);
 
-	public List<TrafficNode> getAllHomeNodes();
+  public List<TrafficNode> getAllHomeNodes();
 
-	public List<TrafficNode> getAllWorkNodes();
+  public List<TrafficNode> getAllWorkNodes();
 
-	public List<BusStop> getBusStops();
+  public List<BusStop> getBusStops();
 
-	public List<TrafficEdge> getShortestPath(TrafficNode start,
-		TrafficNode dest);
+  public List<TrafficEdge> getShortestPath(TrafficNode start,
+    TrafficNode dest);
 
-	public GraphExtensions getTrafficGraphExtesions();
+  public GraphExtensions getTrafficGraphExtesions();
 
-	public List<TrafficEdge> getBusRoute(List<BusStop> busStopIds);
+  public List<TrafficEdge> getBusRoute(List<BusStop> busStopIds);
 
-	public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds);
+  public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds);
 }

@@ -69,9 +69,7 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
     }
 
     if (event.getVehicle().getData() instanceof BusData) {
-      NavigationNode n = ((BusData) event.getVehicle().getData()).getBusStops().
-        get(
-          event.getVehicle().getCurrentNode());
+      NavigationNode n = event.getVehicle().getCurrentNode();
       // only at busstops the amount of passengers can change
       if (n != null) {
         Random random = new Random(getRandomSeedService()

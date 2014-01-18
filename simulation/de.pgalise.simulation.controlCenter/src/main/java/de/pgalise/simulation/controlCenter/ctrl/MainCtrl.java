@@ -200,7 +200,7 @@ public class MainCtrl implements Serializable {
     }
 
     city.setPosition(new BaseGeoInfo(idGenerator.getNextId(),
-      JTS.toGeometry(cityInfrastructureData.getBoundary())));
+      JTS.toGeometry(cityInfrastructureManager.getBoundary())));
     city.setCityInfrastructureData(cityInfrastructureData);
     initParameter.setCity(city);
     simulationController.init(initParameter);

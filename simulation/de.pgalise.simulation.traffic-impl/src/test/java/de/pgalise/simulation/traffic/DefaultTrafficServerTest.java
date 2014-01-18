@@ -315,7 +315,7 @@ public class DefaultTrafficServerTest {
       tcpIpOutput,
       null,
       null);
-    Vehicle<CarData> car = server1.getCarFactory().createRandomCar(null);
+    Vehicle<CarData> car = server1.getCarFactory().createRandomCar();
     car.setName("Car A");
     car.setPath(path);
     server1.getScheduler().scheduleItem(new DefaultScheduleItem(car,
@@ -326,7 +326,7 @@ public class DefaultTrafficServerTest {
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car3 = server1.getCarFactory().createRandomCar(null);
+    Vehicle<CarData> car3 = server1.getCarFactory().createRandomCar();
     car3.setName("Car B");
     car3.setPath(path);
     server1.getScheduler().scheduleItem(new DefaultScheduleItem(car3,
@@ -393,7 +393,7 @@ public class DefaultTrafficServerTest {
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car2 = server2.getCarFactory().createRandomCar(null);
+    Vehicle<CarData> car2 = server2.getCarFactory().createRandomCar();
     car2.setName("Car " + i);
     TrafficNode startNode = new TrafficNode(idGenerator.getNextId(),
       new JaxRSCoordinate(1,
@@ -645,7 +645,7 @@ public class DefaultTrafficServerTest {
         tcpIpOutput,
         null,
         new GpsNoInterferer());
-      Vehicle<CarData> car = instance.getCarFactory().createRandomCar(null);
+      Vehicle<CarData> car = instance.getCarFactory().createRandomCar();
       car.setName("K.I.T.T");
       TrafficTrip trip = instance.createTrip(instance.getCityZone(),
         car.getData().getType());
@@ -663,8 +663,7 @@ public class DefaultTrafficServerTest {
         tcpIpOutput,
         null,
         new GpsNoInterferer());
-      Vehicle<TruckData> truck = instance.getTruckFactory().createRandomTruck(
-        null);
+      Vehicle<TruckData> truck = instance.getTruckFactory().createRandomTruck();
       truck.setName("Coca Cola Truck");
       TrafficTrip tripTruck = instance.createTrip(instance.getCityZone(),
         truck.getData().getType());
@@ -680,8 +679,8 @@ public class DefaultTrafficServerTest {
         tcpIpOutput,
         null,
         new GpsNoInterferer());
-      Vehicle<BicycleData> bike = instance.getBikeFactory().createRandomBicycle(
-        null);
+      Vehicle<BicycleData> bike = instance.getBikeFactory().
+        createRandomBicycle();
       bike.setName("tlottmann's Fahrrad");
       TrafficTrip tripBike = instance.createTrip(instance.getCityZone(),
         bike.getData().getType());
@@ -699,7 +698,7 @@ public class DefaultTrafficServerTest {
         null,
         new GpsNoInterferer());
       Vehicle<MotorcycleData> motorcycle = instance.getMotorcycleFactory().
-        createRandomMotorcycle(null);
+        createRandomMotorcycle();
       motorcycle.setName("Jens' Kawasaki");
       TrafficTrip tripMotorcycle = instance.createTrip(instance.getCityZone(),
         motorcycle.getData().getType());
@@ -806,7 +805,7 @@ public class DefaultTrafficServerTest {
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car = instance.getCarFactory().createRandomCar(null);
+    Vehicle<CarData> car = instance.getCarFactory().createRandomCar();
     car.setName("K.I.T.T");
     TrafficTrip trip = instance.createTrip(instance.getCityZone(),
       car.getData().getType());
@@ -896,7 +895,7 @@ public class DefaultTrafficServerTest {
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car = instance.getCarFactory().createRandomCar(null);
+    Vehicle<CarData> car = instance.getCarFactory().createRandomCar();
     car.setName("K.I.T.T");
     TrafficTrip trip = instance.createTrip(instance.getCityZone(),
       car.getData().getType());

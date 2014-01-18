@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.internal.model.vehicle;
+package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultBicycle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.BicycleDataList;
 import java.io.InputStream;
@@ -74,7 +75,7 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createRandomBicycle(Output helper) {
+  public Bicycle createRandomBicycle() {
     BicycleData data = getRandomVehicleData();
     return new DefaultBicycle(getIdGenerator().getNextId(),
       "bicycle" + getNextCounter(),
@@ -83,8 +84,8 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createBicycle(Output helper) {
-    return createRandomBicycle(helper);
+  public Bicycle createBicycle() {
+    return createRandomBicycle();
   }
 
   /**

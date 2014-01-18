@@ -18,7 +18,6 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 import de.pgalise.simulation.service.IdGenerator;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -51,232 +50,228 @@ import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
  */
 public class CreateRoadBarrierEventHandler<D extends VehicleData> extends AbstractTrafficEventHandler<D, RoadBarrierTrafficEvent<D>> {
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(
-		CreateRoadBarrierEventHandler.class);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    CreateRoadBarrierEventHandler.class);
 
-	/**
-	 * Simulation event type
-	 */
-	private static final EventType type = TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT;
+  /**
+   * Simulation event type
+   */
+  private static final EventType type = TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT;
 
-	/**
-	 * Graph
-	 */
-	private TrafficGraph graph;
-	private IdGenerator idGenerator;
+  /**
+   * Graph
+   */
+  private TrafficGraph graph;
+  private IdGenerator idGenerator;
 
-	/**
-	 * Constructor
-	 */
-	public CreateRoadBarrierEventHandler() {
+  /**
+   * Constructor
+   */
+  public CreateRoadBarrierEventHandler() {
 
-	}
+  }
 
-	public CreateRoadBarrierEventHandler(TrafficGraph graph,
-		IdGenerator idGenerator,
-		TrafficServerLocal<?> server) {
-		this.graph = graph;
-		this.idGenerator = idGenerator;
-		this.server = server;
-	}
+  public CreateRoadBarrierEventHandler(TrafficGraph graph,
+    IdGenerator idGenerator,
+    TrafficServerLocal<?> server) {
+    this.graph = graph;
+    this.idGenerator = idGenerator;
+    this.server = server;
+  }
 
-	/**
-	 * Init the handler
-	 */
-	@Override
-	public void init(TrafficServerLocal<RoadBarrierTrafficEvent<D>> server) {
-		this.server = server;
-	}
+  /**
+   * Init the handler
+   */
+  @Override
+  public void init(TrafficServerLocal<RoadBarrierTrafficEvent<D>> server) {
+    this.server = server;
+  }
 
-	/**
-	 * Traffic server
-	 */
-	private TrafficServerLocal<?> server;
+  /**
+   * Traffic server
+   */
+  private TrafficServerLocal<?> server;
 
-	@Override
-	public EventType getTargetEventType() {
-		return CreateRoadBarrierEventHandler.type;
-	}
+  @Override
+  public EventType getTargetEventType() {
+    return CreateRoadBarrierEventHandler.type;
+  }
 
-	/**
-	 * Handle blocked road and calculate new path for vehicles if their path
-	 * contains the given node
-	 *
-	 * @param vehicle Vehicle
-	 * @param node Node that is blocked by {@link RoadBarrier}
-	 */
-	private void calculateNewWay(Vehicle<? extends VehicleData> vehicle,
-		NavigationNode node) {
-		if (VehicleTypeEnum.VEHICLES_FOR_INDIVIDUAL_TRAFFIC.contains(vehicle.
-			getData().getType())
-			&& vehicle.getPath().contains(node)
-			&& (!vehicle.getNextNode().equals(node) || !vehicle.getCurrentNode().
-			equals(node))) {
+  /**
+   * Handle blocked road and calculate new path for vehicles if their path
+   * contains the given node
+   *
+   * @param vehicle Vehicle
+   * @param node Node that is blocked by {@link RoadBarrier}
+   */
+  private void calculateNewWay(Vehicle<? extends VehicleData> vehicle,
+    NavigationNode node) {
+    if (VehicleTypeEnum.VEHICLES_FOR_INDIVIDUAL_TRAFFIC.contains(vehicle.
+      getData().getType())
+      && vehicle.getPath().contains(node)
+      && (!vehicle.getNextNode().equals(node) || !vehicle.getCurrentNode().
+      equals(node))) {
 
-			/*
-			 * Calculate new path for the vehicles for individual traffic
-			 */
+      /*
+       * Calculate new path for the vehicles for individual traffic
+       */
 //			log.debug("RoadBarrier: Calculate new path for " + vehicle.getData().getType() + " " + vehicle.getId());
 //			Node start = vehicle.getCurrentNode();
-			TrafficNode start = vehicle.getNextNode();
+      TrafficNode start = vehicle.getNextNode();
 
-			// Check destination
-			TrafficNode destination;
-			int t = 0;
-			do {
-				t++;
-				destination = vehicle.getNodePath().
-					get(vehicle.getNodePath().size() - t);
-			} while (destination.equals(node));
+      // Check destination
+      TrafficNode destination;
+      int t = 0;
+      do {
+        t++;
+        destination = vehicle.getNodePath().
+          get(vehicle.getNodePath().size() - t);
+      } while (destination.equals(node));
 
-			List<TrafficEdge> path;
-			path = this.server.getShortestPath(vehicle.getCurrentNode(),
-				vehicle.getNextNode());
+      List<TrafficEdge> path;
+      path = this.server.getShortestPath(vehicle.getCurrentNode(),
+        vehicle.getNextNode());
 
-			List<TrafficEdge> newPath = this.server.getShortestPath(start,
-				destination);
+      List<TrafficEdge> newPath = this.server.getShortestPath(start,
+        destination);
 
-			for (TrafficEdge e : newPath) {
-				path.add(e);
-			}
+      for (TrafficEdge e : newPath) {
+        path.add(e);
+      }
 
-			// set new path
-			vehicle.setPath(path);
+      // set new path
+      vehicle.setPath(path);
 
-			// Log
+      // Log
 //			log.debug("ROAD_BARRIER_TRAFFIC_EVENT set new " + vehicle.getData().getType() + " path");
-		} else if (vehicle.getData().getType().equals(VehicleTypeEnum.BUS) && vehicle.
-			getNodePath().contains(node)
-			&& (!vehicle.getNextNode().equals(node) || !vehicle.getCurrentNode().
-			equals(node))) {
-			/*
-			 * For busses
-			 */
+    } else if (vehicle.getData().getType().equals(VehicleTypeEnum.BUS) && vehicle.
+      getNodePath().contains(node)
+      && (!vehicle.getNextNode().equals(node) || !vehicle.getCurrentNode().
+      equals(node))) {
+      /*
+       * For busses
+       */
 
 //			log.debug("RoadBarrier: Calculate new path for " + vehicle.getData().getType() + " " + vehicle.getId());
-			BusData bus = ((BusData) vehicle.getData());
+      BusData bus = ((BusData) vehicle.getData());
 
-			// Node is bus stop
-			Map<BusStop, TrafficNode> busStops = bus.getBusStops();
-			if (busStops.get(node.getId()) != null) {
-				// Delete bus stop
-				busStops.remove(node.getId());
-				bus.getBusStopOrder().remove(node.getId());
-			}
+      // Node is bus stop
+      if (node instanceof BusStop) {
+        bus.getBusStopOrder().remove((BusStop) node);
+      }
 
-			/*
-			 * Calculate new path for the vehicles for individual traffic
-			 */
-			// To avoid errors, sets the current node for start
+      /*
+       * Calculate new path for the vehicles for individual traffic
+       */
+      // To avoid errors, sets the current node for start
 //			Node start = vehicle.getCurrentNode();
-			TrafficNode start = vehicle.getNextNode();
+      TrafficNode start = vehicle.getNextNode();
 
-			// Check destination
-			int nextIndex = bus.getLastBusStop() + 1;
-			if (nextIndex < bus.getBusStopOrder().size()) {
-				TrafficNode destination = busStops.get(bus.getBusStopOrder().get(
-					nextIndex));
+      // Check destination
+      int nextIndex = bus.getLastBusStop() + 1;
+      if (nextIndex < bus.getBusStopOrder().size()) {
+        TrafficNode destination = bus.getBusStopOrder().get(nextIndex);
 
-				List<TrafficEdge> path;
-				path = this.server.getShortestPath(vehicle.getCurrentNode(),
-					vehicle.getNextNode());
+        List<TrafficEdge> path;
+        path = this.server.getShortestPath(vehicle.getCurrentNode(),
+          vehicle.getNextNode());
 
-				// Path to the next bus stop
-				List<TrafficEdge> newPath = this.server.getShortestPath(start,
-					destination);
+        // Path to the next bus stop
+        List<TrafficEdge> newPath = this.server.getShortestPath(start,
+          destination);
 
-				// Path of the remaining bus stops
-				List<BusStop> remainingStops = bus.getBusStopOrder().subList(nextIndex,
-					(bus.getBusStopOrder().size() - 1));
-				List<TrafficEdge> pathRemainingStops = this.server.getBusRoute(
-					remainingStops);
-				if (pathRemainingStops != null) {
-					for (TrafficEdge e : pathRemainingStops) {
-						newPath.add(e);
-					}
-				}
+        // Path of the remaining bus stops
+        List<BusStop> remainingStops = bus.getBusStopOrder().subList(nextIndex,
+          (bus.getBusStopOrder().size() - 1));
+        List<TrafficEdge> pathRemainingStops = this.server.getBusRoute(
+          remainingStops);
+        if (pathRemainingStops != null) {
+          for (TrafficEdge e : pathRemainingStops) {
+            newPath.add(e);
+          }
+        }
 
-				for (TrafficEdge e : newPath) {
-					path.add(e);
-				}
+        for (TrafficEdge e : newPath) {
+          path.add(e);
+        }
 
-				// set new path
-				vehicle.setPath(path);
+        // set new path
+        vehicle.setPath(path);
 
-				// Log
+        // Log
 //				log.debug("ROAD_BARRIER_TRAFFIC_EVENT set new bus path");
-			}
-		}
-	}
+      }
+    }
+  }
 
-	@Override
-	public void handleEvent(RoadBarrierTrafficEvent e) {
-		log.info("Processing ROAD_BARRIER_TRAFFIC_EVENT: startID=" + e.getNodeID()
-			+ " ; startTime=" + e.getRoadBarrierStartTimestamp() + " ; endTime=" + e.
-			getRoadBarrierEndTimestamp());
+  @Override
+  public void handleEvent(RoadBarrierTrafficEvent e) {
+    log.info("Processing ROAD_BARRIER_TRAFFIC_EVENT: startID=" + e.getNodeID()
+      + " ; startTime=" + e.getRoadBarrierStartTimestamp() + " ; endTime=" + e.
+      getRoadBarrierEndTimestamp());
 
-		// Set graph
-		this.graph = this.server.getGraph();
+    // Set graph
+    this.graph = this.server.getGraph();
 
-		// Blocked node
-		TrafficNode blockedNode = e.getNodeID();
+    // Blocked node
+    TrafficNode blockedNode = e.getNodeID();
 
-		// Change the node on the graph
-		Set<TrafficEdge> edges = this.getAllEdges(blockedNode);
-		if (!edges.isEmpty()) {
+    // Change the node on the graph
+    Set<TrafficEdge> edges = this.getAllEdges(blockedNode);
+    if (!edges.isEmpty()) {
 
-			// Sets the RoadBarrier to the server
-			this.server.addNewRoadBarrier(new RoadBarrier(
-				idGenerator.getNextId(),
-				blockedNode,
-				edges,
-				e.getRoadBarrierStartTimestamp(),
-				e
-				.getRoadBarrierEndTimestamp()));
+      // Sets the RoadBarrier to the server
+      this.server.addNewRoadBarrier(new RoadBarrier(
+        idGenerator.getNextId(),
+        blockedNode,
+        edges,
+        e.getRoadBarrierStartTimestamp(),
+        e
+        .getRoadBarrierEndTimestamp()));
 
-			// Remove from graph
-			this.removeEdgesFromGraph(edges);
+      // Remove from graph
+      this.removeEdgesFromGraph(edges);
 
-			// New Path for all vehicles with this edge
-			List<ScheduleItem> vehicleItems = this.server.getScheduler().
-				getExpiredItems(e.getRoadBarrierEndTimestamp());
-			for (ScheduleItem item : vehicleItems) {
-				Vehicle<?> vehicle = item.getVehicle();
-				this.calculateNewWay(vehicle,
-					blockedNode);
-			}
-		}
-	}
+      // New Path for all vehicles with this edge
+      List<ScheduleItem> vehicleItems = this.server.getScheduler().
+        getExpiredItems(e.getRoadBarrierEndTimestamp());
+      for (ScheduleItem item : vehicleItems) {
+        Vehicle<?> vehicle = item.getVehicle();
+        this.calculateNewWay(vehicle,
+          blockedNode);
+      }
+    }
+  }
 
-	/**
-	 * Get all edges (entering and leaving) from the node
-	 *
-	 * @param node Node
-	 * @return Set<Edge>
-	 */
-	private Set<TrafficEdge> getAllEdges(TrafficNode node) {
-		Set<TrafficEdge> edges = new HashSet<>();
+  /**
+   * Get all edges (entering and leaving) from the node
+   *
+   * @param node Node
+   * @return Set<Edge>
+   */
+  private Set<TrafficEdge> getAllEdges(TrafficNode node) {
+    Set<TrafficEdge> edges = new HashSet<>();
 
-		edges.addAll(graph.incomingEdgesOf(node));
-		edges.addAll(graph.outgoingEdgesOf(node));
+    edges.addAll(graph.incomingEdgesOf(node));
+    edges.addAll(graph.outgoingEdgesOf(node));
 
-		return edges;
-	}
+    return edges;
+  }
 
-	/**
-	 * Remove all edges from graph
-	 *
-	 * @param edges List of edges to remove
-	 */
-	private void removeEdgesFromGraph(Set<TrafficEdge> edges) {
-		for (TrafficEdge edge : edges) {
-			this.graph.removeEdge(edge);
-		}
+  /**
+   * Remove all edges from graph
+   *
+   * @param edges List of edges to remove
+   */
+  private void removeEdgesFromGraph(Set<TrafficEdge> edges) {
+    for (TrafficEdge edge : edges) {
+      this.graph.removeEdge(edge);
+    }
 
-		// log
+    // log
 //		log.debug("ROAD_BARRIER_TRAFFIC_EVENT removed edges: " + edges.size());
-	}
+  }
 }

@@ -4,9 +4,10 @@
 	<cars>
 		<car>
 			<wheelDistanceWidth>1535</wheelDistanceWidth>
-			<wheelbase1>2690</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4324</length>
+			<wheelbases>
+				<wheelbase>2690</wheelbase>
+			</wheelbases>
+			<vehicleLength>4324</vehicleLength>
 			<width>1765</width>
 			<height>1421</height>
 			<weight>1360</weight>
@@ -14,12 +15,14 @@
 			<maxSpeed>195</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>BMW 120i</description>
+			<color>#ffff3300</color>
 		</car>
 		<car>
 			<wheelDistanceWidth>1531</wheelDistanceWidth>
-			<wheelbase1>2810</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4624</length>
+			<wheelbases>
+				<wheelbase>2810</wheelbase>
+			</wheelbases>
+			<vehicleLength>4624</vehicleLength>
 			<width>1811</width>
 			<height>1429</height>
 			<weight>1475</weight>
@@ -27,12 +30,14 @@
 			<maxSpeed>235</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>BMW 320i</description>
+			<color>#fddd0000</color>
 		</car>
 		<car>
 			<wheelDistanceWidth>1600</wheelDistanceWidth>
-			<wheelbase1>2968</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4899</length>
+			<wheelbases>
+				<wheelbase>2968</wheelbase>
+			</wheelbases>
+			<vehicleLength>4899</vehicleLength>
 			<width>1860</width>
 			<height>1464</height>
 			<weight>1670</weight>
@@ -40,12 +45,14 @@
 			<maxSpeed>227</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>BMW 520i</description>
+			<color>#fffbbb00</color>
 		</car>
 		<car>
 			<wheelDistanceWidth>1611</wheelDistanceWidth>
-			<wheelbase1>3070</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>5079</length>
+			<wheelbases>
+				<wheelbase>3070</wheelbase>
+			</wheelbases>
+			<vehicleLength>5079</vehicleLength>
 			<width>1902</width>
 			<height>1471</height>
 			<weight>1900</weight>
@@ -53,12 +60,14 @@
 			<maxSpeed>250</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>BMW 740i</description>
+			<color>#ffff0990</color>
 		</car>
 		<car>
 			<wheelDistanceWidth>1644</wheelDistanceWidth>
-			<wheelbase1>2933</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4857</length>
+			<wheelbases>
+				<wheelbase>2933</wheelbase>
+			</wheelbases>
+			<vehicleLength>4857</vehicleLength>
 			<width>1933</width>
 			<height>1776</height>
 			<weight>2145</weight>
@@ -66,12 +75,14 @@
 			<maxSpeed>235</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>BMW X5</description>
+			<color>#f33f0000</color>
 		</car>
 		<car>
 			<wheelDistanceWidth>1511</wheelDistanceWidth>
-			<wheelbase1>2496</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4239</length>
+			<wheelbases>
+				<wheelbase>2496</wheelbase>
+			</wheelbases>
+			<vehicleLength>4239</vehicleLength>
 			<width>1790</width>
 			<height>1291</height>
 			<weight>1470</weight>
@@ -79,12 +90,14 @@
 			<maxSpeed>235</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>BMW Z4</description>
+			<color>#fff11000</color>
 		</car>
 		<car>
 			<wheelDistanceWidth>1541</wheelDistanceWidth>
-			<wheelbase1>2575</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4199</length>
+			<wheelbases>
+				<wheelbase>2575</wheelbase>
+			</wheelbases>
+			<vehicleLength>4199</vehicleLength>
 			<width>1786</width>
 			<height>1512</height>
 			<weight>1131</weight>
@@ -92,12 +105,14 @@
 			<maxSpeed>220</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>Golf 6 1.4 TSI</description>
+			<color>#fff33300</color>
 		</car>
 		<car>
 			<wheelDistanceWidth>1549</wheelDistanceWidth>
-			<wheelbase1>2637</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4255</length>
+			<wheelbases>
+				<wheelbase>2637</wheelbase>
+			</wheelbases>
+			<vehicleLength>4255</vehicleLength>
 			<width>1799</width>
 			<height>1452</height>
 			<weight>1354</weight>
@@ -105,14 +120,16 @@
 			<maxSpeed>216</maxSpeed>
 			<axleCount>2</axleCount>
 			<description>Golf 7 2.0</description>
+			<color>#ffff3300</color>
 		</car>
 	</cars>
 	<trucks>
 		<truck>
 			<wheelDistanceWidth>1511</wheelDistanceWidth>
-			<wheelbase1>2496</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>4239</length>
+			<wheelbases>
+				<wheelbase>2496</wheelbase>
+			</wheelbases>
+			<vehicleLength>4239</vehicleLength>
 			<width>1790</width>
 			<height>1291</height>
 			<weight>14700</weight>
@@ -123,12 +140,14 @@
 			<trailerCount>1</trailerCount>
 			<trailerDistance>300</trailerDistance>
 			<trailerLength>1000</trailerLength>
+			<color>#ffff0000</color><!--red-->
 		</truck>
 		<truck>
 			<wheelDistanceWidth>3150</wheelDistanceWidth>
-			<wheelbase1>3800</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>2054</length>
+			<wheelbases>
+				<wheelbase>3800</wheelbase>
+			</wheelbases>
+			<vehicleLength>2054</vehicleLength>
 			<width>1425</width>
 			<height>2000</height>
 			<weight>18000</weight>
@@ -139,12 +158,14 @@
 			<trailerCount>1</trailerCount>
 			<trailerDistance>300</trailerDistance>
 			<trailerLength>8500</trailerLength>
+			<color>#15abb698</color>
 		</truck>
 		<truck>
 			<wheelDistanceWidth>3150</wheelDistanceWidth>
-			<wheelbase1>3500</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>1959</length>
+			<wheelbases>
+				<wheelbase>3500</wheelbase>
+			</wheelbases>
+			<vehicleLength>1959</vehicleLength>
 			<width>2530</width>
 			<height>2387</height>
 			<weight>18000</weight>
@@ -155,12 +176,14 @@
 			<trailerCount>1</trailerCount>
 			<trailerDistance>300</trailerDistance>
 			<trailerLength>8000</trailerLength>
+			<color>#465ab666</color>
 		</truck>
 		<truck>
 			<wheelDistanceWidth>3150</wheelDistanceWidth>
-			<wheelbase1>3600</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>18780</length>
+			<wheelbases>
+				<wheelbase>3600</wheelbase>
+			</wheelbases>
+			<vehicleLength>18780</vehicleLength>
 			<width>2430</width>
 			<height>3050</height>
 			<weight>18000</weight>
@@ -171,6 +194,7 @@
 			<trailerCount>1</trailerCount>
 			<trailerDistance>300</trailerDistance>
 			<trailerLength>7000</trailerLength>
+			<color>#75442312</color>
 		</truck>
 	</trucks>
 	<bicycles>
@@ -179,68 +203,90 @@
 			<weight>9.5</weight>
 			<maxSpeed>14</maxSpeed>
 			<material>alu</material>	
-			<length>1500</length>
-			<wheelbase>730</wheelbase>
+			<vehicleLength>1500</vehicleLength>
+			<wheelbases>
+				<wheelbase>730</wheelbase>
+			</wheelbases>
+			<color>#ffff0aaa</color>
 		</bicycle>
 		<bicycle>
 			<description>Gazelle Bike</description>
 			<weight>18.9</weight>
 			<maxSpeed>20</maxSpeed>
 			<material>steel</material>	
-			<length>1800</length>
-			<wheelbase>1009</wheelbase>
+			<vehicleLength>1800</vehicleLength>
+			<wheelbases>
+				<wheelbase>1009</wheelbase>
+			</wheelbases>
+			<color>#ff220000</color>
 		</bicycle>
 		<bicycle>
 			<description>Mountain Bike</description>
 			<weight>13.25</weight>
 			<maxSpeed>16</maxSpeed>
 			<material>alu</material>	
-			<length>1750</length>
-			<wheelbase>1166</wheelbase>
+			<vehicleLength>1750</vehicleLength>
+			<wheelbases>
+				<wheelbase>1166</wheelbase>
+			</wheelbases>
+			<color>#aaff0000</color>
 		</bicycle>
 		<bicycle>
 			<description>Recument Bike</description>
 			<weight>15.3</weight>
 			<maxSpeed>17</maxSpeed>
 			<material>alu</material>	
-			<length>1750</length>
-			<wheelbase>1090</wheelbase>
+			<vehicleLength>1750</vehicleLength>
+			<wheelbases>
+				<wheelbase>1090</wheelbase>
+			</wheelbases>
+			<color>#ffff5550</color>
 		</bicycle>
 	</bicycles>
 	<motorcycles>
 		<motorcycle>
 			<weight>191</weight>
 			<horsePower>178</horsePower>
-			<length>2085</length>	
+			<vehicleLength>2085</vehicleLength>	
 			<maxSpeed>295</maxSpeed>
-			<wheelbase>1400</wheelbase>
+			<wheelbases>
+				<wheelbase>1400</wheelbase>
+			</wheelbases>
 			<axleCount>2</axleCount>
 			<description>Kawasaki Ninja</description>
+			<color>#ffff4400</color>
 		</motorcycle>
 		<motorcycle>
 			<weight>185</weight>
 			<horsePower>140</horsePower>
-			<length>2140</length>	
+			<vehicleLength>2140</vehicleLength>	
 			<maxSpeed>298</maxSpeed>
-			<wheelbase>1485</wheelbase>
+			<wheelbases>
+				<wheelbase>1485</wheelbase>
+			</wheelbases>
 			<axleCount>2</axleCount>
 			<description>Suzuki Hayabusa</description>
+			<color>#ffff0220</color>
 		</motorcycle>
 		<motorcycle>
 			<weight>177</weight>
 			<horsePower>134</horsePower>
-			<length>2040</length>	
+			<vehicleLength>2040</vehicleLength>	
 			<maxSpeed>285</maxSpeed>
-			<wheelbase>1415</wheelbase>
+			<wheelbases>
+				<wheelbase>1415</wheelbase>
+			</wheelbases>
 			<axleCount>2</axleCount>
 			<description>Yamaha YZF</description>
+			<color>#ffff0300</color>
 		</motorcycle>
 	</motorcycles>
 	<buses>
 		<bus>
-			<wheelbase1>5845</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>11950</length>
+			<wheelbases>
+				<wheelbase>5845</wheelbase>
+			</wheelbases>
+			<vehicleLength>11950</vehicleLength>
 			<width>2550</width>
 			<height>3076</height>
 			<weight>10770</weight>
@@ -249,11 +295,14 @@
 			<description>Mercedes-Benz - Citaro</description>
 			<maxPassengerCount>106</maxPassengerCount>
 			<axleCount>2</axleCount>
+			<color>#ff330000</color>
 		</bus>
 		<bus>
-			<wheelbase1>5990</wheelbase1>
-			<wheelbase2>5990</wheelbase2>
-			<length>17940</length>
+			<wheelbases>
+			<wheelbase>5990</wheelbase>
+			<wheelbase>5990</wheelbase>
+			</wheelbases>
+			<vehicleLength>17940</vehicleLength>
 			<width>2550</width>
 			<height>3076</height>
 			<weight>15200</weight>
@@ -262,11 +311,14 @@
 			<description>Mercedes-Benz - Citaro G</description>
 			<maxPassengerCount>158</maxPassengerCount>
 			<axleCount>3</axleCount>
+			<color>#fff33000</color>
 		</bus>
 		<bus>
-			<wheelbase1>4398</wheelbase1>
+			<wheelbases>
+				<wheelbase>4398</wheelbase>
+			</wheelbases>
 			<wheelbase2>0</wheelbase2>
-			<length>10503</length>
+			<vehicleLength>10503</vehicleLength>
 			<width>2550</width>
 			<height>3076</height>
 			<weight>10037</weight>
@@ -275,11 +327,14 @@
 			<description>Mercedes-Benz - Citaro K</description>
 			<maxPassengerCount>87</maxPassengerCount>
 			<axleCount>2</axleCount>
+			<color>#ffff0003</color>
 		</bus>
 		<bus>
-			<wheelbase1>7290</wheelbase1>
-			<wheelbase2>1600</wheelbase2>
-			<length>14995</length>
+			<wheelbases>
+				<wheelbase>7290</wheelbase>
+				<wheelbase>1600</wheelbase>
+			</wheelbases>
+			<vehicleLength>14995</vehicleLength>
 			<width>2550</width>
 			<height>3076</height>
 			<weight>13800</weight>
@@ -288,11 +343,13 @@
 			<description>Mercedes-Benz - Citaro L</description>
 			<maxPassengerCount>138</maxPassengerCount>
 			<axleCount>3</axleCount>
+			<color>#f3330000</color>
 		</bus>
 		<bus>
-			<wheelbase1>6035</wheelbase1>
-			<wheelbase2>0</wheelbase2>
-			<length>12040</length>
+			<wheelbases>
+				<wheelbase>6035</wheelbase>
+			</wheelbases>
+			<vehicleLength>12040</vehicleLength>
 			<width>2550</width>
 			<height>3076</height>
 			<weight>11125</weight>
@@ -301,6 +358,7 @@
 			<description>Mercedes-Benz - Citaro LE</description>
 			<maxPassengerCount>101</maxPassengerCount>
 			<axleCount>2</axleCount>
+			<color>#ff444000</color>
 		</bus>
 	</buses>
 </vehicles>

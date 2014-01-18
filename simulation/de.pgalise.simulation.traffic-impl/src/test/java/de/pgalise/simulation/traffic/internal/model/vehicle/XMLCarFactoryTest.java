@@ -17,11 +17,10 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultIdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.model.vehicle.XMLCarFactory;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLCarFactory;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -31,6 +30,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
@@ -43,6 +45,8 @@ import org.junit.Test;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 27, 2012)
  */
+@LocalClient
+@ManagedBean
 public class XMLCarFactoryTest {
 
   /**
@@ -54,6 +58,8 @@ public class XMLCarFactoryTest {
    * Test file
    */
   public static final String TEST_FILE = "t.tmp";
+  @EJB
+  private IdGenerator idGenerator;
 
   @Test
   public void testCreateRandomVehicle() throws FileNotFoundException, IOException {
@@ -67,7 +73,6 @@ public class XMLCarFactoryTest {
      * Test case
      */
     TrafficGraph graph = new DefaultTrafficGraph();
-    IdGenerator idGenerator = new DefaultIdGenerator();
     TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(
       TrafficGraphExtensions.class);
     CarFactory factory = new XMLCarFactory(idGenerator,
@@ -75,10 +80,10 @@ public class XMLCarFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<CarData> vehicle1 = factory.createRandomCar(null);
+    Vehicle<CarData> vehicle1 = factory.createRandomCar();
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<CarData> vehicle2 = factory.createCar(null);
+    Vehicle<CarData> vehicle2 = factory.createCar();
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,
       vehicle2.getData().getColor());

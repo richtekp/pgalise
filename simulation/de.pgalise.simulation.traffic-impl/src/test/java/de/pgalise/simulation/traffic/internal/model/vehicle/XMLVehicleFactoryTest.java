@@ -5,30 +5,22 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.traffic.internal.model.factory.XMLVehicleFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
-import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.model.vehicle.Truck;
-import de.pgalise.simulation.traffic.model.vehicle.xml.BicycleDataList;
-import de.pgalise.simulation.traffic.model.vehicle.xml.VehicleDataList;
 import de.pgalise.testutils.TestUtils;
 import java.awt.Color;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import static org.junit.Assert.assertEquals;
@@ -72,7 +64,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Bicycle result = instance.createBicycle(output);
+    Bicycle result = instance.createBicycle();
     assertNotNull(result);
   }
 
@@ -88,7 +80,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Bus result = instance.createBus(output);
+    Bus result = instance.createBus();
     assertNotNull(result);
   }
 
@@ -104,7 +96,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Car result = instance.createCar(output);
+    Car result = instance.createCar();
     assertNotNull(result);
   }
 
@@ -120,7 +112,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Motorcycle result = instance.createMotorcycle(output);
+    Motorcycle result = instance.createMotorcycle();
     assertNotNull(result);
   }
 
@@ -136,7 +128,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Bicycle result = instance.createRandomBicycle(output);
+    Bicycle result = instance.createRandomBicycle();
     assertNotNull(result);
   }
 
@@ -152,7 +144,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Bus result = instance.createRandomBus(output);
+    Bus result = instance.createRandomBus();
     assertNotNull(result);
   }
 
@@ -168,7 +160,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Car result = instance.createRandomCar(output);
+    Car result = instance.createRandomCar();
     assertNotNull(result);
   }
 
@@ -184,7 +176,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Motorcycle result = instance.createRandomMotorcycle(output);
+    Motorcycle result = instance.createRandomMotorcycle();
     assertNotNull(result);
   }
 
@@ -200,7 +192,7 @@ public class XMLVehicleFactoryTest {
       idGenerator,
       trafficGraphExtensions,
       inputStream);
-    Truck result = instance.createRandomTruck(output);
+    Truck result = instance.createRandomTruck();
     assertNotNull(result);
   }
 
@@ -219,31 +211,10 @@ public class XMLVehicleFactoryTest {
     Color color = Color.BLACK;
     int trailerCount = 2;
     Truck result = instance.createTruck(color,
-      trailerCount,
-      output);
-    assertNotNull(result);
+      trailerCount);
     assertEquals(color,
       result.getData().getColor());
     assertEquals(trailerCount,
-      result.getData().getTrailerCount());
-  }
-
-  @Test
-  public void t() {
-    try {
-      JAXBContext jaxbContext = JAXBContext.newInstance(VehicleDataList.class);
-      Marshaller jaxbUnmarshaller = jaxbContext.createMarshaller();
-
-      VehicleDataList retValue = new VehicleDataList();
-      BicycleData a = new BicycleData();
-      List<BicycleData> d = new LinkedList<>(Arrays.asList(a));
-      BicycleDataList e = new BicycleDataList(d);
-      retValue.setBicycleData(e);
-      jaxbUnmarshaller.
-        marshal(retValue,
-          System.out);
-    } catch (JAXBException ex) {
-      throw new RuntimeException(ex);
-    }
+      result.getData().getTruckTrailerDatas().size());
   }
 }

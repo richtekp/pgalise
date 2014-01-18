@@ -178,8 +178,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
 
     // check if path could not be computed between the nodes
     if (path != null) {
-      bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle(
-        getOutput());
+      bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle();
       if (name != null) {
         bike.setName(name);
       }
@@ -228,8 +227,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
     // check if path could not be computed between the nodes
     if (path != null) {
       GpsSensor gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-      car = this.getResponsibleServer().getCarFactory().createRandomCar(
-        getOutput());
+      car = this.getResponsibleServer().getCarFactory().createRandomCar();
 
       if (name != null) {
         car.setName(name);
@@ -271,7 +269,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
     // check if path could not be computed between the nodes
     if (path != null) {
       motorcycle = this.getResponsibleServer().getMotorcycleFactory().
-        createRandomMotorcycle(getOutput());
+        createRandomMotorcycle();
       if (name != null) {
         motorcycle.setName(name);
       }
@@ -313,8 +311,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
 
     // check if path could not be computed between the nodes
     if (path != null) {
-      truck = this.getResponsibleServer().getTruckFactory().createRandomTruck(
-        getOutput());
+      truck = this.getResponsibleServer().getTruckFactory().createRandomTruck();
       if (name != null) {
         truck.setName(name);
       }

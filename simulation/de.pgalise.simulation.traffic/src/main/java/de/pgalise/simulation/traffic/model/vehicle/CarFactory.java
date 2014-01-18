@@ -15,8 +15,6 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
-
 /**
  * Interface to provide methods to create different types of {@link Car}.
  *
@@ -25,21 +23,19 @@ import de.pgalise.simulation.sensorFramework.output.Output;
  */
 public interface CarFactory extends VehicleFactory {
 
-	/**
-	 * Method to create a {@link Car} with the given typeId.All position related
-	 * data is <code>null</code>
-	 *
-	 * @param output
-	 * @return created {@link Car}
-	 */
-	public Car createCar(Output output);
+  /**
+   * Method to create a {@link Car} with the given typeId.All position related
+   * data is <code>null</code>
+   *
+   * @return created {@link Car}
+   */
+  public Car createCar();
 
-	/**
-	 * Method to create a random {@link Car}. All position related data is
-	 * <code>null</code>
-	 *
-	 * @param output
-	 * @return created {@link Car}
-	 */
-	Car createRandomCar(Output output);
+  /**
+   * Method to create a random {@link Car}. All position related data is
+   * <code>null</code>
+   *
+   * @return created {@link Car}
+   */
+  Car createRandomCar();
 }

@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.internal.model.vehicle;
+package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
+import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorcycle;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.MotorcycleDataList;
 import java.awt.Color;
@@ -73,7 +74,7 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
   }
 
   @Override
-  public Motorcycle createRandomMotorcycle(Output output) {
+  public Motorcycle createRandomMotorcycle() {
     MotorcycleData data = getRandomVehicleData();
     return new DefaultMotorcycle(getIdGenerator().getNextId(),
       null,
@@ -82,8 +83,8 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
   }
 
   @Override
-  public Motorcycle createMotorcycle(Output output) {
-    return createRandomMotorcycle(output);
+  public Motorcycle createMotorcycle() {
+    return createRandomMotorcycle();
   }
 
   /**

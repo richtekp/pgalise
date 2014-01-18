@@ -59,9 +59,7 @@ public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<Vehicl
     }
 
     if (event.getVehicle().getData() instanceof BusData) {
-      NavigationNode n = ((BusData) event.getVehicle().getData()).getBusStops().
-        get(
-          event.getVehicle().getCurrentNode());
+      NavigationNode n = event.getVehicle().getCurrentNode();
       // only at busstops the amount of passengers can change
       if (n != null) {
         int lastBusStop = ((BusData) event.getVehicle().getData()).

@@ -4,7 +4,6 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
-import com.vividsolutions.jts.geom.Envelope;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.LinkedList;
@@ -18,6 +17,9 @@ import javax.persistence.ManyToMany;
  * <tt>CityInfrastructureData</tt>s.
  *
  * @author richter
+ */
+/*
+ get boundary from city (add reference property if necessary)
  */
 @Entity
 public class CityInfrastructureData extends Identifiable {
@@ -41,10 +43,6 @@ public class CityInfrastructureData extends Identifiable {
   @ManyToMany
   private List<TrafficWay> ways = new LinkedList<>();
 
-  //@TODO: re-enable hibernate-spatial as soon as hibernate spatial is compatible Java EE 7 and/or integrated in hibernate-orm 5.x
-//	@Type(type="org.hibernate.spatial.GeometryType")
-//	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
-  private Envelope boundary;
   @ManyToMany
   private List<TrafficWay> cycleAndMotorways = new LinkedList<>();
   @ManyToMany
@@ -112,10 +110,6 @@ public class CityInfrastructureData extends Identifiable {
     this.cycleAndMotorways = cycleAndMotorways;
   }
 
-  public void setBoundary(Envelope boundary) {
-    this.boundary = boundary;
-  }
-
   public List<TrafficWay> getWays() {
     return ways;
   }
@@ -150,10 +144,6 @@ public class CityInfrastructureData extends Identifiable {
 
   public List<TrafficWay> getCycleAndMotorways() {
     return cycleAndMotorways;
-  }
-
-  public Envelope getBoundary() {
-    return boundary;
   }
 
   public List<BusStop> getBusStops() {

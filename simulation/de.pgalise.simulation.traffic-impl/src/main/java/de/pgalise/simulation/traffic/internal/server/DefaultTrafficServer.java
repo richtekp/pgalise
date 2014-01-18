@@ -15,7 +15,64 @@
  */
 package de.pgalise.simulation.traffic.internal.server;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.traffic.VehicleType;
+import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.entity.BusStop;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
+import de.pgalise.simulation.traffic.governor.TrafficGovernor;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLVehicleFactory;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
+import de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle.VehicleEventTypeEnum;
+import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersection;
+import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensor;
+import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
+import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
+import de.pgalise.simulation.traffic.internal.server.scheduler.SchedulerComposite;
+import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
+import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorController;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
+import de.pgalise.simulation.traffic.model.RoadBarrier;
+import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
+import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
+import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
+import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
+import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
+import de.pgalise.simulation.traffic.server.TrafficSensorController;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.VehicleAmountManager;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
+import de.pgalise.simulation.traffic.server.route.RouteConstructor;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
+import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
+import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,71 +85,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Local;
-
+import javax.ejb.Stateful;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.pgalise.simulation.service.configReader.ConfigReader;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.internal.AbstractController;
-import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.exception.InitializationException;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.service.ControllerStatusEnum;
-import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.entity.BusStop;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.entity.TrafficNode;
-import de.pgalise.simulation.traffic.entity.TrafficTrip;
-import de.pgalise.simulation.traffic.governor.TrafficGovernor;
-import de.pgalise.simulation.traffic.internal.model.vehicle.XMLVehicleFactory;
-import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersection;
-import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
-import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
-import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorController;
-import de.pgalise.simulation.traffic.model.RoadBarrier;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
-import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
-import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
-import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficSensorController;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.VehicleAmountManager;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
-import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.TrafficSensorFactory;
-import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
-import de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle.VehicleEventTypeEnum;
-import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensor;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
-import de.pgalise.simulation.traffic.server.route.RouteConstructor;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
-import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
-import de.pgalise.simulation.traffic.internal.server.scheduler.SchedulerComposite;
-import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
-import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
-import javax.ejb.Stateful;
 
 /**
  * Default implementation of the traffic server. Possible extension points:<br/>
@@ -399,7 +397,7 @@ public class DefaultTrafficServer extends AbstractController<
 
   @Override
   public TrafficTrip createTrip(Geometry cityZone,
-    VehicleTypeEnum vehicleType) {
+    VehicleType vehicleType) {
     return this.routeConstructor.createTrip(this,
       cityZone,
       vehicleType);
@@ -440,11 +438,6 @@ public class DefaultTrafficServer extends AbstractController<
   @Override
   public List<TrafficEdge> getBusRoute(List<BusStop> busStopIds) {
     return this.routeConstructor.getBusRoute(busStopIds);
-  }
-
-  @Override
-  public Map<BusStop, TrafficNode> getBusStopNodes(List<BusStop> busStopIds) {
-    return this.routeConstructor.getBusStopNodes(busStopIds);
   }
 
   @Override

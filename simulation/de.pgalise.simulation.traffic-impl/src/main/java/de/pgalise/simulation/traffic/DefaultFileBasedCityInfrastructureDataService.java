@@ -156,8 +156,14 @@ public class DefaultFileBasedCityInfrastructureDataService implements
   private TrafficGraph trafficGraph;
   @EJB
   private GraphConstructor graphConstructor;
+  private Envelope boundary;
 
   public DefaultFileBasedCityInfrastructureDataService() {
+  }
+
+  @Override
+  public Envelope getBoundary() {
+    return boundary;
   }
 
   /**
@@ -1289,12 +1295,12 @@ public class DefaultFileBasedCityInfrastructureDataService implements
     this.junctionNodesTree.load(this.cityInfrastructureData.getJunctionNodes());
 
     if (northEastBoundary != null) {
-      cityInfrastructureData.setBoundary(new Envelope(new JaxRSCoordinate(
+      this.boundary = new Envelope(new JaxRSCoordinate(
         northEastBoundary.
         getGeoLocation().getX(),
         northEastBoundary.getGeoLocation().getY()),
         new JaxRSCoordinate(southWestBoundary.getGeoLocation().getX(),
-          southWestBoundary.getGeoLocation().getY())));
+          southWestBoundary.getGeoLocation().getY()));
     }
 
     this.cityInfrastructureData.setBuildings(this.extractBuildings(wayList));
@@ -1423,11 +1429,6 @@ public class DefaultFileBasedCityInfrastructureDataService implements
 
     throw new RuntimeException(
       "No nearest node found for: latitude: " + latitude + " longitude: " + longitude);
-  }
-
-  @Override
-  public Envelope getBoundary() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override

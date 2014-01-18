@@ -15,8 +15,6 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
-
 /**
  * Interface to provide methods to create different types of {@link Motorcycle}.
  *
@@ -25,19 +23,17 @@ import de.pgalise.simulation.sensorFramework.output.Output;
  */
 public interface MotorcycleFactory extends VehicleFactory {
 
-	/**
-	 * Method to create a {@link Motorcycle} with the given typeId.
-	 *
-	 * @param output
-	 * @return created {@link Motorcycle}
-	 */
-	Motorcycle createMotorcycle(Output output);
+  /**
+   * Method to create a {@link Motorcycle} with the given typeId.
+   *
+   * @return created {@link Motorcycle}
+   */
+  Motorcycle createMotorcycle();
 
-	/**
-	 * Method to create a random {@link Motorcycle}.
-	 *
-	 * @param output
-	 * @return created {@link Motorcycle}
-	 */
-	Motorcycle createRandomMotorcycle(Output output);
+  /**
+   * Method to create a random {@link Motorcycle}.
+   *
+   * @return created {@link Motorcycle}
+   */
+  Motorcycle createRandomMotorcycle();
 }

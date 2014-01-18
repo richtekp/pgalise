@@ -12,52 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
  */
-
-
-package de.pgalise.simulation.traffic.internal.model.vehicle;
+package de.pgalise.simulation.traffic.internal.model.factory;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -77,6 +33,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import javax.annotation.PostConstruct;
 
 /**
  * Abstract XML factory for the vehicle factories.
@@ -120,6 +77,8 @@ public abstract class AbstractXMLVehicleFactory<D extends VehicleData> extends A
       idGenerator,
       randomSeedService);
     this.randomVehicleDataPool = randomVehicleDataPool;
+    this.random = new Random(getRandomSeedService().getSeed(
+      AbstractXMLVehicleFactory.class.getName()));
   }
 
   /**
@@ -140,8 +99,17 @@ public abstract class AbstractXMLVehicleFactory<D extends VehicleData> extends A
       idGenerator,
       randomSeedService);
     this.randomVehicleDataPool = readVehicleData(stream);
+    this.init0();
+  }
+
+  private void init0() {
     this.random = new Random(getRandomSeedService().getSeed(
       AbstractXMLVehicleFactory.class.getName()));
+  }
+
+  @PostConstruct
+  public void init() {
+    init0();
   }
 
   public Set<D> getRandomVehicleDataPool() {
