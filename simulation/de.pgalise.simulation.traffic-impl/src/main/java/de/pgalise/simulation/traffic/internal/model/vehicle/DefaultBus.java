@@ -13,30 +13,29 @@ import de.pgalise.simulation.traffic.entity.BusData;
  *
  * @author richter
  */
-public class DefaultBus extends ExtendedMotorizedVehicle<BusData> implements Bus{
-	private static final long serialVersionUID = 1L;
-	private InfraredSensor infraredSensor;
+public class DefaultBus extends ExtendedMotorizedVehicle<BusData> implements Bus {
 
-	protected DefaultBus() {
-	}
+  private static final long serialVersionUID = 1L;
+  private InfraredSensor infraredSensor;
 
-	public DefaultBus(Long id,
-		String name,
-		BusData data,
-		TrafficGraphExtensions trafficGraphExtensions) {
-		super(id,
-			name,
-			data,
-			trafficGraphExtensions);
-	}
+  protected DefaultBus() {
+  }
 
-	public void setInfraredSensor(InfraredSensor infraredSensor) {
-		this.infraredSensor = infraredSensor;
-	}
+  public DefaultBus(Long id,
+    BusData data,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    super(id,
+      data,
+      trafficGraphExtensions);
+  }
 
-	@Override
-	public InfraredSensor getInfraredSensor() {
-		return infraredSensor;
-	}
+  public void setInfraredSensor(InfraredSensor infraredSensor) {
+    this.infraredSensor = infraredSensor;
+  }
+
+  @Override
+  public InfraredSensor getInfraredSensor() {
+    return infraredSensor;
+  }
 
 }

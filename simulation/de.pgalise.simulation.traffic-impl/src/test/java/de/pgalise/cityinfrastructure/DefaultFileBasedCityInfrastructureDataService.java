@@ -96,7 +96,7 @@ public class DefaultFileBasedCityInfrastructureDataService {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
     osmParser.parse(DefaultFileBasedCityInfrastructureDataService.class.
       getResourceAsStream("/oldenburg_pg.osm"),

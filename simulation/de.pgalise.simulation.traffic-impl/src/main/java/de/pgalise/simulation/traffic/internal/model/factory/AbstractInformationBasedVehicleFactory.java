@@ -8,6 +8,7 @@ package de.pgalise.simulation.traffic.internal.model.factory;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.VehicleInformation;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
@@ -19,6 +20,7 @@ import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 import javax.ejb.EJB;
 
 /**
@@ -45,7 +47,8 @@ public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFacto
   }
 
   @Override
-  public Vehicle<?> createVehicle(VehicleInformation vehicleInformation
+  public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
+    Set<TrafficEdge> edges
   ) {
     GpsSensor gpsSensor = sensorFactory.createGpsSensor(new ArrayList<>(
       Arrays.
@@ -55,7 +58,7 @@ public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFacto
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BUS)) {
       return busFactory.createBus();
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.CAR)) {
-      return carFactory.createCar();
+      return carFactory.createCar(edges);
     } else if (vehicleInformation.getVehicleType().equals(
       VehicleTypeEnum.MOTORCYCLE)) {
       motorcycleFactory.createRandomMotorcycle();
@@ -63,5 +66,11 @@ public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFacto
       return truckFactory.createRandomTruck();
     }
     throw new IllegalArgumentException();
+  }
+
+  @Override
+  public Vehicle<?> createVehicle(VehicleInformation vehicleInformation) {
+    return createVehicle(vehicleInformation,
+      null);
   }
 }

@@ -40,11 +40,9 @@ import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -59,230 +57,223 @@ import org.junit.Test;
 @ManagedBean
 public class DefaultCreateRandomVehicleServiceTest {
 
-	private static EJBContainer eJBContainer;
-	@EJB
-	private RandomSeedService randomSeedService;
-	@EJB
-	private CreateRandomVehicleService testClass;
-	@EJB
-	private TcpIpOutput tcpIpOutput;
+  @EJB
+  private RandomSeedService randomSeedService;
+  @EJB
+  private CreateRandomVehicleService testClass;
+  @EJB
+  private TcpIpOutput tcpIpOutput;
 
-	public DefaultCreateRandomVehicleServiceTest() {
-	}
+  public DefaultCreateRandomVehicleServiceTest() {
+  }
 
-	@Before
-	public void setUp() throws NamingException {
-		eJBContainer.getContext().bind("inject",
-			this);
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().bind("inject",
+      this);
+  }
 
-	}
+  /**
+   * Mock for this test.
+   *
+   * @author Timo
+   */
+  private static class SensorInterfererServiceMock implements
+    SensorInterfererService {
 
-	/**
-	 * Mock for this test.
-	 *
-	 * @author Timo
-	 */
-	private static class SensorInterfererServiceMock implements
-		SensorInterfererService {
+    @Override
+    public List<SensorInterfererType> getSensorInterfererTypes(
+      SensorType sensorType,
+      boolean isWithSensorInterferer) {
+      return new LinkedList<>();
+    }
+  }
+  private static final double ASSERT_EQUALS_DELTA = 0.09;
+  private static final int RANDOM_CAR_AMOUNT = 100;
+  private static final double GPS_CAR_RATIO = 0.9;
+  private static final int RANDOM_BIKE_AMOUNT = 233;
+  private static final double GPS_BIKE_RATIO = 0.8;
+  private static final int RANDOM_TRUCK_AMOUNT = 55;
+  private static final double GPS_TRUCK_RATIO = 1.0;
+  private static final int RANDOM_MOTORCYCLE_AMOUNT = 99;
+  private static final double GPS_MOTORCYCLE_RATIO = 0.5;
+  private static final Set<Sensor<?, ?>> usedSensorIDs = new HashSet<>(1);
+  private static final Set<Sensor<?, ?>> newSensorIDs = new HashSet<>();
 
-		@Override
-		public List<SensorInterfererType> getSensorInterfererTypes(
-			SensorType sensorType,
-			boolean isWithSensorInterferer) {
-			return new LinkedList<>();
-		}
-	}
-	private static final double ASSERT_EQUALS_DELTA = 0.09;
-	private static final int RANDOM_CAR_AMOUNT = 100;
-	private static final double GPS_CAR_RATIO = 0.9;
-	private static final int RANDOM_BIKE_AMOUNT = 233;
-	private static final double GPS_BIKE_RATIO = 0.8;
-	private static final int RANDOM_TRUCK_AMOUNT = 55;
-	private static final double GPS_TRUCK_RATIO = 1.0;
-	private static final int RANDOM_MOTORCYCLE_AMOUNT = 99;
-	private static final double GPS_MOTORCYCLE_RATIO = 0.5;
-	private static final Set<Sensor<?, ?>> usedSensorIDs = new HashSet<>(1);
-	private static final Set<Sensor<?, ?>> newSensorIDs = new HashSet<>();
+  /**
+   * Tests if enough GPS sensors are generated.
+   */
+  @Test
+  public void testGPSGeneration() {
+    RandomVehicleBundle testData = new RandomVehicleBundle(
+      DefaultCreateRandomVehicleServiceTest.RANDOM_CAR_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_CAR_RATIO,
+      DefaultCreateRandomVehicleServiceTest.RANDOM_BIKE_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_BIKE_RATIO,
+      DefaultCreateRandomVehicleServiceTest.RANDOM_TRUCK_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_TRUCK_RATIO,
+      DefaultCreateRandomVehicleServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_MOTORCYCLE_RATIO);
 
-	@BeforeClass
-	public static void setUpClass() {
-		eJBContainer = TestUtils.getContainer();
-	}
+    TrafficEvent<?> result = testClass.createRandomDynamicSensors(testData,
+      randomSeedService,
+      true);
+    int carAmount = 0, carsWithGPSAmount = 0, bikeAmount = 0, bikesWithGPSAmount = 0, motorcycleAmount = 0, motorcyclesWithGPSAmount = 0, truckAmount = 0, trucksWithGPSAmount = 0;
 
-	/**
-	 * Tests if enough GPS sensors are generated.
-	 */
-	@Test
-	public void testGPSGeneration() {
-		RandomVehicleBundle testData = new RandomVehicleBundle(
-			DefaultCreateRandomVehicleServiceTest.RANDOM_CAR_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_CAR_RATIO,
-			DefaultCreateRandomVehicleServiceTest.RANDOM_BIKE_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_BIKE_RATIO,
-			DefaultCreateRandomVehicleServiceTest.RANDOM_TRUCK_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_TRUCK_RATIO,
-			DefaultCreateRandomVehicleServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_MOTORCYCLE_RATIO);
+    /* Count vehicles and their gps ratio: */
+    Assert.assertEquals(result.getType(),
+      TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
+    for (CreateRandomVehicleData createRandomVehicleData
+      : ((CreateRandomVehiclesEvent<?>) result)
+      .getCreateRandomVehicleDataList()) {
+      if (createRandomVehicleData.getClass().equals(CreateRandomCarData.class)) {
+        carAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          carsWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomCarData) createRandomVehicleData).getGpsSensor());
+      } else if (createRandomVehicleData.getClass().equals(
+        CreateRandomBicycleData.class)) {
+        bikeAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          bikesWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomBicycleData) createRandomVehicleData).getGpsSensor());
+      } else if (createRandomVehicleData.getClass().equals(
+        CreateRandomMotorcycleData.class)) {
+        motorcycleAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          motorcyclesWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomMotorcycleData) createRandomVehicleData).
+          getGpsSensor());
+      } else if (createRandomVehicleData.getClass().equals(
+        CreateRandomTruckData.class)) {
+        truckAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          trucksWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomTruckData) createRandomVehicleData).getGpsSensor());
+      } else {
+        throw new IllegalArgumentException();
+      }
+    }
 
-		TrafficEvent<?> result = testClass.createRandomDynamicSensors(testData,
-			randomSeedService,
-			true);
-		int carAmount = 0, carsWithGPSAmount = 0, bikeAmount = 0, bikesWithGPSAmount = 0, motorcycleAmount = 0, motorcyclesWithGPSAmount = 0, truckAmount = 0, trucksWithGPSAmount = 0;
+    Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.GPS_CAR_RATIO,
+      (double) carsWithGPSAmount
+      / (double) carAmount,
+      DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
+    Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.GPS_BIKE_RATIO,
+      (double) bikesWithGPSAmount
+      / (double) bikeAmount,
+      DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
+    Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.GPS_TRUCK_RATIO,
+      (double) trucksWithGPSAmount
+      / (double) truckAmount,
+      DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
+    Assert.assertEquals(
+      DefaultCreateRandomVehicleServiceTest.GPS_MOTORCYCLE_RATIO,
+      (double) motorcyclesWithGPSAmount
+      / (double) carAmount,
+      DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
+  }
 
-		/* Count vehicles and their gps ratio: */
-		Assert.assertEquals(result.getType(),
-			TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
-		for (CreateRandomVehicleData createRandomVehicleData
-			: ((CreateRandomVehiclesEvent<?>) result)
-			.getCreateRandomVehicleDataList()) {
-			if (createRandomVehicleData.getClass().equals(CreateRandomCarData.class)) {
-				carAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					carsWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomCarData) createRandomVehicleData).getGpsSensor());
-			} else if (createRandomVehicleData.getClass().equals(
-				CreateRandomBicycleData.class)) {
-				bikeAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					bikesWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomBicycleData) createRandomVehicleData).getGpsSensor());
-			} else if (createRandomVehicleData.getClass().equals(
-				CreateRandomMotorcycleData.class)) {
-				motorcycleAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					motorcyclesWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomMotorcycleData) createRandomVehicleData).
-					getGpsSensor());
-			} else if (createRandomVehicleData.getClass().equals(
-				CreateRandomTruckData.class)) {
-				truckAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					trucksWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomTruckData) createRandomVehicleData).getGpsSensor());
-			} else {
-				throw new IllegalArgumentException();
-			}
-		}
+  /**
+   * Tests if enough unique ids are generated.
+   */
+  @Test
+  public void testIDs() {
+    Set<Sensor<?, ?>> allIDs = new HashSet<>();
+    allIDs.addAll(DefaultCreateRandomVehicleServiceTest.newSensorIDs);
+    allIDs.addAll(DefaultCreateRandomVehicleServiceTest.usedSensorIDs);
+    Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.usedSensorIDs.
+      size()
+      + DefaultCreateRandomVehicleServiceTest.newSensorIDs.
+      size(),
+      allIDs.size());
+  }
 
-		Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.GPS_CAR_RATIO,
-			(double) carsWithGPSAmount
-			/ (double) carAmount,
-			DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
-		Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.GPS_BIKE_RATIO,
-			(double) bikesWithGPSAmount
-			/ (double) bikeAmount,
-			DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
-		Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.GPS_TRUCK_RATIO,
-			(double) trucksWithGPSAmount
-			/ (double) truckAmount,
-			DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
-		Assert.assertEquals(
-			DefaultCreateRandomVehicleServiceTest.GPS_MOTORCYCLE_RATIO,
-			(double) motorcyclesWithGPSAmount
-			/ (double) carAmount,
-			DefaultCreateRandomVehicleServiceTest.ASSERT_EQUALS_DELTA);
-	}
+  /**
+   * Tests if enough vehicles are generated.
+   */
+  @Test
+  public void testVehicleGeneration() {
 
-	/**
-	 * Tests if enough unique ids are generated.
-	 */
-	@Test
-	public void testIDs() {
-		Set<Sensor<?, ?>> allIDs = new HashSet<>();
-		allIDs.addAll(DefaultCreateRandomVehicleServiceTest.newSensorIDs);
-		allIDs.addAll(DefaultCreateRandomVehicleServiceTest.usedSensorIDs);
-		Assert.assertEquals(DefaultCreateRandomVehicleServiceTest.usedSensorIDs.
-			size()
-			+ DefaultCreateRandomVehicleServiceTest.newSensorIDs.
-			size(),
-			allIDs.size());
-	}
+    int carAmount = 0, carsWithGPSAmount = 0, bikeAmount = 0, bikesWithGPSAmount = 0, motorcycleAmount = 0, motorcyclesWithGPSAmount = 0, truckAmount = 0, trucksWithGPSAmount = 0;
 
-	/**
-	 * Tests if enough vehicles are generated.
-	 */
-	@Test
-	public void testVehicleGeneration() {
+    RandomVehicleBundle testData = new RandomVehicleBundle(
+      DefaultCreateRandomVehicleServiceTest.RANDOM_CAR_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_CAR_RATIO,
+      DefaultCreateRandomVehicleServiceTest.RANDOM_BIKE_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_BIKE_RATIO,
+      DefaultCreateRandomVehicleServiceTest.RANDOM_TRUCK_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_TRUCK_RATIO,
+      DefaultCreateRandomVehicleServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
+      DefaultCreateRandomVehicleServiceTest.GPS_MOTORCYCLE_RATIO);
 
-		int carAmount = 0, carsWithGPSAmount = 0, bikeAmount = 0, bikesWithGPSAmount = 0, motorcycleAmount = 0, motorcyclesWithGPSAmount = 0, truckAmount = 0, trucksWithGPSAmount = 0;
+    TrafficEvent<?> result = testClass.createRandomDynamicSensors(testData,
+      randomSeedService,
+      true);
 
-		RandomVehicleBundle testData = new RandomVehicleBundle(
-			DefaultCreateRandomVehicleServiceTest.RANDOM_CAR_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_CAR_RATIO,
-			DefaultCreateRandomVehicleServiceTest.RANDOM_BIKE_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_BIKE_RATIO,
-			DefaultCreateRandomVehicleServiceTest.RANDOM_TRUCK_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_TRUCK_RATIO,
-			DefaultCreateRandomVehicleServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
-			DefaultCreateRandomVehicleServiceTest.GPS_MOTORCYCLE_RATIO);
+    Assert.assertEquals(result.getType(),
+      TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
+    /* Count vehicles and their gps ratio: */
+    for (CreateRandomVehicleData createRandomVehicleData
+      : ((CreateRandomVehiclesEvent<?>) result)
+      .getCreateRandomVehicleDataList()) {
+      if (createRandomVehicleData.getClass().equals(CreateRandomCarData.class)) {
+        carAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          carsWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomCarData) createRandomVehicleData).getGpsSensor());
+      } else if (createRandomVehicleData.getClass().equals(
+        CreateRandomBicycleData.class)) {
+        bikeAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          bikesWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomBicycleData) createRandomVehicleData).getGpsSensor());
+      } else if (createRandomVehicleData.getClass().equals(
+        CreateRandomMotorcycleData.class)) {
+        motorcycleAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          motorcyclesWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomMotorcycleData) createRandomVehicleData).
+          getGpsSensor());
+      } else if (createRandomVehicleData.getClass().equals(
+        CreateRandomTruckData.class)) {
+        truckAmount++;
+        if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
+          trucksWithGPSAmount++;
+        }
+        DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
+          ((CreateRandomTruckData) createRandomVehicleData).getGpsSensor());
+      } else {
+        throw new IllegalArgumentException();
+      }
+    }
 
-		TrafficEvent<?> result = testClass.createRandomDynamicSensors(testData,
-			randomSeedService,
-			true);
-
-		Assert.assertEquals(result.getType(),
-			TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT);
-		/* Count vehicles and their gps ratio: */
-		for (CreateRandomVehicleData createRandomVehicleData
-			: ((CreateRandomVehiclesEvent<?>) result)
-			.getCreateRandomVehicleDataList()) {
-			if (createRandomVehicleData.getClass().equals(CreateRandomCarData.class)) {
-				carAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					carsWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomCarData) createRandomVehicleData).getGpsSensor());
-			} else if (createRandomVehicleData.getClass().equals(
-				CreateRandomBicycleData.class)) {
-				bikeAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					bikesWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomBicycleData) createRandomVehicleData).getGpsSensor());
-			} else if (createRandomVehicleData.getClass().equals(
-				CreateRandomMotorcycleData.class)) {
-				motorcycleAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					motorcyclesWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomMotorcycleData) createRandomVehicleData).
-					getGpsSensor());
-			} else if (createRandomVehicleData.getClass().equals(
-				CreateRandomTruckData.class)) {
-				truckAmount++;
-				if (createRandomVehicleData.getVehicleInformation().isGpsActivated()) {
-					trucksWithGPSAmount++;
-				}
-				DefaultCreateRandomVehicleServiceTest.newSensorIDs.add(
-					((CreateRandomTruckData) createRandomVehicleData).getGpsSensor());
-			} else {
-				throw new IllegalArgumentException();
-			}
-		}
-
-		Assert.
-			assertEquals(
-				DefaultCreateRandomVehicleServiceTest.RANDOM_BIKE_AMOUNT,
-				bikeAmount);
-		Assert.assertEquals(
-			DefaultCreateRandomVehicleServiceTest.RANDOM_CAR_AMOUNT,
-			carAmount);
-		Assert.assertEquals(
-			DefaultCreateRandomVehicleServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
-			motorcycleAmount);
-		Assert.assertEquals(
-			DefaultCreateRandomVehicleServiceTest.RANDOM_TRUCK_AMOUNT,
-			truckAmount);
-	}
+    Assert.
+      assertEquals(
+        DefaultCreateRandomVehicleServiceTest.RANDOM_BIKE_AMOUNT,
+        bikeAmount);
+    Assert.assertEquals(
+      DefaultCreateRandomVehicleServiceTest.RANDOM_CAR_AMOUNT,
+      carAmount);
+    Assert.assertEquals(
+      DefaultCreateRandomVehicleServiceTest.RANDOM_MOTORCYCLE_AMOUNT,
+      motorcycleAmount);
+    Assert.assertEquals(
+      DefaultCreateRandomVehicleServiceTest.RANDOM_TRUCK_AMOUNT,
+      truckAmount);
+  }
 }

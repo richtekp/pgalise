@@ -23,7 +23,7 @@ import java.awt.Color;
  * @author Andreas
  * @version 1.0
  */
-public interface TruckFactory extends VehicleFactory {
+public interface TruckFactory extends BaseVehicleFactory {
 
   /**
    * Method to create a {@link Truck} with the given typeId.All position related

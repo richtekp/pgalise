@@ -15,13 +15,16 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import java.util.Set;
+
 /**
  * Interface to provide methods to create different types of {@link Bike}.
  *
  * @author Andreas
  * @version 1.0
  */
-public interface BicycleFactory extends VehicleFactory {
+public interface BicycleFactory extends BaseVehicleFactory {
 
   /**
    * Method to create a {@link Bike} with the given typeId.All position related
@@ -38,4 +41,8 @@ public interface BicycleFactory extends VehicleFactory {
    * @return created {@link Bike}
    */
   public Bicycle createRandomBicycle();
+
+  public Bicycle createBicycle(Set<TrafficEdge> edges);
+
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges);
 }

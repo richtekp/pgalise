@@ -57,32 +57,36 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
    * @param randomSeedService Random Seed Service
    * @param trafficGraphExtensions
    * @param stream
+   * @param sensorFactory
    */
   public XMLTruckFactory(IdGenerator idGenerator,
     TrafficGraphExtensions trafficGraphExtensions,
     RandomSeedService randomSeedService,
-    InputStream stream) {
+    InputStream stream,
+    TrafficSensorFactory sensorFactory) {
     super(trafficGraphExtensions,
       idGenerator,
       randomSeedService,
       stream);
+    this.sensorFactory = sensorFactory;
   }
 
   public XMLTruckFactory(IdGenerator idGenerator,
     TrafficGraphExtensions trafficGraphExtensions,
     RandomSeedService randomSeedService,
-    Set<TruckData> randomVehicleDataPool) {
+    Set<TruckData> randomVehicleDataPool,
+    TrafficSensorFactory sensorFactory) {
     super(trafficGraphExtensions,
       idGenerator,
       randomSeedService,
       randomVehicleDataPool);
+    this.sensorFactory = sensorFactory;
   }
 
   @Override
   public Truck createRandomTruck() {
     TruckData data = getRandomVehicleData();
     return new DefaultTruck(getIdGenerator().getNextId(),
-      null,
       data,
       getTrafficGraphExtensions());
   }

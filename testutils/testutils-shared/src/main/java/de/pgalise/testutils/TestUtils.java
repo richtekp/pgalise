@@ -11,11 +11,13 @@ import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.util.Properties;
-import javax.ejb.embeddable.EJBContainer;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  *
@@ -24,39 +26,45 @@ import org.slf4j.LoggerFactory;
 public class TestUtils {
 
   private final static Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
-  private static EJBContainer container;
+//  private static EJBContainer container;
 
-  public static EJBContainer getContainer() {
-    if (container == null) {
-      Properties p;
-      p = new Properties();
-      p.setProperty("java.naming.factory.initial",
-        "org.apache.openejb.client.LocalInitialContextFactory");
-      p.setProperty("jdbc/pgalise",
-        "new://Resource?type=DataSource");
-      p.setProperty("jdbc/pgalise.JdbcDriver",
-        "org.postgresql.Driver");
-      p.setProperty("jdbc/pgalise.JdbcUrl",
-        "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
-      p.setProperty("jdbc/pgalise.UserName",
-        "pgalise");
-      p.setProperty("jdbc/pgalise.Password",
-        "somepw");
-      p.setProperty("jdbc/pgalise.JtaManaged",
-        "true");
+  public static Context getContainer() {
+//    if (container == null) {
+    Properties p;
+    p = new Properties();
+    p.setProperty("java.naming.factory.initial",
+      "org.apache.openejb.client.LocalInitialContextFactory");
+    p.setProperty("jdbc/pgalise",
+      "new://Resource?type=DataSource");
+    p.setProperty("jdbc/pgalise.JdbcDriver",
+      "org.postgresql.Driver");
+    p.setProperty("jdbc/pgalise.JdbcUrl",
+      "jdbc:postgresql://127.0.0.1:5201/pgalise_test");
+    p.setProperty("jdbc/pgalise.UserName",
+      "pgalise");
+    p.setProperty("jdbc/pgalise.Password",
+      "somepw");
+    p.setProperty("jdbc/pgalise.JtaManaged",
+      "true");
 //			p.setProperty(
 //				"hibernate.dialect",
 //				"org.hibernate.spatial.dialect.postgis.PostgisDialect"
 //			);
-      p.setProperty("hibernate.transaction.jta.platform",
-        "org.apache.openejb.hibernate.OpenEJBJtaPlatform2");
-      p.setProperty("openejb.classloader.forced-skip",
-        "org.xml.sax");
+    p.setProperty("hibernate.transaction.jta.platform",
+      "org.apache.openejb.hibernate.OpenEJBJtaPlatform2");
+    p.setProperty("openejb.classloader.forced-skip",
+      "org.xml.sax");
 //      p.setProperty("openejb.validation.output.level",
 //        "VERBOSE");
-      container = EJBContainer.createEJBContainer(p);
+//      container = EJBContainer.createEJBContainer(p);
+//    }
+    try {
+      InitialContext initialContext = new InitialContext(p);
+      return initialContext;
+//    return container.getContext();
+    } catch (NamingException ex) {
+      throw new RuntimeException(ex);
     }
-    return container;
   }
 
   public static EntityManagerFactory createEntityManagerFactory(String unitName) {

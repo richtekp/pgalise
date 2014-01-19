@@ -12,12 +12,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -28,90 +26,83 @@ import org.junit.Test;
 @LocalBean
 public class XMLStartParameterSerializerServiceTest {
 
-	private static EJBContainer container;
+  @EJB
+  private StartParameterSerializerService instance;
 
-	@EJB
-	private StartParameterSerializerService instance;
+  public XMLStartParameterSerializerServiceTest() {
+  }
 
-	public XMLStartParameterSerializerServiceTest() {
-	}
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().bind("inject",
+      this);
+  }
 
-	@BeforeClass
-	public static void setUpClass() {
-		container = TestUtils.getContainer();
-	}
+  /**
+   * Test of deserialize method, of class XMLStartParameterSerializerService.
+   */
+  @Test
+  @Ignore
+  public void testDeserialize_String() {
+    System.out.println("deserialize");
+    String content = "";
+    ControlCenterStartParameter expResult = null;
+    ControlCenterStartParameter result = instance.deserialize(content);
+    assertEquals(expResult,
+      result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
 
-	@Before
-	public void setUp() throws NamingException {
-		container.getContext().bind("inject",
-			this);
-	}
+  /**
+   * Test of deserialize method, of class XMLStartParameterSerializerService.
+   */
+  @Test
+  @Ignore
+  public void testDeserialize_InputStream() {
+    System.out.println("deserialize");
+    InputStream inputStream = null;
+    ControlCenterStartParameter expResult = null;
+    ControlCenterStartParameter result = instance.deserialize(inputStream);
+    assertEquals(expResult,
+      result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
 
-	/**
-	 * Test of deserialize method, of class XMLStartParameterSerializerService.
-	 */
-	@Test
-	@Ignore
-	public void testDeserialize_String() {
-		System.out.println("deserialize");
-		String content = "";
-		ControlCenterStartParameter expResult = null;
-		ControlCenterStartParameter result = instance.deserialize(content);
-		assertEquals(expResult,
-			result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
+  /**
+   * Test of serialize method, of class XMLStartParameterSerializerService.
+   */
+  @Test
+  @Ignore
+  public void testSerialize_ControlCenterStartParameter_String() {
+    System.out.println("serialize");
+    ControlCenterStartParameter cCSimulationStartParameter = null;
+    String fileName = "";
+    String expResult = "";
+    String result = instance.serialize(cCSimulationStartParameter,
+      fileName);
+    assertEquals(expResult,
+      result);
+    // TODO review the generated test code and remove the default call to fail.
+    fail("The test case is a prototype.");
+  }
 
-	/**
-	 * Test of deserialize method, of class XMLStartParameterSerializerService.
-	 */
-	@Test
-	@Ignore
-	public void testDeserialize_InputStream() {
-		System.out.println("deserialize");
-		InputStream inputStream = null;
-		ControlCenterStartParameter expResult = null;
-		ControlCenterStartParameter result = instance.deserialize(inputStream);
-		assertEquals(expResult,
-			result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-
-	/**
-	 * Test of serialize method, of class XMLStartParameterSerializerService.
-	 */
-	@Test
-	@Ignore
-	public void testSerialize_ControlCenterStartParameter_String() {
-		System.out.println("serialize");
-		ControlCenterStartParameter cCSimulationStartParameter = null;
-		String fileName = "";
-		String expResult = "";
-		String result = instance.serialize(cCSimulationStartParameter,
-			fileName);
-		assertEquals(expResult,
-			result);
-		// TODO review the generated test code and remove the default call to fail.
-		fail("The test case is a prototype.");
-	}
-
-	/**
-	 * Test of serialize method, of class XMLStartParameterSerializerService.
-	 */
-	@Test
-	@Ignore
-	public void testSerialize_ControlCenterStartParameter_OutputStream() {
-		System.out.println("serialize");
-		ControlCenterStartParameter controlCenterStartParameter = new ControlCenterStartParameter();
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		instance.serialize(controlCenterStartParameter,
-			outputStream);
-		String expResult = "";
-		String result = outputStream.toString();
-		assertEquals(expResult,
-			result);
-	}
+  /**
+   * Test of serialize method, of class XMLStartParameterSerializerService.
+   */
+  @Test
+  @Ignore
+  public void testSerialize_ControlCenterStartParameter_OutputStream() {
+    System.out.println("serialize");
+    ControlCenterStartParameter controlCenterStartParameter = new ControlCenterStartParameter();
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    instance.serialize(controlCenterStartParameter,
+      outputStream);
+    String expResult = "";
+    String result = outputStream.toString();
+    assertEquals(expResult,
+      result);
+  }
 
 }

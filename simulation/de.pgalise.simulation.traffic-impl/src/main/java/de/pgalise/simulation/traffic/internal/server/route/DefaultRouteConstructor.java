@@ -64,8 +64,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
 
   private static final Logger log = LoggerFactory.getLogger(
     DefaultRouteConstructor.class);
-
-  private RandomVehicleTripGenerator gen;
+  @EJB
+  private RandomVehicleTripGenerator randomVehicleTripGenerator;
   private TrafficGraph graph;
   @EJB
   private GraphConstructor graphConstructor;
@@ -107,11 +107,12 @@ public class DefaultRouteConstructor implements RouteConstructor {
     Date date,
     int buffer) {
     if (cityZone == null) {
-      return this.gen.createVehicleTrip(getAllHomeNodes(),
-        getAllWorkNodes(),
-        vehicleType,
-        date,
-        buffer);
+      return this.randomVehicleTripGenerator.
+        createVehicleTrip(getAllHomeNodes(),
+          getAllWorkNodes(),
+          vehicleType,
+          date,
+          buffer);
     } else {
       if (startHomeNodesForServer.get(serverId) == null) {
         startHomeNodesForServer.put(serverId,
@@ -122,7 +123,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
           getStartWorkNodes(cityZone));
       }
 
-      return this.gen.createVehicleTrip(startHomeNodesForServer.get(serverId),
+      return this.randomVehicleTripGenerator.createVehicleTrip(
+        startHomeNodesForServer.get(serverId),
         startWorkNodesForServer.get(serverId),
         vehicleType,
         date,
@@ -131,30 +133,32 @@ public class DefaultRouteConstructor implements RouteConstructor {
   }
 
   @Override
-  public TrafficTrip createTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTrip(TrafficServer<?> server,
     Geometry cityZone,
     VehicleType vehicleType) {
     if (cityZone == null) {// for tests (if there is just 1 server and cityzone is undefined)
-      return this.gen.createVehicleTrip(getAllHomeNodes(),
-        getAllWorkNodes(),
-        vehicleType,
-        null,
-        -1);
+      return this.randomVehicleTripGenerator.
+        createVehicleTrip(getAllHomeNodes(),
+          getAllWorkNodes(),
+          vehicleType,
+          new Date(),
+          10);
     } else {
-      if (startHomeNodesForServer.get(serverId) == null) {
-        startHomeNodesForServer.put(serverId,
+      if (startHomeNodesForServer.get(server) == null) {
+        startHomeNodesForServer.put(server,
           getStartHomeNodes(cityZone));
       }
-      if (startWorkNodesForServer.get(serverId) == null) {
-        startWorkNodesForServer.put(serverId,
+      if (startWorkNodesForServer.get(server) == null) {
+        startWorkNodesForServer.put(server,
           getStartWorkNodes(cityZone));
       }
 
-      return this.gen.createVehicleTrip(startHomeNodesForServer.get(serverId),
-        startWorkNodesForServer.get(serverId),
+      return this.randomVehicleTripGenerator.createVehicleTrip(
+        startHomeNodesForServer.get(server),
+        startWorkNodesForServer.get(server),
         vehicleType,
-        null,
-        -1);
+        new Date(),
+        10);
     }
 
   }
@@ -173,20 +177,21 @@ public class DefaultRouteConstructor implements RouteConstructor {
           getStartHomeNodes(cityZone));
       }
 
-      return this.gen.createVehicleTrip(startHomeNodesForServer.get(serverId),
+      return this.randomVehicleTripGenerator.createVehicleTrip(
+        startHomeNodesForServer.get(serverId),
         nodeID,
         startTimestamp);
     } else {
       if (cityZone == null || cityZone.covers(GEOMETRY_FACTORY.createPoint(
         nodeID.getGeoLocation()))) {
-        return this.gen.createVehicleTrip(nodeID,
+        return this.randomVehicleTripGenerator.createVehicleTrip(nodeID,
           getAllHomeNodes(),
           startTimestamp);
       } else {
         return null;
       }
     }
-		// return (isStartNode) ? this.gen.createVehicleTrip(nodeID, getAllHomeNodes(), startTimestamp) : this.gen
+    // return (isStartNode) ? this.gen.createVehicleTrip(nodeID, getAllHomeNodes(), startTimestamp) : this.gen
     // .createVehicleTrip(lastUsedStartHomeNodes, nodeID, startTimestamp);
   }
 
@@ -292,7 +297,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
     return path;
   }
 
-	// public Path getShortestPath(Node start, Node dest) {
+  // public Path getShortestPath(Node start, Node dest) {
   //
   // Foo entry = null;
   // for(Foo f : this.map) {
@@ -353,7 +358,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
     CityInfrastructureData cityInfrastructureData) {
     this.regionParser.parseLanduse(this.graph,
       cityInfrastructureData);
-    this.gen = new DefaultRandomVehicleTripGenerator(time,
+    this.randomVehicleTripGenerator = new DefaultRandomVehicleTripGenerator(time,
       this.getAllHomeNodes(),
       this.getAllWorkNodes(),
       this.randomSeedService);

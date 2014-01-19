@@ -12,60 +12,35 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
  */
 package de.pgalise.simulation.traffic;
 
-import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficController;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopNoInterferer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
-import java.util.Arrays;
 import java.util.LinkedList;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.getCurrentArguments;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import org.easymock.IAnswer;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the DefaultTrafficController
@@ -87,7 +62,7 @@ public class DefaultTrafficControllerTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
   }
 
@@ -96,65 +71,37 @@ public class DefaultTrafficControllerTest {
    *
    * @throws IllegalStateException
    * @throws InitializationException
+   * @throws javax.naming.NamingException
    */
-  @SuppressWarnings({"unchecked", "rawtypes"})
   @Test
-  public void initAndStartTest() throws IllegalStateException, InitializationException {
+  public void initAndStartTest() throws IllegalStateException, InitializationException, NamingException {
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
+    TrafficFuzzyData trafficFuzzyData = new TrafficFuzzyData(1,
+      1.0,
+      1);
     TrafficInitParameter initParam = new TrafficInitParameter(city,
-      null);
+      trafficFuzzyData);
     TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
     s1.init(initParam);
-    s1.setCityZone(anyObject(Geometry.class));
-    expectLastCall().andAnswer(new IAnswer() {
-
-      @Override
-      public Object answer() throws Throwable {
-        Geometry g = (Geometry) getCurrentArguments()[0];
-
-        assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.
-          getEnvelopeInternal().getMinY() == 0 && g.getEnvelopeInternal().
-          getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
-        return null;
-      }
-
-    });
     s1.start(startParam);
-    replay(s1);
 
-    TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     s2.init(initParam);
-    s2.setCityZone(anyObject(Geometry.class));
-    expectLastCall().andAnswer(new IAnswer() {
-
-      @Override
-      public Object answer() throws Throwable {
-        Geometry g = (Geometry) getCurrentArguments()[0];
-        assertTrue(g.getEnvelopeInternal().getMinX() == 0 && g.
-          getEnvelopeInternal().getMinY() == 500 && g.getEnvelopeInternal().
-          getWidth() == 800 && g.getEnvelopeInternal().getHeight() == 500);
-        return null;
-      }
-
-    });
     s2.start(startParam);
-    replay(s2);
 
-    TrafficControllerLocal<?> ctrl = new DefaultTrafficController(
-      GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-        new JaxRSCoordinate[]{}),
-      new LinkedList<>(Arrays.asList(s1,
-          s2)));
-
+    TrafficControllerLocal<?> ctrl
+      = (TrafficControllerLocal) TestUtils.getContainer().lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
     ctrl.init(initParam);
     ctrl.start(startParam);
-
-    verify(s1);
-    verify(s2);
   }
 
   @Test
@@ -164,123 +111,123 @@ public class DefaultTrafficControllerTest {
    * @throws IllegalStateException
    * @throws InitializationException
    */
-  public void stopAndResumeTest() throws IllegalStateException, InitializationException {
+  public void stopAndResumeTest() throws IllegalStateException, InitializationException, NamingException {
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
+    TrafficFuzzyData trafficFuzzyData = new TrafficFuzzyData(1,
+      1.0,
+      1);
     TrafficInitParameter initParam = new TrafficInitParameter(city,
-      null);
+      trafficFuzzyData);
     TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
     s1.init(initParam);
-    s1.setCityZone(anyObject(Geometry.class));
     s1.start(startParam);
     s1.stop();
     s1.start(null);
-    replay(s1);
 
-    TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     s2.init(initParam);
-    s2.setCityZone(anyObject(Geometry.class));
     s2.start(startParam);
     s2.stop();
     s2.start(null);
-    replay(s2);
 
-    TrafficControllerLocal ctrl = new DefaultTrafficController(
-      GeoToolsBootstrapping.getGEOMETRY_FACTORY().
-      createPolygon(new JaxRSCoordinate[]{}),
-      Arrays.asList(s1,
-        s2));
+    TrafficControllerLocal<?> ctrl
+      = (TrafficControllerLocal) TestUtils.getContainer().lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
 
     ctrl.init(initParam);
     ctrl.start(startParam);
     ctrl.stop();
     ctrl.start(null);
-
-    verify(s1);
-    verify(s2);
   }
 
   @Test
-  public void resetTest() throws IllegalStateException, InitializationException {
+  public void resetTest() throws IllegalStateException, InitializationException, NamingException {
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
+    TrafficFuzzyData trafficFuzzyData = new TrafficFuzzyData(1,
+      1.0,
+      1);
     TrafficInitParameter initParam = new TrafficInitParameter(city,
-      null);
-    TrafficStartParameter startParam = createNiceMock(
-      TrafficStartParameter.class);
+      trafficFuzzyData);
+    TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
     s1.init(initParam);
-    s1.setCityZone(anyObject(Geometry.class));
     s1.start(startParam);
     s1.stop();
     s1.reset();
-    replay(s1);
 
-    TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     s2.init(initParam);
-    s2.setCityZone(anyObject(Geometry.class));
     s2.start(startParam);
     s2.stop();
     s2.reset();
-    replay(s2);
 
-    TrafficControllerLocal ctrl = new DefaultTrafficController(
-      GeoToolsBootstrapping.getGEOMETRY_FACTORY().
-      createPolygon(new JaxRSCoordinate[]{}),
-      Arrays.asList(s1,
-        s2));
-
+    TrafficControllerLocal<?> ctrl = (TrafficControllerLocal) TestUtils.
+      getContainer().lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
     ctrl.init(initParam);
     ctrl.start(startParam);
     ctrl.stop();
     ctrl.reset();
-
-    verify(s1);
-    verify(s2);
   }
 
   @Test
-  public void updateTest() throws IllegalStateException, InitializationException {
+  public void updateTest() throws IllegalStateException, InitializationException, NamingException {
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
+    TrafficFuzzyData trafficFuzzyData = new TrafficFuzzyData(1,
+      1.0,
+      1);
     TrafficInitParameter initParam = new TrafficInitParameter(city,
-      null);
+      trafficFuzzyData);
     TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
     s1.init(initParam);
-    s1.setCityZone(anyObject(Geometry.class));
     s1.start(startParam);
-    s1.update(anyObject(EventList.class));
+    EventList eventList = new EventList(idGenerator.getNextId(),
+      new LinkedList<>(),
+      System.currentTimeMillis());
+    s1.update(eventList);
     s1.processMovedVehicles();
-    replay(s1);
 
-    TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     s2.init(initParam);
-    s2.setCityZone(anyObject(Geometry.class));
     s2.start(startParam);
-    s2.update(anyObject(EventList.class));
+    eventList = new EventList(idGenerator.getNextId(),
+      new LinkedList<>(),
+      System.currentTimeMillis());
+    s2.update(eventList);
     s2.processMovedVehicles();
-    replay(s2);
 
-    TrafficControllerLocal<?> ctrl = new DefaultTrafficController(
-      GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-        new JaxRSCoordinate[]{}),
-      Arrays.asList(s1,
-        s2));
-
+    TrafficControllerLocal<?> ctrl
+      = (TrafficControllerLocal) TestUtils.getContainer().lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
     ctrl.init(initParam);
     ctrl.start(startParam);
-    ctrl.update(createNiceMock(EventList.class));
-
-    verify(s1);
-    verify(s2);
+    eventList = new EventList(idGenerator.getNextId(),
+      new LinkedList<>(),
+      System.currentTimeMillis());
+    ctrl.update(eventList);
   }
 
   @Test
@@ -291,57 +238,59 @@ public class DefaultTrafficControllerTest {
    * @throws SensorException
    * @throws InitializationException
    */
-  public void sensorTests() throws IllegalStateException, SensorException, InitializationException {
+  public void sensorTests() throws IllegalStateException, SensorException, InitializationException, NamingException {
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
+    TrafficFuzzyData trafficFuzzyData = new TrafficFuzzyData(1,
+      1.0,
+      1);
     TrafficInitParameter initParam = new TrafficInitParameter(city,
-      null);
+      trafficFuzzyData);
     TrafficStartParameter startParam = createNiceMock(
       TrafficStartParameter.class);
 
     // create sensors
-    TrafficSensor sensor = new InductionLoopSensor(idGenerator.getNextId(),
+    TrafficNode someNode = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(1,
+        2));
+    TrafficSensor<?> sensor = new InductionLoopSensor(idGenerator.getNextId(),
       tcpIpOutput,
-      null,
+      someNode,
       new InductionLoopNoInterferer());
-    TrafficSensor sensor2 = new InductionLoopSensor(idGenerator.getNextId(),
+    sensor.setActivated(true);
+    TrafficSensor<?> sensor2 = new InductionLoopSensor(idGenerator.getNextId(),
       tcpIpOutput,
-      null,
+      someNode,
       new InductionLoopNoInterferer());
+    sensor2.setActivated(false);
 
-    TrafficServerLocal<TrafficEvent> s1 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.
+      getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
     s1.init(initParam);
-    s1.setCityZone(anyObject(Geometry.class));
     s1.start(startParam);
     s1.createSensor(sensor);
-    expect(s1.isActivated(sensor)).andReturn(true);
     s1.deleteSensor(sensor);
-    replay(s1);
 
-    TrafficServerLocal<TrafficEvent> s2 = createMock(TrafficServerLocal.class);
+    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.
+      getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     s2.init(initParam);
-    s2.setCityZone(anyObject(Geometry.class));
     s2.start(startParam);
     s2.createSensor(sensor);
-    expect(s2.isActivated(sensor2)).andReturn(false);
     s2.deleteSensor(sensor);
-    replay(s2);
 
-    TrafficControllerLocal<?> ctrl = new DefaultTrafficController(
-      GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-        new JaxRSCoordinate[]{}),
-      Arrays.asList(s1,
-        s2));
-
+    TrafficControllerLocal<?> ctrl
+      = (TrafficControllerLocal) TestUtils.getContainer().lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
     ctrl.init(initParam);
     ctrl.start(startParam);
     ctrl.createSensor(sensor);
     assertTrue(ctrl.isActivated(sensor));
     assertFalse(ctrl.isActivated(sensor2));
     ctrl.deleteSensor(sensor);
-
-    verify(s1);
-    verify(s2);
   }
 }

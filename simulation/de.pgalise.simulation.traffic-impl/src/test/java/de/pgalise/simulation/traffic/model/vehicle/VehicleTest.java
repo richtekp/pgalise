@@ -83,14 +83,23 @@ public class VehicleTest {
   /**
    * File path of the test file
    */
-  public static final String FILEPATH = System.getProperty("user.dir") + "/vehicle.bin";
+  public static final String FILEPATH;
+
+  static {
+    try {
+      FILEPATH = File.createTempFile("pgalise",
+        null).getAbsolutePath();
+    } catch (IOException ex) {
+      throw new ExceptionInInitializerError(ex);
+    }
+  }
 
   public VehicleTest() {
   }
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
   }
 
@@ -106,11 +115,14 @@ public class VehicleTest {
   @Test
   public void drivingTest() throws InterruptedException {
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      null);
+      new JaxRSCoordinate(1,
+        1));
     TrafficNode b = new TrafficNode((idGenerator.getNextId()),
-      null);
+      new JaxRSCoordinate(1,
+        2));
     TrafficNode c = new TrafficNode((idGenerator.getNextId()),
-      null);
+      new JaxRSCoordinate(2,
+        2));
     TrafficGraph graph = new DefaultTrafficGraph();
     graph.addVertex(a);
     graph.addVertex(b);
@@ -126,7 +138,7 @@ public class VehicleTest {
     List<TrafficEdge> shortestPath = algo.getPathEdgeList();
     log.debug("Shortest path: " + shortestPath.toString());
 
-    Vehicle<CarData> car = factory.createRandomCar();
+    Vehicle<CarData> car = factory.createRandomCar(graph.edgeSet());
 
     car.setCurrentNode(a);
     car.setPosition(a.getGeoLocation());
@@ -342,7 +354,7 @@ public class VehicleTest {
      * "b", 2, 0); Node c = this.addNode(graph, "c", 2, 2);
      */
     // Creating the cars
-    Vehicle<?> carA = factory.createRandomCar();
+    Vehicle<?> carA = factory.createRandomCar(graph.edgeSet());
     carA.setTrafficGraphExtensions(ee);
     carA.setName("carA");
     carA.setPath(shortestPath);
@@ -352,7 +364,7 @@ public class VehicleTest {
     Collections.reverse(revPath);
     Collections.reverse(revPath);
 
-    Vehicle<?> carB = factory.createRandomCar();
+    Vehicle<?> carB = factory.createRandomCar(graph.edgeSet());
     carB.setTrafficGraphExtensions(ee);
     carB.setName("carB");
     carB.setPath(revPath);
@@ -453,7 +465,7 @@ public class VehicleTest {
     graph.setEdgeWeight(bc,
       1);
 
-    Vehicle<CarData> car = factory.createCar();
+    Vehicle<CarData> originalCar = factory.createCar(graph.edgeSet());
 
     DijkstraShortestPath<TrafficNode, TrafficEdge> algo = new DijkstraShortestPath<>(
       graph,
@@ -461,24 +473,25 @@ public class VehicleTest {
       c);
     List<TrafficEdge> shortestPath = algo.getPathEdgeList();
 
-    car.setPath(shortestPath);
-    saveVehicle(car,
+    originalCar.setPath(shortestPath);
+    saveVehicle(originalCar,
       FILEPATH);
 
-    Vehicle<?> car2 = loadVehicle(FILEPATH,
+    Vehicle<?> deserializedCar = deserializeVehicle(FILEPATH,
       graph,
-      car.getPath().get(0).getSource(),
-      car.getPath().get(car.getPath().size() - 1).getSource());
+      originalCar.getPath().get(0).getSource(),
+      originalCar.getPath().get(originalCar.getPath().size() - 1).getSource());
 
-    assertEquals(car.getPath().get(0).getId(),
-      car2.getPath().get(0).getId());
+    assertEquals(originalCar.getPath().get(0).getId(),
+      deserializedCar.getPath().get(0).getId());
 
-    assertEquals(car.getPath().get(
-      car.getPath().size() - 1).getId(),
-      car2.getPath().get(car.getPath().size() - 1).getId());
+    assertEquals(originalCar.getPath().get(
+      originalCar.getPath().size() - 1).getId(),
+      deserializedCar.getPath().get(deserializedCar.getPath().size() - 1).
+      getId());
 
-    assertEquals(car.getData().getType(),
-      car2.getData().getType());
+    assertEquals(originalCar.getData().getType(),
+      deserializedCar.getData().getType());
   }
 
   /**
@@ -489,9 +502,10 @@ public class VehicleTest {
    */
   private void saveVehicle(Vehicle<?> car,
     String path) throws FileNotFoundException, IOException {
-    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(path));
-    out.writeObject(car);
-    out.close();
+    try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(
+      path))) {
+      out.writeObject(car);
+    }
   }
 
   /**
@@ -505,7 +519,7 @@ public class VehicleTest {
    */
   @SuppressWarnings(
     "unchecked")
-  private Vehicle<?> loadVehicle(String path,
+  private Vehicle<?> deserializeVehicle(String path,
     TrafficGraph graph,
     TrafficNode startNodeId,
     TrafficNode targetNodeId)

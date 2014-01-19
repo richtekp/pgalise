@@ -11,6 +11,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.JaxbVector2d;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsClockInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
@@ -30,6 +31,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
 
   private static final long serialVersionUID = 1L;
+  @EJB
   private TrafficGraphExtensions trafficGraphExtensions;
   @EJB
   private IdGenerator idGenerator;
@@ -37,6 +39,8 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
   private RandomSeedService randomSeedService;
   @EJB
   private TcpIpOutput output;
+  @EJB
+  private TrafficSensorFactory sensorFactory;
 
   private final static Random RANDOM = new Random();
 
@@ -155,7 +159,10 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
     int i = 0;
     Iterator<TrafficEdge> it = edges.iterator();
     while (i < chosenIndex) {
+      //needs to be < in order to be select the position in the iterator which 
+      //will be before the selected position below (another call to it.next)
       it.next();
+      i++;
     }
     TrafficEdge chosenEdge = it.next();
     double chosenOffset = chosenEdge.getEdgeLength() * Math.random();
@@ -316,5 +323,9 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
 
   public List<Pair<Integer, Integer>> getWheelbaseMinMaxPairs() {
     return wheelbaseMinMaxPairs;
+  }
+
+  public TrafficSensorFactory getSensorFactory() {
+    return sensorFactory;
   }
 }

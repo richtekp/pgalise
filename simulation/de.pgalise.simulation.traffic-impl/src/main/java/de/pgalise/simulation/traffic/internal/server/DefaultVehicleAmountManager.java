@@ -17,7 +17,6 @@ package de.pgalise.simulation.traffic.internal.server;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
@@ -334,7 +333,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
         Vehicle<?> v = i.next();
         long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-        DefaultScheduleItem item = new DefaultScheduleItem(v,
+        ScheduleItem item = new ScheduleItem(v,
           startTime,
           ts.getUpdateIntervall());
         ts.getItemsToScheduleAfterFuzzy().add(item);
@@ -385,7 +384,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
 
         long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-        DefaultScheduleItem<?> item = new DefaultScheduleItem<>(v,
+        ScheduleItem item = new ScheduleItem(v,
           startTime,
           ts.getUpdateIntervall());
         ts.getItemsToScheduleAfterFuzzy().add(item);
@@ -436,7 +435,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
         Vehicle v = i.next();
         long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-        DefaultScheduleItem item = new DefaultScheduleItem(v,
+        ScheduleItem item = new ScheduleItem(v,
           startTime,
           ts.getUpdateIntervall());
         ts.getItemsToScheduleAfterFuzzy().add(item);
@@ -484,7 +483,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
         Vehicle<?> v = i.next();
         long startTime = (rand.nextInt(this.timebuffer + 1) * 60 * 1000) + timestamp;
 
-        ScheduleItem item = new DefaultScheduleItem<>(v,
+        ScheduleItem item = new ScheduleItem(v,
           startTime,
           ts.getUpdateIntervall());
         ts.getItemsToScheduleAfterFuzzy().add(item);

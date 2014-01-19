@@ -129,7 +129,7 @@ public class DefaultEnergyControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
 
     Calendar cal = new GregorianCalendar();

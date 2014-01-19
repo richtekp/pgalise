@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,173 +35,175 @@ import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
  */
 public abstract class ExtendedMotorizedVehicle<T extends VehicleData> extends BaseMotorizedVehicle<T> {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -6046625845401699913L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -6046625845401699913L;
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(
-		ExtendedMotorizedVehicle.class);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    ExtendedMotorizedVehicle.class);
 
-	/**
-	 * Last registered node of the graph
-	 */
-	private TrafficNode lastRegisteredNode;
-	
-	protected ExtendedMotorizedVehicle() {
-	}
+  /**
+   * Last registered node of the graph
+   */
+  private TrafficNode lastRegisteredNode;
 
-	/**
-	 * Constructor
-	 *
-	 * @param id
-	 * @param name Name of the car
-	 * @param carData Information of the car
-	 * @param trafficGraphExtensions
-	 */
-	public ExtendedMotorizedVehicle(Long id,
-		String name,
-		T carData,
-		TrafficGraphExtensions trafficGraphExtensions) {
-		super(id,
-			carData,
-			trafficGraphExtensions);
-		this.setData(carData);
-	}
+  protected ExtendedMotorizedVehicle() {
+  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param id
-	 * @param carData Information of the car
-	 * @param trafficGraphExtensions
-	 */
-	public ExtendedMotorizedVehicle(Long id,
-		T carData,
-		TrafficGraphExtensions trafficGraphExtensions) {
-		super(id,carData,
-			trafficGraphExtensions);
-		if (carData == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"carData"));
-		}
-		this.setData(carData);
-	}
+  /**
+   * Constructor
+   *
+   * @param id
+   * @param name Name of the car
+   * @param carData Information of the car
+   * @param trafficGraphExtensions
+   */
+  public ExtendedMotorizedVehicle(Long id,
+    T carData,
+    TrafficGraphExtensions trafficGraphExtensions,
+    JaxRSCoordinate position) {
+    super(id,
+      carData,
+      trafficGraphExtensions,
+      position);
+    this.setData(carData);
+  }
 
-	@Override
-	protected void passedNode(final TrafficNode passedNode) {
+  /**
+   * Constructor
+   *
+   * @param id
+   * @param carData Information of the car
+   * @param trafficGraphExtensions
+   */
+  public ExtendedMotorizedVehicle(Long id,
+    T carData,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    super(id,
+      carData,
+      trafficGraphExtensions);
+    if (carData == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "carData"));
+    }
+    this.setData(carData);
+  }
 
-		if ((this.getPreviousNode() == null) || (this.getNextNode() == null)) {
-			// car eliminates the NPE
-			return;
-		}
+  @Override
+  protected void passedNode(final TrafficNode passedNode) {
 
-		this.setPosition(this.getTrafficGraphExtensions().getPosition(passedNode));
-		final double vel = this.getVelocity();
-		this.setVelocity(0);
-		this.setVehicleState(VehicleStateEnum.STOPPED);
-		this.getTrafficGraphExtensions().getTrafficRule(passedNode)
-			.register(this,
-				this.getPreviousNode(),
-				this.getNextNode(),
-				new TrafficRuleCallback() {
+    if ((this.getPreviousNode() == null) || (this.getNextNode() == null)) {
+      // car eliminates the NPE
+      return;
+    }
 
-					@Override
-					public boolean onEnter() {
-						// is allowed to drive
-						ExtendedMotorizedVehicle.this.setVehicleState(
-							VehicleStateEnum.IN_TRAFFIC_RULE);
-						return true;
-					}
+    this.setPosition(this.getTrafficGraphExtensions().getPosition(passedNode));
+    final double vel = this.getVelocity();
+    this.setVelocity(0);
+    this.setVehicleState(VehicleStateEnum.STOPPED);
+    this.getTrafficGraphExtensions().getTrafficRule(passedNode)
+      .register(this,
+        this.getPreviousNode(),
+        this.getNextNode(),
+        new TrafficRuleCallback() {
 
-					@Override
-					public boolean onExit() {
-						// leaves the trafficRule
-						ExtendedMotorizedVehicle.this.setVehicleState(
-							VehicleStateEnum.DRIVING);
-						ExtendedMotorizedVehicle.this.setVelocity(vel);
+          @Override
+          public boolean onEnter() {
+            // is allowed to drive
+            ExtendedMotorizedVehicle.this.setVehicleState(
+              VehicleStateEnum.IN_TRAFFIC_RULE);
+            return true;
+          }
 
-						if (ExtendedMotorizedVehicle.this.getPreviousEdge() != null) {
-							// log.debug("Unregister car " + this.getName() + " from edge: " +
-							// this.getPreviousEdge().getId());
-							ExtendedMotorizedVehicle.this.getTrafficGraphExtensions().
-							unregisterFromEdge(
-								ExtendedMotorizedVehicle.this.getPreviousEdge(),
-								ExtendedMotorizedVehicle.this.getPreviousNode(),
-								ExtendedMotorizedVehicle.this.getCurrentNode(),
-								ExtendedMotorizedVehicle.this);
-						}
+          @Override
+          public boolean onExit() {
+            // leaves the trafficRule
+            ExtendedMotorizedVehicle.this.setVehicleState(
+              VehicleStateEnum.DRIVING);
+            ExtendedMotorizedVehicle.this.setVelocity(vel);
 
-						if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(
-							ExtendedMotorizedVehicle.this.getVehicleState())) {
-							if (ExtendedMotorizedVehicle.this.getCurrentEdge() != null) {
-								// log.debug("Register car " + this.getName() + " on edge: " +
-								// this.getCurrentEdge().getId());
-								ExtendedMotorizedVehicle.this.getTrafficGraphExtensions().
-								registerOnEdge(
-									ExtendedMotorizedVehicle.this.getCurrentEdge(),
-									ExtendedMotorizedVehicle.this.getCurrentNode(),
-									ExtendedMotorizedVehicle.this.getNextNode(),
-									ExtendedMotorizedVehicle.this);
-							}
-						}
+            if (ExtendedMotorizedVehicle.this.getPreviousEdge() != null) {
+              // log.debug("Unregister car " + this.getName() + " from edge: " +
+              // this.getPreviousEdge().getId());
+              ExtendedMotorizedVehicle.this.getTrafficGraphExtensions().
+              unregisterFromEdge(
+                ExtendedMotorizedVehicle.this.getPreviousEdge(),
+                ExtendedMotorizedVehicle.this.getPreviousNode(),
+                ExtendedMotorizedVehicle.this.getCurrentNode(),
+                ExtendedMotorizedVehicle.this);
+            }
 
-						return true;
-					}
-				});
-	}
+            if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(
+              ExtendedMotorizedVehicle.this.getVehicleState())) {
+              if (ExtendedMotorizedVehicle.this.getCurrentEdge() != null) {
+                // log.debug("Register car " + this.getName() + " on edge: " +
+                // this.getCurrentEdge().getId());
+                ExtendedMotorizedVehicle.this.getTrafficGraphExtensions().
+                registerOnEdge(
+                  ExtendedMotorizedVehicle.this.getCurrentEdge(),
+                  ExtendedMotorizedVehicle.this.getCurrentNode(),
+                  ExtendedMotorizedVehicle.this.getNextNode(),
+                  ExtendedMotorizedVehicle.this);
+              }
+            }
 
-	@Override
-	protected void postUpdate(TrafficNode passedNode) {
-		if (this.getVehicleState() != VehicleStateEnum.REACHED_TARGET) {
-			if (passedNode != null) {
-				if (this.getTrafficGraphExtensions().getPosition(passedNode).equals(
-					this.getPosition())
-					&& this.getVehicleState() != VehicleStateEnum.PAUSED) {
-					this.getTrafficGraphExtensions().registerOnNode(passedNode,
-						this);
-					log.debug("Registering car "
-						+ this.getName()
-						+ " on node "
-						+ passedNode.getId()
-						+ ", new size: "
-						+ this.getTrafficGraphExtensions().getVehiclesOnNode(passedNode,
-							this.getData().getType())
-						.size());
-					lastRegisteredNode = passedNode;
-				}
-			} else {
-				if (lastRegisteredNode != null
-					&& !this.getTrafficGraphExtensions().getPosition(lastRegisteredNode).
-					equals(this.getPosition())) {
-					this.getTrafficGraphExtensions().
-						unregisterFromNode(lastRegisteredNode,
-							this);
-					log.debug("Unregistering car "
-						+ this.getName()
-						+ " from node "
-						+ lastRegisteredNode.getId()
-						+ ", new size: "
-						+ this.getTrafficGraphExtensions()
-						.getVehiclesOnNode(lastRegisteredNode,
-							this.getData().getType()).size());
-					lastRegisteredNode = null;
-				}
-			}
-		}
-	}
+            return true;
+          }
+        });
+  }
 
-	@Override
-	protected void preUpdate(long elapsedTime) {
-	}
+  @Override
+  protected void postUpdate(TrafficNode passedNode) {
+    if (this.getVehicleState() != VehicleStateEnum.REACHED_TARGET) {
+      if (passedNode != null) {
+        if (this.getTrafficGraphExtensions().getPosition(passedNode).equals(
+          this.getPosition())
+          && this.getVehicleState() != VehicleStateEnum.PAUSED) {
+          this.getTrafficGraphExtensions().registerOnNode(passedNode,
+            this);
+          log.debug("Registering car "
+            + this.getName()
+            + " on node "
+            + passedNode.getId()
+            + ", new size: "
+            + this.getTrafficGraphExtensions().getVehiclesOnNode(passedNode,
+              this.getData().getType())
+            .size());
+          lastRegisteredNode = passedNode;
+        }
+      } else {
+        if (lastRegisteredNode != null
+          && !this.getTrafficGraphExtensions().getPosition(lastRegisteredNode).
+          equals(this.getPosition())) {
+          this.getTrafficGraphExtensions().
+            unregisterFromNode(lastRegisteredNode,
+              this);
+          log.debug("Unregistering car "
+            + this.getName()
+            + " from node "
+            + lastRegisteredNode.getId()
+            + ", new size: "
+            + this.getTrafficGraphExtensions()
+            .getVehiclesOnNode(lastRegisteredNode,
+              this.getData().getType()).size());
+          lastRegisteredNode = null;
+        }
+      }
+    }
+  }
 
-	@Override
-	public String toString() {
-		return "ExtendedMotorizedVehicle (" + this.getData().getClass().
-			getSimpleName() + ") [lastRegisteredNode="
-			+ lastRegisteredNode + ", super=" + super.toString() + "]";
-	}
+  @Override
+  protected void preUpdate(long elapsedTime) {
+  }
+
+  @Override
+  public String toString() {
+    return "ExtendedMotorizedVehicle (" + this.getData().getClass().
+      getSimpleName() + ") [lastRegisteredNode="
+      + lastRegisteredNode + ", super=" + super.toString() + "]";
+  }
 }

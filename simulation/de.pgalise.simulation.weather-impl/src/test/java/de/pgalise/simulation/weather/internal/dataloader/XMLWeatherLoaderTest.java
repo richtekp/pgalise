@@ -96,7 +96,7 @@ public class XMLWeatherLoaderTest {
     XMLWeatherLoaderTest.testFilePath = XMLWeatherLoaderTest.testClass
       .getFilePath(XMLWeatherLoaderTest.testTimestamp);
 
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
   }
 

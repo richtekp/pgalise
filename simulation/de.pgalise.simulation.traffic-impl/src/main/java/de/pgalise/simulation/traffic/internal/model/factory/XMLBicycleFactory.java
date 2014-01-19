@@ -18,9 +18,11 @@ package de.pgalise.simulation.traffic.internal.model.factory;
 import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultBicycle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.BicycleDataList;
@@ -78,7 +80,6 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   public Bicycle createRandomBicycle() {
     BicycleData data = getRandomVehicleData();
     return new DefaultBicycle(getIdGenerator().getNextId(),
-      "bicycle" + getNextCounter(),
       data,
       this.getTrafficGraphExtensions());
   }
@@ -172,6 +173,26 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
     } catch (JAXBException ex) {
       throw new RuntimeException(ex);
     }
+  }
+
+  @Override
+  public Bicycle createBicycle(Set<TrafficEdge> edges) {
+    Bicycle retValue = createBicycle();
+    if (edges != null) {
+      JaxRSCoordinate position = generateRandomPosition(edges);
+      retValue.setPosition(position);
+    }
+    return retValue;
+  }
+
+  @Override
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges) {
+    Bicycle retValue = createRandomBicycle();
+    if (edges != null) {
+      JaxRSCoordinate position = generateRandomPosition(edges);
+      retValue.setPosition(position);
+    }
+    return retValue;
   }
 
 }

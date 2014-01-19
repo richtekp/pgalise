@@ -5,11 +5,16 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.traffic.internal.model.factory.XMLVehicleFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
@@ -42,13 +47,15 @@ public class XMLVehicleFactoryTest {
   private IdGenerator idGenerator;
   @EJB
   private TrafficGraphExtensions trafficGraphExtensions;
+  @EJB
+  private TrafficSensorFactory sensorFactory;
 
   public XMLVehicleFactoryTest() {
   }
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
   }
 
@@ -63,7 +70,8 @@ public class XMLVehicleFactoryTest {
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Bicycle result = instance.createBicycle();
     assertNotNull(result);
   }
@@ -79,7 +87,8 @@ public class XMLVehicleFactoryTest {
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Bus result = instance.createBus();
     assertNotNull(result);
   }
@@ -92,11 +101,23 @@ public class XMLVehicleFactoryTest {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
+    TrafficGraph graph = new DefaultTrafficGraph();
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(30,
+        30));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(60,
+        60));
+    graph.addVertex(a);
+    graph.addVertex(b);
+    graph.addEdge(a,
+      b);
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
-    Car result = instance.createCar();
+      inputStream,
+      sensorFactory);
+    Car result = instance.createCar(graph.edgeSet());
     assertNotNull(result);
   }
 
@@ -111,7 +132,8 @@ public class XMLVehicleFactoryTest {
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Motorcycle result = instance.createMotorcycle();
     assertNotNull(result);
   }
@@ -127,7 +149,8 @@ public class XMLVehicleFactoryTest {
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Bicycle result = instance.createRandomBicycle();
     assertNotNull(result);
   }
@@ -143,7 +166,8 @@ public class XMLVehicleFactoryTest {
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Bus result = instance.createRandomBus();
     assertNotNull(result);
   }
@@ -156,11 +180,23 @@ public class XMLVehicleFactoryTest {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
+    TrafficGraph graph = new DefaultTrafficGraph();
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(30,
+        30));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(60,
+        60));
+    graph.addVertex(a);
+    graph.addVertex(b);
+    graph.addEdge(a,
+      b);
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
-    Car result = instance.createRandomCar();
+      inputStream,
+      sensorFactory);
+    Car result = instance.createRandomCar(graph.edgeSet());
     assertNotNull(result);
   }
 
@@ -175,7 +211,8 @@ public class XMLVehicleFactoryTest {
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Motorcycle result = instance.createRandomMotorcycle();
     assertNotNull(result);
   }
@@ -191,7 +228,8 @@ public class XMLVehicleFactoryTest {
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Truck result = instance.createRandomTruck();
     assertNotNull(result);
   }
@@ -200,14 +238,15 @@ public class XMLVehicleFactoryTest {
    * Test of createTruck method, of class XMLVehicleFactory.
    */
   @Test
-  public void testCreateTruck() {
+  public void testCreateTruck() throws NamingException {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
     XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
-      inputStream);
+      inputStream,
+      sensorFactory);
     Color color = Color.BLACK;
     int trailerCount = 2;
     Truck result = instance.createTruck(color,

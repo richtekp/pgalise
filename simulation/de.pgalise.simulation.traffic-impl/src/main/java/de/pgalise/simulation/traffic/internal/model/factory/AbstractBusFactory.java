@@ -134,7 +134,6 @@ public abstract class AbstractBusFactory extends AbstractMotorizedVehicleFactory
         getHeightMax()),
       idGenerator.getNextId());
     return new DefaultBus(getIdGenerator().getNextId(),
-      "random bus",
       busData,
       trafficGraphExtensions);
   }

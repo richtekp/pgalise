@@ -9,6 +9,8 @@ package de.pgalise.simulation.traffic.model.vehicle;
  *
  * @author richter
  */
-public interface VehicleFactory extends BaseVehicleFactory {
+public interface VehicleFactory extends BaseVehicleFactory, BicycleFactory,
+  BusFactory, CarFactory, MotorcycleFactory,
+  TruckFactory {
 
 }

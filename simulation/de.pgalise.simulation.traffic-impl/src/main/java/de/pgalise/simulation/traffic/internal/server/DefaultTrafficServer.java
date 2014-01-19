@@ -47,7 +47,6 @@ import de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle.Vehicl
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersection;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensor;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SchedulerComposite;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
 import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorController;
@@ -59,6 +58,7 @@ import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -113,6 +113,7 @@ public class DefaultTrafficServer extends AbstractController<
   ScheduleHandler {
 
   private static final long serialVersionUID = 1L;
+  private final static String XML_FACTORY_FILE_PATH = "/defaultvehicles.xml";
 
   @Override
   public Set<TrafficSensor> getAllManagedSensors() {
@@ -188,7 +189,8 @@ public class DefaultTrafficServer extends AbstractController<
   /**
    * Vehicle factory to create new cars
    */
-  private XMLVehicleFactory vehicleFactory;
+  @EJB
+  private VehicleFactory vehicleFactory;
   /*
    * Internal Dependencies
    */
@@ -552,7 +554,7 @@ public class DefaultTrafficServer extends AbstractController<
             + rv.getVehicle().getCurrentNode().getId());
         }
         rv.getVehicle().setVehicleState(VehicleStateEnum.NOT_STARTED);
-        DefaultScheduleItem item = new DefaultScheduleItem(rv.getVehicle(),
+        ScheduleItem item = new ScheduleItem(rv.getVehicle(),
           this.currentTime,
           this.updateIntervall);
         log.debug(String.format(
@@ -837,7 +839,8 @@ public class DefaultTrafficServer extends AbstractController<
       this.vehicleFactory = new XMLVehicleFactory(randomSeedService,
         idGenerator,
         this.trafficGraphExtensions,
-        DefaultTrafficServer.class.getResourceAsStream("/defaultvehicles.xml")
+        DefaultTrafficServer.class.getResourceAsStream(XML_FACTORY_FILE_PATH),
+        sensorFactory
       );
 
       if (fuzzyTrafficGovernor != null) {

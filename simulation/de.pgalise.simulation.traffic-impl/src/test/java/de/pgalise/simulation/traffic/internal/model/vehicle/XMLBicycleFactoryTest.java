@@ -28,9 +28,12 @@ import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.testutils.TestUtils;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.junit.Before;
 
 /**
  * Tests the {@link XMLBicycleFactoryTest}
@@ -48,6 +51,15 @@ public class XMLBicycleFactoryTest {
   public static final String FILEPATH = "/bicycles.xml";
   @EJB
   private IdGenerator idGenerator;
+
+  public XMLBicycleFactoryTest() {
+  }
+
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().bind("inject",
+      this);
+  }
 
   @Test
   public void test() {

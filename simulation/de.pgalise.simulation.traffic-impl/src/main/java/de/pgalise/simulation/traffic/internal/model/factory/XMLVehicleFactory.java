@@ -19,6 +19,8 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
@@ -30,10 +32,12 @@ import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Truck;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.VehicleDataList;
 import java.awt.Color;
 import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -46,7 +50,7 @@ import javax.xml.bind.Unmarshaller;
  * @version 1.0 (Dec 24, 2012)
  */
 public class XMLVehicleFactory extends AbstractVehicleFactory implements
-  CarFactory, BusFactory, TruckFactory, MotorcycleFactory, BicycleFactory {
+  VehicleFactory {
 
   private static final long serialVersionUID = 1L;
 
@@ -73,7 +77,7 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   /**
    * Bicycle factory
    */
-  private final BicycleFactory bicycleFactory;
+  private final XMLBicycleFactory bicycleFactory;
 
   /**
    * Constructor
@@ -86,7 +90,8 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   public XMLVehicleFactory(RandomSeedService randomSeedService,
     IdGenerator idGenerator,
     TrafficGraphExtensions trafficGraphExtensions,
-    InputStream xmlInputStream) {
+    InputStream xmlInputStream,
+    TrafficSensorFactory sensorFactory) {
     super(
       trafficGraphExtensions,
       idGenerator,
@@ -110,7 +115,8 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
     this.truckFactory = new XMLTruckFactory(idGenerator,
       trafficGraphExtensions,
       randomSeedService,
-      new HashSet<>(vehicleDataList.getTruckData().getList()));
+      new HashSet<>(vehicleDataList.getTruckData().getList()),
+      sensorFactory);
     this.motorcycleFactory = new XMLMotorcycleFactory(idGenerator,
       trafficGraphExtensions,
       randomSeedService,
@@ -122,8 +128,8 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Bicycle createBicycle() {
-    return this.bicycleFactory.createBicycle();
+  public Bicycle createBicycle(Set<TrafficEdge> edges) {
+    return this.bicycleFactory.createBicycle(edges);
   }
 
   @Override
@@ -132,8 +138,8 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Car createCar() {
-    return this.carFactory.createCar();
+  public Car createCar(Set<TrafficEdge> edges) {
+    return this.carFactory.createCar(edges);
   }
 
   @Override
@@ -142,8 +148,8 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Bicycle createRandomBicycle() {
-    return this.bicycleFactory.createRandomBicycle();
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges) {
+    return this.bicycleFactory.createRandomBicycle(edges);
   }
 
   @Override
@@ -152,8 +158,8 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Car createRandomCar() {
-    return this.carFactory.createRandomCar();
+  public Car createRandomCar(Set<TrafficEdge> edges) {
+    return this.carFactory.createRandomCar(edges);
   }
 
   @Override
@@ -207,6 +213,26 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
     } catch (JAXBException ex) {
       throw new RuntimeException(ex);
     }
+  }
+
+  @Override
+  public Car createRandomCar() {
+    return createRandomCar(null);
+  }
+
+  @Override
+  public Car createCar() {
+    return createCar(null);
+  }
+
+  @Override
+  public Bicycle createBicycle() {
+    return createBicycle(null);
+  }
+
+  @Override
+  public Bicycle createRandomBicycle() {
+    return createRandomBicycle(null);
   }
 
 }

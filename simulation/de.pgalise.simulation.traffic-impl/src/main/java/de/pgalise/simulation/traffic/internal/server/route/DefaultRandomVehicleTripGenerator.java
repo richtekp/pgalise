@@ -26,6 +26,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import javax.ejb.Stateful;
+import javax.ejb.EJB;
+import javax.annotation.PostConstruct;
 
 /**
  *
@@ -34,6 +37,7 @@ import java.util.Random;
  * @author Timo
  * @author Mischa
  */
+@Stateful
 public class DefaultRandomVehicleTripGenerator implements
   RandomVehicleTripGenerator {
 
@@ -65,6 +69,7 @@ public class DefaultRandomVehicleTripGenerator implements
   /**
    * Random seed service
    */
+  @EJB
   private RandomSeedService randomSeedService;
 
   /**
@@ -87,6 +92,9 @@ public class DefaultRandomVehicleTripGenerator implements
    */
   private List<TrafficNode> workNodes = new ArrayList<>();
 
+  public DefaultRandomVehicleTripGenerator() {
+  }
+
   /**
    * Constructor
    *
@@ -104,11 +112,22 @@ public class DefaultRandomVehicleTripGenerator implements
 
     this.homeNodes = hn;
     this.workNodes = wn;
-		// this.carModelList =
+    // this.carModelList =
     // VehicleModelEnum.getVehicleModelsForTypeAsUnmodifiable(VehicleTypeEnum.CAR);
     // this.truckModelList =
     // VehicleModelEnum.getVehicleModelsForTypeAsUnmodifiable(VehicleTypeEnum.TRUCK);
-    this.init();
+    this.init0();
+  }
+
+  @PostConstruct
+  public void init() {
+    init0();
+  }
+
+  private void init0() {
+    this.random = new Random(
+      this.randomSeedService.getSeed(DefaultRandomVehicleTripGenerator.class
+        .getName()));
   }
 
   /**
@@ -125,7 +144,7 @@ public class DefaultRandomVehicleTripGenerator implements
     int buffer) {
     this.startHomeNodes = startHomeNodes;
     this.startWorkNodes = startWorkNodes;
-		// log.debug("Anzahl startHomeNodes vs allHomeNodes: " +
+    // log.debug("Anzahl startHomeNodes vs allHomeNodes: " +
     // startHomeNodes.size() + " : " + homeNodes.size());
     if (vehicleType.equals(VehicleTypeEnum.TRUCK)) {
       return this.createTruckTrip(date,
@@ -160,7 +179,7 @@ public class DefaultRandomVehicleTripGenerator implements
    */
   private TrafficTrip createCarTrip(Date date,
     int buffer) {
-    String weekday = new SimpleDateFormat("E").format(this.date);
+    String weekday = new SimpleDateFormat("E").format(date);
 
     if (weekday.equals("Sa") || weekday.equals("So")) {
       this.createFreeTimeTrip(date,
@@ -176,7 +195,7 @@ public class DefaultRandomVehicleTripGenerator implements
       }
     }
 
-		// log.debug(String.format("Created Trip (%s, %s)",
+    // log.debug(String.format("Created Trip (%s, %s)",
     // startNode.getAttribute("position"),
     // targetNode.getAttribute("position")));
     return new TrafficTrip(this.startNode,
@@ -212,13 +231,6 @@ public class DefaultRandomVehicleTripGenerator implements
 
   public List<TrafficNode> getWorkNodes() {
     return this.workNodes;
-  }
-
-  @Override
-  public void init() {
-    this.random = new Random(
-      this.randomSeedService.getSeed(DefaultRandomVehicleTripGenerator.class
-        .getName()));
   }
 
   public void setHomeNodes(List<TrafficNode> homeNodes) {
@@ -276,7 +288,7 @@ public class DefaultRandomVehicleTripGenerator implements
   @SuppressWarnings("deprecation")
   private void createWorkTrip(Date date,
     int buffer) {
-		// this.startNode =
+    // this.startNode =
     // this.startHomeNodes.get(this.random.nextInt(this.startHomeNodes.size()));
     // this.targetNode =
     // this.workNodes.get(this.random.nextInt(this.workNodes.size()));
@@ -339,7 +351,7 @@ public class DefaultRandomVehicleTripGenerator implements
       buffer); // Trucks are driving from 0-24 Uhr
   }
 
-	// // log.debug("WorkTrip am " + cal.get(Calendar.DATE) + "." +
+  // log.debug("WorkTrip am " + cal.get(Calendar.DATE) + "." +
   // // (cal.get(Calendar.MONTH) + 1) + "." +
   // // cal.get(Calendar.YEAR));
   //

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.shared.JaxRSCoordinate;
@@ -37,237 +36,256 @@ import de.pgalise.simulation.traffic.entity.TrafficTrip;
 
 /**
  * Superclass for vehicles
- * 
- * @param <D> 
+ *
+ * @param <D>
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 1, 2012)
  */
-public abstract class BaseVehicle<D extends VehicleData> extends Identifiable implements Vehicle<D> {
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = 1628469891526892322L;
+public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
+  implements Vehicle<D> {
 
-	/**
-	 * Logger
-	 */
-	private static transient Logger log = LoggerFactory.getLogger(BaseVehicle.class);
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = 1628469891526892322L;
 
-	/**
-	 * GPS sensor of the car
-	 */
-	private transient GpsSensor gpsSensor;
+  /**
+   * Logger
+   */
+  private static transient Logger log = LoggerFactory.getLogger(
+    BaseVehicle.class);
 
-	/**
-	 * Current velocity
-	 */
-	private double velocity = 50d / 360; // 0.138 vu/s = 50 km/h
+  /**
+   * GPS sensor of the car
+   */
+  private transient GpsSensor gpsSensor;
 
-	/**
-	 * Current node
-	 */
-	private transient TrafficNode currentNode;
-	/**
-	 * Position
-	 */
-	private JaxRSCoordinate position;
+  /**
+   * Current velocity
+   */
+  private double velocity = 50d / 360; // 0.138 vu/s = 50 km/h
 
-	/**
-	 * Direction
-	 */
-	private JaxbVector2d direction;
+  /**
+   * Current node
+   */
+  private transient TrafficNode currentNode;
+  /**
+   * Position
+   */
+  private JaxRSCoordinate position;
 
-	/**
-	 * Orientation
-	 */
-	private Orientation orientation;
+  /**
+   * Direction
+   */
+  private JaxbVector2d direction;
 
-	/**
-	 * Name
-	 */
-	private String name = "unnamed";
+  /**
+   * Orientation
+   */
+  private Orientation orientation;
 
-	/**
-	 * Current state
-	 */
-	/*
-	 * state is a reserved SQL keyword
-	 */
-	private VehicleStateEnum vehicleState = VehicleStateEnum.NOT_STARTED;
+  /**
+   * Name
+   */
+  private String name = "unnamed";
 
-	/**
-	 * Path
-	 */
-	private transient List<TrafficEdge> edgePath;
-	
-	private transient List<TrafficNode> nodePath;
+  /**
+   * Current state
+   */
+  /*
+   * state is a reserved SQL keyword
+   */
+  private VehicleStateEnum vehicleState = VehicleStateEnum.NOT_STARTED;
 
-	/**
-	 * Current edge
-	 */
-	private transient TrafficEdge currentEdge;
+  /**
+   * Path
+   */
+  private transient List<TrafficEdge> edgePath;
 
-	/**
-	 * Previous node
-	 */
-	private transient TrafficNode prevNode;
+  private transient List<TrafficNode> nodePath;
 
-	/**
-	 * Previous edge
-	 */
-	private transient TrafficEdge prevEdge;
+  /**
+   * Current edge
+   */
+  private transient TrafficEdge currentEdge;
 
-	/**
-	 * Information
-	 */
-	private D vehicleData;
+  /**
+   * Previous node
+   */
+  private transient TrafficNode prevNode;
 
-	private boolean isVirgin = false;
-	
-	private VehicleStateEnum state;
+  /**
+   * Previous edge
+   */
+  private transient TrafficEdge prevEdge;
 
-	private transient TrafficGraphExtensions trafficGraphExtensions;
-	
-	private TrafficTrip trafficTrip;
+  /**
+   * Information
+   */
+  private D vehicleData;
 
-	protected BaseVehicle() {
-	}
+  private boolean isVirgin = false;
 
-	public BaseVehicle(Long id,TrafficGraphExtensions trafficGraphExtensions) {
-		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.vehicleState = (VehicleStateEnum.NOT_STARTED);
-	}
+  private VehicleStateEnum state;
 
-	public BaseVehicle(Long id, String name, TrafficGraphExtensions trafficGraphExtensions) {
-		super(id);
-		this.name = name;
-		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.state = VehicleStateEnum.NOT_STARTED;
-	}
+  private transient TrafficGraphExtensions trafficGraphExtensions;
 
-	public BaseVehicle(Long id, String name, D data, TrafficGraphExtensions trafficGraphExtensions) {
-		super(id);
-		this.name = name;
-		this.vehicleData = data;
-		this.trafficGraphExtensions = trafficGraphExtensions;
-		this.state = VehicleStateEnum.NOT_STARTED;
-	}
+  private TrafficTrip trafficTrip;
 
-	@Override
-	public void setGpsSensor(GpsSensor gpsSensor) {
-		this.gpsSensor = gpsSensor;
-	}
+  protected BaseVehicle() {
+  }
 
-	@Override
-	public GpsSensor getGpsSensor() {
-		return gpsSensor;
-	}
+  public BaseVehicle(Long id,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    this.trafficGraphExtensions = trafficGraphExtensions;
+    this.vehicleState = (VehicleStateEnum.NOT_STARTED);
+  }
 
-	@Override
-	public TrafficEdge getCurrentEdge() {
-		return this.currentEdge;
-	}
+  public BaseVehicle(Long id,
+    String name,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    super(id);
+    this.name = name;
+    this.trafficGraphExtensions = trafficGraphExtensions;
+    this.state = VehicleStateEnum.NOT_STARTED;
+  }
 
-	@Override
-	public TrafficNode getCurrentNode() {
-		return this.currentNode;
-	}
+  public BaseVehicle(Long id,
+    D data,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    super(id);
+    this.vehicleData = data;
+    this.trafficGraphExtensions = trafficGraphExtensions;
+    this.state = VehicleStateEnum.NOT_STARTED;
+  }
 
-	@Override
-	public D getData() {
-		return this.vehicleData;
-	}
+  public BaseVehicle(Long id,
+    D data,
+    TrafficGraphExtensions trafficGraphExtensions,
+    JaxRSCoordinate position) {
+    super(id);
+    this.vehicleData = data;
+    this.trafficGraphExtensions = trafficGraphExtensions;
+    this.state = VehicleStateEnum.NOT_STARTED;
+    this.position = position;
+  }
 
-	@Override
-	public JaxbVector2d getDirection() {
-		return this.direction;
-	}
+  @Override
+  public void setGpsSensor(GpsSensor gpsSensor) {
+    this.gpsSensor = gpsSensor;
+  }
 
-	@Override
-	public String getName() {
-		return this.name;
-	}
+  @Override
+  public GpsSensor getGpsSensor() {
+    return gpsSensor;
+  }
 
-	@Override
-	public TrafficEdge getNextEdge() {
-		return this._getNextEdge();
-	}
+  @Override
+  public TrafficEdge getCurrentEdge() {
+    return this.currentEdge;
+  }
 
-	@Override
-	public TrafficNode getNextNode() {
-		return this._getNextNode();
-	}
+  @Override
+  public TrafficNode getCurrentNode() {
+    return this.currentNode;
+  }
 
-	@Override
-	public List<TrafficEdge> getPath() {
-		return this.edgePath;
-	}
+  @Override
+  public D getData() {
+    return this.vehicleData;
+  }
 
-	@Override
-	public JaxRSCoordinate getPosition() {
-		return this.position;
-	}
+  @Override
+  public JaxbVector2d getDirection() {
+    return this.direction;
+  }
 
-	@Override
-	public TrafficEdge getPreviousEdge() {
-		try {
-			int index = this.edgePath.indexOf(this.currentEdge);
-			if (index >= 0) {
-				this.prevEdge = this.edgePath.get(index - 1);
-			}
-		} catch (IndexOutOfBoundsException e) {
-		}
-		return this.prevEdge;
-	}
+  @Override
+  public String getName() {
+    return this.name;
+  }
 
-	@Override
-	public TrafficNode getPreviousNode() {
-		try {
-			int index = this.edgePath.indexOf(this.currentNode);
-			if (index >= 0) {
-				this.prevNode = this.nodePath.get(this.nodePath.indexOf(this.currentNode) - 1);
-			}
-		} catch (IndexOutOfBoundsException e) {
-		}
-		return this.prevNode;
-	}
+  @Override
+  public TrafficEdge getNextEdge() {
+    return this._getNextEdge();
+  }
 
-	@Override
-	public VehicleStateEnum getVehicleState() {
-		return this.vehicleState;
-	}
+  @Override
+  public TrafficNode getNextNode() {
+    return this._getNextNode();
+  }
 
-	@Override
-	public double getVelocity() {
-		return this.velocity;
-	}
+  @Override
+  public List<TrafficEdge> getPath() {
+    return this.edgePath;
+  }
 
-	@Override
-	public void setCurrentEdge(TrafficEdge edge) {
-		this.currentEdge = edge;
-	}
+  @Override
+  public JaxRSCoordinate getPosition() {
+    return this.position;
+  }
 
-	@Override
-	public void setCurrentNode(TrafficNode currentNode) {
-		this.currentNode = currentNode;
-	}
+  @Override
+  public TrafficEdge getPreviousEdge() {
+    try {
+      int index = this.edgePath.indexOf(this.currentEdge);
+      if (index >= 0) {
+        this.prevEdge = this.edgePath.get(index - 1);
+      }
+    } catch (IndexOutOfBoundsException e) {
+    }
+    return this.prevEdge;
+  }
 
-	@Override
-	public void setData(D data) {
-		this.vehicleData = data;
-	}
+  @Override
+  public TrafficNode getPreviousNode() {
+    try {
+      int index = this.edgePath.indexOf(this.currentNode);
+      if (index >= 0) {
+        this.prevNode = this.nodePath.get(this.nodePath.
+          indexOf(this.currentNode) - 1);
+      }
+    } catch (IndexOutOfBoundsException e) {
+    }
+    return this.prevNode;
+  }
 
-	@Override
-	public void setDirection(JaxbVector2d direction) {
-		this.direction = direction;
-	}
+  @Override
+  public VehicleStateEnum getVehicleState() {
+    return this.vehicleState;
+  }
 
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-	
+  @Override
+  public double getVelocity() {
+    return this.velocity;
+  }
+
+  @Override
+  public void setCurrentEdge(TrafficEdge edge) {
+    this.currentEdge = edge;
+  }
+
+  @Override
+  public void setCurrentNode(TrafficNode currentNode) {
+    this.currentNode = currentNode;
+  }
+
+  @Override
+  public void setData(D data) {
+    this.vehicleData = data;
+  }
+
+  @Override
+  public void setDirection(JaxbVector2d direction) {
+    this.direction = direction;
+  }
+
+  @Override
+  public void setName(String name) {
+    this.name = name;
+  }
+
 //	private static <X extends VehicleData> List<TrafficNode<X>> creaeteNodePath(List<TrafficEdge<X>> edgePath) {
 //		List<TrafficNode<X>> retValue = new LinkedList<>();
 //		retValue.add(edgePath.get(0).getSource());
@@ -276,290 +294,317 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable im
 //		}
 //		return retValue;
 //	}
-	private static List<TrafficNode> creaeteNodePath(List<TrafficEdge> edgePath) {
-		List<TrafficNode> retValue = new LinkedList<>();
-		retValue.add(edgePath.get(0).getSource());
-		for(TrafficEdge edge : edgePath) {
-			retValue.add(edge.getTarget());
-		}
-		return retValue;
-	}
+  private static List<TrafficNode> creaeteNodePath(List<TrafficEdge> edgePath) {
+    List<TrafficNode> retValue = new LinkedList<>();
+    retValue.add(edgePath.get(0).getSource());
+    for (TrafficEdge edge : edgePath) {
+      retValue.add(edge.getTarget());
+    }
+    return retValue;
+  }
 
-	@Override
-	public void setPath(List<TrafficEdge> path) {
-		if (path.size() < 1) {
-			throw new IllegalArgumentException("A path needs to consist of at least one edge");
-		}
-		this.edgePath = path;
-		this.nodePath = BaseVehicle.creaeteNodePath( path);
-		this.currentNode = this.nodePath.get(0);
-		this.position = this.getTrafficGraphExtensions().getPosition(this.currentNode);
-		this.currentEdge = path.get(0);
-		// calculate direction from currentNode to nextNode
-		this.direction = this.getDirection(this.getTrafficGraphExtensions().getPosition(this.currentNode), this
-				.getTrafficGraphExtensions().getPosition(this._getNextNode()));
-		this.orientation = this.getOrientation(this.direction);
-	}
+  @Override
+  public void setPath(List<TrafficEdge> path) {
+    if (path.size() < 1) {
+      throw new IllegalArgumentException(
+        "A path needs to consist of at least one edge");
+    }
+    this.edgePath = path;
+    this.nodePath = BaseVehicle.creaeteNodePath(path);
+    this.currentNode = this.nodePath.get(0);
+    this.position = this.currentNode.getGeoLocation();
+    this.currentEdge = path.get(0);
+    // calculate direction from currentNode to nextNode
+    this.direction = this.getDirection(this.getTrafficGraphExtensions().
+      getPosition(this.currentNode),
+      this
+      .getTrafficGraphExtensions().getPosition(this._getNextNode()));
+    this.orientation = this.getOrientation(this.direction);
+  }
 
-	@Override
-	public void setPosition(JaxRSCoordinate position) {
-		this.position = position;
-	}
+  @Override
+  public void setPosition(JaxRSCoordinate position) {
+    this.position = position;
+  }
 
-	@Override
-	public void setVehicleState(VehicleStateEnum state) {
-		// if (state != this.state)
-		// logger.debug("Changed state of vehicle " + this.getName() + " from " + this.state + " to " + state);
-		if (state == VehicleStateEnum.NOT_STARTED) {
-			this.isVirgin = true;
-		}
-		this.vehicleState = state;
-	}
+  @Override
+  public void setVehicleState(VehicleStateEnum state) {
+    // if (state != this.state)
+    // logger.debug("Changed state of vehicle " + this.getName() + " from " + this.state + " to " + state);
+    if (state == VehicleStateEnum.NOT_STARTED) {
+      this.isVirgin = true;
+    }
+    this.vehicleState = state;
+  }
 
-	@Override
-	public void setVelocity(double velocity) {
-		this.velocity = velocity;
-	}
+  @Override
+  public void setVelocity(double velocity) {
+    this.velocity = velocity;
+  }
 
-	@Override
-	public void update(long elapsedTime) {
-		this.preUpdate(elapsedTime);
-		if (!(VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.vehicleState))) {
-			return;
-		}
-		if (this.vehicleState == VehicleStateEnum.STOPPED || this.vehicleState == VehicleStateEnum.IN_TRAFFIC_RULE) {
-			this.velocity = 0;
-		} else if (this.vehicleState != VehicleStateEnum.PAUSED) {
-			this.vehicleState = VehicleStateEnum.DRIVING;
-		}
+  @Override
+  public void update(long elapsedTime) {
+    this.preUpdate(elapsedTime);
+    if (!(VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.vehicleState))) {
+      return;
+    }
+    if (this.vehicleState == VehicleStateEnum.STOPPED || this.vehicleState == VehicleStateEnum.IN_TRAFFIC_RULE) {
+      this.velocity = 0;
+    } else if (this.vehicleState != VehicleStateEnum.PAUSED) {
+      this.vehicleState = VehicleStateEnum.DRIVING;
+    }
 
-		// logger.debug(String.format("Vehicle '%s' position and velocity before update: %s, %s", this.name,
-		// this.position,
-		// this.velocity));
-		this.position = this.update(elapsedTime, this.position, this.direction);
+    // logger.debug(String.format("Vehicle '%s' position and velocity before update: %s, %s", this.name,
+    // this.position,
+    // this.velocity));
+    this.position = this.update(elapsedTime,
+      this.position,
+      this.direction);
 
-		TrafficNode passedNode = this.currentNode;
+    TrafficNode passedNode = this.currentNode;
 
-		// has reached node but not last node
-		this.handleReachedNode();
+    // has reached node but not last node
+    this.handleReachedNode();
 
-		passedNode = (passedNode != this.currentNode || this.isVirgin) ? this.currentNode : null;
-		if (this.isVirgin) {
-			this.passedNode(passedNode);
-		}
-		// if(passedNode!=null)
-		// log.info("postUpdate on "+this.getName()+", passedNode: "+passedNode.getId());
-		// else
-		// log.info("postUpdate on "+this.getName()+", passedNode: null");
-		this.postUpdate(passedNode);
-		// logger.debug(String.format("Vehicle '%s' position and velocity after update: %s, %s", this.name,
-		// this.position,
-		// this.velocity));
-		isVirgin = false;
-	}
+    passedNode = (passedNode != this.currentNode || this.isVirgin) ? this.currentNode : null;
+    if (this.isVirgin) {
+      this.passedNode(passedNode);
+    }
+    // if(passedNode!=null)
+    // log.info("postUpdate on "+this.getName()+", passedNode: "+passedNode.getId());
+    // else
+    // log.info("postUpdate on "+this.getName()+", passedNode: null");
+    this.postUpdate(passedNode);
+    // logger.debug(String.format("Vehicle '%s' position and velocity after update: %s, %s", this.name,
+    // this.position,
+    // this.velocity));
+    isVirgin = false;
+  }
 
-	/**
-	 * Helper method to get the next edge. It enables to secure the functionality of this vehicle regardless if
-	 * {@link #getNextEdge()} get overridden in subclasses.
-	 * 
-	 * @return
-	 */
-	private TrafficEdge _getNextEdge() {
-		TrafficEdge nextEdge = null;
-		try {
-			int index = this.edgePath.indexOf(this.currentEdge);
-			if (index >= 0) {
-				nextEdge = this.edgePath.get(index + 1);
-			}
-		} catch (IndexOutOfBoundsException e) {
-		}
-		return nextEdge;
-	}
+  /**
+   * Helper method to get the next edge. It enables to secure the functionality
+   * of this vehicle regardless if {@link #getNextEdge()} get overridden in
+   * subclasses.
+   *
+   * @return
+   */
+  private TrafficEdge _getNextEdge() {
+    TrafficEdge nextEdge = null;
+    try {
+      int index = this.edgePath.indexOf(this.currentEdge);
+      if (index >= 0) {
+        nextEdge = this.edgePath.get(index + 1);
+      }
+    } catch (IndexOutOfBoundsException e) {
+    }
+    return nextEdge;
+  }
 
-	/**
-	 * Helper method to get the next node. It enables to secure the functionality of this vehicle regardless if
-	 * {@link #getNextNode()} get overridden in subclasses.
-	 * 
-	 * @return
-	 */
-	private TrafficNode _getNextNode() {
-		TrafficNode nextNode = null;
-		try {
-			int index = this.nodePath.indexOf(this.currentNode);
-			if (index >= 0) {
-				nextNode = this.nodePath.get(this.nodePath.indexOf(this.currentNode) + 1);
-			}
-		} catch (IndexOutOfBoundsException e) {
-		}
-		return nextNode;
-	}
+  /**
+   * Helper method to get the next node. It enables to secure the functionality
+   * of this vehicle regardless if {@link #getNextNode()} get overridden in
+   * subclasses.
+   *
+   * @return
+   */
+  private TrafficNode _getNextNode() {
+    TrafficNode nextNode = null;
+    try {
+      int index = this.nodePath.indexOf(this.currentNode);
+      if (index >= 0) {
+        nextNode = this.nodePath.
+          get(this.nodePath.indexOf(this.currentNode) + 1);
+      }
+    } catch (IndexOutOfBoundsException e) {
+    }
+    return nextNode;
+  }
 
-	protected JaxbVector2d getDirection(JaxRSCoordinate a, JaxRSCoordinate b) {
-		JaxbVector2d dir = new JaxbVector2d(b.getX(), b.getY());
-		JaxbVector2d aVector = new JaxbVector2d(a.getX(), a.getY());
-		dir.sub(aVector);
-		dir.normalize();
-		return dir;
-	}
+  protected JaxbVector2d getDirection(JaxRSCoordinate a,
+    JaxRSCoordinate b) {
+    JaxbVector2d dir = new JaxbVector2d(b.getX(),
+      b.getY());
+    JaxbVector2d aVector = new JaxbVector2d(a.getX(),
+      a.getY());
+    dir.sub(aVector);
+    dir.normalize();
+    return dir;
+  }
 
-	/**
-	 * Returns a direction enum for the coordinates of the private transport vehicle.
-	 * 
-	 * @param direction 
-	 * @return Direction enum
-	 */
-	protected Orientation getOrientation(JaxbVector2d direction) {
-		return Orientation.getOrientation(direction);
-	}
+  /**
+   * Returns a direction enum for the coordinates of the private transport
+   * vehicle.
+   *
+   * @param direction
+   * @return Direction enum
+   */
+  protected Orientation getOrientation(JaxbVector2d direction) {
+    return Orientation.getOrientation(direction);
+  }
 
-	protected void handleReachedNode() {
-		boolean reachedNextNode = this.hasReachedNextNode(this.orientation, this.position);
-		if (reachedNextNode && (this._getNextNode() != this.nodePath.get(this.nodePath.size() - 1))) {
-			// new direction and orientation
-			this.direction = this.getDirection(
-					this.getTrafficGraphExtensions().getPosition(this._getNextNode()),
-					this.getTrafficGraphExtensions().getPosition(
-							this.nodePath.get(this.nodePath.indexOf(this._getNextNode()) + 1)));
-			this.orientation = this.getOrientation(this.direction);
+  protected void handleReachedNode() {
+    boolean reachedNextNode = this.hasReachedNextNode(this.orientation,
+      this.position);
+    if (reachedNextNode && (this._getNextNode() != this.nodePath.get(
+      this.nodePath.size() - 1))) {
+      // new direction and orientation
+      this.direction = this.getDirection(
+        this.getTrafficGraphExtensions().getPosition(this._getNextNode()),
+        this.getTrafficGraphExtensions().getPosition(
+          this.nodePath.get(this.nodePath.indexOf(this._getNextNode()) + 1)));
+      this.orientation = this.getOrientation(this.direction);
 
-			// calculate new position on the path
-			JaxbVector2d positionVector = new JaxbVector2d(this.position.getX(), this.position.getY());
-			JaxRSCoordinate nextNodePosition = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
-			JaxbVector2d nextNodeVector = new JaxbVector2d(nextNodePosition.getX(), nextNodePosition.getY());
-			positionVector.sub(nextNodeVector);
-			double scale = positionVector
-					.length();
-			// log.debug("Drüber gefahren: "+scale);
-			// log.debug(String.format("Edge (%s, %s): ", getNextNode().getId(),
-			// path.get(path.indexOf(getNextNode()) + 1).getId()));
-			// log.debug("DIR: "+NodeExtensions.getInstance().getPosition(path.get(path.indexOf(getNextNode())
-			// + 1)).
-			// sub(NodeExtensions.getInstance().getPosition(getNextNode())));
-			this.direction.scale(scale);
-			nextNodeVector
-					.add(this.direction);
-			this.position = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
+      // calculate new position on the path
+      JaxbVector2d positionVector = new JaxbVector2d(this.position.getX(),
+        this.position.getY());
+      JaxRSCoordinate nextNodePosition = this.getTrafficGraphExtensions().
+        getPosition(this._getNextNode());
+      JaxbVector2d nextNodeVector = new JaxbVector2d(nextNodePosition.getX(),
+        nextNodePosition.getY());
+      positionVector.sub(nextNodeVector);
+      double scale = positionVector
+        .length();
+      // log.debug("Drüber gefahren: "+scale);
+      // log.debug(String.format("Edge (%s, %s): ", getNextNode().getId(),
+      // path.get(path.indexOf(getNextNode()) + 1).getId()));
+      // log.debug("DIR: "+NodeExtensions.getInstance().getPosition(path.get(path.indexOf(getNextNode())
+      // + 1)).
+      // sub(NodeExtensions.getInstance().getPosition(getNextNode())));
+      this.direction.scale(scale);
+      nextNodeVector
+        .add(this.direction);
+      this.position = this.getTrafficGraphExtensions().getPosition(this.
+        _getNextNode());
 
-			// log.debug(String.format("Vehicle \"%s\" passed by intermediate node \"%s\" (index: %s)", this.name,
-			// this._getNextNode().getId(), this.getIndex(this._getNextNode())));
+      // log.debug(String.format("Vehicle \"%s\" passed by intermediate node \"%s\" (index: %s)", this.name,
+      // this._getNextNode().getId(), this.getIndex(this._getNextNode())));
+      this.prevNode = this.currentNode;
+      this.currentNode = this._getNextNode();
+      this.prevEdge = this.currentEdge;
+      this.currentEdge = this._getNextEdge();
 
-			this.prevNode = this.currentNode;
-			this.currentNode = this._getNextNode();
-			this.prevEdge = this.currentEdge;
-			this.currentEdge = this._getNextEdge();
+      this.passedNode(this.currentNode);
 
-			this.passedNode(this.currentNode);
+      // log.debug("Vehicle's "+name+" position: "+this.position);
+      if (this.hasReachedNextNode(this.orientation,
+        this.position)) {
+        this.handleReachedNode();
+      }
+    } // arrived at targets position
+    else if (reachedNextNode && (this._getNextNode() == this.nodePath.get(
+      this.nodePath.size() - 1))) {
+      this.position = this.getTrafficGraphExtensions().getPosition(this.
+        _getNextNode());
 
-			// log.debug("Vehicle's "+name+" position: "+this.position);
-			if (this.hasReachedNextNode(this.orientation, this.position)) {
-				this.handleReachedNode();
-			}
-		}
-		// arrived at targets position
-		else if (reachedNextNode && (this._getNextNode() == this.nodePath.get(this.nodePath.size() - 1))) {
-			this.position = this.getTrafficGraphExtensions().getPosition(this._getNextNode());
+      log.debug(String.format("Vehicle \"%s\" arrived at target node \"%s\"",
+        this.name,
+        this.currentNode.getId()));
 
-			log.debug(String.format("Vehicle \"%s\" arrived at target node \"%s\"", this.name, this.currentNode.getId()));
+      this.prevNode = this.currentNode;
+      this.currentNode = this._getNextNode();
+      setVehicleState(VehicleStateEnum.REACHED_TARGET);
+      this.prevEdge = this.currentEdge;
+      this.currentEdge = null;
 
-			this.prevNode = this.currentNode;
-			this.currentNode = this._getNextNode();
-			setVehicleState(VehicleStateEnum.REACHED_TARGET);
-			this.prevEdge = this.currentEdge;
-			this.currentEdge = null;
+      this.passedNode(this.currentNode);
+    }
+  }
 
-			this.passedNode(this.currentNode);
-		}
-	}
+  /**
+   * Checks whether or not the next node is reached.
+   *
+   * @param orientation
+   * @param position
+   * @return true, if the next node is reached
+   */
+  protected boolean hasReachedNextNode(Orientation orientation,
+    JaxRSCoordinate position) {
+    return Orientation.isBeyond(orientation,
+      position,
+      this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
+  }
 
-	/**
-	 * Checks whether or not the next node is reached.
-	 * 
-	 * @param orientation
-	 * @param position
-	 * @return true, if the next node is reached
-	 */
-	protected boolean hasReachedNextNode(Orientation orientation, JaxRSCoordinate position) {
-		return Orientation.isBeyond(orientation, position,
-				this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
-	}
+  protected JaxRSCoordinate update(long elapsedTime,
+    JaxRSCoordinate pos,
+    JaxbVector2d dir) {
+    // log.debug("elapsedTime == 0 " + (elapsedTime == 0) + ", velocity == 0 " + (this.velocity == 0));
+    if (elapsedTime == 0 || this.velocity == 0) {
+      return pos;
+    }
+    // log.debug("Before calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos
+    // + ", direction: " + dir);
+    double distance = this.velocity * (double) (elapsedTime / 1000);
+    // log.debug("Distance: " + distance + ", Add to vector: " + (dir.scale(distance)));
+    dir.scale(distance);
+    JaxbVector2d posVector = new JaxbVector2d(pos.getX(),
+      pos.getY());
+    posVector.add(dir);
+    // log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
+    // ", direction: " + dir);
+    return new JaxRSCoordinate(posVector.getX(),
+      posVector.getY());
+  }
 
-	protected JaxRSCoordinate update(long elapsedTime, JaxRSCoordinate pos, JaxbVector2d dir) {
-		// log.debug("elapsedTime == 0 " + (elapsedTime == 0) + ", velocity == 0 " + (this.velocity == 0));
-		if (elapsedTime == 0 || this.velocity == 0) {
-			return pos;
-		}
-		// log.debug("Before calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos
-		// + ", direction: " + dir);
-		double distance = this.velocity * (double) (elapsedTime / 1000);
-		// log.debug("Distance: " + distance + ", Add to vector: " + (dir.scale(distance)));
-		dir.scale(distance);
-		JaxbVector2d posVector = new JaxbVector2d(pos.getX(), pos.getY());
-		posVector.add(dir);
-		// log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
-		// ", direction: " + dir);
-		return new JaxRSCoordinate(posVector.getX(), posVector.getY());
-	}
+  @Override
+  public TrafficGraphExtensions getTrafficGraphExtensions() {
+    return this.trafficGraphExtensions;
+  }
 
-	@Override
-	public TrafficGraphExtensions getTrafficGraphExtensions() {
-		return this.trafficGraphExtensions;
-	}
+  @Override
+  public void setTrafficGraphExtensions(
+    TrafficGraphExtensions trafficGraphExtensions) {
+    this.trafficGraphExtensions = trafficGraphExtensions;
+  }
 
-	@Override
-	public void setTrafficGraphExtensions(TrafficGraphExtensions trafficGraphExtensions) {
-		this.trafficGraphExtensions = trafficGraphExtensions;
-	}
+  @Override
+  public int getIndex(TrafficNode node) {
+    for (int i = 0; i < this.edgePath.size(); i++) {
+      TrafficNode n = this.nodePath.get(i);
+      if (n.getId().equals(node.getId())) {
+        return i;
+      }
+    }
+    return -1;
+  }
 
-	@Override
-	public int getIndex(TrafficNode node) {
-		for (int i = 0; i < this.edgePath.size(); i++) {
-			TrafficNode n = this.nodePath.get(i);
-			if (n.getId().equals(node.getId())) {
-				return i;
-			}
-		}
-		return -1;
-	}
+  public void setNodePath(
+    List<TrafficNode> nodePath) {
+    this.nodePath = nodePath;
+  }
 
-	public void setNodePath(
-		List<TrafficNode> nodePath) {
-		this.nodePath = nodePath;
-	}
+  @Override
+  public List<TrafficNode> getNodePath() {
+    return nodePath;
+  }
 
-	@Override
-	public List<TrafficNode> getNodePath() {
-		return nodePath;
-	}
+  public void setTrafficTrip(TrafficTrip trafficTrip) {
+    this.trafficTrip = trafficTrip;
+  }
 
-	public void setTrafficTrip(TrafficTrip trafficTrip) {
-		this.trafficTrip = trafficTrip;
-	}
+  @Override
+  public TrafficTrip getTrafficTrip() {
+    return trafficTrip;
+  }
 
-	@Override
-	public TrafficTrip getTrafficTrip() {
-		return trafficTrip;
-	}
+  /**
+   * This method will be invoked when ever a node has been passed.
+   *
+   * @param passedNode
+   */
+  protected abstract void passedNode(TrafficNode passedNode);
 
-	/**
-	 * This method will be invoked when ever a node has been passed.
-	 * 
-	 * @param passedNode
-	 */
-	protected abstract void passedNode(TrafficNode passedNode) ;
+  /**
+   * This method will be invoked after this vehicle was updated.
+   *
+   * @param lastPassedNode Passed Node on the last update otherwise null
+   */
+  protected abstract void postUpdate(TrafficNode lastPassedNode);
 
-	/**
-	 * This method will be invoked after this vehicle was updated.
-	 * 
-	 * @param lastPassedNode
-	 *            Passed Node on the last update otherwise null
-	 */
-	protected abstract void postUpdate(TrafficNode lastPassedNode);
-
-	/**
-	 * This method will be invoked before this vehicle is updated.
-	 * 
-	 * @param elapsedTime
-	 *            elapsed time in ms since this vehicle has been updated the last time
-	 */
-	protected abstract void preUpdate(long elapsedTime) ;
+  /**
+   * This method will be invoked before this vehicle is updated.
+   *
+   * @param elapsedTime elapsed time in ms since this vehicle has been updated
+   * the last time
+   */
+  protected abstract void preUpdate(long elapsedTime);
 }

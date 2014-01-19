@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
@@ -29,71 +30,85 @@ import org.slf4j.LoggerFactory;
  * @author Mustafa
  * @version 1.0 (Feb 11, 2013)
  */
-public class DefaultBicycle extends BaseVehicle<BicycleData> implements Bicycle{
+public class DefaultBicycle extends BaseVehicle<BicycleData> implements Bicycle {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -7152958132550318840L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -7152958132550318840L;
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.
-		getLogger(DefaultBicycle.class);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.
+    getLogger(DefaultBicycle.class);
 
-	protected DefaultBicycle() {
-	}
+  protected DefaultBicycle() {
+  }
 
-	/**
-	 * Default constructor
-	 *
-	 * @param id
-	 * @param name Name
-	 * @param data Information
-	 * @param trafficGraphExtensions TrafficGraphExtensions
-	 */
-	public DefaultBicycle(Long id,
-		String name,
-		BicycleData data,
-		TrafficGraphExtensions trafficGraphExtensions) {
-		super(id,
-			name,
-			data,
-			trafficGraphExtensions);
-		this.setVelocity(15d / 360); // 15km/h // (15*1000/3600)/100 // durch 100 da 1vu 100m sind
-	}
+  /**
+   * Default constructor
+   *
+   * @param id
+   * @param data Information
+   * @param trafficGraphExtensions TrafficGraphExtensions
+   */
+  public DefaultBicycle(Long id,
+    BicycleData data,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    super(id,
+      data,
+      trafficGraphExtensions);
+  }
 
-	@Override
-	protected void passedNode(TrafficNode node) {
-		if (this.getPreviousEdge() != null) {
-			log.debug("Unregistering bycicle " + this.getName() + " from edge: "
-				+ this.getPreviousEdge().getId());
-			this.getTrafficGraphExtensions().
-				unregisterFromEdge(this.getPreviousEdge(),
-					this.getPreviousNode(),
-					this.getCurrentNode(),
-					this);
-		}
+  /**
+   * Default constructor
+   *
+   * @param id
+   * @param data Information
+   * @param trafficGraphExtensions TrafficGraphExtensions
+   * @param position
+   */
+  public DefaultBicycle(Long id,
+    BicycleData data,
+    TrafficGraphExtensions trafficGraphExtensions,
+    JaxRSCoordinate position) {
+    super(id,
+      data,
+      trafficGraphExtensions,
+      position);
+  }
 
-		if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.getVehicleState())) {
-			if (this.getCurrentEdge() != null) {
-				log.debug("Registering bycicle " + this.getName() + " on edge: " + this.
-					getCurrentEdge().getId());
-				this.getTrafficGraphExtensions().registerOnEdge(this.getCurrentEdge(),
-					this.getCurrentNode(),
-					this.getNextNode(),
-					this);
-			}
-		}
-	}
+  @Override
+  protected void passedNode(TrafficNode node) {
+    if (this.getPreviousEdge() != null) {
+      log.debug("Unregistering bycicle " + this.getName() + " from edge: "
+        + this.getPreviousEdge().getId());
+      this.getTrafficGraphExtensions().
+        unregisterFromEdge(this.getPreviousEdge(),
+          this.getPreviousNode(),
+          this.getCurrentNode(),
+          this);
+    }
 
-	@Override
-	protected void postUpdate(TrafficNode node) {
-	}
+    if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.getVehicleState())) {
+      if (this.getCurrentEdge() != null) {
+        log.debug("Registering bycicle " + this.getName() + " on edge: " + this.
+          getCurrentEdge().getId());
+        this.getTrafficGraphExtensions().registerOnEdge(this.getCurrentEdge(),
+          this.getCurrentNode(),
+          this.getNextNode(),
+          this);
+      }
+    }
+  }
 
-	@Override
-	protected void preUpdate(long elapsedTime) {
+  @Override
+  protected void postUpdate(TrafficNode node) {
+  }
 
-	}
+  @Override
+  protected void preUpdate(long elapsedTime) {
+
+  }
 }

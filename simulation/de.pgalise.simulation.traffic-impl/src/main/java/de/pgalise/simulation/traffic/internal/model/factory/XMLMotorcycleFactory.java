@@ -77,7 +77,6 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
   public Motorcycle createRandomMotorcycle() {
     MotorcycleData data = getRandomVehicleData();
     return new DefaultMotorcycle(getIdGenerator().getNextId(),
-      null,
       data,
       getTrafficGraphExtensions());
   }

@@ -20,9 +20,10 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
+import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.model.factory.XMLTruckFactory;
-import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.testutils.TestUtils;
@@ -54,13 +55,15 @@ public class XMLTruckFactoryTest {
   private TcpIpOutput tcpIpOutput;
   @EJB
   private IdGenerator idGenerator;
+  @EJB
+  private TrafficSensorFactory sensorFactory;
 
   public XMLTruckFactoryTest() {
   }
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
   }
 
@@ -81,7 +84,8 @@ public class XMLTruckFactoryTest {
     TruckFactory factory = new XMLTruckFactory(idGenerator,
       trafficGraphExtensions,
       random,
-      XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
+      XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH),
+      sensorFactory);
 
     Vehicle<TruckData> vehicle1 = factory.createRandomTruck();
     Assert.assertNotNull(vehicle1);

@@ -5,9 +5,23 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultBicycle;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
+import static de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory.generateRandomColor;
+import static de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory.randInt;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -16,13 +30,72 @@ import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 public abstract class AbstractBicycleFactory extends AbstractVehicleFactory
   implements BicycleFactory {
 
+  public final static List<String> MATERIALS = Collections.unmodifiableList(
+    new ArrayList<>(Arrays.asList("steel",
+        "carbon fibre")));
+
+  public AbstractBicycleFactory() {
+    super(new ArrayList<Pair<Integer, Integer>>(Arrays.asList(new MutablePair<>(
+      1200,
+      1800))),
+      10,
+      90,
+      6,
+      25,
+      1200,
+      1600,
+      1100,
+      1800,
+      50,
+      60);
+  }
+
+  @Override
+  public Bicycle createBicycle(Set<TrafficEdge> edges) {
+    return createRandomBicycle(null);
+  }
+
+  @Override
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges) {
+    JaxRSCoordinate randomPosition = null;
+    if (edges != null) {
+      randomPosition = generateRandomPosition(edges);
+    }
+    GpsSensor gpsSensor = getSensorFactory().createGpsSensor(new ArrayList<>(
+      Arrays.
+      asList(retrieveGpsInterferer())));
+    List<Integer> wheelbases = generateWheelbases();
+    BicycleData carData = new BicycleData(
+      MATERIALS.get(randInt(0,
+          MATERIALS.size())),
+      calculateVehicleLength(wheelbases),
+      wheelbases,
+      gpsSensor,
+      randInt(getMaxSpeedMin(),
+        getMaxSpeedMax()),
+      randInt(getWeightMin(),
+        getWeightMax()),
+      randInt(getWidthMin(),
+        getWidthMax()),
+      generateRandomColor(),
+      "randomly generated car",
+      randInt(getHeightMin(),
+        getHeightMax()),
+      getIdGenerator().getNextId()
+    );
+    return new DefaultBicycle(getIdGenerator().getNextId(),
+      carData,
+      getTrafficGraphExtensions(),
+      randomPosition);
+  }
+
   @Override
   public Bicycle createBicycle() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return createBicycle(null);
   }
 
   @Override
   public Bicycle createRandomBicycle() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return createRandomBicycle(null);
   }
 }

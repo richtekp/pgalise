@@ -182,7 +182,7 @@ public class DefaultOCSimulationControllerTest {
 
   @Before
   public void setUpClass() throws NamingException, MalformedURLException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
     SENSOR_HELPER_LIST = new HashSet<>();
     Output output = EasyMock.createNiceMock(Output.class);

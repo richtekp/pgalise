@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic;
 
+import com.vividsolutions.jts.geom.Geometry;
+import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
+import java.util.Map;
 
 /**
  * Local view of the TrafficController.
- * 
- * @param <D> 
- * @param <N> 
- * @param <E> 
- * @param <V> 
- * @param <F> 
+ *
+ * @param <F>
  * @author mustafa
  *
  */
 public interface TrafficControllerLocal<
-	F extends TrafficEvent
-> extends TrafficController<F> {
-	
+	F extends TrafficEvent> extends
+  TrafficController<F> {
+
+  Map<Geometry, TrafficServerLocal<F>> getTrafficServers();
 }

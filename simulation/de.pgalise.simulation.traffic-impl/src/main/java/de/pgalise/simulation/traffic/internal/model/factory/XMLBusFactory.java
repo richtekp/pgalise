@@ -88,7 +88,6 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
   public Bus createRandomBus() {
     BusData data = getRandomVehicleData();
     return new DefaultBus(getIdGenerator().getNextId(),
-      "bus" + getNextCounter(),
       data,
       this.getTrafficGraphExtensions());
   }

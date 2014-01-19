@@ -69,7 +69,7 @@ public class DatabaseWeatherLoaderTest {
 
   @Before
   public void setUp() throws NamingException, NotSupportedException, SystemException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
     city = TestUtils.createDefaultTestCityInstance(idGenerator);
   }

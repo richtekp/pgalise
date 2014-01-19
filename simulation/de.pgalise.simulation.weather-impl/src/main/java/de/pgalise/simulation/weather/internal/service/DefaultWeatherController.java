@@ -419,10 +419,10 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   @Override
   protected void onUpdate(EventList<WeatherEvent> simulationEventList) throws IllegalArgumentException {
     // Handle events
-		if(simulationEventList == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"simulationEventList"));
-		}
+    if (simulationEventList == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "simulationEventList"));
+    }
     for (AbstractEvent event : simulationEventList.getEventList()) {
       // DefaultWeatherController.log.debug("Event: " + event.getEventType());
       if (event instanceof ChangeWeatherEvent) {
@@ -460,6 +460,6 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 
   @Override
   public JaxRSCoordinate getReferencePosition() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return this.city.getReferencePoint();
   }
 }

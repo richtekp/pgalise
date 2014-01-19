@@ -51,8 +51,6 @@ public interface RandomVehicleTripGenerator {
 
   public List<TrafficNode> getWorkNodes();
 
-  public void init();
-
   public void setHomeNodes(List<TrafficNode> homeNodes);
 
   public void setRandomSeedService(RandomSeedService randomSeedService);

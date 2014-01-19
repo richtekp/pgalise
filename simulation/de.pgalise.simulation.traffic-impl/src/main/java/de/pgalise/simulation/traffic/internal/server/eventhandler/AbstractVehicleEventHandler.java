@@ -27,7 +27,6 @@ import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
 import de.pgalise.simulation.traffic.event.CreateRandomCarData;
 import de.pgalise.simulation.traffic.event.CreateRandomMotorcycleData;
 import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.CarData;
@@ -128,7 +127,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
   public void scheduleVehicle(Vehicle<? extends VehicleData> vehicle,
     long startTime) {
     if (vehicle != null) {
-      ScheduleItem item = new DefaultScheduleItem(vehicle,
+      ScheduleItem item = new ScheduleItem(vehicle,
         startTime,
         this.getResponsibleServer().getUpdateIntervall());
       // item.setLastUpdate(startTime - this.getServer().getUpdateIntervall());
@@ -227,7 +226,8 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
     // check if path could not be computed between the nodes
     if (path != null) {
       GpsSensor gpsSensorHelper = this.getGPSSensor(sensorHelpers);
-      car = this.getResponsibleServer().getCarFactory().createRandomCar();
+      car = this.getResponsibleServer().getCarFactory().createRandomCar(
+        getResponsibleServer().getGraph().edgeSet());
 
       if (name != null) {
         car.setName(name);

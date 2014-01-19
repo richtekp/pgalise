@@ -39,8 +39,8 @@ public class GeoToolsBootstrapping {
    * @return
    */
   /*
-   * Geotools uses calculation that returns immense errors (> 100 % for values 
-   * below 500 m)
+   * Geotools uses calculation that returns immense errors (> 100 %) for values 
+   * below 500 m
    */
   public static double distanceHaversineInM(JaxRSCoordinate c1,
     JaxRSCoordinate c2) {

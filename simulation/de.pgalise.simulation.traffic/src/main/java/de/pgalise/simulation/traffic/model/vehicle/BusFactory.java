@@ -21,7 +21,7 @@ package de.pgalise.simulation.traffic.model.vehicle;
  * @author Andreas
  * @version 1.0
  */
-public interface BusFactory extends VehicleFactory {
+public interface BusFactory extends BaseVehicleFactory {
 
   /**
    * Method to create a {@link Bus} with the given typeId.All position related

@@ -16,21 +16,23 @@
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.service.IdGenerator;
-import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
-
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.model.factory.XMLBusFactory;
-import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.testutils.TestUtils;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.Before;
 
 /**
  * Tests the {@link XMLBusFactoryTest}
@@ -48,6 +50,15 @@ public class XMLBusFactoryTest {
   public static final String FILEPATH = "/buses.xml";
   @EJB
   private IdGenerator idGenerator;
+
+  public XMLBusFactoryTest() {
+  }
+
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().bind("inject",
+      this);
+  }
 
   @Test
   public void test() {

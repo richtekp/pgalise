@@ -12,20 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
  */
 package de.pgalise.simulation.internal;
 
@@ -73,7 +59,6 @@ import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
-import javax.ejb.embeddable.EJBContainer;
 import javax.naming.NamingException;
 import org.junit.Before;
 
@@ -87,8 +72,6 @@ import org.junit.Before;
 @LocalBean
 @ManagedBean
 public class DefaultEventInitiatorTest {
-
-  private EJBContainer container;
 
   private static final long INTERVAL = 1000;
   private static final long CLOCK_GENERATOR_INTERVAL = 0;
@@ -107,8 +90,7 @@ public class DefaultEventInitiatorTest {
 
   @Before
   public void setUp() throws NamingException, MalformedURLException {
-    container = TestUtils.getContainer();
-    container.getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
 
     Calendar cal = new GregorianCalendar();

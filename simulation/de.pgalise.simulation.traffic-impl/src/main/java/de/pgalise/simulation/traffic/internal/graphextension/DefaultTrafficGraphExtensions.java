@@ -48,9 +48,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Extension class which extends EdgeExtensions by traffic related aspects
  *
- * @param <D>
- * @param <N>
- * @param <E>
  * @author Marcus, Mustafa, Marina
  */
 @Lock(LockType.READ)
@@ -71,7 +68,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions
 
   private long currentSimTime;
 
-  protected DefaultTrafficGraphExtensions() {
+  public DefaultTrafficGraphExtensions() {
   }
 
   /**
@@ -128,7 +125,7 @@ public class DefaultTrafficGraphExtensions extends DefaultGraphExtensions
     this.trafficRules.add(trafficRule);
     return trafficRule;
 
-		// int priorityRoadCounter = 0;
+    // int priorityRoadCounter = 0;
     // for (final Edge edge : node) {
     // final Boolean value = this.isPriorityRoad(edge);
     // if ((value != null) && (value == true)) {

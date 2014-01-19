@@ -12,6 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
+ *//* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
@@ -37,7 +51,7 @@ import de.pgalise.simulation.traffic.internal.model.factory.RandomBusFactory;
 import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
@@ -144,7 +158,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
             + cal.get(Calendar.DAY_OF_MONTH) + "." + cal.get(Calendar.MONTH) + "."
             + cal.get(Calendar.YEAR));
 
-          ScheduleItem item = new DefaultScheduleItem(b,
+          ScheduleItem item = new ScheduleItem(b,
             cal.getTimeInMillis(),
             this.server.getUpdateIntervall());
           // item.setLastUpdate(cal.getTimeInMillis() - this.server.getUpdateIntervall());

@@ -43,7 +43,7 @@ public class DBBackedServiceWeatherLoaderTest {
 
   @Before
   public void setUpClass() throws NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
   }
 

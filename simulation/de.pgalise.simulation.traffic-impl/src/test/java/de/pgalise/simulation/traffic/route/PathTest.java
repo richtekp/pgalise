@@ -23,6 +23,9 @@ import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.testutils.TestUtils;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
@@ -55,7 +58,7 @@ public class PathTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
   }
 
@@ -108,13 +111,16 @@ public class PathTest {
       length / velocity);
     PathTest.log.debug("Weight of ac: " + length / velocity);
 
-    ClosestFirstIterator astar = new ClosestFirstIterator(graph,
+    ClosestFirstIterator<TrafficNode, TrafficEdge> astar = new ClosestFirstIterator<>(
+      graph,
       a);
+    List<TrafficNode> astarList = new LinkedList<>();
     while (astar.hasNext()) {
-      astar.next();
+      astarList.add(astar.next());
     }
-
-    Assert.assertEquals(astar.toString(),
-      "[a, c]"); // @TODO: adjust library to use a method which returns a path
+    Assert.assertEquals(astarList,
+      new LinkedList<>(Arrays.asList(a,
+          b,
+          c)));
   }
 }

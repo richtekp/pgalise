@@ -18,9 +18,11 @@ package de.pgalise.simulation.traffic.internal.model.factory;
 import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.CarDataList;
@@ -45,17 +47,21 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
   CarFactory {
 
   @Override
-  public Car createCar() {
-    return createRandomCar();
+  public Car createCar(Set<TrafficEdge> edges) {
+    return createRandomCar(edges);
   }
 
   @Override
-  public Car createRandomCar() {
+  public Car createRandomCar(Set<TrafficEdge> edges) {
     CarData data = getRandomVehicleData();
+    JaxRSCoordinate position = null;
+    if (edges != null) {
+      position = generateRandomPosition(edges);
+    }
     return new DefaultCar(getIdGenerator().getNextId(),
-      "name",
       data,
-      getTrafficGraphExtensions());
+      getTrafficGraphExtensions(),
+      position);
   }
 
   public XMLCarFactory() {
@@ -201,6 +207,16 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
     } catch (JAXBException ex) {
       throw new RuntimeException(ex);
     }
+  }
+
+  @Override
+  public Car createRandomCar() {
+    return createRandomCar(null);
+  }
+
+  @Override
+  public Car createCar() {
+    return createCar(null);
   }
 
 }

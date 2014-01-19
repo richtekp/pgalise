@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.traffic.internal.model.factory.AbstractBicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import javax.ejb.Local;
 import javax.ejb.Stateful;
@@ -17,11 +16,11 @@ import javax.ejb.Stateful;
 @Stateful
 @Local(BicycleFactory.class)
 public class RandomBicycleFactory extends AbstractBicycleFactory implements
-	BicycleFactory {
+  BicycleFactory {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public RandomBicycleFactory() {
-	}
+  public RandomBicycleFactory() {
+  }
 
 }

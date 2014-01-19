@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,20 +31,19 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.exception.SensorException;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import de.pgalise.simulation.staticsensor.StaticSensor;
+import de.pgalise.simulation.traffic.Iterables;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.shared.entity.NavigationNode;
-import de.pgalise.simulation.staticsensor.StaticSensor;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
-import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
@@ -53,21 +51,22 @@ import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
 import de.pgalise.util.graph.disassembler.Disassembler;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import javax.ejb.Stateful;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
-/**
- * Implementation of the traffic controller
- *
- * @author Mustafa
- * @version 1.0 (Feb 11, 2013)
- */
 @Stateful
 @Local(TrafficControllerLocal.class)
-public class DefaultTrafficController<
-	D extends VehicleData> extends AbstractController<VehicleEvent, TrafficStartParameter, TrafficInitParameter>
+public class DefaultTrafficController extends AbstractController<VehicleEvent, TrafficStartParameter, TrafficInitParameter>
   implements TrafficControllerLocal<VehicleEvent> {
 
   /**
@@ -86,12 +85,11 @@ public class DefaultTrafficController<
   /**
    * List with all traffic servers
    */
-  private List<TrafficServerLocal<VehicleEvent>> serverList;
-
+//  private List<TrafficServerLocal<VehicleEvent>> serverList = new LinkedList<>();
   /**
-   * List with all city zones
+   * List with all city zones (which are always subsets of area)
    */
-  private List<Geometry> cityZones;
+  private Map<Geometry, TrafficServerLocal<VehicleEvent>> cityZones;
 
   /**
    * Current disassembler
@@ -129,62 +127,58 @@ public class DefaultTrafficController<
    * @param trafficServer List with traffic servers
    */
   public DefaultTrafficController(Geometry area,
-    List<TrafficServerLocal<VehicleEvent>> trafficServer) {
-    this.serverList = trafficServer;
+    Map<Geometry, TrafficServerLocal<VehicleEvent>> trafficServer) {
+    this.cityZones = trafficServer;
     asyncHandler = new ThreadPoolHandler();
 
     this.area = area;
   }
 
-  @EJB
-  private TrafficServerLocal onlyServer;
-
+//  @EJB
+//  private TrafficServerLocal onlyServer;
   @Override
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
     int trafficServerCount = param.getTrafficServerCount();
-    serverList = new LinkedList<>();
+    cityZones = new HashMap<>();
 
-    serverList.add(onlyServer);
-
-//    for (int i = 0; i < trafficServerCount; i++) {
-//      try {
-//        Context localContext = new InitialContext();
-//        TrafficServerLocal trafficServer = (TrafficServerLocal) localContext.
-//          lookup(
-//            "java:global/PG_Alise_Component/traffic-impl-2.0-SNAPSHOT/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-//        trafficServer.init(param);
-//        serverList.add(trafficServer);
-//      } catch (NamingException ex) {
-//        throw new RuntimeException(ex);
-//      }
-//    }
-//    //@TODO: doesn't make sense that TrafficServers know other instances of TrafficServers and manage boundary crossing if TrafficController can do this
+    // stadt in gleichgroße teile aufteilen
+    area = param.getCity().getPosition().getBoundaries();
+    List<Geometry> generatedCityZones = createCityZones(trafficServerCount);
+    for (Geometry generatedCityZone : generatedCityZones) {
+      try {
+        Context localContext = new InitialContext();
+        TrafficServerLocal<VehicleEvent> trafficServer = (TrafficServerLocal) localContext.
+          lookup(
+            "DefaultTrafficServerLocal");
+        trafficServer.init(param);
+        cityZones.put(generatedCityZone,
+          trafficServer);
+      } catch (NamingException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
+    //@TODO: doesn't make sense that TrafficServers know other instances of 
+    //TrafficServers and manage boundary crossing if TrafficController can do this
 //    for (TrafficServerLocal trafficServer : serverList) {
 //      Set<TrafficServerLocal<VehicleEvent>> trafficServersClone = new HashSet<>(
 //        serverList);
 //      trafficServersClone.remove(trafficServer);
 //      trafficServer.setTrafficServers(trafficServersClone);
 //    }
-    // stadt in gleichgroße teile aufteilen
-    area = param.getCity().getPosition().getBoundaries();
-    cityZones = createCityZones();
 
-    // server graphdaten übergeben
-    final List<Exception> exceptions = new ArrayList<>(1);
-    for (int i = 0; i < serverList.size(); i++) {
-      final int serverId = i;
+    for (final Geometry cityZone : cityZones.keySet()) {
       asyncHandler.addDelegateFunction(new Function() {
 
         @Override
         public void delegate() {
-          TrafficServerLocal<VehicleEvent> server = serverList.get(serverId);
+          TrafficServerLocal<VehicleEvent> server = cityZones.get(cityZones);
           try {
             server.init(param);
           } catch (IllegalStateException ex) {
             throw new RuntimeException(ex);
           }
-          server.setCityZone(cityZones.get(serverId));
-          log.debug("TrafficServer " + serverId + " initalized");
+          server.setCityZone(cityZone);
+          log.debug("TrafficServer " + server + " initalized");
         }
 
       });
@@ -195,52 +189,46 @@ public class DefaultTrafficController<
     asyncHandler.waitToFinish();
     log.debug("All TrafficServer have been initialized");
 
-    if (exceptions.size() > 0) {
-      log.error("Could not initialize TrafficController");
-      throw new InitializationException("Could not initialize TrafficController");
-    }
-
     log.info(String.format("%s TrafficServer registered",
-      serverList.size()));
+      cityZones.size()));
   }
 
   @Override
   protected void onReset() {
-    for (TrafficServer<?> server : serverList) {
+    for (TrafficServer<?> server : cityZones.values()) {
       server.reset();
     }
-    serverList = null;
-    cityZones = null;
+    cityZones.clear();
   }
 
   @Override
   protected void onStart(TrafficStartParameter param) {
     //serers in serverList are initialized in onInit with TrafficInitParameter
-    for (TrafficServer<?> server : serverList) {
+    for (TrafficServer<?> server : cityZones.values()) {
       server.start(param);
     }
   }
 
   @Override
   protected void onStop() {
-    for (TrafficServer<?> server : serverList) {
+    for (TrafficServer<?> server : cityZones.values()) {
       server.stop();
     }
   }
 
   @Override
   protected void onResume() {
-    for (TrafficServer<?> server : serverList) {
+    for (TrafficServer<?> server : cityZones.values()) {
       server.start(null);
     }
   }
 
   @Override
   protected void onUpdate(EventList<VehicleEvent> simulationEventList) {
-    if (serverList.size() > 1) {
+    if (cityZones.size() > 1) {
       updateAsynchronous(simulationEventList);
     }
-    serverList.get(0).update(simulationEventList);
+    cityZones.values().iterator().next().update(simulationEventList);
   }
 
   private void updateAsynchronous(EventList<VehicleEvent> simulationEventList) {
@@ -261,7 +249,7 @@ public class DefaultTrafficController<
       eventList,
       simulationEventList.getTimestamp());
 
-    for (final TrafficServer<VehicleEvent> server : serverList) {
+    for (final TrafficServer<VehicleEvent> server : cityZones.values()) {
       asyncHandler.addDelegateFunction(new Function() {
         @Override
         public void delegate() {
@@ -272,7 +260,7 @@ public class DefaultTrafficController<
     asyncHandler.start();
     asyncHandler.waitToFinish();
 
-    for (final TrafficServer<?> server : serverList) {
+    for (final TrafficServer<?> server : cityZones.values()) {
       asyncHandler.addDelegateFunction(new Function() {
         @Override
         public void delegate() {
@@ -286,104 +274,128 @@ public class DefaultTrafficController<
 
   /**
    * Divides one event into multiple events assigning each one a responsible
-   * server.
+   * server. The number of divided events is equal the number of traffic servers
    *
    * @param e
    * @return
    */
   private List<? extends VehicleEvent> divideEvent(VehicleEvent e) {
-    if (e.getType().equals(TrafficEventTypeEnum.CREATE_VEHICLES_EVENT)) {
-      List<CreateVehiclesEvent<D>> eventList = new ArrayList<>(16);
+    List<CreateVehiclesEvent<?>> eventList = new LinkedList<>();
+    if (e instanceof CreateVehiclesEvent) {
       CreateVehiclesEvent<?> originalEvent = (CreateVehiclesEvent) e;
 
-      // creat an event for each server
-      List<CreateVehiclesEvent<D>> eventForEachServer = new ArrayList<>(
-        this.serverList.size());
-      for (int i = 0; i < eventForEachServer.size(); i++) {
-        eventForEachServer.add(new CreateVehiclesEvent<D>(serverList.get(i),
-          System.currentTimeMillis(),
-          0,
-          new ArrayList<CreateRandomVehicleData>(16)));
-      }
+      // create an event for each server
+      Map<TrafficServerLocal, List<CreateVehiclesEvent<?>>> eventForEachServer = new HashMap<>(
+        this.cityZones.size());
 
-      int responsibleServer = 0;
-
-      for (CreateRandomVehicleData data : originalEvent.getVehicles()) {
-        NavigationNode startNode = data.getVehicleInformation().getTrip().
-          getStartNode();
-        NavigationNode targetNode = data.getVehicleInformation().getTrip().
-          getTargetNode();
-
-        // distribute the load equally for random routes
-        if ((startNode == null) && (targetNode == null)) {
-          eventForEachServer.get(responsibleServer).getVehicles().add(data);
-          responsibleServer = (responsibleServer + 1) % this.serverList.size();
-        } // otherwise: let the server decide on their own who is
-        // responsible
-        else {
-          for (CreateVehiclesEvent<D> tmpE : eventForEachServer) {
-            tmpE.getVehicles().add(data);
-          }
+      //separate random routes from specific routes (equal non-specific 
+      //load balancing for random route; let server decide for specific routes
+      //for themselfs
+      List<CreateRandomVehicleData> randomRoutes = new LinkedList<>();
+      Queue<CreateRandomVehicleData> specificRoutes = new LinkedList<>();
+      for (CreateRandomVehicleData randomVehicleData : originalEvent.
+        getVehicles()) {
+        if (randomVehicleData.getVehicleInformation().getTrip().getStartNode() == null
+          && randomVehicleData.getVehicleInformation().getTrip().getTargetNode() == null) {
+          randomRoutes.add(randomVehicleData);
+        } else {
+          specificRoutes.add(randomVehicleData);
         }
       }
-      eventList.addAll(eventForEachServer);
+
+      int offset = 0;
+      for (TrafficServerLocal<VehicleEvent> trafficServer : cityZones.values()) {
+        int size = randomRoutes.size() / cityZones.size();
+        CreateVehiclesEvent<?> dividedEvent = new CreateVehiclesEvent<>(
+          trafficServer,
+          e.getSimulationTime(),
+          e.getElapsedTime(),
+          new LinkedList<>(originalEvent.getVehicles().
+            subList(0,
+              size)));
+        eventList.add(dividedEvent);
+        offset += size;
+      }
+      Iterator<CreateRandomVehicleData> remaining = originalEvent.getVehicles().
+        listIterator(offset);
+      Iterator<TrafficServerLocal<VehicleEvent>> trafficServers = cityZones.
+        values().iterator();
+      while (remaining.hasNext()) {
+        CreateVehiclesEvent<?> dividedEvent = new CreateVehiclesEvent<>(
+          trafficServers.next(),
+          e.getSimulationTime(),
+          e.getElapsedTime(),
+          new LinkedList<>(Arrays.asList(remaining.next())));
+        eventList.add(dividedEvent);
+      }
+
+      Iterator<TrafficServerLocal<VehicleEvent>> trafficServerCycle = Iterables.
+        cycle(
+          cityZones.values()).iterator();
+      while (!specificRoutes.isEmpty()) {
+        CreateRandomVehicleData createRandomVehicleData = specificRoutes.poll();
+//        for (TrafficServerLocal trafficServerLocal : cityZones.
+//          values()) {
+//          if (trafficServerLocal.isResponsible...) {
+//            
+//          }
+//        }
+        CreateVehiclesEvent<?> dividedEvent = new CreateVehiclesEvent<>(
+          trafficServerCycle.next(),
+          e.getSimulationTime(),
+          e.getElapsedTime(),
+          new LinkedList<>(Arrays.asList(createRandomVehicleData)));
+        eventList.add(dividedEvent);
+      }
       return eventList;
-    } else if (e.getType().equals(
-      TrafficEventTypeEnum.CREATE_RANDOM_VEHICLES_EVENT)) {
-      List<CreateRandomVehiclesEvent<D>> eventList = new ArrayList<>(16);
+    } else if (e instanceof CreateRandomVehiclesEvent) {
       CreateRandomVehiclesEvent<?> originalEvent = (CreateRandomVehiclesEvent) e;
-
-      int sizeForEachServer = originalEvent.getCreateRandomVehicleDataList().
-        size() / serverList.size();
-      int sizeForLastServer = originalEvent.getCreateRandomVehicleDataList().
-        size()
-        - (sizeForEachServer * (serverList.size() - 1));
-
-      for (int i = 0; i < serverList.size(); i++) {
-        int a = i * sizeForEachServer;
-        int b = ((i + 1) * sizeForEachServer) + 1; // sublist
-        // [beginning,
-        // ending)
-        if (i == serverList.size() - 1) {
-          b = sizeForLastServer - 1;
-          if (a == b) {
-            continue;
-          }
-        }
-
-        log.info(String.format("Creating new event from original [%s - %s)",
-          a,
-          b));
-
-        CreateRandomVehiclesEvent<D> newEvent = new CreateRandomVehiclesEvent<>(
-          serverList.get(i),
-          System.currentTimeMillis(),
-          0,
-          new ArrayList<>(originalEvent.getCreateRandomVehicleDataList().
-            subList(a,
-              b)));
-        eventList.add(newEvent);
+      int offset = 0;
+      for (TrafficServerLocal<VehicleEvent> trafficServer : cityZones.values()) {
+        int size = originalEvent.getCreateRandomVehicleDataList().size() / cityZones.
+          size();
+        CreateVehiclesEvent<?> dividedEvent = new CreateVehiclesEvent<>(
+          trafficServer,
+          e.getSimulationTime(),
+          e.getElapsedTime(),
+          new LinkedList<>(originalEvent.getCreateRandomVehicleDataList().
+            subList(0,
+              size)));
+        eventList.add(dividedEvent);
+        offset += size;
+      }
+      Iterator<CreateRandomVehicleData> remaining = originalEvent.
+        getCreateRandomVehicleDataList().
+        listIterator(offset);
+      Iterator<TrafficServerLocal<VehicleEvent>> trafficServers = cityZones.
+        values().iterator();
+      while (remaining.hasNext()) {
+        CreateVehiclesEvent<?> dividedEvent = new CreateVehiclesEvent<>(
+          trafficServers.next(),
+          e.getSimulationTime(),
+          e.getElapsedTime(),
+          new LinkedList<>(Arrays.asList(remaining.next())));
+        eventList.add(dividedEvent);
       }
       return eventList;
     }
+
     throw new IllegalArgumentException();
   }
 
   @Override
   public void createSensor(TrafficSensor sensor) {
-    for (TrafficServer<?> server : serverList) {
+    for (TrafficServer<?> server : cityZones.values()) {
       server.createSensor(sensor);
     }
   }
 
   @Override
   public void deleteSensor(TrafficSensor sensor) {
-    for (TrafficServer<?> server : serverList) {
+    for (TrafficServer<?> server : cityZones.values()) {
       server.deleteSensor(sensor);
     }
   }
-
-  private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
   /**
    * {@link InfraredSensor}s are always actived in this implementation
@@ -394,7 +406,7 @@ public class DefaultTrafficController<
    */
   @Override
   public boolean isActivated(TrafficSensor sensor) {
-    for (int i = 0; i < cityZones.size(); i++) {
+    for (Geometry cityZone : cityZones.keySet()) {
       JaxRSCoordinate pos;
       if (sensor instanceof StaticSensor) {
         pos = ((StaticSensor) sensor).getPosition();
@@ -405,8 +417,9 @@ public class DefaultTrafficController<
       } else {
         throw new IllegalArgumentException();
       }
-      if (cityZones.get(i).covers(GEOMETRY_FACTORY.createPoint(pos))) {
-        return serverList.get(i).isActivated(sensor);
+      if (cityZone.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+        createPoint(pos))) {
+        return cityZones.get(cityZone).isActivated(sensor);
       }
     }
     throw new IllegalArgumentException(
@@ -448,9 +461,9 @@ public class DefaultTrafficController<
    *
    * @return List with Geometry objects
    */
-  private List<Geometry> createCityZones() {
+  private List<Geometry> createCityZones(int count) {
     return this.disassembler.disassemble(area,
-      serverList.size());
+      count);
   }
 
   @Override
@@ -475,7 +488,7 @@ public class DefaultTrafficController<
   @Override
   public Set<TrafficSensor> getAllManagedSensors() {
     Set<TrafficSensor> retValue = new HashSet<>();
-    for (TrafficServer<?> trafficServer : serverList) {
+    for (TrafficServer<?> trafficServer : cityZones.values()) {
       for (TrafficSensor sensor : trafficServer.getAllManagedSensors()) {
         if (!retValue.contains(sensor)) {
           retValue.add(sensor);
@@ -483,5 +496,10 @@ public class DefaultTrafficController<
       }
     }
     return retValue;
+  }
+
+  @Override
+  public Map<Geometry, TrafficServerLocal<VehicleEvent>> getTrafficServers() {
+    return cityZones;
   }
 }

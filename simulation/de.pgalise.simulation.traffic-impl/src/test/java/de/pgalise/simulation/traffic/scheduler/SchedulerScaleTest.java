@@ -12,6 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
+ *//* 
+ * Copyright 2013 PG Alise (http://www.pg-alise.de/)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License. 
  */
 package de.pgalise.simulation.traffic.scheduler;
 
@@ -25,7 +39,6 @@ import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.graphextension.DefaultTrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SortedListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.TreeSetScheduler;
@@ -107,7 +120,6 @@ public class SchedulerScaleTest {
 
     for (int i = 0; i < numberOfCars; i++) {
       Vehicle<?> a = new DefaultCar(89324L,
-        "" + i,
         null,
         ee);
       a.setPath(shortestPath);
@@ -122,7 +134,7 @@ public class SchedulerScaleTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
     a = new TrafficNode(idGenerator.getNextId(),
       new JaxRSCoordinate(0,
@@ -232,7 +244,7 @@ public class SchedulerScaleTest {
     // Schedule
     scheduleDuration = System.currentTimeMillis();
     for (int i = 0; i < vehicles.size(); i++) {
-      scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(i),
+      scheduler.scheduleItem(new ScheduleItem(vehicles.get(i),
         startTime + (i * SCHEDULE_INTERVAL),
         1000));
     }
@@ -250,7 +262,7 @@ public class SchedulerScaleTest {
     // Schedule
     scheduleDuration = System.currentTimeMillis();
     for (int i = 0; i < vehicles.size(); i++) {
-      scheduler.scheduleItem(new DefaultScheduleItem(vehicles.get(i),
+      scheduler.scheduleItem(new ScheduleItem(vehicles.get(i),
         startTime + (i * SCHEDULE_INTERVAL),
         1000));
     }

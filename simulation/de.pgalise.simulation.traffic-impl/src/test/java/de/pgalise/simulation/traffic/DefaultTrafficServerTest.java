@@ -19,7 +19,6 @@ import com.Ostermiller.util.CSVParse;
 import com.Ostermiller.util.CSVParser;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.FileOutputServer;
@@ -36,13 +35,18 @@ import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.BusRoute;
+import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
@@ -53,16 +57,12 @@ import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.server.scheduler.DefaultScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
-import de.pgalise.simulation.traffic.entity.BicycleData;
-import de.pgalise.simulation.traffic.entity.CarData;
-import de.pgalise.simulation.traffic.entity.MotorcycleData;
-import de.pgalise.simulation.traffic.entity.TruckData;
+import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.InfraredNoInterferer;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.server.TrafficServer;
@@ -71,6 +71,7 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.TestUtils;
@@ -80,6 +81,10 @@ import de.pgalise.util.graph.internal.QuadrantDisassembler;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -149,11 +154,14 @@ public class DefaultTrafficServerTest {
 
   static {
     try {
-      CSV_OUTPUT = new File(File.createTempFile(null,
+      Path tmpDir = Files.createTempDirectory("pgalise",
+        PosixFilePermissions.asFileAttribute(new HashSet<>(
+            Arrays.asList(PosixFilePermission.OWNER_READ,
+              PosixFilePermission.OWNER_WRITE,
+              PosixFilePermission.OWNER_EXECUTE))));
+      CSV_OUTPUT = File.createTempFile("pgalise",
         null,
-        File.createTempFile(null,
-          null)),
-        "/stream_output.csv").getAbsolutePath();
+        tmpDir.toFile()).getAbsolutePath();
     } catch (IOException ex) {
       throw new ExceptionInInitializerError(ex);
     }
@@ -196,7 +204,7 @@ public class DefaultTrafficServerTest {
   /**
    * Implementation of SensorRegistry.
    */
-  private static Set<TrafficSensor<?>> SENSOR_REGISTRY;
+  private static Set<TrafficSensor<?>> SENSOR_REGISTRY = new HashSet<>();
   @EJB
   private IdGenerator idGenerator;
   @EJB
@@ -209,8 +217,8 @@ public class DefaultTrafficServerTest {
   private RandomSeedService randomSeedService;
   @EJB
   private TcpIpOutput tcpIpOutput;
-  @EJB
-  private TrafficServerLocal instance;
+  private TrafficStartParameter startParam = new TrafficStartParameter();
+  private TrafficInitParameter initParameter = new TrafficInitParameter();
 
   public DefaultTrafficServerTest() {
   }
@@ -231,18 +239,20 @@ public class DefaultTrafficServerTest {
 
   @Before
   public void setUp() throws IOException, NamingException {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
     city = TrafficTestUtils.createDefaultTestCityInstance(idGenerator);
 
-    cityFactory.parse(new File(OSM),
-      new File(BUS_STOPS));
+    cityFactory.parse(Thread.currentThread().getContextClassLoader().
+      getResourceAsStream(OSM),
+      Thread.currentThread().getContextClassLoader().getResourceAsStream(
+        BUS_STOPS));
 
     WeatherController wc = createNiceMock(WeatherController.class);
     EnergyController ec = createNiceMock(EnergyController.class);
 
     EntityManager entityManager = EasyMock.createMock(EntityManager.class);
-    SENSOR_REGISTRY = new HashSet();
+    SENSOR_REGISTRY = new HashSet<>();
 
     server = new FileOutputServer(new File(CSV_OUTPUT),
       null,
@@ -258,11 +268,6 @@ public class DefaultTrafficServerTest {
       1);
     randomSeedService.init(SIMULATION_START.
       getTime());
-
-    TrafficStartParameter startParam = new TrafficStartParameter();
-    TrafficInitParameter initParameter = new TrafficInitParameter();
-    instance.init(initParameter);
-    instance.start(startParam);
   }
 
   @After
@@ -272,7 +277,6 @@ public class DefaultTrafficServerTest {
       file.delete();
     }
     SENSOR_REGISTRY.clear();
-    instance.reset();
   }
 
   /*
@@ -290,11 +294,11 @@ public class DefaultTrafficServerTest {
       2);
 
     Context localContext = new InitialContext();
-    TrafficServerLocal<VehicleEvent> server2 = (TrafficServerLocal) localContext.
+    TrafficServerLocal server2 = (TrafficServerLocal) localContext.
       lookup(
         "java:global/PG_Alise_Component/traffic-impl-2.0-SNAPSHOT/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
-    TrafficServerLocal<VehicleEvent> server1 = (TrafficServerLocal) localContext.
+    TrafficServerLocal server1 = (TrafficServerLocal) localContext.
       lookup(
         "java:global/PG_Alise_Component/traffic-impl-2.0-SNAPSHOT/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     server1.setCityZone(gs.get(0));
@@ -304,21 +308,29 @@ public class DefaultTrafficServerTest {
       1,
       gs);
 
-    TrafficInitParameter initParameter = new TrafficInitParameter();
-    TrafficStartParameter startParam = new TrafficStartParameter();
     server1.init(initParameter);
     server1.start(startParam);
     server2.init(initParameter);
     server2.start(startParam);
 
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(30,
+        30));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(60,
+        60));
+    TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
+      a,
+      b);
     Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),
       tcpIpOutput,
       null,
       null);
-    Vehicle<CarData> car = server1.getCarFactory().createRandomCar();
+    Vehicle<CarData> car = server1.getCarFactory().createRandomCar(
+      new HashSet<>(Arrays.asList(ab)));
     car.setName("Car A");
     car.setPath(path);
-    server1.getScheduler().scheduleItem(new DefaultScheduleItem(car,
+    server1.getScheduler().scheduleItem(new ScheduleItem(car,
       SIMULATION_START.getTime(),
       server1.getUpdateIntervall()));
 
@@ -326,10 +338,11 @@ public class DefaultTrafficServerTest {
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car3 = server1.getCarFactory().createRandomCar();
+    Vehicle<CarData> car3 = server1.getCarFactory().createRandomCar(
+      new HashSet<>(Arrays.asList(ab)));
     car3.setName("Car B");
     car3.setPath(path);
-    server1.getScheduler().scheduleItem(new DefaultScheduleItem(car3,
+    server1.getScheduler().scheduleItem(new ScheduleItem(car3,
       SIMULATION_START.getTime() + 1000,
       server1.getUpdateIntervall()));
 
@@ -338,7 +351,8 @@ public class DefaultTrafficServerTest {
     List<Vehicle<? extends VehicleData>> addedVehicles = new LinkedList<>();
     int droveOverBoundaries = 0;
     while ((i / 1000) < 6131) {
-      EventList eventList = new EventList<>(idGenerator.getNextId(),
+      EventList<TrafficEvent<?>> eventList = new EventList<>(idGenerator.
+        getNextId(),
         null,
         SIMULATION_START.getTime() + i);
       i += 1000;
@@ -393,7 +407,17 @@ public class DefaultTrafficServerTest {
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car2 = server2.getCarFactory().createRandomCar();
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(30,
+        30));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(60,
+        60));
+    TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
+      a,
+      b);
+    Vehicle<CarData> car2 = server2.getCarFactory().createRandomCar(
+      new HashSet<TrafficEdge>(Arrays.asList(ab)));
     car2.setName("Car " + i);
     TrafficNode startNode = new TrafficNode(idGenerator.getNextId(),
       new JaxRSCoordinate(1,
@@ -404,14 +428,12 @@ public class DefaultTrafficServerTest {
       endNode));
 
     server2.getScheduler().scheduleItem(
-      new DefaultScheduleItem(car2,
+      new ScheduleItem(car2,
         SIMULATION_START.getTime() + (5135 * 1000),
         server2.getUpdateIntervall()));
 
     return car2;
   }
-
-  private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
   /**
    * @return nodes from two distinct areas
@@ -430,7 +452,8 @@ public class DefaultTrafficServerTest {
 
       if (nodes[0] == null) {
         if (gs.get(0).covers(
-          GEOMETRY_FACTORY.createPoint(trip.getStartNode().getGeoLocation()))) {
+          GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPoint(trip.
+            getStartNode().getGeoLocation()))) {
           log.debug("Found node in the first area: "
             + trip.getStartNode()
             + ", "
@@ -441,7 +464,8 @@ public class DefaultTrafficServerTest {
       }
       if (nodes[1] == null) {
         if (gs.get(1).covers(
-          GEOMETRY_FACTORY.createPoint(trip2.getStartNode().getGeoLocation()))) {
+          GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPoint(trip2.
+            getStartNode().getGeoLocation()))) {
           log.debug("Found node in the second area: "
             + trip2.getStartNode()
             + ", "
@@ -467,7 +491,7 @@ public class DefaultTrafficServerTest {
   }
 
   @Test
-  public void createRandomCarTest() throws IllegalStateException, InitializationException {
+  public void createRandomCarTest() throws IllegalStateException, InitializationException, NamingException {
     log.debug("##########################");
     log.debug("HANDLE RANDOMCAREVENT TEST");
     log.debug("##########################");
@@ -483,6 +507,9 @@ public class DefaultTrafficServerTest {
     initTrafficServer(null);
 
     StartParameter startParam = new StartParameter();
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
     instance.start(startParam);
 
@@ -497,7 +524,7 @@ public class DefaultTrafficServerTest {
   }
 
   @Test
-  public void createRandomTruckTest() throws IllegalStateException, InitializationException {
+  public void createRandomTruckTest() throws IllegalStateException, InitializationException, NamingException {
     log.debug("##########################");
     log.debug("HANDLE RANDOMTRUCKEVENT TEST");
     log.debug("##########################");
@@ -511,6 +538,9 @@ public class DefaultTrafficServerTest {
       SIMULATION_START.getTime());
 
     StartParameter startParam = new StartParameter();
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
     instance.start(startParam);
 
@@ -525,7 +555,7 @@ public class DefaultTrafficServerTest {
   }
 
   @Test
-  public void createRandomBusTest() throws IllegalStateException, InitializationException {
+  public void createRandomBusTest() throws IllegalStateException, InitializationException, NamingException {
     log.debug("##########################");
     log.debug("HANDLE BUSEVENT TEST");
     log.debug("##########################");
@@ -551,7 +581,7 @@ public class DefaultTrafficServerTest {
         tcpIpOutput,
         null,
         null,
-        null);
+        new InfraredNoInterferer());
       busDataList.add(new CreateRandomBusData(sensor2,
         sensor,
         new VehicleInformation(true,
@@ -572,7 +602,10 @@ public class DefaultTrafficServerTest {
       trafficEventList,
       SIMULATION_START.getTime());
 
-    StartParameter startParam = new StartParameter();
+    TrafficServerLocal<VehicleEvent> instance = (TrafficServerLocal) TestUtils.
+      getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
     instance.start(startParam);
 
@@ -634,18 +667,30 @@ public class DefaultTrafficServerTest {
     log.debug("###########");
     // File file = new File(DefaultTrafficServerTest.CSV_OUTPUT);
 
-    StartParameter startParam = new StartParameter();
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
     instance.start(startParam);
     JaxRSCoordinate location;
     NavigationNode nodeForStaticSensor = null;
 
     if (VEHICLE_TYPE.equals("car") || VEHICLE_TYPE.equals("all")) {
+      TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+        new JaxRSCoordinate(30,
+          30));
+      TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+        new JaxRSCoordinate(60,
+          60));
+      TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
+        a,
+        b);
       Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),
         tcpIpOutput,
         null,
         new GpsNoInterferer());
-      Vehicle<CarData> car = instance.getCarFactory().createRandomCar();
+      Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
+        new HashSet<>(Arrays.asList(ab)));
       car.setName("K.I.T.T");
       TrafficTrip trip = instance.createTrip(instance.getCityZone(),
         car.getData().getType());
@@ -654,7 +699,7 @@ public class DefaultTrafficServerTest {
 
       nodeForStaticSensor = car.getNodePath().get(0);
 
-      instance.getScheduler().scheduleItem(new DefaultScheduleItem(car,
+      instance.getScheduler().scheduleItem(new ScheduleItem(car,
         SIMULATION_START.getTime() + 1000,
         instance.getUpdateIntervall()));
     }
@@ -670,7 +715,7 @@ public class DefaultTrafficServerTest {
       truck.setPath(instance.getShortestPath(tripTruck.getStartNode(),
         tripTruck.getTargetNode()));
 
-      instance.getScheduler().scheduleItem(new DefaultScheduleItem(truck,
+      instance.getScheduler().scheduleItem(new ScheduleItem(truck,
         SIMULATION_START.getTime() + 1000,
         instance.getUpdateIntervall()));
     }
@@ -687,7 +732,7 @@ public class DefaultTrafficServerTest {
       bike.setPath(instance.getShortestPath(tripBike.getStartNode(),
         tripBike.getTargetNode()));
 
-      instance.getScheduler().scheduleItem(new DefaultScheduleItem(bike,
+      instance.getScheduler().scheduleItem(new ScheduleItem(bike,
         SIMULATION_START.getTime() + 1000,
         instance.getUpdateIntervall()));
     }
@@ -706,7 +751,7 @@ public class DefaultTrafficServerTest {
         tripMotorcycle.getTargetNode()));
 
       instance.getScheduler().scheduleItem(
-        new DefaultScheduleItem(motorcycle,
+        new ScheduleItem(motorcycle,
           SIMULATION_START.getTime() + 1000,
           instance.getUpdateIntervall()));
     }
@@ -797,22 +842,34 @@ public class DefaultTrafficServerTest {
     log.debug("CREATE VEHICLE EVENT TEST");
     log.debug("###########");
 
-    StartParameter startParam = new StartParameter();
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
     instance.start(startParam);
 
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(30,
+        30));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(60,
+        60));
+    TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
+      a,
+      b);
     GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car = instance.getCarFactory().createRandomCar();
+    Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
+      new HashSet<>(Arrays.asList(ab)));
     car.setName("K.I.T.T");
     TrafficTrip trip = instance.createTrip(instance.getCityZone(),
       car.getData().getType());
     car.setPath(instance.getShortestPath(trip.getStartNode(),
       trip.getTargetNode()));
 
-    instance.getScheduler().scheduleItem(new DefaultScheduleItem(car,
+    instance.getScheduler().scheduleItem(new ScheduleItem(car,
       SIMULATION_START.getTime() + 1000,
       instance.getUpdateIntervall()));
 
@@ -891,18 +948,33 @@ public class DefaultTrafficServerTest {
     log.debug("CREATE ATTRACTION EVENT TEST");
     log.debug("###########");
 
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(30,
+        30));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(60,
+        60));
+    TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
+      a,
+      b);
     GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),
       tcpIpOutput,
       null,
       new GpsNoInterferer());
-    Vehicle<CarData> car = instance.getCarFactory().createRandomCar();
+
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
+
+    Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
+      new HashSet<>(Arrays.asList(ab)));
     car.setName("K.I.T.T");
     TrafficTrip trip = instance.createTrip(instance.getCityZone(),
       car.getData().getType());
     car.setPath(instance.getShortestPath(trip.getStartNode(),
       trip.getTargetNode()));
 
-    instance.getScheduler().scheduleItem(new DefaultScheduleItem(car,
+    instance.getScheduler().scheduleItem(new ScheduleItem(car,
       SIMULATION_START.getTime() + 1000,
       instance.getUpdateIntervall()));
 
@@ -987,7 +1059,8 @@ public class DefaultTrafficServerTest {
    */
   private void initTrafficServer(
     List<TrafficServerLocal<VehicleEvent>> serverList) throws IllegalStateException,
-    InitializationException {
+    InitializationException,
+    NamingException {
     // durch einen outputstream am besten ersetzen...
     // TrafficSensorFactory sensorFactory = new CSVTrafficSensorFactory(CSV_OUTPUT, sd.getRandomSeedService(),
     // sd.getController(WeatherController.class), mapper);
@@ -1000,6 +1073,9 @@ public class DefaultTrafficServerTest {
     TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager = EasyMock.
       createNiceMock(
         TrafficEventHandlerManager.class);
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+      lookup(
+        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.setCityZone(JTS.toGeometry(new Envelope(0,
       0,
       100,

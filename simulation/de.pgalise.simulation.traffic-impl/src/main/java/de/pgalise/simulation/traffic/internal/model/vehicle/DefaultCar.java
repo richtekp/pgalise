@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.entity.CarData;
@@ -15,19 +16,27 @@ import de.pgalise.simulation.traffic.entity.CarData;
  */
 public class DefaultCar extends ExtendedMotorizedVehicle<CarData> implements Car {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	protected DefaultCar() {
-	}
+  protected DefaultCar() {
+  }
 
-	public DefaultCar(Long id,
-		String name,
-		CarData data,
-		TrafficGraphExtensions trafficGraphExtensions) {
-		super(id,
-			name,
-			data,
-			trafficGraphExtensions);
-	}
+  public DefaultCar(Long id,
+    CarData data,
+    TrafficGraphExtensions trafficGraphExtensions,
+    JaxRSCoordinate position) {
+    super(id,
+      data,
+      trafficGraphExtensions,
+      position);
+  }
 
-	}
+  public DefaultCar(Long id,
+    CarData data,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    super(id,
+      data,
+      trafficGraphExtensions);
+  }
+
+}

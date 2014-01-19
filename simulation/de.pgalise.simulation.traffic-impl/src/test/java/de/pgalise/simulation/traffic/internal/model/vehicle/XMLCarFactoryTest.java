@@ -17,13 +17,16 @@ package de.pgalise.simulation.traffic.internal.model.vehicle;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.internal.model.factory.XMLCarFactory;
 import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.testutils.TestUtils;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,10 +35,12 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 
 import org.junit.Test;
 
@@ -61,6 +66,15 @@ public class XMLCarFactoryTest {
   @EJB
   private IdGenerator idGenerator;
 
+  public XMLCarFactoryTest() {
+  }
+
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContainer().bind("inject",
+      this);
+  }
+
   @Test
   public void testCreateRandomVehicle() throws FileNotFoundException, IOException {
     /*
@@ -73,6 +87,16 @@ public class XMLCarFactoryTest {
      * Test case
      */
     TrafficGraph graph = new DefaultTrafficGraph();
+    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(30,
+        30));
+    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+      new JaxRSCoordinate(60,
+        60));
+    graph.addVertex(a);
+    graph.addVertex(b);
+    graph.addEdge(a,
+      b);
     TrafficGraphExtensions trafficGraphExtensions = EasyMock.createNiceMock(
       TrafficGraphExtensions.class);
     CarFactory factory = new XMLCarFactory(idGenerator,
@@ -80,10 +104,10 @@ public class XMLCarFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<CarData> vehicle1 = factory.createRandomCar();
+    Vehicle<CarData> vehicle1 = factory.createRandomCar(graph.edgeSet());
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<CarData> vehicle2 = factory.createCar();
+    Vehicle<CarData> vehicle2 = factory.createCar(graph.edgeSet());
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,
       vehicle2.getData().getColor());

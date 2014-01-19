@@ -107,7 +107,7 @@ public class DefaultWeatherControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
 
     System.setProperty("simulation.configuration.filepath",

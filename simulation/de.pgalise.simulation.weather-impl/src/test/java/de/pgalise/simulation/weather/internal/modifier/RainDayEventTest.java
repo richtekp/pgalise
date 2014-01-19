@@ -138,7 +138,7 @@ public class RainDayEventTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().getContext().bind("inject",
+    TestUtils.getContainer().bind("inject",
       this);
     userTransaction.begin();
     try {

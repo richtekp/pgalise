@@ -5,10 +5,9 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
@@ -16,9 +15,9 @@ import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.ejb.EJB;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import java.util.Set;
 
 /**
  *
@@ -27,11 +26,6 @@ import org.apache.commons.lang3.tuple.Pair;
 public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
   implements
   CarFactory {
-
-  @EJB
-  private IdGenerator idGenerator;
-  @EJB
-  private TrafficSensorFactory sensorFactory;
 
   public AbstractCarFactory() {
     super(60,
@@ -85,15 +79,24 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
   }
 
   @Override
-  public Car createCar() {
-    return createRandomCar();
+  public Car createCar(Set<TrafficEdge> edges) {
+    return createRandomCar(edges);
   }
 
+  /**
+   *
+   * @param edges if edges is <code>null</code> this no position information is
+   * generated
+   * @return
+   */
   @Override
-  public Car createRandomCar() {
-    JaxRSCoordinate randomPosition = generateRandomPosition(
-      getTrafficGraphExtensions().getGraph().edgeSet());
-    GpsSensor gpsSensor = sensorFactory.createGpsSensor(new ArrayList<>(Arrays.
+  public Car createRandomCar(Set<TrafficEdge> edges) {
+    JaxRSCoordinate randomPosition = null;
+    if (edges != null) {
+      randomPosition = generateRandomPosition(edges);
+    }
+    GpsSensor gpsSensor = getSensorFactory().createGpsSensor(new ArrayList<>(
+      Arrays.
       asList(retrieveGpsInterferer())));
     List<Integer> wheelbases = generateWheelbases();
     CarData carData = new CarData(
@@ -112,11 +115,21 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
       "randomly generated car",
       randInt(getHeightMin(),
         getHeightMax()),
-      idGenerator.getNextId()
+      getIdGenerator().getNextId()
     );
     return new DefaultCar(getIdGenerator().getNextId(),
-      "random car",
       carData,
-      null);
+      getTrafficGraphExtensions(),
+      randomPosition);
+  }
+
+  @Override
+  public Car createCar() {
+    return createCar(null);
+  }
+
+  @Override
+  public Car createRandomCar() {
+    return createRandomCar(null);
   }
 }
