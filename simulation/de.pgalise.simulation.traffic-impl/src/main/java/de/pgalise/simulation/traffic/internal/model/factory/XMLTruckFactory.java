@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
@@ -84,7 +85,7 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
   }
 
   @Override
-  public Truck createRandomTruck() {
+  public Truck createRandomTruck(Output output) {
     TruckData data = getRandomVehicleData();
     return new DefaultTruck(getIdGenerator().getNextId(),
       data,
@@ -93,11 +94,13 @@ public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
 
   @Override
   public Truck createTruck(Color color,
-    int trailercount
+    int trailercount,
+    Output output
   ) {
-    Truck retValue = createRandomTruck();
+    Truck retValue = createRandomTruck(output);
     retValue.getData().setColor(color);
-    retValue.setGpsSensor(sensorFactory.createGpsSensor(false));
+    retValue.setGpsSensor(sensorFactory.createGpsSensor(false,
+      output));
     return retValue;
   }
 

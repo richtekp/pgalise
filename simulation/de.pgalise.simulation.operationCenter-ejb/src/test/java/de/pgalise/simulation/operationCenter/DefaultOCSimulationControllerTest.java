@@ -219,7 +219,8 @@ public class DefaultOCSimulationControllerTest {
       0,
       new URL(""),
       new URL(""),
-      null);
+      null,
+      output);
 
     /* Create start parameter: */
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(

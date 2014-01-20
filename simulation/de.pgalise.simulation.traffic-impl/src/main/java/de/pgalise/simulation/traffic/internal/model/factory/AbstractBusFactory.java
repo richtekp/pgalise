@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
@@ -95,16 +96,18 @@ public abstract class AbstractBusFactory extends AbstractMotorizedVehicleFactory
   }
 
   @Override
-  public Bus createBus() {
-    return createRandomBus();
+  public Bus createBus(Output output) {
+    return createRandomBus(output);
   }
 
   @Override
-  public Bus createRandomBus() {
+  public Bus createRandomBus(Output output) {
     GpsSensor gpsSensor = sensorFactory.createGpsSensor(
       new ArrayList<>(Arrays.
-        asList(retrieveGpsInterferer())));
-    InfraredSensor infraredSensor = sensorFactory.createInfraredSensor(null);
+        asList(retrieveGpsInterferer())),
+      output);
+    InfraredSensor infraredSensor = sensorFactory.createInfraredSensor(null,
+      output);
     int maxPassengerCount = randInt(maxPassengerCountMin,
       maxPassengerCountMax);
     int currentPassengerCount = randInt(0,

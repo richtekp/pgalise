@@ -10,6 +10,7 @@
 package de.pgalise.simulation.weather.service;
 
 import com.vividsolutions.jts.geom.Envelope;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.entity.City;
 import java.net.URL;
@@ -39,14 +40,16 @@ public class WeatherInitParameter<C extends City> extends SimulationInitParamete
     long clockGeneratorInterval,
     URL operationCenterURL,
     URL controlCenterURL,
-    Envelope cityBoundary) {
+    Envelope cityBoundary,
+    Output output) {
     super(startTimestamp,
       endTimestamp,
       interval,
       clockGeneratorInterval,
       operationCenterURL,
       controlCenterURL,
-      cityBoundary);
+      cityBoundary,
+      output);
     this.city = city;
   }
 

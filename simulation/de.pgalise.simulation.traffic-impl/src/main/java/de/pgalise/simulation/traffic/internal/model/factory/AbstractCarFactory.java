@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
@@ -15,9 +16,9 @@ import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import java.util.Set;
 
 /**
  *
@@ -79,8 +80,10 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
   }
 
   @Override
-  public Car createCar(Set<TrafficEdge> edges) {
-    return createRandomCar(edges);
+  public Car createCar(Set<TrafficEdge> edges,
+    Output output) {
+    return createRandomCar(edges,
+      output);
   }
 
   /**
@@ -90,14 +93,16 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
    * @return
    */
   @Override
-  public Car createRandomCar(Set<TrafficEdge> edges) {
+  public Car createRandomCar(Set<TrafficEdge> edges,
+    Output output) {
     JaxRSCoordinate randomPosition = null;
     if (edges != null) {
       randomPosition = generateRandomPosition(edges);
     }
     GpsSensor gpsSensor = getSensorFactory().createGpsSensor(new ArrayList<>(
       Arrays.
-      asList(retrieveGpsInterferer())));
+      asList(retrieveGpsInterferer())),
+      output);
     List<Integer> wheelbases = generateWheelbases();
     CarData carData = new CarData(
       randDouble(getPowerMin(),
@@ -124,12 +129,14 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
   }
 
   @Override
-  public Car createCar() {
-    return createCar(null);
+  public Car createCar(Output output) {
+    return createCar(null,
+      output);
   }
 
   @Override
-  public Car createRandomCar() {
-    return createRandomCar(null);
+  public Car createRandomCar(Output output) {
+    return createRandomCar(null,
+      output);
   }
 }

@@ -5,13 +5,13 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
@@ -33,8 +33,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import javax.ejb.Stateful;
 import javax.ejb.Local;
+import javax.ejb.Stateful;
 
 /**
  *
@@ -53,7 +53,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
     IdGenerator idGenerator,
     WeatherController wctrl,
     EnergyControllerLocal ectrl,
-    TcpIpOutput sensorOutput,
+    Output sensorOutput,
     int updateLimit) {
     super(rss,
       idGenerator,
@@ -65,7 +65,8 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
   @Override
   public InductionLoopSensor createInductionLoopSensor(
-    List<InductionLoopInterferer> sensorInterfererTypes) {
+    List<InductionLoopInterferer> sensorInterfererTypes,
+    Output output) {
     InductionLoopInterferer inductionLoopInterferer;
     if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
       inductionLoopInterferer = new CompositeInductionLoopInterferer(
@@ -76,7 +77,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
     JaxRSCoordinate position = createRandomPositionInductionLoopSensor();
     return new InductionLoopSensor(getIdGenerator().getNextId(),
-      getSensorOutput(),
+      output,
       null,
       getUpdateLimit(),
       inductionLoopInterferer
@@ -85,7 +86,8 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
   @Override
   public TopoRadarSensor createTopoRadarSensor(
-    List<TopoRadarInterferer> sensorInterfererTypes) {
+    List<TopoRadarInterferer> sensorInterfererTypes,
+    Output output) {
     TopoRadarInterferer toporadarInterferer;
     if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
       toporadarInterferer = new CompositeTopoRadarInterferer(
@@ -96,7 +98,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
     JaxRSCoordinate position = createRandomPositionTopoRadarSensor();
     return new TopoRadarSensor(getIdGenerator().getNextId(),
-      getSensorOutput(),
+      output,
       null,
       getUpdateLimit(),
       toporadarInterferer);
@@ -104,7 +106,8 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
   @Override
   public InfraredSensor createInfraredSensor(
-    List<InfraredInterferer> sensorInterfererTypes) {
+    List<InfraredInterferer> sensorInterfererTypes,
+    Output output) {
     InfraredInterferer infraredInterferer;
     if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
       infraredInterferer = new CompositeInfraredInterferer(sensorInterfererTypes);
@@ -114,7 +117,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
     JaxRSCoordinate position = createRandomPositionInfraredSensor();
     return new InfraredSensor(getIdGenerator().getNextId(),
-      getSensorOutput(),
+      output,
       null,
       position,
       getUpdateLimit(),
@@ -124,15 +127,18 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
   public final static List<GpsInterferer> DEFAULT_SENSOR_INTERFERER = new LinkedList<>();
 
   @Override
-  public GpsSensor createGpsSensor(boolean withSensorInterferer) {
+  public GpsSensor createGpsSensor(boolean withSensorInterferer,
+    Output output) {
     return createGpsSensor(
       withSensorInterferer ? DEFAULT_SENSOR_INTERFERER : new ArrayList<GpsInterferer>(
-        0));
+        0),
+      output);
   }
 
   @Override
   public GpsSensor createGpsSensor(
-    List<GpsInterferer> sensorInterfererTypes) {
+    List<GpsInterferer> sensorInterfererTypes,
+    Output output) {
     GpsInterferer gpsInterferer;
     if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
       gpsInterferer = new CompositeGpsInterferer(sensorInterfererTypes);
@@ -141,7 +147,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
     }
 
     return new GpsSensor(getIdGenerator().getNextId(),
-      getSensorOutput(),
+      output,
       null,
       getUpdateLimit(),
       gpsInterferer);
@@ -149,7 +155,8 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
   @Override
   public Sensor<?, ?> createSensor(SensorType sensorType,
-    List<SensorInterfererType> sensorInterfererTypes)
+    List<SensorInterfererType> sensorInterfererTypes,
+    Output output)
     throws InterruptedException, ExecutionException {
     if (sensorType.equals(TrafficSensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
       throw new UnsupportedOperationException(
@@ -169,19 +176,22 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
   @Override
   public InfraredSensor createInfraredSensor(JaxRSCoordinate position,
-    List<InfraredInterferer> sensorInterfererTypes) {
+    List<InfraredInterferer> sensorInterfererTypes,
+    Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
   public InductionLoopSensor createInductionLoopSensor(JaxRSCoordinate position,
-    List<InductionLoopInterferer> sensorInterfererTypes) {
+    List<InductionLoopInterferer> sensorInterfererTypes,
+    Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
   public TopoRadarSensor createTopoRadarSensor(JaxRSCoordinate position,
-    List<TopoRadarInterferer> sensorInterfererTypes) {
+    List<TopoRadarInterferer> sensorInterfererTypes,
+    Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

@@ -185,7 +185,8 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
       param.getClockGeneratorInterval(),
       param.getOperationCenterURL(),
       param.getControlCenterURL(),
-      param.getCity().getGeoInfo().getBoundaries().getEnvelopeInternal()));
+      param.getCity().getGeoInfo().getBoundaries().getEnvelopeInternal(),
+      param.getOutput()));
     energyController.init(param);
     trafficController.init(param);
     weatherSensorController.init(param);

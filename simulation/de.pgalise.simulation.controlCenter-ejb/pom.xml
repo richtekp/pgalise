@@ -83,6 +83,13 @@
 			<classifier>jdk15</classifier>
 		</dependency>
 	 <dependency>
+	  <groupId>org.easymock</groupId>
+	  <artifactId>easymock</artifactId>
+	  <version>3.2</version>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
 	  <groupId>javax</groupId>
 	  <artifactId>javaee-api</artifactId>
 	  <scope>provided</scope>

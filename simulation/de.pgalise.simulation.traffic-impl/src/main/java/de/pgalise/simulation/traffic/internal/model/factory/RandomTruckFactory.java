@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Truck;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
@@ -25,13 +26,14 @@ public class RandomTruckFactory extends AbstractVehicleFactory implements
 
   @Override
   public Truck createTruck(Color color,
-    int trailercount
+    int trailercount,
+    Output output
   ) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public Truck createRandomTruck() {
+  public Truck createRandomTruck(Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

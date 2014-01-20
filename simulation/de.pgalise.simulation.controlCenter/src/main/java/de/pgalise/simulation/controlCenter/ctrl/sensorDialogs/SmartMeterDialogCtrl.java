@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
+import de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.staticsensor.internal.sensor.energy.SmartMeterSensor;
 import java.util.concurrent.ExecutionException;
@@ -19,33 +19,35 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class SmartMeterDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
-	private static final long serialVersionUID = 1L;
-	private int measureRadius;
 
-	/**
-	 * Creates a new instance of SmartMeterDialogCtrl
-	 */
-	public SmartMeterDialogCtrl() {
-	}
+  private static final long serialVersionUID = 1L;
+  private int measureRadius;
 
-	public void setMeasureRadius(int measureRadius) {
-		this.measureRadius = measureRadius;
-	}
+  /**
+   * Creates a new instance of SmartMeterDialogCtrl
+   */
+  public SmartMeterDialogCtrl() {
+  }
 
-	public int getMeasureRadius() {
-		return measureRadius;
-	}
+  public void setMeasureRadius(int measureRadius) {
+    this.measureRadius = measureRadius;
+  }
 
-	public void saveSensor() throws SensorException, InterruptedException, ExecutionException {
-		getSensorManagerController().createSensor(new SmartMeterSensor(getIdGenerator().
-			getNextId(),
-			getOutput(),
-			getCoordinate(),
-			getWeatherController(),
-			getEnergyController(),
-			getRandomSeedService(),
-			measureRadius,
-			null));
-	}
-	
+  public int getMeasureRadius() {
+    return measureRadius;
+  }
+
+  public void saveSensor() throws SensorException, InterruptedException, ExecutionException {
+    getSensorManagerController().createSensor(new SmartMeterSensor(
+      getIdGenerator().
+      getNextId(),
+      MainCtrlUtils.OUTPUT,
+      getCoordinate(),
+      getWeatherController(),
+      getEnergyController(),
+      getRandomSeedService(),
+      measureRadius,
+      null));
+  }
+
 }

@@ -18,19 +18,20 @@ package de.pgalise.simulation.energy.test;
 import de.pgalise.simulation.energy.EnergyConsumptionManagerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
 import de.pgalise.simulation.energy.internal.DefaultEnergyController;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.TestUtils;
@@ -214,6 +215,7 @@ public class DefaultEnergyControllerTest {
     DefaultEnergyControllerTest.weather = EasyMock.createNiceMock(
       WeatherController.class);
     EasyMock.replay(DefaultEnergyControllerTest.weather);
+    Output output = EasyMock.createNiceMock(Output.class);
 
     DefaultEnergyControllerTest.initParameter = new TrafficInitParameter(
       null,
@@ -223,7 +225,8 @@ public class DefaultEnergyControllerTest {
       interval,
       new URL("http://localhost:8080/operationCenter"),
       new URL(""),
-      null);
+      null,
+      output);
 
     city = TrafficTestUtils.createDefaultTestCityInstance(idGenerator);
     DefaultEnergyControllerTest.startParameter = new TrafficStartParameter(

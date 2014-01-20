@@ -1,14 +1,16 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import javax.ejb.EJB;
 
 /**
@@ -18,12 +20,6 @@ import javax.ejb.EJB;
  */
 public abstract class AbstractSensorFactory<S extends Sensor<?, ?>> implements
   SensorFactory {
-
-  /**
-   * Sensor output
-   */
-  @EJB
-  private TcpIpOutput sensorOutput;
 
   /**
    * Random seed service
@@ -56,15 +52,6 @@ public abstract class AbstractSensorFactory<S extends Sensor<?, ?>> implements
 
   public int getUpdateLimit() {
     return updateLimit;
-  }
-
-  protected void setSensorOutput(TcpIpOutput output) {
-    this.sensorOutput = output;
-  }
-
-  @Override
-  public TcpIpOutput getSensorOutput() {
-    return sensorOutput;
   }
 
   public void setRandomSeedService(RandomSeedService randomSeedService) {

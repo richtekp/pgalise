@@ -15,29 +15,21 @@
  */
 package de.pgalise.simulation.internal;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-import java.util.LinkedList;
-
-import org.easymock.EasyMock;
-import org.junit.Test;
-
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
@@ -48,14 +40,19 @@ import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * JUnit tests for {@link DefaultSimulationController}<br />
@@ -87,8 +84,7 @@ public class DefaultSimulationControllerTest {
   private TrafficCity city;
   @EJB
   private IdGenerator idGenerator;
-  @EJB
-  private TcpIpOutput output;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public DefaultSimulationControllerTest() {
   }
@@ -128,7 +124,8 @@ public class DefaultSimulationControllerTest {
       new TrafficFuzzyData(0,
         0.9,
         1),
-      2);
+      2,
+      output);
   }
 
   /**
@@ -151,7 +148,8 @@ public class DefaultSimulationControllerTest {
       initParameter.getClockGeneratorInterval(),
       initParameter.getControlCenterURL(),
       initParameter.getOperationCenterURL(),
-      initParameter.getCityBoundary()));
+      initParameter.getCityBoundary(),
+      output));
     weatherController.start(startParameter);
     weatherController.stop();
     weatherController.reset();

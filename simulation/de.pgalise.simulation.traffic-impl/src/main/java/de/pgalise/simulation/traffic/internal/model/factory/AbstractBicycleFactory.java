@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
@@ -51,19 +52,22 @@ public abstract class AbstractBicycleFactory extends AbstractVehicleFactory
   }
 
   @Override
-  public Bicycle createBicycle(Set<TrafficEdge> edges) {
+  public Bicycle createBicycle(Set<TrafficEdge> edges,
+    Output output) {
     return createRandomBicycle(null);
   }
 
   @Override
-  public Bicycle createRandomBicycle(Set<TrafficEdge> edges) {
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
+    Output output) {
     JaxRSCoordinate randomPosition = null;
     if (edges != null) {
       randomPosition = generateRandomPosition(edges);
     }
     GpsSensor gpsSensor = getSensorFactory().createGpsSensor(new ArrayList<>(
       Arrays.
-      asList(retrieveGpsInterferer())));
+      asList(retrieveGpsInterferer())),
+      output);
     List<Integer> wheelbases = generateWheelbases();
     BicycleData carData = new BicycleData(
       MATERIALS.get(randInt(0,
@@ -90,12 +94,14 @@ public abstract class AbstractBicycleFactory extends AbstractVehicleFactory
   }
 
   @Override
-  public Bicycle createBicycle() {
-    return createBicycle(null);
+  public Bicycle createBicycle(Output output) {
+    return createBicycle(null,
+      output);
   }
 
   @Override
-  public Bicycle createRandomBicycle() {
-    return createRandomBicycle(null);
+  public Bicycle createRandomBicycle(Output output) {
+    return createRandomBicycle(null,
+      output);
   }
 }

@@ -15,17 +15,10 @@
  */
 package de.pgalise.simulation.service;
 
-import com.vividsolutions.jts.geom.Envelope;
-import java.io.Serializable;
+import de.pgalise.simulation.sensorFramework.output.Output;
 
-import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.io.Serializable;
 import javax.faces.bean.ManagedBean;
-import javax.validation.constraints.NotNull;
 
 /**
  * The init parameters will be send to every controller on init. It contains all
@@ -37,12 +30,21 @@ import javax.validation.constraints.NotNull;
 @ManagedBean
 public class InitParameter implements Serializable {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -39986353888978216L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -39986353888978216L;
+  private Output output;
 
-	public InitParameter() {
-	}
+  public InitParameter() {
+  }
+
+  public InitParameter(Output output) {
+    this.output = output;
+  }
+
+  public Output getOutput() {
+    return output;
+  }
 
 }

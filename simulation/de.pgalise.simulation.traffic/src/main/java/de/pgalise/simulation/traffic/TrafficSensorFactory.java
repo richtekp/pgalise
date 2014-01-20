@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -26,24 +27,32 @@ import javax.ejb.Local;
 public interface TrafficSensorFactory extends SensorFactory {
 
   public InfraredSensor createInfraredSensor(JaxRSCoordinate position,
-    List<InfraredInterferer> sensorInterfererTypes);
+    List<InfraredInterferer> sensorInterfererTypes,
+    Output output);
 
   public InfraredSensor createInfraredSensor(
-    List<InfraredInterferer> sensorInterfererTypes);
+    List<InfraredInterferer> sensorInterfererTypes,
+    Output output);
 
   public InductionLoopSensor createInductionLoopSensor(JaxRSCoordinate position,
-    List<InductionLoopInterferer> sensorInterfererTypes);
+    List<InductionLoopInterferer> sensorInterfererTypes,
+    Output output);
 
   public InductionLoopSensor createInductionLoopSensor(
-    List<InductionLoopInterferer> sensorInterfererTypes);
+    List<InductionLoopInterferer> sensorInterfererTypes,
+    Output output);
 
   public TopoRadarSensor createTopoRadarSensor(JaxRSCoordinate position,
-    List<TopoRadarInterferer> sensorInterfererTypes);
+    List<TopoRadarInterferer> sensorInterfererTypes,
+    Output output);
 
   public TopoRadarSensor createTopoRadarSensor(
-    List<TopoRadarInterferer> sensorInterfererTypes);
+    List<TopoRadarInterferer> sensorInterfererTypes,
+    Output output);
 
-  public GpsSensor createGpsSensor(boolean withSensorInterferer);
+  public GpsSensor createGpsSensor(boolean withSensorInterferer,
+    Output output);
 
-  GpsSensor createGpsSensor(List<GpsInterferer> gpsInterferers);
+  GpsSensor createGpsSensor(List<GpsInterferer> gpsInterferers,
+    Output output);
 }

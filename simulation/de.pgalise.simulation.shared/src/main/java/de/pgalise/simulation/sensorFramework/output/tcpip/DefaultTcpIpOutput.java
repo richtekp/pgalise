@@ -16,7 +16,7 @@ import java.util.concurrent.Semaphore;
  *
  * @author richter
  */
-public class AbstractTcpIpOutput implements TcpIpOutput {
+public class DefaultTcpIpOutput implements TcpIpOutput {
 
   private static final long serialVersionUID = 1L;
 
@@ -66,7 +66,7 @@ public class AbstractTcpIpOutput implements TcpIpOutput {
    */
   private TcpIpOutputState transmittingState;
 
-  protected AbstractTcpIpOutput() {
+  protected DefaultTcpIpOutput() {
   }
 
   /**
@@ -81,7 +81,7 @@ public class AbstractTcpIpOutput implements TcpIpOutput {
    * @exception IllegalArgumentException if argument at least one passed
    * argument is null
    */
-  public AbstractTcpIpOutput(final InetSocketAddress address,
+  public DefaultTcpIpOutput(final InetSocketAddress address,
     TcpIpConnectionStrategy connectionStrategy)
     throws IllegalArgumentException {
     if (address == null) {
@@ -114,7 +114,7 @@ public class AbstractTcpIpOutput implements TcpIpOutput {
    * @exception IllegalArgumentException if argument at least one passed
    * argument is null
    */
-  public AbstractTcpIpOutput(String hostname,
+  public DefaultTcpIpOutput(String hostname,
     int port,
     TcpIpConnectionStrategy connectionStrategy)
     throws IllegalArgumentException {

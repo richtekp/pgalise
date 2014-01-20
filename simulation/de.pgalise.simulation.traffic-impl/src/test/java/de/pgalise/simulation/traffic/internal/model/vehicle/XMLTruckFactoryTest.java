@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -51,8 +51,7 @@ public class XMLTruckFactoryTest {
    * Path to the XML file
    */
   public static final String FILEPATH = "/trucks.xml";
-  @EJB
-  private TcpIpOutput tcpIpOutput;
+  private final Output tcpIpOutput = EasyMock.createNiceMock(Output.class);
   @EJB
   private IdGenerator idGenerator;
   @EJB

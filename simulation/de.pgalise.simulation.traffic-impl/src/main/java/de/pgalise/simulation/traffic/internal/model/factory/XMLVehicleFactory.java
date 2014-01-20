@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -128,18 +129,22 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Bicycle createBicycle(Set<TrafficEdge> edges) {
-    return this.bicycleFactory.createBicycle(edges);
+  public Bicycle createBicycle(Set<TrafficEdge> edges,
+    Output output) {
+    return this.bicycleFactory.createBicycle(edges,
+      output);
   }
 
   @Override
-  public Bus createBus() {
-    return this.busFactory.createBus();
+  public Bus createBus(Output output) {
+    return this.busFactory.createBus(output);
   }
 
   @Override
-  public Car createCar(Set<TrafficEdge> edges) {
-    return this.carFactory.createCar(edges);
+  public Car createCar(Set<TrafficEdge> edges,
+    Output output) {
+    return this.carFactory.createCar(edges,
+      output);
   }
 
   @Override
@@ -148,18 +153,22 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Bicycle createRandomBicycle(Set<TrafficEdge> edges) {
-    return this.bicycleFactory.createRandomBicycle(edges);
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
+    Output output) {
+    return this.bicycleFactory.createRandomBicycle(edges,
+      output);
   }
 
   @Override
-  public Bus createRandomBus() {
-    return this.busFactory.createRandomBus();
+  public Bus createRandomBus(Output output) {
+    return this.busFactory.createRandomBus(output);
   }
 
   @Override
-  public Car createRandomCar(Set<TrafficEdge> edges) {
-    return this.carFactory.createRandomCar(edges);
+  public Car createRandomCar(Set<TrafficEdge> edges,
+    Output output) {
+    return this.carFactory.createRandomCar(edges,
+      output);
   }
 
   @Override
@@ -168,16 +177,18 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Truck createRandomTruck() {
-    return this.truckFactory.createRandomTruck();
+  public Truck createRandomTruck(Output output) {
+    return this.truckFactory.createRandomTruck(output);
   }
 
   @Override
   public Truck createTruck(Color color,
-    int trailercount
+    int trailercount,
+    Output output
   ) {
     return this.truckFactory.createTruck(color,
-      trailercount);
+      trailercount,
+      output);
   }
 
   public BicycleFactory getBicycleFactory() {
@@ -216,23 +227,27 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   }
 
   @Override
-  public Car createRandomCar() {
-    return createRandomCar(null);
+  public Car createRandomCar(Output output) {
+    return createRandomCar(null,
+      output);
   }
 
   @Override
-  public Car createCar() {
-    return createCar(null);
+  public Car createCar(Output output) {
+    return createCar(null,
+      output);
   }
 
   @Override
-  public Bicycle createBicycle() {
-    return createBicycle(null);
+  public Bicycle createBicycle(Output output) {
+    return createBicycle(null,
+      output);
   }
 
   @Override
-  public Bicycle createRandomBicycle() {
-    return createRandomBicycle(null);
+  public Bicycle createRandomBicycle(Output output) {
+    return createRandomBicycle(null,
+      output);
   }
 
 }

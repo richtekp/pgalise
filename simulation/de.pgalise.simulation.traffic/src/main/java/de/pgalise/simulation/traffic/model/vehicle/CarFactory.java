@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import java.util.Set;
 
@@ -32,14 +33,14 @@ public interface CarFactory extends BaseVehicleFactory {
    *
    * @return
    */
-  public Car createRandomCar();
+  public Car createRandomCar(Output output);
 
   /**
    * the same as {@link #createRandomCar() }
    *
    * @return
    */
-  public Car createCar();
+  public Car createCar(Output output);
 
   /**
    * Method to create a {@link Car} with a random position on a random edge of
@@ -51,7 +52,8 @@ public interface CarFactory extends BaseVehicleFactory {
    *
    * @return created {@link Car}
    */
-  public Car createCar(Set<TrafficEdge> edges);
+  public Car createCar(Set<TrafficEdge> edges,
+    Output output);
 
   /**
    * Method to create a random {@link Car} with a random position on a random
@@ -60,5 +62,6 @@ public interface CarFactory extends BaseVehicleFactory {
    *
    * @return created {@link Car}
    */
-  Car createRandomCar(Set<TrafficEdge> edges);
+  Car createRandomCar(Set<TrafficEdge> edges,
+    Output output);
 }

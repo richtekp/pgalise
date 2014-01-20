@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
+import de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -22,23 +22,25 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class TopoRadarDialogCtrl extends BaseSensorDialogCtrl {
-	private static final long serialVersionUID = 1L;
-	@EJB
-	private TrafficGraph trafficGraph;
 
-	/**
-	 * Creates a new instance of TopoRadarDialogCtrl
-	 */
-	public TopoRadarDialogCtrl() {
-	}
+  private static final long serialVersionUID = 1L;
+  @EJB
+  private TrafficGraph trafficGraph;
 
-	public void saveSensor() throws SensorException, InterruptedException, ExecutionException {
-		TrafficNode node = trafficGraph.getNodeClosestTo(getCoordinate());
-		getSensorManagerController().createSensor(new TopoRadarSensor(getIdGenerator().
-			getNextId(),
-			getOutput(),
-			node,
-			null));
-	}
-	
+  /**
+   * Creates a new instance of TopoRadarDialogCtrl
+   */
+  public TopoRadarDialogCtrl() {
+  }
+
+  public void saveSensor() throws SensorException, InterruptedException, ExecutionException {
+    TrafficNode node = trafficGraph.getNodeClosestTo(getCoordinate());
+    getSensorManagerController().createSensor(new TopoRadarSensor(
+      getIdGenerator().
+      getNextId(),
+      MainCtrlUtils.OUTPUT,
+      node,
+      null));
+  }
+
 }

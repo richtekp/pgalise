@@ -24,9 +24,7 @@ import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.FileOutputServer;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.Server;
-import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
@@ -57,7 +55,6 @@ import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.traffic.internal.server.sensor.DefaultTrafficSensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
@@ -199,7 +196,8 @@ public class DefaultTrafficServerTest {
   /**
    * Sensor factory
    */
-  private static TrafficSensorFactory sensorFactory;
+  @EJB
+  private TrafficSensorFactory sensorFactory;
 
   /**
    * Implementation of SensorRegistry.
@@ -215,8 +213,7 @@ public class DefaultTrafficServerTest {
   private EnergyControllerLocal energyController;
   @EJB
   private RandomSeedService randomSeedService;
-  @EJB
-  private TcpIpOutput tcpIpOutput;
+  private Output tcpIpOutput = EasyMock.createNiceMock(Output.class);
   private TrafficStartParameter startParam = new TrafficStartParameter();
   private TrafficInitParameter initParameter = new TrafficInitParameter();
 
@@ -258,14 +255,6 @@ public class DefaultTrafficServerTest {
       null,
       6666);
     server.open();
-    sensorFactory = new DefaultTrafficSensorFactory(randomSeedService,
-      idGenerator,
-      weatherController,
-      energyController,
-      new AbstractTcpIpOutput("127.0.0.1",
-        6666,
-        new TcpIpKeepOpenStrategy()),
-      1);
     randomSeedService.init(SIMULATION_START.
       getTime());
   }
@@ -602,7 +591,8 @@ public class DefaultTrafficServerTest {
       trafficEventList,
       SIMULATION_START.getTime());
 
-    TrafficServerLocal<VehicleEvent> instance = (TrafficServerLocal) TestUtils.getContext().
+    TrafficServerLocal<VehicleEvent> instance = (TrafficServerLocal) TestUtils.
+      getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();

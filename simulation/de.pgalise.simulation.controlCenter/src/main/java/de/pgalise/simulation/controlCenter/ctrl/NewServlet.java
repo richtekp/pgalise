@@ -10,9 +10,6 @@ import de.pgalise.simulation.controlCenter.model.AttractionData;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpKeepOpenStrategy;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -22,9 +19,9 @@ import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
-import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.staticsensor.internal.sensor.weather.RainSensor;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhiteNoiseInterferer;
@@ -91,13 +88,10 @@ public class NewServlet extends HttpServlet {
 //						true, new po);
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
-    Output output = new AbstractTcpIpOutput("127.0.0.1",
-      22000,
-      new TcpIpKeepOpenStrategy());
     WeatherInterferer weatherInterferer = new RainsensorWhiteNoiseInterferer(
       randomSeedService);
     Sensor<?, ?> windSensor = new RainSensor(idGenerator.getNextId(),
-      output,
+      MainCtrlUtils.OUTPUT,
       city.getReferencePoint(),
       weatherController,
       weatherInterferer);

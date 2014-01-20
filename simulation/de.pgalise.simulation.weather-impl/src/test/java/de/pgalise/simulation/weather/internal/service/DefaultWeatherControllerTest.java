@@ -15,11 +15,12 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.ChangeWeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -29,8 +30,8 @@ import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherInitParameter;
-import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,6 +52,7 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -174,15 +176,18 @@ public class DefaultWeatherControllerTest {
         getNextId(),
         testEventList,
         valueTime);
+      Output output = EasyMock.createNiceMock(Output.class);
 
       WeatherInitParameter initParameter = new WeatherInitParameter(city,
         startTimestamp,
         endTimestamp,
         valueTime,
         eventTimestamp,
-        null,
-        null,
-        null);
+        null,//operationCenterURL
+        null,//controlCenterURL
+        null, //cityBoundary
+        output
+      );
       initParameter.setStartTimestamp(new Date(startTimestamp));
       initParameter.setEndTimestamp(new Date(endTimestamp));
 

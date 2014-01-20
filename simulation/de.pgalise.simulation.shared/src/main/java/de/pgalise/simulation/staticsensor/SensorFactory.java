@@ -15,14 +15,13 @@
  */
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import java.util.concurrent.ExecutionException;
-
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Factory to create sensors
@@ -34,27 +33,30 @@ import java.util.List;
  */
 public interface SensorFactory {
 
-	/**
-	 * Returns the Output of the {@link SensorFactory}
-	 *
-	 * @return the Output of the {@link SensorFactory}
-	 */
-	public TcpIpOutput getSensorOutput();
+  /**
+   * Creates a sensor of a specific type with random values (use other methods
+   * of this class to create sensors with values of specific bounds)
+   *
+   * @param sensorType
+   * @param sensorInterfererTypes
+   * @param output
+   * @return sensor Returns the created sensor
+   * @throws InterruptedException
+   * @throws ExecutionException
+   */
+  public Sensor<?, ?> createSensor(SensorType sensorType,
+    List<SensorInterfererType> sensorInterfererTypes,
+    Output output)
+    throws InterruptedException, ExecutionException;
 
-	/**
-	 * Creates a sensor of a specific type with random values (use other methods
-	 * of this class to create sensors with values of specific bounds)
-	 *
-	 * @param sensorType
-	 * @param sensorInterfererTypes
-	 * @return sensor Returns the created sensor
-	 * @throws InterruptedException
-	 * @throws ExecutionException
-	 */
-	public Sensor<?, ?> createSensor(SensorType sensorType,
-		List<SensorInterfererType> sensorInterfererTypes)
-		throws InterruptedException, ExecutionException;
-
-	public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
-		List<SensorInterfererType> sensorInterfererTypes);
+  /**
+   *
+   * @param position
+   * @param sensorInterfererTypes
+   * @param output
+   * @return
+   */
+  public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
+    List<SensorInterfererType> sensorInterfererTypes,
+    Output output);
 }

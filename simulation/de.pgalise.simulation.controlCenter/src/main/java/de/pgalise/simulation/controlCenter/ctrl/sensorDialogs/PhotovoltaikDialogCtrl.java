@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
+import de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.staticsensor.internal.sensor.energy.PhotovoltaikSensor;
 import java.util.concurrent.ExecutionException;
@@ -18,30 +19,32 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class PhotovoltaikDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
-	private static final long serialVersionUID = 1L;
 
-	private int chosenArea;
+  private static final long serialVersionUID = 1L;
 
-	public PhotovoltaikDialogCtrl() {
-	}
+  private int chosenArea;
 
-	public void setChosenArea(int chosenArea) {
-		this.chosenArea = chosenArea;
-	}
+  public PhotovoltaikDialogCtrl() {
+  }
 
-	public int getChosenArea() {
-		return chosenArea;
-	}
+  public void setChosenArea(int chosenArea) {
+    this.chosenArea = chosenArea;
+  }
 
-	public void saveSensor() throws SensorException, InterruptedException, ExecutionException {
-		getSensorManagerController().createSensor(new PhotovoltaikSensor(getIdGenerator().
-			getNextId(),
-			getOutput(),
-			getCoordinate(),
-			getWeatherController(),
-			getEnergyController(),
-			getRandomSeedService(),
-			chosenArea,
-			null));
-	}
+  public int getChosenArea() {
+    return chosenArea;
+  }
+
+  public void saveSensor() throws SensorException, InterruptedException, ExecutionException {
+    getSensorManagerController().createSensor(new PhotovoltaikSensor(
+      getIdGenerator().
+      getNextId(),
+      MainCtrlUtils.OUTPUT,
+      getCoordinate(),
+      getWeatherController(),
+      getEnergyController(),
+      getRandomSeedService(),
+      chosenArea,
+      null));
+  }
 }

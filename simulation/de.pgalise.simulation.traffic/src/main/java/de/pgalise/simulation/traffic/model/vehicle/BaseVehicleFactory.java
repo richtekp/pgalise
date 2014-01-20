@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 
@@ -15,9 +14,7 @@ import de.pgalise.simulation.service.RandomSeedService;
  */
 public interface BaseVehicleFactory {
 
-	IdGenerator getIdGenerator();
+  IdGenerator getIdGenerator();
 
-	RandomSeedService getRandomSeedService();
-
-	TcpIpOutput getTcpIpOutput();
+  RandomSeedService getRandomSeedService();
 }

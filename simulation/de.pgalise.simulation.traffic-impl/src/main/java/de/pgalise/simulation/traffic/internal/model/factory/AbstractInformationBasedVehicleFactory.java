@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.VehicleInformation;
@@ -48,28 +49,32 @@ public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFacto
 
   @Override
   public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
-    Set<TrafficEdge> edges
+    Set<TrafficEdge> edges,
+    Output output
   ) {
     GpsSensor gpsSensor = sensorFactory.createGpsSensor(new ArrayList<>(
       Arrays.
-      asList(retrieveGpsInterferer())));
+      asList(retrieveGpsInterferer())),
+      output);
     if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BIKE)) {
-      return bicycleFactory.createBicycle();
+      return bicycleFactory.createBicycle(output);
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BUS)) {
-      return busFactory.createBus();
+      return busFactory.createBus(output);
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.CAR)) {
-      return carFactory.createCar(edges);
+      return carFactory.createCar(edges,
+        output);
     } else if (vehicleInformation.getVehicleType().equals(
       VehicleTypeEnum.MOTORCYCLE)) {
       motorcycleFactory.createRandomMotorcycle();
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.TRUCK)) {
-      return truckFactory.createRandomTruck();
+      return truckFactory.createRandomTruck(output);
     }
     throw new IllegalArgumentException();
   }
 
   @Override
-  public Vehicle<?> createVehicle(VehicleInformation vehicleInformation) {
+  public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
+    Output output) {
     return createVehicle(vehicleInformation,
       null);
   }

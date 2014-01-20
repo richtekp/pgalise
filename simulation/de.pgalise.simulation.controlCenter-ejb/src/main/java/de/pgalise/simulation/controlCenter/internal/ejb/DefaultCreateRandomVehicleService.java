@@ -18,7 +18,8 @@ package de.pgalise.simulation.controlCenter.internal.ejb;
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
@@ -49,137 +50,140 @@ import javax.ejb.Stateful;
  */
 @Stateful
 public class DefaultCreateRandomVehicleService implements
-	CreateRandomVehicleService {
+  CreateRandomVehicleService {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private SensorInterfererService sensorInterfererService;
-	@EJB
-	private TrafficServerLocal<?> trafficServerLocal;
-	@EJB
-	private TcpIpOutput output;
-	@EJB
-	private TrafficSensorFactory sensorFactory;
+  private SensorInterfererService sensorInterfererService;
+  @EJB
+  private TrafficServerLocal<?> trafficServerLocal;
+  private Output output;
+  @EJB
+  private TrafficSensorFactory sensorFactory;
 
-	public DefaultCreateRandomVehicleService() {
-	}
+  public DefaultCreateRandomVehicleService() {
+  }
 
-	/**
-	 * Contructor
-	 *
-	 * @param sensorInterfererService
-	 * @param trafficServerLocal
-	 */
-	public DefaultCreateRandomVehicleService(
-		SensorInterfererService sensorInterfererService,
-		TrafficServerLocal<?> trafficServerLocal) {
-		this.sensorInterfererService = sensorInterfererService;
-		this.trafficServerLocal = trafficServerLocal;
-	}
+  /**
+   * Contructor
+   *
+   * @param sensorInterfererService
+   * @param trafficServerLocal
+   */
+  public DefaultCreateRandomVehicleService(
+    SensorInterfererService sensorInterfererService,
+    TrafficServerLocal<?> trafficServerLocal) {
+    this.sensorInterfererService = sensorInterfererService;
+    this.trafficServerLocal = trafficServerLocal;
+  }
 
-	@Override
-	public TrafficEvent<?> createRandomDynamicSensors(
-		RandomVehicleBundle randomDynamicSensorBundle,
-		RandomSeedService randomSeedService,
-		boolean withSensorInterferer) {
+  public void init(InitParameter initParameter) {
+    this.output = initParameter.getOutput();
+  }
 
-		Random random = new Random(randomSeedService.getSeed(
-			DefaultCreateRandomVehicleService.class.getName()));
-		List<CreateRandomVehicleData> createRandomVehicleDataList = new LinkedList<>();
+  @Override
+  public TrafficEvent<?> createRandomDynamicSensors(
+    RandomVehicleBundle randomDynamicSensorBundle,
+    RandomSeedService randomSeedService,
+    boolean withSensorInterferer) {
 
-		/* create cars: */
-		for (int i = 0; i < randomDynamicSensorBundle.getRandomCarAmount(); i++) {
-			boolean gpsActivated = false;
+    Random random = new Random(randomSeedService.getSeed(
+      DefaultCreateRandomVehicleService.class.getName()));
+    List<CreateRandomVehicleData> createRandomVehicleDataList = new LinkedList<>();
 
-			GpsSensor sensorID = null;
-			if (i < randomDynamicSensorBundle.getRandomCarAmount()
-				* randomDynamicSensorBundle.getGpsCarRatio()) {
-				gpsActivated = true;
-				sensorID = sensorFactory.createGpsSensor(
-					withSensorInterferer);
-				NavigationNode sensorNode = null;
-			}
+    /* create cars: */
+    for (int i = 0; i < randomDynamicSensorBundle.getRandomCarAmount(); i++) {
+      boolean gpsActivated = false;
 
-			createRandomVehicleDataList.add(new CreateRandomCarData(
-				sensorID,
-				new VehicleInformation(gpsActivated,
-					VehicleTypeEnum.CAR,
-					VehicleModelEnum.CAR_RANDOM,
-					null,
-					null)));
-		}
+      GpsSensor sensorID = null;
+      if (i < randomDynamicSensorBundle.getRandomCarAmount()
+        * randomDynamicSensorBundle.getGpsCarRatio()) {
+        gpsActivated = true;
+        sensorID = sensorFactory.createGpsSensor(
+          withSensorInterferer);
+        NavigationNode sensorNode = null;
+      }
 
-		/* create bikes: */
-		for (int i = 0; i < randomDynamicSensorBundle.getRandomBikeAmount(); i++) {
-			boolean gpsActivated = false;
+      createRandomVehicleDataList.add(new CreateRandomCarData(
+        sensorID,
+        new VehicleInformation(gpsActivated,
+          VehicleTypeEnum.CAR,
+          VehicleModelEnum.CAR_RANDOM,
+          null,
+          null)));
+    }
 
-			GpsSensor sensorID = null;
-			if (i < randomDynamicSensorBundle.getRandomBikeAmount()
-				* randomDynamicSensorBundle.getGpsBikeRatio()) {
-				gpsActivated = true;
-				sensorID = sensorFactory.createGpsSensor(
-					withSensorInterferer);
-				NavigationNode sensorNode = null;
-			}
+    /* create bikes: */
+    for (int i = 0; i < randomDynamicSensorBundle.getRandomBikeAmount(); i++) {
+      boolean gpsActivated = false;
 
-			createRandomVehicleDataList.add(new CreateRandomBicycleData(
-				sensorID,
-				new VehicleInformation(gpsActivated,
-					VehicleTypeEnum.BIKE,
-					VehicleModelEnum.BIKE_RANDOM,
-					null,
-					null)));
-		}
+      GpsSensor sensorID = null;
+      if (i < randomDynamicSensorBundle.getRandomBikeAmount()
+        * randomDynamicSensorBundle.getGpsBikeRatio()) {
+        gpsActivated = true;
+        sensorID = sensorFactory.createGpsSensor(
+          withSensorInterferer);
+        NavigationNode sensorNode = null;
+      }
 
-		/* create trucks: */
-		for (int i = 0; i < randomDynamicSensorBundle.getRandomTruckAmount(); i++) {
-			boolean gpsActivated = false;
+      createRandomVehicleDataList.add(new CreateRandomBicycleData(
+        sensorID,
+        new VehicleInformation(gpsActivated,
+          VehicleTypeEnum.BIKE,
+          VehicleModelEnum.BIKE_RANDOM,
+          null,
+          null)));
+    }
 
-			GpsSensor sensorID = null;
-			if (i < randomDynamicSensorBundle.getRandomTruckAmount()
-				* randomDynamicSensorBundle.getGpsTruckRatio()) {
-				gpsActivated = true;
-				sensorID = sensorFactory.createGpsSensor(
-					withSensorInterferer);
-				NavigationNode sensorNode = null;
-			}
+    /* create trucks: */
+    for (int i = 0; i < randomDynamicSensorBundle.getRandomTruckAmount(); i++) {
+      boolean gpsActivated = false;
 
-			createRandomVehicleDataList.add(new CreateRandomTruckData(
-				sensorID,
-				new VehicleInformation(gpsActivated,
-					VehicleTypeEnum.TRUCK,
-					VehicleModelEnum.TRUCK_RANDOM,
-					null,
-					null)));
-		}
+      GpsSensor sensorID = null;
+      if (i < randomDynamicSensorBundle.getRandomTruckAmount()
+        * randomDynamicSensorBundle.getGpsTruckRatio()) {
+        gpsActivated = true;
+        sensorID = sensorFactory.createGpsSensor(
+          withSensorInterferer);
+        NavigationNode sensorNode = null;
+      }
 
-		/* create motorcycle: */
-		for (int i = 0; i < randomDynamicSensorBundle.getRandomMotorcycleAmount();
-			i++) {
-			boolean gpsActivated = false;
+      createRandomVehicleDataList.add(new CreateRandomTruckData(
+        sensorID,
+        new VehicleInformation(gpsActivated,
+          VehicleTypeEnum.TRUCK,
+          VehicleModelEnum.TRUCK_RANDOM,
+          null,
+          null)));
+    }
 
-			GpsSensor sensorID = null;
-			if (i < randomDynamicSensorBundle.getRandomMotorcycleAmount()
-				* randomDynamicSensorBundle.getGpsMotorcycleRatio()) {
-				gpsActivated = true;
-				sensorID = sensorFactory.createGpsSensor(
-					withSensorInterferer);
-				NavigationNode sensorNode = null;
-			}
+    /* create motorcycle: */
+    for (int i = 0; i < randomDynamicSensorBundle.getRandomMotorcycleAmount();
+      i++) {
+      boolean gpsActivated = false;
 
-			createRandomVehicleDataList.add(new CreateRandomMotorcycleData(
-				sensorID,
-				new VehicleInformation(gpsActivated,
-					VehicleTypeEnum.MOTORCYCLE,
-					VehicleModelEnum.MOTORCYCLE_RANDOM,
-					null,
-					null)));
-		}
+      GpsSensor sensorID = null;
+      if (i < randomDynamicSensorBundle.getRandomMotorcycleAmount()
+        * randomDynamicSensorBundle.getGpsMotorcycleRatio()) {
+        gpsActivated = true;
+        sensorID = sensorFactory.createGpsSensor(
+          withSensorInterferer);
+        NavigationNode sensorNode = null;
+      }
 
-		return new CreateRandomVehiclesEvent(trafficServerLocal,
-			System.
-			currentTimeMillis(),
-			0,
-			createRandomVehicleDataList);
-	}
+      createRandomVehicleDataList.add(new CreateRandomMotorcycleData(
+        sensorID,
+        new VehicleInformation(gpsActivated,
+          VehicleTypeEnum.MOTORCYCLE,
+          VehicleModelEnum.MOTORCYCLE_RANDOM,
+          null,
+          null)));
+    }
+
+    return new CreateRandomVehiclesEvent(trafficServerLocal,
+      System.
+      currentTimeMillis(),
+      0,
+      createRandomVehicleDataList);
+  }
 }

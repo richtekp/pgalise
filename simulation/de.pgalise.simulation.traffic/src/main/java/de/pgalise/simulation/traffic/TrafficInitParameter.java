@@ -7,6 +7,7 @@
  */
 package de.pgalise.simulation.traffic;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
@@ -53,7 +54,8 @@ public class TrafficInitParameter extends WeatherInitParameter<TrafficCity> {
     long clockGeneratorInterval,
     URL operationCenterURL,
     URL controlCenterURL,
-    TrafficFuzzyData trafficFuzzyData) {
+    TrafficFuzzyData trafficFuzzyData,
+    Output output) {
     super(city,
       startTimestamp,
       endTimestamp,
@@ -61,7 +63,8 @@ public class TrafficInitParameter extends WeatherInitParameter<TrafficCity> {
       clockGeneratorInterval,
       operationCenterURL,
       controlCenterURL,
-      city.getGeoInfo().getBoundaries().getEnvelopeInternal());
+      city.getGeoInfo().getBoundaries().getEnvelopeInternal(),
+      output);
     this.trafficFuzzyData = trafficFuzzyData;
   }
 
@@ -74,7 +77,8 @@ public class TrafficInitParameter extends WeatherInitParameter<TrafficCity> {
     URL operationCenterURL,
     URL controlCenterURL,
     TrafficFuzzyData trafficFuzzyData,
-    int trafficServerCount) {
+    int trafficServerCount,
+    Output output) {
     this(city,
       startTimestamp,
       endTimestamp,
@@ -82,7 +86,8 @@ public class TrafficInitParameter extends WeatherInitParameter<TrafficCity> {
       clockGeneratorInterval,
       operationCenterURL,
       controlCenterURL,
-      trafficFuzzyData);
+      trafficFuzzyData,
+      output);
     this.TrafficServerCount = trafficServerCount;
   }
 

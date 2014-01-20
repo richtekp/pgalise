@@ -31,60 +31,61 @@ import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
  * Sensor for the traffic lights
  *
  * @author Marcus
+ * @param <D>
  */
 public class TrafficLightSensor<D extends VehicleData> extends AbstractStaticTrafficSensor<TrafficLightSensorData> {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Traffic light
-	 */
-	private final TrafficLight trafficLight;
+  /**
+   * Traffic light
+   */
+  private final TrafficLight trafficLight;
 
-	/**
-	 * Constructor
-	 *
-	 * @param output Sensor output
-	 * @param node
-	 * @param sensorData
-	 * @param trafficLight Traffic light
-	 * @throws IllegalArgumentException Thrown if no traffic light is null
-	 */
-	public TrafficLightSensor(Long id,
-		Output output,
-		TrafficNode node,
-		TrafficLight trafficLight)
-		throws IllegalArgumentException {
-		super(id,
-			output,
-			node,
-			new TrafficLightSensorData());
-		if (trafficLight == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"trafficLight"));
-		}
-		this.trafficLight = trafficLight;
-	}
+  /**
+   * Constructor
+   *
+   * @param id
+   * @param output Sensor output
+   * @param node
+   * @param trafficLight Traffic light
+   * @throws IllegalArgumentException Thrown if no traffic light is null
+   */
+  public TrafficLightSensor(Long id,
+    Output output,
+    TrafficNode node,
+    TrafficLight trafficLight)
+    throws IllegalArgumentException {
+    super(id,
+      output,
+      node,
+      new TrafficLightSensorData());
+    if (trafficLight == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "trafficLight"));
+    }
+    this.trafficLight = trafficLight;
+  }
 
-	@Override
-	public void transmitUsageData(EventList<TrafficEvent<?>> eventList) {
-		// // Send data
-		this.getOutput().transmitDouble(this.trafficLight.getAngle1());
-		this.getOutput().transmitDouble(this.trafficLight.getAngle2());
-		this.getOutput().transmitByte((byte) this.trafficLight.getState().
-			getStateId()); // stateId
-		this.getOutput().transmitLong(this.trafficLight.getId());
-		this.getOutput().transmitShort((short) 0);
-		this.getOutput().transmitShort((short) 0);
-	}
+  @Override
+  public void transmitUsageData(EventList<TrafficEvent<?>> eventList) {
+    // // Send data
+    this.getOutput().transmitDouble(this.trafficLight.getAngle1());
+    this.getOutput().transmitDouble(this.trafficLight.getAngle2());
+    this.getOutput().transmitByte((byte) this.trafficLight.getState().
+      getStateId()); // stateId
+    this.getOutput().transmitLong(this.trafficLight.getId());
+    this.getOutput().transmitShort((short) 0);
+    this.getOutput().transmitShort((short) 0);
+  }
 
-	@Override
-	public void vehicleOnNodeRegistered(Vehicle<?> vehicle) {
-		// nothing to do here
-	}
+  @Override
+  public void vehicleOnNodeRegistered(Vehicle<?> vehicle) {
+    // nothing to do here
+  }
 
-	@Override
-	public SensorType getSensorType() {
-		return TrafficSensorTypeEnum.TRAFFICLIGHT_SENSOR;
-	}
+  @Override
+  public SensorType getSensorType() {
+    return TrafficSensorTypeEnum.TRAFFICLIGHT_SENSOR;
+  }
 }

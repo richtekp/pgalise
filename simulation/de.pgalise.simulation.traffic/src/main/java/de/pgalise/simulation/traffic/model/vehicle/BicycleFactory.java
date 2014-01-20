@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import java.util.Set;
 
@@ -30,19 +31,23 @@ public interface BicycleFactory extends BaseVehicleFactory {
    * Method to create a {@link Bike} with the given typeId.All position related
    * data is <code>null</code>
    *
+   * @param output
    * @return created {@link Bike}
    */
-  public Bicycle createBicycle();
+  public Bicycle createBicycle(Output output);
 
   /**
    * Method to create a random {@link Bike}.All position related data is
    * <code>null</code>
    *
+   * @param output
    * @return created {@link Bike}
    */
-  public Bicycle createRandomBicycle();
+  public Bicycle createRandomBicycle(Output output);
 
-  public Bicycle createBicycle(Set<TrafficEdge> edges);
+  public Bicycle createBicycle(Set<TrafficEdge> edges,
+    Output output);
 
-  public Bicycle createRandomBicycle(Set<TrafficEdge> edges);
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
+    Output output);
 }

@@ -15,13 +15,14 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.entity.BusData;
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultBus;
+import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.BusDataList;
 import java.io.InputStream;
@@ -85,7 +86,7 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
   }
 
   @Override
-  public Bus createRandomBus() {
+  public Bus createRandomBus(Output output) {
     BusData data = getRandomVehicleData();
     return new DefaultBus(getIdGenerator().getNextId(),
       data,
@@ -93,8 +94,8 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
   }
 
   @Override
-  public Bus createBus() {
-    return createRandomBus();
+  public Bus createBus(Output output) {
+    return createRandomBus(output);
   }
 
   @Override

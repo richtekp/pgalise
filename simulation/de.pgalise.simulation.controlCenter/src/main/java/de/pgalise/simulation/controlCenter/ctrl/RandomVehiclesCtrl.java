@@ -6,7 +6,6 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.SimulationControllerLocal;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
@@ -46,8 +45,6 @@ public class RandomVehiclesCtrl {
   private IdGenerator idGenerator;
   @EJB
   private TrafficServerLocal trafficServerLocal;
-  @EJB
-  private TcpIpOutput output;
   @EJB
   private SimulationControllerLocal simulationController;
   @EJB
@@ -205,7 +202,7 @@ public class RandomVehiclesCtrl {
       CreateRandomVehicleData createRandomVehicleData = new CreateRandomBicycleData(
         new GpsSensor(idGenerator.
           getNextId(),
-          output,
+          MainCtrlUtils.OUTPUT,
           null,
           gpsInterferer),
         new VehicleInformation(true,
@@ -220,7 +217,7 @@ public class RandomVehiclesCtrl {
       CreateRandomVehicleData createRandomVehicleData = new CreateRandomTruckData(
         new GpsSensor(idGenerator.
           getNextId(),
-          output,
+          MainCtrlUtils.OUTPUT,
           null,
           gpsInterferer),
         new VehicleInformation(true,
@@ -235,7 +232,7 @@ public class RandomVehiclesCtrl {
       CreateRandomVehicleData createRandomVehicleData = new CreateRandomMotorcycleData(
         new GpsSensor(idGenerator.
           getNextId(),
-          output,
+          MainCtrlUtils.OUTPUT,
           null,
           gpsInterferer),
         new VehicleInformation(true,
@@ -250,7 +247,7 @@ public class RandomVehiclesCtrl {
       CreateRandomVehicleData createRandomVehicleData = new CreateRandomCarData(
         new GpsSensor(idGenerator.
           getNextId(),
-          output,
+          MainCtrlUtils.OUTPUT,
           null,
           gpsInterferer),
         new VehicleInformation(true,

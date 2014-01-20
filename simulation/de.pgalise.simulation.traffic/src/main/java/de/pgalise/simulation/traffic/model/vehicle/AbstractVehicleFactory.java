@@ -5,7 +5,6 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
@@ -37,8 +36,6 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
   private IdGenerator idGenerator;
   @EJB
   private RandomSeedService randomSeedService;
-  @EJB
-  private TcpIpOutput output;
   @EJB
   private TrafficSensorFactory sensorFactory;
 
@@ -194,11 +191,6 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
    */
   public GpsInterferer retrieveGpsInterferer() {
     return new GpsClockInterferer(randomSeedService);
-  }
-
-  @Override
-  public TcpIpOutput getTcpIpOutput() {
-    return output;
   }
 
   /**

@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
+import de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.staticsensor.internal.sensor.energy.WindPowerSensor;
@@ -20,44 +20,46 @@ import javax.faces.bean.RequestScoped;
 @ManagedBean
 @RequestScoped
 public class WindPowerSensorDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
-	private static final long serialVersionUID = 1L;
-	private int rotorLength;
-	private float activityValue;
-	@EJB
-	private EnergyInterferer energyInterferer;
 
-	/**
-	 * Creates a new instance of WindPowerSensorDialogCtrl
-	 */
-	public WindPowerSensorDialogCtrl() {
-	}
+  private static final long serialVersionUID = 1L;
+  private int rotorLength;
+  private float activityValue;
+  @EJB
+  private EnergyInterferer energyInterferer;
 
-	public void setActivityValue(float activityValue) {
-		this.activityValue = activityValue;
-	}
+  /**
+   * Creates a new instance of WindPowerSensorDialogCtrl
+   */
+  public WindPowerSensorDialogCtrl() {
+  }
 
-	public float getActivityValue() {
-		return activityValue;
-	}
+  public void setActivityValue(float activityValue) {
+    this.activityValue = activityValue;
+  }
 
-	public void setRotorLength(int rotorLength) {
-		this.rotorLength = rotorLength;
-	}
+  public float getActivityValue() {
+    return activityValue;
+  }
 
-	public int getRotorLength() {
-		return rotorLength;
-	}
-	
-	public void saveSensor() throws SensorException {
-		getSensorManagerController().createSensor(new WindPowerSensor(getIdGenerator().getNextId(),
-				getOutput(),
-				getCoordinate(),
-				getWeatherController(),
-				getEnergyController(),
-				getRandomSeedService(),
-				rotorLength,
-				activityValue,
-				energyInterferer));
-	}
-	
+  public void setRotorLength(int rotorLength) {
+    this.rotorLength = rotorLength;
+  }
+
+  public int getRotorLength() {
+    return rotorLength;
+  }
+
+  public void saveSensor() throws SensorException {
+    getSensorManagerController().createSensor(new WindPowerSensor(
+      getIdGenerator().getNextId(),
+      MainCtrlUtils.OUTPUT,
+      getCoordinate(),
+      getWeatherController(),
+      getEnergyController(),
+      getRandomSeedService(),
+      rotorLength,
+      activityValue,
+      energyInterferer));
+  }
+
 }

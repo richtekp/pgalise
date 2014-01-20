@@ -21,6 +21,7 @@ import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.event.DefaultEventInitiator;
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
@@ -84,6 +85,7 @@ public class DefaultEventInitiatorTest {
   private static SimulationController simulationController;
   @EJB
   private IdGenerator idGenerator;
+  private final Output output = EasyMock.createNiceMock(Output.class);
 
   public DefaultEventInitiatorTest() {
   }
@@ -118,7 +120,8 @@ public class DefaultEventInitiatorTest {
       CLOCK_GENERATOR_INTERVAL,
       new URL("http://localhost:8080/operationCenter"),
       new URL("http://localhost:8080/controlCenter"),
-      null);
+      null,
+      output);
 
     startParameter = new StartParameter<>(true,
       null,

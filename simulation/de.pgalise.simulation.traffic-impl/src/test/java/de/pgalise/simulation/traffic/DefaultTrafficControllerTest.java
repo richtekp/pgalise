@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic;
 
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
@@ -35,6 +35,7 @@ import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
 import static org.easymock.EasyMock.createNiceMock;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -54,8 +55,7 @@ public class DefaultTrafficControllerTest {
 
   @EJB
   private IdGenerator idGenerator;
-  @EJB
-  private TcpIpOutput tcpIpOutput;
+  private final Output tcpIpOutput = EasyMock.createNiceMock(Output.class);
 
   public DefaultTrafficControllerTest() {
   }

@@ -5,6 +5,7 @@
 package de.pgalise.simulation.service;
 
 import com.vividsolutions.jts.geom.Envelope;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
@@ -100,8 +101,9 @@ public class SimulationInitParameter extends InitParameter {
     long clockGeneratorInterval,
     URL operationCenterURL,
     URL controlCenterURL,
-    Envelope cityBoundary) {
-    super();
+    Envelope cityBoundary,
+    Output output) {
+    super(output);
     this.startTimestamp = new Date(startTimestamp);
     this.endTimestamp = new Date(endTimestamp);
     if (this.startTimestamp.after(this.endTimestamp)) {

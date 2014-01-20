@@ -15,15 +15,16 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
+import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.CarDataList;
 import java.awt.Color;
@@ -47,12 +48,15 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
   CarFactory {
 
   @Override
-  public Car createCar(Set<TrafficEdge> edges) {
-    return createRandomCar(edges);
+  public Car createCar(Set<TrafficEdge> edges,
+    Output output) {
+    return createRandomCar(edges,
+      output);
   }
 
   @Override
-  public Car createRandomCar(Set<TrafficEdge> edges) {
+  public Car createRandomCar(Set<TrafficEdge> edges,
+    Output output) {
     CarData data = getRandomVehicleData();
     JaxRSCoordinate position = null;
     if (edges != null) {
@@ -210,13 +214,15 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
   }
 
   @Override
-  public Car createRandomCar() {
-    return createRandomCar(null);
+  public Car createRandomCar(Output output) {
+    return createRandomCar(null,
+      output);
   }
 
   @Override
-  public Car createCar() {
-    return createCar(null);
+  public Car createCar(Output output) {
+    return createCar(null,
+      output);
   }
 
 }

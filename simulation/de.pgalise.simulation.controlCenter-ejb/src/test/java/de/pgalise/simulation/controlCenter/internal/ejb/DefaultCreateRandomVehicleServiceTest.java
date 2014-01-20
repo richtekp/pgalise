@@ -15,13 +15,13 @@
  */
 package de.pgalise.simulation.controlCenter.internal.ejb;
 
+import de.pgalise.simulation.controlCenter.internal.ejb.DefaultCreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.internal.util.service.SensorInterfererService;
-import de.pgalise.simulation.controlCenter.internal.ejb.DefaultCreateRandomVehicleService;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
@@ -41,6 +41,7 @@ import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.naming.NamingException;
+import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,8 +62,7 @@ public class DefaultCreateRandomVehicleServiceTest {
   private RandomSeedService randomSeedService;
   @EJB
   private CreateRandomVehicleService testClass;
-  @EJB
-  private TcpIpOutput tcpIpOutput;
+  private final Output tcpIpOutput = EasyMock.createNiceMock(Output.class);
 
   public DefaultCreateRandomVehicleServiceTest() {
   }

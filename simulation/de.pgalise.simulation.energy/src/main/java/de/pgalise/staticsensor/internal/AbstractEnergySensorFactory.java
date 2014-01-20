@@ -15,25 +15,21 @@
  */
 package de.pgalise.staticsensor.internal;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergySensorFactory;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
+import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
-import de.pgalise.simulation.energy.sensor.EnergyInterferer;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
-import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorTypeEnum;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
@@ -87,6 +83,9 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherNoInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import javax.ejb.EJB;
 
 /**
@@ -121,10 +120,11 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     IdGenerator idGenerator,
     WeatherController wctrl,
     EnergyControllerLocal ectrl,
-    TcpIpOutput sensorOutput,
+    Output sensorOutput,
     int updateLimit) {
     super(
-      updateLimit);
+      updateLimit,
+      sensorOutput);
     this.energyController = ectrl;
     this.weatherController = wctrl;
   }
@@ -186,7 +186,8 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
   @Override
   public Sensor<?, ?> createSensor(SensorType sensorType,
-    List<SensorInterfererType> sensorInterfererTypes)
+    List<SensorInterfererType> sensorInterfererTypes,
+    Output output)
     throws InterruptedException, ExecutionException {
     if (sensorType.equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
       JaxRSCoordinate position = createRandomPositionEnergySensor();
@@ -484,7 +485,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorInterfererType.equals(
       SensorInterfererType.HYGROMETER_WHITE_NOISE_INTERFERER)) {
       return new HygrometerWhiteNoiseInterferer(this.getRandomSeedService());
-			// case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
+      // case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
       // return new InductionLoopWhiteNoiseInterferer(this.getRandomSeedService());
       // case INFRARED_WHITE_NOISE_INTERFERER:
       // return new InfraredWhiteNoiseInterferer(this.getRandomSeedService());
@@ -520,7 +521,8 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
   @Override
   public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
-    List<SensorInterfererType> sensorInterfererTypes) {
+    List<SensorInterfererType> sensorInterfererTypes,
+    Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

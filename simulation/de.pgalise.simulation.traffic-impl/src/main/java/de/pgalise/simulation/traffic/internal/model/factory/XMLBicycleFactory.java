@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -77,7 +78,7 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createRandomBicycle() {
+  public Bicycle createRandomBicycle(Output output) {
     BicycleData data = getRandomVehicleData();
     return new DefaultBicycle(getIdGenerator().getNextId(),
       data,
@@ -85,8 +86,8 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createBicycle() {
-    return createRandomBicycle();
+  public Bicycle createBicycle(Output output) {
+    return createRandomBicycle(output);
   }
 
   /**
@@ -176,8 +177,9 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createBicycle(Set<TrafficEdge> edges) {
-    Bicycle retValue = createBicycle();
+  public Bicycle createBicycle(Set<TrafficEdge> edges,
+    Output output) {
+    Bicycle retValue = createBicycle(output);
     if (edges != null) {
       JaxRSCoordinate position = generateRandomPosition(edges);
       retValue.setPosition(position);
@@ -186,8 +188,9 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createRandomBicycle(Set<TrafficEdge> edges) {
-    Bicycle retValue = createRandomBicycle();
+  public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
+    Output output) {
+    Bicycle retValue = createRandomBicycle(output);
     if (edges != null) {
       JaxRSCoordinate position = generateRandomPosition(edges);
       retValue.setPosition(position);

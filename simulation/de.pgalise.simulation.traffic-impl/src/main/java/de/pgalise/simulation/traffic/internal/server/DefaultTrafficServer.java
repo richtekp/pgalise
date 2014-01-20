@@ -16,8 +16,7 @@
 package de.pgalise.simulation.traffic.internal.server;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.InitParameter;
@@ -27,6 +26,7 @@ import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.traffic.VehicleType;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -87,8 +87,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Stateful;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,8 +102,6 @@ import org.slf4j.LoggerFactory;
  * @author Lena
  * @version 1.0 (Feb 17, 2013)
  */
-@Stateful
-@Local(TrafficServerLocal.class)
 public class DefaultTrafficServer extends AbstractController<
 	VehicleEvent, TrafficStartParameter, TrafficInitParameter>
   implements
@@ -114,6 +110,7 @@ public class DefaultTrafficServer extends AbstractController<
 
   private static final long serialVersionUID = 1L;
   private final static String XML_FACTORY_FILE_PATH = "/defaultvehicles.xml";
+  private Output output;
 
   @Override
   public Set<TrafficSensor> getAllManagedSensors() {
@@ -208,7 +205,7 @@ public class DefaultTrafficServer extends AbstractController<
   /**
    * Sensor registry
    */
-  private Set<StaticTrafficSensor> sensorRegistry;
+  private Set<StaticTrafficSensor> sensorRegistry = new HashSet<>();
 
   /**
    * Sensor factory
@@ -262,7 +259,7 @@ public class DefaultTrafficServer extends AbstractController<
   /**
    * List of all known traffic servers
    */
-  private Set<TrafficServerLocal<VehicleEvent>> trafficServers;
+  private Map<Geometry, TrafficServerLocal<VehicleEvent>> otherTrafficServers;
 
   /**
    * All known other city zones
@@ -284,82 +281,89 @@ public class DefaultTrafficServer extends AbstractController<
    * Update interval of the simulation for the traffic servers
    */
   private long updateIntervall;
-
   private Map<Long, VehicleEvent> eventForVehicle;
-
   @EJB
   private TrafficGovernor fuzzyTrafficGovernor;
-
   @EJB
   private VehicleAmountManager vehicleFuzzyManager;
-
   /**
    * All listed road barriers
    */
-  private Set<RoadBarrier> listedRoadBarriers;
-
+  private Set<RoadBarrier> listedRoadBarriers = new HashSet<>();
   @EJB
   private IdGenerator idGenerator;
-
   private Set<Vehicle<?>> managedVehicles = new HashSet<>();
-
-  @EJB
-  private TcpIpOutput tcpIpOutput;
+  private Output tcpIpOutput;
 
   /**
    * Default constructor
    */
   public DefaultTrafficServer() {
+    this.cityZones = new ArrayList<>();
+    this.otherTrafficServers = new HashMap<>();
+    this.receivedVehicles = new ArrayList<>();
+    this.listedRoadBarriers = new HashSet<>();
+    this.eventForVehicle = new HashMap<>();
+    this.itemsToScheduleAfterAttractionReached = new ArrayList<>();
+    this.itemsToScheduleAfterFuzzy = new ArrayList<>();
+    this.itemsToRemoveAfterFuzzy = new ArrayList<>();
+
+    Scheduler s = SortedListScheduler.createInstance().getScheduler();
+    Scheduler s2 = SortedListScheduler.createInstance().getScheduler();
+
+    this.scheduler = new SchedulerComposite();
+    this.scheduler.addScheduler(VehicleTypeEnum.MOTORIZED_VEHICLES,
+      s);
+    this.scheduler.addScheduler(EnumSet.of(VehicleTypeEnum.BIKE),
+      s2);
+    this.scheduler.changeModus(ScheduleModus.WRITE);
+    s.addScheduleHandler(this);
+    s2.addScheduleHandler(this);
   }
 
+  /**
+   * The initial list of road barriers is empty
+   *
+   * @param randomSeedService
+   * @param trafficGraphExtensions
+   * @param vehicleFactory
+   * @param sensorFactory
+   * @param sensorController
+   * @param routeConstructor
+   * @param cityZone
+   * @param otherTrafficServers
+   * @param updateIntervall
+   * @param fuzzyTrafficGovernor
+   * @param vehicleFuzzyManager
+   * @param listedRoadBarriers
+   * @param idGenerator
+   * @param tcpIpOutput
+   */
   public DefaultTrafficServer(RandomSeedService randomSeedService,
     TrafficGraphExtensions trafficGraphExtensions,
     VehicleFactory vehicleFactory,
-    VehicleEventHandlerManager vehicleEventHandlerManager,
-    Set<StaticTrafficSensor> sensorRegistry,
     TrafficSensorFactory sensorFactory,
-    ConfigReader configReader,
-    SchedulerComposite scheduler,
-    List<ScheduleItem> itemsToScheduleAfterAttractionReached,
-    List<ScheduleItem> itemsToScheduleAfterFuzzy,
-    List<Vehicle<?>> itemsToRemoveAfterFuzzy,
     TrafficSensorController sensorController,
     RouteConstructor routeConstructor,
     Geometry cityZone,
-    Set<TrafficServerLocal<VehicleEvent>> trafficServers,
-    List<Geometry> cityZones,
-    List<ReceivedVehicle> receivedVehicles,
-    long currentTime,
+    Map<Geometry, TrafficServerLocal<VehicleEvent>> otherTrafficServers,
     long updateIntervall,
-    Map<Long, VehicleEvent> eventForVehicle,
     TrafficGovernor fuzzyTrafficGovernor,
     VehicleAmountManager vehicleFuzzyManager,
-    Set<RoadBarrier> listedRoadBarriers,
     IdGenerator idGenerator,
-    TcpIpOutput tcpIpOutput) {
+    Output tcpIpOutput) {
+    this();
     this.randomSeedService = randomSeedService;
     this.trafficGraphExtensions = trafficGraphExtensions;
     this.vehicleFactory = vehicleFactory;
-    this.vehicleEventHandlerManager = vehicleEventHandlerManager;
-    this.sensorRegistry = sensorRegistry;
     this.sensorFactory = sensorFactory;
-    this.configReader = configReader;
-    this.scheduler = scheduler;
-    this.itemsToScheduleAfterAttractionReached = itemsToScheduleAfterAttractionReached;
-    this.itemsToScheduleAfterFuzzy = itemsToScheduleAfterFuzzy;
-    this.itemsToRemoveAfterFuzzy = itemsToRemoveAfterFuzzy;
     this.sensorController = sensorController;
     this.routeConstructor = routeConstructor;
     this.cityZone = cityZone;
-    this.trafficServers = trafficServers;
-    this.cityZones = cityZones;
-    this.receivedVehicles = receivedVehicles;
-    this.currentTime = currentTime;
+    this.otherTrafficServers = otherTrafficServers;
     this.updateIntervall = updateIntervall;
-    this.eventForVehicle = eventForVehicle;
     this.fuzzyTrafficGovernor = fuzzyTrafficGovernor;
     this.vehicleFuzzyManager = vehicleFuzzyManager;
-    this.listedRoadBarriers = listedRoadBarriers;
     this.idGenerator = idGenerator;
     this.tcpIpOutput = tcpIpOutput;
   }
@@ -380,12 +384,12 @@ public class DefaultTrafficServer extends AbstractController<
     List<TrafficServerLocal<VehicleEvent>> slist,
     TrafficSensorFactory sensorFactory,
     TrafficGraph graph) {
-    this.instanciateDependencies();
+    this.init0();
   }
 
   @PostConstruct
   public void init() {
-    this.instanciateDependencies();
+    this.init0();
     this.vehicleEventHandlerManager = new DefaultVehicleEventHandlerManager(
       randomSeedService,
       this,
@@ -407,13 +411,12 @@ public class DefaultTrafficServer extends AbstractController<
         trafficLightIntersection);
       this.sensorRegistry.add(new TrafficLightSensor(this.idGenerator.
         getNextId(),
-        this.sensorFactory.
-        getSensorOutput(),
+        output,
         null,
         trafficLightIntersection.getTrafficLight0()));
       this.sensorRegistry.add(new TrafficLightSensor(this.idGenerator.
         getNextId(),
-        this.sensorFactory.getSensorOutput(),
+        output,
         null,
         trafficLightIntersection.getTrafficLight1()));
     }
@@ -692,32 +695,8 @@ public class DefaultTrafficServer extends AbstractController<
   /**
    * Instanciate dependencies for the traffic server
    */
-  private void instanciateDependencies() {
-    this.cityZones = new ArrayList<>();
-    this.trafficServers = new HashSet<>();
-    this.receivedVehicles = new ArrayList<>();
-    this.listedRoadBarriers = new HashSet<>();
-    this.eventForVehicle = new HashMap<>();
-    this.itemsToScheduleAfterAttractionReached = new ArrayList<>();
-    this.itemsToScheduleAfterFuzzy = new ArrayList<>();
-    this.itemsToRemoveAfterFuzzy = new ArrayList<>();
+  private void init0() {
 
-    /*
-     * Create all schedulers
-     */
-    // Scheduler s = ListScheduler.createInstance().getScheduler();
-    // Scheduler s2 = ListScheduler.createInstance().getScheduler();
-    Scheduler s = SortedListScheduler.createInstance().getScheduler();
-    Scheduler s2 = SortedListScheduler.createInstance().getScheduler();
-
-    this.scheduler = new SchedulerComposite();
-    this.scheduler.addScheduler(VehicleTypeEnum.MOTORIZED_VEHICLES,
-      s);
-    this.scheduler.addScheduler(EnumSet.of(VehicleTypeEnum.BIKE),
-      s2);
-    this.scheduler.changeModus(ScheduleModus.WRITE);
-    s.addScheduleHandler(this);
-    s2.addScheduleHandler(this);
   }
 
   /**
@@ -759,8 +738,6 @@ public class DefaultTrafficServer extends AbstractController<
       this.sensorFactory,
       this.trafficGraphExtensions);
   }
-
-  private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
   /**
    * Updates all vehicles of the traffic server
@@ -809,7 +786,8 @@ public class DefaultTrafficServer extends AbstractController<
             log.debug(
               "Vehicle " + vehicle.getName() + " passed node " + curNode.getId());
             if (this.cityZone == null
-              || this.cityZone.covers(GEOMETRY_FACTORY.createPoint(
+              || this.cityZone.covers(GeoToolsBootstrapping.
+                getGEOMETRY_FACTORY().createPoint(
                   this.trafficGraphExtensions.getPosition(curNode)))) {
               this.vehicleEventHandlerManager.handleEvent(
                 new GenericVehicleEvent<>(
@@ -820,19 +798,19 @@ public class DefaultTrafficServer extends AbstractController<
                   VehicleEventTypeEnum.VEHICLE_PASSED_NODE));
             } else {
               // vehicle is driving out of boundaries
-              List<TrafficServerLocal<VehicleEvent>> trafficServerList = new ArrayList<>(
-                trafficServers);
-              for (int j = 0; j < this.cityZones.size(); j++) {
-                if (this.cityZones.get(j).covers(GEOMETRY_FACTORY.createPoint(
-                  this.trafficGraphExtensions.getPosition(curNode)))) {
+              for (Geometry cityZone : otherTrafficServers.
+                keySet()) {
+                if (this.cityZone.covers(GeoToolsBootstrapping.
+                  getGEOMETRY_FACTORY().createPoint(
+                    curNode.getGeoLocation()))) {
                   log.debug(String.format(
                     "Vehicle %s drove out of the bounderies of server %s",
                     vehicle.getName(),
                     this.getId()));
                   log.debug(String.format("Sending vehicle %s to server %s",
                     vehicle.getName(),
-                    trafficServerList.get(j)));
-                  trafficServerList.get(j).takeVehicle(
+                    otherTrafficServers.get(cityZone)));
+                  otherTrafficServers.get(cityZone).takeVehicle(
                     vehicle,
                     curNode,
                     vehicle.getNodePath()
@@ -881,6 +859,7 @@ public class DefaultTrafficServer extends AbstractController<
 
   @Override
   protected void onInit(TrafficInitParameter param) throws InitializationException {
+    this.output = param.getOutput();
     try {
 //			this.trafficServers = this.getTrafficServer(param.getServerConfiguration());
       this.loadSensorDependencies(param);
@@ -926,7 +905,7 @@ public class DefaultTrafficServer extends AbstractController<
     this.listedRoadBarriers.clear();
     this.trafficGraphExtensions.reset();
     this.cityZones.clear();
-    this.trafficServers.clear();
+    this.otherTrafficServers.clear();
 //		this.trafficEventHandlerManager.clear();
     this.vehicleEventHandlerManager.clear();
     this.sensorController.reset();
@@ -939,7 +918,8 @@ public class DefaultTrafficServer extends AbstractController<
 
   @Override
   protected void onStart(TrafficStartParameter param) {
-    for (TrafficServerLocal<VehicleEvent> server : this.trafficServers) {
+    for (TrafficServerLocal<VehicleEvent> server : this.otherTrafficServers.
+      values()) {
       this.cityZones.add(server.getCityZone());
     }
     // not working..
@@ -1014,7 +994,7 @@ public class DefaultTrafficServer extends AbstractController<
 //	}
   @Override
   public int getServerListSize() {
-    return trafficServers.size();
+    return otherTrafficServers.size();
   }
 
   public void updateRoadBarriers(long timestamp) {
@@ -1119,12 +1099,10 @@ public class DefaultTrafficServer extends AbstractController<
     this.managedVehicles = managedVehicles;
   }
 
+  @Override
   public void setTrafficServers(
-    Set<TrafficServerLocal<VehicleEvent>> trafficServers) {
-    this.trafficServers = trafficServers;
+    Map<Geometry, TrafficServerLocal<VehicleEvent>> trafficServers) {
+    this.otherTrafficServers = trafficServers;
   }
 
-  public Set<TrafficServerLocal<VehicleEvent>> getTrafficServers() {
-    return trafficServers;
-  }
 }

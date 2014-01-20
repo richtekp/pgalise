@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.sensorFramework.internal;
 
-import de.pgalise.simulation.sensorFramework.output.tcpip.AbstractTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import java.net.ConnectException;
 
@@ -32,90 +30,97 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 
 /**
  * Tests the Connection to the datastream management system
- * 
+ *
  * @author Marcus
  * @version 1.0 (Feb 6, 2013)
  */
 @Ignore
 public class AdvancedStreamsTest {
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(AdvancedStreamsTest.class);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    AdvancedStreamsTest.class);
 
-	/**
-	 * Output
-	 */
-	private final TcpIpOutput outputKeepOpen = new AbstractTcpIpOutput("127.0.0.1", 6666, new TcpIpKeepOpenStrategy());
+  /**
+   * Output
+   */
+  private final TcpIpOutput outputKeepOpen = new DefaultTcpIpOutput("127.0.0.1",
+    6666,
+    TcpIpKeepOpenStrategy.getInstance());
 
-	/**
-	 * Output
-	 */
-	private final TcpIpOutput outputForceClose = new AbstractTcpIpOutput("127.0.0.1", 6666, new TcpIpForceCloseStrategy());
+  /**
+   * Output
+   */
+  private final TcpIpOutput outputForceClose = new DefaultTcpIpOutput(
+    "127.0.0.1",
+    6666,
+    TcpIpForceCloseStrategy.getInstance());
 
-	/**
-	 * Tests if it is possible to send all data to the streams instance in one stream
-	 */
-	@Test
-	@Ignore
-	public void testTransmitForceClose() {
-		this.testTransmit(this.outputForceClose);
-	}
+  /**
+   * Tests if it is possible to send all data to the streams instance in one
+   * stream
+   */
+  @Test
+  @Ignore
+  public void testTransmitForceClose() {
+    this.testTransmit(this.outputForceClose);
+  }
 
-	/**
-	 * Tests if it is possible to send all data to the streams instance in one stream
-	 */
-	@Test
-	public void testTransmitKeepOpen() {
-		this.testTransmit(this.outputKeepOpen);
-	}
+  /**
+   * Tests if it is possible to send all data to the streams instance in one
+   * stream
+   */
+  @Test
+  public void testTransmitKeepOpen() {
+    this.testTransmit(this.outputKeepOpen);
+  }
 
-	/**
-	 * Transmit test
-	 * 
-	 * @param output
-	 *            TcpIpOutput
-	 */
-	private void testTransmit(TcpIpOutput output) {
-		try {
-			for (int j = 0; j < 100; j++) {
-				AdvancedStreamsTest.log.debug("J= " + j);
-				for (int i = 0; i < 21; i++) {
-					AdvancedStreamsTest.log.debug("I= " + i);
-					output.beginTransmit();
-					// Timestamp
-					output.transmitLong(j);
-					// Sensorid
-					output.transmitInt(j);
-					// sensortype
-					output.transmitByte((byte) i);
-					// measureValue1
-					output.transmitDouble(j);
-					// measureValue2
-					output.transmitDouble(j);
-					// axcleCount
-					output.transmitByte((byte) i);
-					// length
-					output.transmitShort((short) i);
-					// wheelbase1
-					output.transmitShort((short) i);
-					// wheelbase2
-					output.transmitShort((short) i);
+  /**
+   * Transmit test
+   *
+   * @param output TcpIpOutput
+   */
+  private void testTransmit(TcpIpOutput output) {
+    try {
+      for (int j = 0; j < 100; j++) {
+        AdvancedStreamsTest.log.debug("J= " + j);
+        for (int i = 0; i < 21; i++) {
+          AdvancedStreamsTest.log.debug("I= " + i);
+          output.beginTransmit();
+          // Timestamp
+          output.transmitLong(j);
+          // Sensorid
+          output.transmitInt(j);
+          // sensortype
+          output.transmitByte((byte) i);
+          // measureValue1
+          output.transmitDouble(j);
+          // measureValue2
+          output.transmitDouble(j);
+          // axcleCount
+          output.transmitByte((byte) i);
+          // length
+          output.transmitShort((short) i);
+          // wheelbase1
+          output.transmitShort((short) i);
+          // wheelbase2
+          output.transmitShort((short) i);
 
-					output.endTransmit();
-				}
-			}
-		} catch (Exception e) {
-			// If there is no connection than all is fine, else error!
-			if (!((e.getCause() instanceof RuntimeException) || (e.getCause() instanceof ConnectException))) {
-				e.printStackTrace();
-				Assert.assertTrue(false);
-			} else {
-				e.printStackTrace();
-				Assert.assertTrue(false);
-				AdvancedStreamsTest.log.debug("No connection to Odysseus!");
-			}
-		}
-	}
+          output.endTransmit();
+        }
+      }
+    } catch (Exception e) {
+      // If there is no connection than all is fine, else error!
+      if (!((e.getCause() instanceof RuntimeException) || (e.getCause() instanceof ConnectException))) {
+        e.printStackTrace();
+        Assert.assertTrue(false);
+      } else {
+        e.printStackTrace();
+        Assert.assertTrue(false);
+        AdvancedStreamsTest.log.debug("No connection to Odysseus!");
+      }
+    }
+  }
 }

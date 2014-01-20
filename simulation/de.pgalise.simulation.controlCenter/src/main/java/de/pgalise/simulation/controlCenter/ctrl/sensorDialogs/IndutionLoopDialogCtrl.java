@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.controlCenter.ctrl.sensorDialogs;
 
+import de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -22,20 +22,22 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class IndutionLoopDialogCtrl extends BaseSensorDialogCtrl {
-	private static final long serialVersionUID = 1L;
-	@EJB
-	private TrafficGraph trafficGraph;
-	@EJB
-	private InductionLoopInterferer inductionLoopInterferer;
 
-	public IndutionLoopDialogCtrl() {
-	}
-	
-	public void saveSensor() throws SensorException {
-		TrafficNode node = trafficGraph.getNodeClosestTo(getCoordinate());
-		getSensorManagerController().createSensor(new InductionLoopSensor(getIdGenerator().getNextId(),
-			getOutput(),
-			node,
-			inductionLoopInterferer));
-	}
+  private static final long serialVersionUID = 1L;
+  @EJB
+  private TrafficGraph trafficGraph;
+  @EJB
+  private InductionLoopInterferer inductionLoopInterferer;
+
+  public IndutionLoopDialogCtrl() {
+  }
+
+  public void saveSensor() throws SensorException {
+    TrafficNode node = trafficGraph.getNodeClosestTo(getCoordinate());
+    getSensorManagerController().createSensor(new InductionLoopSensor(
+      getIdGenerator().getNextId(),
+      MainCtrlUtils.OUTPUT,
+      node,
+      inductionLoopInterferer));
+  }
 }
