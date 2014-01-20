@@ -15,11 +15,11 @@
  */
 package de.pgalise.simulation.energy;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
 
 /**
  * Interface for the energy controllers. An energy controller is able to give
@@ -30,18 +30,18 @@ import de.pgalise.simulation.traffic.TrafficStartParameter;
  * @author Timo
  */
 public interface EnergyController extends
-	Controller<EnergyEvent, TrafficStartParameter, TrafficInitParameter> {
+  Controller<EnergyEvent, StartParameter, InitParameter> {
 
-	/**
-	 * Returns the current energy consumption on the given point.
-	 *
-	 * @param timestamp Timestamp
-	 * @param position Position on the graph
-	 * @param measureRadiusInMeter the measure radius around the given position
-	 * @return double value in KWh
-	 */
-	public double getEnergyConsumptionInKWh(long timestamp,
-		JaxRSCoordinate position,
-		int measureRadiusInMeter);
+  /**
+   * Returns the current energy consumption on the given point.
+   *
+   * @param timestamp Timestamp
+   * @param position Position on the graph
+   * @param measureRadiusInMeter the measure radius around the given position
+   * @return double value in KWh
+   */
+  public double getEnergyConsumptionInKWh(long timestamp,
+    JaxRSCoordinate position,
+    int measureRadiusInMeter);
 
 }

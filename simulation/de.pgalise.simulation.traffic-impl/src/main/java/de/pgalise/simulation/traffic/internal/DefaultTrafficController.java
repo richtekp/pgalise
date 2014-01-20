@@ -138,19 +138,41 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
 //  private TrafficServerLocal onlyServer;
   @Override
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
-    int trafficServerCount = param.getTrafficServerCount();
+
+    int trafficServerCount
+      = 1;
+    //param.getTrafficServerCount();
     cityZones = new HashMap<>();
 
     // stadt in gleichgroße teile aufteilen
-    area = param.getCity().getPosition().getBoundaries();
+    area = param.getCity().getGeoInfo().getBoundaries();
     List<Geometry> generatedCityZones = createCityZones(trafficServerCount);
-    for (Geometry generatedCityZone : generatedCityZones) {
+    for (final Geometry generatedCityZone : generatedCityZones) {
       try {
         Context localContext = new InitialContext();
-        TrafficServerLocal<VehicleEvent> trafficServer = (TrafficServerLocal) localContext.
+        final TrafficServerLocal<VehicleEvent> trafficServer
+          = //          new DefaultTrafficServer(new JaxRSCoordinate(param.getCityBoundary().centre()),
+          //            null,
+          //            null,
+          //            null,
+          //            null)
+          (TrafficServerLocal) localContext.
           lookup(
-            "DefaultTrafficServerLocal");
-        trafficServer.init(param);
+            "java:global/PG_Alise_Component/traffic-impl-2.0-SNAPSHOT/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
+
+        asyncHandler.addDelegateFunction(new Function() {
+          @Override
+          public void delegate() {
+            try {
+              trafficServer.init(param);
+            } catch (IllegalStateException ex) {
+              throw new RuntimeException(ex);
+            }
+            trafficServer.setCityZone(generatedCityZone);
+            log.debug("TrafficServer " + trafficServer + " initalized");
+          }
+        });
+
         cityZones.put(generatedCityZone,
           trafficServer);
       } catch (NamingException ex) {
@@ -165,24 +187,6 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
 //      trafficServersClone.remove(trafficServer);
 //      trafficServer.setTrafficServers(trafficServersClone);
 //    }
-
-    for (final Geometry cityZone : cityZones.keySet()) {
-      asyncHandler.addDelegateFunction(new Function() {
-
-        @Override
-        public void delegate() {
-          TrafficServerLocal<VehicleEvent> server = cityZones.get(cityZones);
-          try {
-            server.init(param);
-          } catch (IllegalStateException ex) {
-            throw new RuntimeException(ex);
-          }
-          server.setCityZone(cityZone);
-          log.debug("TrafficServer " + server + " initalized");
-        }
-
-      });
-    }
 
     log.debug("Initializing all TrafficServer...");
     asyncHandler.start();
@@ -244,7 +248,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
       }
     }
 
-    final EventList<VehicleEvent> newList = new EventList(idGenerator.
+    final EventList<VehicleEvent> newList = new EventList<>(idGenerator.
       getNextId(),
       eventList,
       simulationEventList.getTimestamp());

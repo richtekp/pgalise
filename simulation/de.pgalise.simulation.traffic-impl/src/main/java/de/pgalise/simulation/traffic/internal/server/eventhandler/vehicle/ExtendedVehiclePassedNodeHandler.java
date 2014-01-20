@@ -57,8 +57,7 @@ public class ExtendedVehiclePassedNodeHandler<D extends VehicleData> extends Abs
       }
 
       TrafficNode passedNode = vehicle.getCurrentNode();
-      vehicle.setPosition(event.getTrafficGraphExtensions().getPosition(
-        passedNode));
+      vehicle.setPosition(passedNode.getGeoLocation());
       final double vel = vehicle.getVelocity();
       vehicle.setVelocity(0);
       vehicle.setVehicleState(VehicleStateEnum.STOPPED);

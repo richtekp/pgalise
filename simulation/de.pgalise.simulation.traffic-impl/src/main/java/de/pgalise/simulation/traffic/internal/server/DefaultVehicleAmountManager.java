@@ -16,11 +16,12 @@
 package de.pgalise.simulation.traffic.internal.server;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.traffic.governor.TrafficGovernor;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
 import de.pgalise.simulation.traffic.entity.TruckData;
+import de.pgalise.simulation.traffic.governor.TrafficGovernor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.VehicleAmountManager;
@@ -124,6 +125,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
    * The FuzzyTrafficGonvernor will deliver the Amount of each vehicle in
    * percentage, depending on Fuzzy Rules (e.g. depending on weather events)
    */
+  @EJB
   private TrafficGovernor fuzzy;
 
   /**
@@ -608,5 +610,9 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
   @Override
   public void increaseMaxTrucks() {
     this.maxTrucks++;
+  }
+
+  public void init(TrafficInitParameter initParameter) {
+    this.fuzzy.init(initParameter);
   }
 }

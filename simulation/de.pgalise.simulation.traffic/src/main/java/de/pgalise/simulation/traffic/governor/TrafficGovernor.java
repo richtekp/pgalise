@@ -13,30 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.governor;
 
+import de.pgalise.simulation.traffic.TrafficInitParameter;
+
 /**
- * Interface that returns the percentage of active vehicles to a given time stamp
- * 
+ * Interface that returns the percentage of active vehicles to a given time
+ * stamp
+ *
  * @author Marcus
  */
 public interface TrafficGovernor {
 
-	/**
-	 * Returns the percentage of active cars to the passed time.
-	 * 
-	 * @param simTime
-	 *            the time to which the active cars shall be extracted
-	 * @return the percentage of active cars to the passed time
-	 */
-	public double getPercentageOfActiveCars(long simTime);
+  /**
+   * Returns the percentage of active cars to the passed time.
+   *
+   * @param simTime the time to which the active cars shall be extracted
+   * @return the percentage of active cars to the passed time
+   */
+  public double getPercentageOfActiveCars(long simTime);
 
-	public double getPercentageOfActiveBicycles(long simTime);
+  public double getPercentageOfActiveBicycles(long simTime);
 
-	public double getPercentageOfActiveTrucks(long simTime);
+  public double getPercentageOfActiveTrucks(long simTime);
 
-	public double getPercentageOfActiveMotorcycles(long simTime);
+  public double getPercentageOfActiveMotorcycles(long simTime);
 
-	public double getAverageBusManningPercentage(long simTime);
+  public double getAverageBusManningPercentage(long simTime);
+
+  public void init(TrafficInitParameter initParameter);
 }

@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.weathercollector.weatherservice;
 
-import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weathercollector.exceptions.ReadServiceDataException;
 import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 
@@ -35,5 +34,5 @@ public interface ServiceStrategy {
    * @return ServiceData instance
    * @throws ReadServiceDataException Data can not be read by strategy
    */
-  public ServiceDataHelper getWeather(City city) throws ReadServiceDataException;
+  public ServiceDataHelper getWeather(String city) throws ReadServiceDataException;
 }

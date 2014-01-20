@@ -15,37 +15,27 @@
  */
 package de.pgalise.simulation.internal;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.easymock.EasyMock;
-import org.junit.Test;
-
 import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.event.DefaultEventInitiator;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.ControllerStatusEnum;
-import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.SimulationInitParameter;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
-import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
@@ -55,12 +45,20 @@ import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.testutils.TestUtils;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.naming.NamingException;
+import org.easymock.EasyMock;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * J-Unit test for {@link DefaultEventInitiator}, which will test if every
@@ -81,9 +79,11 @@ public class DefaultEventInitiatorTest {
   private static WeatherControllerMock weatherController;
   private static TrafficControllerMock trafficController;
   private static long startTimestamp, endTimestamp;
-  private static SimulationInitParameter initParameter;
+  private static WeatherInitParameter initParameter;
   private static StartParameter startParameter;
   private static SimulationController simulationController;
+  @EJB
+  private IdGenerator idGenerator;
 
   public DefaultEventInitiatorTest() {
   }
@@ -110,7 +110,8 @@ public class DefaultEventInitiatorTest {
       0);
     endTimestamp = cal.getTimeInMillis();
 
-    initParameter = new SimulationInitParameter(
+    initParameter = new WeatherInitParameter<>(
+      TestUtils.createDefaultTestCityInstance(idGenerator),
       startTimestamp,
       endTimestamp,
       INTERVAL,
@@ -119,7 +120,7 @@ public class DefaultEventInitiatorTest {
       new URL("http://localhost:8080/controlCenter"),
       null);
 
-    startParameter = new StartParameter(true,
+    startParameter = new StartParameter<>(true,
       null,
       null);
 
@@ -343,7 +344,7 @@ public class DefaultEventInitiatorTest {
     }
 
     @Override
-    public void init(TrafficInitParameter param) throws IllegalStateException {
+    public void init(InitParameter param) throws IllegalStateException {
     }
 
     @Override
@@ -351,7 +352,7 @@ public class DefaultEventInitiatorTest {
     }
 
     @Override
-    public void start(TrafficStartParameter param) throws IllegalStateException {
+    public void start(StartParameter param) throws IllegalStateException {
     }
 
     @Override

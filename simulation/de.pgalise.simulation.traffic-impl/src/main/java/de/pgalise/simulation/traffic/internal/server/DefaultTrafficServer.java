@@ -290,6 +290,7 @@ public class DefaultTrafficServer extends AbstractController<
   @EJB
   private TrafficGovernor fuzzyTrafficGovernor;
 
+  @EJB
   private VehicleAmountManager vehicleFuzzyManager;
 
   /**
@@ -300,7 +301,7 @@ public class DefaultTrafficServer extends AbstractController<
   @EJB
   private IdGenerator idGenerator;
 
-  private Set<Vehicle<?>> managedVehicles = new HashSet<Vehicle<?>>();
+  private Set<Vehicle<?>> managedVehicles = new HashSet<>();
 
   @EJB
   private TcpIpOutput tcpIpOutput;
@@ -845,13 +846,13 @@ public class DefaultTrafficServer extends AbstractController<
 
       if (fuzzyTrafficGovernor != null) {
         this.vehicleFuzzyManager = new DefaultVehicleAmountManager(this,
-          param.getTrafficFuzzyData()
-          .getTolerance(),
+          param.getTrafficFuzzyData().getTolerance(),
           param.getTrafficFuzzyData().getUpdateSteps(),
           param.getTrafficFuzzyData()
           .getTimeBuffer(),
           this.fuzzyTrafficGovernor);
       }
+      this.fuzzyTrafficGovernor.init(param);
 
       // this.trafficGraphExtensions.setGraph(this.getGraph());
       // this.trafficGraphExtensions.setRouteConstructor(this.routeConstructor);

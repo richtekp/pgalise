@@ -175,7 +175,7 @@ public class DefaultWeatherService implements WeatherService {
 
     // Init maps
     this.referenceValues = null;
-    this.gridConverter = new LinearWeatherPositionConverter(city.getPosition().
+    this.gridConverter = new LinearWeatherPositionConverter(city.getGeoInfo().
       getBoundaries());
     this.plannedEventModifiers = new ArrayList<>();
   }
@@ -409,7 +409,7 @@ public class DefaultWeatherService implements WeatherService {
       time,
       position,
       value,
-      city.getPosition().getBoundaries()
+      city.getGeoInfo().getBoundaries()
     );
   }
 

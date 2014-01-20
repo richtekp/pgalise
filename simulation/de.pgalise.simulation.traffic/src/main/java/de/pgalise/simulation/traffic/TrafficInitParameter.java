@@ -1,28 +1,32 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import java.net.URL;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 @ManagedBean
 @SessionScoped
-public class TrafficInitParameter extends SimulationInitParameter {
+public class TrafficInitParameter extends WeatherInitParameter<TrafficCity> {
 
   private static final long serialVersionUID = 1L;
-  private TrafficCity city;
   private int TrafficServerCount = 2;
 
   /**
    * Traffic fuzzy data
    */
-  private TrafficFuzzyData trafficFuzzyData;
+  //@ManagedProperty(value = "#{trafficFuzzyData}")
+  private TrafficFuzzyData trafficFuzzyData = new TrafficFuzzyData();
 
   public TrafficInitParameter() {
     super();
@@ -37,8 +41,7 @@ public class TrafficInitParameter extends SimulationInitParameter {
    */
   public TrafficInitParameter(TrafficCity city,
     TrafficFuzzyData trafficFuzzyData) {
-    super();
-    this.city = city;
+    super(city);
     this.trafficFuzzyData = trafficFuzzyData;
   }
 
@@ -51,15 +54,14 @@ public class TrafficInitParameter extends SimulationInitParameter {
     URL operationCenterURL,
     URL controlCenterURL,
     TrafficFuzzyData trafficFuzzyData) {
-    super(
+    super(city,
       startTimestamp,
       endTimestamp,
       interval,
       clockGeneratorInterval,
       operationCenterURL,
       controlCenterURL,
-      city.getPosition().getBoundaries().getEnvelopeInternal());
-    this.city = city;
+      city.getGeoInfo().getBoundaries().getEnvelopeInternal());
     this.trafficFuzzyData = trafficFuzzyData;
   }
 
@@ -82,15 +84,6 @@ public class TrafficInitParameter extends SimulationInitParameter {
       controlCenterURL,
       trafficFuzzyData);
     this.TrafficServerCount = trafficServerCount;
-  }
-
-  public void setCity(
-    TrafficCity city) {
-    this.city = city;
-  }
-
-  public TrafficCity getCity() {
-    return city;
   }
 
   public void setTrafficServerCount(int TrafficServerCount) {

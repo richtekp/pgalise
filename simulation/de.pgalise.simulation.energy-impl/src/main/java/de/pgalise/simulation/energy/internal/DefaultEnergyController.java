@@ -21,17 +21,17 @@ import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
 import de.pgalise.simulation.service.ControllerStatusEnum;
-import de.pgalise.simulation.shared.entity.Building;
-import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.shared.entity.Building;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.traffic.TrafficInitParameter;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,268 +54,268 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton(name = "de.pgalise.simulation.energy.EnergyController")
 @Local(EnergyControllerLocal.class)
-public class DefaultEnergyController extends AbstractController<EnergyEvent, TrafficStartParameter, TrafficInitParameter>
-	implements
-	EnergyControllerLocal {
+public class DefaultEnergyController extends AbstractController<EnergyEvent, StartParameter, InitParameter>
+  implements
+  EnergyControllerLocal {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Wrapps geo location and measure radius in meter.
-	 *
-	 * @author Timo
-	 *
-	 */
-	private static class GeoRadiusWrapper {
+  /**
+   * Wrapps geo location and measure radius in meter.
+   *
+   * @author Timo
+   *
+   */
+  private static class GeoRadiusWrapper {
 
-		/**
-		 * Position
-		 */
-		private JaxRSCoordinate geoLocation;
-		/**
-		 * Radius in meter
-		 */
-		private int measureRadiusInMeter;
+    /**
+     * Position
+     */
+    private JaxRSCoordinate geoLocation;
+    /**
+     * Radius in meter
+     */
+    private int measureRadiusInMeter;
 
-		/**
-		 * Constructor
-		 *
-		 * @param geoLocation
-		 * @param measureRadiusInMeter
-		 */
-		GeoRadiusWrapper(JaxRSCoordinate geoLocation,
-			int measureRadiusInMeter) {
-			this.geoLocation = geoLocation;
-			this.measureRadiusInMeter = measureRadiusInMeter;
-		}
+    /**
+     * Constructor
+     *
+     * @param geoLocation
+     * @param measureRadiusInMeter
+     */
+    GeoRadiusWrapper(JaxRSCoordinate geoLocation,
+      int measureRadiusInMeter) {
+      this.geoLocation = geoLocation;
+      this.measureRadiusInMeter = measureRadiusInMeter;
+    }
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-			GeoRadiusWrapper other = (GeoRadiusWrapper) obj;
-			if (geoLocation == null) {
-				if (other.geoLocation != null) {
-					return false;
-				}
-			} else if (!geoLocation.equals(other.geoLocation)) {
-				return false;
-			}
-			return measureRadiusInMeter == other.measureRadiusInMeter;
-		}
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj) {
+        return true;
+      }
+      if (obj == null) {
+        return false;
+      }
+      if (getClass() != obj.getClass()) {
+        return false;
+      }
+      GeoRadiusWrapper other = (GeoRadiusWrapper) obj;
+      if (geoLocation == null) {
+        if (other.geoLocation != null) {
+          return false;
+        }
+      } else if (!geoLocation.equals(other.geoLocation)) {
+        return false;
+      }
+      return measureRadiusInMeter == other.measureRadiusInMeter;
+    }
 
-		public JaxRSCoordinate getGeoLocation() {
-			return geoLocation;
-		}
+    public JaxRSCoordinate getGeoLocation() {
+      return geoLocation;
+    }
 
-		public int getMeasureRadiusInMeter() {
-			return measureRadiusInMeter;
-		}
+    public int getMeasureRadiusInMeter() {
+      return measureRadiusInMeter;
+    }
 
-		@Override
-		public int hashCode() {
-			final int prime = 31;
-			int result = 1;
-			result = prime * result
-				+ ((geoLocation == null) ? 0 : geoLocation.hashCode());
-			result = prime * result + measureRadiusInMeter;
-			return result;
-		}
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result
+        + ((geoLocation == null) ? 0 : geoLocation.hashCode());
+      result = prime * result + measureRadiusInMeter;
+      return result;
+    }
 
-		public void setGeoLocation(JaxRSCoordinate geoLocation) {
-			this.geoLocation = geoLocation;
-		}
+    public void setGeoLocation(JaxRSCoordinate geoLocation) {
+      this.geoLocation = geoLocation;
+    }
 
-		public void setMeasureRadiusInMeter(int measureRadiusInMeter) {
-			this.measureRadiusInMeter = measureRadiusInMeter;
-		}
-	}
+    public void setMeasureRadiusInMeter(int measureRadiusInMeter) {
+      this.measureRadiusInMeter = measureRadiusInMeter;
+    }
+  }
 
-	private static final String NAME = "EnergyController";
+  private static final String NAME = "EnergyController";
 
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LoggerFactory.getLogger(
-		DefaultEnergyController.class);
+  @SuppressWarnings("unused")
+  private static final Logger LOGGER = LoggerFactory.getLogger(
+    DefaultEnergyController.class);
 
-	/**
-	 * City of the current simulation
-	 */
-	private City city;
+  /**
+   * City of the current simulation
+   */
+  private City city;
 
-	/**
-	 * city Infrastructure
-	 */
-	@EJB
-	private CityInfrastructureDataService cityInfrastructure;
+  /**
+   * city Infrastructure
+   */
+  @EJB
+  private CityInfrastructureDataService cityInfrastructure;
 
-	/**
-	 * Current timestamp
-	 */
-	private long currentTimestamp;
+  /**
+   * Current timestamp
+   */
+  private long currentTimestamp;
 
-	/**
-	 * EnergyConsumptionManager
-	 */
-	@EJB
-	private EnergyConsumptionManagerLocal energyConsumptionManager;
+  /**
+   * EnergyConsumptionManager
+   */
+  @EJB
+  private EnergyConsumptionManagerLocal energyConsumptionManager;
 
-	@EJB
-	private EnergyEventStrategyLocal energyEventStrategy;
+  @EJB
+  private EnergyEventStrategyLocal energyEventStrategy;
 
-	private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap = new HashMap<>();
+  private Map<GeoRadiusWrapper, Map<EnergyProfileEnum, List<Building>>> buildingsMap = new HashMap<>();
 
-	private TrafficInitParameter initParameter;
+  private InitParameter initParameter;
 
-	@EJB
-	private WeatherController weatherController;
+  @EJB
+  private WeatherController weatherController;
 
-	public DefaultEnergyController() {
-	}
+  public DefaultEnergyController() {
+  }
 
-	/**
-	 * Default
-	 *
-	 * @param cityInfrastructureData
-	 */
-	public DefaultEnergyController(
-		CityInfrastructureDataService cityInfrastructureData) {
-		this.cityInfrastructure = cityInfrastructureData;
-		this.buildingsMap = new HashMap<>();
-	}
+  /**
+   * Default
+   *
+   * @param cityInfrastructureData
+   */
+  public DefaultEnergyController(
+    CityInfrastructureDataService cityInfrastructureData) {
+    this.cityInfrastructure = cityInfrastructureData;
+    this.buildingsMap = new HashMap<>();
+  }
 
-	public City getCity() {
-		return this.city;
-	}
+  public City getCity() {
+    return this.city;
+  }
 
-	public CityInfrastructureDataService getCityInfrastructure() {
-		return this.cityInfrastructure;
-	}
+  public CityInfrastructureDataService getCityInfrastructure() {
+    return this.cityInfrastructure;
+  }
 
-	public long getCurrentTimestamp() {
-		return this.currentTimestamp;
-	}
+  public long getCurrentTimestamp() {
+    return this.currentTimestamp;
+  }
 
-	@Override
-	public double getEnergyConsumptionInKWh(long timestamp,
-		JaxRSCoordinate position,
-		int measureRadiusInMeter) {
-		if (this.getStatus() != ControllerStatusEnum.STARTED) {
-			throw new IllegalStateException(
-				"Controller is not in running state!");
-		}
+  @Override
+  public double getEnergyConsumptionInKWh(long timestamp,
+    JaxRSCoordinate position,
+    int measureRadiusInMeter) {
+    if (this.getStatus() != ControllerStatusEnum.STARTED) {
+      throw new IllegalStateException(
+        "Controller is not in running state!");
+    }
 
-		// Get all buildings
-		GeoRadiusWrapper geoRadiusWrapper = new GeoRadiusWrapper(position,
-			measureRadiusInMeter);
-		Map<EnergyProfileEnum, List<Building>> list = this.buildingsMap
-			.get(geoRadiusWrapper);
-		if (list == null) {
-			list = this.cityInfrastructure.getBuildings(position,
-				measureRadiusInMeter);
-			this.buildingsMap.put(geoRadiusWrapper,
-				list);
-		}
+    // Get all buildings
+    GeoRadiusWrapper geoRadiusWrapper = new GeoRadiusWrapper(position,
+      measureRadiusInMeter);
+    Map<EnergyProfileEnum, List<Building>> list = this.buildingsMap
+      .get(geoRadiusWrapper);
+    if (list == null) {
+      list = this.cityInfrastructure.getBuildings(position,
+        measureRadiusInMeter);
+      this.buildingsMap.put(geoRadiusWrapper,
+        list);
+    }
 
-		double energyConsumption = 0.0;
-		for (java.util.Map.Entry<EnergyProfileEnum, List<Building>> entry : list
-			.entrySet()) {
-			for (Building building : entry.getValue()) {
-				energyConsumption += this.getEnergyConsumptionManager()
-					.getEnergyConsumptionInKWh(
-						timestamp,
-						entry.getKey(),
+    double energyConsumption = 0.0;
+    for (java.util.Map.Entry<EnergyProfileEnum, List<Building>> entry : list
+      .entrySet()) {
+      for (Building building : entry.getValue()) {
+        energyConsumption += this.getEnergyConsumptionManager()
+          .getEnergyConsumptionInKWh(
+            timestamp,
+            entry.getKey(),
 
-						building.getPosition().getCenterPoint());
-			}
-		}
+            building.getPosition().getCenterPoint());
+      }
+    }
 
-		return energyConsumption;
-	}
+    return energyConsumption;
+  }
 
-	public EnergyConsumptionManagerLocal getEnergyConsumptionManager() {
-		return this.energyConsumptionManager;
-	}
+  public EnergyConsumptionManagerLocal getEnergyConsumptionManager() {
+    return this.energyConsumptionManager;
+  }
 
-	public EnergyEventStrategyLocal getEnergyEventStrategy() {
-		return energyEventStrategy;
-	}
+  public EnergyEventStrategyLocal getEnergyEventStrategy() {
+    return energyEventStrategy;
+  }
 
-	@Override
-	protected void onInit(TrafficInitParameter param) throws InitializationException {
-		this.buildingsMap.clear();
-		this.initParameter = param;
-	}
+  @Override
+  protected void onInit(InitParameter param) throws InitializationException {
+    this.buildingsMap.clear();
+    this.initParameter = param;
+  }
 
-	@Override
-	protected void onReset() {
-		// Nothing to do
-	}
+  @Override
+  protected void onReset() {
+    // Nothing to do
+  }
 
-	@Override
-	protected void onResume() {
-		// Nothing to do
+  @Override
+  protected void onResume() {
+    // Nothing to do
 
-	}
+  }
 
-	@Override
-	protected void onStart(TrafficStartParameter param) {
-		this.city = param.getCity();
-		this.energyConsumptionManager.init(this.initParameter.getStartTimestamp().
-			getTime(),
-			this.initParameter.getEndTimestamp().getTime(),
-			weatherController);
-	}
+  @Override
+  protected void onStart(StartParameter param) {
+    this.city = param.getCity();
+    this.energyConsumptionManager.init(param.getStartTimestamp().
+      getTime(),
+      param.getEndTimestamp().getTime(),
+      weatherController);
+  }
 
-	@Override
-	protected void onStop() {
-		// Nothing to do
-	}
+  @Override
+  protected void onStop() {
+    // Nothing to do
+  }
 
-	@Override
-	protected void onUpdate(EventList<EnergyEvent> simulationEventList) {
-		// Save timestamp
-		this.setCurrentTimestamp(simulationEventList.getTimestamp());
+  @Override
+  protected void onUpdate(EventList<EnergyEvent> simulationEventList) {
+    // Save timestamp
+    this.setCurrentTimestamp(simulationEventList.getTimestamp());
 
-		List<EnergyEvent> energyEventList = new ArrayList<>();
-		for (EnergyEvent event : simulationEventList.getEventList()) {
-			energyEventList.add(event);
-		}
-		this.energyEventStrategy.update(this.currentTimestamp,
-			energyEventList);
-	}
+    List<EnergyEvent> energyEventList = new ArrayList<>();
+    for (EnergyEvent event : simulationEventList.getEventList()) {
+      energyEventList.add(event);
+    }
+    this.energyEventStrategy.update(this.currentTimestamp,
+      energyEventList);
+  }
 
-	public void setCity(City city) {
-		this.city = city;
-	}
+  public void setCity(City city) {
+    this.city = city;
+  }
 
-	public void setCityInfrastructure(
-		CityInfrastructureDataService cityInfrastructure) {
-		this.cityInfrastructure = cityInfrastructure;
-	}
+  public void setCityInfrastructure(
+    CityInfrastructureDataService cityInfrastructure) {
+    this.cityInfrastructure = cityInfrastructure;
+  }
 
-	public void setCurrentTimestamp(long currentTimestamp) {
-		this.currentTimestamp = currentTimestamp;
-	}
+  public void setCurrentTimestamp(long currentTimestamp) {
+    this.currentTimestamp = currentTimestamp;
+  }
 
-	public void setEnergyConsumptionManager(
-		EnergyConsumptionManagerLocal energyConsumptionManager) {
-		this.energyConsumptionManager = energyConsumptionManager;
-	}
+  public void setEnergyConsumptionManager(
+    EnergyConsumptionManagerLocal energyConsumptionManager) {
+    this.energyConsumptionManager = energyConsumptionManager;
+  }
 
-	public void setEnergyEventStrategy(
-		EnergyEventStrategyLocal energyEventStrategy) {
-		this.energyEventStrategy = energyEventStrategy;
-	}
+  public void setEnergyEventStrategy(
+    EnergyEventStrategyLocal energyEventStrategy) {
+    this.energyEventStrategy = energyEventStrategy;
+  }
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+  @Override
+  public String getName() {
+    return NAME;
+  }
 }

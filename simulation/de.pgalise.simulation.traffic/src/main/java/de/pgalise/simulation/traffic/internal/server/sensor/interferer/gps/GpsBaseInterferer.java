@@ -32,132 +32,133 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  */
 public abstract class GpsBaseInterferer implements GpsInterferer {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Random Seed Service
-	 */
-	private RandomSeedService randomSeedService;
+  /**
+   * Random Seed Service
+   */
+  private RandomSeedService randomSeedService;
 
-	/**
-	 * Random Object
-	 */
-	private Random random;
+  /**
+   * Random Object
+   */
+  private Random random;
 
-	/**
-	 * Change amplitude
-	 */
-	private double changeAmplitude;
+  /**
+   * Change amplitude
+   */
+  private double changeAmplitude;
 
-	/**
-	 * Probability to change the values
-	 */
-	private double changeProbability;
-	
-	/**
-	 * Properties with limits
-	 */
-	private Properties properties;
+  /**
+   * Probability to change the values
+   */
+  private double changeProbability;
 
-	public GpsBaseInterferer(RandomSeedService randomservice,
-		double changeAmplitude,
-		double changeProbability) {
-		this.randomSeedService = randomservice;
-		this.changeAmplitude = changeAmplitude;
-		this.changeProbability = changeProbability;
-	}
+  /**
+   * Properties with limits
+   */
+  private Properties properties;
 
-	/**
-	 * Constructor
-	 *
-	 * @param randomSeedService Random Seed Service
-	 * @param filepath File path to the properties file
-	 */
-	public GpsBaseInterferer(RandomSeedService randomSeedService,
-		String filepath) {
-		if (randomSeedService == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"randomseedservice"));
-		}
-		if (filepath == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-				"filepath"));
-		}
-		this.randomSeedService = randomSeedService;
-		this.random = new Random(randomSeedService.getSeed(GpsBaseInterferer.class.
-			getName()));
+  public GpsBaseInterferer(RandomSeedService randomservice,
+    double changeAmplitude,
+    double changeProbability) {
+    this.randomSeedService = randomservice;
+    this.changeAmplitude = changeAmplitude;
+    this.changeProbability = changeProbability;
+  }
 
-		// Read property file
-		try (InputStream propInFile = GpsBaseInterferer.class.getResourceAsStream(
-			filepath)) {
-			this.properties = new Properties();
-			this.properties.loadFromXML(propInFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+  /**
+   * Constructor
+   *
+   * @param randomSeedService Random Seed Service
+   * @param filepath File path to the properties file
+   */
+  public GpsBaseInterferer(RandomSeedService randomSeedService,
+    String filepath) {
+    if (randomSeedService == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "randomseedservice"));
+    }
+    if (filepath == null) {
+      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
+        "filepath"));
+    }
+    this.randomSeedService = randomSeedService;
+    this.random = new Random(randomSeedService.getSeed(GpsBaseInterferer.class.
+      getName()));
+
+    // Read property file
+    try (InputStream propInFile = Thread.currentThread().getContextClassLoader().
+      getResourceAsStream(
+        filepath)) {
+        this.properties = new Properties();
+        this.properties.loadFromXML(propInFile);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
 
 		// Save default values
 
-		/*
-		 * Note every property file should have these properties
-		 */
-		this.changeAmplitude = Double.parseDouble(this.properties.getProperty(
-			"change_amplitude"));
-		this.changeProbability = Double.parseDouble(this.properties.getProperty(
-			"change_probability"));
-	}
+      /*
+       * Note every property file should have these properties
+       */
+      this.changeAmplitude = Double.parseDouble(this.properties.getProperty(
+        "change_amplitude"));
+      this.changeProbability = Double.parseDouble(this.properties.getProperty(
+        "change_probability"));
+  }
 
-	public double getChangeAmplitude() {
-		return this.changeAmplitude;
-	}
+  public double getChangeAmplitude() {
+    return this.changeAmplitude;
+  }
 
-	public double getChangeProbability() {
-		return this.changeProbability;
-	}
+  public double getChangeProbability() {
+    return this.changeProbability;
+  }
 
-	public Random getRandom() {
-		return this.random;
-	}
+  public Random getRandom() {
+    return this.random;
+  }
 
-	public void setChangeAmplitude(double changeAmplitude) {
-		this.changeAmplitude = changeAmplitude;
-	}
+  public void setChangeAmplitude(double changeAmplitude) {
+    this.changeAmplitude = changeAmplitude;
+  }
 
-	public void setChangeProbability(double changeProbability) {
-		this.changeProbability = changeProbability;
-	}
+  public void setChangeProbability(double changeProbability) {
+    this.changeProbability = changeProbability;
+  }
 
-	public void setRandom(Random random) {
-		this.random = random;
-	}
+  public void setRandom(Random random) {
+    this.random = random;
+  }
 
-	/**
-	 * @return the randomSeedService
-	 */
-	public RandomSeedService getRandomservice() {
-		return randomSeedService;
-	}
+  /**
+   * @return the randomSeedService
+   */
+  public RandomSeedService getRandomservice() {
+    return randomSeedService;
+  }
 
-	/**
-	 * @param randomservice the randomSeedService to set
-	 */
-	public void setRandomservice(
-		RandomSeedService randomservice) {
-		this.randomSeedService = randomservice;
-	}
+  /**
+   * @param randomservice the randomSeedService to set
+   */
+  public void setRandomservice(
+    RandomSeedService randomservice) {
+    this.randomSeedService = randomservice;
+  }
 
-	/**
-	 * @return the properties
-	 */
-	public Properties getProperties() {
-		return properties;
-	}
+  /**
+   * @return the properties
+   */
+  public Properties getProperties() {
+    return properties;
+  }
 
-	/**
-	 * @param properties the properties to set
-	 */
-	protected void setProperties(Properties properties) {
-		this.properties = properties;
-	}
+  /**
+   * @param properties the properties to set
+   */
+  protected void setProperties(Properties properties) {
+    this.properties = properties;
+  }
 
 }

@@ -256,13 +256,11 @@ public class CityCtrl implements Serializable {
     City selectedValue = (City) event.getObject();
     List<LatLng> citySelectionBounds = new LinkedList<>();
     Polygon citySelectionBoundsPolygon = new Polygon();
-    for (com.vividsolutions.jts.geom.Coordinate coordinate : selectedValue.
-      getPosition().getBoundaries().getCoordinates()) {
+    for (com.vividsolutions.jts.geom.Coordinate coordinate : selectedValue.getGeoInfo().getBoundaries().getCoordinates()) {
       citySelectionBoundsPolygon.getPaths().add(new LatLng(coordinate.y,
         coordinate.x));
     }
-    mapCenter = selectedValue.getPosition().getCenterPoint().getY() + ", " + selectedValue.
-      getPosition().getCenterPoint().getX();
+    mapCenter = selectedValue.getGeoInfo().getCenterPoint().getY() + ", " + selectedValue.getGeoInfo().getCenterPoint().getX();
     mapModel.getPolygons().clear();
     citySelectionBoundsPolygon.setStrokeColor("#FF9900");
     citySelectionBoundsPolygon.setFillColor("#FF9900");

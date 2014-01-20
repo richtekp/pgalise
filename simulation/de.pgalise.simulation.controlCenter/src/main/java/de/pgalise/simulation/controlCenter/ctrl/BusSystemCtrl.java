@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.component.html.HtmlDataTable;
 import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -21,48 +20,49 @@ import javax.faces.event.AjaxBehaviorEvent;
  */
 @ManagedBean
 @SessionScoped
-public class BusSystemCtrl implements Serializable 
-{
+public class BusSystemCtrl implements Serializable {
 
-	private LinkedList<BusRoute> busRoutes = new LinkedList<>(Arrays.asList(
-					new BusRoute(1L,
-									"shortN",
-									"longN")));
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Creates a new instance of BusSystemCtrl
-	 */
-	public BusSystemCtrl() {
+  private LinkedList<BusRoute> busRoutes = new LinkedList<>(Arrays.asList(
+    new BusRoute(1L,
+      "shortN",
+      "longN")));
+
+  /**
+   * Creates a new instance of BusSystemCtrl
+   */
+  public BusSystemCtrl() {
 //		dataTable.
-	}
+  }
 
-	public LinkedList<BusRoute> getBusRoutes() {
-		return busRoutes;
-	}
+  public LinkedList<BusRoute> getBusRoutes() {
+    return busRoutes;
+  }
 
-	public void setBusRoutes(LinkedList<BusRoute> busRoutes) {
-		this.busRoutes = busRoutes;
-	}
+  public void setBusRoutes(LinkedList<BusRoute> busRoutes) {
+    this.busRoutes = busRoutes;
+  }
 
-	public void checkAll() {
-		for (BusRoute busRoute : busRoutes) {
-			busRoute.setUsed(true);
-		}
-	}
+  public void checkAll() {
+    for (BusRoute busRoute : busRoutes) {
+      busRoute.setUsed(true);
+    }
+  }
 
-	public void checkNone() {
-		for (BusRoute busRoute : busRoutes) {
-			busRoute.setUsed(false);
-		}
-	}
+  public void checkNone() {
+    for (BusRoute busRoute : busRoutes) {
+      busRoute.setUsed(false);
+    }
+  }
 
-	public void useBusRouteChange(BusRoute a) {
-		a.setUsed(!a.getUsed());
-	}
+  public void useBusRouteChange(BusRoute a) {
+    a.setUsed(!a.getUsed());
+  }
 
-	public void usedChanged(AjaxBehaviorEvent event) {
-		HtmlSelectBooleanCheckbox source = (HtmlSelectBooleanCheckbox) event.
-						getSource();
-		System.out.println(event);
-	}
+  public void usedChanged(AjaxBehaviorEvent event) {
+    HtmlSelectBooleanCheckbox source = (HtmlSelectBooleanCheckbox) event.
+      getSource();
+    System.out.println(event);
+  }
 }

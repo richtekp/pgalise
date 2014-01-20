@@ -84,7 +84,7 @@ public class DefaultWeatherServiceManagerTest {
             databaseManager)));
 
       City city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      entityManager.merge(city.getPosition());
+      entityManager.merge(city.getGeoInfo());
       entityManager.merge(city);
       instance.saveInformations();
       Query queryCurrent = entityManager.createQuery(

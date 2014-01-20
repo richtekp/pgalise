@@ -64,7 +64,7 @@ public class GoogleWeatherTest {
     userTransaction.begin();
     try {
       City city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      entityManager.merge(city.getPosition());
+      entityManager.merge(city.getGeoInfo());
       entityManager.merge(city);
       GoogleWeather instance = new GoogleWeather(idGenerator,
         baseDatabaseManager);

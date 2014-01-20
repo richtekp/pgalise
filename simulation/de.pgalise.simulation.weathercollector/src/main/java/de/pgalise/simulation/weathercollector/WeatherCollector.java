@@ -4,7 +4,6 @@
  */
 package de.pgalise.simulation.weathercollector;
 
-import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.simulation.weathercollector.weatherservice.ServiceStrategy;
 import de.pgalise.simulation.weathercollector.weatherstation.StationStrategy;
@@ -31,7 +30,7 @@ public interface WeatherCollector {
 
   ServiceDataHelper retrieveServiceDataCurrent(
     ServiceStrategy serviceStrategy,
-    City city);
+    String cityName);
 
   public void collectStationData(
     Set<StationStrategy> stationStrategys);

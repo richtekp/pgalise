@@ -146,8 +146,9 @@ public class MainCtrl implements Serializable {
       cityCtrl.getChosenAltitude(),
       cityCtrl.getNearRiver(),
       cityCtrl.getNearSea(),
-      null,
-      null);
+      null, //geoInformation (set later)
+      null //cityInfrastructureData (set later)
+    );
     Thread weatherCollectorThread = new Thread() {
       @Override
       public void run() {
@@ -199,7 +200,7 @@ public class MainCtrl implements Serializable {
       throw new RuntimeException(ex);
     }
 
-    city.setPosition(new BaseGeoInfo(idGenerator.getNextId(),
+    city.setGeoInfo(new BaseGeoInfo(idGenerator.getNextId(),
       JTS.toGeometry(cityInfrastructureManager.getBoundary())));
     city.setCityInfrastructureData(cityInfrastructureData);
     initParameter.setCity(city);

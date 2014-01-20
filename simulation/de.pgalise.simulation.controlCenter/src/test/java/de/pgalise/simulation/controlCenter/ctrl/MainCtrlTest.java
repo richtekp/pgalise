@@ -10,21 +10,23 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.testutils.TestUtils;
 import java.io.IOException;
+import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.naming.NamingException;
-import org.junit.Test;
+import org.apache.openejb.api.LocalClient;
 import static org.junit.Assert.*;
+import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
-import org.junit.Before;
 
 /**
  *
  * @author richter
  */
-@LocalBean
+@LocalClient
+@ManagedBean
 public class MainCtrlTest {
 
   @EJB

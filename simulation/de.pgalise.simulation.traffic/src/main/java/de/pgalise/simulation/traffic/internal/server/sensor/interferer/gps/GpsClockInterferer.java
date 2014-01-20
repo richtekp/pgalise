@@ -26,38 +26,38 @@ import de.pgalise.simulation.service.RandomSeedService;
  */
 public class GpsClockInterferer extends GpsBaseInterferer {
 
-	/**
-	 * File path for property file
-	 */
-	public static final String PROPERTIES_FILE_PATH = "/interferer_gps_clock.properties";
+  /**
+   * File path for property file
+   */
+  public static final String PROPERTIES_FILE_PATH = "interferer_gps_clock.properties";
 
-	// @TODO GPSMapper als abhängigkeit hinzufügen um die VECTOR_UNIT zu bestimmen
-	private static final double VECTOR_UNIT = 100.0;
-	private static final long serialVersionUID = 1L;
+  // @TODO GPSMapper als abhängigkeit hinzufügen um die VECTOR_UNIT zu bestimmen
+  private static final double VECTOR_UNIT = 100.0;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Constructor
-	 *
-	 * @param randomseedservice Random Seed Service
-	 */
-	public GpsClockInterferer(RandomSeedService randomseedservice) {
-		super(randomseedservice,
-			GpsClockInterferer.PROPERTIES_FILE_PATH);
-	}
+  /**
+   * Constructor
+   *
+   * @param randomseedservice Random Seed Service
+   */
+  public GpsClockInterferer(RandomSeedService randomseedservice) {
+    super(randomseedservice,
+      GpsClockInterferer.PROPERTIES_FILE_PATH);
+  }
 
-	@Override
-	public JaxRSCoordinate interfere(JaxRSCoordinate mutablePosition,
-		JaxRSCoordinate realPosition,
-		long simTime) {
-		// Should be changed?
-		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
-			double changeValue = (this.getChangeAmplitude() / VECTOR_UNIT) * this.
-				getRandom().nextGaussian();
-			return new JaxRSCoordinate(mutablePosition.getX() + changeValue,
-				mutablePosition.getY() + changeValue);
-		}
+  @Override
+  public JaxRSCoordinate interfere(JaxRSCoordinate mutablePosition,
+    JaxRSCoordinate realPosition,
+    long simTime) {
+    // Should be changed?
+    if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
+      double changeValue = (this.getChangeAmplitude() / VECTOR_UNIT) * this.
+        getRandom().nextGaussian();
+      return new JaxRSCoordinate(mutablePosition.getX() + changeValue,
+        mutablePosition.getY() + changeValue);
+    }
 
-		// Returns with no change
-		return mutablePosition;
-	}
+    // Returns with no change
+    return mutablePosition;
+  }
 }

@@ -87,7 +87,7 @@ public class DefaultWeatherCollectorTest {
             baseDatabaseManager)));
 
       City city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      entityManager.merge(city.getPosition());
+      entityManager.merge(city.getGeoInfo());
       entityManager.merge(city);
       weatherCollector.collectServiceData(
         serviceStrategys);
@@ -108,7 +108,7 @@ public class DefaultWeatherCollectorTest {
       expectLastCall().once();
       EasyMock.replay(stationStrategy);
       City city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      entityManager.merge(city.getPosition());
+      entityManager.merge(city.getGeoInfo());
       entityManager.merge(city);
       weatherCollector.collectStationData(
         new HashSet<>(Arrays.asList(stationStrategy)));

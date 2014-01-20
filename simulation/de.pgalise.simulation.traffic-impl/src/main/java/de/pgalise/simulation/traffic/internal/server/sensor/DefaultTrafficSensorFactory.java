@@ -34,12 +34,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import javax.ejb.Stateful;
+import javax.ejb.Local;
 
 /**
  *
  * @author richter
  */
 @Stateful
+@Local(TrafficSensorFactory.class)
 public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
   implements TrafficSensorFactory {
 

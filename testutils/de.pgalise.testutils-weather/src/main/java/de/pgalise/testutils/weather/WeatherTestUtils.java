@@ -64,7 +64,7 @@ public class WeatherTestUtils {
     long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
       endTimestamp);
     Map<Date, ServiceDataForecast> retValue;
-    entityManager.merge(city.getPosition());
+    entityManager.merge(city.getGeoInfo());
     entityManager.merge(city);
     long start = preceedingDayTimestampMidnight;
     retValue = new HashMap<>();
@@ -125,7 +125,7 @@ public class WeatherTestUtils {
     long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
       endTimestamp);
     Map<Date, ServiceDataCurrent> retValue;
-    entityManager.merge(city.getPosition());
+    entityManager.merge(city.getGeoInfo());
     entityManager.merge(city);
     long start = preceedingDayTimestampMidnight;
     retValue = new HashMap<>();

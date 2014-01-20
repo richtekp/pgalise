@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.weathercollector.internal;
 
-import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.simulation.weathercollector.WeatherCollector;
 import de.pgalise.simulation.weathercollector.util.DatabaseManager;
@@ -100,7 +99,7 @@ public class DefaultWeatherCollector implements
   @Override
   public ServiceDataHelper retrieveServiceDataCurrent(
     ServiceStrategy serviceStrategy,
-    City city) {
+    String city) {
     return serviceStrategy.getWeather(city);
   }
 }

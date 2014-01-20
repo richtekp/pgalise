@@ -90,7 +90,7 @@ public class DefaultWeatherStationManagerTest {
       EasyMock.replay(strategyMock);
 
       City city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      entityManager.merge(city.getPosition());
+      entityManager.merge(city.getGeoInfo());
       entityManager.merge(city);
       instance.saveInformations();
       //only test that StationStrategy.saveWeather is invoked

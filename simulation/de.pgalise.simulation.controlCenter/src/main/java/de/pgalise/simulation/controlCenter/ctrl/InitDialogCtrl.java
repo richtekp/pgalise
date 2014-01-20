@@ -10,8 +10,8 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,14 +45,14 @@ public class InitDialogCtrl implements Serializable {
   private int chosenInitialType;
 
   @EJB
-  private InformationBasedVehicleFactory vehicleFactory;
+  private InformationBasedVehicleFactory informationBasedVehicleFactory;
   @EJB
   private TcpIpOutput output;
   private Queue<VehicleData> uiVehicles;
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private CarFactory carFactory;
+  private VehicleFactory vehicleFactory;
 
   public InitDialogCtrl() {
   }
@@ -63,7 +63,7 @@ public class InitDialogCtrl implements Serializable {
     InformationBasedVehicleFactory vehicleFactory,
     TcpIpOutput output) {
     this.importedXML = importedXML;
-    this.vehicleFactory = vehicleFactory;
+    this.informationBasedVehicleFactory = vehicleFactory;
     this.output = output;
   }
 
@@ -73,7 +73,7 @@ public class InitDialogCtrl implements Serializable {
     recentScenarioMap = new HashMap<>();
     uiVehicles = new LinkedList<VehicleData>(
       Arrays.asList(
-        carFactory.createCar().getData()));
+        vehicleFactory.createCar().getData()));
   }
 
   /**

@@ -178,14 +178,14 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
 
   @Override
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
-    weatherController.init(new WeatherInitParameter(param.getCity(),
+    weatherController.init(new WeatherInitParameter<>(param.getCity(),
       param.getStartTimestamp().getTime(),
       param.getEndTimestamp().getTime(),
       param.getInterval(),
       param.getClockGeneratorInterval(),
       param.getOperationCenterURL(),
       param.getControlCenterURL(),
-      param.getCity().getPosition().getBoundaries().getEnvelopeInternal()));
+      param.getCity().getGeoInfo().getBoundaries().getEnvelopeInternal()));
     energyController.init(param);
     trafficController.init(param);
     weatherSensorController.init(param);
@@ -193,6 +193,9 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
     // init the event initiator
     this.eventInitiator.setFrontController(frontControllerList);
     this.eventInitiator.init(param);
+    trafficSensorController.init(param);
+    trafficServer.init(param);
+    energySensorController.init(param);
   }
 
   @Override

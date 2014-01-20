@@ -13,51 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.event;
 
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.SimulationInitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import java.util.List;
 
 /**
- * An event initiator gives the tact of the simulation. It calls the
- * update method of the {@link SimulationComponent} controllers and
- * provides instances of {@link SimulationEvent}, which shall be
- * processed by the respective controllers. The events are encapsulated in a
- * {@link SimulationEventList} with the current timestamp. It's also possible, that
- * there is no current {@link SimulationEvent} in the given {@link SimulationEventList}, then
- * the {@link SimulationEventList} indicates only the progress of the simulation time.
- * 
+ * An event initiator gives the tact of the simulation. It calls the update
+ * method of the {@link SimulationComponent} controllers and provides instances
+ * of {@link SimulationEvent}, which shall be processed by the respective
+ * controllers. The events are encapsulated in a {@link SimulationEventList}
+ * with the current timestamp. It's also possible, that there is no current
+ * {@link SimulationEvent} in the given {@link SimulationEventList}, then the
+ * {@link SimulationEventList} indicates only the progress of the simulation
+ * time.
+ *
  * @author Timo
  */
-public interface EventInitiator extends Controller<Event, StartParameter, SimulationInitParameter> {
+public interface EventInitiator extends
+  Controller<Event, StartParameter, WeatherInitParameter> {
 
-	/**
-	 * Returns the event thread. Use this only for testing.
-	 * 
-	 * @return event thread
-	 */
-	public Thread getEventThread();
-	
-	/**
-	 * Adds an event list.
-	 * @param simulationEventList
-	 */
-	public void addSimulationEventList(EventList<?> simulationEventList);
-	
-	public EventList<?> getEventList();
-	
-	/**
-	 * Returns the current timestamp of the simulation.
-	 * @return
-	 */
-	public long getCurrentTimestamp();
-	
-	public void setFrontController(List<Controller<?,?,?>> frontController);
+  /**
+   * Returns the event thread. Use this only for testing.
+   *
+   * @return event thread
+   */
+  public Thread getEventThread();
+
+  /**
+   * Adds an event list.
+   *
+   * @param simulationEventList
+   */
+  public void addSimulationEventList(EventList<?> simulationEventList);
+
+  public EventList<?> getEventList();
+
+  /**
+   * Returns the current timestamp of the simulation.
+   *
+   * @return
+   */
+  public long getCurrentTimestamp();
+
+  public void setFrontController(List<Controller<?, ?, ?>> frontController);
 
 }
