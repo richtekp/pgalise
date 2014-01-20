@@ -23,10 +23,6 @@
   <dependencies>
     <dependency>
       <groupId>de.pgalise.simulation</groupId>
-      <artifactId>operationCenter-jar</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>de.pgalise.simulation</groupId>
       <artifactId>shared</artifactId>
       <type>jar</type>
     </dependency>

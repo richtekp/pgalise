@@ -62,6 +62,7 @@ public class ServiceDataForecast extends AbstractServiceData implements
     Float relativHumidity,
     Float windDirection,
     Float windVelocity,
+    Float airPressure,
     WeatherCondition condition
   ) {
     super(id,
@@ -71,6 +72,7 @@ public class ServiceDataForecast extends AbstractServiceData implements
       relativHumidity,
       windDirection,
       windVelocity,
+      airPressure,
       condition);
     this.temperatureHigh = temperatureHigh;
     this.temperatureLow = temperatureLow;
@@ -96,40 +98,40 @@ public class ServiceDataForecast extends AbstractServiceData implements
   public int compareTo(ServiceDataForecast o) {
     return this.getMeasureTime().compareTo(o.getMeasureTime());
   }
-	
-	protected boolean equalsTransitive(ServiceDataForecast other) {
-		if(!super.equalsTransitive(other)) {
-			return false;
-		}
-		if (!Objects.equals(this.temperatureHigh,
-			other.temperatureHigh)) {
-			return false;
-		}
-		if (!Objects.equals(this.temperatureLow,
-			other.temperatureLow)) {
-			return false;
-		}
-		return true;
-	}
 
-	@Override
-	public int hashCode() {
-		int hash = 23 * super.hashCode();
-		hash = 23 * hash + Objects.hashCode(this.temperatureHigh);
-		hash = 23 * hash + Objects.hashCode(this.temperatureLow);
-		return hash;
-	}
+  protected boolean equalsTransitive(ServiceDataForecast other) {
+    if (!super.equalsTransitive(other)) {
+      return false;
+    }
+    if (!Objects.equals(this.temperatureHigh,
+      other.temperatureHigh)) {
+      return false;
+    }
+    if (!Objects.equals(this.temperatureLow,
+      other.temperatureLow)) {
+      return false;
+    }
+    return true;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final ServiceDataForecast other = (ServiceDataForecast) obj;
-		return equalsTransitive(other);
-	}
+  @Override
+  public int hashCode() {
+    int hash = 23 * super.hashCode();
+    hash = 23 * hash + Objects.hashCode(this.temperatureHigh);
+    hash = 23 * hash + Objects.hashCode(this.temperatureLow);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final ServiceDataForecast other = (ServiceDataForecast) obj;
+    return equalsTransitive(other);
+  }
 
 }

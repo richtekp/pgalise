@@ -71,6 +71,7 @@ public class ExtendedServiceDataCurrent extends ServiceDataCurrent {
     Float visibility,
     Float windDirection,
     Float windVelocity,
+    Float airPressure,
     WeatherCondition condition,
     java.sql.Time sunrise,
     java.sql.Time sunset) {
@@ -82,6 +83,7 @@ public class ExtendedServiceDataCurrent extends ServiceDataCurrent {
       temperature,
       windDirection,
       windVelocity,
+      airPressure,
       condition);
     this.sunrise = sunrise;
     this.sunset = sunset;

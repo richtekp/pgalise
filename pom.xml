@@ -221,18 +221,6 @@
 			</dependency>
 			<dependency>
 				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>weathercollector-impl</artifactId>
-				<version>2.1-SNAPSHOT</version>
-				<type>ejb</type>
-			</dependency>
-			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
-				<artifactId>weathercollector-impl</artifactId>
-				<version>2.1-SNAPSHOT</version>
-				<type>jar</type>
-			</dependency>
-			<dependency>
-				<groupId>de.pgalise.simulation</groupId>
 				<artifactId>energy</artifactId>
 				<version>2.0-SNAPSHOT</version>
 			</dependency>
@@ -649,6 +637,14 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.16</version>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+				</configuration>
 			</plugin>
 		</plugins>
 

@@ -51,6 +51,8 @@ public abstract class AbstractServiceData extends AbstractTimeSensitive {
   @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   private WeatherCondition condition;
 
+  private Float airPressure;
+
   protected AbstractServiceData() {
   }
 
@@ -61,6 +63,7 @@ public abstract class AbstractServiceData extends AbstractTimeSensitive {
     Float relativHumidity,
     Float windDirection,
     Float windVelocity,
+    Float airPressure,
     WeatherCondition condition) {
     super(id,
       measureDate,
@@ -69,6 +72,7 @@ public abstract class AbstractServiceData extends AbstractTimeSensitive {
     this.relativHumidity = relativHumidity;
     this.windDirection = windDirection;
     this.windVelocity = windVelocity;
+    this.airPressure = airPressure;
     this.condition = condition;
   }
 
@@ -114,55 +118,63 @@ public abstract class AbstractServiceData extends AbstractTimeSensitive {
   public WeatherCondition getCondition() {
     return this.condition;
   }
-	
-	protected boolean equalsTransitive(AbstractServiceData other) {
-		if(!super.equalsTransitive(other)) {
-			return false;
-		}
-		if (!Objects.equals(this.city,
-			other.city)) {
-			return false;
-		}
-		if (!Objects.equals(this.relativHumidity,
-			other.relativHumidity)) {
-			return false;
-		}
-		if (!Objects.equals(this.windDirection,
-			other.windDirection)) {
-			return false;
-		}
-		if (!Objects.equals(this.windVelocity,
-			other.windVelocity)) {
-			return false;
-		}
-		if (!Objects.equals(this.condition,
-			other.condition)) {
-			return false;
-		}
-		return true;
-	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final AbstractServiceData other = (AbstractServiceData) obj;
-		return equalsTransitive(other);
-	}
+  public Float getAirPressure() {
+    return airPressure;
+  }
 
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 97 * hash + super.hashCode();
-		hash = 97 * hash + Objects.hashCode(this.city);
-		hash = 97 * hash + Objects.hashCode(this.relativHumidity);
-		hash = 97 * hash + Objects.hashCode(this.windDirection);
-		hash = 97 * hash + Objects.hashCode(this.windVelocity);
-		hash = 97 * hash + Objects.hashCode(this.condition);
-		return hash;
-	}
+  public void setAirPressure(Float airPressure) {
+    this.airPressure = airPressure;
+  }
+
+  protected boolean equalsTransitive(AbstractServiceData other) {
+    if (!super.equalsTransitive(other)) {
+      return false;
+    }
+    if (!Objects.equals(this.city,
+      other.city)) {
+      return false;
+    }
+    if (!Objects.equals(this.relativHumidity,
+      other.relativHumidity)) {
+      return false;
+    }
+    if (!Objects.equals(this.windDirection,
+      other.windDirection)) {
+      return false;
+    }
+    if (!Objects.equals(this.windVelocity,
+      other.windVelocity)) {
+      return false;
+    }
+    if (!Objects.equals(this.condition,
+      other.condition)) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final AbstractServiceData other = (AbstractServiceData) obj;
+    return equalsTransitive(other);
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 97 * hash + super.hashCode();
+    hash = 97 * hash + Objects.hashCode(this.city);
+    hash = 97 * hash + Objects.hashCode(this.relativHumidity);
+    hash = 97 * hash + Objects.hashCode(this.windDirection);
+    hash = 97 * hash + Objects.hashCode(this.windVelocity);
+    hash = 97 * hash + Objects.hashCode(this.condition);
+    return hash;
+  }
 }

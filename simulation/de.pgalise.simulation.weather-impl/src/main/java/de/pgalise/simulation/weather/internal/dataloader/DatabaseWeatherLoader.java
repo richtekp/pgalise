@@ -202,6 +202,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
       data.getTemperature(),
       data.getWindDirection(),
       data.getWindVelocity(),
+      data.getAirPressure(),
       WeatherCondition.
       retrieveCondition(idGenerator,
         WeatherCondition.UNKNOWN_CONDITION_CODE)
@@ -251,6 +252,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
       data.getRelativHumidity(),
       data.getWindDirection(),
       data.getWindVelocity(),
+      data.getAirPressure(),
       WeatherCondition.
       retrieveCondition(idGenerator,
         WeatherCondition.UNKNOWN_CONDITION_CODE)

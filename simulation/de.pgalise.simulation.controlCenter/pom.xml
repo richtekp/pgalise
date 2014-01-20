@@ -23,6 +23,12 @@
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic-impl</artifactId>
+			<type>ejb</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>controlCenter-jar</artifactId>
 		</dependency>
 		<dependency>
@@ -45,6 +51,24 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared-resources</artifactId>
 		</dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>simulationController-impl</artifactId>
+	  <type>ejb</type>
+		<scope>test</scope>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>weather-impl</artifactId>
+	  <type>ejb</type>
+		<scope>test</scope>
+	 </dependency>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>energy-impl</artifactId>
+	  <type>ejb</type>
+		<scope>test</scope>
+	 </dependency>
 		
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -220,11 +244,6 @@
 			<version>6626</version>
 			<type>jar</type>
 		</dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>weathercollector</artifactId>
-	  <type>jar</type>
-	 </dependency>
 	</dependencies>
 	<build>
 		<finalName>de.pgalise.simulation.controlCenter</finalName>

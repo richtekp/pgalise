@@ -44,11 +44,6 @@
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weathercollector-impl</artifactId>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>controlCenter-ejb</artifactId>
 			<type>ejb</type>
 			<exclusions>
@@ -131,11 +126,6 @@
 							<groupId>de.pgalise.simulation</groupId>
 							<artifactId>shared-impl</artifactId>
 							<moduleId>shared-impl</moduleId>
-						</ejbModule>
-						<ejbModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>weathercollector-impl</artifactId>
-							<moduleId>weathercollector-impl</moduleId>
 						</ejbModule>
 					</modules>
 					<archive>

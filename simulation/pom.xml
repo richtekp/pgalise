@@ -26,7 +26,6 @@
 		<module>de.pgalise.simulation.jsf</module>
 		<module>de.pgalise.simulation.controlCenter-jar</module>
 		<module>de.pgalise.simulation.operationCenter-jar</module>
-		<module>de.pgalise.simulation.weathercollector</module>
 		
 		<!-- Implementierungen -->
 		<module>de.pgalise.simulation.shared-impl</module>
@@ -36,7 +35,6 @@
 		<module>de.pgalise.simulation.simulationController-impl</module>
 		<module>de.pgalise.simulation.controlCenter-ejb</module>
 		<module>de.pgalise.simulation.operationCenter-ejb</module>
-		<module>de.pgalise.simulation.weathercollector-impl</module>
 		<!-- Web Module -->
 		<module>de.pgalise.simulation.controlCenter</module>
 		<module>de.pgalise.simulation.operationCenter</module>

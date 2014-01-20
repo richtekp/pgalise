@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
@@ -27,6 +28,8 @@ import de.pgalise.simulation.weather.internal.modifier.WeatherStrategyContext;
 import de.pgalise.simulation.weather.internal.positionconverter.LinearWeatherPositionConverter;
 import de.pgalise.simulation.weather.internal.util.comparator.WeatherStrategyComparator;
 import de.pgalise.simulation.weather.entity.AbstractStationData;
+import de.pgalise.simulation.weather.entity.ServiceDataHelper;
+import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
 import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.modifier.WeatherDayEventModifier;
 import de.pgalise.simulation.weather.modifier.WeatherStrategy;
@@ -35,10 +38,15 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterBase;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.parameter.WindStrength;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
+import de.pgalise.simulation.weather.positionconverter.WeatherPositionInitParameter;
 import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
+import de.pgalise.simulation.weathercollector.WeatherCollector;
+import de.pgalise.simulation.weathercollector.util.DatabaseManager;
+import de.pgalise.simulation.weathercollector.weatherservice.ServiceStrategy;
+import de.pgalise.simulation.weathercollector.weatherservice.strategy.YahooWeather;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Date;
 import java.sql.Time;
@@ -51,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.measure.quantity.Temperature;
@@ -68,7 +77,7 @@ import javax.measure.unit.Unit;
  * If there is a request for {@link WeatherParameter} values, which cannot be
  * calculated from the provided data, the WeatherService try to get the needed
  * data automatically. Only one thread can get the new information from the
- * database. At that moment the other requests have to wait till the new data
+ * database. At that moment the other requests have to wait until the new data
  * are available. Many threads can request specific {@link WeatherParameter}
  * values simultaneously. At the time of the WeatherService creation, the class
  * loads the {@link WeatherParameter} by the help of the
@@ -129,6 +138,8 @@ public class DefaultWeatherService implements WeatherService {
   /**
    * Values linked to the reference point
    */
+  /*
+   initialized in @PostConstruct*/
   private WeatherMap referenceValues;
 
   /**
@@ -147,6 +158,15 @@ public class DefaultWeatherService implements WeatherService {
    */
   private List<WeatherStrategyHelper> plannedEventModifiers = new LinkedList<>();
 
+  @EJB
+  private WeatherCollector weatherCollector;
+
+  private ServiceStrategy serviceStrategy;
+  @EJB
+  private IdGenerator idGenerator;
+  @EJB
+  private DatabaseManager databaseManager;
+
   /**
    *
    * @throws IllegalArgumentException
@@ -154,7 +174,7 @@ public class DefaultWeatherService implements WeatherService {
   public DefaultWeatherService() {
     this.parameters = new HashMap<>();
     this.cachedParameters = new HashMap<>();
-    this.initParameters();
+    this.init0();
   }
 
   /**
@@ -174,10 +194,56 @@ public class DefaultWeatherService implements WeatherService {
     this.loader = loader;
 
     // Init maps
-    this.referenceValues = null;
     this.gridConverter = new LinearWeatherPositionConverter(city.getGeoInfo().
       getBoundaries());
     this.plannedEventModifiers = new ArrayList<>();
+  }
+
+  @PostConstruct
+  public void init() {
+    init0();
+  }
+
+  @Override
+  public void init(WeatherInitParameter initParameter) {
+    this.loadedTimestamp = initParameter.getStartTimestamp().getTime();
+    this.simEndTimestamp = initParameter.getEndTimestamp().getTime();
+    this.referenceValues = new CityClimateModifier(initParameter.getCity(),
+      initParameter.getStartTimestamp().getTime(),
+      loader);
+    this.gridConverter.init(new WeatherPositionInitParameter(initParameter.
+      getCity().getGeoInfo().getBoundaries()));
+  }
+
+  /**
+   * Initiate all parameters
+   *
+   * @throws Exception There is a parameter that can not be initiated.
+   */
+  private void init0() {
+    for (WeatherParameterEnum enumElement : WeatherParameterEnum.values()) {
+      // Add parameter
+      try {
+        WeatherParameterBase type = enumElement.getValueType().getConstructor(
+          WeatherService.class)
+          .newInstance(this);
+        type.setWeatherService(this);
+
+        this.parameters.put(enumElement,
+          type);
+      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        throw new RuntimeException(ex);
+      }
+
+      // Add cached parameter
+      if (enumElement.isCachedParameter()) {
+        this.cachedParameters.put(enumElement,
+          new HashMap<Long, Number>());
+      }
+    }
+
+    serviceStrategy = new YahooWeather(idGenerator,
+      databaseManager);
   }
 
   @Override
@@ -245,7 +311,7 @@ public class DefaultWeatherService implements WeatherService {
   }
 
   @Override
-  public boolean checkDate(long timestamp) {
+  public boolean checkDate(long timestamp) throws IllegalArgumentException {
     if (timestamp < 1) {
       throw new IllegalArgumentException(ExceptionMessages.
         getMessageForNotNegative("timestamp",
@@ -325,7 +391,7 @@ public class DefaultWeatherService implements WeatherService {
   @SuppressWarnings("unchecked")
   public <T extends Number> T getValue(WeatherParameterEnum key,
     long time,
-    City city) throws IllegalArgumentException {
+    City city) throws IllegalArgumentException, NoWeatherDataFoundException {
     if (key == null) {
       throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
         "key"));
@@ -368,7 +434,46 @@ public class DefaultWeatherService implements WeatherService {
       }
 
       // Return the value
-      return this.parameters.get(key).getValue(time);
+      //@TODO:
+      try {
+        return this.parameters.get(key).getValue(time);
+      } catch (NullPointerException ex) {
+        ServiceDataHelper serviceDataHelper = weatherCollector.
+          retrieveServiceDataCurrent(serviceStrategy,
+            city);
+        switch (key) {
+          case AIR_PRESSURE:
+            return (T) serviceDataHelper.getCurrentCondition().getAirPressure();
+          case LIGHT_INTENSITY:
+            //return serviceDataHelper.getCurrentCondition().getLightIntensity();
+            return (T) Float.valueOf(20.0f);
+          case PERCEIVED_TEMPERATURE:
+            return (T) Float.valueOf(20.0f);
+          //return serviceDataHelper.getCurrentCondition().
+          //getPerceivedTemperature();
+          case PRECIPITATION_AMOUNT:
+            return (T) Float.valueOf("2.0f");
+          case RADIATION:
+            return (T) Float.valueOf(1.0f);
+          //return serviceDataHelper.getCurrentCondition().getRadiation();
+          case RELATIV_HUMIDITY:
+            return (T) Float.valueOf(60.0f);
+          //return serviceDataHelper.getCurrentCondition().getRelativHumidity();
+          case TEMPERATURE:
+            return (T) Float.valueOf(20.0f);
+          //return serviceDataHelper.getCurrentCondition().getTemperature();
+          case WIND_DIRECTION:
+            return (T) Float.valueOf(20.0f);
+          //return serviceDataHelper.getCurrentCondition().getWindDirection();
+          case WIND_VELOCITY:
+            return (T) serviceDataHelper.getCurrentCondition().getWindVelocity();
+          case WIND_STRENGTH:
+            return (T) Float.valueOf(2.0f);
+          //return serviceDataHelper.getCurrentCondition().getWindStrength();
+          default:
+            throw new IllegalArgumentException();
+        }
+      }
 
     } catch (InterruptedException ex) {
       throw new RuntimeException(ex);
@@ -415,7 +520,6 @@ public class DefaultWeatherService implements WeatherService {
 
   @Override
   public void initValues() {
-    this.simEndTimestamp = -1;
     this.plannedEventModifiers.clear();
 
     // Clear the values for the date
@@ -459,37 +563,11 @@ public class DefaultWeatherService implements WeatherService {
   public void clearValues() {
     // Delete generel data
     this.referenceValues = null;
-    this.loadedTimestamp = -1;
+//    this.loadedTimestamp = -1;
 
     // Delete cached values
     for (WeatherParameterEnum enumElement : this.cachedParameters.keySet()) {
       this.cachedParameters.get(enumElement).clear();
-    }
-  }
-
-  /**
-   * Initiate all parameters
-   *
-   * @throws Exception There is a parameter that can not be initiated.
-   */
-  private void initParameters() {
-    for (WeatherParameterEnum enumElement : WeatherParameterEnum.values()) {
-      // Add parameter
-      try {
-        WeatherParameterBase type = enumElement.getValueType().getConstructor(
-          WeatherService.class)
-          .newInstance(this);
-        this.parameters.put(enumElement,
-          type);
-      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-        throw new RuntimeException(ex);
-      }
-
-      // Add cached parameter
-      if (enumElement.isCachedParameter()) {
-        this.cachedParameters.put(enumElement,
-          new HashMap<Long, Number>());
-      }
     }
   }
 
@@ -659,10 +737,5 @@ public class DefaultWeatherService implements WeatherService {
   @Override
   public Unit<Temperature> getTemperatureUnit() {
     return SI.CELSIUS;
-  }
-
-  @Override
-  public void init(WeatherInitParameter initParameter) {
-
   }
 }

@@ -134,7 +134,7 @@ public class SchedulerScaleTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
     a = new TrafficNode(idGenerator.getNextId(),
       new JaxRSCoordinate(0,

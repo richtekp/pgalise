@@ -82,6 +82,7 @@ public class WeatherTestUtils {
         1.0f,
         1.0f,
         1.0f,
+        20.0f,
         WeatherCondition.retrieveCondition(idGenerator,
           WeatherCondition.UNKNOWN_CONDITION_CODE)
       );
@@ -141,6 +142,7 @@ public class WeatherTestUtils {
           SI.CELSIUS),
         1.0f,
         1.0f,
+        20.0f,
         WeatherCondition.retrieveCondition(idGenerator,
           WeatherCondition.UNKNOWN_CONDITION_CODE)
       );

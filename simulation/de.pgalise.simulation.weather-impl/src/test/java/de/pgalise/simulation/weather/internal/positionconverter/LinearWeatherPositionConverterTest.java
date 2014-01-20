@@ -57,12 +57,14 @@ public class LinearWeatherPositionConverterTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
+      this);
+    TestUtils.getContainer().getContext().bind("inject",
       this);
   }
 
   @Test
-	@Ignore //why result 62?
+  @Ignore //why result 62?
   public void testGetValue() throws Exception {
     userTransaction.begin();
     try {
@@ -94,7 +96,7 @@ public class LinearWeatherPositionConverterTest {
               referencePoint.getY() - 1)
           }
         );
-			instance.init(new WeatherPositionInitParameter(referenceArea));
+      instance.init(new WeatherPositionInitParameter(referenceArea));
       value = instance.getValue(WeatherParameterEnum.TEMPERATURE,
         testTime.getTime(),
         testPosition,

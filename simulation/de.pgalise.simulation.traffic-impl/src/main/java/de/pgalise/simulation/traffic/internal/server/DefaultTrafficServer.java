@@ -312,6 +312,58 @@ public class DefaultTrafficServer extends AbstractController<
   public DefaultTrafficServer() {
   }
 
+  public DefaultTrafficServer(RandomSeedService randomSeedService,
+    TrafficGraphExtensions trafficGraphExtensions,
+    VehicleFactory vehicleFactory,
+    VehicleEventHandlerManager vehicleEventHandlerManager,
+    Set<StaticTrafficSensor> sensorRegistry,
+    TrafficSensorFactory sensorFactory,
+    ConfigReader configReader,
+    SchedulerComposite scheduler,
+    List<ScheduleItem> itemsToScheduleAfterAttractionReached,
+    List<ScheduleItem> itemsToScheduleAfterFuzzy,
+    List<Vehicle<?>> itemsToRemoveAfterFuzzy,
+    TrafficSensorController sensorController,
+    RouteConstructor routeConstructor,
+    Geometry cityZone,
+    Set<TrafficServerLocal<VehicleEvent>> trafficServers,
+    List<Geometry> cityZones,
+    List<ReceivedVehicle> receivedVehicles,
+    long currentTime,
+    long updateIntervall,
+    Map<Long, VehicleEvent> eventForVehicle,
+    TrafficGovernor fuzzyTrafficGovernor,
+    VehicleAmountManager vehicleFuzzyManager,
+    Set<RoadBarrier> listedRoadBarriers,
+    IdGenerator idGenerator,
+    TcpIpOutput tcpIpOutput) {
+    this.randomSeedService = randomSeedService;
+    this.trafficGraphExtensions = trafficGraphExtensions;
+    this.vehicleFactory = vehicleFactory;
+    this.vehicleEventHandlerManager = vehicleEventHandlerManager;
+    this.sensorRegistry = sensorRegistry;
+    this.sensorFactory = sensorFactory;
+    this.configReader = configReader;
+    this.scheduler = scheduler;
+    this.itemsToScheduleAfterAttractionReached = itemsToScheduleAfterAttractionReached;
+    this.itemsToScheduleAfterFuzzy = itemsToScheduleAfterFuzzy;
+    this.itemsToRemoveAfterFuzzy = itemsToRemoveAfterFuzzy;
+    this.sensorController = sensorController;
+    this.routeConstructor = routeConstructor;
+    this.cityZone = cityZone;
+    this.trafficServers = trafficServers;
+    this.cityZones = cityZones;
+    this.receivedVehicles = receivedVehicles;
+    this.currentTime = currentTime;
+    this.updateIntervall = updateIntervall;
+    this.eventForVehicle = eventForVehicle;
+    this.fuzzyTrafficGovernor = fuzzyTrafficGovernor;
+    this.vehicleFuzzyManager = vehicleFuzzyManager;
+    this.listedRoadBarriers = listedRoadBarriers;
+    this.idGenerator = idGenerator;
+    this.tcpIpOutput = tcpIpOutput;
+  }
+
   /**
    * Constructor (for tests)
    *

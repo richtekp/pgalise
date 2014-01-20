@@ -77,6 +77,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.xml.stream.FactoryConfigurationError;
 import javax.xml.stream.XMLStreamException;
+import javax.ejb.Local;
 
 /**
  * The DefaultFileBasedCityInfrastructureDataService is the used
@@ -90,6 +91,7 @@ import javax.xml.stream.XMLStreamException;
  @TODO: separate logic from data
  */
 @Stateful
+@Local(FileBasedCityInfrastructureDataService.class)
 public class DefaultFileBasedCityInfrastructureDataService implements
   FileBasedCityInfrastructureDataService {
 

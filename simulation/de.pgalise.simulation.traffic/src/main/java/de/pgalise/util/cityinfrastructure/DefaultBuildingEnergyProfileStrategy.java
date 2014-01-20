@@ -32,116 +32,132 @@ import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
  * @author Timo
  */
 public class DefaultBuildingEnergyProfileStrategy implements
-	BuildingEnergyProfileStrategy {
+  BuildingEnergyProfileStrategy {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -8937195673955676784L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -8937195673955676784L;
 
-	/**
-	 * If nothing else can be found: a building smaller than this gets the profile
-	 * household and a building bigger than this gets the profile industry_general
-	 */
-	private double minSquareMetersForIndustry = 100;
+  /**
+   * If nothing else can be found: a building smaller than this gets the profile
+   * household and a building bigger than this gets the profile industry_general
+   */
+  private double minSquareMetersForIndustry = 100;
 
-	/**
-	 * If a building is too small, the strategy will return nothing.
-	 */
-	private double tooSmallBuilding = 10;
+  /**
+   * If a building is too small, the strategy will return nothing.
+   */
+  private double tooSmallBuilding = 10;
 
-	/**
-	 * Constructor
-	 *
-	 * @throws IOException
-	 */
-	public DefaultBuildingEnergyProfileStrategy() {
-		try (InputStream propertiesInputStream = DefaultBuildingEnergyProfileStrategy.class.
-			getResourceAsStream("/properties.props")) {
-			Properties properties = new Properties();
-			properties.load(propertiesInputStream);
-			this.minSquareMetersForIndustry = Double.valueOf(properties.getProperty(
-				"too-small-size-for-house"));
-			this.tooSmallBuilding = Double.valueOf(properties.getProperty(
-				"min-size-for-industry"));
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+  private final static String PROPERTIES_FILE_PATH = "energy_profile_strategy.properties";
 
-	@Override
-	public EnergyProfileEnum getEnergyProfile(Building building) {
-		if (building.getSquareMeter() <= tooSmallBuilding) {
-			throw new RuntimeException("Building is too small");
-		}
-		if (building.getPublicTransportTags() != null && building.
-			getPublicTransportTags().contains(PublicTransportTagEnum.STOP_POSITION)) {
-			throw new RuntimeException("No energy profile found!");
-		}
+  /**
+   * Constructor
+   *
+   */
+  public DefaultBuildingEnergyProfileStrategy() {
+    try (InputStream propertiesInputStream = Thread.currentThread().
+      getContextClassLoader().
+      getResourceAsStream(PROPERTIES_FILE_PATH)) {
+      Properties properties = new Properties();
+      properties.load(propertiesInputStream);
+      this.minSquareMetersForIndustry = Double.valueOf(properties.getProperty(
+        "too-small-size-for-house"));
+      this.tooSmallBuilding = Double.valueOf(properties.getProperty(
+        "min-size-for-industry"));
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+  }
 
-		if (building.getLanduseTags() != null) {
-			if (building.getLanduseTags().contains(LanduseTagEnum.FARMLAND)
-				|| building.getLanduseTags().contains(LanduseTagEnum.FARMYARD)) {
+  @Override
+  public EnergyProfileEnum getEnergyProfile(Building building) {
+    if (building.getSquareMeter() <= tooSmallBuilding) {
+      throw new IllegalArgumentException("Building is too small");
+    }
+    if (building.getPublicTransportTags() != null && building.
+      getPublicTransportTags().contains(PublicTransportTagEnum.STOP_POSITION.
+        getStringValue())) {
+      throw new IllegalArgumentException("No energy profile found!");
+    }
 
-				return EnergyProfileEnum.FARM_BUILDING;
+    if (building.getLanduseTags() != null) {
+      if (building.getLanduseTags().contains(LanduseTagEnum.FARMLAND.
+        getStringValue())
+        || building.getLanduseTags().contains(LanduseTagEnum.FARMYARD.
+          getStringValue())) {
 
-			} else if (building.getLanduseTags().contains(LanduseTagEnum.INDUSTRY)) {
+        return EnergyProfileEnum.FARM_BUILDING;
 
-				return EnergyProfileEnum.INDUSTRY_GENERAL;
+      } else if (building.getLanduseTags().contains(LanduseTagEnum.INDUSTRY.
+        getStringValue())) {
 
-			} else if (building.getLanduseTags().contains(LanduseTagEnum.RETAIL)) {
+        return EnergyProfileEnum.INDUSTRY_GENERAL;
 
-				return EnergyProfileEnum.SHOP;
+      } else if (building.getLanduseTags().contains(LanduseTagEnum.RETAIL.
+        getStringValue())) {
 
-			} else if (building.getLanduseTags().contains(LanduseTagEnum.MILITARY)) {
+        return EnergyProfileEnum.SHOP;
 
-				return EnergyProfileEnum.INDUSTRY_GENERAL;
+      } else if (building.getLanduseTags().contains(LanduseTagEnum.MILITARY.
+        getStringValue())) {
 
-			} else if (building.getLanduseTags().contains(LanduseTagEnum.RESIDENTIAL)) {
+        return EnergyProfileEnum.INDUSTRY_GENERAL;
 
-				return EnergyProfileEnum.HOUSEHOLD;
+      } else if (building.getLanduseTags().contains(LanduseTagEnum.RESIDENTIAL.
+        getStringValue())) {
 
-			} else if (building.getLanduseTags().contains(LanduseTagEnum.COMMERCIAL)) {
+        return EnergyProfileEnum.HOUSEHOLD;
 
-				return EnergyProfileEnum.INDUSTRY_GENERAL;
+      } else if (building.getLanduseTags().contains(LanduseTagEnum.COMMERCIAL.
+        getStringValue())) {
 
-			}
-		}
+        return EnergyProfileEnum.INDUSTRY_GENERAL;
 
-		if (building.getAmenityTags() != null) {
-			if (building.getAmenityTags().contains(AmenityTagEnum.KINDERGARTEN)) {
+      }
+    }
 
-				return EnergyProfileEnum.INDUSTRY_ON_WORKDAYS;
+    if (building.getAmenityTags() != null) {
+      if (building.getAmenityTags().contains(AmenityTagEnum.KINDERGARTEN.
+        getStringValue())) {
 
-			} else if (building.getAmenityTags().contains(AmenityTagEnum.PHARMACY)) {
+        return EnergyProfileEnum.INDUSTRY_ON_WORKDAYS;
 
-				return EnergyProfileEnum.INDUSTRY_WORKING;
+      } else if (building.getAmenityTags().contains(AmenityTagEnum.PHARMACY.
+        getStringValue())) {
 
-			} else if (building.getAmenityTags().contains(AmenityTagEnum.RESTAURANT)) {
+        return EnergyProfileEnum.INDUSTRY_WORKING;
 
-				return EnergyProfileEnum.BUSINESS_ON_WEEKEND;
+      } else if (building.getAmenityTags().contains(AmenityTagEnum.RESTAURANT.
+        getStringValue())) {
 
-			} else if (building.getAmenityTags().contains(AmenityTagEnum.KINDERGARTEN)
-				|| building.getAmenityTags().contains(AmenityTagEnum.BICYKLE_PARKING)) {
+        return EnergyProfileEnum.BUSINESS_ON_WEEKEND;
 
-				return EnergyProfileEnum.INDUSTRY_GENERAL;
+      } else if (building.getAmenityTags().contains(AmenityTagEnum.KINDERGARTEN.
+        getStringValue())
+        || building.getAmenityTags().contains(AmenityTagEnum.BICYKLE_PARKING.
+          getStringValue())) {
 
-			} else if (building.getAmenityTags().contains(AmenityTagEnum.CAR_RENTAL)) {
+        return EnergyProfileEnum.INDUSTRY_GENERAL;
 
-				return EnergyProfileEnum.INDUSTRY_ON_WORKDAYS;
+      } else if (building.getAmenityTags().contains(AmenityTagEnum.CAR_RENTAL.
+        getStringValue())) {
 
-			}
-		}
+        return EnergyProfileEnum.INDUSTRY_ON_WORKDAYS;
 
-		if (building.getShopTags() != null) {
+      }
+    }
 
-			return EnergyProfileEnum.SHOP;
-		}
+    if (building.getShopTags() != null) {
 
-		if (building.getSquareMeter() < minSquareMetersForIndustry) {
-			return EnergyProfileEnum.HOUSEHOLD;
-		}
+      return EnergyProfileEnum.SHOP;
+    }
 
-		return EnergyProfileEnum.INDUSTRY_GENERAL;
-	}
+    if (building.getSquareMeter() < minSquareMetersForIndustry) {
+      return EnergyProfileEnum.HOUSEHOLD;
+    }
+
+    return EnergyProfileEnum.INDUSTRY_GENERAL;
+  }
 }

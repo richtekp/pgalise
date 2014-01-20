@@ -29,7 +29,6 @@ import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.internal.modifier.events.HotDayEvent;
@@ -150,7 +149,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   }
 
   @Override
-  public void checkDate(long timestamp) {
+  public void checkDate(long timestamp) throws IllegalArgumentException {
     // Check date
     if (!this.weatherService.checkDate(timestamp)) {
       throw new IllegalArgumentException("There is no data available.");
@@ -372,10 +371,11 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   }
 
   @Override
-  protected void onInit(WeatherInitParameter param) throws InitializationException {
+  protected void onInit(WeatherInitParameter param) {
     // Set random seed service
     this.initParameter = param;
     this.city = initParameter.getCity();
+    this.weatherService.init(param);
   }
 
   @Override

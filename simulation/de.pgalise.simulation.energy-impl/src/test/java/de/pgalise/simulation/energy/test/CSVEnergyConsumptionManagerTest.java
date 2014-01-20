@@ -85,7 +85,7 @@ public class CSVEnergyConsumptionManagerTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
     Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
     List<Building> buildingList = new ArrayList<>();

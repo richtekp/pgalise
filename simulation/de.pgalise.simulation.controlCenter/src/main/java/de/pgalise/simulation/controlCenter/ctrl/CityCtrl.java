@@ -9,10 +9,10 @@ import com.vividsolutions.jts.geom.Envelope;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
+import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
@@ -81,7 +81,7 @@ public class CityCtrl implements Serializable {
   private List<String> busStopFileNames = new LinkedList<>(
     MainCtrlUtils.INITIAL_BUS_STOP_FILE_PATHS);
   @EJB
-  private CityInfrastructureDataService cityInfrastructureManager;
+  private FileBasedCityInfrastructureDataService cityInfrastructureManager;
   @EJB
   private IdGenerator idGenerator;
 
@@ -90,6 +90,17 @@ public class CityCtrl implements Serializable {
    */
   public CityCtrl() {
     mapModel = new DefaultMapModel();
+  }
+
+  public CityCtrl(boolean nearSea,
+    boolean nearRiver,
+    FileBasedCityInfrastructureDataService cityInfrastructureManager,
+    IdGenerator idGenerator) {
+    this();
+    this.nearSea = nearSea;
+    this.nearRiver = nearRiver;
+    this.cityInfrastructureManager = cityInfrastructureManager;
+    this.idGenerator = idGenerator;
   }
 
   public void setDbDatabase(String dbDatabase) {
@@ -256,11 +267,13 @@ public class CityCtrl implements Serializable {
     City selectedValue = (City) event.getObject();
     List<LatLng> citySelectionBounds = new LinkedList<>();
     Polygon citySelectionBoundsPolygon = new Polygon();
-    for (com.vividsolutions.jts.geom.Coordinate coordinate : selectedValue.getGeoInfo().getBoundaries().getCoordinates()) {
+    for (com.vividsolutions.jts.geom.Coordinate coordinate : selectedValue.
+      getGeoInfo().getBoundaries().getCoordinates()) {
       citySelectionBoundsPolygon.getPaths().add(new LatLng(coordinate.y,
         coordinate.x));
     }
-    mapCenter = selectedValue.getGeoInfo().getCenterPoint().getY() + ", " + selectedValue.getGeoInfo().getCenterPoint().getX();
+    mapCenter = selectedValue.getGeoInfo().getCenterPoint().getY() + ", " + selectedValue.
+      getGeoInfo().getCenterPoint().getX();
     mapModel.getPolygons().clear();
     citySelectionBoundsPolygon.setStrokeColor("#FF9900");
     citySelectionBoundsPolygon.setFillColor("#FF9900");

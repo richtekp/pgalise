@@ -123,7 +123,7 @@ public class SchedulerTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
     nodeA = new TrafficNode(idGenerator.getNextId(),
       new JaxRSCoordinate(0,

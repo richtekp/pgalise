@@ -84,7 +84,7 @@ public interface WeatherService {
    * @param timestamp Timestamp
    * @return
    */
-  public boolean checkDate(long timestamp);
+  public boolean checkDate(long timestamp) throws IllegalArgumentException;
 
   /**
    * Modifies the current weather data with the given weather strategy
@@ -135,7 +135,7 @@ public interface WeatherService {
    */
   public <T extends Number> T getValue(WeatherParameterEnum key,
     long time,
-    City city) throws IllegalArgumentException;
+    City city) throws IllegalArgumentException, NoWeatherDataFoundException;
 
   /**
    * Get the reference value for the given timestamp and position. If the value
@@ -157,7 +157,7 @@ public interface WeatherService {
     long time,
     JaxRSCoordinate position,
     City city)
-    throws IllegalArgumentException;
+    throws IllegalArgumentException, NoWeatherDataFoundException;
 
   /**
    * Clear all stored data to use new data

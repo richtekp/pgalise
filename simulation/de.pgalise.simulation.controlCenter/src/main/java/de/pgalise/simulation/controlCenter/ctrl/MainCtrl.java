@@ -1,8 +1,3 @@
- /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.SimulationControllerLocal;
@@ -13,6 +8,7 @@ import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
@@ -42,6 +38,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -84,9 +81,9 @@ public class MainCtrl implements Serializable {
    * a wrapper for {@link SimulationControllerLocal} which shouldn't be writable
    * in interface
    */
-  private ControllerStatusEnum simulationControllerState;
+  private ControllerStatusEnum simulationControllerStatus;
   private Map<Date, ControlCenterMessage<?>> sentMessages = new HashMap<>();
-  private MapParsedStateEnum mapParsedStateEnum;
+  private MapParsedStateEnum mapParsedStateEnum = MapParsedStateEnum.IN_PROGRESS;
   private MapAndBusstopFileData mapAndBusstopFileData;
   private ControlCenterStartParameter importedStartParameter;
   private InitDialogCtrlInitialType chosenInitialType = InitDialogCtrlInitialTypeEnum.create;
@@ -119,6 +116,32 @@ public class MainCtrl implements Serializable {
   public MainCtrl() {
   }
 
+  public MainCtrl(GsonService gsonService,
+    IdGenerator idGenerator,
+    SimulationControllerLocal simulationController,
+    MapAndBusstopFileData mapAndBusstopFileData,
+    ControlCenterStartParameter importedStartParameter,
+    StartParameterSerializerService startParameterSerializerService,
+    CityCtrl cityCtrl,
+    FileBasedCityInfrastructureDataService cityInfrastructureManager,
+    WeatherCollector weatherCollector,
+    ServiceStrategyManager serviceStrategyManager,
+    String parameterUploadData,
+    String parameterDownloadData) {
+    this.gsonService = gsonService;
+    this.idGenerator = idGenerator;
+    this.simulationController = simulationController;
+    this.mapAndBusstopFileData = mapAndBusstopFileData;
+    this.importedStartParameter = importedStartParameter;
+    this.startParameterSerializerService = startParameterSerializerService;
+    this.cityCtrl = cityCtrl;
+    this.cityInfrastructureManager = cityInfrastructureManager;
+    this.weatherCollector = weatherCollector;
+    this.serviceStrategyManager = serviceStrategyManager;
+    this.parameterUploadData = parameterUploadData;
+    this.parameterDownloadData = parameterDownloadData;
+  }
+
   @PostConstruct
   public void init() {
     startParameterTreeRoot = new DefaultTreeNode("StartParameter",
@@ -129,6 +152,7 @@ public class MainCtrl implements Serializable {
       getValue(FacesContext.getCurrentInstance().getELContext(),
         null,
         "cityCtrl");
+    this.simulationControllerStatus = simulationController.getStatus();
   }
 
   public void startSimulation() throws IOException {
@@ -147,7 +171,8 @@ public class MainCtrl implements Serializable {
       cityCtrl.getNearRiver(),
       cityCtrl.getNearSea(),
       null, //geoInformation (set later)
-      null //cityInfrastructureData (set later)
+      null, //cityInfrastructureData (set later)
+      null //need to set referencePoint explicitly in order to avoid NullPointerException
     );
     Thread weatherCollectorThread = new Thread() {
       @Override
@@ -196,13 +221,15 @@ public class MainCtrl implements Serializable {
     CityInfrastructureData cityInfrastructureData;
     try {
       cityInfrastructureData = oSMParseFuture.get();
-    } catch (Exception ex) {
+    } catch (InterruptedException | ExecutionException ex) {
       throw new RuntimeException(ex);
     }
 
     city.setGeoInfo(new BaseGeoInfo(idGenerator.getNextId(),
       JTS.toGeometry(cityInfrastructureManager.getBoundary())));
     city.setCityInfrastructureData(cityInfrastructureData);
+    city.setReferencePoint(new JaxRSCoordinate(cityInfrastructureManager.
+      getBoundary().centre()));
     initParameter.setCity(city);
     simulationController.init(initParameter);
     simulationController.start(startParameter);
@@ -212,13 +239,13 @@ public class MainCtrl implements Serializable {
     simulationController.stop();
   }
 
-  public void setSimulationControllerState(
+  public void setSimulationControllerStatus(
     ControllerStatusEnum simulationControllerStatus) {
-    this.simulationControllerState = simulationControllerStatus;
+    this.simulationControllerStatus = simulationControllerStatus;
   }
 
-  public ControllerStatusEnum getSimulationControllerState() {
-    return simulationControllerState;
+  public ControllerStatusEnum getSimulationControllerStatus() {
+    return simulationControllerStatus;
   }
 
   public TrafficInitParameter getInitParameter() {

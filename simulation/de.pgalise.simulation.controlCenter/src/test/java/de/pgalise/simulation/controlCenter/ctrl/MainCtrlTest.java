@@ -4,10 +4,17 @@
  */
 package de.pgalise.simulation.controlCenter.ctrl;
 
+import de.pgalise.simulation.SimulationControllerLocal;
 import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage;
 import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
+import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
+import de.pgalise.simulation.service.GsonService;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.weathercollector.ServiceStrategyManager;
+import de.pgalise.simulation.weathercollector.WeatherCollector;
 import de.pgalise.testutils.TestUtils;
 import java.io.IOException;
 import javax.annotation.ManagedBean;
@@ -37,7 +44,7 @@ public class MainCtrlTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
   }
 
@@ -156,10 +163,40 @@ public class MainCtrlTest {
     assertNotNull(result);
   }
 
+  @EJB
+  private GsonService gsonService;
+  @EJB
+  private IdGenerator idGenerator;
+  @EJB
+  private SimulationControllerLocal simulationControllerLocal;
+  @EJB
+  private FileBasedCityInfrastructureDataService fileBasedCityInfrastructureDataService;
+  @EJB
+  private WeatherCollector weatherColletor;
+  @EJB
+  private ServiceStrategyManager serviceStrategyManager;
+
   @Test
-  @Ignore
   public void testStartSimulation() throws IOException {
-    MainCtrl instance = new MainCtrl();
-    instance.startSimulation();
+    MapAndBusstopFileData mapAndBusstopFileData = new MapAndBusstopFileData();
+    ControlCenterStartParameter startParameter = new ControlCenterStartParameter();
+    CityCtrl cityCtrl = new CityCtrl(true,
+      true,
+      fileBasedCityInfrastructureDataService,
+      idGenerator);
+    MainCtrl instance = new MainCtrl(gsonService,
+      idGenerator,
+      simulationControllerLocal,
+      mapAndBusstopFileData,
+      startParameter,
+      startParameterSerializerService,
+      cityCtrl,
+      fileBasedCityInfrastructureDataService,
+      weatherColletor,
+      serviceStrategyManager,
+      "",
+      "");
+    instance.
+      startSimulation();
   }
 }

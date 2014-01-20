@@ -23,7 +23,6 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -32,6 +31,7 @@ import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
@@ -106,7 +106,10 @@ public class DefaultEnergyControllerTest {
   /**
    * Traffic information
    */
-  private static CityInfrastructureDataService information;
+  /*
+   Mock in order to get building list more easy
+   */
+  private static FileBasedCityInfrastructureDataService information;
 
   /**
    * The used energy consumption manager
@@ -129,7 +132,7 @@ public class DefaultEnergyControllerTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
 
     Calendar cal = new GregorianCalendar();
@@ -169,7 +172,7 @@ public class DefaultEnergyControllerTest {
     }
 
     DefaultEnergyControllerTest.information = EasyMock.createNiceMock(
-      CityInfrastructureDataService.class);
+      FileBasedCityInfrastructureDataService.class);
     EasyMock.expect(
       DefaultEnergyControllerTest.information.getBuildings(
         DefaultEnergyControllerTest.testLocation,

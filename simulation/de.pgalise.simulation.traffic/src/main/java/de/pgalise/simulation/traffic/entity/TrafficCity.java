@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
@@ -25,13 +26,25 @@ public class TrafficCity extends City {
   public TrafficCity() {
   }
 
+  /**
+   *
+   * @param id
+   * @param name
+   * @param population
+   * @param altitude
+   * @param nearRiver
+   * @param nearSea
+   * @param geoInfo
+   * @param cityInfrastructureData
+   * @throws NullPointerException if <tt>geoInfo</tt> is <code>null</code>
+   */
   public TrafficCity(Long id,
     String name,
     int population,
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseGeoInfo position,
+    BaseGeoInfo geoInfo,
     CityInfrastructureData cityInfrastructureData) {
     super(id,
       name,
@@ -39,7 +52,28 @@ public class TrafficCity extends City {
       altitude,
       nearRiver,
       nearSea,
-      position
+      geoInfo
+    );
+    this.cityInfrastructureData = cityInfrastructureData;
+  }
+
+  public TrafficCity(Long id,
+    String name,
+    int population,
+    int altitude,
+    boolean nearRiver,
+    boolean nearSea,
+    BaseGeoInfo geoInfo,
+    CityInfrastructureData cityInfrastructureData,
+    JaxRSCoordinate referencePoint) {
+    super(id,
+      name,
+      population,
+      altitude,
+      nearRiver,
+      nearSea,
+      geoInfo,
+      referencePoint
     );
     this.cityInfrastructureData = cityInfrastructureData;
   }

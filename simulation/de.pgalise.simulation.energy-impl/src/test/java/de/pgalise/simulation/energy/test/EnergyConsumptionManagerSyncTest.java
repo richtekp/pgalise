@@ -92,7 +92,7 @@ public class EnergyConsumptionManagerSyncTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
 
     Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();

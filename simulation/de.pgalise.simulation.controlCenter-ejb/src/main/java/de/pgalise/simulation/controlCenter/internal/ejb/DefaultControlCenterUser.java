@@ -47,7 +47,6 @@ import de.pgalise.simulation.controlCenter.model.AttractionData;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.controlCenter.model.ErrorMessageData;
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
-import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
@@ -63,10 +62,7 @@ import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
 import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
-import de.pgalise.simulation.staticsensor.StaticSensorController;
-import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.VehicleInformation;
@@ -99,7 +95,6 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.ejb.EJB;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -128,377 +123,376 @@ import org.slf4j.LoggerFactory;
  */
 //@ServerEndpoint(value = "/echo")
 public class DefaultControlCenterUser extends Endpoint implements
-	ControlCenterUser {
+  ControlCenterUser {
 
-	/**
-	 * Not wanted reg exp in file names.
-	 */
-	private static final String removeFromFileNameRegExp = "\\W";
-	/**
-	 * Date format for exported start parameter file names.
-	 */
-	private static final DateFormat dateFormat = new SimpleDateFormat(
-		"yyyy-MM-dd-H-m-s");
-	private static final Charset charset = Charset.forName("UTF-8");
-	private static final CharsetDecoder decoder = charset.newDecoder();
-	private static final Logger log = LoggerFactory.getLogger(
-		ControlCenterUser.class);
-	/**
-	 * Used to serialize and deserialize the start parameter.
-	 */
-	@EJB
-	private StartParameterSerializerService startParameterSerializerService;
-	/**
-	 * Creates random vehicles, if the user ask for it.
-	 */
-	@EJB
-	private CreateRandomVehicleService randomDynamicSensorService;
-	/**
-	 * Used for openstreetmap parsing. To avoid long waiting, this service will
-	 * serialize the file binary and reload it, if it's already parsed.
-	 */
-	@EJB
-	private CityInfrastructureDataService osmCityInfrastructureDataService;
-	/**
-	 * This service knows about all sensor interferers.
-	 */
-	@EJB
-	private SensorInterfererService sensorInterfererService;
-	/**
-	 * This service gives the energy profiles for all buildings in an area.
-	 */
-	@EJB
-	private BuildingEnergyProfileStrategy buildingEnergyProfileStrategy;
-	/**
-	 * This service can create an attraction event {@link AttractionTrafficEvent}
-	 */
-	@EJB
-	private CreateAttractionEventService createAttractionEventService;
-	@EJB
-	private SimulationController simulationController;
-	/**
-	 * Lock to get sure that city infrastructure is parsed before called.
-	 */
-	private final Object cityInfrastructureDataLock = new Object();
-	@EJB
-	private FileBasedCityInfrastructureDataService cityInfrastructureManager;
-	private Properties properties;
-	@EJB
-	private ControlCenterStartParameter simulationStartParameter;
+  /**
+   * Not wanted reg exp in file names.
+   */
+  private static final String removeFromFileNameRegExp = "\\W";
+  /**
+   * Date format for exported start parameter file names.
+   */
+  private static final DateFormat dateFormat = new SimpleDateFormat(
+    "yyyy-MM-dd-H-m-s");
+  private static final Charset charset = Charset.forName("UTF-8");
+  private static final CharsetDecoder decoder = charset.newDecoder();
+  private static final Logger log = LoggerFactory.getLogger(
+    ControlCenterUser.class);
+  /**
+   * Used to serialize and deserialize the start parameter.
+   */
+  @EJB
+  private StartParameterSerializerService startParameterSerializerService;
+  /**
+   * Creates random vehicles, if the user ask for it.
+   */
+  @EJB
+  private CreateRandomVehicleService randomDynamicSensorService;
+  /**
+   * Used for openstreetmap parsing. To avoid long waiting, this service will
+   * serialize the file binary and reload it, if it's already parsed.
+   */
+  @EJB
+  private FileBasedCityInfrastructureDataService osmCityInfrastructureDataService;
+  /**
+   * This service knows about all sensor interferers.
+   */
+  @EJB
+  private SensorInterfererService sensorInterfererService;
+  /**
+   * This service gives the energy profiles for all buildings in an area.
+   */
+  @EJB
+  private BuildingEnergyProfileStrategy buildingEnergyProfileStrategy;
+  /**
+   * This service can create an attraction event {@link AttractionTrafficEvent}
+   */
+  @EJB
+  private CreateAttractionEventService createAttractionEventService;
+  @EJB
+  private SimulationController simulationController;
+  /**
+   * Lock to get sure that city infrastructure is parsed before called.
+   */
+  private final Object cityInfrastructureDataLock = new Object();
+  @EJB
+  private FileBasedCityInfrastructureDataService cityInfrastructureManager;
+  private Properties properties;
+  @EJB
+  private ControlCenterStartParameter simulationStartParameter;
 
-	/**
-	 * To serialize the messages.
-	 */
-	private Gson gson;
-	/**
-	 * This service can query bus information.
-	 */
-	@EJB
-	private BusService busService;
-	/**
-	 * the websocket session (of Java EE 7's websocket API)
-	 */
-	private Session session;
-	@EJB
-	private IdGenerator idGenerator;
-	@EJB
-	private TrafficServerLocal trafficServer;
-	@EJB
-	private RandomSeedService randomSeedService;
-	@EJB
-	private TrafficControllerLocal trafficController;
-	@EJB
-	private StaticSensorController staticSensorController;
-	@EJB
-	private WeatherController weatherController;
-	@EJB
-	private EnergyControllerLocal energyController;
+  /**
+   * To serialize the messages.
+   */
+  private Gson gson;
+  /**
+   * This service can query bus information.
+   */
+  @EJB
+  private BusService busService;
+  /**
+   * the websocket session (of Java EE 7's websocket API)
+   */
+  private Session session;
+  @EJB
+  private IdGenerator idGenerator;
+  @EJB
+  private TrafficServerLocal trafficServer;
+  @EJB
+  private RandomSeedService randomSeedService;
+  @EJB
+  private TrafficControllerLocal trafficController;
+  @EJB
+  private WeatherController weatherController;
+  @EJB
+  private EnergyControllerLocal energyController;
 
-	public DefaultControlCenterUser() {
-	}
+  public DefaultControlCenterUser() {
+  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param gson to serialize and deserialize the messages
-	 * @param serviceDictionary to set and get the controllers.
-	 */
-	public DefaultControlCenterUser(
-		Gson gson) {
-		this.gson = gson;
-		this.properties = new Properties();
-		InputStream is = Thread.currentThread().getContextClassLoader().
-			getResourceAsStream("/properties.props");
-		try {
-			this.properties.load(is);
-		} catch (IOException e) {
-			log.error("Exception",
-				e);
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				log.error("Exception",
-					e);
-			}
-		}
-	}
+  /**
+   * Constructor
+   *
+   * @param gson to serialize and deserialize the messages
+   * @param serviceDictionary to set and get the controllers.
+   */
+  public DefaultControlCenterUser(
+    Gson gson) {
+    this.gson = gson;
+    this.properties = new Properties();
+    InputStream is = Thread.currentThread().getContextClassLoader().
+      getResourceAsStream("/properties.props");
+    try {
+      this.properties.load(is);
+    } catch (IOException e) {
+      log.error("Exception",
+        e);
+    } finally {
+      try {
+        is.close();
+      } catch (IOException e) {
+        log.error("Exception",
+          e);
+      }
+    }
+  }
 
-	/**
-	 * Invoked when message received. All the messages needs to be a subclass of
-	 * {@link ControlCenterMessage}. If a new message will be added, the behavior
-	 * needs to be added here.
-	 *
-	 * @param message
-	 */
-	@Override
-	public void onMessage(String message) {
-		log.debug("Incoming message: " + message);
-		IdentifiableControlCenterMessage<?> ccWebSocketMessage = this.gson.fromJson(
-			message,
-			IdentifiableControlCenterMessage.class);
+  /**
+   * Invoked when message received. All the messages needs to be a subclass of
+   * {@link ControlCenterMessage}. If a new message will be added, the behavior
+   * needs to be added here.
+   *
+   * @param message
+   */
+  @Override
+  public void onMessage(String message) {
+    log.debug("Incoming message: " + message);
+    IdentifiableControlCenterMessage<?> ccWebSocketMessage = this.gson.fromJson(
+      message,
+      IdentifiableControlCenterMessage.class);
 
-		try {
-			switch (ccWebSocketMessage.getMessageType()) {
-				case OSM_AND_BUSSTOP_FILE_MESSAGE:
-					synchronized (cityInfrastructureDataLock) {
-						MapAndBusstopFileMessage osmAndBusstopFileMessage = this.gson.
-							fromJson(message,
-								MapAndBusstopFileMessage.class);
-						String path = Thread.currentThread().getContextClassLoader().
-							getResource("/").getPath();
-						this.cityInfrastructureManager.parse(
-							new File(path + osmAndBusstopFileMessage.
-								getContent().getOsmFileNames()),
-							new File(path + osmAndBusstopFileMessage.
-								getContent().getBusStopFileNames()));
-						this.sendMessage(new OSMParsedMessage(ccWebSocketMessage.getId(),
-							this.cityInfrastructureManager.getBoundary()));
-						return;
-					}
+    try {
+      switch (ccWebSocketMessage.getMessageType()) {
+        case OSM_AND_BUSSTOP_FILE_MESSAGE:
+          synchronized (cityInfrastructureDataLock) {
+            MapAndBusstopFileMessage osmAndBusstopFileMessage = this.gson.
+              fromJson(message,
+                MapAndBusstopFileMessage.class);
+            String path = Thread.currentThread().getContextClassLoader().
+              getResource("/").getPath();
+            this.cityInfrastructureManager.parse(
+              new File(path + osmAndBusstopFileMessage.
+                getContent().getOsmFileNames()),
+              new File(path + osmAndBusstopFileMessage.
+                getContent().getBusStopFileNames()));
+            this.sendMessage(new OSMParsedMessage(ccWebSocketMessage.getId(),
+              this.cityInfrastructureManager.getBoundary()));
+            return;
+          }
 
-				case ASK_FOR_VALID_NODE:
-					synchronized (cityInfrastructureDataLock) {
-						if (this.cityInfrastructureManager != null) {
-							AskForValidNodeMessage askForValidNodeMessage = this.gson.
-								fromJson(message,
-									AskForValidNodeMessage.class);
-							NavigationNode node;
-							if (askForValidNodeMessage.getContent().isOnJunction()) {
-								node = this.cityInfrastructureManager.getNearestJunctionNode(
-									askForValidNodeMessage.getContent().getGeoLocation().getX(),
-									askForValidNodeMessage.getContent().getGeoLocation().getY());
-							} else if (askForValidNodeMessage.getContent().isOnStreet()) {
-								node = this.cityInfrastructureManager.getNearestStreetNode(
-									askForValidNodeMessage.getContent().getGeoLocation().getX(),
-									askForValidNodeMessage.getContent().getGeoLocation().getY());
-							} else {
-								node = this.cityInfrastructureManager.getNearestNode(
-									askForValidNodeMessage.getContent().getGeoLocation().getX(),
-									askForValidNodeMessage.getContent().getGeoLocation().getY());
-							}
+        case ASK_FOR_VALID_NODE:
+          synchronized (cityInfrastructureDataLock) {
+            if (this.cityInfrastructureManager != null) {
+              AskForValidNodeMessage askForValidNodeMessage = this.gson.
+                fromJson(message,
+                  AskForValidNodeMessage.class);
+              NavigationNode node;
+              if (askForValidNodeMessage.getContent().isOnJunction()) {
+                node = this.cityInfrastructureManager.getNearestJunctionNode(
+                  askForValidNodeMessage.getContent().getGeoLocation().getX(),
+                  askForValidNodeMessage.getContent().getGeoLocation().getY());
+              } else if (askForValidNodeMessage.getContent().isOnStreet()) {
+                node = this.cityInfrastructureManager.getNearestStreetNode(
+                  askForValidNodeMessage.getContent().getGeoLocation().getX(),
+                  askForValidNodeMessage.getContent().getGeoLocation().getY());
+              } else {
+                node = this.cityInfrastructureManager.getNearestNode(
+                  askForValidNodeMessage.getContent().getGeoLocation().getX(),
+                  askForValidNodeMessage.getContent().getGeoLocation().getY());
+              }
 
-							this.sendMessage(new ValidNodeMessage(ccWebSocketMessage.getId(),
-								node));
-							return;
-						} else {
-							throw new RuntimeException("OSM not parsed yet!");
-						}
-					}
+              this.sendMessage(new ValidNodeMessage(ccWebSocketMessage.getId(),
+                node));
+              return;
+            } else {
+              throw new RuntimeException("OSM not parsed yet!");
+            }
+          }
 
-				case CREATE_SENSORS_MESSAGE:
-					Set<Sensor<?, ?>> sensorHelperList = new HashSet<>(this.gson.
-						fromJson(message,
-							CreateSensorsMessage.class).getContent());
-					for (Sensor<?, ?> sensorHelper : sensorHelperList) {
-						sensorHelper.setSensorInterfererTypes(sensorInterfererService.
-							getSensorInterfererTypes(sensorHelper.getSensorType(),
-								this.simulationStartParameter.
-								isWithSensorInterferes()));
-					}
-					this.simulationController.createSensors(sensorHelperList);
-					break;
+        case CREATE_SENSORS_MESSAGE:
+          Set<Sensor<?, ?>> sensorHelperList = new HashSet<>(this.gson.
+            fromJson(message,
+              CreateSensorsMessage.class).getContent());
+          for (Sensor<?, ?> sensorHelper : sensorHelperList) {
+            sensorHelper.setSensorInterfererTypes(sensorInterfererService.
+              getSensorInterfererTypes(sensorHelper.getSensorType(),
+                this.simulationStartParameter.
+                isWithSensorInterferes()));
+          }
+          this.simulationController.createSensors(sensorHelperList);
+          break;
 
-				case DELETE_SENSORS_MESSAGE:
-					this.simulationController.deleteSensors(this.gson.fromJson(message,
-						DeleteSensorsMessage.class).getContent());
-					break;
+        case DELETE_SENSORS_MESSAGE:
+          this.simulationController.deleteSensors(this.gson.fromJson(message,
+            DeleteSensorsMessage.class).getContent());
+          break;
 
-				case SIMULATION_START_PARAMETER:
-					onStartParameterMessage(message,
-						ccWebSocketMessage
-						);
-					break;
+        case SIMULATION_START_PARAMETER:
+          onStartParameterMessage(message,
+            ccWebSocketMessage
+          );
+          break;
 
-				case SIMULATION_INIT_PARAMETER:
-					onInitParameterMessage(message,
-						ccWebSocketMessage);
-					break;
-				case SIMULATION_STOP:
-					this.simulationController.stop();
-					break;
+        case SIMULATION_INIT_PARAMETER:
+          onInitParameterMessage(message,
+            ccWebSocketMessage);
+          break;
+        case SIMULATION_STOP:
+          this.simulationController.stop();
+          break;
 
-				case SIMULATION_EVENT_LIST:
-					EventList sel = this.gson.fromJson(message,
-						SimulationEventListMessage.class).getContent();
-					this.simulationController.update(sel);
-					break;
+        case SIMULATION_EVENT_LIST:
+          EventList sel = this.gson.fromJson(message,
+            SimulationEventListMessage.class).getContent();
+          this.simulationController.update(sel);
+          break;
 
-				case CREATE_RANDOM_VEHICLES: {
-					List<TrafficEvent> simulationEventList = new LinkedList<>();
-					RandomVehicleBundle rvb = this.gson.fromJson(message,
-						CreateRandomVehiclesMessage.class).getContent();
-					simulationEventList.add(randomDynamicSensorService.
-						createRandomDynamicSensors(rvb,randomSeedService,
-							this.simulationStartParameter.isWithSensorInterferes()));
-					this.simulationController.update(
-						new EventList(idGenerator.getNextId(),
-							simulationEventList,
-							0));
+        case CREATE_RANDOM_VEHICLES: {
+          List<TrafficEvent> simulationEventList = new LinkedList<>();
+          RandomVehicleBundle rvb = this.gson.fromJson(message,
+            CreateRandomVehiclesMessage.class).getContent();
+          simulationEventList.add(randomDynamicSensorService.
+            createRandomDynamicSensors(rvb,
+              randomSeedService,
+              this.simulationStartParameter.isWithSensorInterferes()));
+          this.simulationController.update(
+            new EventList(idGenerator.getNextId(),
+              simulationEventList,
+              0));
 
-					/* Send message with new used ids: */
-					List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
-					List<UUID> newUUIDs = new LinkedList<>();
+          /* Send message with new used ids: */
+          List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
+          List<UUID> newUUIDs = new LinkedList<>();
 //					this.sendMessage(new UsedIDsMessage(ccWebSocketMessage.getId(),
 //						new IDWrapper(newIntegerIDs,
 //							newUUIDs)));
-					return;
-				}
+          return;
+        }
 
-				case CREATE_ATTRACTION_EVENTS_MESSAGE: {
-					List<AbstractEvent> simulationEventList = new LinkedList<>();
-					Collection<AttractionData> attractionDataCollection = this.gson.
-						fromJson(message,
-							CreateAttractionEventsMessage.class).
-						getContent();
-					for (AttractionData attractionData : attractionDataCollection) {
-						simulationEventList.add(createAttractionEventService.
-							createAttractionTrafficEvent(
-								attractionData.getRandomVehicleBundle(),
-								randomSeedService,
-								this.simulationStartParameter.
-								isWithSensorInterferes(),
-								attractionData.getNodeID(),
-								attractionData.getAttractionPoint(),
-								attractionData.getAttractionStartTimestamp(),
-								attractionData.getAttractionEndTimestamp()));
-					}
-					this.simulationController.update(
-						new EventList(idGenerator.getNextId(),
-							simulationEventList,
-							0));
+        case CREATE_ATTRACTION_EVENTS_MESSAGE: {
+          List<AbstractEvent> simulationEventList = new LinkedList<>();
+          Collection<AttractionData> attractionDataCollection = this.gson.
+            fromJson(message,
+              CreateAttractionEventsMessage.class).
+            getContent();
+          for (AttractionData attractionData : attractionDataCollection) {
+            simulationEventList.add(createAttractionEventService.
+              createAttractionTrafficEvent(
+                attractionData.getRandomVehicleBundle(),
+                randomSeedService,
+                this.simulationStartParameter.
+                isWithSensorInterferes(),
+                attractionData.getNodeID(),
+                attractionData.getAttractionPoint(),
+                attractionData.getAttractionStartTimestamp(),
+                attractionData.getAttractionEndTimestamp()));
+          }
+          this.simulationController.update(
+            new EventList(idGenerator.getNextId(),
+              simulationEventList,
+              0));
 
-					/* Send message with new used ids: */
-					List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
-					List<UUID> newUUIDs = new LinkedList<>();
+          /* Send message with new used ids: */
+          List<Sensor<?, ?>> newIntegerIDs = new LinkedList<>();
+          List<UUID> newUUIDs = new LinkedList<>();
 //					this.sendMessage(new UsedIDsMessage(ccWebSocketMessage.getId(),
 //						new IDWrapper(newIntegerIDs,
 //							newUUIDs)));
-					return;
-				}
-				case SIMULATION_EXPORT_PARAMETER:
-					SimulationExportStartParameterMessage simulationExportParameterMessage = this.gson.
-						fromJson(message,
-							SimulationExportStartParameterMessage.class);
-					this.sendMessage(new SimulationExportedMessage(
-						simulationExportParameterMessage.getId(),
-						startParameterSerializerService.serialize(
-							simulationExportParameterMessage.getContent().
-							getCcSimulationStartParameter(),
-							simulationExportParameterMessage.getContent().
-							getFileName())));
+          return;
+        }
+        case SIMULATION_EXPORT_PARAMETER:
+          SimulationExportStartParameterMessage simulationExportParameterMessage = this.gson.
+            fromJson(message,
+              SimulationExportStartParameterMessage.class);
+          this.sendMessage(new SimulationExportedMessage(
+            simulationExportParameterMessage.getId(),
+            startParameterSerializerService.serialize(
+              simulationExportParameterMessage.getContent().
+              getCcSimulationStartParameter(),
+              simulationExportParameterMessage.getContent().
+              getFileName())));
 
-					log.debug("Startparameter: " + message);
+          log.debug("Startparameter: " + message);
 
-					return;
+          return;
 
-				case LOAD_SIMULATION_START_PARAMETER:
-					LoadSimulationStartParameterMessage loadSimulationStartParameterMessage = this.gson.
-						fromJson(message,
-							LoadSimulationStartParameterMessage.class);
+        case LOAD_SIMULATION_START_PARAMETER:
+          LoadSimulationStartParameterMessage loadSimulationStartParameterMessage = this.gson.
+            fromJson(message,
+              LoadSimulationStartParameterMessage.class);
 
-					String path = Thread.currentThread().getContextClassLoader().
-						getResource("/").getPath().replaceAll("WEB-INF/classes",
-							"");
+          String path = Thread.currentThread().getContextClassLoader().
+            getResource("/").getPath().replaceAll("WEB-INF/classes",
+              "");
 
-					this.sendMessage(new SimulationStartParameterMessage(
-						loadSimulationStartParameterMessage.getId(),
-						startParameterSerializerService.deserialize(
-							new FileInputStream(
-								new File(
-									path
-									+ loadSimulationStartParameterMessage.
-									getContent())))));
-					return;
+          this.sendMessage(new SimulationStartParameterMessage(
+            loadSimulationStartParameterMessage.getId(),
+            startParameterSerializerService.deserialize(
+              new FileInputStream(
+                new File(
+                  path
+                  + loadSimulationStartParameterMessage.
+                  getContent())))));
+          return;
 
-				case IMPORT_XML_START_PARAMETER:
-					ImportXMLStartParameterMessage importXMLStartParameterMessage = this.gson.
-						fromJson(message,
-							ImportXMLStartParameterMessage.class);
+        case IMPORT_XML_START_PARAMETER:
+          ImportXMLStartParameterMessage importXMLStartParameterMessage = this.gson.
+            fromJson(message,
+              ImportXMLStartParameterMessage.class);
 
-					log.debug("XML:" + importXMLStartParameterMessage.getContent());
+          log.debug("XML:" + importXMLStartParameterMessage.getContent());
 
-					this.sendMessage(new SimulationStartParameterMessage(
-						importXMLStartParameterMessage.getId(),
-						startParameterSerializerService.deserialize(
-							importXMLStartParameterMessage.getContent())));
-					return;
+          this.sendMessage(new SimulationStartParameterMessage(
+            importXMLStartParameterMessage.getId(),
+            startParameterSerializerService.deserialize(
+              importXMLStartParameterMessage.getContent())));
+          return;
 
-				default:
-					break;
-			}
+        default:
+          break;
+      }
 
-			/* Everything was okay: */
-			this.sendMessage(
-				new GenericNotificationMessage(ccWebSocketMessage.getId(),
-					""));
-		} catch (Exception e) {
-			log.error("Exception",
-				e);
-			try {
-				this.sendMessage(new ErrorMessage(ccWebSocketMessage.getId(),
-					new ErrorMessageData(e.getMessage(),
-						ccWebSocketMessage.
-						getMessageType())));
-			} catch (IOException e1) {
-				log.error("Exception",
-					e1);
-			}
-		}
-	}
+      /* Everything was okay: */
+      this.sendMessage(
+        new GenericNotificationMessage(ccWebSocketMessage.getId(),
+          ""));
+    } catch (Exception e) {
+      log.error("Exception",
+        e);
+      try {
+        this.sendMessage(new ErrorMessage(ccWebSocketMessage.getId(),
+          new ErrorMessageData(e.getMessage(),
+            ccWebSocketMessage.
+            getMessageType())));
+      } catch (IOException e1) {
+        log.error("Exception",
+          e1);
+      }
+    }
+  }
 
-	/**
-	 * Send a message to the client.
-	 *
-	 * @param message
-	 * @throws IOException
-	 */
-	@Override
-	public void sendMessage(ControlCenterMessage<?> message) throws IOException {
-		log.debug("Sending: " + message.toJson(this.gson));
-		this.session.getBasicRemote().sendText(message.toJson(this.gson));
-	}
+  /**
+   * Send a message to the client.
+   *
+   * @param message
+   * @throws IOException
+   */
+  @Override
+  public void sendMessage(ControlCenterMessage<?> message) throws IOException {
+    log.debug("Sending: " + message.toJson(this.gson));
+    this.session.getBasicRemote().sendText(message.toJson(this.gson));
+  }
 
-	/**
-	 * Message from client
-	 *
-	 * @param message
-	 * @param session
-	 * @return
-	 */
-	@OnMessage
-	@Override
-	public String onMessage(String message,
-		Session session) {
-		return message;
-	}
+  /**
+   * Message from client
+   *
+   * @param message
+   * @param session
+   * @return
+   */
+  @OnMessage
+  @Override
+  public String onMessage(String message,
+    Session session) {
+    return message;
+  }
 
-	@Override
-	public void onOpen(Session session,
-		EndpointConfig config) {
-		this.session = session;
-		throw new UnsupportedOperationException(
-			"handle login mechanism (user mustn't have servlet reference)");
+  @Override
+  public void onOpen(Session session,
+    EndpointConfig config) {
+    this.session = session;
+    throw new UnsupportedOperationException(
+      "handle login mechanism (user mustn't have servlet reference)");
 //		if (ccWebSocketServlet.getUser() == this) {
 //			try {
 //				this.
@@ -516,186 +510,187 @@ public class DefaultControlCenterUser extends Endpoint implements
 //					e);
 //			}
 //		}
-	}
+  }
 
-	/**
-	 * Returns a random unused integer id.
-	 *
-	 * @param usedIDs
-	 * @param random
-	 * @return
-	 */
-	private int getUniqueRandomIntID(Set<Integer> usedIDs,
-		Random random) {
-		int randomValue = random.nextInt(Integer.MAX_VALUE);
-		while (usedIDs.contains(randomValue)) {
-			randomValue = random.nextInt(Integer.MAX_VALUE);
-		}
-		return randomValue;
-	}
+  /**
+   * Returns a random unused integer id.
+   *
+   * @param usedIDs
+   * @param random
+   * @return
+   */
+  private int getUniqueRandomIntID(Set<Integer> usedIDs,
+    Random random) {
+    int randomValue = random.nextInt(Integer.MAX_VALUE);
+    while (usedIDs.contains(randomValue)) {
+      randomValue = random.nextInt(Integer.MAX_VALUE);
+    }
+    return randomValue;
+  }
 
-	private void onStartParameterMessage(String message,
-		IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
-		log.debug("Start simulation");
+  private void onStartParameterMessage(String message,
+    IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
+    log.debug("Start simulation");
 
-		ControlCenterStartParameter ccSimulationStartParameter = this.gson.
-			fromJson(message,
-				SimulationStartParameterMessage.class).
-			getContent();
-		this.simulationStartParameter = ccSimulationStartParameter;
+    ControlCenterStartParameter ccSimulationStartParameter = this.gson.
+      fromJson(message,
+        SimulationStartParameterMessage.class).
+      getContent();
+    this.simulationStartParameter = ccSimulationStartParameter;
 
-		/* Create server configuration: */
-		Map<String, List<ServerConfigurationEntity>> serverConfiguationMap = new HashMap<>();
+    /* Create server configuration: */
+    Map<String, List<ServerConfigurationEntity>> serverConfiguationMap = new HashMap<>();
 
-		log.debug("Create server configuration");
+    log.debug("Create server configuration");
 
-		/* Add traffic servers: */
-		List<TrafficServerLocal> trafficServerList = new LinkedList<>();
-		Context context;
-		try {
-			context = new InitialContext();
-		} catch (NamingException ex) {
-			throw new RuntimeException(ex);
-		}
-		for(int i=0; i<ccSimulationStartParameter.getTrafficServerCount(); i++) {
-			TrafficServerLocal trafficServerLocal;
-			try {
-				trafficServerLocal = (TrafficServerLocal) context.lookup(TrafficServerLocal.class.getName());
-			} catch (NamingException ex) {
-				throw new RuntimeException(ex);
-			}
-			trafficServerList.add(trafficServerLocal);
-		}
+    /* Add traffic servers: */
+    List<TrafficServerLocal> trafficServerList = new LinkedList<>();
+    Context context;
+    try {
+      context = new InitialContext();
+    } catch (NamingException ex) {
+      throw new RuntimeException(ex);
+    }
+    for (int i = 0; i < ccSimulationStartParameter.getTrafficServerCount(); i++) {
+      TrafficServerLocal trafficServerLocal;
+      try {
+        trafficServerLocal = (TrafficServerLocal) context.lookup(
+          TrafficServerLocal.class.getName());
+      } catch (NamingException ex) {
+        throw new RuntimeException(ex);
+      }
+      trafficServerList.add(trafficServerLocal);
+    }
 
-		/* Created server configuration */
-		/* Create init parameters: */
+    /* Created server configuration */
+    /* Create init parameters: */
 
-		/* Create sensors: */
-		for (Sensor<?, ?> sensorHelper : ccSimulationStartParameter.getSensors()) {
-			sensorHelper.setSensorInterfererTypes(sensorInterfererService.
-				getSensorInterfererTypes(sensorHelper.getSensorType(),
-					ccSimulationStartParameter.isWithSensorInterferes()));
-		}
-		this.simulationController.createSensors(ccSimulationStartParameter.
-			getSensors());
+    /* Create sensors: */
+    for (Sensor<?, ?> sensorHelper : ccSimulationStartParameter.getSensors()) {
+      sensorHelper.setSensorInterfererTypes(sensorInterfererService.
+        getSensorInterfererTypes(sensorHelper.getSensorType(),
+          ccSimulationStartParameter.isWithSensorInterferes()));
+    }
+    this.simulationController.createSensors(ccSimulationStartParameter.
+      getSensors());
 
-		/* Create start parameters: */
-		TrafficStartParameter startParameter = new TrafficStartParameter();
-		startParameter.setCity(ccSimulationStartParameter.getCity());
-		startParameter.setAggregatedWeatherDataEnabled(
-			ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
-		startParameter.setWeatherEvents(ccSimulationStartParameter.
-			getWeatherEvents());
+    /* Create start parameters: */
+    TrafficStartParameter startParameter = new TrafficStartParameter();
+    startParameter.setCity(ccSimulationStartParameter.getCity());
+    startParameter.setAggregatedWeatherDataEnabled(
+      ccSimulationStartParameter.isAggregatedWeatherDataEnabled());
+    startParameter.setWeatherEvents(ccSimulationStartParameter.
+      getWeatherEvents());
 
-		List<Event> simulationEventList = new LinkedList<>();
+    List<Event> simulationEventList = new LinkedList<>();
 
-		/* Create random vehicles: */
-		CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent<?>) randomDynamicSensorService.
-			createRandomDynamicSensors(ccSimulationStartParameter.
-				getRandomDynamicSensorBundle(),
-				randomSeedService,
-				ccSimulationStartParameter.isWithSensorInterferes());
-		simulationEventList.add(createRandomVehiclesEvent);
+    /* Create random vehicles: */
+    CreateRandomVehiclesEvent<?> createRandomVehiclesEvent = (CreateRandomVehiclesEvent<?>) randomDynamicSensorService.
+      createRandomDynamicSensors(ccSimulationStartParameter.
+        getRandomDynamicSensorBundle(),
+        randomSeedService,
+        ccSimulationStartParameter.isWithSensorInterferes());
+    simulationEventList.add(createRandomVehiclesEvent);
 
-		/* @TODO?: Save the new and old IDs from create random vehicles: */
+    /* @TODO?: Save the new and old IDs from create random vehicles: */
 
-		/* Create attractions: */
-		for (AttractionData attractionData : ccSimulationStartParameter.
-			getAttractionCollection()) {
-			/* Before creating them, update the used IDs: */
-			AttractionTrafficEvent<?> attractionTrafficEvent = createAttractionEventService.
-				createAttractionTrafficEvent(
-					attractionData.getRandomVehicleBundle(),
-					randomSeedService,
-					this.simulationStartParameter.
-					isWithSensorInterferes(),
-					attractionData.getNodeID(),
-					attractionData.getAttractionPoint(),
-					attractionData.getAttractionStartTimestamp(),
-					attractionData.getAttractionEndTimestamp());
-			simulationEventList.add(attractionTrafficEvent);
+    /* Create attractions: */
+    for (AttractionData attractionData : ccSimulationStartParameter.
+      getAttractionCollection()) {
+      /* Before creating them, update the used IDs: */
+      AttractionTrafficEvent<?> attractionTrafficEvent = createAttractionEventService.
+        createAttractionTrafficEvent(
+          attractionData.getRandomVehicleBundle(),
+          randomSeedService,
+          this.simulationStartParameter.
+          isWithSensorInterferes(),
+          attractionData.getNodeID(),
+          attractionData.getAttractionPoint(),
+          attractionData.getAttractionStartTimestamp(),
+          attractionData.getAttractionEndTimestamp());
+      simulationEventList.add(attractionTrafficEvent);
 
-			/* @TODO?: Update the new used IDs: */
-		}
+      /* @TODO?: Update the new used IDs: */
+    }
 
-		/* Create busses: */
-		log.debug("Selected bus routes in cc: " + ccSimulationStartParameter.
-			getBusRoutes().size());
+    /* Create busses: */
+    log.debug("Selected bus routes in cc: " + ccSimulationStartParameter.
+      getBusRoutes().size());
 
-		List<CreateRandomVehicleData> busDataList = new LinkedList<>();
-		List<BusRoute> busRouteList = new LinkedList<>();
-		for (BusRoute busRoute : ccSimulationStartParameter.getBusRoutes()) {
-			if (busRoute.getUsed()) {
-				log.debug("Selected bus route: " + busRoute.getId());
-				busRouteList.add(busRoute);
-			} else {
-				log.debug("Not selected bus route: " + busRoute.getId());
-			}
-		}
+    List<CreateRandomVehicleData> busDataList = new LinkedList<>();
+    List<BusRoute> busRouteList = new LinkedList<>();
+    for (BusRoute busRoute : ccSimulationStartParameter.getBusRoutes()) {
+      if (busRoute.getUsed()) {
+        log.debug("Selected bus route: " + busRoute.getId());
+        busRouteList.add(busRoute);
+      } else {
+        log.debug("Not selected bus route: " + busRoute.getId());
+      }
+    }
 
-		log.debug("Selected bus routes: " + busRouteList.size());
+    log.debug("Selected bus routes: " + busRouteList.size());
 
-		int totalNumberOfBusTrips = this.busService.getTotalNumberOfBusTrips(
-			busRouteList,
-			ccSimulationStartParameter.getStartTimestamp().getTime());
+    int totalNumberOfBusTrips = this.busService.getTotalNumberOfBusTrips(
+      busRouteList,
+      ccSimulationStartParameter.getStartTimestamp().getTime());
 
-		log.debug("Create " + totalNumberOfBusTrips + " busses!");
+    log.debug("Create " + totalNumberOfBusTrips + " busses!");
 
-		for (int i = 0; i < totalNumberOfBusTrips; i++) {
-			UUID id = UUID.randomUUID();
-			busDataList.add(new CreateRandomBusData(null,
-				null,
-				new VehicleInformation(true,
-					VehicleTypeEnum.BUS,
-					VehicleModelEnum.BUS_CITARO,
-					null,
-					id.toString())));
-		}
-		simulationEventList.add(new CreateBussesEvent(trafficServer,
-			ccSimulationStartParameter.getStartTimestamp().getTime(),
-			0L,
-			busDataList,
-			busRouteList));
+    for (int i = 0; i < totalNumberOfBusTrips; i++) {
+      UUID id = UUID.randomUUID();
+      busDataList.add(new CreateRandomBusData(null,
+        null,
+        new VehicleInformation(true,
+          VehicleTypeEnum.BUS,
+          VehicleModelEnum.BUS_CITARO,
+          null,
+          id.toString())));
+    }
+    simulationEventList.add(new CreateBussesEvent(trafficServer,
+      ccSimulationStartParameter.getStartTimestamp().getTime(),
+      0L,
+      busDataList,
+      busRouteList));
 
-		/* Add events to simulation: */
-		this.simulationController.addSimulationEventList(new EventList<>(
-			idGenerator.getNextId(),
-			simulationEventList,
-			0));
+    /* Add events to simulation: */
+    this.simulationController.addSimulationEventList(new EventList<>(
+      idGenerator.getNextId(),
+      simulationEventList,
+      0));
 
-		/* Add event lists from startparameter: */
-		for (EventList<?> tmpList : ccSimulationStartParameter.
-			getSimulationEventLists()) {
-			this.simulationController.addSimulationEventList(tmpList);
-		}
+    /* Add event lists from startparameter: */
+    for (EventList<?> tmpList : ccSimulationStartParameter.
+      getSimulationEventLists()) {
+      this.simulationController.addSimulationEventList(tmpList);
+    }
 
-		/* Start the controllers: */
-		this.simulationController.start(startParameter);
+    /* Start the controllers: */
+    this.simulationController.start(startParameter);
 
-		/* Save start parameter: */
-		startParameterSerializerService.serialize(ccSimulationStartParameter,
-			ccSimulationStartParameter.getCity().getName().replaceAll(
-				removeFromFileNameRegExp,
-				"") + "_"
-			+ dateFormat.format(new Date())
-			+ "." + this.properties.getProperty(
-				"suffixStartParameterXML"));
+    /* Save start parameter: */
+    startParameterSerializerService.serialize(ccSimulationStartParameter,
+      ccSimulationStartParameter.getCity().getName().replaceAll(
+        removeFromFileNameRegExp,
+        "") + "_"
+      + dateFormat.format(new Date())
+      + "." + this.properties.getProperty(
+        "suffixStartParameterXML"));
 
-		/* Send message with new used ids: */
-		this.sendMessage(new SimulationStartedMessage(ccWebSocketMessage.
-			getId()));
-		return;
-	}
+    /* Send message with new used ids: */
+    this.sendMessage(new SimulationStartedMessage(ccWebSocketMessage.
+      getId()));
+    return;
+  }
 
-	public void onInitParameterMessage(String message,
-		IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
+  public void onInitParameterMessage(String message,
+    IdentifiableControlCenterMessage<?> ccWebSocketMessage) throws IOException, SensorException, InitializationException {
 
-		TrafficInitParameter initParameter = this.gson.
-			fromJson(message,
-				SimulationInitParameterMessage.class).
-			getContent();
+    TrafficInitParameter initParameter = this.gson.
+      fromJson(message,
+        SimulationInitParameterMessage.class).
+      getContent();
 
-		/* Init: */
-		this.simulationController.init(initParameter);
-	}
+    /* Init: */
+    this.simulationController.init(initParameter);
+  }
 }

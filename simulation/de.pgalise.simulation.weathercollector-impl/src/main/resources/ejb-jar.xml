@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ejb-jar>
-	<assembly-descriptor>
-		<application-exception>
-			<exception-class>java.lang.UnsupportedOperationException</exception-class>
-			<rollback>false</rollback>
-		</application-exception>
-	</assembly-descriptor>
-</ejb-jar>

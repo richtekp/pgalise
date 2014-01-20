@@ -1,6 +1,9 @@
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
+ *//*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
  */
 package de.pgalise.testutils;
 
@@ -11,13 +14,12 @@ import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.util.Properties;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.ejb.embeddable.EJBContainer;
 
 /**
  *
@@ -26,11 +28,11 @@ import javax.naming.NamingException;
 public class TestUtils {
 
   private final static Logger LOGGER = LoggerFactory.getLogger(TestUtils.class);
-//  private static EJBContainer container;
+  private static EJBContainer container;
 
-  public static Context getContainer() {
-//    if (container == null) {
-    Properties p;
+  private final static Properties p;
+
+  static {
     p = new Properties();
     p.setProperty("java.naming.factory.initial",
       "org.apache.openejb.client.LocalInitialContextFactory");
@@ -58,6 +60,18 @@ public class TestUtils {
 //        "VERBOSE");
 //      container = EJBContainer.createEJBContainer(p);
 //    }
+  }
+
+  public static EJBContainer getContainer() {
+    if (container == null) {
+      container = EJBContainer.createEJBContainer(p);
+    }
+    return container;
+  }
+
+  public static Context getContext() {
+//    if (container == null) {
+
     try {
       InitialContext initialContext = new InitialContext(p);
       return initialContext;
@@ -65,34 +79,6 @@ public class TestUtils {
     } catch (NamingException ex) {
       throw new RuntimeException(ex);
     }
-  }
-
-  public static EntityManagerFactory createEntityManagerFactory(String unitName) {
-    return createEntityManagerFactory(unitName,
-      null);
-  }
-
-  public static EntityManagerFactory createEntityManagerFactory(String unitName,
-    Properties initialProperties) {
-    Properties p = initialProperties;
-    if (p == null) {
-      p = new Properties();
-    }
-
-//		p.setProperty(
-//			"hibernate.dialect",
-//			"org.hibernate.spatial.dialect.postgis.PostgisDialect"
-//		);
-//		p.setProperty("javax.persistence.jdbc.driver", "org.postgresql.Driver");
-//		p.setProperty("javax.persistence.jdbc.url", "jdbc:postgresql://127.0.0.1:5201/weather_data");
-//		p.setProperty("javax.persistence.jdbc.user", "postgis");
-//		p.setProperty("javax.persistence.jdbc.password", "postgis");		
-//		p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-//		p.setProperty("hibernate.show_sql", "false");
-    EntityManagerFactory retValue = Persistence.createEntityManagerFactory(
-      unitName,
-      p);
-    return retValue;
   }
 
   public static City createDefaultTestCityInstance(IdGenerator idGenerator) {

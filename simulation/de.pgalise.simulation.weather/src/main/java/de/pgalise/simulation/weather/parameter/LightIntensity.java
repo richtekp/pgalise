@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 /**
- * 
+ *
  */
 package de.pgalise.simulation.weather.parameter;
 
@@ -23,31 +22,30 @@ import de.pgalise.simulation.weather.service.WeatherService;
 
 /**
  * Weather parameter: light intensity
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
 public class LightIntensity extends WeatherParameterBase {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param base
-	 *            WeatherService
-	 */
-	public LightIntensity(WeatherService base) {
-		super(base);
-	}
+  /**
+   * Constructor
+   *
+   * @param base WeatherService
+   */
+  public LightIntensity(WeatherService base) {
+    super(base);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.pgalise.simulation.weather.parameter.WeatherParameter#getValue(java.sql.Timestamp)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T extends Number> T getValue(long time)  {
-		Integer value = this.getWeather(time).getLightIntensity();
-		return (T) value;
-	}
+  /*
+   * (non-Javadoc)
+   * @see de.pgalise.simulation.weather.parameter.WeatherParameter#getValue(java.sql.Timestamp)
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T extends Number> T getValue(long time) {
+    Integer value = this.getWeather(time).getLightIntensity();
+    return (T) value;
+  }
 
 }

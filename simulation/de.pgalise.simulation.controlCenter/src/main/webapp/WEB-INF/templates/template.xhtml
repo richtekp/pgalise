@@ -31,7 +31,7 @@
 							<img src="img/console.png" id="consoleImg" onclick="consoleDialog.show()" />
 							<div id="layout_top">
 								Connection: <span class="connectionStateColor"><h:outputText value="#{mainCtrl.connectionState}"/></span>
-								Simulation: <span class="simulationStateColor"><h:outputText value="#{mainCtrl.simulationControllerState}"/></span>
+								Simulation: <span class="simulationStateColor"><h:outputText value="#{mainCtrl.simulationControllerStatus}"/></span>
 								Simulation Time: <h:outputText value="#{mainCtrl.simulationDate}">
 									<f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
 								</h:outputText>
@@ -60,7 +60,7 @@
 				<p:layoutUnit position="west">
 					<h:form>
 						<p:menu>
-							<p:submenu label="Initial state" rendered="#{mainCtrl.simulationControllerState ne controllerStatusEnum.STARTED}">  
+							<p:submenu label="Initial state" rendered="#{mainCtrl.simulationControllerStatus ne controllerStatusEnum.STARTED}">  
 								<p:menuitem value="Bus System" outcome="/busSystem.xhtml" />
 								<p:menuitem value="City" outcome="/city.xhtml" />
 								<p:menuitem value="General" outcome="/general.xhtml" />
@@ -70,7 +70,7 @@
 								<p:menuitem value="Start" outcome="/start.xhtml" />
 								<p:menuitem value="Traffic" outcome="/traffic.xhtml"/>
 							</p:submenu>
-							<p:submenu label="Runtime state" rendered="#{mainCtrl.simulationControllerState eq controllerStatusEnum.STARTED}">
+							<p:submenu label="Runtime state" rendered="#{mainCtrsimulationControllerStatuste eq controllerStatusEnum.STARTED}">
 								<p:menuitem value="Message"/>
 								<p:menuitem value="Random vehicles"/>
 								<p:menuitem value="Sensor events"/>

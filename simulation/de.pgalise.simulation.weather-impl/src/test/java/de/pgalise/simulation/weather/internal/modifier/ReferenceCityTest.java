@@ -114,7 +114,9 @@ public class ReferenceCityTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
+      this);
+    TestUtils.getContainer().getContext().bind("inject",
       this);
     userTransaction.begin();
     try {
@@ -125,7 +127,7 @@ public class ReferenceCityTest {
   }
 
   @Test
-	@Ignore //more details about test values
+  @Ignore //more details about test values
   public void testDeployChanges() throws Exception {
     userTransaction.begin();
     try {

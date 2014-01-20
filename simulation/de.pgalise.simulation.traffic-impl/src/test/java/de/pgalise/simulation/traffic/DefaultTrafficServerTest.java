@@ -239,7 +239,7 @@ public class DefaultTrafficServerTest {
 
   @Before
   public void setUp() throws IOException, NamingException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
     city = TrafficTestUtils.createDefaultTestCityInstance(idGenerator);
 
@@ -507,7 +507,7 @@ public class DefaultTrafficServerTest {
     initTrafficServer(null);
 
     StartParameter startParam = new StartParameter();
-    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
@@ -538,7 +538,7 @@ public class DefaultTrafficServerTest {
       SIMULATION_START.getTime());
 
     StartParameter startParam = new StartParameter();
-    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
@@ -602,8 +602,7 @@ public class DefaultTrafficServerTest {
       trafficEventList,
       SIMULATION_START.getTime());
 
-    TrafficServerLocal<VehicleEvent> instance = (TrafficServerLocal) TestUtils.
-      getContainer().
+    TrafficServerLocal<VehicleEvent> instance = (TrafficServerLocal) TestUtils.getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
@@ -667,7 +666,7 @@ public class DefaultTrafficServerTest {
     log.debug("###########");
     // File file = new File(DefaultTrafficServerTest.CSV_OUTPUT);
 
-    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
@@ -842,7 +841,7 @@ public class DefaultTrafficServerTest {
     log.debug("CREATE VEHICLE EVENT TEST");
     log.debug("###########");
 
-    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.reset();
@@ -962,7 +961,7 @@ public class DefaultTrafficServerTest {
       null,
       new GpsNoInterferer());
 
-    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
@@ -1073,7 +1072,7 @@ public class DefaultTrafficServerTest {
     TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager = EasyMock.
       createNiceMock(
         TrafficEventHandlerManager.class);
-    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContainer().
+    TrafficServerLocal instance = (TrafficServerLocal) TestUtils.getContext().
       lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
     instance.setCityZone(JTS.toGeometry(new Envelope(0,

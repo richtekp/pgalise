@@ -177,6 +177,7 @@ public class City extends Identifiable {
    * @param nearRiver Option that the city is near a river
    * @param nearSea Option that the city is near the sea
    * @param geoInfo
+   * @throws NullPointerException if <tt>geoInfo</tt> is <code>null</code>
    */
   public City(Long id,
     String name,

@@ -33,6 +33,7 @@ import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.staticsensor.StaticSensor;
@@ -40,10 +41,12 @@ import de.pgalise.simulation.traffic.Iterables;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
@@ -60,9 +63,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import javax.ejb.Stateful;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 @Stateful
 @Local(TrafficControllerLocal.class)
@@ -105,6 +105,12 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
   private Geometry area;
   @EJB
   private IdGenerator idGenerator;
+  @EJB
+  private RandomSeedService randomSeedService;
+  @EJB
+  private TrafficGraphExtensions trafficGraphExtensions;
+  @EJB
+  private VehicleFactory vehicleFactory;
 
   public DefaultTrafficController() {
 
@@ -134,8 +140,9 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
     this.area = area;
   }
 
-//  @EJB
-//  private TrafficServerLocal onlyServer;
+  @EJB
+  private TrafficServerLocal onlyServer;
+
   @Override
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
 
@@ -148,36 +155,58 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
     area = param.getCity().getGeoInfo().getBoundaries();
     List<Geometry> generatedCityZones = createCityZones(trafficServerCount);
     for (final Geometry generatedCityZone : generatedCityZones) {
-      try {
-        Context localContext = new InitialContext();
-        final TrafficServerLocal<VehicleEvent> trafficServer
-          = //          new DefaultTrafficServer(new JaxRSCoordinate(param.getCityBoundary().centre()),
-          //            null,
-          //            null,
-          //            null,
-          //            null)
-          (TrafficServerLocal) localContext.
-          lookup(
-            "java:global/PG_Alise_Component/traffic-impl-2.0-SNAPSHOT/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
+//      try {
+//        Context localContext = new InitialContext();
+//        VehicleEventHandlerManager vehicleEventHandlerManager = new DefaultVehicleEventHandlerManager(randomSeedService,
+//          null,
+//          null)
+      final TrafficServerLocal<VehicleEvent> trafficServer = onlyServer;
+//          = new DefaultTrafficServer(randomSeedService,
+      //            trafficGraphExtensions,
+      //            vehicleFactory,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            area,
+      //            null,
+      //            generatedCityZones,
+      //            generatedCityZones,
+      //            serialVersionUID,
+      //            serialVersionUID,
+      //            null,
+      //            null,
+      //            null,
+      //            null,
+      //            idGenerator,
+      //(TrafficServerLocal) localContext.
+      //          lookup(
+      //            "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
 
-        asyncHandler.addDelegateFunction(new Function() {
-          @Override
-          public void delegate() {
-            try {
-              trafficServer.init(param);
-            } catch (IllegalStateException ex) {
-              throw new RuntimeException(ex);
-            }
-            trafficServer.setCityZone(generatedCityZone);
-            log.debug("TrafficServer " + trafficServer + " initalized");
+      asyncHandler.addDelegateFunction(new Function() {
+        @Override
+        public void delegate() {
+          try {
+            trafficServer.init(param);
+          } catch (IllegalStateException ex) {
+            throw new RuntimeException(ex);
           }
-        });
+          trafficServer.setCityZone(generatedCityZone);
+          log.debug("TrafficServer " + trafficServer + " initalized");
+        }
+      });
 
-        cityZones.put(generatedCityZone,
-          trafficServer);
-      } catch (NamingException ex) {
-        throw new RuntimeException(ex);
-      }
+      cityZones.put(generatedCityZone,
+        trafficServer);
+//      } catch (NamingException ex) {
+//        throw new RuntimeException(ex);
+//      }
     }
     //@TODO: doesn't make sense that TrafficServers know other instances of 
     //TrafficServers and manage boundary crossing if TrafficController can do this

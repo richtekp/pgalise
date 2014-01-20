@@ -69,7 +69,9 @@ public class DatabaseWeatherLoaderTest {
 
   @Before
   public void setUp() throws NamingException, NotSupportedException, SystemException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
+      this);
+    TestUtils.getContainer().getContext().bind("inject",
       this);
     city = TestUtils.createDefaultTestCityInstance(idGenerator);
   }
@@ -210,7 +212,7 @@ public class DatabaseWeatherLoaderTest {
    * @throws Exception
    */
   @Test
-	@Ignore //@TODO: who to test values -> mock retrieval service ??
+  @Ignore //@TODO: who to test values -> mock retrieval service ??
   public void testLoadForecastServiceWeatherData() throws Exception {
     long timestamp = System.currentTimeMillis();
     long startTimestamp = DateConverter.convertTimestampToMidnight(timestamp);
@@ -246,16 +248,22 @@ public class DatabaseWeatherLoaderTest {
         endTimestamp,
         true,
         null);
-      ServiceDataForecast expResult = new ServiceDataForecast(idGenerator.getNextId(),DateUtils.truncate(new Date(timestamp),Calendar.DATE),
-				new Time(timestamp),
-				city,
-				Measure.valueOf(20f,SI.CELSIUS),
-				Measure.valueOf(20f,SI.CELSIUS),
-				1.0f,
-				2.0f,
-				2.0f,
-				WeatherCondition.retrieveCondition(idGenerator,
-				2));
+      ServiceDataForecast expResult = new ServiceDataForecast(idGenerator.
+        getNextId(),
+        DateUtils.truncate(new Date(timestamp),
+          Calendar.DATE),
+        new Time(timestamp),
+        city,
+        Measure.valueOf(20f,
+          SI.CELSIUS),
+        Measure.valueOf(20f,
+          SI.CELSIUS),
+        1.0f,
+        2.0f,
+        2.0f,
+        20.0f,
+        WeatherCondition.retrieveCondition(idGenerator,
+          2));
       ServiceDataForecast result = instance.loadForecastServiceWeatherData(
         timestamp,
         city);

@@ -95,7 +95,7 @@ public class DefaultSimulationControllerTest {
 
   @Before
   public void setUp() throws NamingException, MalformedURLException {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
       this);
 
     /* Mock all controllers: */

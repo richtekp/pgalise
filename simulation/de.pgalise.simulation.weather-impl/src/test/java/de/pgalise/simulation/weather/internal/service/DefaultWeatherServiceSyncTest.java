@@ -103,7 +103,9 @@ public class DefaultWeatherServiceSyncTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContainer().bind("inject",
+    TestUtils.getContext().bind("inject",
+      this);
+    TestUtils.getContainer().getContext().bind("inject",
       this);
 
     userTransaction.begin();

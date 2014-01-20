@@ -32,6 +32,7 @@ import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -153,7 +154,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
    * city Infrastructure
    */
   @EJB
-  private CityInfrastructureDataService cityInfrastructure;
+  private FileBasedCityInfrastructureDataService cityInfrastructure;
 
   /**
    * Current timestamp
@@ -185,7 +186,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
    * @param cityInfrastructureData
    */
   public DefaultEnergyController(
-    CityInfrastructureDataService cityInfrastructureData) {
+    FileBasedCityInfrastructureDataService cityInfrastructureData) {
     this.cityInfrastructure = cityInfrastructureData;
     this.buildingsMap = new HashMap<>();
   }
@@ -296,7 +297,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
   }
 
   public void setCityInfrastructure(
-    CityInfrastructureDataService cityInfrastructure) {
+    FileBasedCityInfrastructureDataService cityInfrastructure) {
     this.cityInfrastructure = cityInfrastructure;
   }
 

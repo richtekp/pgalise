@@ -23,7 +23,6 @@ import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverterBase;
-import de.pgalise.simulation.weather.positionconverter.WeatherPositionInitParameter;
 import de.pgalise.simulation.weather.util.DateConverter;
 import javax.ejb.Local;
 import javax.ejb.Stateful;

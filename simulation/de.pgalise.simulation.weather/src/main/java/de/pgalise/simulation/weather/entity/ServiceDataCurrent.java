@@ -54,6 +54,7 @@ public class ServiceDataCurrent extends AbstractServiceData {
     Measure<Float, Temperature> temperature,
     Float windDirection,
     Float windVelocity,
+    Float airPressure,
     WeatherCondition condition) {
     super(id,
       measureDate,
@@ -62,6 +63,7 @@ public class ServiceDataCurrent extends AbstractServiceData {
       relativHumidity,
       windDirection,
       windVelocity,
+      airPressure,
       condition);
     this.temperature = temperature;
   }
@@ -73,35 +75,35 @@ public class ServiceDataCurrent extends AbstractServiceData {
   public void setTemperature(Measure<Float, Temperature> temperature) {
     this.temperature = temperature;
   }
-	
-	protected boolean equalsTransitive(ServiceDataCurrent other) {
-		if(!super.equalsTransitive(other)) {
-			return false;
-		}
-		if (!Objects.equals(this.temperature,
-			other.temperature)) {
-			return false;
-		}
-		return true;
-	}
 
-	@Override
-	public int hashCode() {
-		int hash = 71 * super.hashCode();
-		hash = 71 * hash + Objects.hashCode(this.temperature);
-		return hash;
-	}
+  protected boolean equalsTransitive(ServiceDataCurrent other) {
+    if (!super.equalsTransitive(other)) {
+      return false;
+    }
+    if (!Objects.equals(this.temperature,
+      other.temperature)) {
+      return false;
+    }
+    return true;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final ServiceDataCurrent other = (ServiceDataCurrent) obj;
-		return equalsTransitive(other);
-	}
+  @Override
+  public int hashCode() {
+    int hash = 71 * super.hashCode();
+    hash = 71 * hash + Objects.hashCode(this.temperature);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final ServiceDataCurrent other = (ServiceDataCurrent) obj;
+    return equalsTransitive(other);
+  }
 
 }

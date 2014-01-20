@@ -52,6 +52,7 @@ public class ExtendedServiceDataForecast extends ServiceDataForecast {
     Float relativHumidity,
     Float windDirection,
     Float windVelocity,
+    Float airPressure,
     WeatherCondition condition) {
     super(id,
       measureDate,
@@ -62,6 +63,7 @@ public class ExtendedServiceDataForecast extends ServiceDataForecast {
       relativHumidity,
       windDirection,
       windVelocity,
+      airPressure,
       condition);
   }
 
