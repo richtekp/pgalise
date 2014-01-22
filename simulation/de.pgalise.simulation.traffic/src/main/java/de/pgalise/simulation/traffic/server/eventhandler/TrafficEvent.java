@@ -16,8 +16,6 @@ public interface TrafficEvent<E extends TrafficEvent<?>> extends Event {
 
   TrafficServerLocal<E> getResponsibleServer();
 
-  void setResponsibleServer(TrafficServerLocal<E> responsibleServer);
-
   long getSimulationTime();
 
   long getElapsedTime();

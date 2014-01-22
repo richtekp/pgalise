@@ -58,7 +58,7 @@ public class OSMDataStoreCityInfrastructureDataService implements
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     this.cityInfrastructureData = new CityInfrastructureData(idGenerator.
       getNextId());
   }

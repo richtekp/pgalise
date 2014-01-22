@@ -68,7 +68,7 @@ public class OCSimulationServlet extends HttpServlet {
 	 * Only to handle post construct stuff. Don't call this separately.
 	 */
 	@PostConstruct
-	public void postConstruct() {
+  public void initialize() {
 		this.gson = this.gsonService.getGson();
 
 	}

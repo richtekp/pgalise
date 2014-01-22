@@ -74,7 +74,7 @@ public class DefaultWeatherServiceContext implements WeatherServiceContext {
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     this.strategies = loadStrategiesFromFile(idGenerator,
       databaseManager);
   }

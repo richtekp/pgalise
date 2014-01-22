@@ -190,7 +190,7 @@ public class DefaultFileBasedCityInfrastructureDataService implements
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     this.cityInfrastructureData = new CityInfrastructureData(idGenerator.
       getNextId());
   }

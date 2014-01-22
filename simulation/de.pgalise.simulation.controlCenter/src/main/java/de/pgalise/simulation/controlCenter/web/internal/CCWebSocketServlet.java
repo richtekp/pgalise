@@ -72,7 +72,7 @@ public class CCWebSocketServlet extends HttpServlet {
 	 * it's own after construct.
 	 */
 	@PostConstruct
-	public void initGson() {
+  public void initialize() {
 		this.gson = this.gsonService.getGson();
 	}
 
@@ -136,6 +136,7 @@ public class CCWebSocketServlet extends HttpServlet {
 
 	/**
 	 * Receives updates and stop from the simulation and sends it to the user.
+   *
 	 * @throws javax.servlet.ServletException
 	 * @throws java.io.IOException
 	 */

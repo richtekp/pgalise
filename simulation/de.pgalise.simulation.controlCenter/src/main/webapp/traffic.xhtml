@@ -18,12 +18,12 @@
 				</p:spinner>
 				<div>Explanation??</div>
 				<h:outputLabel for="tolerance" value="Tolerance"/>
-				<p:spinner id="tolerance" value="#{mainCtrl.initParameter.trafficFuzzyData.tolerance}" step="0.1">				
+				<p:spinner id="tolerance" value="#{mainCtrl.initParameter.trafficFuzzyData.tolerance}" stepFactor="0.1">				
 					<p:ajax/>
 				</p:spinner>
 				<div>Explanation??</div>
 				<h:outputLabel for="timeBuffer" value="Time buffer"/>
-				<p:spinner id="timeBuffer" value="#{mainCtrl.initParameter.trafficFuzzyData.timeBuffer}" step="1">
+				<p:spinner id="timeBuffer" value="#{mainCtrl.initParameter.trafficFuzzyData.timeBuffer}" stepFactor="1">
 					<p:ajax/>
 				</p:spinner>
 			</h:form>

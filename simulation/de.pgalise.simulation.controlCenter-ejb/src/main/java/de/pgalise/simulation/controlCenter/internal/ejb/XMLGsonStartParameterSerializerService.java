@@ -77,7 +77,7 @@ public class XMLGsonStartParameterSerializerService implements
 	}
 
 	@PostConstruct
-	public void init() {
+  public void initialize() {
 		this.gson = gsonService.getGson();
 	}
 

@@ -120,7 +120,7 @@ public class DefaultRandomVehicleTripGenerator implements
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     init0();
   }
 

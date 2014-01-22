@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
@@ -65,6 +66,7 @@ public class XMLCarFactoryTest {
   public static final String TEST_FILE = "t.tmp";
   @EJB
   private IdGenerator idGenerator;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public XMLCarFactoryTest() {
   }
@@ -104,10 +106,12 @@ public class XMLCarFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<CarData> vehicle1 = factory.createRandomCar(graph.edgeSet());
+    Vehicle<CarData> vehicle1 = factory.createRandomCar(graph.edgeSet(),
+      output);
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<CarData> vehicle2 = factory.createCar(graph.edgeSet());
+    Vehicle<CarData> vehicle2 = factory.createCar(graph.edgeSet(),
+      output);
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,
       vehicle2.getData().getColor());

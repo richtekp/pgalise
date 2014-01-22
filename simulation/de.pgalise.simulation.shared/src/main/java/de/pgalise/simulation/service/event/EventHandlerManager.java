@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.service.event;
 
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.event.Event;
 import java.io.IOException;
@@ -86,4 +87,6 @@ public interface EventHandlerManager<H extends EventHandler<E>, E extends Event>
    * Clear all event handlers
    */
   public void clear();
+
+  public void init(InitParameter initParameter);
 }

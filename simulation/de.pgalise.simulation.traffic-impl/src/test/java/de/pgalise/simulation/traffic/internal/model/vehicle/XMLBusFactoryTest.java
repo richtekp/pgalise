@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -50,6 +51,7 @@ public class XMLBusFactoryTest {
   public static final String FILEPATH = "/buses.xml";
   @EJB
   private IdGenerator idGenerator;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public XMLBusFactoryTest() {
   }
@@ -79,10 +81,10 @@ public class XMLBusFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<BusData> vehicle1 = factory.createRandomBus();
+    Vehicle<BusData> vehicle1 = factory.createRandomBus(output);
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<BusData> vehicle2 = factory.createBus();
+    Vehicle<BusData> vehicle2 = factory.createBus(output);
     Assert.assertNotNull(vehicle2);
   }
 

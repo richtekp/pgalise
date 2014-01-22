@@ -87,7 +87,7 @@ public class VehicleReachedTargetHandler<D extends VehicleData> extends Abstract
       // only at busstops the amount of passengers can change
       if (n != null) {
         Random random = new Random(getRandomSeedService()
-          .getSeed(DefaultTrafficServer.class.getName()));
+          .getSeed(VehicleReachedTargetHandler.class.getName()));
         int max = ((BusData) event.getVehicle().getData()).
           getMaxPassengerCount();
         BusData temp = (BusData) event.getVehicle().getData();

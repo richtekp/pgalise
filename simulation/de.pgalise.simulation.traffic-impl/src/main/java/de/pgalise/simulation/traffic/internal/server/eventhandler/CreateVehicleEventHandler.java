@@ -62,8 +62,6 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
     return CreateVehicleEventHandler.type;
   }
 
-  private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
-
   @Override
   public void handleEvent(CreateVehiclesEvent<D> event) {
     if (!event.getResponsibleServer().equals(this.getResponsibleServer())) {
@@ -106,7 +104,7 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
       data.getVehicleInformation().setTrip(trip);
 
       if (this.getResponsibleServer().getCityZone().covers(
-        GEOMETRY_FACTORY.createPoint(
+        GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPoint(
           trip.getStartNode().getGeoLocation()))) {
         // Create vehicle
         Vehicle<?> v = this.createVehicle(data,

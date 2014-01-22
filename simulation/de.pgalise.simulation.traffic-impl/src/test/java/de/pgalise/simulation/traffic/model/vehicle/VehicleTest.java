@@ -15,11 +15,8 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import org.junit.Before;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -45,10 +42,14 @@ import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
 import org.jgrapht.alg.DijkstraShortestPath;
 import org.junit.AfterClass;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the attitude of a {@link Vehicle}
@@ -79,6 +80,7 @@ public class VehicleTest {
   private RandomSeedService rss;
   @EJB
   private IdGenerator idGenerator;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   /**
    * File path of the test file
@@ -138,7 +140,8 @@ public class VehicleTest {
     List<TrafficEdge> shortestPath = algo.getPathEdgeList();
     log.debug("Shortest path: " + shortestPath.toString());
 
-    Vehicle<CarData> car = factory.createRandomCar(graph.edgeSet());
+    Vehicle<CarData> car = factory.createRandomCar(graph.edgeSet(),
+      output);
 
     car.setCurrentNode(a);
     car.setPosition(a.getGeoLocation());
@@ -283,7 +286,7 @@ public class VehicleTest {
       e);
     List<TrafficEdge> shortestPath = algo.getPathEdgeList();
 
-    Vehicle<BicycleData> v = bicycleFactory.createBicycle();
+    Vehicle<BicycleData> v = bicycleFactory.createBicycle(output);
     v.setVelocity(9.5);
     v.setPath(shortestPath);
 
@@ -354,7 +357,8 @@ public class VehicleTest {
      * "b", 2, 0); Node c = this.addNode(graph, "c", 2, 2);
      */
     // Creating the cars
-    Vehicle<?> carA = factory.createRandomCar(graph.edgeSet());
+    Vehicle<?> carA = factory.createRandomCar(graph.edgeSet(),
+      output);
     carA.setTrafficGraphExtensions(ee);
     carA.setName("carA");
     carA.setPath(shortestPath);
@@ -364,7 +368,8 @@ public class VehicleTest {
     Collections.reverse(revPath);
     Collections.reverse(revPath);
 
-    Vehicle<?> carB = factory.createRandomCar(graph.edgeSet());
+    Vehicle<?> carB = factory.createRandomCar(graph.edgeSet(),
+      output);
     carB.setTrafficGraphExtensions(ee);
     carB.setName("carB");
     carB.setPath(revPath);
@@ -465,7 +470,8 @@ public class VehicleTest {
     graph.setEdgeWeight(bc,
       1);
 
-    Vehicle<CarData> originalCar = factory.createCar(graph.edgeSet());
+    Vehicle<CarData> originalCar = factory.createCar(graph.edgeSet(),
+      output);
 
     DijkstraShortestPath<TrafficNode, TrafficEdge> algo = new DijkstraShortestPath<>(
       graph,

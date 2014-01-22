@@ -19,7 +19,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.traffic.VehicleType;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.BusStop;
@@ -96,7 +98,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     this.busStops = parseBusStops();
   }
 
@@ -182,7 +184,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
         nodeID,
         startTimestamp);
     } else {
-      if (cityZone == null || cityZone.covers(GEOMETRY_FACTORY.createPoint(
+      if (cityZone == null || cityZone.covers(GeoToolsBootstrapping.
+        getGEOMETRY_FACTORY().createPoint(
         nodeID.getGeoLocation()))) {
         return this.randomVehicleTripGenerator.createVehicleTrip(nodeID,
           getAllHomeNodes(),
@@ -325,7 +328,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
   public List<TrafficNode> getStartHomeNodes(Geometry cityZone) {
     List<TrafficNode> nodes = new ArrayList<>();
     for (TrafficNode node : getAllHomeNodes()) {
-      if (cityZone.covers(GEOMETRY_FACTORY.createPoint(
+      if (cityZone.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+        createPoint(
         this.trafficGraphExtensions.getPosition(node)))) {
         nodes.add(node);
       }
@@ -337,7 +341,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
   public List<TrafficNode> getStartWorkNodes(Geometry cityZone) {
     List<TrafficNode> nodes = new ArrayList<>();
     for (TrafficNode node : getAllWorkNodes()) {
-      if (cityZone.covers(GEOMETRY_FACTORY.createPoint(
+      if (cityZone.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+        createPoint(
         this.trafficGraphExtensions.getPosition(node)))) {
         nodes.add(node);
       }

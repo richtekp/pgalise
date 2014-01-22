@@ -45,7 +45,7 @@ public class DefaultServiceStrategyManager implements ServiceStrategyManager {
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     primaryService = new YahooWeather(idGenerator,
       databaseManager);
     SERVICE_STRATEGIES.add(primaryService);

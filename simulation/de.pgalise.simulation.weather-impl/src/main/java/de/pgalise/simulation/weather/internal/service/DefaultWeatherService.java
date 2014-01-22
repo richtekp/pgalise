@@ -200,12 +200,12 @@ public class DefaultWeatherService implements WeatherService {
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     init0();
   }
 
   @Override
-  public void init(WeatherInitParameter initParameter) {
+  public void init(WeatherInitParameter<?> initParameter) {
     this.loadedTimestamp = initParameter.getStartTimestamp().getTime();
     this.simEndTimestamp = initParameter.getEndTimestamp().getTime();
     this.referenceValues = new CityClimateModifier(initParameter.getCity(),

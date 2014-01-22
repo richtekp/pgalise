@@ -426,7 +426,8 @@ public class DefaultOCSimulationController extends AbstractController<Event, Tra
    */
   private Vehicle<?> createRandomVehicleDataToVehicleData(
     CreateRandomVehicleData data) {
-    return vehicleFactory.createVehicle(data.getVehicleInformation());
+    return vehicleFactory.createVehicle(data.getVehicleInformation(),
+      MainCtrlUtils.OUTPUT);
   }
 
   @Override

@@ -5,6 +5,7 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -32,8 +33,8 @@ public abstract class AbstractTrafficEventHandler<D extends VehicleData, E exten
     return output;
   }
 
-  public void setOutput(Output output) {
-    this.output = output;
+  public void init(InitParameter initParameter) {
+    this.output = initParameter.getOutput();
   }
 
   public AbstractTrafficEventHandler() {

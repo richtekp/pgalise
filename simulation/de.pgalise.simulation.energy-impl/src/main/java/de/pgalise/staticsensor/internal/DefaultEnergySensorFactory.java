@@ -22,10 +22,8 @@ import javax.ejb.LockType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergySensorFactory;
-import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -41,36 +39,34 @@ import javax.ejb.Singleton;
 @Lock(LockType.READ)
 @Singleton
 public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory
-	implements EnergySensorFactory {
+  implements EnergySensorFactory {
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(
-		DefaultEnergySensorFactory.class);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    DefaultEnergySensorFactory.class);
 
-	/**
-	 * Server config reader
-	 */
-	@EJB
-	private ConfigReader configReader;
+  /**
+   * Server config reader
+   */
+  @EJB
+  private ConfigReader configReader;
 
-	public DefaultEnergySensorFactory() {
-	}
+  public DefaultEnergySensorFactory() {
+  }
 
-	public DefaultEnergySensorFactory(RandomSeedService rss,
-		IdGenerator idGenerator,
-		WeatherController wctrl,
-		EnergyControllerLocal ectrl,
-		TcpIpOutput sensorOutput,
-		int updateLimit) {
-		super(rss,
-			idGenerator,
-			wctrl,
-			ectrl,
-			sensorOutput,
-			updateLimit);
-	}
+  public DefaultEnergySensorFactory(RandomSeedService rss,
+    IdGenerator idGenerator,
+    WeatherController wctrl,
+    EnergyControllerLocal ectrl,
+    int updateLimit) {
+    super(rss,
+      idGenerator,
+      wctrl,
+      ectrl,
+      updateLimit);
+  }
 
 //	@PostConstruct
 //	public void postConstruct() {

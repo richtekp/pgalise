@@ -113,7 +113,7 @@ public class CreateRandomVehicleEventHandler<D extends VehicleData, E extends Cr
    *
    * @author marcus
    */
-  private static class CreateThread<X extends VehicleData, Y extends CreateRandomVehiclesEvent<X>>
+  private class CreateThread<X extends VehicleData, Y extends CreateRandomVehiclesEvent<X>>
     extends Thread {
 
     private final CreateRandomVehicleEventHandler<X, Y> eHandler;

@@ -10,6 +10,7 @@ import de.pgalise.simulation.controlCenter.ctrl.BaseMapDialogCtrl;
 import de.pgalise.simulation.controlCenter.ctrl.RandomVehiclesCtrl;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.EventList;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
@@ -28,6 +29,7 @@ import javax.faces.bean.ViewScoped;
 @ManagedBean
 @ViewScoped
 public class AttractionDialogCtrl extends BaseMapDialogCtrl {
+
 	private static final long serialVersionUID = 1L;
 	private Date chosenStartTimestamp;
 	private int chosenDurationMinutes = 45;
@@ -67,12 +69,13 @@ public class AttractionDialogCtrl extends BaseMapDialogCtrl {
 	
 	public void saveAttraction() {
 		TrafficNode node = trafficServerLocal.getTrafficGraphExtesions().getGraph().getNodeClosestTo(getCoordinate());
+    	long timestamp = System.currentTimeMillis();
 		trafficServerLocal.update(new EventList(idGenerator.getNextId(),
 			new LinkedList<>(
 				Arrays.asList(
 					new AttractionTrafficEvent(
 						trafficServerLocal,
-						System.currentTimeMillis(),
+						timestamp,
 						-1,
 						chosenStartTimestamp.getTime(),
 						chosenStartTimestamp.getTime()+chosenDurationMinutes*60,
@@ -81,6 +84,6 @@ public class AttractionDialogCtrl extends BaseMapDialogCtrl {
 					)
 				)
 			),
-			serialVersionUID));
+      timestamp));
 	}
 }

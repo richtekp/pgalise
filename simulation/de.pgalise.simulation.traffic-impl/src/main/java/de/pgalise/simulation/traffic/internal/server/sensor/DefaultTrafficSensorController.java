@@ -23,7 +23,8 @@ import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.staticsensor.SensorFactory;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.entity.BusData;
@@ -37,7 +38,8 @@ import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
-import java.util.HashSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ...

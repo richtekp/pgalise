@@ -10,7 +10,12 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.VehicleInformation;
+import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
+import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
 import de.pgalise.simulation.traffic.event.CreateRandomCarData;
 import de.pgalise.simulation.traffic.event.CreateRandomMotorcycleData;
@@ -49,6 +54,8 @@ public class RandomVehiclesCtrl {
   private SimulationControllerLocal simulationController;
   @EJB
   private RandomSeedService randomSeedService;
+  @EJB
+  private VehicleFactory vehicleFactory;
   private GpsInterferer gpsInterferer;
 
   private int randomCars = 0;
@@ -78,7 +85,7 @@ public class RandomVehiclesCtrl {
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     this.gpsInterferer = new GpsWhiteNoiseInterferer(randomSeedService,
       1.0);
   }
@@ -265,8 +272,8 @@ public class RandomVehiclesCtrl {
     List<Vehicle> bikes = new LinkedList<>();
     for (int i = 0; i < randomBikes; i++) {
       Long id = idGenerator.getNextId();
-      Vehicle<BicycleData> bicycle = trafficServerLocal.getBikeFactory().
-        createRandomBicycle();
+      Vehicle<BicycleData> bicycle = vehicleFactory.
+        createRandomBicycle(MainCtrlUtils.OUTPUT);
       bikes.add(bicycle);
     }
     CreateVehiclesEvent createBicyclesEvent = new CreateVehiclesEvent(
@@ -279,7 +286,7 @@ public class RandomVehiclesCtrl {
     for (int i = 0; i < randomTrucks; i++) {
       Long id = idGenerator.getNextId();
       Vehicle<TruckData> truck = trafficServerLocal.getTruckFactory().
-        createRandomTruck();
+        createRandomTruck(MainCtrlUtils.OUTPUT);
       trucks.add(truck);
     }
     CreateVehiclesEvent createTrucksEvent = new CreateVehiclesEvent(
@@ -292,7 +299,7 @@ public class RandomVehiclesCtrl {
     for (int i = 0; i < randomCars; i++) {
       Long id = idGenerator.getNextId();
       Vehicle<CarData> car = trafficServerLocal.getCarFactory().
-        createRandomCar();
+        createRandomCar(MainCtrlUtils.OUTPUT);
       cars.add(car);
     }
     CreateVehiclesEvent createCarsEvent = new CreateVehiclesEvent(

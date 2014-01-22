@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.service.event;
 
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventType;
 
@@ -37,4 +38,6 @@ public interface EventHandler<E extends Event> {
    * @param event event to be handled
    */
   public void handleEvent(E event);
+
+  public void init(InitParameter initParameter);
 }

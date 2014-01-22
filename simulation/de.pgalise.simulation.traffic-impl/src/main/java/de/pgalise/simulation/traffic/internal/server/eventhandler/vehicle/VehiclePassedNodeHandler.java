@@ -66,7 +66,7 @@ public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<Vehicl
           getBusStopOrder().indexOf(n.getId());
         ((BusData) event.getVehicle().getData()).setLastBusStop(lastBusStop);
         Random random = new Random(getRandomSeedService()
-          .getSeed(DefaultTrafficServer.class.getName()));
+          .getSeed(VehiclePassedNodeHandler.class.getName()));
         int max = ((BusData) event.getVehicle().getData()).
           getMaxPassengerCount();
         BusData temp = (BusData) event.getVehicle().getData();
