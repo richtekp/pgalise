@@ -72,12 +72,12 @@ public class InitDialogCtrl implements Serializable {
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     chosenInitialType = InitDialogCtrlInitialTypeEnum.create.ordinal();
     recentScenarioMap = new HashMap<>();
     uiVehicles = new LinkedList<VehicleData>(
       Arrays.asList(
-        vehicleFactory.createCar().getData()));
+        vehicleFactory.createCar(output).getData()));
   }
 
   /**

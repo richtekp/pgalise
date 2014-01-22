@@ -64,7 +64,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.util.graph.disassembler.AdvancedDisassembler;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
@@ -112,8 +111,6 @@ public class AdvancedQuadrantDisassembler implements AdvancedDisassembler {
 
     return new ArrayList<>(GeometryList);
   }
-
-  private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
   /**
    * Divides the Geometry into two parts.

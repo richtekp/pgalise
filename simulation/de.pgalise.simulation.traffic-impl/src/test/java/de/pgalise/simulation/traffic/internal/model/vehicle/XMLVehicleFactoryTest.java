@@ -49,6 +49,7 @@ public class XMLVehicleFactoryTest {
   private TrafficGraphExtensions trafficGraphExtensions;
   @EJB
   private TrafficSensorFactory sensorFactory;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public XMLVehicleFactoryTest() {
   }
@@ -72,7 +73,7 @@ public class XMLVehicleFactoryTest {
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Bicycle result = instance.createBicycle();
+    Bicycle result = instance.createBicycle(output);
     assertNotNull(result);
   }
 
@@ -89,7 +90,7 @@ public class XMLVehicleFactoryTest {
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Bus result = instance.createBus();
+    Bus result = instance.createBus(output);
     assertNotNull(result);
   }
 
@@ -117,7 +118,8 @@ public class XMLVehicleFactoryTest {
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Car result = instance.createCar(graph.edgeSet());
+    Car result = instance.createCar(graph.edgeSet(),
+      output);
     assertNotNull(result);
   }
 
@@ -151,7 +153,7 @@ public class XMLVehicleFactoryTest {
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Bicycle result = instance.createRandomBicycle();
+    Bicycle result = instance.createRandomBicycle(output);
     assertNotNull(result);
   }
 
@@ -168,7 +170,7 @@ public class XMLVehicleFactoryTest {
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Bus result = instance.createRandomBus();
+    Bus result = instance.createRandomBus(output);
     assertNotNull(result);
   }
 
@@ -196,7 +198,8 @@ public class XMLVehicleFactoryTest {
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Car result = instance.createRandomCar(graph.edgeSet());
+    Car result = instance.createRandomCar(graph.edgeSet(),
+      output);
     assertNotNull(result);
   }
 
@@ -230,7 +233,7 @@ public class XMLVehicleFactoryTest {
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Truck result = instance.createRandomTruck();
+    Truck result = instance.createRandomTruck(output);
     assertNotNull(result);
   }
 
@@ -250,7 +253,8 @@ public class XMLVehicleFactoryTest {
     Color color = Color.BLACK;
     int trailerCount = 2;
     Truck result = instance.createTruck(color,
-      trailerCount);
+      trailerCount,
+      output);
     assertEquals(color,
       result.getData().getColor());
     assertEquals(trailerCount,

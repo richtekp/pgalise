@@ -46,8 +46,4 @@ public class DefaultSimulationController extends AbstractSimulationController
 
   public DefaultSimulationController() {
   }
-
-  @Override
-  public void onPostContruct() {
-  }
 }

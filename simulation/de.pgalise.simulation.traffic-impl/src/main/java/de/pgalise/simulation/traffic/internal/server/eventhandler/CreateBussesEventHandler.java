@@ -12,51 +12,35 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.BusTrip;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomBusData;
-import de.pgalise.simulation.traffic.model.vehicle.Bus;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.internal.model.factory.RandomBusFactory;
-import de.pgalise.simulation.traffic.entity.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
+import de.pgalise.simulation.traffic.model.vehicle.Bus;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.util.GTFS.service.BusService;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create busses
@@ -81,7 +65,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
   /**
    * Traffic server
    */
-  private TrafficServerLocal server;
+  private TrafficControllerLocal server;
 
   /**
    *
@@ -93,6 +77,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
   private Calendar tempCal;
 
   private BusService bs;
+  private Output output;
 
   /**
    * Default constructor
@@ -100,6 +85,11 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
   public CreateBussesEventHandler() {
     cal = new GregorianCalendar();
     tempCal = new GregorianCalendar();
+  }
+
+  public void init(CreateBussesEventHandlerInitParameter initParameter) {
+    this.output = initParameter.getOutput();
+    this.bs = initParameter.getBusService();
   }
 
   /**
@@ -114,7 +104,8 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
       if (trip.getBusStops().size() > 0) {
         List<TrafficEdge> path = this.server.getBusRoute(trip.getBusStops());
         if (path != null) {
-          Vehicle<BusData> b = this.server.getBusFactory().createRandomBus();
+          Vehicle<BusData> b = this.server.getBusFactory().createRandomBus(
+            getOutput());
           b.getData().setBusStopOrder(trip.getBusStops());
           b.setName(trip.getRouteShortName() + " " + trip.getRouteLongName());
           b.setPath(path);
@@ -192,7 +183,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
       getCreateRandomVehicleDataList()) {
       GpsSensor gpsSensor = vehicleData.getGpsSensor();
       InfraredSensor infraredSensor = vehicleData.getInfraredSensor();
-      Bus bus = new RandomBusFactory().createRandomBus();
+      Bus bus = new RandomBusFactory().createRandomBus(getOutput());
       buses.add(bus);
     }
 
@@ -235,7 +226,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
   }
 
   @Override
-  public void init(TrafficServerLocal<CreateBussesEvent<BusData>> server) {
+  public void init(TrafficControllerLocal<CreateBussesEvent<BusData>> server) {
     this.server = server;
   }
 }

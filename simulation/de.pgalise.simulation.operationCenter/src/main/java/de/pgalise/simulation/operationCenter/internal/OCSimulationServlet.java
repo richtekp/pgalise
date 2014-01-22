@@ -35,10 +35,8 @@ import de.pgalise.simulation.sensorFramework.Sensor;
 
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import java.util.Set;
 
 /**
@@ -52,155 +50,155 @@ import java.util.Set;
  */
 public class OCSimulationServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -2330660894525825600L;
-	private static final Logger log = LoggerFactory.getLogger(
-		OCSimulationServlet.class);
-	@EJB
-	private OCSimulationController ocSimulationController;
-	private static final TypeToken<Collection<Sensor>> sensorCollectionTypeToken = new TypeToken<Collection<Sensor>>() {
-	};
+  private static final long serialVersionUID = -2330660894525825600L;
+  private static final Logger log = LoggerFactory.getLogger(
+    OCSimulationServlet.class);
+  @EJB
+  private OCSimulationController ocSimulationController;
+  private static final TypeToken<Collection<Sensor>> sensorCollectionTypeToken = new TypeToken<Collection<Sensor>>() {
+  };
 
-	@EJB
-	private GsonService gsonService;
-	private Gson gson;
+  @EJB
+  private GsonService gsonService;
+  private Gson gson;
 
-	/**
-	 * Only to handle post construct stuff. Don't call this separately.
-	 */
-	@PostConstruct
-	public void postConstruct() {
-		this.gson = this.gsonService.getGson();
+  /**
+   * Only to handle post construct stuff. Don't call this separately.
+   */
+  @PostConstruct
+  public void initialize() {
+    this.gson = this.gsonService.getGson();
 
-	}
+  }
 
-	public OCSimulationController getOCSimulationController() {
-		return ocSimulationController;
-	}
+  public OCSimulationController getOCSimulationController() {
+    return ocSimulationController;
+  }
 
-	@Override
-	protected void doGet(HttpServletRequest req,
-		HttpServletResponse resp)
-		throws ServletException, IOException {
-		processRequest(req,
-			resp);
-	}
+  @Override
+  protected void doGet(HttpServletRequest req,
+    HttpServletResponse resp)
+    throws ServletException, IOException {
+    processRequest(req,
+      resp);
+  }
 
-	@Override
-	protected void doPost(HttpServletRequest req,
-		HttpServletResponse resp)
-		throws ServletException, IOException {
-		processRequest(req,
-			resp);
-	}
+  @Override
+  protected void doPost(HttpServletRequest req,
+    HttpServletResponse resp)
+    throws ServletException, IOException {
+    processRequest(req,
+      resp);
+  }
 
-	/**
-	 * Processes the request. New items needs to be set here.
-	 *
-	 * @param req
-	 * @param resp
-	 * @throws IOException
-	 * @throws IllegalStateException
-	 * @throws JsonSyntaxException
-	 */
-	protected void processRequest(HttpServletRequest req,
-		HttpServletResponse resp) throws IOException {
+  /**
+   * Processes the request. New items needs to be set here.
+   *
+   * @param req
+   * @param resp
+   * @throws IOException
+   * @throws IllegalStateException
+   * @throws JsonSyntaxException
+   */
+  protected void processRequest(HttpServletRequest req,
+    HttpServletResponse resp) throws IOException {
 
-		try {
+    try {
 
-			/* Remove sensor: */
-			if (req.getParameter("deletesensor") != null && req.getParameter(
-				"deletesensor").equalsIgnoreCase("true")) {
+      /* Remove sensor: */
+      if (req.getParameter("deletesensor") != null && req.getParameter(
+        "deletesensor").equalsIgnoreCase("true")) {
 
-				log.debug("deletesensor");
-				ocSimulationController.deleteSensor(gson.fromJson(req.getParameter(
-					"json"),
-					Sensor.class));
+        log.debug("deletesensor");
+        ocSimulationController.deleteSensor(gson.fromJson(req.getParameter(
+          "json"),
+          Sensor.class));
 
 
-				/* Add sensor: */
-			} else if (req.getParameter("createsensor") != null && req.getParameter(
-				"createsensor").equalsIgnoreCase("true")) {
-				log.debug("create sensor");
-				Sensor<?, ?> sensor = gson.fromJson(req.getParameter("json"),
-					Sensor.class);
-				ocSimulationController.createSensor(sensor);
+        /* Add sensor: */
+      } else if (req.getParameter("createsensor") != null && req.getParameter(
+        "createsensor").equalsIgnoreCase("true")) {
+        log.debug("create sensor");
+        Sensor<?, ?> sensor = gson.fromJson(req.getParameter("json"),
+          Sensor.class);
+        ocSimulationController.createSensor(sensor);
 
-				/* Add sensors: */
-			} else if (req.getParameter("createsensors") != null && req.getParameter(
-				"createsensor").equalsIgnoreCase("true")) {
-				log.debug("create sensors");
-				Set<Sensor<?,?>> sensors = gson.fromJson(req.
-					getParameter("json"),
-					sensorCollectionTypeToken.getType());
-				ocSimulationController.createSensors(sensors);
+        /* Add sensors: */
+      } else if (req.getParameter("createsensors") != null && req.getParameter(
+        "createsensor").equalsIgnoreCase("true")) {
+        log.debug("create sensors");
+        Set<Sensor<?, ?>> sensors = gson.fromJson(req.
+          getParameter("json"),
+          sensorCollectionTypeToken.getType());
+        ocSimulationController.createSensors(sensors);
 
-				/* Remove sensors:: */
-			} else if (req.getParameter("deletesensors") != null && req.getParameter(
-				"createsensor").equalsIgnoreCase("true")) {
-				log.debug("delete sensors");
-				Set<Sensor<?,?>> sensors = gson.fromJson(req.
-					getParameter("json"),
-					sensorCollectionTypeToken.getType());
-				ocSimulationController.deleteSensors(sensors);
+        /* Remove sensors:: */
+      } else if (req.getParameter("deletesensors") != null && req.getParameter(
+        "createsensor").equalsIgnoreCase("true")) {
+        log.debug("delete sensors");
+        Set<Sensor<?, ?>> sensors = gson.fromJson(req.
+          getParameter("json"),
+          sensorCollectionTypeToken.getType());
+        ocSimulationController.deleteSensors(sensors);
 
-				/* simulation update: */
-			} else if (req.getParameter("update") != null && req.
-				getParameter("update").equalsIgnoreCase("true")) {
+        /* simulation update: */
+      } else if (req.getParameter("update") != null && req.
+        getParameter("update").equalsIgnoreCase("true")) {
 
-				EventList simulationEventList = gson.fromJson(req.getParameter("json"),
-					EventList.class);
-				if (!simulationEventList.getEventList().isEmpty()) {
-					log.debug(req.getParameter("json"));
-				}
-				ocSimulationController.update(gson.fromJson(req.getParameter("json"),
-					EventList.class));
+        EventList simulationEventList = gson.fromJson(req.getParameter("json"),
+          EventList.class);
+        if (!simulationEventList.getEventList().isEmpty()) {
+          log.debug(req.getParameter("json"));
+        }
+        ocSimulationController.update(gson.fromJson(req.getParameter("json"),
+          EventList.class));
 
-				/* simulation paused: */
-			} else if (req.getParameter("stop") != null && req.getParameter("stop").
-				equalsIgnoreCase("true")) {
+        /* simulation paused: */
+      } else if (req.getParameter("stop") != null && req.getParameter("stop").
+        equalsIgnoreCase("true")) {
 
-				log.debug("Stopped!");
+        log.debug("Stopped!");
 				// Not included, because simulation is much faster than infosphere!
-				//ocSimulationController.stop();
+        //ocSimulationController.stop();
 
-			} else if (req.getParameter("start") != null && req.getParameter("start").
-				equalsIgnoreCase("true")) {
+      } else if (req.getParameter("start") != null && req.getParameter("start").
+        equalsIgnoreCase("true")) {
 
-				log.debug("start");
-				ocSimulationController.start(gson.fromJson(req.getParameter("json"),
-					TrafficStartParameter.class));
+        log.debug("start");
+        ocSimulationController.start(gson.fromJson(req.getParameter("json"),
+          TrafficStartParameter.class));
 
-			} else if (req.getParameter("init") != null && req.getParameter("init").
-				equalsIgnoreCase("true")) {
+      } else if (req.getParameter("init") != null && req.getParameter("init").
+        equalsIgnoreCase("true")) {
 
-				log.debug("init");
-				/* If the simulation is already stopped, than stop if, before start. */
-				try {
-					ocSimulationController.init(gson.fromJson(req.getParameter("json"),
-						TrafficInitParameter.class));
-				} catch (JsonSyntaxException | IllegalStateException e) {
-					ocSimulationController.stop();
-					ocSimulationController.reset();
-					ocSimulationController.init(gson.fromJson(req.getParameter("json"),
-						TrafficInitParameter.class));
-				}
+        log.debug("init");
+        /* If the simulation is already stopped, than stop if, before start. */
+        try {
+          ocSimulationController.init(gson.fromJson(req.getParameter("json"),
+            TrafficInitParameter.class));
+        } catch (JsonSyntaxException | IllegalStateException e) {
+          ocSimulationController.stop();
+          ocSimulationController.reset();
+          ocSimulationController.init(gson.fromJson(req.getParameter("json"),
+            TrafficInitParameter.class));
+        }
 
-			} else if (req.getParameter("reset") != null && req.getParameter("reset").
-				equalsIgnoreCase("true")) {
+      } else if (req.getParameter("reset") != null && req.getParameter("reset").
+        equalsIgnoreCase("true")) {
 
-				log.debug("reset");
-				ocSimulationController.reset();
+        log.debug("reset");
+        ocSimulationController.reset();
 
-			} else if (req.getParameter("exception") != null) {
+      } else if (req.getParameter("exception") != null) {
 
-				String exceptionMessage = req.getParameter("exception");
-				ocSimulationController.displayException(new Exception(exceptionMessage));
-				log.error(exceptionMessage);
-			}
+        String exceptionMessage = req.getParameter("exception");
+        ocSimulationController.displayException(new Exception(exceptionMessage));
+        log.error(exceptionMessage);
+      }
 
-		} catch (JsonSyntaxException | IllegalStateException e) {
-			log.error("Exception",
-				e);
-		}
-	}
+    } catch (JsonSyntaxException | IllegalStateException e) {
+      log.error("Exception",
+        e);
+    }
+  }
 }

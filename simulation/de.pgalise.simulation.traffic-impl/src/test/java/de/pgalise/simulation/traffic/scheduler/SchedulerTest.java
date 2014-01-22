@@ -29,6 +29,7 @@
  */
 package de.pgalise.simulation.traffic.scheduler;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -54,6 +55,7 @@ import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
 import org.jgrapht.alg.DijkstraShortestPath;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -89,6 +91,7 @@ public class SchedulerTest {
   private final TrafficGraph graph = new DefaultTrafficGraph();
   private List<TrafficEdge> shortestPath;
   private TrafficEdge ab, bc;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public SchedulerTest() {
   }
@@ -102,19 +105,23 @@ public class SchedulerTest {
   public List<Vehicle<?>> createVehicles(TrafficGraphExtensions ee) {
     List<Vehicle<?>> vehicles = new ArrayList<>();
 
-    Vehicle<?> a1 = carFactory.createCar(graph.edgeSet());
+    Vehicle<?> a1 = carFactory.createCar(graph.edgeSet(),
+      output);
     a1.setPath(shortestPath);
     vehicles.add(a1);
 
-    Vehicle<?> b1 = carFactory.createCar(graph.edgeSet());
+    Vehicle<?> b1 = carFactory.createCar(graph.edgeSet(),
+      output);
     b1.setPath(shortestPath);
     vehicles.add(b1);
 
-    Vehicle<?> c1 = carFactory.createCar(graph.edgeSet());
+    Vehicle<?> c1 = carFactory.createCar(graph.edgeSet(),
+      output);
     c1.setPath(shortestPath);
     vehicles.add(c1);
 
-    Vehicle<?> d1 = carFactory.createCar(graph.edgeSet());
+    Vehicle<?> d1 = carFactory.createCar(graph.edgeSet(),
+      output);
     d1.setPath(shortestPath);
     vehicles.add(d1);
 

@@ -17,13 +17,13 @@ package de.pgalise.simulation.traffic.server.route;
 
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.traffic.VehicleType;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.TrafficTrip;
 import de.pgalise.simulation.traffic.graphextension.GraphExtensions;
-import de.pgalise.simulation.traffic.server.TrafficServer;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,22 +41,22 @@ import java.util.Map;
  */
 public interface RouteConstructor {
 
-  public TrafficTrip createTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTrip(TrafficControllerLocal<?> serverId,
     Geometry cityZone,
     VehicleType vehicleType);
 
-  public TrafficTrip createTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTrip(TrafficControllerLocal<?> serverId,
     Geometry cityZone,
     TrafficNode nodeID,
     long startTimestamp,
     boolean isStartNode);
 
-  public TrafficTrip createTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTrip(TrafficControllerLocal<?> serverId,
     TrafficNode startNodeID,
     TrafficNode targetNodeID,
     long startTimestamp);
 
-  public TrafficTrip createTimedTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTimedTrip(TrafficControllerLocal<?> serverId,
     Geometry cityZone,
     VehicleType vehicleType,
     Date date,

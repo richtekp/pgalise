@@ -57,6 +57,9 @@ public class DefaultCreateRandomVehicleService implements
   private SensorInterfererService sensorInterfererService;
   @EJB
   private TrafficServerLocal<?> trafficServerLocal;
+  /*
+   to be initialized with init method
+   */
   private Output output;
   @EJB
   private TrafficSensorFactory sensorFactory;
@@ -100,7 +103,8 @@ public class DefaultCreateRandomVehicleService implements
         * randomDynamicSensorBundle.getGpsCarRatio()) {
         gpsActivated = true;
         sensorID = sensorFactory.createGpsSensor(
-          withSensorInterferer);
+          withSensorInterferer,
+          output);
         NavigationNode sensorNode = null;
       }
 
@@ -122,7 +126,8 @@ public class DefaultCreateRandomVehicleService implements
         * randomDynamicSensorBundle.getGpsBikeRatio()) {
         gpsActivated = true;
         sensorID = sensorFactory.createGpsSensor(
-          withSensorInterferer);
+          withSensorInterferer,
+          output);
         NavigationNode sensorNode = null;
       }
 
@@ -144,7 +149,8 @@ public class DefaultCreateRandomVehicleService implements
         * randomDynamicSensorBundle.getGpsTruckRatio()) {
         gpsActivated = true;
         sensorID = sensorFactory.createGpsSensor(
-          withSensorInterferer);
+          withSensorInterferer,
+          output);
         NavigationNode sensorNode = null;
       }
 
@@ -167,7 +173,8 @@ public class DefaultCreateRandomVehicleService implements
         * randomDynamicSensorBundle.getGpsMotorcycleRatio()) {
         gpsActivated = true;
         sensorID = sensorFactory.createGpsSensor(
-          withSensorInterferer);
+          withSensorInterferer,
+          output);
         NavigationNode sensorNode = null;
       }
 

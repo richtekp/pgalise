@@ -27,7 +27,7 @@ import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopNoInterferer;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
 import java.util.LinkedList;
@@ -84,19 +84,6 @@ public class DefaultTrafficControllerTest {
       trafficFuzzyData);
     TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-
-    s1.init(initParam);
-    s1.start(startParam);
-
-    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-    s2.init(initParam);
-    s2.start(startParam);
-
     TrafficControllerLocal<?> ctrl
       = (TrafficControllerLocal) TestUtils.getContext().lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
@@ -121,23 +108,6 @@ public class DefaultTrafficControllerTest {
       trafficFuzzyData);
     TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-
-    s1.init(initParam);
-    s1.start(startParam);
-    s1.stop();
-    s1.start(null);
-
-    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-    s2.init(initParam);
-    s2.start(startParam);
-    s2.stop();
-    s2.start(null);
-
     TrafficControllerLocal<?> ctrl
       = (TrafficControllerLocal) TestUtils.getContext().lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
@@ -160,23 +130,6 @@ public class DefaultTrafficControllerTest {
       trafficFuzzyData);
     TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-
-    s1.init(initParam);
-    s1.start(startParam);
-    s1.stop();
-    s1.reset();
-
-    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-    s2.init(initParam);
-    s2.start(startParam);
-    s2.stop();
-    s2.reset();
-
     TrafficControllerLocal<?> ctrl = (TrafficControllerLocal) TestUtils.
       getContext().lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
@@ -198,39 +151,18 @@ public class DefaultTrafficControllerTest {
       trafficFuzzyData);
     TrafficStartParameter startParam = new TrafficStartParameter();
 
-    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-
-    s1.init(initParam);
-    s1.start(startParam);
-    EventList eventList = new EventList(idGenerator.getNextId(),
-      new LinkedList<>(),
-      System.currentTimeMillis());
-    s1.update(eventList);
-    s1.processMovedVehicles();
-
-    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.getContext().
-      lookup(
-        "java:global / classpath.ear / de.pgalise.simulation.traffic - impl / DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-    s2.init(initParam);
-    s2.start(startParam);
-    eventList = new EventList(idGenerator.getNextId(),
-      new LinkedList<>(),
-      System.currentTimeMillis());
-    s2.update(eventList);
-    s2.processMovedVehicles();
-
-    TrafficControllerLocal<?> ctrl
+    TrafficControllerLocal<VehicleEvent> ctrl
       = (TrafficControllerLocal) TestUtils.getContext().lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
     ctrl.
       init(initParam);
     ctrl.start(startParam);
-    eventList = new EventList(idGenerator.getNextId(),
-      new LinkedList<>(),
+    EventList<VehicleEvent> eventList = new EventList<>(idGenerator.getNextId(),
+      new LinkedList<VehicleEvent>(),
       System.currentTimeMillis());
     ctrl.update(eventList);
+    ctrl.update(eventList);
+    ctrl.processMovedVehicles();
   }
 
   @Test
@@ -266,26 +198,6 @@ public class DefaultTrafficControllerTest {
       someNode,
       new InductionLoopNoInterferer());
     sensor2.setActivated(false);
-
-    TrafficServerLocal<?> s1 = (TrafficServerLocal) TestUtils.
-      getContext().lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-
-    s1.
-      init(initParam);
-    s1.start(startParam);
-    s1.createSensor(sensor);
-    s1.deleteSensor(sensor);
-
-    TrafficServerLocal<?> s2 = (TrafficServerLocal) TestUtils.
-      getContext().
-      lookup(
-        "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficServer!de.pgalise.simulation.traffic.server.TrafficServerLocal");
-    s2.
-      init(initParam);
-    s2.start(startParam);
-    s2.createSensor(sensor);
-    s2.deleteSensor(sensor);
 
     TrafficControllerLocal<?> ctrl
       = (TrafficControllerLocal) TestUtils.getContext().lookup(

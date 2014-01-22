@@ -56,6 +56,7 @@ public class XMLTruckFactoryTest {
   private IdGenerator idGenerator;
   @EJB
   private TrafficSensorFactory sensorFactory;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public XMLTruckFactoryTest() {
   }
@@ -86,11 +87,12 @@ public class XMLTruckFactoryTest {
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH),
       sensorFactory);
 
-    Vehicle<TruckData> vehicle1 = factory.createRandomTruck();
+    Vehicle<TruckData> vehicle1 = factory.createRandomTruck(output);
     Assert.assertNotNull(vehicle1);
 
     Vehicle<TruckData> vehicle2 = factory.createTruck(Color.GRAY,
-      2);
+      2,
+      output);
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,
       vehicle2.getData().getColor());

@@ -16,29 +16,27 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.entity.BusData;
+import de.pgalise.simulation.traffic.entity.BusStop;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
+import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
+import de.pgalise.simulation.traffic.model.RoadBarrier;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
-import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
-import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.entity.BusStop;
-import de.pgalise.simulation.shared.entity.NavigationNode;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.entity.TrafficNode;
-import de.pgalise.simulation.traffic.model.RoadBarrier;
-import de.pgalise.simulation.traffic.entity.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 
 /**
  * The event handler removes vehicles with the given List of UUIDs from the
@@ -76,7 +74,7 @@ public class CreateRoadBarrierEventHandler<D extends VehicleData> extends Abstra
 
   public CreateRoadBarrierEventHandler(TrafficGraph graph,
     IdGenerator idGenerator,
-    TrafficServerLocal<?> server) {
+    TrafficControllerLocal<?> server) {
     this.graph = graph;
     this.idGenerator = idGenerator;
     this.server = server;
@@ -86,14 +84,14 @@ public class CreateRoadBarrierEventHandler<D extends VehicleData> extends Abstra
    * Init the handler
    */
   @Override
-  public void init(TrafficServerLocal<RoadBarrierTrafficEvent<D>> server) {
+  public void init(TrafficControllerLocal<RoadBarrierTrafficEvent<D>> server) {
     this.server = server;
   }
 
   /**
    * Traffic server
    */
-  private TrafficServerLocal<?> server;
+  private TrafficControllerLocal<?> server;
 
   @Override
   public EventType getTargetEventType() {

@@ -120,11 +120,9 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     IdGenerator idGenerator,
     WeatherController wctrl,
     EnergyControllerLocal ectrl,
-    Output sensorOutput,
     int updateLimit) {
     super(
-      updateLimit,
-      sensorOutput);
+      updateLimit);
     this.energyController = ectrl;
     this.weatherController = wctrl;
   }
@@ -162,9 +160,10 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
   @Override
   public PhotovoltaikSensor createPhotovoltaikSensor(JaxRSCoordinate position,
     List<SensorInterfererType> sensorInterfererTypes,
-    int area) throws InterruptedException, ExecutionException {
+    int area,
+    Output output) throws InterruptedException, ExecutionException {
     return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
-      this.getSensorOutput(),
+      output,
       position,
       this.getWeatherController(),
       this.getEnergyController(),
@@ -177,11 +176,13 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
   @Override
   public PhotovoltaikSensor createPhotovoltaikSensor(
     List<SensorInterfererType> sensorInterfererTypes,
-    int area) throws InterruptedException, ExecutionException {
+    int area,
+    Output output) throws InterruptedException, ExecutionException {
     JaxRSCoordinate randomPosition = null;
     return createPhotovoltaikSensor(randomPosition,
       sensorInterfererTypes,
-      area);
+      area,
+      output);
   }
 
   @Override
@@ -192,7 +193,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     if (sensorType.equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
       JaxRSCoordinate position = createRandomPositionEnergySensor();
       return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         this.getEnergyController(),
@@ -206,7 +207,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
       EnergySensorTypeEnum.WINDPOWERSENSOR)) {
       JaxRSCoordinate position = createRandomPositionEnergySensor();
       return new WindPowerSensor(this.getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         this.getEnergyController(),
@@ -221,7 +222,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.THERMOMETER)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new Thermometer(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -229,7 +230,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.WINDFLAG)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new WindFlagSensor(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -237,7 +238,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.BAROMETER)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new Barometer(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -245,7 +246,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.HYGROMETER)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new Hygrometer(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -253,7 +254,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.PYRANOMETER)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new Pyranometer(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -261,7 +262,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.RAIN)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new RainSensor(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -269,7 +270,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.ANEMOMETER)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new Anemometer(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -277,7 +278,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(WeatherSensorTypeEnum.LUXMETER)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new Luxmeter(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         getUpdateLimit(),
@@ -285,7 +286,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     } else if (sensorType.equals(EnergySensorTypeEnum.SMARTMETER)) {
       JaxRSCoordinate position = createRandomPositionWeatherSensor();
       return new SmartMeterSensor(this.getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         position,
         this.getWeatherController(),
         this.getEnergyController(),
@@ -321,7 +322,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
       JaxRSCoordinate position = createRandomPositionInfraredSensor();
       return new InfraredSensor(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         null,
         position,
         getUpdateLimit(),
@@ -350,7 +351,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
       JaxRSCoordinate position = createRandomPositionInductionLoopSensor();
       return new InductionLoopSensor(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         null,
         getUpdateLimit(),
         inductionLoopInterferer);
@@ -379,7 +380,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
       JaxRSCoordinate position = createRandomPositionTopoRadarSensor();
       return new TopoRadarSensor(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         null,
         getUpdateLimit(),
         toporadarInterferer);
@@ -421,7 +422,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
       }
 
       return new GpsSensor(getIdGenerator().getNextId(),
-        this.getSensorOutput(),
+        output,
         null,
         getUpdateLimit(),
         gpsInterferer);

@@ -108,7 +108,7 @@ public abstract class AbstractXMLVehicleFactory<D extends VehicleData> extends A
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     init0();
   }
 

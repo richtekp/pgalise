@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.service.internal.manager;
 
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.event.EventHandler;
 import static org.junit.Assert.*;
 
@@ -98,6 +99,11 @@ public class AbstractEventHandlerManagerTest {
     public void handleEvent(Event event) {
       throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public void init(InitParameter initParameter) {
+
+    }
   }
 
   private class AbstractEventHandlerManagerImpl extends AbstractEventHandlerManager<EventHandler<Event>, Event> {
@@ -108,4 +114,5 @@ public class AbstractEventHandlerManagerTest {
       return true;
     }
   }
+
 }

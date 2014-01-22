@@ -15,17 +15,14 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.traffic.internal.model.factory.XMLBicycleFactory;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
-
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLBicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.testutils.TestUtils;
@@ -33,7 +30,10 @@ import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the {@link XMLBicycleFactoryTest}
@@ -51,6 +51,7 @@ public class XMLBicycleFactoryTest {
   public static final String FILEPATH = "/bicycles.xml";
   @EJB
   private IdGenerator idGenerator;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public XMLBicycleFactoryTest() {
   }
@@ -81,10 +82,10 @@ public class XMLBicycleFactoryTest {
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH)
     );
 
-    Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle();
+    Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle(output);
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<BicycleData> vehicle2 = factory.createBicycle();
+    Vehicle<BicycleData> vehicle2 = factory.createBicycle(output);
     Assert.assertNotNull(vehicle2);
   }
 

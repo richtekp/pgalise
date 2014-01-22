@@ -15,11 +15,11 @@
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
@@ -61,8 +61,6 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
   public EventType getTargetEventType() {
     return CreateVehicleEventHandler.type;
   }
-
-  private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
   @Override
   public void handleEvent(CreateVehiclesEvent<D> event) {
@@ -106,7 +104,7 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
       data.getVehicleInformation().setTrip(trip);
 
       if (this.getResponsibleServer().getCityZone().covers(
-        GEOMETRY_FACTORY.createPoint(
+        GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPoint(
           trip.getStartNode().getGeoLocation()))) {
         // Create vehicle
         Vehicle<?> v = this.createVehicle(data,

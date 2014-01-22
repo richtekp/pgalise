@@ -15,6 +15,8 @@
  */
 package de.pgalise.simulation.service.internal.event;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.event.EventHandler;
 import de.pgalise.simulation.service.event.EventHandlerManager;
@@ -47,9 +49,16 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E>, E e
   EventHandlerManager<H, E> {
 
   private List<H> handlers = new ArrayList<>();
-
   @EJB
   private RandomSeedService randomSeedService;
+  private Output output;
+
+  public AbstractEventHandlerManager() {
+  }
+
+  public void init(InitParameter initParameter) {
+    this.output = initParameter.getOutput();
+  }
 
   @Override
   public <J extends H> void init(InputStream config,
@@ -84,6 +93,7 @@ public abstract class AbstractEventHandlerManager<H extends EventHandler<E>, E e
       H handler = null;
       try {
         handler = handlerClassConstructor.newInstance();
+        handler.init(new InitParameter(output));
       } catch (IllegalArgumentException | InvocationTargetException ex) {
         throw new RuntimeException(ex);
       }

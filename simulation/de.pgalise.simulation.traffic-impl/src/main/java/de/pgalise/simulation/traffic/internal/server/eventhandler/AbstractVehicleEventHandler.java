@@ -16,28 +16,28 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import java.util.List;
-import java.util.Random;
-
-import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.TruckData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
 import de.pgalise.simulation.traffic.event.CreateRandomCarData;
 import de.pgalise.simulation.traffic.event.CreateRandomMotorcycleData;
 import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.entity.BicycleData;
-import de.pgalise.simulation.traffic.entity.CarData;
-import de.pgalise.simulation.traffic.entity.MotorcycleData;
-import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import java.util.List;
+import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +63,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
    * Random generator
    */
   private Random random;
+  private Output output;
 
   public AbstractVehicleEventHandler() {
   }
@@ -72,6 +73,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
    *
    * @param data Vehicle informations
    * @param trip Traffic trip
+   * @param output
    * @return Vehicle<? extends VehicleData>
    */
   public Vehicle<?> createVehicle(CreateRandomVehicleData data,
@@ -82,14 +84,16 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
         .getName(),
         0.0,
         ((CreateRandomTruckData) data).getGpsSensor(),
-        data.getVehicleInformation().isGpsActivated());
+        data.getVehicleInformation().isGpsActivated(),
+        output);
     } else if (data instanceof CreateRandomBicycleData) {
       return this.createBike(trip,
         data.getVehicleInformation()
         .getName(),
         0.0,
         ((CreateRandomBicycleData) data).getGpsSensor(),
-        data.getVehicleInformation().isGpsActivated());
+        data.getVehicleInformation().isGpsActivated(),
+        output);
     } else if (data instanceof CreateRandomMotorcycleData) {
       return this.createMotorcycle(trip,
         data.getVehicleInformation()
@@ -112,7 +116,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
   }
 
   @Override
-  public void init(TrafficServerLocal server) {
+  public void init(TrafficControllerLocal server) {
     setResponsibleServer(server);
     random = new Random(getRandomSeedService()
       .getSeed(AbstractVehicleEventHandler.class.getName()));
@@ -156,10 +160,10 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
    * Create bike
    *
    * @param trip Trip
-   * @param vehicleID ID
    * @param name Name
+   * @param gpsSensor
    * @param velocity Velocity
-   * @param sensorHelpers List with sensors
+   * @param output
    * @param gpsActivated True if the GPS sensor should be activated
    * @return bicycle
    */
@@ -167,7 +171,8 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
     String name,
     double velocity,
     GpsSensor gpsSensor,
-    boolean gpsActivated) {
+    boolean gpsActivated,
+    Output output) {
     Vehicle<BicycleData> bike = null;
     TrafficTrip tmpTrip = trip;
 
@@ -177,7 +182,8 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
 
     // check if path could not be computed between the nodes
     if (path != null) {
-      bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle();
+      bike = this.getResponsibleServer().getBikeFactory().createRandomBicycle(
+        output);
       if (name != null) {
         bike.setName(name);
       }
@@ -203,10 +209,10 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
    * Create car
    *
    * @param trip Trip
-   * @param vehicleID ID
    * @param name Name
    * @param velocity Velocity
    * @param sensorHelpers List with sensors
+   * @param output
    * @param gpsActivated True if the GPS sensor should be activated
    * @return Car
    */
@@ -214,7 +220,8 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
     final String name,
     final double velocity,
     final List<Sensor<?, ?>> sensorHelpers,
-    final boolean gpsActivated) {
+    final boolean gpsActivated,
+    Output output) {
     Vehicle<CarData> car = null;
     TrafficTrip tmpTrip = trip;
 
@@ -227,7 +234,8 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
     if (path != null) {
       GpsSensor gpsSensorHelper = this.getGPSSensor(sensorHelpers);
       car = this.getResponsibleServer().getCarFactory().createRandomCar(
-        getResponsibleServer().getGraph().edgeSet());
+        getResponsibleServer().getGraph().edgeSet(),
+        output);
 
       if (name != null) {
         car.setName(name);
@@ -295,13 +303,15 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
    * @param gpsSensor
    * @param velocity Velocity
    * @param gpsActivated True if the GPS sensor should be activated
+   * @param output
    * @return Truck
    */
   protected Vehicle<TruckData> createTruck(TrafficTrip trip,
     String name,
     double velocity,
     GpsSensor gpsSensor,
-    boolean gpsActivated) {
+    boolean gpsActivated,
+    Output output) {
     Vehicle<TruckData> truck = null;
     TrafficTrip tmpTrip = trip;
 
@@ -311,7 +321,8 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
 
     // check if path could not be computed between the nodes
     if (path != null) {
-      truck = this.getResponsibleServer().getTruckFactory().createRandomTruck();
+      truck = this.getResponsibleServer().getTruckFactory().createRandomTruck(
+        output);
       if (name != null) {
         truck.setName(name);
       }

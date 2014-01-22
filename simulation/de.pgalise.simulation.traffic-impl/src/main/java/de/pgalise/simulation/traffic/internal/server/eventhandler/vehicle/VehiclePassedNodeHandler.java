@@ -19,7 +19,6 @@ import java.util.Random;
 
 import de.pgalise.simulation.shared.event.EventType;
 import de.pgalise.simulation.shared.entity.NavigationNode;
-import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.entity.BusData;
@@ -66,7 +65,7 @@ public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<Vehicl
           getBusStopOrder().indexOf(n.getId());
         ((BusData) event.getVehicle().getData()).setLastBusStop(lastBusStop);
         Random random = new Random(getRandomSeedService()
-          .getSeed(DefaultTrafficServer.class.getName()));
+          .getSeed(VehiclePassedNodeHandler.class.getName()));
         int max = ((BusData) event.getVehicle().getData()).
           getMaxPassengerCount();
         BusData temp = (BusData) event.getVehicle().getData();

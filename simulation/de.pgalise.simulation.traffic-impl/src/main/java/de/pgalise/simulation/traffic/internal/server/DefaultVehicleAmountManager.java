@@ -16,6 +16,7 @@
 package de.pgalise.simulation.traffic.internal.server;
 
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.CarData;
@@ -23,7 +24,6 @@ import de.pgalise.simulation.traffic.entity.MotorcycleData;
 import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.VehicleAmountManager;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
@@ -108,7 +108,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
    * The TrafficServer where the VehicleFuzzyManager belongs to. Each Server has
    * his own VehicleFuzzyManager.
    */
-  private TrafficServerLocal ts;
+  private TrafficControllerLocal ts;
 
   /**
    * The quantity of steps, how often the VehicleAmount will be checked. One
@@ -195,7 +195,7 @@ public class DefaultVehicleAmountManager implements VehicleAmountManager {
    * @param fuzzy delivers the amount of each vehicle in percentage, depending
    * on Fuzzy Rules (e.g. depending on weather events)
    */
-  public DefaultVehicleAmountManager(TrafficServerLocal ts,
+  public DefaultVehicleAmountManager(TrafficControllerLocal ts,
     double tolerance,
     int updateSteps,
     int timebuffer,

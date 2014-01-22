@@ -166,5 +166,5 @@ public interface WeatherService {
 
   Unit<Temperature> getTemperatureUnit();
 
-  void init(WeatherInitParameter initParameter);
+  void init(WeatherInitParameter<?> initParameter);
 }

@@ -46,117 +46,117 @@ import javax.ejb.EJB;
  * @author Timo
  */
 public class XMLGsonStartParameterSerializerService implements
-	StartParameterSerializerService {
+  StartParameterSerializerService {
 
-	private static final Logger log = LoggerFactory.getLogger(
-		XMLGsonStartParameterSerializerService.class);
-	private final static String FILE_PATH;
+  private static final Logger log = LoggerFactory.getLogger(
+    XMLGsonStartParameterSerializerService.class);
+  private final static String FILE_PATH;
 
-	static {
-		if (System.getProperty("os.name").toLowerCase().contains("win")) {
-			FILE_PATH = Thread.currentThread().getContextClassLoader().getResource("").
-				getPath().substring(1).replaceAll("WEB-INF/classes",
-					"");
-		} else {
-			FILE_PATH = Thread.currentThread().getContextClassLoader().getResource("").
-				getPath().replaceAll("WEB-INF/classes",
-					"");
-		}
-	}
+  static {
+    if (System.getProperty("os.name").toLowerCase().contains("win")) {
+      FILE_PATH = Thread.currentThread().getContextClassLoader().getResource("").
+        getPath().substring(1).replaceAll("WEB-INF/classes",
+          "");
+    } else {
+      FILE_PATH = Thread.currentThread().getContextClassLoader().getResource("").
+        getPath().replaceAll("WEB-INF/classes",
+          "");
+    }
+  }
 
-	private Gson gson;
-	@EJB
-	private GsonService gsonService;
-	private XMLSerializer xmlSerializer;
+  private Gson gson;
+  @EJB
+  private GsonService gsonService;
+  private XMLSerializer xmlSerializer;
 
-	/**
-	 * Default
-	 */
-	public XMLGsonStartParameterSerializerService() {
-		this.xmlSerializer = new XMLSerializer();
-	}
+  /**
+   * Default
+   */
+  public XMLGsonStartParameterSerializerService() {
+    this.xmlSerializer = new XMLSerializer();
+  }
 
-	@PostConstruct
-	public void init() {
-		this.gson = gsonService.getGson();
-	}
+  @PostConstruct
+  public void initialize() {
+    this.gson = gsonService.getGson();
+  }
 
-	@Override
-	public ControlCenterStartParameter deserialize(InputStream inputStream) {
-		if (this.gson == null) {
-			throw new IllegalStateException(
-				"Gson is null. Service must be initialized!");
-		}
-		return this.gson.fromJson(this.xmlSerializer.readFromStream(inputStream).
-			toString(),
-			ControlCenterStartParameter.class);
-	}
+  @Override
+  public ControlCenterStartParameter deserialize(InputStream inputStream) {
+    if (this.gson == null) {
+      throw new IllegalStateException(
+        "Gson is null. Service must be initialized!");
+    }
+    return this.gson.fromJson(this.xmlSerializer.readFromStream(inputStream).
+      toString(),
+      ControlCenterStartParameter.class);
+  }
 
-	@Override
-	public String serialize(ControlCenterStartParameter cCSimulationStartParameter,
-		String fileName) {
-		String filePath = XMLGsonStartParameterSerializerService.FILE_PATH + fileName;
-		if (new File(filePath).exists()) {
-			throw new RuntimeException("file name: " + fileName + " already in use!");
-		}
+  @Override
+  public String serialize(ControlCenterStartParameter cCSimulationStartParameter,
+    String fileName) {
+    String filePath = XMLGsonStartParameterSerializerService.FILE_PATH + fileName;
+    if (new File(filePath).exists()) {
+      throw new RuntimeException("file name: " + fileName + " already in use!");
+    }
 
-		PrintWriter pw = null;
+    PrintWriter pw = null;
 
-		try {
-			pw = new PrintWriter(filePath,
-				"UTF-8");
-		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			log.error("Exception",
-				e);
-			throw new RuntimeException(e);
-		} finally {
-			if (pw != null) {
-				try {
-					pw.flush();
-					pw.close();
-				} catch (Exception e) {
-					log.error("Exception",
-						e);
-				}
-			}
-		}
+    try {
+      pw = new PrintWriter(filePath,
+        "UTF-8");
+    } catch (FileNotFoundException | UnsupportedEncodingException e) {
+      log.error("Exception",
+        e);
+      throw new RuntimeException(e);
+    } finally {
+      if (pw != null) {
+        try {
+          pw.flush();
+          pw.close();
+        } catch (Exception e) {
+          log.error("Exception",
+            e);
+        }
+      }
+    }
 
-		return filePath.replaceAll(XMLGsonStartParameterSerializerService.FILE_PATH,
-			"");
-	}
+    return filePath.replaceAll(XMLGsonStartParameterSerializerService.FILE_PATH,
+      "");
+  }
 
-	@Override
-	public ControlCenterStartParameter deserialize(String content) {
-		return this.gson.fromJson(this.xmlSerializer.read(content).toString(),
-			ControlCenterStartParameter.class);
-	}
+  @Override
+  public ControlCenterStartParameter deserialize(String content) {
+    return this.gson.fromJson(this.xmlSerializer.read(content).toString(),
+      ControlCenterStartParameter.class);
+  }
 
-	@Override
-	public void serialize(
-		ControlCenterStartParameter controlCenterStartParameter,
-		OutputStream outputStream) {
-		if (this.gson == null) {
-			throw new IllegalStateException(
-				"Gson is null. Service must be initialized!");
-		}
-		if (outputStream == null) {
-			throw new IllegalArgumentException("outputStream mustn't be null");
-		}
-		try {
-			outputStream.write(xmlSerializer.write(JSONSerializer.toJSON(this.gson.
-				toJson(controlCenterStartParameter))).getBytes());
-		} catch (Exception e) {
-			log.error("Exception",
-				e);
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				outputStream.flush();
-				outputStream.close();
-			} catch (Exception e) {
-				log.error("Exception",
-					e);
-			}
-		}
-	}
+  @Override
+  public void serialize(
+    ControlCenterStartParameter controlCenterStartParameter,
+    OutputStream outputStream) {
+    if (this.gson == null) {
+      throw new IllegalStateException(
+        "Gson is null. Service must be initialized!");
+    }
+    if (outputStream == null) {
+      throw new IllegalArgumentException("outputStream mustn't be null");
+    }
+    try {
+      outputStream.write(xmlSerializer.write(JSONSerializer.toJSON(this.gson.
+        toJson(controlCenterStartParameter))).getBytes());
+    } catch (Exception e) {
+      log.error("Exception",
+        e);
+      throw new RuntimeException(e);
+    } finally {
+      try {
+        outputStream.flush();
+        outputStream.close();
+      } catch (Exception e) {
+        log.error("Exception",
+          e);
+      }
+    }
+  }
 }

@@ -51,116 +51,117 @@ import javax.servlet.http.HttpServlet;
  */
 public class CCWebSocketServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 3385629233339378162L;
-	private static final Logger log = LoggerFactory.getLogger(
-		CCWebSocketServlet.class);
-	/**
-	 * The user. Only one user.
-	 */
-	private static ControlCenterUser user = null;
+  private static final long serialVersionUID = 3385629233339378162L;
+  private static final Logger log = LoggerFactory.getLogger(
+    CCWebSocketServlet.class);
+  /**
+   * The user. Only one user.
+   */
+  private static ControlCenterUser user = null;
 
-	@EJB
-	private GsonService gsonService;
+  @EJB
+  private GsonService gsonService;
 
-	/**
-	 * Gson to serialize and deserialize the messages.
-	 */
-	private Gson gson;
+  /**
+   * Gson to serialize and deserialize the messages.
+   */
+  private Gson gson;
 
-	/**
-	 * Post construct method. Don't call this separately. It will be called on
-	 * it's own after construct.
-	 */
-	@PostConstruct
-	public void initGson() {
-		this.gson = this.gsonService.getGson();
-	}
+  /**
+   * Post construct method. Don't call this separately. It will be called on
+   * it's own after construct.
+   */
+  @PostConstruct
+  public void initialize() {
+    this.gson = this.gsonService.getGson();
+  }
 
-	/**
-	 * Removes an online user. Another user can enter the control center after
-	 * this method.
-	 *
-	 * @param controlCenterUserWebSocket
-	 */
-	public static synchronized void removeUser(
-		ControlCenterUser controlCenterUserWebSocket) {
-		if (user == controlCenterUserWebSocket) {
-			user = null;
-		}
-	}
+  /**
+   * Removes an online user. Another user can enter the control center after
+   * this method.
+   *
+   * @param controlCenterUserWebSocket
+   */
+  public static synchronized void removeUser(
+    ControlCenterUser controlCenterUserWebSocket) {
+    if (user == controlCenterUserWebSocket) {
+      user = null;
+    }
+  }
 
-	/**
-	 * Send a message to the user.
-	 *
-	 * @param message will be parsed to JSON.
-	 * @throws IOException
-	 */
-	public void sendMessage(ControlCenterMessage<?> message) throws IOException {
-		if (user != null) {
-			user.sendMessage(message);
-		} else {
-			throw new RuntimeException("No user online!");
-		}
-	}
+  /**
+   * Send a message to the user.
+   *
+   * @param message will be parsed to JSON.
+   * @throws IOException
+   */
+  public void sendMessage(ControlCenterMessage<?> message) throws IOException {
+    if (user != null) {
+      user.sendMessage(message);
+    } else {
+      throw new RuntimeException("No user online!");
+    }
+  }
 
-	/**
-	 * Produces a look up for the simulation controller.
-	 *
-	 * @param address
-	 * @return
-	 * @throws NamingException
-	 */
-	public SimulationController getSimulationController(String address) throws NamingException {
-		String[] ipPortArray = address.split(":");
-		String ip = ipPortArray[0];
-		String port = ipPortArray[1];
-		Properties props = new Properties();
-		if (ip.equals("127.0.0.1") || ip.equals("localhost")) {
-			props.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.apache.openejb.client.LocalInitialContextFactory");
-			Context ctx = new InitialContext(props);
+  /**
+   * Produces a look up for the simulation controller.
+   *
+   * @param address
+   * @return
+   * @throws NamingException
+   */
+  public SimulationController getSimulationController(String address) throws NamingException {
+    String[] ipPortArray = address.split(":");
+    String ip = ipPortArray[0];
+    String port = ipPortArray[1];
+    Properties props = new Properties();
+    if (ip.equals("127.0.0.1") || ip.equals("localhost")) {
+      props.put(Context.INITIAL_CONTEXT_FACTORY,
+        "org.apache.openejb.client.LocalInitialContextFactory");
+      Context ctx = new InitialContext(props);
 
-			return (SimulationController) ctx.lookup(
-				"de.pgalise.simulation.SimulationControllerLocal");
-		} else {
-			props.put(Context.INITIAL_CONTEXT_FACTORY,
-				"org.apache.openejb.client.InitialContextFactory");
-			props.put(Context.PROVIDER_URL,
-				"http://" + ip + ":" + port + "/tomee/ejb");
-			Context ctx = new InitialContext(props);
+      return (SimulationController) ctx.lookup(
+        "de.pgalise.simulation.SimulationControllerLocal");
+    } else {
+      props.put(Context.INITIAL_CONTEXT_FACTORY,
+        "org.apache.openejb.client.InitialContextFactory");
+      props.put(Context.PROVIDER_URL,
+        "http://" + ip + ":" + port + "/tomee/ejb");
+      Context ctx = new InitialContext(props);
 
-			return (SimulationController) ctx.lookup(
-				"de.pgalise.simulation.SimulationController");
-		}
-	}
+      return (SimulationController) ctx.lookup(
+        "de.pgalise.simulation.SimulationController");
+    }
+  }
 
-	/**
-	 * Receives updates and stop from the simulation and sends it to the user.
-	 * @throws javax.servlet.ServletException
-	 * @throws java.io.IOException
-	 */
-	@Override
-	protected void doPost(HttpServletRequest req,
-		HttpServletResponse resp) throws ServletException, IOException {
-		if (user != null) {
-			if (req.getParameter("update") != null) {
-				user.sendMessage(new SimulationUpdateMessage(this.gson.fromJson(req.
-					getParameter("json"),
-					EventList.class).getTimestamp()));
-			} else if (req.getParameter("stopped") != null && req.getParameter(
-				"stopped").equalsIgnoreCase("true")) {
-				log.debug("Simulation stopped");
-				user.sendMessage(new SimulationStoppedMessage());
-			}
-		}
-	}
+  /**
+   * Receives updates and stop from the simulation and sends it to the user.
+   *
+   * @throws javax.servlet.ServletException
+   * @throws java.io.IOException
+   */
+  @Override
+  protected void doPost(HttpServletRequest req,
+    HttpServletResponse resp) throws ServletException, IOException {
+    if (user != null) {
+      if (req.getParameter("update") != null) {
+        user.sendMessage(new SimulationUpdateMessage(this.gson.fromJson(req.
+          getParameter("json"),
+          EventList.class).getTimestamp()));
+      } else if (req.getParameter("stopped") != null && req.getParameter(
+        "stopped").equalsIgnoreCase("true")) {
+        log.debug("Simulation stopped");
+        user.sendMessage(new SimulationStoppedMessage());
+      }
+    }
+  }
 
-	/**
-	 * Returns the control center user.
-	 *
-	 * @return user or null, if no one is online.
-	 */
-	public static ControlCenterUser getUser() {
-		return user;
-	}
+  /**
+   * Returns the control center user.
+   *
+   * @return user or null, if no one is online.
+   */
+  public static ControlCenterUser getUser() {
+    return user;
+  }
 }

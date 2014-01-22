@@ -32,8 +32,6 @@ import de.pgalise.simulation.traffic.server.TrafficSensorController;
 ;
 import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import javax.ejb.EJB;
-import javax.annotation.PostConstruct;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
 import java.util.LinkedList;
@@ -85,7 +83,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
   @EJB
   private WeatherSensorController weatherSensorController;
   @EJB
-  private TrafficServerLocal<?> trafficServer;
+  private TrafficControllerLocal<?> trafficServer;
   /**
    * copy of the start parameter to be able to resume controllers after being
    * paused
@@ -98,12 +96,6 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
   public AbstractSimulationController() {
     this.frontControllerList = new LinkedList<>();
   }
-
-  /**
-   * Automatically called on post construct
-   */
-  @PostConstruct
-  public abstract void onPostContruct();
 
   /**
    * handles delegation of sensors to controllers which are managed by

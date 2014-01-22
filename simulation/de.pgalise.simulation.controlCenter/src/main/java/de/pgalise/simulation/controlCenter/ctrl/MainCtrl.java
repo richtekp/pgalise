@@ -143,7 +143,7 @@ public class MainCtrl implements Serializable {
   }
 
   @PostConstruct
-  public void init() {
+  public void initialize() {
     startParameterTreeRoot = new DefaultTreeNode("StartParameter",
       null);
     cityCtrl = (CityCtrl) FacesContext.getCurrentInstance().

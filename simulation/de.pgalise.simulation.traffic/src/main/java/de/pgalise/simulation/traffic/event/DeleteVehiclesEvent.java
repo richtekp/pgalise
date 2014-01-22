@@ -13,74 +13,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import java.util.UUID;
 import javax.xml.bind.annotation.XmlRootElement;
 
-
 /**
  * Removes the vehicles with the given {@link UUID}.
- * @param <D> 
+ *
+ * @param <D>
  * @author Timo
  */
 @XmlRootElement
 public class DeleteVehiclesEvent<D extends VehicleData> extends AbstractVehicleEvent<D> {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = 1533612793042541169L;
-	
-	public DeleteVehiclesEvent(TrafficServerLocal<VehicleEvent> server,
-		long simulationTime,
-		long elapsedTime,
-		Vehicle<D> deleteVehicle) {
-		super(server,
-			simulationTime,
-			elapsedTime, deleteVehicle);
-	}
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = 1533612793042541169L;
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((getVehicle() == null) ? 0 : getVehicle().hashCode());
-		return result;
-	}
+  public DeleteVehiclesEvent(TrafficControllerLocal<VehicleEvent> server,
+    long simulationTime,
+    long elapsedTime,
+    Vehicle<D> deleteVehicle) {
+    super(server,
+      simulationTime,
+      elapsedTime,
+      deleteVehicle);
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		DeleteVehiclesEvent<?> other = (DeleteVehiclesEvent) obj;
-		if (getVehicle() == null) {
-			if (other.getVehicle() != null) {
-				return false;
-			}
-		} else if (!getVehicle().equals(other.getVehicle())) {
-			return false;
-		}
-		return true;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + ((getVehicle() == null) ? 0 : getVehicle().
+      hashCode());
+    return result;
+  }
 
-	@Override
-	public EventType getType() {
-		return TrafficEventTypeEnum.DELETE_VEHICLES_EVENT;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    DeleteVehiclesEvent<?> other = (DeleteVehiclesEvent) obj;
+    if (getVehicle() == null) {
+      if (other.getVehicle() != null) {
+        return false;
+      }
+    } else if (!getVehicle().equals(other.getVehicle())) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public EventType getType() {
+    return TrafficEventTypeEnum.DELETE_VEHICLES_EVENT;
+  }
 }

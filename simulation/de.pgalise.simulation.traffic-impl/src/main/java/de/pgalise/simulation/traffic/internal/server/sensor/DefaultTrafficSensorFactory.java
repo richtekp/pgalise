@@ -53,13 +53,11 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
     IdGenerator idGenerator,
     WeatherController wctrl,
     EnergyControllerLocal ectrl,
-    Output sensorOutput,
     int updateLimit) {
     super(rss,
       idGenerator,
       wctrl,
       ectrl,
-      sensorOutput,
       updateLimit);
   }
 
