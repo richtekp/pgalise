@@ -38,6 +38,7 @@ import de.pgalise.simulation.traffic.entity.TrafficTrip;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.event.DeleteVehiclesEvent;
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
+import de.pgalise.simulation.traffic.internal.server.DefaultVehicleEventHandlerManager;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.GenericVehicleEvent;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle.VehicleEventTypeEnum;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersection;
@@ -210,6 +211,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
     this.output = param.getOutput();
     area = param.getCity().getGeoInfo().getBoundaries();
+    init0(); //initializes vehicleEventHandlerManager
     this.vehicleEventHandlerManager.init(param);
     try {
       this.loadEventHandler();
@@ -533,40 +535,16 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
     this.managedVehicles.add(vehicle);
   }
 
-//	/**
-//	 * Returns all known traffic servers from the server configuration
-//	 *
-//	 * @param serverConfig server configuration
-//	 * @return List of all traffic servers
-//	 */
-//	private List<TrafficServerLocal<VehicleEvent>> getTrafficServer(
-//		ServerConfiguration serverConfig) {
-//		this.serverConfigReader.read(
-//			serverConfig,
-//			new ServiceHandler<TrafficServerLocal<VehicleEvent>>() {
-//
-//				@Override
-//				public String getName() {
-//					return DefaultTrafficServiceDictionary.TRAFFIC_SERVER;
-//				}
-//
-//				@Override
-//				public void handle(String server,
-//					TrafficServerLocal<VehicleEvent> service) {
-//					if (!server.equals(DefaultTrafficServer.this.configReader.getProperty(
-//							ServerConfigurationIdentifier.SERVER_HOST))) {
-//						log.debug("Found another traffic server on host: " + server);
-//						DefaultTrafficServer.this.trafficServers.add(service);
-//					}
-//				}
-//
-//			});
-//		return this.trafficServers;
-//	}
   /**
-   * Instanciate dependencies for the traffic server
+   * Instanciate dependencies for the traffic server.
+   * <tt>vehicleEventHandlerManager</tt> still needs to be initialized with {@link VehicleEventHandlerManager#init(de.pgalise.simulation.service.InitParameter)
+   * }.
    */
   private void init0() {
+    this.vehicleEventHandlerManager = new DefaultVehicleEventHandlerManager(
+      randomSeedService,
+      this,
+      output);
   }
 
   /**
