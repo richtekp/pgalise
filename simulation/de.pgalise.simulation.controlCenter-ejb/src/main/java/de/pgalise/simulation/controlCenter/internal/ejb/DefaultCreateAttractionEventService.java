@@ -20,10 +20,11 @@ import de.pgalise.simulation.controlCenter.internal.util.service.CreateRandomVeh
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import javax.ejb.EJB;
 import javax.ejb.Stateful;
 
 /**
@@ -34,49 +35,50 @@ import javax.ejb.Stateful;
  */
 @Stateful
 public class DefaultCreateAttractionEventService implements
-	CreateAttractionEventService {
+  CreateAttractionEventService {
 
-	private CreateRandomVehicleService createRandomVehiclesService;
-	private TrafficServerLocal trafficServerLocal;
+  private CreateRandomVehicleService createRandomVehiclesService;
+  @EJB
+  private TrafficControllerLocal trafficServerLocal;
 
-	public DefaultCreateAttractionEventService() {
-	}
+  public DefaultCreateAttractionEventService() {
+  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param sensorInterfererService
-	 */
-	public DefaultCreateAttractionEventService(
-		CreateRandomVehicleService createRandomVehiclesService,
-		TrafficServerLocal trafficServerLocal) {
-		this.createRandomVehiclesService = createRandomVehiclesService;
-		this.trafficServerLocal = trafficServerLocal;
-	}
+  /**
+   * Constructor
+   *
+   * @param sensorInterfererService
+   */
+  public DefaultCreateAttractionEventService(
+    CreateRandomVehicleService createRandomVehiclesService,
+    TrafficControllerLocal trafficServerLocal) {
+    this.createRandomVehiclesService = createRandomVehiclesService;
+    this.trafficServerLocal = trafficServerLocal;
+  }
 
-	@Override
-	public AttractionTrafficEvent createAttractionTrafficEvent(
-		RandomVehicleBundle randomDynamicSensorBundle,
-		RandomSeedService randomSeedService,
-		boolean withSensorInterferer,
-		TrafficNode nodeID,
-		JaxRSCoordinate position,
-		long startTimestamp,
-		long endTimestamp) {
+  @Override
+  public AttractionTrafficEvent createAttractionTrafficEvent(
+    RandomVehicleBundle randomDynamicSensorBundle,
+    RandomSeedService randomSeedService,
+    boolean withSensorInterferer,
+    TrafficNode nodeID,
+    JaxRSCoordinate position,
+    long startTimestamp,
+    long endTimestamp) {
 
-		CreateRandomVehiclesEvent createRandomVehiclesEvent
-			= (CreateRandomVehiclesEvent) this.createRandomVehiclesService.
-			createRandomDynamicSensors(randomDynamicSensorBundle,
-				randomSeedService,
-				withSensorInterferer);
+    CreateRandomVehiclesEvent createRandomVehiclesEvent
+      = (CreateRandomVehiclesEvent) this.createRandomVehiclesService.
+      createRandomDynamicSensors(randomDynamicSensorBundle,
+        randomSeedService,
+        withSensorInterferer);
 
-		return new AttractionTrafficEvent(
-			trafficServerLocal,
-			System.currentTimeMillis(),
-			0,
-			startTimestamp,
-			endTimestamp,
-			nodeID,
-			createRandomVehiclesEvent.getCreateRandomVehicleDataList());
-	}
+    return new AttractionTrafficEvent(
+      trafficServerLocal,
+      System.currentTimeMillis(),
+      0,
+      startTimestamp,
+      endTimestamp,
+      nodeID,
+      createRandomVehiclesEvent.getCreateRandomVehicleDataList());
+  }
 }

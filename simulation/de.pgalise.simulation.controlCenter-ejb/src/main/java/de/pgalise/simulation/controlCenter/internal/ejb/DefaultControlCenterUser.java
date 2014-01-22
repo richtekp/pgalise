@@ -71,7 +71,6 @@ import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomBusData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.util.GTFS.service.BusService;
@@ -96,9 +95,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import javax.ejb.EJB;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.OnMessage;
@@ -196,8 +192,6 @@ public class DefaultControlCenterUser extends Endpoint implements
   private Session session;
   @EJB
   private IdGenerator idGenerator;
-  @EJB
-  private TrafficServerLocal trafficServer;
   @EJB
   private RandomSeedService randomSeedService;
   @EJB
@@ -543,25 +537,6 @@ public class DefaultControlCenterUser extends Endpoint implements
 
     log.debug("Create server configuration");
 
-    /* Add traffic servers: */
-    List<TrafficServerLocal> trafficServerList = new LinkedList<>();
-    Context context;
-    try {
-      context = new InitialContext();
-    } catch (NamingException ex) {
-      throw new RuntimeException(ex);
-    }
-    for (int i = 0; i < ccSimulationStartParameter.getTrafficServerCount(); i++) {
-      TrafficServerLocal trafficServerLocal;
-      try {
-        trafficServerLocal = (TrafficServerLocal) context.lookup(
-          TrafficServerLocal.class.getName());
-      } catch (NamingException ex) {
-        throw new RuntimeException(ex);
-      }
-      trafficServerList.add(trafficServerLocal);
-    }
-
     /* Created server configuration */
     /* Create init parameters: */
 
@@ -646,7 +621,7 @@ public class DefaultControlCenterUser extends Endpoint implements
           null,
           id.toString())));
     }
-    simulationEventList.add(new CreateBussesEvent(trafficServer,
+    simulationEventList.add(new CreateBussesEvent(trafficController,
       ccSimulationStartParameter.getStartTimestamp().getTime(),
       0L,
       busDataList,

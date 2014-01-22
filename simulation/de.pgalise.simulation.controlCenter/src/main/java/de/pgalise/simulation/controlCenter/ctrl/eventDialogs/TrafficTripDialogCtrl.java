@@ -6,10 +6,10 @@
 package de.pgalise.simulation.controlCenter.ctrl.eventDialogs;
 
 import de.pgalise.simulation.controlCenter.ctrl.BaseMapTwoPointsMapDialogCtrl;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,48 +26,47 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class TrafficTripDialogCtrl extends BaseMapTwoPointsMapDialogCtrl {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private Date chosenStartDate;
-	@EJB
-	private TrafficServerLocal<?> trafficServer;
-	private List<Vehicle<?>> selectedVehilces = new LinkedList<>();
-	@EJB
-	private TrafficGraph trafficGraph;
+  private Date chosenStartDate;
+  @EJB
+  private TrafficControllerLocal<?> trafficServer;
+  private List<Vehicle<?>> selectedVehilces = new LinkedList<>();
+  @EJB
+  private TrafficGraph trafficGraph;
 
-	public TrafficTripDialogCtrl() {
-	}
+  public TrafficTripDialogCtrl() {
+  }
 
-	public void setChosenStartDate(Date chosenStartDate) {
-		this.chosenStartDate = chosenStartDate;
-	}
+  public void setChosenStartDate(Date chosenStartDate) {
+    this.chosenStartDate = chosenStartDate;
+  }
 
-	public Date getChosenStartDate() {
-		return chosenStartDate;
-	}
+  public Date getChosenStartDate() {
+    return chosenStartDate;
+  }
 
-	public Set<Vehicle<?>> retrieveVehicles() {
-		return trafficServer.getManagedVehicles();
-	}
+  public Set<Vehicle<?>> retrieveVehicles() {
+    return trafficServer.getManagedVehicles();
+  }
 
-	public void setSelectedVehilces(
-		List<Vehicle<?>> selectedVehilces) {
-		this.selectedVehilces = selectedVehilces;
-	}
+  public void setSelectedVehilces(
+    List<Vehicle<?>> selectedVehilces) {
+    this.selectedVehilces = selectedVehilces;
+  }
 
-	public List<Vehicle<?>> getSelectedVehilces() {
-		return selectedVehilces;
-	}
+  public List<Vehicle<?>> getSelectedVehilces() {
+    return selectedVehilces;
+  }
 
-	public void saveTrafficTrip() {
-		TrafficNode startNode = trafficGraph.getNodeClosestTo(getCoordinate());
-		TrafficNode endNode = trafficGraph.getNodeClosestTo(getEndCoordinate());
-		for (Vehicle<?> selectedVehicle : selectedVehilces) {
-			trafficServer.takeVehicle(selectedVehicle,
-				startNode,
-				endNode,
-				null);
-		}
+  public void saveTrafficTrip() {
+    TrafficNode startNode = trafficGraph.getNodeClosestTo(getCoordinate());
+    TrafficNode endNode = trafficGraph.getNodeClosestTo(getEndCoordinate());
+    for (Vehicle<?> selectedVehicle : selectedVehilces) {
+      trafficServer.takeVehicle(selectedVehicle,
+        startNode,
+        endNode);
+    }
 
-	}
+  }
 }

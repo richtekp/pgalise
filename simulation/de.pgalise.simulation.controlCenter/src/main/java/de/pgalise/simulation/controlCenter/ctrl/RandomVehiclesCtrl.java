@@ -273,7 +273,7 @@ public class RandomVehiclesCtrl {
       bikes.add(bicycle);
     }
     CreateVehiclesEvent createBicyclesEvent = new CreateVehiclesEvent(
-      trafficControllerLocal.,
+      trafficControllerLocal,
       System.currentTimeMillis(),
       simulationController.getElapsedTime(),
       bikes);
