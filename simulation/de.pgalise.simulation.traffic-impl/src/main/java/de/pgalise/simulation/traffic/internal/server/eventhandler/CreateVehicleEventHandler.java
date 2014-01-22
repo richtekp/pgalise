@@ -15,17 +15,16 @@
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
-import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.entity.VehicleData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The event handler create two vehicles with the same ID and properties. The

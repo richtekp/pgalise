@@ -16,28 +16,28 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
-import java.util.List;
-import java.util.Random;
-
-import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
-import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.TruckData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
 import de.pgalise.simulation.traffic.event.CreateRandomCarData;
 import de.pgalise.simulation.traffic.event.CreateRandomMotorcycleData;
 import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
+import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.entity.BicycleData;
-import de.pgalise.simulation.traffic.entity.CarData;
-import de.pgalise.simulation.traffic.entity.MotorcycleData;
-import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
+import java.util.List;
+import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

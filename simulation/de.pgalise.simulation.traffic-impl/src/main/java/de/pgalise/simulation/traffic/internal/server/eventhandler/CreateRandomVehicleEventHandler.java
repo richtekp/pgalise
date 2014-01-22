@@ -16,15 +16,15 @@
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
 import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.entity.BicycleData;
-import de.pgalise.simulation.traffic.entity.CarData;
-import de.pgalise.simulation.traffic.entity.MotorcycleData;
-import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import java.util.List;
 import org.slf4j.Logger;

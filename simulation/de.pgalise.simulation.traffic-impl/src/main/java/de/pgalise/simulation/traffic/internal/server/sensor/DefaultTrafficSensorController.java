@@ -15,26 +15,23 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.staticsensor.SensorFactory;
-import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.entity.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
+import java.util.HashSet;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
@@ -196,12 +193,12 @@ public class DefaultTrafficSensorController extends AbstractController<TrafficEv
             + vehicle.getName());
           sensorRegistry.add(newSensor);
         } else {
-					// workaround (warum auch immer ist in der registry sonst ein falsches fahrzeug gespeichert)
+          // workaround (warum auch immer ist in der registry sonst ein falsches fahrzeug gespeichert)
           // evtl. sensorregistry beim start clearen?
           ((InfraredSensor) sensor).setVehicle((Vehicle<BusData>) vehicle);
         }
 
-				// log.debug("sending infrared sensor data for vehicle " + vehicle.getId());
+        // log.debug("sending infrared sensor data for vehicle " + vehicle.getId());
         // sensor.update(eventList); //auskommentiert lassen, sonst werden die Werte doppelt gesendet
       }
     }

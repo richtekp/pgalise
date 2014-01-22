@@ -29,34 +29,32 @@
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
-import de.pgalise.simulation.traffic.event.CreateBussesEvent;
+import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.BusTrip;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.event.CreateBussesEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomBusData;
-import de.pgalise.simulation.traffic.model.vehicle.Bus;
+import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.internal.model.factory.RandomBusFactory;
-import de.pgalise.simulation.traffic.entity.BusData;
+import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
+import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
-import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
-import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.util.GTFS.service.BusService;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Create busses
