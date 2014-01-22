@@ -7,8 +7,8 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 
@@ -25,8 +25,11 @@ public abstract class AbstractTrafficEventHandler<D extends VehicleData, E exten
   /**
    * Traffic server
    */
-  private TrafficServerLocal<E> responsibleServer;
+  private TrafficControllerLocal<E> responsibleServer;
 
+  /**
+   * is set via {@link #init(de.pgalise.simulation.service.InitParameter) }
+   */
   private Output output;
 
   public Output getOutput() {
@@ -41,7 +44,7 @@ public abstract class AbstractTrafficEventHandler<D extends VehicleData, E exten
   }
 
   public AbstractTrafficEventHandler(RandomSeedService randomSeedService,
-    TrafficServerLocal<E> responsibleServer,
+    TrafficControllerLocal<E> responsibleServer,
     Output output) {
     this.randomSeedService = randomSeedService;
     this.responsibleServer = responsibleServer;
@@ -50,7 +53,7 @@ public abstract class AbstractTrafficEventHandler<D extends VehicleData, E exten
 
   @Override
   public void init(RandomSeedService randomSeedService,
-    TrafficServerLocal responsibleServer,
+    TrafficControllerLocal responsibleServer,
     Output output) {
     this.randomSeedService = randomSeedService;
     this.responsibleServer = responsibleServer;
@@ -62,11 +65,11 @@ public abstract class AbstractTrafficEventHandler<D extends VehicleData, E exten
   }
 
   @Override
-  public TrafficServerLocal<E> getResponsibleServer() {
+  public TrafficControllerLocal<E> getResponsibleServer() {
     return responsibleServer;
   }
 
-  public void setResponsibleServer(TrafficServerLocal<E> responsibleServer) {
+  public void setResponsibleServer(TrafficControllerLocal<E> responsibleServer) {
     this.responsibleServer = responsibleServer;
   }
 

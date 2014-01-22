@@ -8,7 +8,7 @@ package de.pgalise.simulation.traffic.event;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.internal.event.AbstractEventHandlerManager;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import java.io.IOException;
@@ -24,11 +24,11 @@ public abstract class AbstractTrafficEventHandlerManager<H extends TrafficEventH
   extends AbstractEventHandlerManager<H, E> {
 
   private RandomSeedService randomSeedService;
-  private TrafficServerLocal trafficServerLocal;
+  private TrafficControllerLocal trafficServerLocal;
   private Output tcpIpOutput;
 
   public AbstractTrafficEventHandlerManager(RandomSeedService randomSeedService,
-    TrafficServerLocal trafficServerLocal,
+    TrafficControllerLocal trafficServerLocal,
     Output tcpIpOutput) {
     this.randomSeedService = randomSeedService;
     this.trafficServerLocal = trafficServerLocal;

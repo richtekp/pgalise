@@ -18,8 +18,7 @@ package de.pgalise.simulation.traffic.server.eventhandler;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.event.EventHandler;
-import de.pgalise.simulation.traffic.server.TrafficServer;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 
 /**
  * A TrafficHandler handles a specific type of a TrafficEvent raised by the user
@@ -42,9 +41,9 @@ public interface TrafficEventHandler<
    *
    * @param server Corresponding {@link TrafficServer}
    */
-  void init(TrafficServerLocal<F> server);
+  void init(TrafficControllerLocal<F> server);
 
-  TrafficServerLocal<F> getResponsibleServer();
+  TrafficControllerLocal<F> getResponsibleServer();
 
   /**
    * initializes services after initialiazation with reflection
@@ -54,6 +53,6 @@ public interface TrafficEventHandler<
    * @param output
    */
   void init(RandomSeedService randomSeedService,
-    TrafficServerLocal responsibleServer,
+    TrafficControllerLocal responsibleServer,
     Output output);
 }

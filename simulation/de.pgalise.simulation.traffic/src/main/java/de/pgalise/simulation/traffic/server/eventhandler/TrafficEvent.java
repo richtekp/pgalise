@@ -5,7 +5,7 @@
 package de.pgalise.simulation.traffic.server.eventhandler;
 
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 
 /**
  *
@@ -14,7 +14,7 @@ import de.pgalise.simulation.traffic.server.TrafficServerLocal;
  */
 public interface TrafficEvent<E extends TrafficEvent<?>> extends Event {
 
-  TrafficServerLocal<E> getResponsibleServer();
+  TrafficControllerLocal<E> getResponsibleServer();
 
   long getSimulationTime();
 

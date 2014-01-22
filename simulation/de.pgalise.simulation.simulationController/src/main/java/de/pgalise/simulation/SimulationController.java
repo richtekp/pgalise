@@ -25,7 +25,6 @@ import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
-import de.pgalise.simulation.traffic.server.TrafficServer;
 
 /**
  * The simulation controller inits, starts, stops, resets and updates the whole
@@ -36,37 +35,37 @@ import de.pgalise.simulation.traffic.server.TrafficServer;
  * @auther Timo
  */
 public interface SimulationController extends
-	SensorManagerController<Event, TrafficStartParameter, TrafficInitParameter, Sensor<?, ?>> {
+  SensorManagerController<Event, TrafficStartParameter, TrafficInitParameter, Sensor<?, ?>> {
 
-	/**
-	 * Adds an event list. The other controllers will be updated with the given
-	 * events.
-	 *
-	 * @param simulationEventList an event list with a timestamp and events
-	 */
-	public void addSimulationEventList(EventList<?> simulationEventList);
+  /**
+   * Adds an event list. The other controllers will be updated with the given
+   * events.
+   *
+   * @param simulationEventList an event list with a timestamp and events
+   */
+  public void addSimulationEventList(EventList<?> simulationEventList);
 
-	/**
-	 * Returns the current simulation timestamp.
-	 *
-	 * @TODO: check usage (timestamps should be determined by System simply)
-	 *
-	 * @return
-	 */
-	public long getSimulationTimestamp();
+  /**
+   * Returns the current simulation timestamp.
+   *
+   * @TODO: check usage (timestamps should be determined by System simply)
+   *
+   * @return
+   */
+  public long getSimulationTimestamp();
 
-	public long getElapsedTime();
+  public long getElapsedTime();
 
-	/**
-	 * Use this only for testing.
-	 *
-	 * @return
-	 */
-	public EventInitiator getEventInitiator();
-	
-	public WeatherSensorController getWeatherSensorController();
-	
-	public EnergySensorController getEnergySensorController();
-	
-	public TrafficSensorController getTrafficSensorController();
+  /**
+   * Use this only for testing.
+   *
+   * @return
+   */
+  public EventInitiator getEventInitiator();
+
+  public WeatherSensorController getWeatherSensorController();
+
+  public EnergySensorController getEnergySensorController();
+
+  public TrafficSensorController getTrafficSensorController();
 }

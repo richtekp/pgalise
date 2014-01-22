@@ -7,7 +7,7 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandlerManager;
@@ -20,7 +20,7 @@ public class AbstractVehicleEventHandlerManager extends AbstractTrafficEventHand
   implements VehicleEventHandlerManager {
 
   public AbstractVehicleEventHandlerManager(RandomSeedService randomSeedService,
-    TrafficServerLocal trafficServerLocal,
+    TrafficControllerLocal trafficServerLocal,
     Output tcpIpOutput) {
     super(randomSeedService,
       trafficServerLocal,

@@ -20,6 +20,7 @@ import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.staticsensor.SensorFactory;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
@@ -27,7 +28,6 @@ import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
@@ -70,7 +70,8 @@ public class DefaultTrafficSensorController extends AbstractController<TrafficEv
   public DefaultTrafficSensorController() {
   }
 
-  public DefaultTrafficSensorController(TrafficServerLocal<VehicleEvent> server,
+  public DefaultTrafficSensorController(
+    TrafficControllerLocal<VehicleEvent> server,
     SensorFactory sensorFactory,
     TrafficGraphExtensions trafficGraphExtensions) {
     this.sensorRegistry = sensorRegistry;

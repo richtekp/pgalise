@@ -13,65 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.event;
 
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import java.util.Map;
 
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
- * This type of events is raised whenever something happens that concerns a single vehicle,
- * e.g. a vehicle has passed a node.
- * 
- * @param <D> 
- * @param <N> 
- * @param <E> 
- * @param <V> 
+ * This type of events is raised whenever something happens that concerns a
+ * single vehicle, e.g. a vehicle has passed a node.
+ *
+ * @param <D>
+ * @param <N>
+ * @param <E>
+ * @param <V>
  * @author mustafa
  *
  */
-public abstract class AbstractVehicleEvent<D extends VehicleData> extends AbstractTrafficEvent<D, VehicleEvent> implements VehicleEvent {
-	private static final long serialVersionUID = 1L;
-	private final Vehicle<D> vehicle;
+public abstract class AbstractVehicleEvent<D extends VehicleData> extends AbstractTrafficEvent<D, VehicleEvent>
+  implements VehicleEvent {
 
-	public AbstractVehicleEvent(TrafficServerLocal<VehicleEvent>  server, long simulationTime, long elapsedTime, Vehicle<D> vehicles) {
-		super(server, simulationTime,
-			elapsedTime);
-		this.vehicle = vehicles;
-	}
+  private static final long serialVersionUID = 1L;
+  private final Vehicle<D> vehicle;
 
-	@Override
-	public Vehicle<D> getVehicle() {
-		return vehicle;
-	}
+  public AbstractVehicleEvent(TrafficControllerLocal<VehicleEvent> server,
+    long simulationTime,
+    long elapsedTime,
+    Vehicle<D> vehicles) {
+    super(server,
+      simulationTime,
+      elapsedTime);
+    this.vehicle = vehicles;
+  }
 
-	/**
-	 * @return shallow copy of currently driving vehicles
-	 */
-	@Override
-	public Scheduler getDrivingVehicles() {
-		return getResponsibleServer().getScheduler();
-	}
+  @Override
+  public Vehicle<D> getVehicle() {
+    return vehicle;
+  }
 
-	@Override
-	public TrafficGraph getGraph() {
-		return getResponsibleServer().getGraph();
-	}
+  /**
+   * @return shallow copy of currently driving vehicles
+   */
+  @Override
+  public Scheduler getDrivingVehicles() {
+    return getResponsibleServer().getScheduler();
+  }
 
-	@Override
-	public TrafficGraphExtensions getTrafficGraphExtensions() {
-		return getResponsibleServer().getTrafficGraphExtesions();
-	}
-	
-	@Override
-	public Map<Long, VehicleEvent> getEventForVehicleMap() {
-		return getResponsibleServer().getEventForVehicle();
-	}
+  @Override
+  public TrafficGraph getGraph() {
+    return getResponsibleServer().getGraph();
+  }
+
+  @Override
+  public TrafficGraphExtensions getTrafficGraphExtensions() {
+    return getResponsibleServer().getTrafficGraphExtesions();
+  }
+
+  @Override
+  public Map<Long, VehicleEvent> getEventForVehicleMap() {
+    return getResponsibleServer().getEventForVehicle();
+  }
 }

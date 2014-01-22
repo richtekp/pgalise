@@ -24,6 +24,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.event.CreateRandomBicycleData;
@@ -33,7 +34,6 @@ import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +56,7 @@ public class DefaultCreateRandomVehicleService implements
 
   private SensorInterfererService sensorInterfererService;
   @EJB
-  private TrafficServerLocal<?> trafficServerLocal;
+  private TrafficControllerLocal<?> trafficServerLocal;
   /*
    to be initialized with init method
    */
@@ -75,7 +75,7 @@ public class DefaultCreateRandomVehicleService implements
    */
   public DefaultCreateRandomVehicleService(
     SensorInterfererService sensorInterfererService,
-    TrafficServerLocal<?> trafficServerLocal) {
+    TrafficControllerLocal<?> trafficServerLocal) {
     this.sensorInterfererService = sensorInterfererService;
     this.trafficServerLocal = trafficServerLocal;
   }

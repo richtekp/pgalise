@@ -16,7 +16,6 @@
 package de.pgalise.simulation.traffic.internal.server.route;
 
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -29,7 +28,6 @@ import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.TrafficTrip;
-import de.pgalise.simulation.traffic.server.TrafficServer;
 import de.pgalise.simulation.traffic.server.route.BusStopParser;
 import de.pgalise.simulation.traffic.server.route.RandomVehicleTripGenerator;
 import de.pgalise.simulation.traffic.server.route.RouteConstructor;
@@ -81,8 +79,8 @@ public class DefaultRouteConstructor implements RouteConstructor {
   private TrafficGraphExtensions trafficGraphExtensions;
   private List<BusStop> busStops;
 
-  private final Map<TrafficServer<?>, List<TrafficNode>> startHomeNodesForServer = new HashMap<>();
-  private final Map<TrafficServer<?>, List<TrafficNode>> startWorkNodesForServer = new HashMap<>();
+  private List<TrafficNode> startHomeNodesForServer = new LinkedList<>();
+  private List<TrafficNode> startWorkNodesForServer = new LinkedList<>();
 
   final Set<Pair<Boolean, TrafficGraph>> map = new HashSet<>();
 
@@ -103,7 +101,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
   }
 
   @Override
-  public TrafficTrip createTimedTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTimedTrip(TrafficControllerLocal<?> serverId,
     Geometry cityZone,
     VehicleType vehicleType,
     Date date,
@@ -116,18 +114,17 @@ public class DefaultRouteConstructor implements RouteConstructor {
           date,
           buffer);
     } else {
-      if (startHomeNodesForServer.get(serverId) == null) {
-        startHomeNodesForServer.put(serverId,
-          getStartHomeNodes(cityZone));
+      if (startHomeNodesForServer == null) {
+        startHomeNodesForServer = getStartHomeNodes(cityZone);
       }
-      if (startWorkNodesForServer.get(serverId) == null) {
-        startWorkNodesForServer.put(serverId,
-          getStartWorkNodes(cityZone));
+      if (startWorkNodesForServer == null) {
+        startWorkNodesForServer
+          = getStartWorkNodes(cityZone);
       }
 
       return this.randomVehicleTripGenerator.createVehicleTrip(
-        startHomeNodesForServer.get(serverId),
-        startWorkNodesForServer.get(serverId),
+        startHomeNodesForServer,
+        startWorkNodesForServer,
         vehicleType,
         date,
         buffer);
@@ -135,7 +132,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
   }
 
   @Override
-  public TrafficTrip createTrip(TrafficServer<?> server,
+  public TrafficTrip createTrip(TrafficControllerLocal<?> server,
     Geometry cityZone,
     VehicleType vehicleType) {
     if (cityZone == null) {// for tests (if there is just 1 server and cityzone is undefined)
@@ -146,18 +143,18 @@ public class DefaultRouteConstructor implements RouteConstructor {
           new Date(),
           10);
     } else {
-      if (startHomeNodesForServer.get(server) == null) {
-        startHomeNodesForServer.put(server,
-          getStartHomeNodes(cityZone));
+      if (startHomeNodesForServer == null) {
+        startHomeNodesForServer
+          = getStartHomeNodes(cityZone);
       }
-      if (startWorkNodesForServer.get(server) == null) {
-        startWorkNodesForServer.put(server,
-          getStartWorkNodes(cityZone));
+      if (startWorkNodesForServer == null) {
+        startWorkNodesForServer
+          = getStartWorkNodes(cityZone);
       }
 
       return this.randomVehicleTripGenerator.createVehicleTrip(
-        startHomeNodesForServer.get(server),
-        startWorkNodesForServer.get(server),
+        startHomeNodesForServer,
+        startWorkNodesForServer,
         vehicleType,
         new Date(),
         10);
@@ -165,28 +162,26 @@ public class DefaultRouteConstructor implements RouteConstructor {
 
   }
 
-  private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
-
   @Override
-  public TrafficTrip createTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTrip(TrafficControllerLocal<?> serverId,
     Geometry cityZone,
     TrafficNode nodeID,
     long startTimestamp,
     boolean isStartNode) {
     if (!isStartNode) {
-      if (startHomeNodesForServer.get(serverId) == null) {
-        startHomeNodesForServer.put(serverId,
-          getStartHomeNodes(cityZone));
+      if (startHomeNodesForServer == null) {
+        startHomeNodesForServer
+          = getStartHomeNodes(cityZone);
       }
 
       return this.randomVehicleTripGenerator.createVehicleTrip(
-        startHomeNodesForServer.get(serverId),
+        startHomeNodesForServer,
         nodeID,
         startTimestamp);
     } else {
       if (cityZone == null || cityZone.covers(GeoToolsBootstrapping.
         getGEOMETRY_FACTORY().createPoint(
-        nodeID.getGeoLocation()))) {
+          nodeID.getGeoLocation()))) {
         return this.randomVehicleTripGenerator.createVehicleTrip(nodeID,
           getAllHomeNodes(),
           startTimestamp);
@@ -199,7 +194,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
   }
 
   @Override
-  public TrafficTrip createTrip(TrafficServer<?> serverId,
+  public TrafficTrip createTrip(TrafficControllerLocal<?> serverId,
     TrafficNode startNodeID,
     TrafficNode targetNodeID,
     long startTimestamp) {
@@ -330,7 +325,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
     for (TrafficNode node : getAllHomeNodes()) {
       if (cityZone.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
         createPoint(
-        this.trafficGraphExtensions.getPosition(node)))) {
+          this.trafficGraphExtensions.getPosition(node)))) {
         nodes.add(node);
       }
     }
@@ -343,7 +338,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
     for (TrafficNode node : getAllWorkNodes()) {
       if (cityZone.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
         createPoint(
-        this.trafficGraphExtensions.getPosition(node)))) {
+          this.trafficGraphExtensions.getPosition(node)))) {
         nodes.add(node);
       }
     }

@@ -13,62 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
+ 
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.event.AbstractEvent;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * Superclass for all traffic events.
- *
- * @param <D>
+ * 
+ * @param <D> 
  * @author Timo
  * @param <E>
  */
-public abstract class AbstractTrafficEvent<D extends VehicleData, E extends TrafficEvent<E>>
-  extends AbstractEvent implements TrafficEvent<E> {
+public abstract class AbstractTrafficEvent<D extends VehicleData,E extends TrafficEvent<E>> extends AbstractEvent implements TrafficEvent<E> {
+	/**
+	 * Serial
+	 */
+	private static final long serialVersionUID = -8313844787624266589L;
+  private TrafficControllerLocal<E> responsibleServer;
+	private final long simulationTime;
+	private final long elapsedTime;
 
-  /**
-   * Serial
-   */
-  private static final long serialVersionUID = -8313844787624266589L;
-  private TrafficServerLocal<E> responsibleServer;
-  private final long simulationTime;
-  private final long elapsedTime;
-
-  /**
-   * Constructor
-   *
-   * @param simulationTime
-   * @param elapsedTime
-   * @param responsibleServer
-   */
-  public AbstractTrafficEvent(TrafficServerLocal<E> responsibleServer,
+	/**
+	 * Constructor
+	 * 
+	 * @param simulationTime 
+	 * @param elapsedTime 
+	 * @param responsibleServer  
+	 */
+  public AbstractTrafficEvent(TrafficControllerLocal<E> responsibleServer,
     long simulationTime,
     long elapsedTime) {
-    this.responsibleServer = responsibleServer;
-    this.simulationTime = simulationTime;
-    this.elapsedTime = elapsedTime;
-  }
+		this.responsibleServer = responsibleServer;
+		this.simulationTime = simulationTime;
+		this.elapsedTime = elapsedTime;
+	}
 
-  @Override
-  public long getSimulationTime() {
-    return simulationTime;
-  }
+	@Override
+	public long getSimulationTime() {
+		return simulationTime;
+	}
 
-  @Override
-  public long getElapsedTime() {
-    return elapsedTime;
-  }
-
-  protected void setResponsibleServer(TrafficServerLocal<E> serverId) {
-    this.responsibleServer = serverId;
-  }
-
-  @Override
-  public TrafficServerLocal<E> getResponsibleServer() {
-    return this.responsibleServer;
-  }
+	@Override
+	public long getElapsedTime() {
+		return elapsedTime;
+	}
+	
+	@Override
+  public TrafficControllerLocal<E> getResponsibleServer() {
+		return this.responsibleServer;
+	}
 }

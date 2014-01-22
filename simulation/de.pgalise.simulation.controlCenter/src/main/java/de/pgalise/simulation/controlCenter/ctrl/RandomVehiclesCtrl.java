@@ -10,6 +10,7 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.VehicleInformation;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.CarData;
@@ -23,9 +24,12 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
+import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.entity.CarData;
+import de.pgalise.simulation.traffic.entity.MotorcycleData;
+import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +49,7 @@ public class RandomVehiclesCtrl {
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private TrafficServerLocal trafficServerLocal;
+  private TrafficControllerLocal trafficControllerLocal;
   @EJB
   private SimulationControllerLocal simulationController;
   @EJB
@@ -273,7 +277,7 @@ public class RandomVehiclesCtrl {
       bikes.add(bicycle);
     }
     CreateVehiclesEvent createBicyclesEvent = new CreateVehiclesEvent(
-      trafficServerLocal,
+      trafficControllerLocal,
       System.currentTimeMillis(),
       simulationController.getElapsedTime(),
       bikes);
@@ -281,12 +285,12 @@ public class RandomVehiclesCtrl {
     List<Vehicle> trucks = new LinkedList<>();
     for (int i = 0; i < randomTrucks; i++) {
       Long id = idGenerator.getNextId();
-      Vehicle<TruckData> truck = trafficServerLocal.getTruckFactory().
+      Vehicle<TruckData> truck = trafficControllerLocal.getTruckFactory().
         createRandomTruck(MainCtrlUtils.OUTPUT);
       trucks.add(truck);
     }
     CreateVehiclesEvent createTrucksEvent = new CreateVehiclesEvent(
-      trafficServerLocal,
+      trafficControllerLocal,
       System.currentTimeMillis(),
       simulationController.getElapsedTime(),
       trucks);
@@ -294,12 +298,12 @@ public class RandomVehiclesCtrl {
     List<Vehicle> cars = new LinkedList<>();
     for (int i = 0; i < randomCars; i++) {
       Long id = idGenerator.getNextId();
-      Vehicle<CarData> car = trafficServerLocal.getCarFactory().
+      Vehicle<CarData> car = trafficControllerLocal.getCarFactory().
         createRandomCar(MainCtrlUtils.OUTPUT);
       cars.add(car);
     }
     CreateVehiclesEvent createCarsEvent = new CreateVehiclesEvent(
-      trafficServerLocal,
+      trafficControllerLocal,
       System.currentTimeMillis(),
       simulationController.getElapsedTime(),
       cars);
@@ -307,12 +311,12 @@ public class RandomVehiclesCtrl {
     List<Vehicle> motorcycles = new LinkedList<>();
     for (int i = 0; i < randomMotorcycles; i++) {
       Long id = idGenerator.getNextId();
-      Vehicle<MotorcycleData> bicycle = trafficServerLocal.
+      Vehicle<MotorcycleData> bicycle = trafficControllerLocal.
         getMotorcycleFactory().createRandomMotorcycle();
       motorcycles.add(bicycle);
     }
     CreateVehiclesEvent createMotorcyclesEvent = new CreateVehiclesEvent(
-      trafficServerLocal,
+      trafficControllerLocal,
       System.currentTimeMillis(),
       simulationController.getElapsedTime(),
       motorcycles);

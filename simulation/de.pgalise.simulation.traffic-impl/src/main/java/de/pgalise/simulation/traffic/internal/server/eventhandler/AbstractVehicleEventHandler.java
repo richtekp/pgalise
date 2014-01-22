@@ -17,6 +17,7 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
@@ -32,7 +33,6 @@ import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEventHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
@@ -116,7 +116,7 @@ public abstract class AbstractVehicleEventHandler<D extends VehicleData, E exten
   }
 
   @Override
-  public void init(TrafficServerLocal server) {
+  public void init(TrafficControllerLocal server) {
     setResponsibleServer(server);
     random = new Random(getRandomSeedService()
       .getSeed(AbstractVehicleEventHandler.class.getName()));
