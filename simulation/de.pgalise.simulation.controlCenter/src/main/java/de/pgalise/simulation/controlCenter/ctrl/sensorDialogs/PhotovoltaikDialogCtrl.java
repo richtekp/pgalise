@@ -23,6 +23,7 @@ public class PhotovoltaikDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
   private static final long serialVersionUID = 1L;
 
   private int chosenArea;
+  private int randomSensorCount = 100;
 
   public PhotovoltaikDialogCtrl() {
   }
@@ -46,5 +47,9 @@ public class PhotovoltaikDialogCtrl extends BaseEnergyWeatherSensorDialogCtrl {
       getRandomSeedService(),
       chosenArea,
       null));
+  }
+
+  public void generateRandomSensors() {
+
   }
 }

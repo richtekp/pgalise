@@ -17,7 +17,9 @@ package de.pgalise.simulation.weather.positionconverter;
 
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import javax.ejb.EJB;
 
 /**
  * Abstract super class for a {@link WeatherPositionConverter}. This class
@@ -53,6 +55,8 @@ public abstract class WeatherPositionConverterBase implements
    * Position of the reference values
    */
   private Polygon grid;
+  @EJB
+  private IdGenerator idGenerator;
 
   public WeatherPositionConverterBase() {
   }
@@ -69,7 +73,7 @@ public abstract class WeatherPositionConverterBase implements
 
   public double getGridDistance() {
     double retValue = Double.MIN_VALUE;
-    JaxRSCoordinate referncePoint = getReferencePosition();
+    BaseCoordinate referncePoint = getReferencePosition();
     for (com.vividsolutions.jts.geom.Coordinate coordinate : grid.
       getCoordinates()) {
       double distance = referncePoint.distance(coordinate);
@@ -80,12 +84,12 @@ public abstract class WeatherPositionConverterBase implements
     return retValue;
   }
 
-  public JaxRSCoordinate getReferencePosition() throws IllegalStateException{
+  public BaseCoordinate getReferencePosition() throws IllegalStateException{
 		if(grid == null) {
 			throw new IllegalStateException("grid has not been set (is null). Init the converter before invoking methods");
 		}
     Point centroid = this.grid.getCentroid();
-    return new JaxRSCoordinate(centroid.getX(),
+    return new BaseCoordinate(idGenerator.getNextId(), centroid.getX(),
       centroid.getY());
   }
 
@@ -93,6 +97,7 @@ public abstract class WeatherPositionConverterBase implements
     return grid;
   }
 
+  @Override
   public void setGrid(Polygon grid) {
     this.grid = grid;
   }

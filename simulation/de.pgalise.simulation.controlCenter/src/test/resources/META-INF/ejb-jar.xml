@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ejb-jar/>
+<ejb-jar>
+	<assembly-descriptor>
+		<application-exception>
+			<exception-class>java.lang.IllegalArgumentException</exception-class>
+			<rollback>false</rollback>
+		</application-exception>
+		<application-exception>
+			<exception-class>java.lang.IllegalStateException</exception-class>
+			<rollback>false</rollback>
+		</application-exception>
+	</assembly-descriptor>
+</ejb-jar>

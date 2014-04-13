@@ -19,7 +19,7 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.entity.BicycleData;
@@ -181,7 +181,7 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
     Output output) {
     Bicycle retValue = createBicycle(output);
     if (edges != null) {
-      JaxRSCoordinate position = generateRandomPosition(edges);
+      BaseCoordinate position = generateRandomPosition(edges);
       retValue.setPosition(position);
     }
     return retValue;
@@ -192,7 +192,7 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
     Output output) {
     Bicycle retValue = createRandomBicycle(output);
     if (edges != null) {
-      JaxRSCoordinate position = generateRandomPosition(edges);
+      BaseCoordinate position = generateRandomPosition(edges);
       retValue.setPosition(position);
     }
     return retValue;

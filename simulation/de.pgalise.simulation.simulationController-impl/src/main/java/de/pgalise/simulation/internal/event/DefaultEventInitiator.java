@@ -29,31 +29,15 @@
  */
 package de.pgalise.simulation.internal.event;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-import javax.ejb.Local;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.internal.DefaultFrontController;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.service.SimulationComponent;
-import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.Event;
@@ -65,7 +49,21 @@ import de.pgalise.simulation.traffic.TrafficController;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherInitParameter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.ejb.EJB;
+import javax.ejb.Local;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
+import javax.ejb.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default implementation of the {@link EventInitiator}. It starts a thread
@@ -95,7 +93,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
   @EJB
   private EnergyControllerLocal energyController;
   @EJB
@@ -387,7 +385,7 @@ public class DefaultEventInitiator extends AbstractController<Event, StartParame
   }
 
   /**
-   * Stops the event thread
+   * Stops the event thread and the controller
    */
   private void stopEventThread() {
     if (this.eventThread != null && this.eventThread.isAlive()) {

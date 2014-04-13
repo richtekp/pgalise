@@ -88,9 +88,9 @@ public class DefaultRegionParser implements RegionParser {
 
 			for (int i = 0; i < landuse.getEdgeList().size(); i++) {
 				NavigationNode landuseNode = landuse.getNodeList().get(i);
-				int xpoint = (int) (landuseNode.getGeoLocation().getX() * 10000000);
+				int xpoint = (int) (landuseNode.getX() * 10000000);
 				xpoints[i] = xpoint;
-				int ypoint = (int) (landuseNode.getGeoLocation().getY() * 10000000);
+				int ypoint = (int) (landuseNode.getY() * 10000000);
 				ypoints[i] = ypoint;
 			}
 
@@ -104,8 +104,8 @@ public class DefaultRegionParser implements RegionParser {
 			for (TrafficNode node : way.getNodeList()) {
 				for (EnrichedPolygon p : polygons) {
 					if (p.getPolygon().contains(
-						(int) (node.getGeoLocation().getX() * 10000000),
-						(int) (node.getGeoLocation().getY() * 10000000))) {
+						(int) (node.getX() * 10000000),
+						(int) (node.getY() * 10000000))) {
 						Set<String> landuse = p.getLanduse();
 						node.getLanduseTags().addAll(landuse);
 

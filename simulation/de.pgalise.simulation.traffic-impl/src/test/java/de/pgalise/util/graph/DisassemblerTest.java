@@ -57,10 +57,11 @@
  */
 package de.pgalise.util.graph;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -78,6 +79,8 @@ import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.geotools.geometry.jts.JTS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -111,13 +114,13 @@ public class DisassemblerTest {
 
     // erster qudrant
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(10,
+      new Coordinate(10,
         10));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(25,
+      new Coordinate(25,
         25));
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(20,
+      new Coordinate(20,
         25));
     graph.addVertex(a);
     graph.addVertex(b);
@@ -125,28 +128,28 @@ public class DisassemblerTest {
 
     // zweiter quadrant
     TrafficNode d = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(18,
+      new Coordinate(18,
         45));
     TrafficNode e = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(40,
+      new Coordinate(40,
         50));
     graph.addVertex(d);
     graph.addVertex(e);
 
     // dritter quadrant
     TrafficNode f = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(75,
+      new Coordinate(75,
         30));
     TrafficNode g = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(80,
+      new Coordinate(80,
         45));
     graph.addVertex(f);
     graph.addVertex(g);
 
     List<Geometry> quadrants = dis.disassemble(JTS.toGeometry(new Envelope(
-      new JaxRSCoordinate(0,
+      new Coordinate(0,
         0),
-      new JaxRSCoordinate(100,
+      new Coordinate(100,
         60))),
       4);
 
@@ -201,7 +204,7 @@ public class DisassemblerTest {
     Set<TrafficNode> str = new HashSet<>();
     for (TrafficNode node : nodes) {
       if (geometry.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
-        createPoint(node.getGeoLocation()))) {
+        createPoint(node))) {
         str.add(node);
       }
     }

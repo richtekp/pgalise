@@ -23,14 +23,10 @@ import de.pgalise.simulation.traffic.event.CreateRandomTruckData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateVehiclesEvent;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
-import de.pgalise.simulation.traffic.entity.BicycleData;
-import de.pgalise.simulation.traffic.entity.CarData;
-import de.pgalise.simulation.traffic.entity.MotorcycleData;
-import de.pgalise.simulation.traffic.entity.TruckData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -56,7 +52,8 @@ public class RandomVehiclesCtrl {
   private RandomSeedService randomSeedService;
   @EJB
   private VehicleFactory vehicleFactory;
-  private GpsInterferer gpsInterferer;
+  @EJB
+  private GpsWhiteNoiseInterferer gpsInterferer;
 
   private int randomCars = 0;
   private double randomCarGPSRatio = 100;
@@ -82,12 +79,6 @@ public class RandomVehiclesCtrl {
     setRandomMotorcycleGPSRatio(100);
     setRandomBikes(0);
     setRandomBikeGPSRatio(100);
-  }
-
-  @PostConstruct
-  public void initialize() {
-    this.gpsInterferer = new GpsWhiteNoiseInterferer(randomSeedService,
-      1.0);
   }
 
   /**

@@ -52,6 +52,16 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 	 */
 	protected Way() {
 	}
+  
+  public Way(Long id) {
+    super(id);
+  }
+
+	public Way(Long id,
+		List<E> edgeList,
+		String streetname) {
+    this(id, edgeList, streetname, new HashSet<String>());
+	}
 
 	/**
 	 * Constructor
@@ -60,31 +70,23 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 	 * @param streetname
 	 * @param wayTags
 	 */
-	public Way(List<E> edgeList,
+	public Way(Long id,
+    List<E> edgeList,
 		String streetname,
 		Set<String> wayTags) {
-		this(edgeList,
-			streetname);
-		this.tags = wayTags;
+		this(id,edgeList,
+			streetname, wayTags, new HashSet<String>());
 	}
 
-	public Way(
-		List<E> edgeList,
-		String streetname) {
-		this.edgeList = edgeList;
-		this.streetName = streetname;
-		this.tags = new HashSet<>();
-		this.landuseTags = new HashSet<>();
-	}
-
-	public Way(
+	public Way(Long id,
 		List<E> edgeList,
 		String streetname,
 		Set<String> tags,
 		Set<String> landuseTags) {
-		this(edgeList,
-			streetname,
-			tags);
+    this(id);
+    this.edgeList = edgeList;
+    this.streetName = streetname;
+    this.tags = tags;
 		this.landuseTags = landuseTags;
 	}
 

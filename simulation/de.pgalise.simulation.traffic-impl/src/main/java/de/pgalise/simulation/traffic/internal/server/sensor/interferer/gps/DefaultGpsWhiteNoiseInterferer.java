@@ -15,8 +15,11 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
+import javax.ejb.EJB;
 
 /**
  * Represents an interferer that creates generally low errors
@@ -24,15 +27,13 @@ import de.pgalise.simulation.service.RandomSeedService;
  * @author Marcus
  * @version 1.0 (Nov 17, 2012)
  */
-public class GpsWhiteNoiseInterferer extends GpsBaseInterferer {
+public class DefaultGpsWhiteNoiseInterferer extends GpsBaseInterferer implements GpsWhiteNoiseInterferer {
 
-	/**
-	 * File path for property file
-	 */
-	public static final String PROPERTIES_FILE_PATH = "/interferer_gps_whitenoise.properties";
 	private static final long serialVersionUID = 1L;
+  @EJB
+  private IdGenerator idGenerator;
 	
-	public GpsWhiteNoiseInterferer(RandomSeedService randomseedservice) {
+	public DefaultGpsWhiteNoiseInterferer(RandomSeedService randomseedservice) {
 		this(randomseedservice,
 			1.0);
 	}
@@ -43,7 +44,7 @@ public class GpsWhiteNoiseInterferer extends GpsBaseInterferer {
 	 * @param randomseedservice Random Seed Service
 	 * @param changeAmplitude
 	 */
-	public GpsWhiteNoiseInterferer(RandomSeedService randomseedservice,
+	public DefaultGpsWhiteNoiseInterferer(RandomSeedService randomseedservice,
 		double changeAmplitude) {
 		super(randomseedservice,
 			changeAmplitude,
@@ -51,8 +52,8 @@ public class GpsWhiteNoiseInterferer extends GpsBaseInterferer {
 	}
 
 	@Override
-	public JaxRSCoordinate interfere(final JaxRSCoordinate mutablePosition,
-		final JaxRSCoordinate realPosition,
+	public BaseCoordinate interfere(final BaseCoordinate mutablePosition,
+		final BaseCoordinate realPosition,
 		final long simTime) {
 		// Should be changed?
 		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
@@ -60,7 +61,7 @@ public class GpsWhiteNoiseInterferer extends GpsBaseInterferer {
 				getChangeAmplitude()) + Double.MIN_NORMAL)));
 			final double y = 1d / ((1d / ((this.getRandom().nextDouble() * this.
 				getChangeAmplitude()) + Double.MIN_NORMAL)));
-			return new JaxRSCoordinate(
+			return new BaseCoordinate(idGenerator.getNextId(),
 				this.getRandom().nextBoolean() ? mutablePosition.getX() + x : mutablePosition.
 				getX() - x,
 				this

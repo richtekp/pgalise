@@ -15,27 +15,34 @@
  */
 package de.pgalise.staticsensor.sensors;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.CompositeEnergyInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.EnergyBaseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.PhotovoltaikWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.SmartMeterWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.energy.interferer.WindPowerWhiteNoiseInterferer;
+import de.pgalise.testutils.TestUtils;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import org.apache.openejb.api.LocalClient;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the all {@link EnergyInterferer}
@@ -43,6 +50,8 @@ import javax.ejb.EJB;
  * @author Andreas Rehfeldt
  * @version 1.0 (Nov 12, 2012)
  */
+@LocalClient
+@ManagedBean
 public class EnergyInterfererTest {
 
 	/**
@@ -59,7 +68,7 @@ public class EnergyInterfererTest {
 	/**
 	 * Test position
 	 */
-	public static JaxRSCoordinate testPosition;
+	public static BaseCoordinate testPosition;
 
 	/**
 	 * Test value
@@ -71,9 +80,16 @@ public class EnergyInterfererTest {
 	 */
 	@EJB
 	private RandomSeedService service;
+  @EJB
+  private IdGenerator idGenerator;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+  public EnergyInterfererTest() {
+  }
+
+	@Before
+	public void setUp() throws Exception {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
 
 		// Start
 		Calendar cal = new GregorianCalendar();
@@ -88,7 +104,7 @@ public class EnergyInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new JaxRSCoordinate(1.0,
+		testPosition = new BaseCoordinate(idGenerator.getNextId(), 1.0,
 			10.0);
 	}
 

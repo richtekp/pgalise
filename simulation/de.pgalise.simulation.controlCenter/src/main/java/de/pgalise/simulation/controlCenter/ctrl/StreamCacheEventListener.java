@@ -19,44 +19,33 @@ import org.apache.commons.fileupload.util.Streams;
  *
  * @author richter
  */
+/*
+transformation between files and InputStream can't take place here because 
+there's no event for getting element, so elements can't be manipulated at 
+retrieval. Therefore implementation of transformation should take place as a 
+whole in the StreamedFileCache class.
+*/
 public class StreamCacheEventListener extends CacheEventListenerAdapter {
 
-	@Override
-	public void notifyElementEvicted(Ehcache cache,
-		Element element) {
-		if (!(element.getObjectKey() instanceof String)) {
-			throw new IllegalArgumentException();
-		}
-		String key = (String) element.getObjectKey();
-		File file = new File(MainCtrlUtils.CACHE_DATA_DIR,
-			key);
-		if (!file.delete()) {
-			throw new RuntimeException(String.format("file %s could not be deleted",
-				file.getAbsolutePath()));
-		}
-	}
+  private File fileDataDir;
 
-	@Override
-	public void notifyElementPut(Ehcache cache,
-		Element element) throws CacheException {
-		if (!(element.getObjectKey() instanceof String)) {
-			throw new IllegalArgumentException();
-		}
-		if (!(element.getObjectValue() instanceof InputStream)) {
-			throw new IllegalArgumentException();
-		}
-		String key = (String) element.getObjectKey();
-		InputStream inputStream = (InputStream) element.getObjectValue();
-		File file = new File(MainCtrlUtils.CACHE_DATA_DIR,
-			key);
-		try {
-			file.createNewFile(); //returns false if the file already exists
-			Streams.copy(inputStream,
-				new FileOutputStream(file),
-				true);
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-	}
+  public StreamCacheEventListener(File fileDataDir) {
+    this.fileDataDir = fileDataDir;
+  }
+
+  @Override
+  public void notifyElementEvicted(Ehcache cache,
+    Element element) {
+    if (!(element.getObjectKey() instanceof String)) {
+      throw new IllegalArgumentException();
+    }
+    String key = (String) element.getObjectKey();
+    File file = new File(fileDataDir,
+      key);
+    if (!file.delete()) {
+      throw new RuntimeException(String.format("file %s could not be deleted",
+        file.getAbsolutePath()));
+    }
+  }
 
 }

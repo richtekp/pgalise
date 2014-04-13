@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.weather.service;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -51,7 +51,7 @@ public interface WeatherController extends
    *
    * @return
    */
-  public JaxRSCoordinate getReferencePosition();
+  public BaseCoordinate getReferencePosition();
 
   /**
    * Get the reference value for the given timestamp and position. If the value
@@ -67,5 +67,5 @@ public interface WeatherController extends
    */
   public Number getValue(WeatherParameterEnum key,
     long timestamp,
-    JaxRSCoordinate position);
+    BaseCoordinate position);
 }

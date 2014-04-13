@@ -6,7 +6,7 @@
 package de.pgalise.simulation.traffic.internal.model.factory;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.BicycleData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultBicycle;
@@ -60,7 +60,7 @@ public abstract class AbstractBicycleFactory extends AbstractVehicleFactory
   @Override
   public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
     Output output) {
-    JaxRSCoordinate randomPosition = null;
+    BaseCoordinate randomPosition = null;
     if (edges != null) {
       randomPosition = generateRandomPosition(edges);
     }

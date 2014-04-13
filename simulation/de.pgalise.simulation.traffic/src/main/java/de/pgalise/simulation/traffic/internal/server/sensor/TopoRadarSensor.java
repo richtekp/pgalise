@@ -26,7 +26,7 @@ import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
-import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
 import java.util.LinkedList;
 import java.util.List;
 import org.jgroups.util.Triple;

@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.traffic.entity;
+package de.pgalise.simulation.traffic.entity.osm;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import javax.persistence.Entity;
 
 /**
@@ -22,7 +23,7 @@ public class OSMNavigationNode extends TrafficNode {
 
   public OSMNavigationNode(Long id,
     String OSMId,
-    JaxRSCoordinate geoLocation) {
+    BaseCoordinate geoLocation) {
     super(id,
       geoLocation);
     this.OSMId = OSMId;

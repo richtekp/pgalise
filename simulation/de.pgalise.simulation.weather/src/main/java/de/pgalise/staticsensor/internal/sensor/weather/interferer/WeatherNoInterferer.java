@@ -17,7 +17,7 @@
 package de.pgalise.staticsensor.internal.sensor.weather.interferer;
 
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 
 /**
  * Represents an interferer that shows no errors
@@ -30,7 +30,7 @@ public class WeatherNoInterferer implements WeatherInterferer {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public double interfere(double mutableValue, JaxRSCoordinate position, long simTime) {
+	public double interfere(double mutableValue, BaseCoordinate position, long simTime) {
 		// Returns with no change
 		return mutableValue;
 	}

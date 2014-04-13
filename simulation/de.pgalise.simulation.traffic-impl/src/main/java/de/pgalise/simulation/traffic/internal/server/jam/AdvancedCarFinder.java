@@ -16,20 +16,22 @@
  
 package de.pgalise.simulation.traffic.internal.server.jam;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.Orientation;
+import de.pgalise.simulation.shared.JaxbVector2d;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import de.pgalise.simulation.service.Orientation;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.entity.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.traffic.server.jam.SurroundingCarsFinder;
 import java.util.Set;
-import de.pgalise.simulation.shared.JaxbVector2d;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
 
 /**
  * Implements the advanced car finder. Has a visibility range to verify the vehicles in front of the given vehicle.
@@ -38,7 +40,14 @@ import de.pgalise.simulation.shared.JaxbVector2d;
  * @author Marina
  * @author mustafa 
  */
+@Stateful
 public class AdvancedCarFinder implements SurroundingCarsFinder {
+  @EJB
+  private IdGenerator idGenerator;
+  
+  public AdvancedCarFinder() {
+  }
+  
 	@Override
 	public Set<Vehicle<?>> findCars(Vehicle<?> car, long time) {
 		TrafficGraphExtensions trafficGraphExtensions = car.getTrafficGraphExtensions();
@@ -94,16 +103,16 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		// Berechnen der Endposition (Ende der Visibilityrange auf der letzten
 		// Kante)
 		double diff = edgesLength - visibilityRange;
-		JaxRSCoordinate toNodePosition = trafficGraphExtensions.getPosition(toNode);
+		BaseCoordinate toNodePosition = trafficGraphExtensions.getPosition(toNode);
 		JaxbVector2d dir = new JaxbVector2d(toNodePosition.getX(), toNodePosition.getY());
-		JaxRSCoordinate fromNodePosition = trafficGraphExtensions.getPosition(fromNode);
+		BaseCoordinate fromNodePosition = trafficGraphExtensions.getPosition(fromNode);
 		JaxbVector2d fromNodeVector = new JaxbVector2d(fromNodePosition.getX(), fromNodePosition.getY());
 		dir.sub(fromNodeVector);
 		dir.normalize();
 		dir.scale(diff);
 		JaxbVector2d endPositionVector = new JaxbVector2d(toNodePosition.getX(), toNodePosition.getY());
 		endPositionVector.sub(dir);
-		JaxRSCoordinate endPosition = new JaxRSCoordinate(endPositionVector.getX(), endPositionVector.getY());
+		BaseCoordinate endPosition = new BaseCoordinate(idGenerator.getNextId(), endPositionVector.getX(), endPositionVector.getY());
 
 		// AdvancedCarFinder.log.debug("Endposition: " + endPosition.toString());
 

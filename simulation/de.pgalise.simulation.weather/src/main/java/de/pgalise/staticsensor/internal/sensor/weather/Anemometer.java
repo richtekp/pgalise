@@ -17,7 +17,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.weather.entity.AnemometerData;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
@@ -51,7 +51,7 @@ public class Anemometer extends WeatherSensor<AnemometerData> {
 	 */
 	public Anemometer(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		WeatherInterferer weatherInterferer) {
 		this(id,
@@ -78,7 +78,7 @@ public class Anemometer extends WeatherSensor<AnemometerData> {
 	 */
 	public Anemometer(Long id,
 		final Output output,
-		final JaxRSCoordinate position,
+		final BaseCoordinate position,
 		final WeatherController weatherController,
 		final int updateLimit,
 		final WeatherInterferer weatherInterferer)

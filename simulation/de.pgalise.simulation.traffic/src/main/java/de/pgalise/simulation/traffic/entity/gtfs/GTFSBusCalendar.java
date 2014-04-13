@@ -14,8 +14,9 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.entity;
+package de.pgalise.simulation.traffic.entity.gtfs;
 
+import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -30,7 +31,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_CALENDAR")
-public class BusCalendar extends Identifiable {
+public class GTFSBusCalendar extends Identifiable {
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "MONDAY")
@@ -62,9 +63,9 @@ public class BusCalendar extends Identifiable {
 	@Temporal(TemporalType.DATE)
 	private Date endDate;
 	
-	public BusCalendar() {}
+	public GTFSBusCalendar() {}
 
-	public BusCalendar(char monday, char thuesday,
+	public GTFSBusCalendar(char monday, char thuesday,
 			char wednesday, char thursday, char friday, char saturday,
 			char sunday, Date startDate, Date endDate) {
 		this.monday = monday;

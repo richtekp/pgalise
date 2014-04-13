@@ -17,7 +17,7 @@
 package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.traffic.entity.VehicleData;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
@@ -89,13 +89,13 @@ public interface Vehicle<D extends VehicleData> {
 	/**
 	 * @return the position
 	 */
-	public JaxRSCoordinate getPosition();
+	public BaseCoordinate getPosition();
 
 	/**
 	 * @param position
 	 *            the position to set
 	 */
-	public void setPosition(JaxRSCoordinate position);
+	public void setPosition(BaseCoordinate position);
 
 	/**
 	 * @return the direction

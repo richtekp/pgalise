@@ -82,8 +82,8 @@ public class TrafficEdge extends NavigationEdge<TrafficNode> {
 
   public boolean validateNavigationNodeDistance() {
     double distance
-      = GeoToolsBootstrapping.distanceHaversineInM(getSource().getGeoLocation(),
-        getTarget().getGeoLocation());
+      = GeoToolsBootstrapping.distanceHaversineInM(getSource(),
+        getTarget());
     return distance > NavigationNode.NODE_RADIUS;
   }
 

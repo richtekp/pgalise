@@ -21,11 +21,15 @@ public class TrafficWay extends Way<TrafficEdge, TrafficNode> {
 
 	protected TrafficWay() {
 	}
+  
+  public TrafficWay(Long id) {
+    super(id);
+  }
 
-	public TrafficWay(
+	public TrafficWay(Long id,
 		List<TrafficEdge> edgeList,
 		String streetname) {
-		super(edgeList,
+		super(id,edgeList,
 			streetname);
 	}
 

@@ -15,9 +15,10 @@
  */
 package de.pgalise.simulation.traffic.route;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.JaxbVector2d;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -72,15 +73,15 @@ public class PathTest {
     // log.debug("velocity = " + velocity);
     // log.debug("distance 2000m = " + distance);
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(0,
+      new Coordinate(0,
         0));
     graph.addVertex(a);
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(distance,
+      new Coordinate(distance,
         0));
     graph.addVertex(b);
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(distance,
+      new Coordinate(distance,
         distance));
     graph.addVertex(c);
 
@@ -100,10 +101,10 @@ public class PathTest {
 
     TrafficEdge ac = graph.addEdge(a,
       c);
-    JaxbVector2d v = new JaxbVector2d(a.getGeoLocation().getX(),
-      a.getGeoLocation().getY());
-    v.sub(new JaxbVector2d(c.getGeoLocation().getX(),
-      c.getGeoLocation().getY()));
+    JaxbVector2d v = new JaxbVector2d(a.getX(),
+      a.getY());
+    v.sub(new JaxbVector2d(c.getX(),
+      c.getY()));
     double length = v.length();
 
     ac.setMaxSpeed(velocity);

@@ -14,7 +14,7 @@
  * limitations under the License. 
  */
  
-package de.pgalise.util.GTFS.service;
+package de.pgalise.simulation.traffic.service;
 
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.BusTrip;

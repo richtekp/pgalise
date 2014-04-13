@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.simulation.shared.entity.BusAgency;
+import de.pgalise.simulation.traffic.entity.gtfs.GTFSBusAgency;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author richter
  */
 @Stateless
-public class BusAgencyFacade extends AbstractFacade<BusAgency> {
+public class BusAgencyFacade extends AbstractFacade<GTFSBusAgency> {
 	@PersistenceContext(unitName = "pgalise-jsf")
 	private EntityManager em;
 
@@ -26,7 +26,7 @@ public class BusAgencyFacade extends AbstractFacade<BusAgency> {
 	}
 
 	public BusAgencyFacade() {
-		super(BusAgency.class);
+		super(GTFSBusAgency.class);
 	}
 	
 }

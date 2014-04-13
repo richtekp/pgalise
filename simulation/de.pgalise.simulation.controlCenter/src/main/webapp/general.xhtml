@@ -1,12 +1,12 @@
 <!-- GENERAL (INIT) -->
-<ui:composition template="/WEB-INF/templates/template.xhtml"
+<ui:composition template="/templates/template.xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui" >
+	xmlns:p="http://primefaces.org/ui">
 	<ui:define name="content">
-		<div class="contentDiv" >
+		<div class="contentDiv">
 			<h:form>
 				<div class="contentDiv" ng-controller="GeneralCtrl">
 					<h2>General</h2>
@@ -17,15 +17,14 @@
 							</tr>
 							<tr>
 								<td>
-									<div>
-										Choose a date where the simulation has to start.
-									</div>
+									<div>Choose a date where the simulation has to start.</div>
 								</td>
 							</tr>
 							<tr>
-								<td>
-									<p:calendar value="#{mainCtrl.initParameter.startTimestamp}" title="set the simulation's start date" pattern="MM/dd/yyyy HH:mm" />
-								</td>
+								<td><p:calendar
+										value="#{mainCtrl.initParameter.startTimestamp}"
+										title="set the simulation's start date"
+										pattern="MM/dd/yyyy HH:mm" /></td>
 							</tr>
 						</table>
 					</div>
@@ -36,15 +35,14 @@
 							</tr>
 							<tr>
 								<td>
-									<div>
-										Choose a date of expiration.
-									</div>
+									<div>Choose a date of expiration.</div>
 								</td>
 							</tr>
 							<tr>
-								<td>
-									<p:calendar value="#{mainCtrl.initParameter.endTimestamp}" title="set the simulation's end date" pattern="MM/dd/yyyy HH:mm" />
-								</td>
+								<td><p:calendar
+										value="#{mainCtrl.initParameter.endTimestamp}"
+										title="set the simulation's end date"
+										pattern="MM/dd/yyyy HH:mm" /></td>
 							</tr>
 						</table>
 					</div>
@@ -55,22 +53,21 @@
 							</tr>
 							<tr>
 								<td colspan="2">
-									<div>
-										Set the time interval and the steps when the simulation will be updated. As well you can choose if there are any kind of interferer in the simulation or not.
-									</div>
+									<div>Set the time interval and the steps when the
+										simulation will be updated. As well you can choose if there
+										are any kind of interferer in the simulation or not.</div>
 								</td>
 							</tr>
-							<tr >
+							<tr>
 								<td>Clock [ms]:</td>
-								<td>
-									<p:spinner value="#{mainCtrl.initParameter.clockGeneratorInterval}" min="0" max="60000" />
-								</td>
+								<td><p:spinner
+										value="#{mainCtrl.initParameter.clockGeneratorInterval}"
+										min="0" max="60000" /></td>
 							</tr>
 							<tr title="set the simulationstep's timeinterval">
 								<td>Intervall [ms]:</td>
-								<td>
-									<p:spinner value="#{mainCtrl.initParameter.interval}" min="1000" max="60000" />
-								</td>
+								<td><p:spinner value="#{mainCtrl.initParameter.interval}"
+										min="1000" max="60000" /></td>
 							</tr>
 						</table>
 					</div>
@@ -81,35 +78,40 @@
 							</tr>
 							<tr>
 								<td colspan="2">
-									<div>
-										Set the time interval and the steps when the simulation will be updated. As well you can choose if there are any kind of interferer in the simulation or not.
-									</div>
+									<div>Set the time interval and the steps when the
+										simulation will be updated. As well you can choose if there
+										are any kind of interferer in the simulation or not.</div>
 								</td>
 							</tr>
 							<tr>
 								<td>Interferer enabled:</td>
 								<td>
 									<div>
-										<h:selectBooleanCheckbox value="#{mainCtrl.startParameter.withSensorInterferes}"/>
+										<h:selectBooleanCheckbox
+											value="#{mainCtrl.startParameter.withSensorInterferes}" />
 									</div>
 								</td>
 							</tr>
 							<tr title="set the intervall for sensors to send data">
 								<td>General Update steps:</td>
-								<td>
-									<p:spinner value="#{mainCtrl.startParameter.sensorUpdateSteps}" min="1" max="10" />
-								</td>
+								<td><p:spinner
+										value="#{mainCtrl.startParameter.sensorUpdateSteps}" min="1"
+										max="10" /></td>
 							</tr>
 							<tr>
-								<h:dataTable value="#{mainCtrl.startParameter.specificUpdateSteps.entrySet()}" var="specificUpdateStepEntry">
+								<h:dataTable
+									value="#{mainCtrl.startParameter.specificUpdateSteps.entrySet()}"
+									var="specificUpdateStepEntry">
 									<h:column>
 										<f:facet name="header">Sensor type</f:facet>
 											#{specificUpdateStepEntry.key}
 									</h:column>
 									<h:column>
 										<f:facet name="header">Update steps</f:facet>
-										<p:spinner value="#{mainCtrl.startParameter.specificUpdateSteps[specificUpdateStepEntry.key]}" min="1" max="10" >
-											<f:ajax/>
+										<p:spinner
+											value="#{mainCtrl.startParameter.specificUpdateSteps[specificUpdateStepEntry.key]}"
+											min="1" max="10">
+											<f:ajax />
 										</p:spinner>
 									</h:column>
 								</h:dataTable>
@@ -117,8 +119,17 @@
 						</table>
 					</div>
 				</div>
-				<h:commandButton value="save"/>
+				<h:commandButton value="save" />
 			</h:form>
 		</div>
+	</ui:define>
+	<ui:define name="header_extension">
+		<ui:include src="/WEB-INF/templates/partials/header_extension.xhtml" />
+	</ui:define>
+	<ui:define name="menubar_west">
+		<ui:include src="/WEB-INF/templates/partials/menubar_west.xhtml" />
+	</ui:define>
+	<ui:define name="simulation_status">
+		<ui:include src="/WEB-INF/templates/partials/simulation_status.xhtml" />
 	</ui:define>
 </ui:composition>

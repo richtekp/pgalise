@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -66,7 +66,7 @@ public class BusStop extends TrafficNode {
   public BusStop(Long id,
     String name,
     BusStopInformation busStopInformation,
-    JaxRSCoordinate geoLocation) {
+    BaseCoordinate geoLocation) {
     super(id,
       geoLocation);
     this.stopName = name;

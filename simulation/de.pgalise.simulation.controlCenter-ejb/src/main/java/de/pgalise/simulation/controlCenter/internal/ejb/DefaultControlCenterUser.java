@@ -62,7 +62,7 @@ import de.pgalise.simulation.shared.traffic.VehicleModelEnum;
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
-import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.FileBasedCityDataService;
 import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.VehicleInformation;
@@ -73,7 +73,7 @@ import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
 import de.pgalise.simulation.traffic.event.CreateRandomVehiclesEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
-import de.pgalise.util.GTFS.service.BusService;
+import de.pgalise.simulation.traffic.service.BusService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;
 import java.io.FileInputStream;
@@ -149,7 +149,7 @@ public class DefaultControlCenterUser extends Endpoint implements
    * serialize the file binary and reload it, if it's already parsed.
    */
   @EJB
-  private FileBasedCityInfrastructureDataService osmCityInfrastructureDataService;
+  private FileBasedCityDataService osmCityInfrastructureDataService;
   /**
    * This service knows about all sensor interferers.
    */
@@ -172,7 +172,7 @@ public class DefaultControlCenterUser extends Endpoint implements
    */
   private final Object cityInfrastructureDataLock = new Object();
   @EJB
-  private FileBasedCityInfrastructureDataService cityInfrastructureManager;
+  private FileBasedCityDataService cityInfrastructureManager;
   private Properties properties;
   @EJB
   private ControlCenterStartParameter simulationStartParameter;
@@ -254,13 +254,11 @@ public class DefaultControlCenterUser extends Endpoint implements
                 MapAndBusstopFileMessage.class);
             String path = Thread.currentThread().getContextClassLoader().
               getResource("/").getPath();
-            this.cityInfrastructureManager.parse(
+            this.cityInfrastructureManager.parseFile(
               new File(path + osmAndBusstopFileMessage.
-                getContent().getOsmFileNames()),
-              new File(path + osmAndBusstopFileMessage.
-                getContent().getBusStopFileNames()));
+                getContent().getOsmFileNames()));
             this.sendMessage(new OSMParsedMessage(ccWebSocketMessage.getId(),
-              this.cityInfrastructureManager.getBoundary()));
+              this.cityInfrastructureManager.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal()));
             return;
           }
 
@@ -273,16 +271,16 @@ public class DefaultControlCenterUser extends Endpoint implements
               NavigationNode node;
               if (askForValidNodeMessage.getContent().isOnJunction()) {
                 node = this.cityInfrastructureManager.getNearestJunctionNode(
-                  askForValidNodeMessage.getContent().getGeoLocation().getX(),
-                  askForValidNodeMessage.getContent().getGeoLocation().getY());
+                  askForValidNodeMessage.getContent().getX(),
+                  askForValidNodeMessage.getContent().getY());
               } else if (askForValidNodeMessage.getContent().isOnStreet()) {
                 node = this.cityInfrastructureManager.getNearestStreetNode(
-                  askForValidNodeMessage.getContent().getGeoLocation().getX(),
-                  askForValidNodeMessage.getContent().getGeoLocation().getY());
+                  askForValidNodeMessage.getContent().getX(),
+                  askForValidNodeMessage.getContent().getY());
               } else {
                 node = this.cityInfrastructureManager.getNearestNode(
-                  askForValidNodeMessage.getContent().getGeoLocation().getX(),
-                  askForValidNodeMessage.getContent().getGeoLocation().getY());
+                  askForValidNodeMessage.getContent().getX(),
+                  askForValidNodeMessage.getContent().getY());
               }
 
               this.sendMessage(new ValidNodeMessage(ccWebSocketMessage.getId(),

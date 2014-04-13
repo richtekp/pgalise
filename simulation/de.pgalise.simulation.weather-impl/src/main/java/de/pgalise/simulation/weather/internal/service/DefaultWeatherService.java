@@ -17,7 +17,7 @@ package de.pgalise.simulation.weather.internal.service;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.event.weather.WeatherEventType;
 import de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
@@ -131,9 +131,9 @@ public class DefaultWeatherService implements WeatherService {
   private HashMap<WeatherParameterEnum, WeatherParameter> parameters = new HashMap<>();
 
   /**
-   * BaseGeoInfo of the reference point
+   * BaseBoundary of the reference point
    */
-  private JaxRSCoordinate referencePosition;
+  private BaseCoordinate referencePosition;
 
   /**
    * Values linked to the reference point
@@ -166,6 +166,7 @@ public class DefaultWeatherService implements WeatherService {
   private IdGenerator idGenerator;
   @EJB
   private DatabaseManager databaseManager;
+  private City city;
 
   /**
    *
@@ -194,14 +195,14 @@ public class DefaultWeatherService implements WeatherService {
     this.loader = loader;
 
     // Init maps
-    this.gridConverter = new LinearWeatherPositionConverter(city.getGeoInfo().
-      getBoundaries());
+    this.city = city;
     this.plannedEventModifiers = new ArrayList<>();
   }
 
   @PostConstruct
   public void initialize() {
     init0();
+    this.gridConverter.setGrid(city.getGeoInfo().retrieveBoundary());
   }
 
   @Override
@@ -212,7 +213,7 @@ public class DefaultWeatherService implements WeatherService {
       initParameter.getStartTimestamp().getTime(),
       loader);
     this.gridConverter.init(new WeatherPositionInitParameter(initParameter.
-      getCity().getGeoInfo().getBoundaries()));
+      getCity().getGeoInfo().retrieveBoundary()));
   }
 
   /**
@@ -374,7 +375,7 @@ public class DefaultWeatherService implements WeatherService {
   }
 
   @Override
-  public JaxRSCoordinate getReferencePosition() {
+  public BaseCoordinate getReferencePosition() {
     return this.referencePosition;
   }
 
@@ -485,7 +486,7 @@ public class DefaultWeatherService implements WeatherService {
   @Override
   public <T extends Number> T getValue(WeatherParameterEnum key,
     long time,
-    JaxRSCoordinate position,
+    BaseCoordinate position,
     City city)
     throws IllegalArgumentException, NoWeatherDataFoundException {
     if (key == null) {
@@ -514,7 +515,7 @@ public class DefaultWeatherService implements WeatherService {
       time,
       position,
       value,
-      city.getGeoInfo().getBoundaries()
+      city.getGeoInfo().retrieveBoundary()
     );
   }
 

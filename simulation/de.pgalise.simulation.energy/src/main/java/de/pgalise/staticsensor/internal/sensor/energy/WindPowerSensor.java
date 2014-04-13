@@ -16,7 +16,7 @@
 package de.pgalise.staticsensor.internal.sensor.energy;
 
 import de.pgalise.simulation.energy.entity.WindPowerSensorData;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.sensor.EnergySensorTypeEnum;
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -87,7 +87,7 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 	 */
 	public WindPowerSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,
@@ -123,7 +123,7 @@ public class WindPowerSensor extends EnergySensor<WindPowerSensorData> {
 	 */
 	public WindPowerSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,

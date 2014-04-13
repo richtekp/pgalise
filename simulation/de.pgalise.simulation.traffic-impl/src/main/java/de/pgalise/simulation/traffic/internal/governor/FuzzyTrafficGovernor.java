@@ -22,8 +22,8 @@ import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.governor.TrafficGovernor;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import java.util.Calendar;
-
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Lock;
@@ -220,7 +220,7 @@ public class FuzzyTrafficGovernor implements TrafficGovernor {
    * name of input variable for rain
    */
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
 
   /**
    * Creates a FuzzyTrafficGovernor with definition from the FCL-file of the
@@ -493,7 +493,7 @@ public class FuzzyTrafficGovernor implements TrafficGovernor {
     return weatherController;
   }
 
-  public void setWeatherController(WeatherController weatherController) {
+  public void setWeatherController(WeatherControllerLocal weatherController) {
     this.weatherController = weatherController;
   }
 

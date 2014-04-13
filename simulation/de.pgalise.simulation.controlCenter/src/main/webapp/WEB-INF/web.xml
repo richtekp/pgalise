@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	version="2.5"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	<display-name>PG ALISE - Control Center</display-name>
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
 	</context-param>
-	<!--		<context-param>
-		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-		<param-value>server</param-value>
-	</context-param>-->
-		
+	<!-- <context-param> <param-name>javax.faces.STATE_SAVING_METHOD</param-name> 
+		<param-value>server</param-value> </context-param> -->
+
 	<!-- JSF mapping -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
-	<!--		<servlet>
-		<servlet-name>jsp</servlet-name>
-		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>-->
-		
-	<!--    <servlet-mapping>
-			<servlet-name>Faces Servlet</servlet-name>
-			<url-pattern>/faces/*</url-pattern>
-	</servlet-mapping>-->
+	<!-- <servlet> <servlet-name>jsp</servlet-name> <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class> 
+		<load-on-startup>1</load-on-startup> </servlet> -->
+
+	<!-- <servlet-mapping> <servlet-name>Faces Servlet</servlet-name> <url-pattern>/faces/*</url-pattern> 
+		</servlet-mapping> -->
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.jsf</url-pattern>
@@ -45,23 +38,16 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>*.jspf</url-pattern>
 	</servlet-mapping>
-	<!--		<servlet-mapping>
-		<servlet-name>jsp</servlet-name>
-		<url-pattern>/js/*</url-pattern>
-	</servlet-mapping>-->
+	<!-- <servlet-mapping> <servlet-name>jsp</servlet-name> <url-pattern>/js/*</url-pattern> 
+		</servlet-mapping> -->
 	<welcome-file-list>
 		<welcome-file>index.xhtml</welcome-file>
 	</welcome-file-list>
-		
-<!--	<servlet>
-		<servlet-name>Seam Remoting</servlet-name>
-		<servlet-class>org.jboss.seam.remoting.SeamRemotingServlet</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Seam Remoting</servlet-name>
-		<url-pattern>/seam/remoting/*</url-pattern>
-	</servlet-mapping>-->
-	
+
+	<!-- <servlet> <servlet-name>Seam Remoting</servlet-name> <servlet-class>org.jboss.seam.remoting.SeamRemotingServlet</servlet-class> 
+		</servlet> <servlet-mapping> <servlet-name>Seam Remoting</servlet-name> <url-pattern>/seam/remoting/*</url-pattern> 
+		</servlet-mapping> -->
+
 	<servlet>
 		<servlet-name>jersey-serlvet</servlet-name>
 		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
@@ -71,7 +57,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
- 
+
 	<servlet-mapping>
 		<servlet-name>jersey-serlvet</servlet-name>
 		<url-pattern>/rest/*</url-pattern>

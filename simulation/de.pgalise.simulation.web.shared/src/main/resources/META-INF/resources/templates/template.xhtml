@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:p="http://primefaces.org/ui"
+			xmlns:o="http://omnifaces.org/ui">
+	<ui:remove>
+		The templeate expects widgetVars settingsDialog and consoleDialog to be accessible.
+		It needs partials in /WEB-INF/templates/partials/ with the names [...] in order to be included (missing file don't cause fatal errors, but leave empty field where navigation components ought to be places)
+	</ui:remove>
+	<h:head>
+		<!-- Styles -->
+		<h:link  rel="stylesheet" type="text/css" href="css/style.css"/>
+		<h:link rel="stylesheet" type="text/css" href="css//olStyle.css"/>
+		<!-- Enum access -->
+		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.ConnectionStateEnum" var="connectionStateEnum"/>
+		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.MapParsedStateEnum" var="mapParsedStateEnum"/>
+		<o:importConstants type="de.pgalise.simulation.service.ControllerStatusEnum" var="controllerStatusEnum"/>
+	</h:head>
+	<h:body>
+		<div id="page">
+			<p:layout fullPage="true">
+				<p:layoutUnit position="north">
+					<div id="div_top" >
+						<h:form>
+							<img src="img/wrench.png" id="wrenchImg" onclick="settingsDialog.show()" />
+							<img src="img/console.png" id="consoleImg" onclick="consoleDialog.show()" />
+							<div id="layout_top">
+								<ui:insert name="simulation_status"/>
+							</div>
+							<div id="loadingArea" class="loadingStatus"></div>
+							<div id="div_logo">
+								<a href="index.xhtml"><img src="img/logo.png"/></a>
+							</div>
+							<ui:insert name="header_extension"/>
+						</h:form>
+					</div>
+				</p:layoutUnit>
+				<p:layoutUnit position="center">
+					<div class="contentDiv">
+						<ui:insert name="content" />
+					</div>
+				</p:layoutUnit>
+				<p:layoutUnit position="west">
+					<ui:insert name="menubar_west"/>
+				</p:layoutUnit>
+			</p:layout>
+		</div>
+		
+		<p:dialog id="startWaitDialog0" widgetVar="startWaitDialog" modal="true">
+			<h:form>
+			<p:progressBar widgetVar="pbAjax" ajax="true" value="#{simulationStatusCtrl.startProgress}" labelTemplate="{value}%" >
+        
+			</p:progressBar>  
+				<h:commandLink type="button" value="Abort" onclick="startWaitDialog.hide();" action="#{mainCtrl.cancelStart}"/>
+			</h:form>
+		</p:dialog>
+	</h:body>
+</html>

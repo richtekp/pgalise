@@ -1,17 +1,21 @@
-<ui:composition 
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:p="http://primefaces.org/ui" >
+	xmlns:p="http://primefaces.org/ui">
 	<p:dialog id="smartMeterDialog">
 		<h:form>
 			<h:panelGrid>
-				Position:<p:gmap center="36.890257,30.707417" zoom="13" type="HYBRID"  model="#{smartMeterDialogCtrl.mapModel}" style="width:600px;height:400px"  >
-					<p:ajax event="markerDrag" listener="#{smartMeterDialogCtrl.onMarkerDrag}" />  
+				Position:<p:gmap center="36.890257,30.707417" zoom="13"
+					type="HYBRID" model="#{smartMeterDialogCtrl.mapModel}"
+					style="width:600px;height:400px">
+					<p:ajax event="markerDrag"
+						listener="#{smartMeterDialogCtrl.onMarkerDrag}" />
 				</p:gmap>
-				Update steps: <p:spinner value="#{smartMeterDialogCtrl.chosenUpdateStep}"/>
-				Measure radius:<p:spinner min="1" max="10000" value="#{smartMeterDialogCtrl.measureRadius}"/>
-				<p:commandButton action="#{smartMeterDialogCtrl.saveSensor}"/>
+				Update steps: <p:spinner
+					value="#{smartMeterDialogCtrl.chosenUpdateStep}" />
+				Measure radius:<p:spinner min="1" max="10000"
+					value="#{smartMeterDialogCtrl.measureRadius}" />
+				<p:commandButton action="#{smartMeterDialogCtrl.saveSensor}" />
 			</h:panelGrid>
 		</h:form>
 	</p:dialog>

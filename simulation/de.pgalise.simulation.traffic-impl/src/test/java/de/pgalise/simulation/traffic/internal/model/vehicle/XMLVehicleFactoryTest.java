@@ -5,10 +5,11 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
@@ -29,6 +30,8 @@ import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
@@ -104,10 +107,10 @@ public class XMLVehicleFactoryTest {
       getResourceAsStream("defaultvehicles.xml");
     TrafficGraph graph = new DefaultTrafficGraph();
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(30,
+      new Coordinate(30,
         30));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(60,
+      new Coordinate(60,
         60));
     graph.addVertex(a);
     graph.addVertex(b);
@@ -184,10 +187,10 @@ public class XMLVehicleFactoryTest {
       getResourceAsStream("defaultvehicles.xml");
     TrafficGraph graph = new DefaultTrafficGraph();
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(30,
+      new Coordinate(30,
         30));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(60,
+      new Coordinate(60,
         60));
     graph.addVertex(a);
     graph.addVertex(b);

@@ -35,6 +35,7 @@ import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
@@ -50,6 +51,7 @@ import javax.ejb.LocalBean;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +82,7 @@ public class DefaultSimulationControllerTest {
   @EJB
   private EnergyController energyController;
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
   private TrafficCity city;
   @EJB
   private IdGenerator idGenerator;
@@ -97,7 +99,7 @@ public class DefaultSimulationControllerTest {
     /* Mock all controllers: */
     trafficController = EasyMock.createNiceMock(TrafficController.class);
     energyController = EasyMock.createNiceMock(EnergyController.class);
-    weatherController = EasyMock.createNiceMock(WeatherController.class);
+    weatherController = EasyMock.createNiceMock(WeatherControllerLocal.class);
 
     /* Mock all other services: */
     EventInitiator eventInitiator = EasyMock.

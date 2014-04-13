@@ -16,11 +16,14 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsAtmosphereInterferer;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import javax.ejb.EJB;
 
 /**
  * Represents an interferer that shows errors caused by the atmosphere
@@ -28,18 +31,21 @@ import de.pgalise.simulation.weather.service.WeatherController;
  * @author Marcus
  * @version 1.0 (Nov 14, 2012)
  */
-public class GpsAtmosphereInterferer extends GpsBaseInterferer {
+public class DefaultGpsAtmosphereInterferer extends GpsBaseInterferer implements GpsAtmosphereInterferer {
 
-	/**
-	 * File path for property file
-	 */
-	public static final String PROPERTIES_FILE_PATH = "/interferer_gps_atmosphere.properties";
 	private static final long serialVersionUID = 1L;
+  @EJB
+  private IdGenerator idGenerator;
 
 	/**
 	 * Weather controller
 	 */
-	private final WeatherController weatherController;
+  @EJB
+	private WeatherController weatherController;
+
+  public DefaultGpsAtmosphereInterferer() {
+    super();
+  }
 
 	/**
 	 * Constructor
@@ -49,9 +55,9 @@ public class GpsAtmosphereInterferer extends GpsBaseInterferer {
 	 * @param weatherController
 	 *            Weather Controller
 	 */
-	public GpsAtmosphereInterferer(RandomSeedService randomseedservice, final WeatherController weatherController)
+	public DefaultGpsAtmosphereInterferer(RandomSeedService randomseedservice, final WeatherController weatherController)
 			throws IllegalArgumentException {
-		super(randomseedservice, GpsAtmosphereInterferer.PROPERTIES_FILE_PATH);
+		super(randomseedservice, DefaultGpsAtmosphereInterferer.PROPERTIES_FILE_PATH);
 		if (weatherController == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("weatherController"));
 		}
@@ -59,12 +65,12 @@ public class GpsAtmosphereInterferer extends GpsBaseInterferer {
 	}
 
 	@Override
-	public JaxRSCoordinate interfere(final JaxRSCoordinate mutablePosition, final JaxRSCoordinate realPosition, final long simTime) {
+	public BaseCoordinate interfere(final BaseCoordinate mutablePosition, final BaseCoordinate realPosition, final long simTime) {
 		// Should be changed?
 		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
 			double radiation = this.weatherController.getValue(WeatherParameterEnum.RADIATION, simTime, realPosition)
 					.doubleValue();
-			return new JaxRSCoordinate(mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
+			return new BaseCoordinate(idGenerator.getNextId(),mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
 		}
 		// Returns with no change
 		return mutablePosition;

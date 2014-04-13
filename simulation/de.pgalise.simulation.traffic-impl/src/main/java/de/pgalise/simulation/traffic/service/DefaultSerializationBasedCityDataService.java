@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic;
+package de.pgalise.simulation.traffic.service;
 
 import com.vividsolutions.jts.geom.Envelope;
-import de.pgalise.simulation.shared.entity.Building;
-import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.shared.entity.NavigationNode;
-import de.pgalise.simulation.traffic.service.SerializationBasedCityInfrastructureDataService;
+import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.shared.entity.Building;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
+import de.pgalise.simulation.traffic.service.CityDataService;
+import de.pgalise.simulation.traffic.service.SerializationBasedCityDataService;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,10 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ejb.Local;
 import javax.ejb.Stateful;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.ejb.Local;
 
 /**
  * Service to create OSM city infrastructure data.
@@ -46,9 +48,9 @@ import javax.ejb.Local;
  * @author Mustafa
  */
 @Stateful
-@Local(SerializationBasedCityInfrastructureDataService.class)
-public class DefaultSerializationBasedCityInfrastructureDataService implements
-  SerializationBasedCityInfrastructureDataService {
+@Local(SerializationBasedCityDataService.class)
+public class DefaultSerializationBasedCityDataService implements
+  SerializationBasedCityDataService {
 
   /**
    * Pattern to get filenames without postfix.
@@ -59,18 +61,18 @@ public class DefaultSerializationBasedCityInfrastructureDataService implements
    * Logger
    */
   private static final Logger log = LoggerFactory.getLogger(
-    DefaultSerializationBasedCityInfrastructureDataService.class);
+    DefaultSerializationBasedCityDataService.class);
 
-  private CityInfrastructureData cityInfrastructureData;
+  private TrafficCity city;
 
   /**
    * Default
    */
-  public DefaultSerializationBasedCityInfrastructureDataService() {
+  public DefaultSerializationBasedCityDataService() {
   }
 
   /**
-   * Returns an instance of {@link CityInfrastructureDataService}. If the file
+   * Returns an instance of {@link CityDataService}. If the file
    * is already parsed and persistent, it can be loaded, otherwise it will be
    * parsed.
    *
@@ -102,7 +104,7 @@ public class DefaultSerializationBasedCityInfrastructureDataService implements
       try {
         fis = new FileInputStream(cityInfrastructuraDataFile.getAbsolutePath());
         ois = new ObjectInputStream(fis);
-        this.cityInfrastructureData = (CityInfrastructureData) ois.readObject();
+        this.city = (TrafficCity) ois.readObject();
       } catch (IOException | ClassNotFoundException e) {
         log.warn(e.getLocalizedMessage());
       } finally {
@@ -127,7 +129,7 @@ public class DefaultSerializationBasedCityInfrastructureDataService implements
     try {
       fis = new FileOutputStream(cityInfrastructuraDataFile.getAbsolutePath());
       oos = new ObjectOutputStream(fis);
-      oos.writeObject(cityInfrastructureData);
+      oos.writeObject(city);
     } catch (Exception e) {
       log.warn(e.getLocalizedMessage());
     } finally {
@@ -143,26 +145,21 @@ public class DefaultSerializationBasedCityInfrastructureDataService implements
   }
 
   @Override
-  public Envelope getBoundary() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
   public Map<EnergyProfileEnum, List<Building>> getBuildings(
-    JaxRSCoordinate geolocation,
+    BaseCoordinate geolocation,
     int radiusInMeter) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public List<Building> getBuildingsInRadius(JaxRSCoordinate centerPoint,
+  public List<Building> getBuildingsInRadius(BaseCoordinate centerPoint,
     int radiusInMeter) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public CityInfrastructureData createCityInfrastructureData() {
-    return this.cityInfrastructureData;
+  public TrafficCity createCity() {
+    return this.city;
   }
 
   @Override

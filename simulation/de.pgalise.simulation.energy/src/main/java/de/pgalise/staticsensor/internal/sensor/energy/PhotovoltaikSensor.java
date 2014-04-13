@@ -16,7 +16,7 @@
 package de.pgalise.staticsensor.internal.sensor.energy;
 
 import de.pgalise.simulation.energy.entity.PhotovoltaikSensorData;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import java.util.concurrent.ExecutionException;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -61,7 +61,7 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 	 */
 	public PhotovoltaikSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,
@@ -94,7 +94,7 @@ public class PhotovoltaikSensor extends EnergySensor<PhotovoltaikSensorData> {
 	 */
 	public PhotovoltaikSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,

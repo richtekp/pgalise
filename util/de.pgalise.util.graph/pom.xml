@@ -32,7 +32,7 @@
 		</dependency>
 			
 		<dependency>
-			<groupId>javax</groupId>
+			<groupId>java3d</groupId>
 			<artifactId>vecmath</artifactId>
 			<type>jar</type>
 		</dependency>

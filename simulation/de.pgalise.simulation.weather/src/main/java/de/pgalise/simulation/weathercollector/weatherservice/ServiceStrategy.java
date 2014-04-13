@@ -18,6 +18,7 @@ package de.pgalise.simulation.weathercollector.weatherservice;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.simulation.weathercollector.exceptions.ReadServiceDataException;
+import java.io.Serializable;
 
 /**
  * Interface for weather service strategies. Uses the strategy pattern
@@ -25,7 +26,7 @@ import de.pgalise.simulation.weathercollector.exceptions.ReadServiceDataExceptio
  * @author Andreas Rehfeldt
  * @version 1.0 (Mar 16, 2012)
  */
-public interface ServiceStrategy {
+public interface ServiceStrategy extends Serializable {
 
   /**
    * Returns the current weather informations to the given city

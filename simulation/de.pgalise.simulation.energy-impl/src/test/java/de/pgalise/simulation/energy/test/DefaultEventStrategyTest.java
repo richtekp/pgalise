@@ -16,17 +16,18 @@
  
 package de.pgalise.simulation.energy.test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Assert;
-import org.junit.Test;
-
 import de.pgalise.simulation.energy.internal.DefaultEnergyEventStrategy;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.energy.PercentageChangeEnergyEvent;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.ejb.EJB;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * JUnit test for the {@link DefaultEventStrategy}.<br />
@@ -43,10 +44,18 @@ public class DefaultEventStrategyTest {
 	private static final long eventStartTimestamp = 4000;
 	private static final long eventEndTimestamp = 7000;
 	private static final EnergyProfileEnum energyProfile = EnergyProfileEnum.HOUSEHOLD;
-	private static final JaxRSCoordinate testGeoLocation = new JaxRSCoordinate(50, 50);
-	private static final JaxRSCoordinate testGeoLocationOutsideEvent = new JaxRSCoordinate(90, 90);
+	private BaseCoordinate testGeoLocation;
+	private BaseCoordinate testGeoLocationOutsideEvent;
 	private static final int energyConsumption = 50;
 	private static final double assertEqualsDelta = 0.01;
+  @EJB
+  private IdGenerator idGenerator;
+  
+  @Before
+  public void setUp() {
+    testGeoLocation = new BaseCoordinate(idGenerator.getNextId(), 50, 50);
+    testGeoLocationOutsideEvent = new BaseCoordinate(idGenerator.getNextId(), 90, 90);
+  }
 
 	@Test
 	public void testWithPercentageEvent() {
@@ -55,7 +64,7 @@ public class DefaultEventStrategyTest {
 		/* before event */
 		eventStrategy.update(DefaultEventStrategyTest.testTimestampBeforeEvent, new ArrayList<EnergyEvent>());
 		double beforeEvent = eventStrategy.getEnergyConsumptionInKWh(DefaultEventStrategyTest.testTimestampBeforeEvent,
-				DefaultEventStrategyTest.energyProfile, DefaultEventStrategyTest.testGeoLocation,
+				DefaultEventStrategyTest.energyProfile, testGeoLocation,
 				DefaultEventStrategyTest.energyConsumption);
 		Assert.assertEquals(DefaultEventStrategyTest.energyConsumption, beforeEvent,
 				DefaultEventStrategyTest.assertEqualsDelta);
@@ -63,26 +72,26 @@ public class DefaultEventStrategyTest {
 		/* with event */
 		double percentage = 0.5;
 		List<EnergyEvent> eventList = new ArrayList<>();
-		eventList.add(new PercentageChangeEnergyEvent(DefaultEventStrategyTest.testGeoLocation, 50,
+		eventList.add(new PercentageChangeEnergyEvent(testGeoLocation, 50,
 				DefaultEventStrategyTest.eventStartTimestamp, DefaultEventStrategyTest.eventEndTimestamp, percentage));
 		eventStrategy.update(DefaultEventStrategyTest.eventStartTimestamp, eventList);
 
 		/* Inside event boundary */
 		double withEventInsideBoundary = eventStrategy.getEnergyConsumptionInKWh(
 				DefaultEventStrategyTest.testTimestampDuringEvent, DefaultEventStrategyTest.energyProfile,
-				DefaultEventStrategyTest.testGeoLocation, DefaultEventStrategyTest.energyConsumption);
+				testGeoLocation, DefaultEventStrategyTest.energyConsumption);
 		Assert.assertEquals(beforeEvent * percentage, withEventInsideBoundary,
 				DefaultEventStrategyTest.assertEqualsDelta);
 		/* Outside event boundary */
 		double withEventOutsideBoundary = eventStrategy.getEnergyConsumptionInKWh(
 				DefaultEventStrategyTest.testTimestampDuringEvent, DefaultEventStrategyTest.energyProfile,
-				DefaultEventStrategyTest.testGeoLocationOutsideEvent, DefaultEventStrategyTest.energyConsumption);
+				testGeoLocationOutsideEvent, DefaultEventStrategyTest.energyConsumption);
 		Assert.assertEquals(beforeEvent, withEventOutsideBoundary, DefaultEventStrategyTest.assertEqualsDelta);
 
 		/* after event */
 		eventStrategy.update(DefaultEventStrategyTest.testTimestampAfterEvent, new ArrayList<EnergyEvent>());
 		double afterEvent = eventStrategy.getEnergyConsumptionInKWh(DefaultEventStrategyTest.testTimestampAfterEvent,
-				DefaultEventStrategyTest.energyProfile, DefaultEventStrategyTest.testGeoLocation,
+				DefaultEventStrategyTest.energyProfile, testGeoLocation,
 				DefaultEventStrategyTest.energyConsumption);
 		Assert.assertEquals(DefaultEventStrategyTest.energyConsumption, afterEvent,
 				DefaultEventStrategyTest.assertEqualsDelta);

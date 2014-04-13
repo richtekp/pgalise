@@ -4,10 +4,9 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.shared.entity.BaseGeoInfo;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -24,6 +23,11 @@ public class TrafficCity extends City {
   private CityInfrastructureData cityInfrastructureData;
 
   public TrafficCity() {
+  }
+
+  public TrafficCity(Long id, CityInfrastructureData cityInfrastructureData) {
+    super(id);
+    this.cityInfrastructureData = cityInfrastructureData;
   }
 
   /**
@@ -44,7 +48,7 @@ public class TrafficCity extends City {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseGeoInfo geoInfo,
+    BaseBoundary geoInfo,
     CityInfrastructureData cityInfrastructureData) {
     super(id,
       name,
@@ -63,9 +67,9 @@ public class TrafficCity extends City {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseGeoInfo geoInfo,
+    BaseBoundary geoInfo,
     CityInfrastructureData cityInfrastructureData,
-    JaxRSCoordinate referencePoint) {
+    BaseCoordinate referencePoint) {
     super(id,
       name,
       population,

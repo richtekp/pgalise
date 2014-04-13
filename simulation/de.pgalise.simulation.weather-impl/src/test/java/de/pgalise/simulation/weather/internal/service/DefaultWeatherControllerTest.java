@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.internal.service;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.EventList;
@@ -29,6 +29,7 @@ import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.weather.WeatherTestUtils;
@@ -102,7 +103,7 @@ public class DefaultWeatherControllerTest {
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private WeatherController ctrl;
+  private WeatherControllerLocal ctrl;
 
   public DefaultWeatherControllerTest() {
   }
@@ -164,7 +165,7 @@ public class DefaultWeatherControllerTest {
       // Local test variables
       long valueTime = startTimestamp + 360000;
       WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
-      JaxRSCoordinate testPosition = new JaxRSCoordinate(2,
+      BaseCoordinate testPosition = new BaseCoordinate(idGenerator.getNextId(), 2,
         3);
       List<WeatherEvent> testEventList = new ArrayList<>(1);
       testEventList.add(new ChangeWeatherEvent(idGenerator.getNextId(),
@@ -255,7 +256,7 @@ public class DefaultWeatherControllerTest {
       try {
         testNumber = ctrl.getValue(testParameter,
           0,
-          new JaxRSCoordinate(-1,
+          new BaseCoordinate(idGenerator.getNextId(), -1,
             -2));
         Assert.assertNull(testNumber);
       } catch (Exception expected) {

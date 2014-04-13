@@ -17,7 +17,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.weather.entity.RainSensorData;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
@@ -51,7 +51,7 @@ public class RainSensor extends WeatherSensor<RainSensorData> {
 	 */
 	public RainSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		final WeatherInterferer weatherInterferer) throws IllegalArgumentException {
 		this(id,
@@ -78,7 +78,7 @@ public class RainSensor extends WeatherSensor<RainSensorData> {
 	 */
 	public RainSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		int updateLimit,
 		final WeatherInterferer weatherInterferer) throws IllegalArgumentException {

@@ -6,7 +6,7 @@
 package de.pgalise.simulation.traffic.internal.server.rules;
 
 import de.pgalise.simulation.traffic.entity.TrafficLightIntersectionSensorData;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
@@ -26,7 +26,7 @@ public class TrafficLightIntersectionSensor extends AbstractStaticSensor<Traffic
 	public TrafficLightIntersectionSensor(Long id,
 		TrafficLightIntersection trafficLightIntersection,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		int updateLimit,
 		TrafficLightIntersectionSensorData sensorData) throws IllegalArgumentException {
 		super(id,

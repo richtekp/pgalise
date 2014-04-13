@@ -15,16 +15,17 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.model.factory.XMLCarFactory;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLCarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.testutils.TestUtils;
@@ -41,8 +42,8 @@ import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
-
 import org.junit.Test;
 
 /**
@@ -90,10 +91,10 @@ public class XMLCarFactoryTest {
      */
     TrafficGraph graph = new DefaultTrafficGraph();
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(30,
+      new Coordinate(30,
         30));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(60,
+      new Coordinate(60,
         60));
     graph.addVertex(a);
     graph.addVertex(b);

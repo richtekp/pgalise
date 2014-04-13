@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.simulation.shared.entity.BaseGeoInfo;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
  * @author richter
  */
 @Stateless
-public class PositionFacade extends AbstractFacade<BaseGeoInfo> {
+public class PositionFacade extends AbstractFacade<BaseBoundary> {
 	@PersistenceContext(unitName = "pgalise-jsf")
 	private EntityManager em;
 
@@ -26,7 +26,7 @@ public class PositionFacade extends AbstractFacade<BaseGeoInfo> {
 	}
 
 	public PositionFacade() {
-		super(BaseGeoInfo.class);
+		super(BaseBoundary.class);
 	}
 	
 }

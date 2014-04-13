@@ -15,9 +15,10 @@
  */
 package de.pgalise.simulation.traffic.route;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.JaxbVector2d;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -67,13 +68,13 @@ public class ParalellableDijkstraTest {
     double distance = 200;
 
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(0,
+      new Coordinate(0,
         0));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(distance,
+      new Coordinate(distance,
         0));
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(distance,
+      new Coordinate(distance,
         distance));
 
     TrafficEdge ab = graph.addEdge(a,
@@ -92,10 +93,10 @@ public class ParalellableDijkstraTest {
 
     TrafficEdge ac = graph.addEdge(a,
       c);
-    JaxbVector2d v = new JaxbVector2d(a.getGeoLocation().getX(),
-      a.getGeoLocation().getY());
-    v.sub(new JaxbVector2d(c.getGeoLocation().getX(),
-      c.getGeoLocation().getY()));
+    JaxbVector2d v = new JaxbVector2d(a.getX(),
+      a.getY());
+    v.sub(new JaxbVector2d(c.getX(),
+      c.getY()));
     double length = v.length();
 
     ac.setMaxSpeed(velocity);

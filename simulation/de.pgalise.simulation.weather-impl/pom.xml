@@ -49,8 +49,7 @@
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise</groupId>
-			<artifactId>de.pgalise.testutils-weather</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<artifactId>testutils-weather</artifactId>
 			<scope>test</scope>
 			<type>jar</type>
 		</dependency>

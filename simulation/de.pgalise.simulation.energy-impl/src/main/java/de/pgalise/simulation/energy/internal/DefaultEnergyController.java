@@ -21,8 +21,9 @@ import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.energy.EnergyEventStrategy;
 import de.pgalise.simulation.energy.EnergyEventStrategyLocal;
 import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
@@ -31,9 +32,10 @@ import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
-import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.CityDataService;
+import de.pgalise.simulation.traffic.service.FileBasedCityDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +74,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
     /**
      * Position
      */
-    private JaxRSCoordinate geoLocation;
+    private BaseCoordinate geoLocation;
     /**
      * Radius in meter
      */
@@ -84,7 +86,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
      * @param geoLocation
      * @param measureRadiusInMeter
      */
-    GeoRadiusWrapper(JaxRSCoordinate geoLocation,
+    GeoRadiusWrapper(BaseCoordinate geoLocation,
       int measureRadiusInMeter) {
       this.geoLocation = geoLocation;
       this.measureRadiusInMeter = measureRadiusInMeter;
@@ -112,7 +114,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
       return measureRadiusInMeter == other.measureRadiusInMeter;
     }
 
-    public JaxRSCoordinate getGeoLocation() {
+    public BaseCoordinate getGeoLocation() {
       return geoLocation;
     }
 
@@ -130,7 +132,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
       return result;
     }
 
-    public void setGeoLocation(JaxRSCoordinate geoLocation) {
+    public void setGeoLocation(BaseCoordinate geoLocation) {
       this.geoLocation = geoLocation;
     }
 
@@ -154,7 +156,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
    * city Infrastructure
    */
   @EJB
-  private FileBasedCityInfrastructureDataService cityInfrastructure;
+  private FileBasedCityDataService cityInfrastructure;
 
   /**
    * Current timestamp
@@ -175,7 +177,9 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
   private InitParameter initParameter;
 
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
+  @EJB
+  private IdGenerator idGenerator;
 
   public DefaultEnergyController() {
   }
@@ -186,7 +190,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
    * @param cityInfrastructureData
    */
   public DefaultEnergyController(
-    FileBasedCityInfrastructureDataService cityInfrastructureData) {
+    FileBasedCityDataService cityInfrastructureData) {
     this.cityInfrastructure = cityInfrastructureData;
     this.buildingsMap = new HashMap<>();
   }
@@ -195,7 +199,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
     return this.city;
   }
 
-  public CityInfrastructureDataService getCityInfrastructure() {
+  public CityDataService getCityInfrastructure() {
     return this.cityInfrastructure;
   }
 
@@ -205,7 +209,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
 
   @Override
   public double getEnergyConsumptionInKWh(long timestamp,
-    JaxRSCoordinate position,
+    BaseCoordinate position,
     int measureRadiusInMeter) {
     if (this.getStatus() != ControllerStatusEnum.STARTED) {
       throw new IllegalStateException(
@@ -232,8 +236,8 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
           .getEnergyConsumptionInKWh(
             timestamp,
             entry.getKey(),
-
-            building.getPosition().getCenterPoint());
+            new BaseCoordinate(idGenerator.getNextId(),
+            building.getGeoInfo().retrieveCenterPoint()));
       }
     }
 
@@ -297,7 +301,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
   }
 
   public void setCityInfrastructure(
-    FileBasedCityInfrastructureDataService cityInfrastructure) {
+    FileBasedCityDataService cityInfrastructure) {
     this.cityInfrastructure = cityInfrastructure;
   }
 

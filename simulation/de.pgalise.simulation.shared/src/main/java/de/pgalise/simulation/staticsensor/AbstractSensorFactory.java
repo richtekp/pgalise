@@ -10,7 +10,7 @@ package de.pgalise.simulation.staticsensor;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import javax.ejb.EJB;
 
 /**
@@ -62,23 +62,23 @@ public abstract class AbstractSensorFactory<S extends Sensor<?, ?>> implements
     return randomSeedService;
   }
 
-  public JaxRSCoordinate createRandomPositionEnergySensor() {
+  public BaseCoordinate createRandomPositionEnergySensor() {
     throw new UnsupportedOperationException();
   }
 
-  public JaxRSCoordinate createRandomPositionWeatherSensor() {
+  public BaseCoordinate createRandomPositionWeatherSensor() {
     throw new UnsupportedOperationException();
   }
 
-  public JaxRSCoordinate createRandomPositionInfraredSensor() {
+  public BaseCoordinate createRandomPositionInfraredSensor() {
     throw new UnsupportedOperationException();
   }
 
-  public JaxRSCoordinate createRandomPositionInductionLoopSensor() {
+  public BaseCoordinate createRandomPositionInductionLoopSensor() {
     throw new UnsupportedOperationException();
   }
 
-  public JaxRSCoordinate createRandomPositionTopoRadarSensor() {
+  public BaseCoordinate createRandomPositionTopoRadarSensor() {
     throw new UnsupportedOperationException();
   }
 }

@@ -19,7 +19,7 @@ import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverterBase;
@@ -65,7 +65,7 @@ public class LinearWeatherPositionConverter extends WeatherPositionConverterBase
   @SuppressWarnings("unchecked")
   public <T extends Number> T getValue(WeatherParameterEnum key,
     long time,
-    JaxRSCoordinate position,
+    BaseCoordinate position,
     T refValue,
     Polygon grid) {
     // Change the value pro vector unit?

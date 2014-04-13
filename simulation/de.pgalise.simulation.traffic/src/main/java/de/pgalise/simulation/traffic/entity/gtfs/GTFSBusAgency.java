@@ -14,8 +14,9 @@
  * limitations under the License. 
  */
  
-package de.pgalise.simulation.shared.entity;
+package de.pgalise.simulation.traffic.entity.gtfs;
 
+import de.pgalise.simulation.shared.entity.Identifiable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -26,8 +27,10 @@ import javax.persistence.Entity;
  */
 @Entity
 //@Table(name = "PGALISE.BUS_AGENCY")
-public class BusAgency extends Identifiable {
+public class GTFSBusAgency extends Identifiable {
 	private static final long serialVersionUID = 1L;
+  
+  private String gtfsId;
 		
 	@Column(name = "AGENCY_NAME")
 	private String agencyName;
@@ -47,9 +50,9 @@ public class BusAgency extends Identifiable {
 	@Column(name = "AGENCY_FARE_URL")
 	private String agencyFareUrl;
 	
-	public BusAgency() {}
+	public GTFSBusAgency() {}
 	
-	public BusAgency(final String agencyName, final String agencyUrl, final String agencyTimezone, final String agencyLang,
+	public GTFSBusAgency(final String agencyName, final String agencyUrl, final String agencyTimezone, final String agencyLang,
 			final String agencyPhone, final String agencyFareUrl) {
 		this.agencyName = agencyName;
 		this.agencyUrl = agencyUrl;
@@ -106,6 +109,14 @@ public class BusAgency extends Identifiable {
 	public void setAgencyFareUrl(String agencyFareUrl) {
 		this.agencyFareUrl = agencyFareUrl;
 	}
+
+  public void setGtfsId(String gtfsId) {
+    this.gtfsId = gtfsId;
+  }
+
+  public String getGtfsId() {
+    return gtfsId;
+  }
 	
 	
 }

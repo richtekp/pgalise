@@ -19,7 +19,7 @@ import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
  */
 @Stateful
 public class DefaultWeatherController extends AbstractController<WeatherEvent, StartParameter, WeatherInitParameter>
-  implements WeatherController {
+  implements WeatherControllerLocal {
 
   /**
    * Logger
@@ -290,7 +290,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   @Override
   public Number getValue(final WeatherParameterEnum key,
     final long timestamp,
-    final JaxRSCoordinate position) {
+    final BaseCoordinate position) {
     return DefaultWeatherController.this.weatherService.getValue(key,
       timestamp,
       position,
@@ -307,21 +307,6 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 
   public void setStartTimestamp(long startTimestamp) {
     this.startTimestamp = startTimestamp;
-  }
-
-  /**
-   * Start the weather service or initialize this service
-   *
-   * @param city City
-   */
-  private void startWeatherService(City city) {
-    if (this.weatherService == null) {
-      this.weatherService = new DefaultWeatherService(city,
-        this.weatherLoader);
-    } else {
-      this.weatherService.initValues();
-      this.weatherService.init(initParameter);
-    }
   }
 
   /**
@@ -371,11 +356,13 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   }
 
   @Override
-  protected void onInit(WeatherInitParameter param) {
+  protected void onInit(WeatherInitParameter initParameter) {
     // Set random seed service
-    this.initParameter = param;
+    this.initParameter = initParameter;
     this.city = initParameter.getCity();
-    this.weatherService.init(param);
+
+    this.weatherService.initValues();
+    this.weatherService.init(initParameter);
   }
 
   @Override
@@ -390,8 +377,6 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 
   @Override
   protected void onStart(StartParameter param) {
-    // Save values
-    this.startWeatherService(param.getCity());
 
     // Log
     DefaultWeatherController.log
@@ -459,7 +444,7 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
   }
 
   @Override
-  public JaxRSCoordinate getReferencePosition() {
+  public BaseCoordinate getReferencePosition() {
     return this.city.getReferencePoint();
   }
 }

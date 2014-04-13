@@ -63,7 +63,7 @@ public class TrafficInitParameter extends WeatherInitParameter<TrafficCity> {
       clockGeneratorInterval,
       operationCenterURL,
       controlCenterURL,
-      city.getGeoInfo().getBoundaries().getEnvelopeInternal(),
+      city.getGeoInfo().retrieveBoundary().getEnvelopeInternal(),
       output);
     this.trafficFuzzyData = trafficFuzzyData;
   }

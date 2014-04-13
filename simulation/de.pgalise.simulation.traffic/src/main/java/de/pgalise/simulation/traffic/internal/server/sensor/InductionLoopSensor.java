@@ -28,7 +28,7 @@ import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
 
 /**
  * Class to generate an induction loop sensor

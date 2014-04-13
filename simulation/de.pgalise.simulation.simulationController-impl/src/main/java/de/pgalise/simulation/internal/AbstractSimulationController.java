@@ -14,29 +14,29 @@ import de.pgalise.simulation.event.EventInitiator;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
 import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.traffic.TrafficControllerLocal;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
-;
-import de.pgalise.simulation.weather.service.WeatherInitParameter;
-import javax.ejb.EJB;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.ejb.EJB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,8 +44,6 @@ import org.slf4j.LoggerFactory;
  *
  * @author richter
  */
-
-
 public abstract class AbstractSimulationController extends AbstractController<Event, TrafficStartParameter, TrafficInitParameter>
   implements SimulationControllerLocal {
 
@@ -71,7 +69,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
   private long elapsedTime = 0;
   private long lastElapsedTimeCheckTimestamp;
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
   @EJB
   private EnergyControllerLocal energyController;
   @EJB
@@ -177,7 +175,7 @@ public abstract class AbstractSimulationController extends AbstractController<Ev
       param.getClockGeneratorInterval(),
       param.getOperationCenterURL(),
       param.getControlCenterURL(),
-      param.getCity().getGeoInfo().getBoundaries().getEnvelopeInternal(),
+      param.getCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal(),
       param.getOutput()));
     energyController.init(param);
     trafficController.init(param);

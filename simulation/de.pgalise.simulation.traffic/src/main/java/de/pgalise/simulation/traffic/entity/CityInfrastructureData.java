@@ -6,8 +6,10 @@ package de.pgalise.simulation.traffic.entity;
 
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.Identifiable;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
@@ -19,7 +21,10 @@ import javax.persistence.ManyToMany;
  * @author richter
  */
 /*
- get boundary from city (add reference property if necessary)
+- get boundary from city (add reference property if necessary)
+- contains both information about has-a relations which might be separated to a 
+class in shared module (and referenced in City class) and in traffic module 
+(@TODO)
  */
 @Entity
 public class CityInfrastructureData extends Identifiable {
@@ -50,7 +55,9 @@ public class CityInfrastructureData extends Identifiable {
   @ManyToMany
   private List<Building> buildings = new LinkedList<>();
   @ManyToMany
-  private List<BusStop> busStops = new LinkedList<>();
+  private Set<BusStop> busStops = new HashSet<>();
+  @ManyToMany
+  private Set<BusRoute> busRoutes = new HashSet<>();
 
   public CityInfrastructureData() {
   }
@@ -122,7 +129,7 @@ public class CityInfrastructureData extends Identifiable {
     return nodes;
   }
 
-  public List<TrafficWay> getMotorWaysWithBusStops() {
+  public List<TrafficWay> getWaysWithBusStops() {
     return motorWaysWithBusStops;
   }
 
@@ -146,11 +153,11 @@ public class CityInfrastructureData extends Identifiable {
     return cycleAndMotorways;
   }
 
-  public List<BusStop> getBusStops() {
+  public Set<BusStop> getBusStops() {
     return this.busStops;
   }
 
-  protected void setBusStops(List<BusStop> busStops) {
+  public void setBusStops(Set<BusStop> busStops) {
     this.busStops = busStops;
   }
 
@@ -160,6 +167,14 @@ public class CityInfrastructureData extends Identifiable {
 
   public void setBuildings(List<Building> buildings) {
     this.buildings = buildings;
+  }
+
+  public void setBusRoutes(Set<BusRoute> busRoutes) {
+    this.busRoutes = busRoutes;
+  }
+
+  public Set<BusRoute> getBusRoutes() {
+    return busRoutes;
   }
 
 }

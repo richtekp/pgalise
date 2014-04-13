@@ -1,12 +1,12 @@
 <!-- INTERACTION (INIT) -->
-<ui:composition template="/WEB-INF/templates/template.xhtml"
+<ui:composition template="/templates/template.xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui" >
+	xmlns:p="http://primefaces.org/ui">
 	<ui:define name="content">
-		<div class="contentDiv" >
+		<div class="contentDiv">
 			<h:form>
 				<h2>Interaction</h2>
 				<div class="block">
@@ -14,34 +14,47 @@
 						<tr class="head">
 							<td colspan="2"><h3>Scheduling logic</h3></td>
 						</tr>
-            <tr>
+						<tr>
 							<td colspan="2">
-								<div>
-									Choose the parameter for the Fuzzy Logic. The tolerance in percentage, Timebuffer is the range in which new added cars will start driving and he steps how often the TrafficFuzzyGoverner will be called.
-								</div>
+								<div>Choose the parameter for the Fuzzy Logic. The
+									tolerance in percentage, Timebuffer is the range in which new
+									added cars will start driving and he steps how often the
+									TrafficFuzzyGoverner will be called.</div>
 							</td>
-            </tr>
-            <tr >
+						</tr>
+						<tr>
 							<td>Update steps:</td>
-							<td>
-								<p:spinner title="set the intervall for sensors to send data" value="#{mainCtrl.startParameter.trafficFuzzyData.updateSteps}" min="1" max="10" />
-							</td>
-            </tr>
-            <tr>
+							<td><p:spinner
+									title="set the intervall for sensors to send data"
+									value="#{mainCtrl.startParameter.trafficFuzzyData.updateSteps}"
+									min="1" max="10" /></td>
+						</tr>
+						<tr>
 							<td>Tolerance [%]:</td>
-							<td>
-								<p:spinner title="set the intervall for sensors to send data" value="#{mainCtrl.startParameter.trafficFuzzyData.tolerance}" min="0" max="100" />
-							</td>
-            </tr>
-            <tr>
+							<td><p:spinner
+									title="set the intervall for sensors to send data"
+									value="#{mainCtrl.startParameter.trafficFuzzyData.tolerance}"
+									min="0" max="100" /></td>
+						</tr>
+						<tr>
 							<td>Time buffer [min]:</td>
-							<td>
-								<p:spinner title="set the intervall for sensors to send data" value="#{mainCtrl.startParameter.trafficFuzzyData.timeBuffer}" min="5" max="60" />
-							</td>
-            </tr>
+							<td><p:spinner
+									title="set the intervall for sensors to send data"
+									value="#{mainCtrl.startParameter.trafficFuzzyData.timeBuffer}"
+									min="5" max="60" /></td>
+						</tr>
 					</table>
 				</div>
 			</h:form>
 		</div>
+	</ui:define>
+	<ui:define name="header_extension">
+		<ui:include src="/WEB-INF/templates/partials/header_extension.xhtml" />
+	</ui:define>
+	<ui:define name="menubar_west">
+		<ui:include src="/WEB-INF/templates/partials/menubar_west.xhtml" />
+	</ui:define>
+	<ui:define name="simulation_status">
+		<ui:include src="/WEB-INF/templates/partials/simulation_status.xhtml" />
 	</ui:define>
 </ui:composition>

@@ -11,23 +11,24 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.CompositeGpsInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.CompositeGpsInterferer;
+import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.DefaultGpsNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.CompositeInductionLoopInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.CompositeInfraredInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.InfraredNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.CompositeTopoRadarInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.TopoRadarNoInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.staticsensor.internal.AbstractEnergySensorFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -51,7 +52,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
 
   public DefaultTrafficSensorFactory(RandomSeedService rss,
     IdGenerator idGenerator,
-    WeatherController wctrl,
+    WeatherControllerLocal wctrl,
     EnergyControllerLocal ectrl,
     int updateLimit) {
     super(rss,
@@ -73,7 +74,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
       inductionLoopInterferer = new InductionLoopNoInterferer();
     }
 
-    JaxRSCoordinate position = createRandomPositionInductionLoopSensor();
+    BaseCoordinate position = createRandomPositionInductionLoopSensor();
     return new InductionLoopSensor(getIdGenerator().getNextId(),
       output,
       null,
@@ -94,7 +95,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
       toporadarInterferer = new TopoRadarNoInterferer();
     }
 
-    JaxRSCoordinate position = createRandomPositionTopoRadarSensor();
+    BaseCoordinate position = createRandomPositionTopoRadarSensor();
     return new TopoRadarSensor(getIdGenerator().getNextId(),
       output,
       null,
@@ -113,7 +114,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
       infraredInterferer = new InfraredNoInterferer();
     }
 
-    JaxRSCoordinate position = createRandomPositionInfraredSensor();
+    BaseCoordinate position = createRandomPositionInfraredSensor();
     return new InfraredSensor(getIdGenerator().getNextId(),
       output,
       null,
@@ -132,16 +133,16 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
         0),
       output);
   }
-
+  
   @Override
   public GpsSensor createGpsSensor(
     List<GpsInterferer> sensorInterfererTypes,
     Output output) {
     GpsInterferer gpsInterferer;
     if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
-      gpsInterferer = new CompositeGpsInterferer(sensorInterfererTypes);
+      gpsInterferer = new CompositeGpsInterferer(sensorInterfererTypes, getIdGenerator());
     } else {
-      gpsInterferer = new GpsNoInterferer();
+      gpsInterferer = new DefaultGpsNoInterferer();
     }
 
     return new GpsSensor(getIdGenerator().getNextId(),
@@ -173,21 +174,21 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
   }
 
   @Override
-  public InfraredSensor createInfraredSensor(JaxRSCoordinate position,
+  public InfraredSensor createInfraredSensor(BaseCoordinate position,
     List<InfraredInterferer> sensorInterfererTypes,
     Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public InductionLoopSensor createInductionLoopSensor(JaxRSCoordinate position,
+  public InductionLoopSensor createInductionLoopSensor(BaseCoordinate position,
     List<InductionLoopInterferer> sensorInterfererTypes,
     Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public TopoRadarSensor createTopoRadarSensor(JaxRSCoordinate position,
+  public TopoRadarSensor createTopoRadarSensor(BaseCoordinate position,
     List<TopoRadarInterferer> sensorInterfererTypes,
     Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

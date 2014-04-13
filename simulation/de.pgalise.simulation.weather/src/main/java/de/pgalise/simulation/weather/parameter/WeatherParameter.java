@@ -13,39 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.parameter;
 
 import de.pgalise.simulation.weather.service.WeatherService;
+import java.io.Serializable;
 
 /**
- * At the time of the {@link WeatherService} creation, the class loads the {@link WeatherParameter} by the help of the
- * enum {@link WeatherParameter} automatically. There are eleven {@link WeatherParameter} available. Some of them are
- * calculated by other weather parameters. These parameters will be cached by the {@link WeatherService} for another
- * request to reduce the CPU processing. An example is the parameter {@link WindStrength}.
- * 
+ * At the time of the {@link WeatherService} creation, the class loads the
+ * {@link WeatherParameter} by the help of the enum {@link WeatherParameter}
+ * automatically. There are eleven {@link WeatherParameter} available. Some of
+ * them are calculated by other weather parameters. These parameters will be
+ * cached by the {@link WeatherService} for another request to reduce the CPU
+ * processing. An example is the parameter {@link WindStrength}.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
-public interface WeatherParameter {
+public interface WeatherParameter extends Serializable {
 
-	/**
-	 * Returns the value for the given time
-	 * 
-	 * @param time
-	 *            Timestamp
-	 * @return Value as a number
-	 * @throws NoWeatherDataFoundException
-	 *             There is no value for the given time.
-	 */
-	public <T extends Number> T getValue(long time) ;
+  /**
+   * Returns the value for the given time
+   *
+   * @param <T>
+   * @param time Timestamp
+   * @return Value as a number
+   */
+  public <T extends Number> T getValue(long time);
 
-	/**
-	 * Set the WeatherService
-	 * 
-	 * @param weatherService
-	 *            WeatherService
-	 */
-	public void setWeatherService(WeatherService weatherService);
+  /**
+   * Set the WeatherService
+   *
+   * @param weatherService WeatherService
+   */
+  public void setWeatherService(WeatherService weatherService);
 
 }

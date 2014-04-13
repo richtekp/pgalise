@@ -1,10 +1,8 @@
-<ui:composition 
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui" 
-	xmlns:o="http://omnifaces.org/ui">
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
 	<script type="text/javascript">
 		function handlePointClick(event) {
 			var currentMarker = new google.maps.Marker({
@@ -12,46 +10,42 @@
 			});
 			PrimeFaces('map').addOverlay(currentMarker);
 		}
-	</script>  
+	</script>
 	<p:dialog id="energyEventDialog">
 		<h:form>
-			<div class="contentDiv" >
+			<div class="contentDiv">
 				<div class="left">
 					<table>
 						<tr>
 							<td class="top"><b>Position:</b></td>
-							<td>
-								<p:gmap id="gmap" center="36.890257,30.707417" zoom="13" type="HYBRID"   
-												style="width:600px;height:400px" 
-												onPointClick="handlePointClick(event);"   
-												widgetVar="map" />  
-							</td>
+							<td><p:gmap id="gmap" center="36.890257,30.707417" zoom="13"
+									type="HYBRID" style="width:600px;height:400px"
+									onPointClick="handlePointClick(event);" widgetVar="map" /></td>
 						</tr>
-            <tr>
+						<tr>
 							<td><b>Start:</b></td>
-							<td>
-								<p:calendar value="#{energyEventDialogCtrl.chosenStartDate}"/></td>
-            </tr>
-            <tr>
-							<td><b>Duration:</b></td>   
-							<td>
-								<p:spinner value="#{energyEventDialogCtrl.chosenDuration}"/></td>
-            </tr>
-            <tr>
+							<td><p:calendar
+									value="#{energyEventDialogCtrl.chosenStartDate}" /></td>
+						</tr>
+						<tr>
+							<td><b>Duration:</b></td>
+							<td><p:spinner
+									value="#{energyEventDialogCtrl.chosenDuration}" /></td>
+						</tr>
+						<tr>
 							<td colspan="2"><hr /></td>
-            </tr>
-            <tr>
+						</tr>
+						<tr>
 							<td class="top"><b>Ratio [m]:</b></td>
-							<td class="top">
-								<p:spinner value="#{energyEventDialogCtrl.chosenRatio}" min="1" max="100000" />
-							</td>
-            </tr>
-            <tr>
+							<td class="top"><p:spinner
+									value="#{energyEventDialogCtrl.chosenRatio}" min="1"
+									max="100000" /></td>
+						</tr>
+						<tr>
 							<td class="top"><b>Value [%]:</b></td>
-							<td>
-								<p:spinner value="#{energyEventDialogCtrl.chosenRadius}" min="1" max="100000" />
-							</td>
-            </tr>
+							<td><p:spinner value="#{energyEventDialogCtrl.chosenRadius}"
+									min="1" max="100000" /></td>
+						</tr>
 					</table>
 					<h:commandButton action="#{energyEventDialogCtrl.saveEnergyEvent}"
 				</div>

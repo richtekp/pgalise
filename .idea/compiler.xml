@@ -41,12 +41,13 @@
         <module name="simulationController" />
         <module name="simulationController-impl" />
         <module name="testutils-shared" />
+        <module name="testutils-traffic" />
+        <module name="testutils-weather" />
         <module name="traffic" />
         <module name="traffic-impl" />
         <module name="weather" />
         <module name="weather-impl" />
-        <module name="weathercollector" />
-        <module name="weathercollector-impl" />
+        <module name="web-shared" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -72,13 +73,14 @@
       <module name="simulationController-impl" target="1.7" />
       <module name="testutils" target="1.7" />
       <module name="testutils-shared" target="1.7" />
+      <module name="testutils-traffic" target="1.7" />
+      <module name="testutils-weather" target="1.7" />
       <module name="traffic" target="1.7" />
       <module name="traffic-impl" target="1.7" />
       <module name="util" target="1.7" />
       <module name="weather" target="1.7" />
       <module name="weather-impl" target="1.7" />
-      <module name="weathercollector" target="1.7" />
-      <module name="weathercollector-impl" target="1.7" />
+      <module name="web-shared" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

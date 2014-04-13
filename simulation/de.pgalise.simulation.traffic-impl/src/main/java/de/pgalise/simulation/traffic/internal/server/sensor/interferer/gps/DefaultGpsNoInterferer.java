@@ -15,8 +15,9 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsNoInterferer;
 
 /**
  * Represents an interferer that shows no errors
@@ -24,13 +25,13 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  * @author Marcus
  * @version 1.0 (Nov 12, 2012)
  */
-public class GpsNoInterferer implements GpsInterferer {
+public class DefaultGpsNoInterferer implements GpsNoInterferer {
 
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public JaxRSCoordinate interfere(JaxRSCoordinate mutablePosition,
-		JaxRSCoordinate realPosition,
+	public BaseCoordinate interfere(BaseCoordinate mutablePosition,
+		BaseCoordinate realPosition,
 		long simTime) {
 		// Returns with no change
 		return mutablePosition;

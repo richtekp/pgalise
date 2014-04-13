@@ -24,6 +24,8 @@ import javax.ejb.Stateful;
 @Stateful
 public class DefaultServiceStrategyManager implements ServiceStrategyManager {
 
+  private static final long serialVersionUID = 1L;
+
   private final Set<ServiceStrategy> SERVICE_STRATEGIES = new HashSet<>();
   private ServiceStrategy primaryService;
   @EJB

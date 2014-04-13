@@ -23,7 +23,7 @@ import java.util.Random;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
 
 /**
  * Abstract super class for {@link InfraredInterferer}

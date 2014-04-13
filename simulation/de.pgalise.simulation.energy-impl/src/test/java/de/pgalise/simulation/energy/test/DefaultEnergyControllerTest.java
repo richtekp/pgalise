@@ -21,9 +21,9 @@ import de.pgalise.simulation.energy.internal.DefaultEnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.entity.BaseGeoInfo;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -32,7 +32,7 @@ import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
 import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
-import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.FileBasedCityDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
@@ -91,8 +91,7 @@ public class DefaultEnergyControllerTest {
   /**
    * Geolocation (should be inside building)
    */
-  private static final JaxRSCoordinate testLocation = new JaxRSCoordinate(1.5,
-    1.5);
+  private BaseCoordinate testLocation;
 
   /**
    * Init parameters
@@ -110,7 +109,7 @@ public class DefaultEnergyControllerTest {
   /*
    Mock in order to get building list more easy
    */
-  private static FileBasedCityInfrastructureDataService information;
+  private static FileBasedCityDataService information;
 
   /**
    * The used energy consumption manager
@@ -136,6 +135,8 @@ public class DefaultEnergyControllerTest {
     TestUtils.getContext().bind("inject",
       this);
 
+    testLocation = new BaseCoordinate(idGenerator.getNextId(), 1.5,
+    1.5);
     Calendar cal = new GregorianCalendar();
 
     // city
@@ -150,20 +151,20 @@ public class DefaultEnergyControllerTest {
     for (int i = 0; i < 100; i++) {
       buildingList.add(
         new Building(idGenerator.getNextId(),
-          new JaxRSCoordinate(53.136765,
+          new BaseCoordinate(idGenerator.getNextId(), 53.136765,
             8.216524),
-          new BaseGeoInfo(idGenerator.getNextId(),
+          new BaseBoundary(idGenerator.getNextId(),
             GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-              new JaxRSCoordinate[]{
-                new JaxRSCoordinate(1,
+              new BaseCoordinate[]{
+                new BaseCoordinate(idGenerator.getNextId(), 1,
                   1),
-                new JaxRSCoordinate(1,
+                new BaseCoordinate(idGenerator.getNextId(), 1,
                   2),
-                new JaxRSCoordinate(2,
+                new BaseCoordinate(idGenerator.getNextId(), 2,
                   2),
-                new JaxRSCoordinate(2,
+                new BaseCoordinate(idGenerator.getNextId(), 2,
                   1),
-                new JaxRSCoordinate(1,
+                new BaseCoordinate(idGenerator.getNextId(), 1,
                   1)
               }
             )
@@ -173,10 +174,10 @@ public class DefaultEnergyControllerTest {
     }
 
     DefaultEnergyControllerTest.information = EasyMock.createNiceMock(
-      FileBasedCityInfrastructureDataService.class);
+      FileBasedCityDataService.class);
     EasyMock.expect(
       DefaultEnergyControllerTest.information.getBuildings(
-        DefaultEnergyControllerTest.testLocation,
+        testLocation,
         3))
       .andStubReturn(map);
     EasyMock.replay(DefaultEnergyControllerTest.information);
@@ -277,7 +278,7 @@ public class DefaultEnergyControllerTest {
     // Get value
     double value = DefaultEnergyControllerTest.testClass.
       getEnergyConsumptionInKWh(testTime,
-        DefaultEnergyControllerTest.testLocation,
+        testLocation,
         3);
 
     Assert.assertEquals(100.0,

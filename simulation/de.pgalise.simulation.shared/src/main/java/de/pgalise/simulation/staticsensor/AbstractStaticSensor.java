@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.staticsensor;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.sensorFramework.output.Output;
@@ -21,7 +21,7 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	extends AbstractSensor<E, X> implements StaticSensor<E, X> {
 
 	private static final long serialVersionUID = 1L;
-	private JaxRSCoordinate position;
+	private BaseCoordinate position;
 
 	/**
 	 * Constructor
@@ -34,7 +34,7 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	 */
 	public AbstractStaticSensor(Long id,
 		final Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		X sensorData)
 		throws IllegalArgumentException {
 		this(id,
@@ -56,7 +56,7 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	 */
 	public AbstractStaticSensor(Long id,
 		final Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		final int updateLimit,
 		X sensorData)
 		throws IllegalArgumentException {
@@ -68,12 +68,12 @@ public abstract class AbstractStaticSensor<E extends Event, X extends SensorData
 	}
 
 	@Override
-	public JaxRSCoordinate getPosition() {
+	public BaseCoordinate getPosition() {
 		return position;
 	}
 
 	@Override
-	public void setPosition(JaxRSCoordinate position) {
+	public void setPosition(BaseCoordinate position) {
 		this.position = position;
 	}
 

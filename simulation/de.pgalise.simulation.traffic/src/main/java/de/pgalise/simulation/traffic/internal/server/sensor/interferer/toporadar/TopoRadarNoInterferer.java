@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar;
 
-import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
 import java.util.List;
 import org.jgroups.util.Triple;
 

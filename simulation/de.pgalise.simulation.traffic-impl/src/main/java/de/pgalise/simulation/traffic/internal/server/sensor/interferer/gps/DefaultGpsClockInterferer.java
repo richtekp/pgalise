@@ -15,8 +15,12 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsClockInterferer;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 /**
  * Represents an interferer that shows errors caused by satellite clocks
@@ -24,36 +28,29 @@ import de.pgalise.simulation.service.RandomSeedService;
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
-public class GpsClockInterferer extends GpsBaseInterferer {
+@Stateless
+public class DefaultGpsClockInterferer extends GpsBaseInterferer implements GpsClockInterferer {
 
-  /**
-   * File path for property file
-   */
-  public static final String PROPERTIES_FILE_PATH = "interferer_gps_clock.properties";
 
   // @TODO GPSMapper als abhängigkeit hinzufügen um die VECTOR_UNIT zu bestimmen
   private static final double VECTOR_UNIT = 100.0;
   private static final long serialVersionUID = 1L;
+  @EJB
+  private IdGenerator idGenerator;
 
-  /**
-   * Constructor
-   *
-   * @param randomseedservice Random Seed Service
-   */
-  public GpsClockInterferer(RandomSeedService randomseedservice) {
-    super(randomseedservice,
-      GpsClockInterferer.PROPERTIES_FILE_PATH);
+  public DefaultGpsClockInterferer() {
+    super(DefaultGpsClockInterferer.PROPERTIES_FILE_PATH);
   }
 
   @Override
-  public JaxRSCoordinate interfere(JaxRSCoordinate mutablePosition,
-    JaxRSCoordinate realPosition,
+  public BaseCoordinate interfere(BaseCoordinate mutablePosition,
+    BaseCoordinate realPosition,
     long simTime) {
     // Should be changed?
     if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
       double changeValue = (this.getChangeAmplitude() / VECTOR_UNIT) * this.
         getRandom().nextGaussian();
-      return new JaxRSCoordinate(mutablePosition.getX() + changeValue,
+      return new BaseCoordinate(idGenerator.getNextId(), mutablePosition.getX() + changeValue,
         mutablePosition.getY() + changeValue);
     }
 

@@ -9,7 +9,7 @@ package de.pgalise.simulation.traffic.service;
  *
  * @author richter
  */
-public interface DataStoreCityInfrastructureDataService extends
-  CityInfrastructureDataService {
+public interface DataStoreCityDataService extends
+  CityDataService {
 
 }

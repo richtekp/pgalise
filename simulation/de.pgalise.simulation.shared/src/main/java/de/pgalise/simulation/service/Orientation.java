@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.service;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
@@ -71,7 +71,7 @@ public enum Orientation {
 	 * @return True, if the position is beyond the border position
 	 */
 	public static boolean isBeyond(Orientation orientation,
-			JaxRSCoordinate position, JaxRSCoordinate borderPosition) {
+			BaseCoordinate position, BaseCoordinate borderPosition) {
 		return (((orientation == Orientation.NORTH) && (position.getY() <= borderPosition
 				.getY()))
 				|| ((orientation == Orientation.NORTH_EAST)

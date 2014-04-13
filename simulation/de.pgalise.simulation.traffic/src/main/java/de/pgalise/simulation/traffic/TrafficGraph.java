@@ -5,9 +5,11 @@
 package de.pgalise.simulation.traffic;
 
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.VehicleData;
@@ -53,13 +55,13 @@ public abstract class TrafficGraph extends AsWeightedGraph<TrafficNode, TrafficE
    * less than <tt>distanceTolerance</tt>	and 1. doesn't apply</li>
    * <li><code>null</code> if 1. and 2. don't apply
    */
-  public Identifiable getElementClosestTo(JaxRSCoordinate position,
+  public Object getElementClosestTo(BaseCoordinate position,
     double distanceTolerance) {
     //@TODO: remove brute force search
     TrafficNode minDistanceNode = null;
     double minDistance = Double.MAX_VALUE;
     for (TrafficNode node : this.vertexSet()) {
-      double distance = node.getGeoLocation().distance(position);
+      double distance = node.distance(position);
       if (distance <= distanceTolerance && distance < minDistance) {
         minDistanceNode = node;
       }
@@ -70,15 +72,15 @@ public abstract class TrafficGraph extends AsWeightedGraph<TrafficNode, TrafficE
     minDistance = Double.MAX_VALUE;
     TrafficEdge minDistanceEdge = null;
     for (TrafficEdge edge : this.edgeSet()) {
-      JaxRSCoordinate node0Position = edge.getSource().getGeoLocation();
-      JaxRSCoordinate node1Position = edge.getTarget().getGeoLocation();
-      JaxRSCoordinate node0Coordinates = new JaxRSCoordinate(node0Position.
+      BaseCoordinate node0Position = edge.getSource();
+      BaseCoordinate node1Position = edge.getTarget();
+      Coordinate node0Coordinates = new Coordinate(node0Position.
         getX(),
         node0Position.getY());
-      JaxRSCoordinate node1Coordinates = new JaxRSCoordinate(node1Position.
+      Coordinate node1Coordinates = new Coordinate(node1Position.
         getX(),
         node1Position.getY());
-      JaxRSCoordinate positionCoordines = new JaxRSCoordinate(position.getX(),
+      Coordinate positionCoordines = new Coordinate(position.getX(),
         position.getY());
       double distance = CGAlgorithms.distancePointLine(positionCoordines,
         node0Coordinates,
@@ -101,7 +103,7 @@ public abstract class TrafficGraph extends AsWeightedGraph<TrafficNode, TrafficE
     TrafficNode minDistanceNode = null;
     double minDistance = Double.MAX_VALUE;
     for (TrafficNode node : this.vertexSet()) {
-      double distance = node.getGeoLocation().distance(position);
+      double distance = node.distance(position);
       if (distance <= distanceTolerance && distance < minDistance) {
         minDistanceNode = node;
       }

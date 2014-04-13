@@ -15,10 +15,11 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.BicycleData;
@@ -117,13 +118,13 @@ public class VehicleTest {
   @Test
   public void drivingTest() throws InterruptedException {
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(1,
+      new Coordinate(1,
         1));
     TrafficNode b = new TrafficNode((idGenerator.getNextId()),
-      new JaxRSCoordinate(1,
+      new Coordinate(1,
         2));
     TrafficNode c = new TrafficNode((idGenerator.getNextId()),
-      new JaxRSCoordinate(2,
+      new Coordinate(2,
         2));
     TrafficGraph graph = new DefaultTrafficGraph();
     graph.addVertex(a);
@@ -144,7 +145,7 @@ public class VehicleTest {
       output);
 
     car.setCurrentNode(a);
-    car.setPosition(a.getGeoLocation());
+    car.setPosition(a);
     car.setVelocity(1);
     car.setName("test car");
 
@@ -235,23 +236,23 @@ public class VehicleTest {
   public void multipleItermediateNodeTest() {
     TrafficGraph graph = new DefaultTrafficGraph();
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         0,
         0));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         0,
         1));
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         -1 * Math.sqrt(15),
         2));
     TrafficNode d = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         0,
         3));
     TrafficNode e = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         0,
         4));
     graph.addVertex(a);
@@ -320,15 +321,15 @@ public class VehicleTest {
   public void registerOnEdgeTest() {
     TrafficGraph graph = new DefaultTrafficGraph();
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         0,
         0));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         2,
         0));
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         2,
         2));
     graph.addVertex(a);
@@ -444,15 +445,15 @@ public class VehicleTest {
 
     TrafficGraph graph = new DefaultTrafficGraph();
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         0,
         0));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         2,
         0));
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(
+      new Coordinate(
         2,
         2));
     graph.addVertex(a);

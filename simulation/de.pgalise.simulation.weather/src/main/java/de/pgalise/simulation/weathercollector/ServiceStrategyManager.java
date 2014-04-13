@@ -6,6 +6,7 @@
 package de.pgalise.simulation.weathercollector;
 
 import de.pgalise.simulation.weathercollector.weatherservice.ServiceStrategy;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Set;
  *
  * @author richter
  */
-public interface ServiceStrategyManager {
+public interface ServiceStrategyManager extends Serializable {
 
   Set<ServiceStrategy> getServiceStrategies();
 

@@ -13,6 +13,8 @@
   <version>2.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
+  <name>de.pgalise.simulation.controlCenter-jar</name>
+
   <dependencies>
     <dependency>
       <groupId>de.pgalise.simulation</groupId>
@@ -37,18 +39,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <name>de.pgalise.simulation.controlCenter-jar</name>
-  <url>http://maven.apache.org</url>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-    <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+  
 </project>

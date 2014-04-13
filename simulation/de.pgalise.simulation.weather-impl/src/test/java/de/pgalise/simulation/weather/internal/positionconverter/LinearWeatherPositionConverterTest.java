@@ -16,7 +16,8 @@
 package de.pgalise.simulation.weather.internal.positionconverter;
 
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.positionconverter.WeatherPositionConverter;
@@ -48,6 +49,8 @@ public class LinearWeatherPositionConverterTest {
 
   @EJB
   private WeatherPositionConverter instance;
+  @EJB
+  private IdGenerator idGenerator;
 
   @Resource
   private UserTransaction userTransaction;
@@ -73,26 +76,26 @@ public class LinearWeatherPositionConverterTest {
        */
       Timestamp testTime = DateConverter.convertTimestamp("2012-10-08 12:00:00",
         "YYYY-MM-dd HH:mm:ss");
-      JaxRSCoordinate testPosition = new JaxRSCoordinate(1,
+      BaseCoordinate testPosition = new BaseCoordinate(idGenerator.getNextId(), 1,
         1);
       double value;
       /*
        * Test: Temperature
        */
-      JaxRSCoordinate referencePoint = new JaxRSCoordinate(20,
+      BaseCoordinate referencePoint = new BaseCoordinate(idGenerator.getNextId(), 20,
         20);
       Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
         createPolygon(
-          new JaxRSCoordinate[]{
-            new JaxRSCoordinate(referencePoint.getX() - 1,
+          new BaseCoordinate[]{
+            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
               referencePoint.getY() - 1),
-            new JaxRSCoordinate(referencePoint.getX() - 1,
+            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
               referencePoint.getY()),
-            new JaxRSCoordinate(referencePoint.getX(),
+            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
               referencePoint.getY()),
-            new JaxRSCoordinate(referencePoint.getX(),
+            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
               referencePoint.getY() - 1),
-            new JaxRSCoordinate(referencePoint.getX() - 1,
+            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
               referencePoint.getY() - 1)
           }
         );

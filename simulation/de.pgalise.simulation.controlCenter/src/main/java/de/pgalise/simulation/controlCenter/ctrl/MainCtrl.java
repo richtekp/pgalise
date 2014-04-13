@@ -8,22 +8,18 @@ import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.shared.entity.BaseGeoInfo;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
-import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.FileBasedCityDataService;
 import de.pgalise.simulation.weathercollector.ServiceStrategyManager;
 import de.pgalise.simulation.weathercollector.WeatherCollector;
-import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
-import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
+import gnu.cajo.invoke.Remote;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -37,21 +33,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import net.sf.ehcache.Element;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.geotools.geometry.jts.JTS;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -107,12 +99,37 @@ public class MainCtrl implements Serializable {
   private StartParameterSerializerService startParameterSerializerService;
   private CityCtrl cityCtrl;
   @EJB
-  private FileBasedCityInfrastructureDataService cityInfrastructureManager;
+  private FileBasedCityDataService cityDataService;
   @EJB
   private WeatherCollector weatherCollector;
   @EJB
   private ServiceStrategyManager serviceStrategyManager;
+  /**
+   * serves as value for progress bar of start wait dialog
+   */
+  private int startProgress = 0;
+  @ManagedProperty(value = "#{busSystemCtrl}")
+  private BusSystemCtrl busSystemCtrl;
+  private Thread rmiControlCenterThread = new Thread() {
+    @Override
+    public void run() {
+      try {
+        Object operationCenter = Remote.getItem(
+          "//127.0.0.1:1198/operationCenter");
+        Remote.invoke(operationCenter,
+          "hallo",
+          "Wiki");
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+  };
+  private boolean rmiControlCenterThreadRunning = true;
 
+  /**
+   * initializes a MainCtrl without it's RMI thread being started (has to be
+   * started with {@link
+   */
   public MainCtrl() {
   }
 
@@ -123,11 +140,12 @@ public class MainCtrl implements Serializable {
     ControlCenterStartParameter importedStartParameter,
     StartParameterSerializerService startParameterSerializerService,
     CityCtrl cityCtrl,
-    FileBasedCityInfrastructureDataService cityInfrastructureManager,
+    FileBasedCityDataService fileBasedCityDataService,
     WeatherCollector weatherCollector,
     ServiceStrategyManager serviceStrategyManager,
     String parameterUploadData,
-    String parameterDownloadData) {
+    String parameterDownloadData,
+    BusSystemCtrl busSystemCtrl) {
     this.gsonService = gsonService;
     this.idGenerator = idGenerator;
     this.simulationController = simulationController;
@@ -135,11 +153,12 @@ public class MainCtrl implements Serializable {
     this.importedStartParameter = importedStartParameter;
     this.startParameterSerializerService = startParameterSerializerService;
     this.cityCtrl = cityCtrl;
-    this.cityInfrastructureManager = cityInfrastructureManager;
+    this.cityDataService = fileBasedCityDataService;
     this.weatherCollector = weatherCollector;
     this.serviceStrategyManager = serviceStrategyManager;
     this.parameterUploadData = parameterUploadData;
     this.parameterDownloadData = parameterDownloadData;
+    this.busSystemCtrl = busSystemCtrl;
   }
 
   @PostConstruct
@@ -152,87 +171,80 @@ public class MainCtrl implements Serializable {
       getValue(FacesContext.getCurrentInstance().getELContext(),
         null,
         "cityCtrl");
+    busSystemCtrl = (BusSystemCtrl) FacesContext.getCurrentInstance().
+      getELContext().getELResolver().getValue(FacesContext.getCurrentInstance().
+        getELContext(),
+        null,
+        "busSystemCtrl");
+    busSystemCtrl.initializeBusStopParsing();
     this.simulationControllerStatus = simulationController.getStatus();
   }
 
-  public void startSimulation() throws IOException {
-    if (cityCtrl.getOsmFileNames().size() > 1) {
-      throw new UnsupportedOperationException(
-        "multiple osm files not supported yet");
-    }
-    if (cityCtrl.getBusStopFileNames().size() > 1) {
-      throw new UnsupportedOperationException(
-        "multiple bus stop files not supported yet");
-    }
-    final TrafficCity city = new TrafficCity(idGenerator.getNextId(),
-      cityCtrl.getChosenName(),
-      cityCtrl.getChosenPopulation(),
-      cityCtrl.getChosenAltitude(),
-      cityCtrl.getNearRiver(),
-      cityCtrl.getNearSea(),
-      null, //geoInformation (set later)
-      null, //cityInfrastructureData (set later)
-      null //need to set referencePoint explicitly in order to avoid NullPointerException
-    );
-    Thread weatherCollectorThread = new Thread() {
-      @Override
-      public void run() {
-        MainCtrl.this.weatherCollector.retrieveServiceDataCurrent(
-          serviceStrategyManager.getPrimaryServiceStrategy(),
-          city);
+  public void startRmiOperationCenterThread() {
+    rmiControlCenterThread.start();
+  }
+
+  public void stopRmiOperationCenterThread() {
+    rmiControlCenterThreadRunning = false;
+  }
+
+  public void cancelStart() {
+    //@TODO:
+  }
+
+  public void waitForOsmParsing() {
+    //@TODO not necessary, validation of city object sufficient
+//    for(String osmFileName : cityCtrl.getOsmFileNames()) {
+//    try {
+//      Element osmParsingTaskElement = MainCtrlUtils.OSM_PARSING_CACHE.get(
+//        //osmFileName
+//        cityCtrl.getOsmFileName()
+//      );
+//      ((FutureTask<Void>)osmParsingTaskElement.        getObjectValue()).get();
+//    } catch (InterruptedException | ExecutionException ex) {
+//      throw new RuntimeException(ex);
+//    }
+//    }
+  }
+
+  public void waitForBusStopParsing() {
+    for (String busStopFileName : busSystemCtrl.getBusStopFileNames()) {
+      try {
+        Element osmParsingTaskElement = MainCtrlUtils.BUS_STOP_PARSING_CACHE.
+          get(
+            busStopFileName);
+        ((FutureTask<TrafficCity>)osmParsingTaskElement.
+          getObjectValue()).get();
+      } catch (InterruptedException | ExecutionException ex) {
+        throw new RuntimeException(ex);
       }
-    };
-    FutureTask<CityInfrastructureData> oSMParseFuture = new FutureTask<>(
-      new Callable<CityInfrastructureData>() {
-        @Override
-        public CityInfrastructureData call() throws Exception {
-          String osmFileKey = cityCtrl.getOsmFileNames().
-          iterator().next();
-          String busStopFileKey = cityCtrl.getBusStopFileNames().iterator().
-          next();
-          InputStream osmFileBytes = new FileInputStream(new File(
-              MainCtrlUtils.CACHE_DATA_DIR,
-              osmFileKey));
-          InputStream busStopFileBytes = new FileInputStream(new File(
-              MainCtrlUtils.CACHE_DATA_DIR,
-              busStopFileKey));
-          BuildingEnergyProfileStrategy buildingEnergyProfileStrategy = new DefaultBuildingEnergyProfileStrategy();
-
-          cityInfrastructureManager.parse(
-            osmFileBytes,
-            busStopFileBytes);
-          CityInfrastructureData cityInfrastructureData = cityInfrastructureManager.
-          createCityInfrastructureData();
-          return cityInfrastructureData;
-        }
-      });
-    ThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
-    executor.execute(weatherCollectorThread);
-    executor.execute(oSMParseFuture);
-    LOGGER.info("started weather collector thread");
-    LOGGER.info("stared OSM parse thread");
-
-    try {
-      executor.awaitTermination(-1,
-        TimeUnit.DAYS);
-    } catch (InterruptedException ex) {
-      throw new RuntimeException(ex);
     }
-    CityInfrastructureData cityInfrastructureData;
-    try {
-      cityInfrastructureData = oSMParseFuture.get();
-    } catch (InterruptedException | ExecutionException ex) {
-      throw new RuntimeException(ex);
-    }
+  }
 
-    city.setGeoInfo(new BaseGeoInfo(idGenerator.getNextId(),
-      JTS.toGeometry(cityInfrastructureManager.getBoundary())));
-    city.setCityInfrastructureData(cityInfrastructureData);
-    city.setReferencePoint(new JaxRSCoordinate(cityInfrastructureManager.
-      getBoundary().centre()));
-    initParameter.setCity(city);
+  public void startSimulation() throws IOException {
+    busSystemCtrl.initializeBusStopParsing(); //multiple invokations don't 
+    //cause trouble
+    waitForOsmParsing();
+    waitForBusStopParsing();
+    TrafficCity city = cityDataService.
+      createCity();
+    Set<BusRoute> busRoutes = busSystemCtrl.getBusRoutes();
+    city.getCityInfrastructureData().setBusRoutes(busRoutes);
+    initParameter.setCity(cityCtrl.getCity());
     simulationController.init(initParameter);
     simulationController.start(startParameter);
+  }
+
+  public void setBusSystemCtrl(BusSystemCtrl busSystemCtrl) {
+    this.busSystemCtrl = busSystemCtrl;
+  }
+
+  public void setStartProgress(int startProgress) {
+    this.startProgress = startProgress;
+  }
+
+  public int getStartProgress() {
+    return startProgress;
   }
 
   public void stopSimulation() {
@@ -505,5 +517,9 @@ public class MainCtrl implements Serializable {
   protected void setStartParameterSerializerService(
     StartParameterSerializerService startParameterSerializerService) {
     this.startParameterSerializerService = startParameterSerializerService;
+  }
+
+  public void noop() {
+
   }
 }

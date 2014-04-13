@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop;
 
-import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
 
 /**
  * Represents an interferer that shows no errors

@@ -4,10 +4,11 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
-import de.pgalise.simulation.traffic.entity.BusStop;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.NavigationEdge;
 import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
@@ -69,7 +70,7 @@ public class TrafficNode extends NavigationNode {
   }
 
   public TrafficNode(Long id,
-    JaxRSCoordinate geoLocation) {
+    Coordinate geoLocation) {
     super(id,
       geoLocation);
   }

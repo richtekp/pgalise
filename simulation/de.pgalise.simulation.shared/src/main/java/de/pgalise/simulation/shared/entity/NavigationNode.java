@@ -4,8 +4,9 @@
  */
 package de.pgalise.simulation.shared.entity;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
@@ -16,13 +17,18 @@ import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * A <tt>NavigationNode</tt> is a {@link BaseCoordinate} which can be used for 
+ * navigation.
+ * 
+ * <tt>NavigtionNode</tt> provides the base tags which might be used by 
+ * subclasses in a different way (consider making a NavigationNode an office - 
+ * doesn't make a lot of sense, but it is possible). Use tags carefully.
  * @author richter
  */
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class NavigationNode extends Identifiable {
+public class NavigationNode extends BaseCoordinate {
 
   private static final long serialVersionUID = 1L;
   /**
@@ -30,8 +36,6 @@ public class NavigationNode extends Identifiable {
    */
   public final static int NODE_RADIUS = 5;
 
-  @Embedded
-  private JaxRSCoordinate geoLocation;
   @ElementCollection
   private Set<String> tourismTags = new HashSet<>();
   @ElementCollection
@@ -66,15 +70,25 @@ public class NavigationNode extends Identifiable {
 
   protected NavigationNode() {
   }
-
-  public NavigationNode(Long id,
-    JaxRSCoordinate geoLocation) {
+  
+  public NavigationNode(Long id) {
     super(id);
-    this.geoLocation = geoLocation;
   }
 
   public NavigationNode(Long id,
-    JaxRSCoordinate geoLocation,
+    double x, double y) {
+    super(id, x,
+      y);
+  }
+  
+  public NavigationNode(Long id,
+    Coordinate geoLocation) {
+    super(id,
+      geoLocation);
+  }
+
+  public NavigationNode(Long id,
+    double x, double y, 
     Set<String> tourismTags,
     Set<String> serviceTags,
     Set<String> sportTags,
@@ -91,8 +105,7 @@ public class NavigationNode extends Identifiable {
     Set<String> landuseTags,
     boolean office,
     boolean military) {
-    this(id,
-      geoLocation);
+    this(id, x,y);
     this.tourismTags = tourismTags;
     this.serviceTags = serviceTags;
     this.sportTags = sportTags;
@@ -110,20 +123,12 @@ public class NavigationNode extends Identifiable {
     this.military = military;
   }
 
-  public JaxRSCoordinate getGeoLocation() {
-    return geoLocation;
-  }
-
-  public void setGeoLocation(JaxRSCoordinate geoLocation) {
-    this.geoLocation = geoLocation;
+  public boolean isMilitary() {
+    return military;
   }
 
   public void setMilitary(boolean military) {
-    this.setMilitary((Boolean) military);
-  }
-
-  public boolean isMilitary() {
-    return military;
+    this.military = military;
   }
 
   public void setOffice(boolean office) {

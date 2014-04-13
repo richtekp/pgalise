@@ -16,7 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.energy.interferer;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -89,7 +89,7 @@ public class CompositeEnergyInterferer implements EnergyInterferer {
 	}
 
 	@Override
-	public double interfere(final double mutableValue, final JaxRSCoordinate position, final long simTime) {
+	public double interfere(final double mutableValue, final BaseCoordinate position, final long simTime) {
 		double result = mutableValue;
 		for (final EnergyInterferer interferer : this.interferers) {
 			result = interferer.interfere(result, position, simTime);

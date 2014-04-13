@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.weather.service;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import java.util.List;
 
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
@@ -26,6 +26,7 @@ import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 import de.pgalise.simulation.weather.parameter.WeatherParameter;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
+import java.io.Serializable;
 import javax.measure.quantity.Temperature;
 import javax.measure.unit.Unit;
 
@@ -41,7 +42,7 @@ import javax.measure.unit.Unit;
  * @author Andreas Rehfeldt
  * @version 1.0 (09.07.2012)
  */
-public interface WeatherService {
+public interface WeatherService extends Serializable {
 
   /**
    * Clear all stored data to use new data
@@ -109,7 +110,7 @@ public interface WeatherService {
    *
    * @return referencePosition
    */
-  public JaxRSCoordinate getReferencePosition();
+  public BaseCoordinate getReferencePosition();
 
   /**
    * Returns the reference values
@@ -155,7 +156,7 @@ public interface WeatherService {
    */
   public <T extends Number> T getValue(WeatherParameterEnum key,
     long time,
-    JaxRSCoordinate position,
+    BaseCoordinate position,
     City city)
     throws IllegalArgumentException, NoWeatherDataFoundException;
 

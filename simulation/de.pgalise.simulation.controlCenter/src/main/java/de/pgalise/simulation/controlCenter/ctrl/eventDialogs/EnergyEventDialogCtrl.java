@@ -10,6 +10,7 @@ import de.pgalise.simulation.controlCenter.ctrl.BaseMapDialogCtrl;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
 import de.pgalise.simulation.shared.event.energy.PercentageChangeEnergyEvent;
@@ -74,7 +75,7 @@ public class EnergyEventDialogCtrl extends BaseMapDialogCtrl {
 	
 	public void saveEnergyEvent() {
 		energyController.update(new EventList(idGenerator.getNextId(),
-			new LinkedList<>(Arrays.asList(new PercentageChangeEnergyEvent(getCoordinate(),
+			new LinkedList<>(Arrays.asList(new PercentageChangeEnergyEvent(new BaseCoordinate(idGenerator.getNextId(), getCoordinate()),
 						chosenDuration,
 						chosenDuration,
 						chosenDuration,

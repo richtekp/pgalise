@@ -15,8 +15,9 @@
  */
 package de.pgalise.util.graph;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -101,22 +102,22 @@ public class VisualizerTest {
   private TrafficGraph createGraph() {
     TrafficGraph graph = new DefaultTrafficGraph();
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(1,
+      new Coordinate(1,
         1));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(2,
+      new Coordinate(2,
         2));
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(4,
+      new Coordinate(4,
         7));
     TrafficNode d = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(9,
+      new Coordinate(9,
         4));
     TrafficNode e = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(11,
+      new Coordinate(11,
         7));
     TrafficNode f = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(2,
+      new Coordinate(2,
         10));
     TrafficEdge e1 = graph.addEdge(a,
       b);

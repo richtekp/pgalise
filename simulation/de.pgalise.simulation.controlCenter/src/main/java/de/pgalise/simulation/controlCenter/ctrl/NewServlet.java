@@ -23,6 +23,7 @@ import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.staticsensor.internal.sensor.weather.RainSensor;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhiteNoiseInterferer;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
@@ -54,7 +55,7 @@ public class NewServlet extends HttpServlet {
   @EJB
   private TrafficGraph trafficGraph;
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
   @EJB
   private RandomSeedService randomSeedService;
   @EJB

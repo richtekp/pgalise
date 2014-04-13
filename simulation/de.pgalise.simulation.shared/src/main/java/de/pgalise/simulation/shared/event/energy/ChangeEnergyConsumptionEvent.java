@@ -17,7 +17,7 @@
 package de.pgalise.simulation.shared.event.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -35,7 +35,7 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	/**
 	 * Position
 	 */
-	private JaxRSCoordinate position;
+	private BaseCoordinate position;
 
 	/**
 	 * Measure radius (in meter)
@@ -67,7 +67,7 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	 * End timestamp of the event
 	 */
 	
-	public ChangeEnergyConsumptionEvent(JaxRSCoordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
+	public ChangeEnergyConsumptionEvent(BaseCoordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
 		if (measureRadiusInMeter <= 0.0) {
 			throw new IllegalArgumentException("measureRadiusInMeter is negative");
 		}
@@ -77,11 +77,11 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 		this.endTimestamp = endTimestamp;
 	}
 
-	public JaxRSCoordinate getPosition() {
+	public BaseCoordinate getPosition() {
 		return position;
 	}
 
-	public void setPosition(JaxRSCoordinate position) {
+	public void setPosition(BaseCoordinate position) {
 		this.position = position;
 	}
 

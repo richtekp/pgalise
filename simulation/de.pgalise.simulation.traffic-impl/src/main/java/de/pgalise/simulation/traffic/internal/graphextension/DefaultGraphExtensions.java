@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.graphextension;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -125,9 +125,9 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public JaxRSCoordinate getPosition(final NavigationNode node) throws IllegalArgumentException {
+	public BaseCoordinate getPosition(final NavigationNode node) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
-		return node.getGeoLocation();
+		return node;
 	}
 
 	/**
@@ -154,9 +154,9 @@ public class DefaultGraphExtensions implements GraphExtensions {
 		if (!this.hasPosition(to)) {
 			throw new IllegalStateException("Argument 'node2' has no position data attached.");
 		}
-		JaxRSCoordinate fromPosition = this.getPosition(from);
+		BaseCoordinate fromPosition = this.getPosition(from);
 		JaxbVector2d result = new JaxbVector2d(fromPosition.getX(), fromPosition.getY());
-		JaxRSCoordinate toPosition = this.getPosition(to);
+		BaseCoordinate toPosition = this.getPosition(to);
 		result.sub(new JaxbVector2d(toPosition.getX(), toPosition.getY()));
 		return result;
 	}
@@ -188,18 +188,19 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'node' is 'null'
 	 */
 	@Override
-	public TrafficNode setPosition(final TrafficNode node, final JaxRSCoordinate position) throws IllegalArgumentException {
+	public TrafficNode setPosition(final TrafficNode node, final BaseCoordinate position) throws IllegalArgumentException {
 		DefaultGraphExtensions.checkNode(node);
-		if (node.getGeoLocation() != null) {
-			throw new IllegalStateException("Argument \"node\" has already position property attached.");
+		if (node == null) {
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("node"));
 		}
 		if (position == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("node"));
+			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("position"));
 		}
 		if ((position.getX() < 0) || (position.getY() < 0)) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("position", true));
 		}
-		node.setGeoLocation(position);
+		node.setX(position.x);
+    node.setY(position.y);
 		return node;
 	}
 
@@ -496,8 +497,8 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	public Double getLengthBetween(TrafficNode node1, TrafficNode node2) {
 		checkNode(node1);
 		checkNode(node2);
-		return GeoToolsBootstrapping.distanceHaversineInM(node1.getGeoLocation(),
-			node2.getGeoLocation());
+		return GeoToolsBootstrapping.distanceHaversineInM(node1,
+			node2);
 	}
 
 }

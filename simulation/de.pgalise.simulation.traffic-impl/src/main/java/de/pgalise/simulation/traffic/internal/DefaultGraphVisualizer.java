@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -147,7 +147,7 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 
 		for (Iterator<TrafficNode> i = graph.vertexSet().iterator(); i.hasNext();) {
 			TrafficNode node = i.next();
-			JaxRSCoordinate vec0 = this.nodeExtensions.getPosition(node);
+			BaseCoordinate vec0 = this.nodeExtensions.getPosition(node);
 			JaxbVector2d vec = new JaxbVector2d(
 				(vec0.getX() * transform.getScaleX() + transform.getTranslateX()),
 				(vec0.getY()
@@ -169,11 +169,11 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 		}
 
 		for (TrafficEdge edge : graph.edgeSet()) {
-			JaxRSCoordinate a0 = this.nodeExtensions.getPosition(edge.getSource());
+			BaseCoordinate a0 = this.nodeExtensions.getPosition(edge.getSource());
 			JaxbVector2d a = new JaxbVector2d(a0.getX() * transform.getScaleX() + transform.
 				getTranslateX(),
 				a0.getY() * transform.getScaleY() + transform.getTranslateY());
-			JaxRSCoordinate b0 = this.nodeExtensions.getPosition(edge.getTarget());
+			BaseCoordinate b0 = this.nodeExtensions.getPosition(edge.getTarget());
 			JaxbVector2d b = new JaxbVector2d(b0.getX() * transform.getScaleX() + transform.
 				getTranslateX(),
 				b0.getY() * transform.getScaleY() + transform.getTranslateY());

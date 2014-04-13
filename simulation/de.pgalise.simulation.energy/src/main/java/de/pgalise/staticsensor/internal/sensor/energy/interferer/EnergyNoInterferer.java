@@ -16,7 +16,7 @@
  
 package de.pgalise.staticsensor.internal.sensor.energy.interferer;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.energy.sensor.EnergyInterferer;
 
 /**
@@ -30,7 +30,7 @@ public class EnergyNoInterferer implements EnergyInterferer {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public double interfere(double mutableValue, JaxRSCoordinate position, long simTime) {
+	public double interfere(double mutableValue, BaseCoordinate position, long simTime) {
 		// Returns with no change
 		return mutableValue;
 	}

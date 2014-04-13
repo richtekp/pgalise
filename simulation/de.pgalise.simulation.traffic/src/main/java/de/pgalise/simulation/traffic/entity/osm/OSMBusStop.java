@@ -2,11 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.traffic.entity;
+package de.pgalise.simulation.traffic.entity.osm;
 
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.BusStopInformation;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.traffic.entity.BusStop;
+import de.pgalise.simulation.traffic.entity.BusStopInformation;
 import javax.persistence.Entity;
 
 /**
@@ -26,7 +28,7 @@ public class OSMBusStop extends BusStop {
     String osmId,
     String stopName,
     BusStopInformation busStopInformation,
-    JaxRSCoordinate geoLocation) {
+    BaseCoordinate geoLocation) {
     super(id,
       stopName,
       busStopInformation,

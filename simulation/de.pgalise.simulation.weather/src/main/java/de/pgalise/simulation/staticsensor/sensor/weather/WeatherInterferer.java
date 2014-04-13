@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.staticsensor.sensor.weather;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**
@@ -39,5 +39,5 @@ public interface WeatherInterferer extends SensorInterferer {
 	 *            Simulation timestamp
 	 * @return new value
 	 */
-	double interfere(final double mutableValue, final JaxRSCoordinate position, final long simTime);
+	double interfere(final double mutableValue, final BaseCoordinate position, final long simTime);
 }

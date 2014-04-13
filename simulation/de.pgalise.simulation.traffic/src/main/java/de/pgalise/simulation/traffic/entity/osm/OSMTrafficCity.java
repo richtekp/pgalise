@@ -3,10 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.traffic.entity;
+package de.pgalise.simulation.traffic.entity.osm;
 
-import de.pgalise.simulation.shared.entity.BaseGeoInfo;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
 import javax.persistence.Entity;
 
 /**
@@ -14,22 +15,22 @@ import javax.persistence.Entity;
  * @author richter
  */
 @Entity
-public class OsmCity extends TrafficCity {
+public class OSMTrafficCity extends TrafficCity {
 
   private static final long serialVersionUID = 1L;
   private long osmId;
 
-  public OsmCity() {
+  public OSMTrafficCity() {
   }
 
-  public OsmCity(long osmId,
+  public OSMTrafficCity(long osmId,
     Long id,
     String name,
     int population,
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseGeoInfo position,
+    BaseBoundary position,
     CityInfrastructureData trafficInfrastructureData) {
     super(id,
       name,

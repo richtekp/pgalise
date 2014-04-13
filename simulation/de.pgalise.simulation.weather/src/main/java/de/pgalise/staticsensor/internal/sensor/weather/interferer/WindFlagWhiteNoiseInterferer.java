@@ -17,7 +17,7 @@
 package de.pgalise.staticsensor.internal.sensor.weather.interferer;
 
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 
 /**
  * Represents an interferer that creates generally low errors
@@ -45,7 +45,7 @@ public class WindFlagWhiteNoiseInterferer extends WeatherBaseInterferer {
 	}
 
 	@Override
-	public double interfere(final double mutableValue, final JaxRSCoordinate position, final long simTime) {
+	public double interfere(final double mutableValue, final BaseCoordinate position, final long simTime) {
 		// Should be changed?
 		if (this.getRandom().nextDouble() <= this.changeProbability) {
 			double changeValue = this.changeAmplitude * this.random.nextGaussian();

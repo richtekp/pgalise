@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ import de.pgalise.simulation.traffic.entity.BusData;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
 
 /**
  * Class to generate an infrared sensor
@@ -70,7 +70,7 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent<?>, InfraredSens
 	public InfraredSensor(Long id,
 		final Output output,
 		final Vehicle<? extends BusData> vehicle,
-		final JaxRSCoordinate position,
+		final BaseCoordinate position,
 		final int updateLimit,
 		final InfraredInterferer interferer) {
 		super(id,
@@ -97,7 +97,7 @@ public class InfraredSensor extends AbstractSensor<TrafficEvent<?>, InfraredSens
 	public InfraredSensor(Long id,
 		final Output output,
 		final Vehicle<? extends BusData> vehicle,
-		final JaxRSCoordinate position,
+		final BaseCoordinate position,
 		final InfraredInterferer interferer) {
 		this(id,
 			output,

@@ -2,16 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.traffic;
+package de.pgalise.simulation.traffic.service;
 
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
-import de.pgalise.simulation.traffic.service.DataStoreCityInfrastructureDataService;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
+import de.pgalise.simulation.traffic.service.DataStoreCityDataService;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateful;
 import org.geotools.data.DataStore;
 import org.geotools.data.Query;
@@ -32,7 +36,6 @@ import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
-import javax.ejb.Local;
 
 /**
  * An implementation of {@link TrafficInfrastructureData} which (similar to
@@ -42,9 +45,9 @@ import javax.ejb.Local;
  * @author richter
  */
 @Stateful
-@Local(DataStoreCityInfrastructureDataService.class)
-public class OSMDataStoreCityInfrastructureDataService implements
-  DataStoreCityInfrastructureDataService {
+@Local(DataStoreCityDataService.class)
+public class OSMDataStoreCityDataService implements
+  DataStoreCityDataService {
 
   private DataStore dataStore;
   private TrafficGraph trafficGraph;
@@ -54,7 +57,7 @@ public class OSMDataStoreCityInfrastructureDataService implements
   @EJB
   private IdGenerator idGenerator;
 
-  public OSMDataStoreCityInfrastructureDataService() {
+  public OSMDataStoreCityDataService() {
   }
 
   @PostConstruct
@@ -69,7 +72,7 @@ public class OSMDataStoreCityInfrastructureDataService implements
    *
    * @param cityPolygonOsmId
    */
-  public OSMDataStoreCityInfrastructureDataService(
+  public OSMDataStoreCityDataService(
     DataStore dataStore,
     String cityBoundaryOsmId) throws IOException {
     try {
@@ -111,13 +114,13 @@ public class OSMDataStoreCityInfrastructureDataService implements
   }
 
   @Override
-  public Map getBuildings(JaxRSCoordinate geolocation,
+  public Map getBuildings(BaseCoordinate geolocation,
     int radiusInMeter) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public List getBuildingsInRadius(JaxRSCoordinate centerPoint,
+  public List getBuildingsInRadius(BaseCoordinate centerPoint,
     int radiusInMeter) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
@@ -146,12 +149,7 @@ public class OSMDataStoreCityInfrastructureDataService implements
   }
 
   @Override
-  public Envelope getBoundary() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public CityInfrastructureData createCityInfrastructureData() {
+  public TrafficCity createCity() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

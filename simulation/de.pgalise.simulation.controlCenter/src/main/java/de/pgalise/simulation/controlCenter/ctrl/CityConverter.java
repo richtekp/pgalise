@@ -6,7 +6,7 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.shared.entity.Identifiable;
-import de.pgalise.simulation.traffic.entity.OsmCity;
+import de.pgalise.simulation.traffic.entity.osm.OSMTrafficCity;
 import java.util.HashMap;
 import java.util.Map;
 import javax.faces.component.UIComponent;
@@ -39,10 +39,10 @@ public class CityConverter implements Converter {
 	 * @param osmId
 	 * @return
 	 */
-	public OsmCity getOsmCity(long osmId) {
+	public OSMTrafficCity getOsmCity(long osmId) {
 		Query query = entityManager.createQuery(
 			"SELECT c FROM OsmCity c WHERE c.osmId = ?");
-		return (OsmCity) query.getSingleResult();
+		return (OSMTrafficCity) query.getSingleResult();
 	}
 
 	@Override

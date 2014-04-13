@@ -16,7 +16,7 @@
 package de.pgalise.staticsensor.internal.sensor.energy;
 
 import de.pgalise.simulation.energy.entity.SmartMeterSensorData;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.RandomSeedService;
@@ -53,7 +53,7 @@ public class SmartMeterSensor extends EnergySensor<SmartMeterSensorData> {
 	 */
 	public SmartMeterSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,
@@ -85,7 +85,7 @@ public class SmartMeterSensor extends EnergySensor<SmartMeterSensorData> {
 	 */
 	public SmartMeterSensor(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		EnergyController energyController,
 		RandomSeedService randomSeedService,

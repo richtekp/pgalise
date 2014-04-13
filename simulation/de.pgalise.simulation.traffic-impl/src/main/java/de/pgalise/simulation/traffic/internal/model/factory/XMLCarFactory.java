@@ -18,7 +18,7 @@ package de.pgalise.simulation.traffic.internal.model.factory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
@@ -58,7 +58,7 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
   public Car createRandomCar(Set<TrafficEdge> edges,
     Output output) {
     CarData data = getRandomVehicleData();
-    JaxRSCoordinate position = null;
+    BaseCoordinate position = null;
     if (edges != null) {
       position = generateRandomPosition(edges);
     }

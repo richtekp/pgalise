@@ -4,7 +4,6 @@
  */
 package de.pgalise.simulation.shared.entity;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.JaxbVector2d;
 import com.vividsolutions.jts.geom.LineString;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -72,8 +71,8 @@ public class NavigationEdge<N extends NavigationNode> extends Identifiable {
     if (edgeLine == null) {
       this.edgeLine = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
         createLineString(
-          new JaxRSCoordinate[]{
-            getSource().getGeoLocation(), getTarget().getGeoLocation()
+          new BaseCoordinate[]{
+            getSource(), getTarget()
           }
         );
     }
@@ -82,9 +81,9 @@ public class NavigationEdge<N extends NavigationNode> extends Identifiable {
 
   public double getEdgeLength() {
     if (edgeLineLength == null) {
-      double distance = GeoToolsBootstrapping.distanceHaversineInM(source.
-        getGeoLocation(),
-        target.getGeoLocation());
+      double distance = GeoToolsBootstrapping.distanceHaversineInM(source
+        ,
+        target);
       edgeLineLength = distance;
     }
     return edgeLineLength;
@@ -96,10 +95,10 @@ public class NavigationEdge<N extends NavigationNode> extends Identifiable {
 
   public double getLineAzimuth() {
     if (lineAzimuth == null) {
-      JaxbVector2d edgeVector = new JaxbVector2d(source.getGeoLocation().getX(),
-        source.getGeoLocation().getY());
-      edgeVector.sub(new JaxbVector2d(target.getGeoLocation().getX(),
-        target.getGeoLocation().getY()));
+      JaxbVector2d edgeVector = new JaxbVector2d(source.getX(),
+        source.getY());
+      edgeVector.sub(new JaxbVector2d(target.getX(),
+        target.getY()));
       JaxbVector2d northVector = new JaxbVector2d(0,
         1);
       lineAzimuth = edgeVector.angle(northVector) * 180 / Math.PI;
@@ -133,10 +132,10 @@ public class NavigationEdge<N extends NavigationNode> extends Identifiable {
 
   public JaxbVector2d getVector() {
     if (this.vector == null) {
-      this.vector = new JaxbVector2d(getSource().getGeoLocation().getX(),
-        getSource().getGeoLocation().getY());
-      vector.sub(new JaxbVector2d(getTarget().getGeoLocation().getX(),
-        getTarget().getGeoLocation().getY()));
+      this.vector = new JaxbVector2d(getSource().getX(),
+        getSource().getY());
+      vector.sub(new JaxbVector2d(getTarget().getX(),
+        getTarget().getY()));
     }
     return this.vector;
   }

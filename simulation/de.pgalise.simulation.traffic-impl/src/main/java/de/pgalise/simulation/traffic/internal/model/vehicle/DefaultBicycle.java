@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
@@ -72,7 +72,7 @@ public class DefaultBicycle extends BaseVehicle<BicycleData> implements Bicycle 
   public DefaultBicycle(Long id,
     BicycleData data,
     TrafficGraphExtensions trafficGraphExtensions,
-    JaxRSCoordinate position) {
+    BaseCoordinate position) {
     super(id,
       data,
       trafficGraphExtensions,

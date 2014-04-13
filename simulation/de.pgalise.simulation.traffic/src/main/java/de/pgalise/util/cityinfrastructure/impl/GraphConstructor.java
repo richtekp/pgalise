@@ -14,13 +14,13 @@ import java.util.List;
  */
 public interface GraphConstructor {
 
-	/**
-	 * Create graph
-	 *
-	 * @param ways List of ways
-	 * @return Graph
-	 */
-	TrafficGraph createGraph(
-		List<TrafficWay> ways);
-	
+  /**
+   * Create graph
+   *
+   * @param ways List of ways
+   * @return Graph
+   */
+  TrafficGraph createGraph(
+    List<TrafficWay> ways);
+
 }

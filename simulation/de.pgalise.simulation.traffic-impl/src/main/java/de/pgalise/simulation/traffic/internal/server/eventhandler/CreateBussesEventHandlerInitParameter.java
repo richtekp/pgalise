@@ -2,7 +2,7 @@ package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.util.GTFS.service.BusService;
+import de.pgalise.simulation.traffic.service.BusService;
 
 /**
  *

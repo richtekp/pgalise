@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.server.sensor.interferer;
+package de.pgalise.simulation.traffic.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 
 /**
@@ -35,7 +35,11 @@ public interface GpsInterferer extends SensorInterferer {
 	 * @param simTime Simulation timestamp
 	 * @return new position as Vector2d
 	 */
-	JaxRSCoordinate interfere(final JaxRSCoordinate mutablePosition,
-		final JaxRSCoordinate realPosition,
+/*
+Use BaseCoordinate as return value although it requires acquise of an ID. This 
+  way all events and sensor data is consequently JPA persistable
+*/
+	BaseCoordinate interfere(final BaseCoordinate mutablePosition,
+		final BaseCoordinate realPosition,
 		final long simTime);
 }

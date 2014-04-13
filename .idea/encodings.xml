@@ -22,14 +22,15 @@
     <file url="file://$PROJECT_DIR$/simulation/de.pgalise.simulation.traffic-impl" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/simulation/de.pgalise.simulation.weather" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/simulation/de.pgalise.simulation.weather-impl" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/simulation/de.pgalise.simulation.web.shared" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/testutils" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/testutils/testutils-shared" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testutils/testutils-traffic" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/testutils/testutils-weather" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/util" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/util/de.pgalise.util.btree" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/util/de.pgalise.util.generic" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/util/de.pgalise.util.graph" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/util/de.pgalise.util.weathercollector" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/util/de.pgalise.util.weathercollector-impl" charset="UTF-8" />
   </component>
 </project>
 

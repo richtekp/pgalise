@@ -28,6 +28,7 @@ import de.pgalise.simulation.service.configReader.ConfigReader;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import javax.ejb.Singleton;
 
 /**
@@ -58,7 +59,7 @@ public class DefaultEnergySensorFactory extends AbstractEnergySensorFactory
 
   public DefaultEnergySensorFactory(RandomSeedService rss,
     IdGenerator idGenerator,
-    WeatherController wctrl,
+    WeatherControllerLocal wctrl,
     EnergyControllerLocal ectrl,
     int updateLimit) {
     super(rss,

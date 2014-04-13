@@ -15,14 +15,31 @@
  */
 package de.pgalise.simulation.shared.entity;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAnyElement;
 
 /**
- * A building is a {@link RectangularBoundary} with several openstreetmap
- * tags.<br/>
+ * A building is a {@link NavigationNode} which referes to the reference point 
+ * of the building (e.g. main enterance, central court) with surrounding 
+ * {@link BaseCoordinate}s forming the boundary of the building (they can be 
+ * used for navigation if they are {@link NavigationNode}s). NavigationNodes 
+ * inside the building are not related to building instances. Navigation node 
+ * inside buildings are considered to be accessible if there's a {@link NavigationEdge} starting at the boundary of the building.
+ * 
+ * <h3>Tags</h3>
+ * A lot of tags can be used on both {@link NavigationNode} and 
+ * <tt>Building</tt>. Buildings are NavigationNode. Their geoLocation property 
+ * refers to a refernce point of the building (e.g. the main enterance), 
+ * geographical information can be retrieved from geoInfo property. Further 
+ * point which are interesting for navigation e.g. other enterances, parking 
+ * in the court can be stored in navigationNodes (geoLocation is passed 
+ * separately to distungish the refernce point from other NavigationNode). 
+ * Don't rely to navigationNodes for the boundary, it is in geoInfo.<br/>
  * A lot of useful information can be retrieved using {@link AreaFunction} and
  * other geotools classes and the <tt>boundary</tt> property. Surface size and
  * center point will be calculated lazily.
@@ -36,28 +53,33 @@ public class Building extends NavigationNode {
 
   @Transient
   private Double squareMeter;
-  private BaseGeoInfo position;
+  private BaseBoundary geoInfo;
 
   protected Building() {
+  }
+  
+  public Building(Long id) {
+    super(id);
   }
 
   /**
    *
-   * @param geoLocation the center position of the building which will be used
-   * for navigation
-   * @param tags
-   * @param boundary an optional boundary which is not used in the simulation
+   * @param id
+   * @param navigationNodes positions at the border of the building or 
+   * accessible in side the building's boundary (e.g. in a court) which can be 
+   * used for navigation (The most important point, e.g. pointing to the main 
+   * enterance, can be accessed through the geoInfo.centerPoint property)
+   * @param position
    */
-  public Building(Long id,
-    JaxRSCoordinate geoLocation,
-    BaseGeoInfo position) {
-    super(id,
-      geoLocation);
-    this.position = position;
+  public Building(Long id,BaseCoordinate geoLocation,
+    BaseBoundary position) {
+    this(id);
+    this.geoInfo = position;
   }
 
   public Building(Long id,
-    JaxRSCoordinate geoLocation,
+    BaseCoordinate geoLocation,
+    BaseBoundary geoInfo,
     Set<String> tourismTags,
     Set<String> serviceTags,
     Set<String> sportTags,
@@ -73,10 +95,10 @@ public class Building extends NavigationNode {
     Set<String> amenityTags,
     Set<String> landuseTags,
     boolean office,
-    boolean military,
-    BaseGeoInfo position) {
+    boolean military) {
     super(id,
-      geoLocation,
+      geoLocation.x,
+      geoLocation.y,
       tourismTags,
       serviceTags,
       sportTags,
@@ -93,22 +115,20 @@ public class Building extends NavigationNode {
       landuseTags,
       office,
       military);
-    this.position = position;
   }
 
   public double getSquareMeter() {
     if (squareMeter == null) {
-      squareMeter = position.getBoundaries().getArea();
+      squareMeter = geoInfo.retrieveBoundary().getArea();
     }
     return squareMeter;
   }
 
-  public void setPosition(BaseGeoInfo position) {
-    this.position = position;
+  public void setGeoInfo(BaseBoundary geoInfo) {
+    this.geoInfo = geoInfo;
   }
 
-  public BaseGeoInfo getPosition() {
-    return position;
+  public BaseBoundary getGeoInfo() {
+    return geoInfo;
   }
-
 }

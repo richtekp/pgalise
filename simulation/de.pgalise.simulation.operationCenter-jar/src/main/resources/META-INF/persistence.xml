@@ -9,8 +9,6 @@
     <class>de.pgalise.simulation.operationCenter.entity.HQFData</class>
     <class>de.pgalise.simulation.shared.entity.BaseGeoInfo</class>
     <class>de.pgalise.simulation.shared.entity.Building</class>
-    <class>de.pgalise.simulation.shared.entity.BusAgency</class>
-    <class>de.pgalise.simulation.shared.entity.BusCalendar</class>
     <class>de.pgalise.simulation.shared.entity.City</class>
     <class>de.pgalise.simulation.shared.entity.GPSSensorData</class>
     <class>de.pgalise.simulation.shared.entity.NavigationEdge</class>
@@ -53,6 +51,19 @@
     <class>de.pgalise.simulation.weather.entity.WeatherCondition</class>
     <class>de.pgalise.simulation.weather.entity.WeatherStationData</class>
     <class>de.pgalise.simulation.weather.entity.WindFlagSensorData</class>
+    <class>de.pgalise.simulation.traffic.entity.BicycleData</class>
+    <class>de.pgalise.simulation.traffic.entity.BusData</class>
+    <class>de.pgalise.simulation.traffic.entity.CarData</class>
+    <class>de.pgalise.simulation.traffic.entity.MotorcycleData</class>
+    <class>de.pgalise.simulation.traffic.entity.TruckData</class>
+    <class>de.pgalise.simulation.traffic.entity.TruckTrailerData</class>
+    <class>de.pgalise.simulation.traffic.entity.gtfs.GTFSBusAgency</class>
+    <class>de.pgalise.simulation.traffic.entity.gtfs.GTFSBusCalendar</class>
+    <class>de.pgalise.simulation.traffic.entity.gtfs.GTFSBusRoute</class>
+    <class>de.pgalise.simulation.traffic.entity.OSMBusRoute</class>
+    <class>de.pgalise.simulation.traffic.entity.OSMTrafficCity</class>
+    <class>de.pgalise.simulation.traffic.entity.OSMTrafficNode</class>
+    <class>de.pgalise.simulation.traffic.entity.OSMTrafficWay</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>

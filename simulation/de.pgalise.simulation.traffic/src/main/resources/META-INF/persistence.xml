@@ -5,8 +5,6 @@
     <jta-data-source>jdbc/pgalise</jta-data-source>
     <class>de.pgalise.simulation.shared.entity.BaseGeoInfo</class>
     <class>de.pgalise.simulation.shared.entity.Building</class>
-    <class>de.pgalise.simulation.shared.entity.BusAgency</class>
-    <class>de.pgalise.simulation.shared.entity.BusCalendar</class>
     <class>de.pgalise.simulation.shared.entity.City</class>
     <class>de.pgalise.simulation.shared.entity.GPSSensorData</class>
     <class>de.pgalise.simulation.shared.entity.NavigationEdge</class>
@@ -18,11 +16,7 @@
     <class>de.pgalise.simulation.traffic.entity.BusStopInformation</class>
     <class>de.pgalise.simulation.traffic.entity.BusStopTime</class>
     <class>de.pgalise.simulation.traffic.entity.BusTrip</class>
-    <class>de.pgalise.simulation.traffic.entity.CityInfrastructureData</class>
     <class>de.pgalise.simulation.traffic.entity.InductionLoopSensorData</class>
-    <class>de.pgalise.simulation.traffic.entity.OSMBusStop</class>
-    <class>de.pgalise.simulation.traffic.entity.OSMNavigationNode</class>
-    <class>de.pgalise.simulation.traffic.entity.OsmCity</class>
     <class>de.pgalise.simulation.traffic.entity.TopoRadarSensorData</class>
     <class>de.pgalise.simulation.traffic.entity.TrafficCity</class>
     <class>de.pgalise.simulation.traffic.entity.TrafficEdge</class>
@@ -54,6 +48,17 @@
     <class>de.pgalise.simulation.traffic.entity.CarData</class>
     <class>de.pgalise.simulation.traffic.entity.MotorcycleData</class>
     <class>de.pgalise.simulation.traffic.entity.TruckData</class>
+    <class>de.pgalise.simulation.traffic.entity.CityInfrastructureData</class>
+    <class>de.pgalise.simulation.traffic.entity.TruckTrailerData</class>
+    <class>de.pgalise.simulation.traffic.entity.gtfs.GTFSBusAgency</class>
+    <class>de.pgalise.simulation.traffic.entity.gtfs.GTFSBusCalendar</class>
+    <class>de.pgalise.simulation.traffic.entity.gtfs.GTFSBusRoute</class>
+    <class>de.pgalise.simulation.traffic.entity.osm.OSMBusRoute</class>
+    <class>de.pgalise.simulation.traffic.entity.osm.OSMTrafficCity</class>
+    <class>de.pgalise.simulation.traffic.entity.osm.OSMTrafficNode</class>
+    <class>de.pgalise.simulation.traffic.entity.osm.OSMNavigationNode</class>
+    <class>de.pgalise.simulation.traffic.entity.osm.OSMTrafficWay</class>
+    <class>de.pgalise.simulation.traffic.entity.osm.OSMBusStop</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>
       <property name="javax.persistence.jdbc.password" value="somepw"/>

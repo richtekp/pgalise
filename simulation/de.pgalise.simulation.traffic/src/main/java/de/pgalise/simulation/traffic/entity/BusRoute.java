@@ -15,18 +15,30 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
-import de.pgalise.simulation.traffic.entity.TransportLineInformation;
-import de.pgalise.simulation.shared.entity.BusAgency;
 import de.pgalise.simulation.traffic.TransportLineTypeEnum;
+import de.pgalise.simulation.traffic.entity.TransportLineInformation;
+import de.pgalise.simulation.traffic.entity.gtfs.GTFSBusAgency;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyColumn;
 
 /**
  * Contains information about a bus route. The ID, long name, short, name, the
  * route type and a flag, if it's used or not.
+ * 
+ * Bus routes are directed in one way (compliant with OSM) in order to make it 
+ * possible to differentiate different course in different directions.
  *
  * @author Lena
  */
@@ -56,77 +68,81 @@ public class BusRoute extends TransportLineInformation
 	 */
 	private Boolean used;
 
-	@ManyToOne
-	private BusAgency agency;
+	private BusData bus;
+  /**
+   * Mapping between minutes after Montag 00:00 and the bus stop which is 
+   * served at this time
+   */
+  @Embedded
+  private Map<BusStop,Set<Integer>> schedule = new HashMap<>();
 
 	@Column(name = "ROUTE_DESC")
 	private String routeDesc;
-
-	@Column(name = "ROUTE_URL")
-	private String routeUrl;
-
-	@Column(name = "ROUTE_COLOR")
-	private String routeColor;
-
-	@Column(name = "ROUTE_TEXT_COLOR")
-	private String routeTextColor;
-
-	private BusData bus;
+  @ManyToMany
+  private List<BusStop> busStops = new LinkedList<>();
+  @ManyToMany
+  private List<TrafficEdge> edgeList = new LinkedList<>();
 
 	/**
 	 * Default constructor
 	 */
 	protected BusRoute() {
 	}
-
-	public BusRoute(Long id,
-					String routeShortName,
-					String routeLongName,
-					boolean used,
-					BusAgency agency,
-					String routeDesc,
-					String routeUrl,
-					String routeColor,
-					String routeTextColor) {
-		super(id,
-						TransportLineTypeEnum.BUS);
-		this.routeShortName = routeShortName;
-		this.routeLongName = routeLongName;
-		this.used = used;
-		this.agency = agency;
-		this.routeDesc = routeDesc;
-		this.routeUrl = routeUrl;
-		this.routeColor = routeColor;
-		this.routeTextColor = routeTextColor;
-	}
+  
+  public BusRoute(Long id) {
+    super(id, TransportLineTypeEnum.BUS);
+  }
 
 	public BusRoute(Long id,
 					String routeShortName,
 					String routeLongName) {
-		this(id,
-						routeShortName,
-						routeLongName,
-						true);
-	}
+		this(id);
+		this.routeShortName = routeShortName;
+		this.routeLongName = routeLongName;
+  }
 
-	/**
-	 * Constructor
-	 *
-	 * @param id
-	 * @param routeShortName Short name
-	 * @param routeLongName  Long name
-	 * @param used
-	 */
 	public BusRoute(Long id,
 					String routeShortName,
 					String routeLongName,
-					boolean used) {
-		super(id,
-						TransportLineTypeEnum.BUS);
+          boolean used) {
+		this(id);
 		this.routeShortName = routeShortName;
 		this.routeLongName = routeLongName;
-		this.used = used;
+    this.used = used;
+  }
+
+	public BusRoute(Long id,
+					String routeShortName,
+					String routeLongName,
+          List<BusStop> initialBusStops,
+          List<TrafficEdge> initialEdgeList) {
+		this(id,
+						routeShortName,
+						routeLongName);
+    this.busStops = initialBusStops;
+    this.edgeList = initialEdgeList;
+  }
+
+	public BusRoute(Long id,
+					String routeShortName,
+					String routeLongName,
+          boolean used,
+          List<BusStop> initialBusStops,
+          List<TrafficEdge> initialEdgeList) {
+    this(id,
+      routeShortName,
+      routeLongName,
+      initialBusStops,
+      initialEdgeList);
 	}
+
+  public void setSchedule(Map<BusStop,Set<Integer>> schedule) {
+    this.schedule = schedule;
+  }
+
+  public Map<BusStop,Set<Integer>> getSchedule() {
+    return schedule;
+  }
 
 	/**
 	 * @return the routeShortName
@@ -164,43 +180,33 @@ public class BusRoute extends TransportLineInformation
 		this.used = used;
 	}
 
-	public BusAgency getAgency() {
-		return agency;
-	}
+  /**
+   * @return the routeDesc
+   */
+  public String getRouteDesc() {
+    return routeDesc;
+  }
 
-	public void setAgency(BusAgency agencyId) {
-		this.agency = agencyId;
-	}
+  /**
+   * @param routeDesc the routeDesc to set
+   */
+  public void setRouteDesc(String routeDesc) {
+    this.routeDesc = routeDesc;
+  }
 
-	public String getRouteDesc() {
-		return routeDesc;
-	}
+  public void setEdgeList(List<TrafficEdge> edgeList) {
+    this.edgeList = edgeList;
+  }
 
-	public void setRouteDesc(String routeDesc) {
-		this.routeDesc = routeDesc;
-	}
+  public List<TrafficEdge> getEdgeList() {
+    return edgeList;
+  }
 
-	public String getRouteUrl() {
-		return routeUrl;
-	}
+  public void setBusStops(List<BusStop> busStops) {
+    this.busStops = busStops;
+  }
 
-	public void setRouteUrl(String routeUrl) {
-		this.routeUrl = routeUrl;
-	}
-
-	public String getRouteColor() {
-		return routeColor;
-	}
-
-	public void setRouteColor(String routeColor) {
-		this.routeColor = routeColor;
-	}
-
-	public String getRouteTextColor() {
-		return routeTextColor;
-	}
-
-	public void setRouteTextColor(String routeTextColor) {
-		this.routeTextColor = routeTextColor;
-	}
+  public List<BusStop> getBusStops() {
+    return busStops;
+  }
 }

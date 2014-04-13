@@ -37,54 +37,54 @@ import javax.ejb.Singleton;
 @Singleton
 public class DefaultGraphConstructor implements GraphConstructor {
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(
-		DefaultGraphConstructor.class);
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    DefaultGraphConstructor.class);
 
-	/**
-	 * Constructor
-	 *
-	 */
-	public DefaultGraphConstructor() {
-	}
+  /**
+   * Constructor
+   *
+   */
+  public DefaultGraphConstructor() {
+  }
 
-	/**
-	 * Create graph
-	 *
-	 * @param ways List of ways
-	 * @return Graph
-	 */
-	@Override
-	public TrafficGraph createGraph(
-		List<TrafficWay> ways) {
-		if (ways == null) {
-			return null;
-		}
+  /**
+   * Create graph
+   *
+   * @param ways List of ways
+   * @return Graph
+   */
+  @Override
+  public TrafficGraph createGraph(
+    List<TrafficWay> ways) {
+    if (ways == null) {
+      return null;
+    }
 
-		TrafficGraph graph = new DefaultTrafficGraph();
-		int countEdges = 0;
-		for (Way<?, TrafficNode> way : ways) {
-			TrafficNode prevNode = null;
-			for (TrafficNode node : way.getNodeList()) {
-				if (node == null) {
-					graph.addVertex(node);
-				}
-				if (prevNode != null) {
-					TrafficEdge edge = graph.addEdge(
-						prevNode,
-						node);
-					countEdges++;
-				}
-				prevNode = node;
-			}
-		}
-		log.info(String.format(
-			"Graph constructed. Added %s edges",
-			countEdges
-		));
-		return graph;
-	}
+    TrafficGraph graph = new DefaultTrafficGraph();
+    int countEdges = 0;
+    for (Way<?, TrafficNode> way : ways) {
+      TrafficNode prevNode = null;
+      for (TrafficNode node : way.getNodeList()) {
+        if (node == null) {
+          graph.addVertex(node);
+        }
+        if (prevNode != null) {
+          TrafficEdge edge = graph.addEdge(
+            prevNode,
+            node);
+          countEdges++;
+        }
+        prevNode = node;
+      }
+    }
+    log.info(String.format(
+      "Graph constructed. Added %s edges",
+      countEdges
+    ));
+    return graph;
+  }
 
 }

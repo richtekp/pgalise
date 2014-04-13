@@ -18,7 +18,7 @@ package de.pgalise.simulation.weather.positionconverter;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
@@ -49,9 +49,11 @@ public interface WeatherPositionConverter {
    */
   public <T extends Number> T getValue(WeatherParameterEnum key,
     long time,
-    JaxRSCoordinate position,
+    BaseCoordinate position,
     T refValue,
     Polygon grid) throws IllegalStateException;
 
   void init(WeatherPositionInitParameter initParameter);
+  
+  void setGrid(Polygon grid);
 }

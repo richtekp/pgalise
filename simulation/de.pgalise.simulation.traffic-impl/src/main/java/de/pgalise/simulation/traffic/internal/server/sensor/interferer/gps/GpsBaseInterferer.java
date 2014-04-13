@@ -15,14 +15,15 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.Random;
-
-import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 
 /**
  * Abstract super class for gps interferers
@@ -37,6 +38,7 @@ public abstract class GpsBaseInterferer implements GpsInterferer {
   /**
    * Random Seed Service
    */
+  @EJB
   private RandomSeedService randomSeedService;
 
   /**
@@ -59,6 +61,9 @@ public abstract class GpsBaseInterferer implements GpsInterferer {
    */
   private Properties properties;
 
+  public GpsBaseInterferer() {
+  }
+
   public GpsBaseInterferer(RandomSeedService randomservice,
     double changeAmplitude,
     double changeProbability) {
@@ -67,30 +72,28 @@ public abstract class GpsBaseInterferer implements GpsInterferer {
     this.changeProbability = changeProbability;
   }
 
+  public GpsBaseInterferer(RandomSeedService randomSeedService,
+    String propertiesFilepath) {
+    this(propertiesFilepath);
+    this.randomSeedService = randomSeedService;
+  }
+
   /**
-   * Constructor
+   * propertiesFilepath
    *
-   * @param randomSeedService Random Seed Service
    * @param filepath File path to the properties file
    */
-  public GpsBaseInterferer(RandomSeedService randomSeedService,
-    String filepath) {
-    if (randomSeedService == null) {
-      throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
-        "randomseedservice"));
-    }
-    if (filepath == null) {
+  public GpsBaseInterferer(
+    String propertiesFilepath) {
+    if (propertiesFilepath == null) {
       throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
         "filepath"));
     }
-    this.randomSeedService = randomSeedService;
-    this.random = new Random(randomSeedService.getSeed(GpsBaseInterferer.class.
-      getName()));
 
     // Read property file
     try (InputStream propInFile = Thread.currentThread().getContextClassLoader().
       getResourceAsStream(
-        filepath)) {
+        propertiesFilepath)) {
         this.properties = new Properties();
         this.properties.loadFromXML(propInFile);
       } catch (IOException e) {
@@ -106,6 +109,12 @@ public abstract class GpsBaseInterferer implements GpsInterferer {
         "change_amplitude"));
       this.changeProbability = Double.parseDouble(this.properties.getProperty(
         "change_probability"));
+  }
+  
+  @PostConstruct
+  public void initialize() {    
+    this.random = new Random(randomSeedService.getSeed(GpsBaseInterferer.class.
+      getName()));
   }
 
   public double getChangeAmplitude() {

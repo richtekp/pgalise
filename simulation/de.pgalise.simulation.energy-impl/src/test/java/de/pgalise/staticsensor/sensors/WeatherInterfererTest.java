@@ -15,21 +15,9 @@
  */
 package de.pgalise.staticsensor.sensors;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
-
-import org.easymock.EasyMock;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherInterferer;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
@@ -43,7 +31,25 @@ import de.pgalise.staticsensor.internal.sensor.weather.interferer.RainsensorWhit
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.ThermometerWhiteNoiseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WeatherBaseInterferer;
 import de.pgalise.staticsensor.internal.sensor.weather.interferer.WindFlagWhiteNoiseInterferer;
+import de.pgalise.testutils.TestUtils;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests the all {@link WeatherInterferer}
@@ -51,6 +57,8 @@ import javax.ejb.EJB;
  * @author Andreas Rehfeldt
  * @version 1.0 (Nov 12, 2012)
  */
+@LocalClient
+@ManagedBean
 public class WeatherInterfererTest {
 
 	/**
@@ -72,7 +80,7 @@ public class WeatherInterfererTest {
 	/**
 	 * Test position
 	 */
-	public static JaxRSCoordinate testPosition;
+	public static BaseCoordinate testPosition;
 
 	/**
 	 * Test value
@@ -84,9 +92,14 @@ public class WeatherInterfererTest {
 	 */
 	@EJB
 	private RandomSeedService service;
+  @EJB
+  private IdGenerator idGenerator;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	@Before
+	public void setUp() throws Exception {
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+    
 		// Test timestamp
 		Calendar cal = new GregorianCalendar();
 		cal.set(2011,
@@ -98,7 +111,7 @@ public class WeatherInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new JaxRSCoordinate(1.0,
+		testPosition = new BaseCoordinate(idGenerator.getNextId(), 1.0,
 			10.0);
 
 		/*

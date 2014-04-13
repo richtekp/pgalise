@@ -6,7 +6,7 @@
 package de.pgalise.simulation.traffic.internal.model.factory;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
@@ -95,7 +95,7 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
   @Override
   public Car createRandomCar(Set<TrafficEdge> edges,
     Output output) {
-    JaxRSCoordinate randomPosition = null;
+    BaseCoordinate randomPosition = null;
     if (edges != null) {
       randomPosition = generateRandomPosition(edges);
     }

@@ -8,6 +8,7 @@ package de.pgalise.simulation.traffic.internal;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.VehicleData;
+import java.io.Serializable;
 import org.jgrapht.EdgeFactory;
 
 /**
@@ -18,7 +19,7 @@ import org.jgrapht.EdgeFactory;
  * @param <D>
  */
 public class NavigationEdgeFactory<Y extends TrafficNode, X extends TrafficEdge, D extends VehicleData>
-  implements EdgeFactory<Y, X> {
+  implements EdgeFactory<Y, X>, Serializable {
 
   private final Class<X> edgeClass;
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.server.sensor.interferer;
+package de.pgalise.simulation.traffic.server.sensor.interferer.gps;
 
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import java.util.List;

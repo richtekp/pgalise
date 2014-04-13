@@ -5,7 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.entity.CarData;
@@ -24,7 +24,7 @@ public class DefaultCar extends ExtendedMotorizedVehicle<CarData> implements Car
   public DefaultCar(Long id,
     CarData data,
     TrafficGraphExtensions trafficGraphExtensions,
-    JaxRSCoordinate position) {
+    BaseCoordinate position) {
     super(id,
       data,
       trafficGraphExtensions,

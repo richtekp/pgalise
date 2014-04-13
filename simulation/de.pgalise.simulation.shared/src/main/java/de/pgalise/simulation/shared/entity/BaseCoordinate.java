@@ -3,84 +3,69 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.pgalise.simulation.shared;
+package de.pgalise.simulation.shared.entity;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.JaxRSCoordinate;
 import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
+ * <tt>BaseCoordinate</tt> contains any geographical information for a point. 
+ * It should not be used for navigation - use {@link NavigationNode} for that.
  * @author richter
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-@Embeddable
-public class JaxRSCoordinate extends Coordinate {
-
+@Entity
+public class BaseCoordinate extends JaxRSCoordinate {
 	private static final long serialVersionUID = 1L;
+  @Id
+  private Long id;
 
-	/**
-	 * Constructs a <code>Coordinate</code> at (x,y,z).
-	 *
-	 * @param x the x-value
-	 * @param y the y-value
-	 * @param z the z-value
-	 */
-	public JaxRSCoordinate(double x,
-		double y,
-		double z) {
-		super(x,
-			y,
-			z);
-	}
+  protected BaseCoordinate() {
+  }
 
-	/**
-	 * Constructs a <code>Coordinate</code> at (0,0,NaN).
-	 */
-	public JaxRSCoordinate() {
-		super();
-	}
+  public BaseCoordinate(Long id) {
+    super();
+    this.id = id;
+  }
 
-	/**
+  /**
 	 * Constructs a <code>Coordinate</code> having the same (x,y,z) values as
 	 * <code>other</code>.
 	 *
+   * @param id
 	 * @param c the <code>Coordinate</code> to copy.
 	 */
-	public JaxRSCoordinate(com.vividsolutions.jts.geom.Coordinate c) {
-		super(c);
-	}
+  public BaseCoordinate(Long id,
+    Coordinate c) {
+    super(
+      c); 
+    this.id = id;
+  }
 
 	/**
 	 * Constructs a <code>Coordinate</code> at (x,y,NaN).
 	 *
+   * @param id
 	 * @param x the x-value
 	 * @param y the y-value
 	 */
-	public JaxRSCoordinate(double x,
+	public BaseCoordinate(Long id,double x,
 		double y) {
 		super(x,
 			y);
+    this.id = id;
 	}
 
-	public double getX() {
-		return super.getOrdinate(X);
-	}
+  protected void setId(Long id) {
+    this.id = id;
+  }
 
-	public void setX(double x) {
-		super.setOrdinate(X,
-			x);
-	}
-
-	public double getY() {
-		return super.getOrdinate(Y);
-	}
-
-	public void setY(double y) {
-		super.setOrdinate(Y,
-			y);
-	}
+  public Long getId() {
+    return id;
+  }
 }

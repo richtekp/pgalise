@@ -29,9 +29,9 @@
  */
 package de.pgalise.simulation.traffic.scheduler;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
@@ -133,13 +133,13 @@ public class SchedulerTest {
     TestUtils.getContext().bind("inject",
       this);
     nodeA = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(0,
+      new Coordinate(0,
         0));
     nodeB = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(2,
+      new Coordinate(2,
         0));
     nodeC = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(2,
+      new Coordinate(2,
         2));
     graph.addVertex(nodeA);
     graph.addVertex(nodeB);

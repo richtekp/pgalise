@@ -7,8 +7,8 @@ package de.pgalise.testutils.traffic;
 
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.entity.BaseGeoInfo;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
@@ -25,20 +25,20 @@ public class TrafficTestUtils {
   public static TrafficCity createDefaultTestCityInstance(
     IdGenerator idGenerator) {
 
-    JaxRSCoordinate referencePoint = new JaxRSCoordinate(52.516667,
+    BaseCoordinate referencePoint = new BaseCoordinate(idGenerator.getNextId(), 52.516667,
       13.4);
     Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
       createPolygon(
-        new JaxRSCoordinate[]{
-          new JaxRSCoordinate(referencePoint.getX() - 1,
+        new BaseCoordinate[]{
+          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
             referencePoint.getY() - 1),
-          new JaxRSCoordinate(referencePoint.getX() - 1,
+          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
             referencePoint.getY()),
-          new JaxRSCoordinate(referencePoint.getX(),
+          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
             referencePoint.getY()),
-          new JaxRSCoordinate(referencePoint.getX(),
+          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
             referencePoint.getY() - 1),
-          new JaxRSCoordinate(referencePoint.getX() - 1,
+          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
             referencePoint.getY() - 1)
         }
       );
@@ -62,7 +62,7 @@ public class TrafficTestUtils {
       80,
       true,
       true,
-      new BaseGeoInfo(idGenerator.getNextId(),
+      new BaseBoundary(idGenerator.getNextId(),
         referenceArea),
       trafficInfrastructureData);
     return city;

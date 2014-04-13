@@ -18,6 +18,7 @@ package de.pgalise.simulation.traffic.server.jam;
 
 
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -25,7 +26,7 @@ import java.util.Set;
  * 
  * @author Marina, Mustafa
  */
-public interface SurroundingCarsFinder {
+public interface SurroundingCarsFinder extends Serializable {
 
 	/**
 	 * Returns a list of vehicles which surround the given car.

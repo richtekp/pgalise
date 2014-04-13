@@ -12,54 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
  */
-
-
 package de.pgalise.simulation.shared.entity;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import com.vividsolutions.jts.geom.Coordinate;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -75,13 +31,16 @@ import javax.persistence.Transient;
  * @version 1.0 (Sep 11, 2012)
  */
 /*
- * has identical properties boundaries and centerPoint and Building, but sharing 
- * code is not possible in this inheritance hierarchy (all NavigationNode would have to be AbstractGeometricObjects
+ * 
+- BaseBoundary is used to share properties in City and Building with a has-a 
+relationship
+- a reference to CityInfrastructureData can only be a part of TrafficCity due 
+to modularisation
  */
 @Entity
 @NamedQuery(name = "City.getAll",
   query = "SELECT i FROM City i")
-public class City extends Identifiable {
+public class City extends BaseCoordinate {
 
   /**
    * Serial
@@ -124,23 +83,32 @@ public class City extends Identifiable {
   @Transient
   private int rate = 0;
   @OneToOne
-  private BaseGeoInfo geoInfo;
+  private BaseBoundary geoInfo;
   /**
    * a point which is considered the most important in the geometry which is not
    * forcibly always the geographical center of the referenced area
    */
   @Embedded
-  private JaxRSCoordinate referencePoint;
+  private BaseCoordinate referencePoint;
 
   /**
    * Default constructor
    */
   public City() {
   }
+  
+  public City(Long id) {
+    super(id);
+  }
+  
+  public City(Long id, Coordinate referencePoint) {
+    super(id,referencePoint);
+  }
 
   /**
    * Constructor
    *
+   * @param id
    * @param name Name
    * @param population Population
    * @param altitude Altitude
@@ -156,9 +124,9 @@ public class City extends Identifiable {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseGeoInfo geoInfo,
-    JaxRSCoordinate referencePoint) {
-    super(id);
+    BaseBoundary geoInfo,
+    Coordinate referencePoint) {
+    this(id, referencePoint);
     this.geoInfo = geoInfo;
     this.name = name;
     this.population = population;
@@ -171,6 +139,7 @@ public class City extends Identifiable {
    * Creates a <tt>City</tt> with center point of <tt>geoInfo</tt> as reference
    * point
    *
+   * @param id
    * @param name Name
    * @param population Population
    * @param altitude Altitude
@@ -185,7 +154,7 @@ public class City extends Identifiable {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseGeoInfo geoInfo) {
+    BaseBoundary geoInfo) {
     this(id,
       name,
       population,
@@ -193,7 +162,7 @@ public class City extends Identifiable {
       nearRiver,
       nearSea,
       geoInfo,
-      geoInfo.getCenterPoint());
+      geoInfo.retrieveCenterPoint());
   }
 
   public int getAltitude() {
@@ -244,19 +213,19 @@ public class City extends Identifiable {
     this.rate = rate;
   }
 
-  public void setGeoInfo(BaseGeoInfo geoInfo) {
+  public void setGeoInfo(BaseBoundary geoInfo) {
     this.geoInfo = geoInfo;
   }
 
-  public BaseGeoInfo getGeoInfo() {
+  public BaseBoundary getGeoInfo() {
     return geoInfo;
   }
 
-  public void setReferencePoint(JaxRSCoordinate referencePoint) {
+  public void setReferencePoint(BaseCoordinate referencePoint) {
     this.referencePoint = referencePoint;
   }
 
-  public JaxRSCoordinate getReferencePoint() {
+  public BaseCoordinate getReferencePoint() {
     return referencePoint;
   }
 

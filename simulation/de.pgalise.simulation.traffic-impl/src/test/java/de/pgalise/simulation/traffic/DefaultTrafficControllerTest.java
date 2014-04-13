@@ -17,6 +17,7 @@ package de.pgalise.simulation.traffic;
 
 import com.Ostermiller.util.CSVParse;
 import com.Ostermiller.util.CSVParser;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.FileOutputServer;
@@ -25,8 +26,8 @@ import de.pgalise.simulation.sensorFramework.Server;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
@@ -56,7 +57,7 @@ import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
+import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.DefaultGpsNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.InfraredNoInterferer;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -66,8 +67,9 @@ import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandlerManager;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
-import de.pgalise.simulation.traffic.service.FileBasedCityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.FileBasedCityDataService;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
 import java.io.File;
@@ -99,7 +101,13 @@ import static org.easymock.EasyMock.createNiceMock;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -131,10 +139,8 @@ public class DefaultTrafficControllerTest {
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
 
-    cityFactory.parse(Thread.currentThread().getContextClassLoader().
-      getResourceAsStream(OSM),
-      Thread.currentThread().getContextClassLoader().getResourceAsStream(
-        BUS_STOPS));
+    cityFactory.parseStream(Thread.currentThread().getContextClassLoader().
+      getResourceAsStream(OSM));
 
     WeatherController wc = createNiceMock(WeatherController.class);
     EnergyController ec = createNiceMock(EnergyController.class);
@@ -236,15 +242,15 @@ public class DefaultTrafficControllerTest {
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
     instance.reset();
     instance.start(startParam);
-    JaxRSCoordinate location;
+    BaseCoordinate location;
     NavigationNode nodeForStaticSensor = null;
 
     if (VEHICLE_TYPE.equals("car") || VEHICLE_TYPE.equals("all")) {
       TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-        new JaxRSCoordinate(30,
+        new BaseCoordinate(idGenerator.getNextId(), 30,
           30));
       TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-        new JaxRSCoordinate(60,
+        new BaseCoordinate(idGenerator.getNextId(), 60,
           60));
       TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
         a,
@@ -252,7 +258,7 @@ public class DefaultTrafficControllerTest {
       Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),
         output,
         null,
-        new GpsNoInterferer());
+        new DefaultGpsNoInterferer());
       Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
         new HashSet<>(Arrays.asList(ab)),
         output);
@@ -272,7 +278,7 @@ public class DefaultTrafficControllerTest {
       Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),
         output,
         null,
-        new GpsNoInterferer());
+        new DefaultGpsNoInterferer());
       Vehicle<TruckData> truck = instance.getTruckFactory().createRandomTruck(
         output);
       truck.setName("Coca Cola Truck");
@@ -289,7 +295,7 @@ public class DefaultTrafficControllerTest {
       Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),
         output,
         null,
-        new GpsNoInterferer());
+        new DefaultGpsNoInterferer());
       Vehicle<BicycleData> bike = instance.getBikeFactory().
         createRandomBicycle(output);
       bike.setName("tlottmann's Fahrrad");
@@ -307,7 +313,7 @@ public class DefaultTrafficControllerTest {
       Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),
         output,
         null,
-        new GpsNoInterferer());
+        new DefaultGpsNoInterferer());
       Vehicle<MotorcycleData> motorcycle = instance.getMotorcycleFactory().
         createRandomMotorcycle();
       motorcycle.setName("Jens' Kawasaki");
@@ -341,12 +347,12 @@ public class DefaultTrafficControllerTest {
     log.debug(
       "##############################################################################");
 
-    location = ((JaxRSCoordinate) nodeForStaticSensor.getGeoLocation());
+    location = ((BaseCoordinate) nodeForStaticSensor);
     if (location != null) {
       TrafficSensor sensor = new GpsSensor(idGenerator.getNextId(),
         output,
         null,
-        new GpsNoInterferer());
+        new DefaultGpsNoInterferer());
       instance.createSensor(sensor);
     }
 
@@ -423,7 +429,7 @@ public class DefaultTrafficControllerTest {
 
     // create sensors
     TrafficNode someNode = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(1,
+      new BaseCoordinate(idGenerator.getNextId(), 1,
         2));
     TrafficSensor<?> sensor = new InductionLoopSensor(idGenerator.getNextId(),
       tcpIpOutput,
@@ -522,9 +528,9 @@ public class DefaultTrafficControllerTest {
    */
   private static Set<TrafficSensor<?>> SENSOR_REGISTRY = new HashSet<>();
   @EJB
-  private FileBasedCityInfrastructureDataService cityFactory;
+  private FileBasedCityDataService cityFactory;
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
   @EJB
   private EnergyControllerLocal energyController;
   @EJB
@@ -573,17 +579,17 @@ public class DefaultTrafficControllerTest {
       idGenerator);
 
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(30,
+      new BaseCoordinate(idGenerator.getNextId(), 30,
         30));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(60,
+      new BaseCoordinate(idGenerator.getNextId(), 60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
       b);
-    TrafficTrip trip0 = ctrl.createTrip(city.getGeoInfo().getBoundaries(),
+    TrafficTrip trip0 = ctrl.createTrip(city.getGeoInfo().retrieveBoundary(),
       VehicleTypeEnum.CAR);
-    TrafficTrip trip1 = ctrl.createTrip(city.getGeoInfo().getBoundaries(),
+    TrafficTrip trip1 = ctrl.createTrip(city.getGeoInfo().retrieveBoundary(),
       VehicleTypeEnum.CAR);
 
     List<TrafficEdge> path = ctrl.getShortestPath(a,
@@ -608,7 +614,7 @@ public class DefaultTrafficControllerTest {
     Sensor<?, ?> sensor2 = new GpsSensor(idGenerator.getNextId(),
       output,
       null,
-      new GpsNoInterferer());
+      new DefaultGpsNoInterferer());
     Vehicle<CarData> car3 = ctrl.getCarFactory().createRandomCar(
       new HashSet<>(Arrays.asList(ab)),
       output);
@@ -676,12 +682,12 @@ public class DefaultTrafficControllerTest {
     Sensor<?, ?> sensor = new GpsSensor(idGenerator.getNextId(),
       output,
       null,
-      new GpsNoInterferer());
+      new DefaultGpsNoInterferer());
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(30,
+      new BaseCoordinate(idGenerator.getNextId(), 30,
         30));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(60,
+      new BaseCoordinate(idGenerator.getNextId(), 60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
@@ -691,9 +697,9 @@ public class DefaultTrafficControllerTest {
       output);
     car2.setName("Car " + i);
     TrafficNode startNode = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(1,
+      new Coordinate(1,
         2)), endNode = new TrafficNode(idGenerator.getNextId(),
-        new JaxRSCoordinate(3,
+        new Coordinate(3,
           6));
     car2.setPath(server2.getShortestPath(startNode,
       endNode));
@@ -792,7 +798,7 @@ public class DefaultTrafficControllerTest {
         output,
         null,
         1,
-        new GpsNoInterferer());
+        new DefaultGpsNoInterferer());
       InfraredSensor sensor2 = new InfraredSensor(idGenerator.getNextId(),
         output,
         null,
@@ -888,10 +894,10 @@ public class DefaultTrafficControllerTest {
     instance.start(startParam);
 
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(30,
+      new Coordinate(30,
         30));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(60,
+      new Coordinate(60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
@@ -899,7 +905,7 @@ public class DefaultTrafficControllerTest {
     GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),
       output,
       null,
-      new GpsNoInterferer());
+      new DefaultGpsNoInterferer());
     Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
       new HashSet<>(Arrays.asList(ab)),
       output);
@@ -936,9 +942,9 @@ public class DefaultTrafficControllerTest {
         List<Sensor<?, ?>> sensorLists = new ArrayList<>();
         sensorLists.add(gpsSensor);
         TrafficNode startNode = new TrafficNode(idGenerator.getNextId(),
-          new JaxRSCoordinate(1,
+          new Coordinate(1,
             2)), endNode = new TrafficNode(idGenerator.getNextId(),
-            new JaxRSCoordinate(2,
+            new Coordinate(2,
               3));
         trip = new TrafficTrip(startNode,
           endNode,
@@ -989,10 +995,10 @@ public class DefaultTrafficControllerTest {
     log.debug("###########");
 
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(30,
+      new Coordinate(30,
         30));
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(60,
+      new Coordinate(60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
@@ -1000,7 +1006,7 @@ public class DefaultTrafficControllerTest {
     GpsSensor gpsSensor = new GpsSensor(idGenerator.getNextId(),
       output,
       null,
-      new GpsNoInterferer());
+      new DefaultGpsNoInterferer());
 
     TrafficControllerLocal<VehicleEvent> instance
       = (TrafficControllerLocal) TestUtils.getContext().lookup(
@@ -1048,7 +1054,7 @@ public class DefaultTrafficControllerTest {
             "K.A.R.R")));
 
         TrafficNode node = new TrafficNode(idGenerator.getNextId(),
-          new JaxRSCoordinate(4,
+          new Coordinate(4,
             4));
         list.add(new AttractionTrafficEvent(instance,
           SIMULATION_START.getTime(),
@@ -1109,7 +1115,7 @@ public class DefaultTrafficControllerTest {
     EntityManager entityManager = EasyMock.createMock(EntityManager.class);
     SENSOR_REGISTRY = new HashSet<>();
 
-    JaxRSCoordinate referencePoint = new JaxRSCoordinate(52.516667,
+    Coordinate referencePoint = new Coordinate(52.516667,
       13.4);
     TrafficEventHandlerManager<TrafficEventHandler<VehicleEvent>, VehicleEvent> eventHandlerManager = EasyMock.
       createNiceMock(
@@ -1153,7 +1159,7 @@ public class DefaultTrafficControllerTest {
     GpsSensor sensor = new GpsSensor(idGenerator.getNextId(),
       output,
       null,
-      new GpsNoInterferer());
+      new DefaultGpsNoInterferer());
     sensorLists.add(sensor);
 
     for (int i = 0; i < count; i++) {

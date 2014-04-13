@@ -23,7 +23,7 @@ import java.util.Random;
 
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
 
 /**
  * Abstract super class for traffic count interferers

@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.jsf;
 
-import de.pgalise.simulation.traffic.entity.OSMBusStop;
+import de.pgalise.simulation.traffic.entity.osm.OSMBusStop;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

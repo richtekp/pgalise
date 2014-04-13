@@ -16,21 +16,39 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.MemoryUnit;
 import net.sf.ehcache.config.PersistenceConfiguration;
 import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
-import net.sf.ehcache.event.CacheEventListener;
 import net.sf.ehcache.pool.sizeof.SizeOf;
-import net.sf.ehcache.pool.sizeof.filter.SizeOfFilter;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
 
 /**
+ * A helper/util class for static and "stateless" constants, services, etc.
+ *
+ * <h1>Caching</h1>
+ * <p>
+ * The application manages uploaded files with a LRU cache. The file cache uses
+ * ehcache framework with a customized {@link SizeOf} implementation which
+ * simulates the file in memory. Initial files (shipped with the application are
+ * not cached, because they can't be evicted; their parsing results are)
+ *
+ * The parsing results (of both uploaded and initial files) are cached
+ * seperately in another LRU cache manager. It manages the parsing results in a
+ * {@link FutureTask} which make the results retrievable in the most flexible
+ * way (one might wait for the completion, check whether the task is completed
+ * and retrieve the result multiple times). Parsing results are stored in a
+ * memory cache which overflows to disk.
+ *
+ * Parsing results of evicted files might still be in the cache if the uploaded
+ * file has been evicted (this is not forcibly good, but so far it's implemented
+ * like this).
  *
  * @author richter
  */
@@ -95,14 +113,47 @@ public class MainCtrlUtils {
     }
   }
 
+  /**
+   * names of files shipped with the application (as long as multiple files are
+   * not supported, the set can only contain one name)
+   */
+  public final static Set<String> INITIAL_BUS_STOP_FILE_NAMES;
+  /**
+   * names of files shipped with the application (as long as multiple files are
+   * not supported, the set can only contain one name)
+   */
+  public final static Set<String> INITIAL_OSM_FILE_NAMES;
+
+  static {
+    INITIAL_OSM_FILE_NAMES = Collections.
+      unmodifiableSet(new HashSet<>(
+          Arrays.asList("oldenburg_pg.osm",
+            "dbis_institute_berlin.osm")));
+    INITIAL_BUS_STOP_FILE_NAMES = Collections.
+      unmodifiableSet(new HashSet<>(
+          Arrays.
+          asList("stops.gtfs")));
+  }
+
+  //////////////////////////////
+  // Caching
+  //////////////////////////////
+  /**
+   * The base directory for directories for file and parsing cache
+   */
   public final static File PGALISE_DIR = new File(System.getProperty(
     "user.home"),
     ".pgalise");
-  public final static File CACHE_DIR = new File(PGALISE_DIR,
+  public final static File PARSING_CACHE_DIR = new File(PGALISE_DIR,
     "cache");
-  public final static File CACHE_DATA_DIR = new File(PGALISE_DIR,
-    "cache-data");
+  public final static File OSM_FILE_CACHE_DIR = new File(PGALISE_DIR,
+    "cache-data-osm");
+  public final static File BUS_STOP_FILE_CACHE_DIR = new File(PGALISE_DIR,
+    "cache-data-bus-stop");
 
+  /*
+   * creates directories if they don't exist
+   */
   static {
     if (!PGALISE_DIR.exists()) {
       if (!PGALISE_DIR.mkdir()) {
@@ -112,74 +163,71 @@ public class MainCtrlUtils {
 
       }
     }
-    if (!CACHE_DIR.exists()) {
-      if (!CACHE_DIR.mkdir()) {
+    if (!PARSING_CACHE_DIR.exists()) {
+      if (!PARSING_CACHE_DIR.mkdir()) {
         throw new RuntimeException(String.format(
           "directory %s could not be created",
-          CACHE_DIR));
+          PARSING_CACHE_DIR));
 
       }
     }
-    if (!CACHE_DATA_DIR.exists()) {
-      if (!CACHE_DATA_DIR.mkdir()) {
+    if (!OSM_FILE_CACHE_DIR.exists()) {
+      if (!OSM_FILE_CACHE_DIR.mkdir()) {
         throw new RuntimeException(String.format(
           "directory %s could not be created",
-          CACHE_DATA_DIR));
+          OSM_FILE_CACHE_DIR));
+
+      }
+    }
+    if (!BUS_STOP_FILE_CACHE_DIR.exists()) {
+      if (!BUS_STOP_FILE_CACHE_DIR.mkdir()) {
+        throw new RuntimeException(String.format(
+          "directory %s could not be created",
+          BUS_STOP_FILE_CACHE_DIR));
 
       }
     }
   }
+  public final static StreamedFileCache OSM_FILE_CACHE;
+  public final static StreamedFileCache BUS_STOP_FILE_CACHE;
+  public final static Cache OSM_PARSING_CACHE;
+  public final static Cache BUS_STOP_PARSING_CACHE;
 
-  public final static Set<String> INITIAL_BUS_STOP_FILE_PATHS;
-  public final static Set<String> INITIAL_OSM_FILE_PATHS;
-
+  /*
+   initializes and configures caches
+   */
   static {
-    INITIAL_OSM_FILE_PATHS = Collections.
-      unmodifiableSet(new HashSet<>(
-          Arrays.asList("oldenburg_pg.osm")));
-    INITIAL_BUS_STOP_FILE_PATHS = Collections.
-      unmodifiableSet(new HashSet<>(
-          Arrays.
-          asList("stops.gtfs")));
-  }
-
-  public final static Cache OSM_FILE_CACHE;
-  public final static Cache BUS_STOP_FILE_CACHE;
-
-  private static class FileSizeSizeOf extends SizeOf {
-
-    FileSizeSizeOf(SizeOfFilter fieldFilter,
-      boolean caching) {
-      super(fieldFilter,
-        caching);
-    }
-
-    @Override
-    public long sizeOf(Object obj) {
-      if (!(obj instanceof File)) {
-        throw new IllegalArgumentException(String.format("object is not a %s",
-          File.class));
-      }
-      File file = (File) obj;
-      return file.length();
-    }
-  }
-  private final static CacheEventListener CACHE_EVENT_LISTENER = new StreamCacheEventListener();
-
-  static {
+    //file caches
     String osmFileCacheName = "osmFileCache";
     String busStopFileCacheName = "busStopFileCache";
 
-    System.setProperty(String.format("net.sf.ehcache.sizeofengine.default.%s",
-      busStopFileCacheName),
-      FileSizeSizeOf.class.getName());
-    System.setProperty(String.format("net.sf.ehcache.sizeofengine.default.%s",
-      osmFileCacheName),
-      FileSizeSizeOf.class.getName());
-    CacheManager singletonManager = CacheManager.create();
-    Cache osmFileCache = new Cache(
-      new CacheConfiguration(osmFileCacheName,
-        0 //maxElementsInMemory
+    OSM_FILE_CACHE = new StreamedFileCache(OSM_FILE_CACHE_DIR,
+      osmFileCacheName);
+
+    BUS_STOP_FILE_CACHE = new StreamedFileCache(BUS_STOP_FILE_CACHE_DIR,
+      busStopFileCacheName);
+
+    //parsing caches    
+    String osmParsingCacheName = "osmParsingCache";
+    String busStopParsingCacheName = "busStopParsingCache";
+
+    CacheManager parsingCacheManager = CacheManager.create();
+    Cache osmParsingCache = new Cache(
+      new CacheConfiguration(osmParsingCacheName,
+        0 //maxElementsInMemory (0 == no limit)
+      )
+      .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
+      .eternal(true)
+      .diskExpiryThreadIntervalSeconds(120)
+      .maxBytesLocalDisk(1,
+        MemoryUnit.GIGABYTES)
+      .persistence(new PersistenceConfiguration().strategy(
+          Strategy.LOCALTEMPSWAP)));
+    parsingCacheManager.addCache(osmParsingCache);
+
+    Cache busStopParsingCache = new Cache(
+      new CacheConfiguration(busStopParsingCacheName,
+        0 //maxElementsInMemory (0 == no limit)
       )
       .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
       .eternal(true)
@@ -187,89 +235,77 @@ public class MainCtrlUtils {
       .maxBytesLocalDisk(5,
         MemoryUnit.GIGABYTES)
       .persistence(new PersistenceConfiguration().strategy(
-          Strategy.LOCALTEMPSWAP)).cacheLoaderFactory(
-        new CacheConfiguration.CacheLoaderFactoryConfiguration().className(
-          StreamCacheLoaderFactory.class.getName())));
-    osmFileCache.getCacheEventNotificationService().registerListener(
-      CACHE_EVENT_LISTENER);
-    singletonManager.addCache(osmFileCache);
+          Strategy.LOCALTEMPSWAP)));
+    parsingCacheManager.addCache(busStopParsingCache);
 
-    Cache busStopFileCache = new Cache(
-      new CacheConfiguration(busStopFileCacheName,
-        0 //maxElementsInMemory
-      )
-      .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
-      .eternal(true)
-      .diskExpiryThreadIntervalSeconds(120)
-      .maxBytesLocalDisk(5,
-        MemoryUnit.GIGABYTES)
-      .persistence(new PersistenceConfiguration().strategy(
-          Strategy.LOCALTEMPSWAP)).cacheLoaderFactory(
-        new CacheConfiguration.CacheLoaderFactoryConfiguration().className(
-          StreamCacheLoaderFactory.class.getName())));
-    busStopFileCache.getCacheEventNotificationService().
-      registerListener(CACHE_EVENT_LISTENER);
-    singletonManager.addCache(busStopFileCache);
-
-    OSM_FILE_CACHE = singletonManager.
-      getCache(osmFileCacheName);
-    BUS_STOP_FILE_CACHE = singletonManager.getCache(busStopFileCacheName);
-
-    //copy initially cached files to cache directory
-    for (String initialOsmFile : INITIAL_OSM_FILE_PATHS) {
-      //register file element in cache
-      OSM_FILE_CACHE.put(new Element(new File(initialOsmFile).getName(),
-        Thread.currentThread().getContextClassLoader().getResourceAsStream(
-          initialOsmFile)));
-
-      //copy actual file in managed file directory
-//			File targetFile = new File(CACHE_DIR,
-//				new File(initialOsmFile).getName());
-//			try {
-//				if (!targetFile.exists()) {
-//					if (!targetFile.createNewFile()) {
-//						throw new RuntimeException(String.format(
-//							"file %s could not be created",
-//							targetFile.getAbsoluteFile()));
-//					}
-//				}
-//				FileUtils.copyFile(new File(initialOsmFile),
-//					targetFile);
-//			} catch (IOException ex) {
-//				throw new RuntimeException(ex);
-//			}
-    }
-
-    for (String initialBusStopFile : INITIAL_BUS_STOP_FILE_PATHS) {
-      //register file element in cache
-      BUS_STOP_FILE_CACHE.put(new Element(new File(initialBusStopFile).
-        getName(),
-        Thread.currentThread().getContextClassLoader().getResourceAsStream(
-          initialBusStopFile)));
-
-//			//copy actual file in managed file directory
-//			File targetFile = new File(CACHE_DIR,
-//				new File(initialBusStopFile).getName());
-//			try {
-//				if (!targetFile.exists()) {
-//					if (!targetFile.createNewFile()) {
-//						throw new RuntimeException(String.format(
-//							"file %s could not be created",
-//							targetFile.getAbsoluteFile()));
-//					}
-//				}
-//				FileUtils.copyFile(new File(initialBusStopFile),
-//					targetFile);
-//			} catch (IOException ex) {
-//				throw new RuntimeException(ex);
-//			}
-    }
+    OSM_PARSING_CACHE = parsingCacheManager.getCache(osmParsingCacheName);
+    BUS_STOP_PARSING_CACHE = parsingCacheManager.getCache(
+      busStopParsingCacheName);
   }
 
   public final static Output OUTPUT = new DefaultTcpIpOutput("localhost",
     6666,
     TcpIpForceCloseStrategy.getInstance());
 
+  public final static Executor EXECUTOR = new ScheduledThreadPoolExecutor(
+    2 //one for osm and one for bus stops though there're no separate executors 
+  //for the two 
+  );
+
+  //JCS's auxillary cache doesn't provide possibility to pass and get data as 
+  //streams
+//  public final static String CACHE_DB_FILE_NAME = "db_file";
+//  public final static AuxiliaryCache OSM_FILE_CACHE;
+//  public final static String OSM_FILE_CACHE_NAME = "file-cache-osm";
+//  
+//  static {
+//    try {
+//      Class.forName("org.hsqldb.jdbcDriver");
+//      Connection conn = DriverManager.getConnection("jdbc:hsqldb:"
+//        + CACHE_DB_FILE_NAME,    // filenames
+//        "sa",                     // username
+//        "");
+//    } catch (ClassNotFoundException | SQLException ex) {
+//      throw new ExceptionInInitializerError(ex);
+//    }
+//  }
+//  
+//  static  {
+//    JDBCDiskCacheFactory a = new JDBCDiskCacheFactory();
+//    AuxiliaryCacheAttributes auxiliaryCacheAttributes = new JDBCDiskCacheAttributes();
+//    auxiliaryCacheAttributes.setCacheName("pgalise-cache-osm");
+//    auxiliaryCacheAttributes.setName("pgalise-cache-osm");
+//    ICompositeCacheManager compositeCacheManager = CompositeCacheManager.getUnconfiguredInstance();
+//    compositeCacheManager.getConfigurationProperties().setProperty("userName", "sa");
+//    compositeCacheManager.getConfigurationProperties().setProperty("password", "");
+//    compositeCacheManager.getConfigurationProperties().setProperty("url", String.format("jdbc:hsqldb:%s", CACHE_DB_FILE_NAME));
+//    compositeCacheManager.getConfigurationProperties().setProperty("driverClassName", "org.hsqldb.jdbcDriver");
+//      
+////jcs.auxiliary.MYSQL.attributes.userName=myUsername
+////jcs.auxiliary.MYSQL.attributes.password=myPassword
+////jcs.auxiliary.MYSQL.attributes.url=${MYSQL}
+////jcs.auxiliary.MYSQL.attributes.driverClassName=org.gjt.mm.mysql.Driver
+////jcs.auxiliary.MYSQL.attributes.tableName=JCS_STORE
+////jcs.auxiliary.MYSQL.attributes.testBeforeInsert=false
+////jcs.auxiliary.MYSQL.attributes.maxActive=100
+////jcs.auxiliary.MYSQL.attributes.MaxPurgatorySize=10000000
+////jcs.auxiliary.MYSQL.attributes.UseDiskShrinker=true
+////jcs.auxiliary.MYSQL.attributes.ShrinkerIntervalSeconds=1800
+////jcs.auxiliary.MYSQL.attributes.allowRemoveAll=false
+////jcs.auxiliary.MYSQL.attributes.EventQueueType=POOLED
+////jcs.auxiliary.MYSQL.attributes.EventQueuePoolName=disk_cache_event_queue
+//    
+//    ICacheEventLogger cacheEventLogger = new CacheEventLoggerDebugLogger();
+//    IElementSerializer elementSerializer = new StandardSerializer();
+//      
+//    a.
+//    
+//    OSM_FILE_CACHE = a.createCache(
+//      auxiliaryCacheAttributes, 
+//      compositeCacheManager, 
+//      cacheEventLogger, 
+//      elementSerializer);
+//  }
   private MainCtrlUtils() {
   }
 

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-web>
-  <context-root>/de_pgalise_simulation_controlCenter</context-root>
+	<context-root>/de_pgalise_simulation_controlCenter</context-root>
 </jboss-web>

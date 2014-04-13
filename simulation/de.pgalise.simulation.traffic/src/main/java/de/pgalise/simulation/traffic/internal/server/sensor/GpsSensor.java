@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.GPSSensorData;
 import de.pgalise.simulation.sensorFramework.AbstractSensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
@@ -30,7 +30,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
 
 /**
  * Class to generate a GPS sensor
@@ -178,14 +178,14 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData>
 
     /* Send data if the vehicle is driving */
     // Use interferer
-    final JaxRSCoordinate interferedPos = this.interferer.interfere(
+    final BaseCoordinate interferedPos = this.interferer.interfere(
       this.vehicle.
       getPosition(),
       this.vehicle.getPosition(),
       eventList.getTimestamp());
 
     // convert to geo location
-    final JaxRSCoordinate geoLocation = interferedPos;
+    final BaseCoordinate geoLocation = interferedPos;
 
     log.debug(
       "Send position of sensor " + this.getId() + ": " + geoLocation.getX() + ", "
@@ -233,14 +233,14 @@ public class GpsSensor extends AbstractSensor<TrafficEvent<?>, GPSSensorData>
       // GpsSensor.log.debug("Send: x: " + this.vehicle.getPosition().getX() + " y:"
       // + this.vehicle.getPosition().getY());
       // Use interferer
-      final JaxRSCoordinate interferedPos = this.interferer.interfere(
+      final BaseCoordinate interferedPos = this.interferer.interfere(
         this.vehicle.
         getPosition(),
         this.vehicle.getPosition(),
         eventList.getTimestamp());
 
       // convert to geolocation
-      final JaxRSCoordinate geoLocation = interferedPos;
+      final BaseCoordinate geoLocation = interferedPos;
 
       GpsSensor.log.debug("Send lat: " + geoLocation.getX() + " long: "
         + geoLocation.getY() + " of vehicle " + vehicle.getId());

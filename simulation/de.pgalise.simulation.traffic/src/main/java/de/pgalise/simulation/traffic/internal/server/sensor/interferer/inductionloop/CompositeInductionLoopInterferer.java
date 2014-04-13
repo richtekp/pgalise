@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
 
 /**
  * Implementation of an {@link InductionLoopInterferer} that hold several other {@link InductionLoopInterferer}s

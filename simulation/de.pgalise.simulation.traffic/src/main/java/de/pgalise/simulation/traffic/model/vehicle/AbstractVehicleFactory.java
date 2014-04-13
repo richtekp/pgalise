@@ -7,13 +7,13 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.JaxbVector2d;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsClockInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsClockInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
 import java.awt.Color;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -74,6 +74,8 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
   private int widthMin, widthMax;
   private int heightMin, heightMax;
   private int wheelbaseLengthDifferenceMin, wheelbaseLengthDifferenceMax;
+  @EJB
+  private GpsClockInterferer gpsClockInterferer;
 
   public AbstractVehicleFactory() {
   }
@@ -150,7 +152,7 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
     return idGenerator;
   }
 
-  public JaxRSCoordinate generateRandomPosition(Set<TrafficEdge> edges) {
+  public BaseCoordinate generateRandomPosition(Set<TrafficEdge> edges) {
     int edgeCount = edges.size();
     int chosenIndex = (int) (Math.random() * edgeCount);
     int i = 0;
@@ -166,10 +168,10 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
     JaxbVector2d offsetVector = new JaxbVector2d(chosenEdge.getVector());
     offsetVector.scale(chosenOffset);
     JaxbVector2d positionVector = new JaxbVector2d(chosenEdge.getSource().
-      getGeoLocation().getX(),
-      chosenEdge.getSource().getGeoLocation().getY());
+      getX(),
+      chosenEdge.getSource().getY());
     positionVector.add(offsetVector);
-    return new JaxRSCoordinate(positionVector.getX(),
+    return new BaseCoordinate(idGenerator.getNextId(),positionVector.getX(),
       positionVector.getY());
   }
 
@@ -190,7 +192,7 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
    encapsulating the access to GpsInterferer(s) allows to change the mechanism of retrieval later (e.g. get references from a pool)
    */
   public GpsInterferer retrieveGpsInterferer() {
-    return new GpsClockInterferer(randomSeedService);
+    return gpsClockInterferer;
   }
 
   /**

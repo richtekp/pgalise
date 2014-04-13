@@ -12,26 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
  */
 package de.pgalise.simulation.traffic.scheduler;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
@@ -137,13 +124,13 @@ public class SchedulerScaleTest {
     TestUtils.getContext().bind("inject",
       this);
     a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(0,
+      new Coordinate(0,
         0));
     b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(2,
+      new Coordinate(2,
         0));
     c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(2,
+      new Coordinate(2,
         2));
     this.trafficGraphExtensions = new DefaultTrafficGraphExtensions(
       new DefaultRandomSeedService(),

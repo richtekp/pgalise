@@ -49,7 +49,7 @@ public abstract class AbstractStaticTrafficSensor<X extends SensorData> extends 
 		throws IllegalArgumentException {
 		super(id,
 			output,
-			node.getGeoLocation(),
+			node,
 			updateLimit,
 			sensorData);
 		this.node = node;
@@ -68,7 +68,7 @@ public abstract class AbstractStaticTrafficSensor<X extends SensorData> extends 
 		IllegalArgumentException {
 		super(id,
 			output,
-			node.getGeoLocation(),
+			node,
 			sensorData);
 		this.node = node;
 	}

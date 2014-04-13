@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +65,7 @@ public abstract class ExtendedMotorizedVehicle<T extends VehicleData> extends Ba
   public ExtendedMotorizedVehicle(Long id,
     T carData,
     TrafficGraphExtensions trafficGraphExtensions,
-    JaxRSCoordinate position) {
+    BaseCoordinate position) {
     super(id,
       carData,
       trafficGraphExtensions,

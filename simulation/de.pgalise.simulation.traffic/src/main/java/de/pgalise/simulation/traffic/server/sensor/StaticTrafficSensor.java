@@ -6,7 +6,7 @@
 
 package de.pgalise.simulation.traffic.server.sensor;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
@@ -16,7 +16,7 @@ import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
  * @author richter
  */
 public interface StaticTrafficSensor<X extends SensorData> extends TrafficSensor<X>{
-	JaxRSCoordinate getPosition();
+	BaseCoordinate getPosition();
 
 	/**
 	 * Register vehicle on the node

@@ -32,7 +32,7 @@ import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
-import de.pgalise.util.GTFS.service.BusService;
+import de.pgalise.simulation.traffic.service.BusService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

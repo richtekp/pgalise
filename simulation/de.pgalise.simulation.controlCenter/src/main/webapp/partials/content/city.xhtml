@@ -1,95 +1,132 @@
 <ui:composition 
-	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets" 
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui" 
-	xmlns:o="http://omnifaces.org/ui">
-	<script src="http://maps.google.com/maps/api/js?sensor=false"
-	type="text/javascript"></script>
-	<div class="contentDiv" >
-		<o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils" var="mapAndBusstopFileData"/>
-		<h2>City</h2>
-		<h3>Boundaries</h3>
-		<p:accordionPanel id="boundariesPanel" multiple="false" >
-			<div class="scrollable">
-				<p:tab title="Free boundaries" >
-					<h:form>
-						<p:gmap center="12.0, 55.0" type="HYBRID" zoom="8" />
-						<h:outputLabel for="cityNameInput" value="Area name"/>
-						<h:inputText id="cityNameInput"/>
-					</h:form>
-				</p:tab>
-				<p:tab title="OSM file">
-					<h:form>
-						<h:outputLabel for="osmFileNames" value="Selected OSM files"/>
-						<h:selectManyCheckbox id="osmFileNames" value="#{cityCtrl.osmFileNames}" required="true">
-							<f:selectItems value="#{mapAndBusstopFileData.INITIAL_OSM_FILE_PATHS}"/>
-							<f:validateBean />
-							<f:ajax/>
-						</h:selectManyCheckbox>
-						Selection preview: <p:gmap center="13.0, 54.0" type="HYBRID" zoom="8" style="width:600px;height:400px"/>
-						Upload other:
-						<p:fileUpload fileUploadListener="#{cityCtrl.onOSMFileUpload}"/>
-						<h:outputLabel for="useFileBoundaries" value="Use file boundaries"/>
-						<h:selectBooleanCheckbox id="useFileBoundaries" label="Use file boundaries" value="#{cityCtrl.useFileBoundaries}">
-							<p:ajax update="customBoundariesMapPanel"/>
-						</h:selectBooleanCheckbox>
-						<p:accordionPanel activeIndex="-1" id="customBoundariesMapPanel">
-							<p:tab title="Custom boundaries"
-										 disabled="#{cityCtrl.useFileBoundaries}">
-								<p:gmap center="13.0, 54.0" style="width:600px;height:400px" type="HYBRID" zoom="8" />
-							</p:tab>
-						</p:accordionPanel>
-					</h:form>
-				</p:tab>
-				<p:tab title="OSM PostGIS data based" >
-					<h:form>
-						<p:outputLabel for="dbHost" value="Host:"/>
-						<h:inputText id="dbHost" value="#{cityCtrl.dbHost}"/>
-						<p:outputLabel for="dbPort" value="Port"/>
-						<p:spinner id="dbPort" min="1" max="65535" value="#{cityCtrl.dbPort}"/>
-						<p:outputLabel for="dbDatabase" value="PostGIS Database:"/>
-						<h:inputText id="dbDatabase" value="#{cityCtrl.dbDatabase}"/>
-						<p:outputLabel for="dbUser" value="User:"/>
-						<h:inputText id="dbUser" value="#{cityCtrl.dbUser}"/>
-						<p:outputLabel for="dbPassword" value="Password:"/>
-						<h:inputText id="dbPassword" value="#{cityCtrl.dbPassword}"/>
-						<p:outputLabel for="dbSearch" value="Search:"/>
-						<p:autoComplete id="dbSearch" value="#{cityCtrl.chosenCity}"   
-														completeMethod="#{cityCtrl.cityNameAutocomplete}" var="c" itemLabel="#{c.name}" itemValue="#{c}" converter="cityConverter">
-							<p:ajax event="itemSelect" listener="#{cityCtrl.onCityNameSelectionChange}"
-											update="cityNameMap"/>
-						</p:autoComplete>
-						<p:gmap id="cityNameMap" center="#{cityCtrl.mapCenter}" zoom="13" type="HYBRID"  model="#{cityCtrl.mapModel}" style="width:600px;height:400px" fitBounds="false"/>
-					</h:form>
-				</p:tab>
-			</div>
-		</p:accordionPanel>
-		<h:form>
-			<h3>Public transport data</h3>
-			<h:outputLabel for="busStopFileNames" value="Selected matching GTFS files"/>
-			<h:selectManyCheckbox id="busStopFileNames" value="#{cityCtrl.busStopFileNames}" required="true">
-				<f:selectItems value="#{mapAndBusstopFileData.INITIAL_BUS_STOP_FILE_PATHS}"/>
-				<f:ajax/>
-				<f:validateBean />
-			</h:selectManyCheckbox>
-			Selection preview: <p:gmap center="1.0, 2.0" style="width:600px;height:400px" type="HYBRID" zoom="8"/>
-			Upload other:
-			<p:fileUpload fileUploadListener="#{cityCtrl.onGTFSFileUpload}" />
-			<h3>Parameters</h3>
-			<div>
-				Choose the individual parameters of the City, for example the name, the altitude or if the city is close to a river or near to a coast.
-			</div>
-			Population:	<p:spinner value="#{cityCtrl.chosenPopulation}" min="1"/>
-			Altitude [m]:
-			<p:spinner value="#{cityCtrl.chosenAltitude}" stepFactor="1" title="Altitude of the city" min="-10" max="8000" >
-				<f:ajax />
-			</p:spinner>
-			Near river:
-			<h:selectBooleanCheckbox value="#{cityCtrl.nearRiver}" title="determine wheter the simulated city is (not) located near a river"/>
-			Near coast:
-			<h:selectBooleanCheckbox value="#{cityCtrl.nearSea}" title="determine wheter the simulated city is (not) located near a river"/>
-		</h:form>
-	</div>
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+  xmlns:f="http://xmlns.jcp.org/jsf/core"
+  xmlns:p="http://primefaces.org/ui" 
+  xmlns:o="http://omnifaces.org/ui"
+  xmlns:geojsf="http://geojsf.org/ui"
+  xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+  <script src="http://maps.google.com/maps/api/js?sensor=false"
+  type="text/javascript"></script>
+  <div class="contentDiv" >
+    <o:importConstants type="de.pgalise.simulation.controlCenter.ctrl.MainCtrlUtils" var="mapAndBusstopFileData"/>
+    <h2>City</h2>
+    <h3>Boundaries</h3>
+    <p:accordionPanel id="boundariesPanel" multiple="false" >
+      <div class="scrollable">
+        <p:tab title="Free boundaries" >
+          <h:form>
+            <p:gmap center="12.0, 55.0" type="HYBRID" zoom="8" />
+            <h:outputLabel for="cityNameInput" value="Area name"/>
+            <h:inputText id="cityNameInput"/>
+          </h:form>
+        </p:tab>
+        <p:tab title="OSM file">
+          <h:form>
+            <h:outputLabel for="osmFileNamesParsing" value="Pending parsing tasks for OSM files:"/>
+            <h:dataTable id="osmFileNamesParsing" value="#{cityCtrl.osmFileNamesParsing}" var="osmFileNameParsing">
+              <h:column>
+                #{osmFileNameParsing}
+              </h:column>
+            </h:dataTable>
+						Progress: 
+						<p:progressBar ajax="true" value="#{cityCtrl.osmParsingProgress}" labelTemplate="{value}%" styleClass="animated">
+						</p:progressBar>
+          </h:form>
+          <h:form id="mapPreviewForm" enctype="multipart/form-data">
+            <h:outputLabel for="osmFileNames" value="Selected OSM files"/>
+            <h:selectOneRadio id="osmFileNames" value="#{cityCtrl.osmFileName}" required="true" valueChangeListener="#{cityCtrl.onOsmFileSelectionChanged}">
+              <f:selectItems id="osmFilesSelectItems" value="#{cityCtrl.osmFileNamesParsed}"/>
+              <f:validateBean />
+              <f:ajax render="@form"/>
+            </h:selectOneRadio>
+            <!--preview map-->
+						<c:choose>
+							<!--<c:when test="#{cityCtrl.osmFileNamesParsed.size() gt 0 and cityCtrl.osmFileNames.size() eq 0}">-->
+							<c:when test="#{cityCtrl.osmFileNamesParsed.size() gt 0 and cityCtrl.osmFileName eq null}">
+								Select a OSM file from the list of parsed files above
+								<p:poll interval="3"   
+												update="mapPreviewForm" />
+							</c:when>
+							<c:when test="#{cityCtrl.osmFileNamesParsed.size() eq 0}">
+								Selection preview: Waiting for map parsing to complete
+								<p:poll interval="3"   
+												update="mapPreviewForm" />
+							</c:when>
+							<c:otherwise>
+								Selection preview: <p:gmap center="13.0, 54.0" type="HYBRID" zoom="8" style="width:600px;height:400px" model="#{cityCtrl.previewMapModel}" id="osmFilePreviewMap" widgetVar="osmFilePreviewMapWidget"/>
+							</c:otherwise>
+						</c:choose>
+
+            Upload other:
+            <p:fileUpload fileUploadListener="#{cityCtrl.onOSMFileUpload}"/>
+            <h:outputLabel for="useFileBoundaries" value="Use file boundaries"/>
+            <h:selectBooleanCheckbox id="useFileBoundaries" label="Use file boundaries" value="#{cityCtrl.useFileBoundaries}">
+              <p:ajax update="customBoundariesMapPanel"/>
+            </h:selectBooleanCheckbox>
+            <p:accordionPanel activeIndex="-1" id="customBoundariesMapPanel">
+              <p:tab title="Custom boundaries"
+                     disabled="#{cityCtrl.useFileBoundaries}">
+                <p:gmap center="13.0, 54.0" style="width:600px;height:400px" type="HYBRID" zoom="8" />
+              </p:tab>
+            </p:accordionPanel>
+          </h:form>
+        </p:tab>
+        <p:tab title="OSM PostGIS data based" >
+          <h:form>
+            <p:outputLabel for="dbHost" value="Host:"/>
+						<!-- use p: widgets in order to be able to use p:ajax with 
+							update attribute -->
+            <p:inputText id="dbHost" value="#{cityCtrl.dbHost}">
+							<p:ajax event="valueChange" update="cityNameAutocompleteWarningLabel"/>
+						</p:inputText>
+            <p:outputLabel for="dbPort" value="Port: "/>
+            <p:spinner id="dbPort" min="1" max="65535" value="#{cityCtrl.dbPort}">
+							<p:ajax event="valueChange" update="cityNameAutocompleteWarningLabel"/>
+						</p:spinner>
+            <p:outputLabel for="dbDatabase" value="PostGIS Database:"/>
+            <p:inputText id="dbDatabase" value="#{cityCtrl.dbDatabase}">
+							<p:ajax event="valueChange" update="cityNameAutocompleteWarningLabel"/>
+						</p:inputText>
+            <p:outputLabel for="dbUser" value="User:"/>
+            <p:inputText id="dbUser" value="#{cityCtrl.dbUser}">
+							<p:ajax event="valueChange" update="cityNameAutocompleteWarningLabel"/>
+						</p:inputText>
+            <p:outputLabel for="dbPassword" value="Password:"/>
+            <p:inputText id="dbPassword" value="#{cityCtrl.dbPassword}">
+							<p:ajax event="valueChange" update="cityNameAutocompleteWarningLabel"/>
+						</p:inputText>
+            <p:outputLabel for="dbSearch" value="Search:"/>
+            <p:autoComplete id="dbSearch" value="#{cityCtrl.chosenCity}"   
+                            completeMethod="#{cityCtrl.cityNameAutocomplete}" var="c" itemLabel="#{c.name}" itemValue="#{c}" converter="cityConverter" valueChangeListener="#{cityCtrl.onCityNameValueChange}">
+              <p:ajax event="itemSelect" listener="#{cityCtrl.onCityNameSelectionChange}"
+                      update="cityNameMap,cityNameAutocompleteWarningLabel"/>
+							<p:ajax event="valueChange" 
+											update="cityNameAutocompleteWarningLabel"/> 
+								<!--in case the popup doesn't work (e.g. when connection 
+								fails), itemSelect event isn't triggered -->
+            </p:autoComplete>
+						<h:outputLabel id="cityNameAutocompleteWarningLabel" value="#{cityCtrl.cityNameAutocompleteWarning}"/>
+            <p:gmap id="cityNameMap" center="#{cityCtrl.mapCenter}" zoom="13" type="HYBRID"  model="#{cityCtrl.mapModel}" style="width:600px;height:400px" fitBounds="false"/>
+          </h:form>
+        </p:tab>
+      </div>
+    </p:accordionPanel>
+    <h:form>
+      <h3>Parameters</h3>
+      <div>
+        Choose the individual parameters of the City, for example the name, the altitude or if the city is close to a river or near to a coast.
+      </div>
+      Population:	<p:spinner value="#{cityCtrl.chosenPopulation}" min="1"/>
+      Altitude [m]:
+      <p:spinner value="#{cityCtrl.chosenAltitude}" stepFactor="1" title="Altitude of the city" min="-10" max="8000" >
+        <f:ajax />
+      </p:spinner>
+      Near river:
+      <h:selectBooleanCheckbox value="#{cityCtrl.nearRiver}" title="determine wheter the simulated city is (not) located near a river"/>
+      Near coast:
+      <h:selectBooleanCheckbox value="#{cityCtrl.nearSea}" title="determine wheter the simulated city is (not) located near a river"/>
+    </h:form>
+  </div>
 </ui:composition>

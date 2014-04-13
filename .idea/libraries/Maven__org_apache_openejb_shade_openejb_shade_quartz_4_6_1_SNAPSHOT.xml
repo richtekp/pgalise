@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.openejb.shade:openejb-shade-quartz:4.6.1-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/openejb/shade/openejb-shade-quartz/4.6.1-SNAPSHOT/openejb-shade-quartz-4.6.1-20140331.041135-112.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/openejb/shade/openejb-shade-quartz/4.6.1-SNAPSHOT/openejb-shade-quartz-4.6.1-20140331.041135-112-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/apache/openejb/shade/openejb-shade-quartz/4.6.1-SNAPSHOT/openejb-shade-quartz-4.6.1-20140331.041135-112-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

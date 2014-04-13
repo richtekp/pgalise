@@ -25,7 +25,7 @@ import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.exception.NoValidControllerForSensorException;
 import de.pgalise.simulation.shared.sensor.SensorInterferer;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
@@ -37,12 +37,6 @@ import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensor;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.CompositeGpsInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsAtmosphereInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsClockInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsReceiverInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.CompositeInductionLoopInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopWhiteNoiseInterferer;
@@ -52,11 +46,18 @@ import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.CompositeTopoRadarInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.TopoRadarNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.TopoRadarWhiteNoiseInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.CompositeGpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsAtmosphereInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsClockInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsNoInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsReceiverInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
 import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 import de.pgalise.staticsensor.internal.sensor.energy.PhotovoltaikSensor;
 import de.pgalise.staticsensor.internal.sensor.energy.SmartMeterSensor;
 import de.pgalise.staticsensor.internal.sensor.energy.WindPowerSensor;
@@ -98,9 +99,21 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
   implements EnergySensorFactory {
 
   @EJB
-  private WeatherController weatherController;
+  private WeatherControllerLocal weatherController;
   @EJB
   private EnergyControllerLocal energyController;
+  @EJB
+  private CompositeGpsInterferer compositeGpsInterferer;
+  @EJB
+  private GpsClockInterferer gpsClockInterferer;
+  @EJB
+  private GpsAtmosphereInterferer gpsAtmosphereInterferer;
+  @EJB
+  private GpsReceiverInterferer gpsReceiverInterferer;
+  @EJB
+  private GpsWhiteNoiseInterferer gpsWhiteNoiseInterferer;
+  @EJB
+  private GpsNoInterferer gpsNoInterferer;
 
   public AbstractEnergySensorFactory() {
     super();
@@ -118,7 +131,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
    */
   public AbstractEnergySensorFactory(RandomSeedService rss,
     IdGenerator idGenerator,
-    WeatherController wctrl,
+    WeatherControllerLocal wctrl,
     EnergyControllerLocal ectrl,
     int updateLimit) {
     super(
@@ -127,7 +140,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     this.weatherController = wctrl;
   }
 
-  public void setWeatherController(WeatherController weatherController) {
+  public void setWeatherController(WeatherControllerLocal weatherController) {
     this.weatherController = weatherController;
   }
 
@@ -158,7 +171,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
   }
 
   @Override
-  public PhotovoltaikSensor createPhotovoltaikSensor(JaxRSCoordinate position,
+  public PhotovoltaikSensor createPhotovoltaikSensor(BaseCoordinate position,
     List<SensorInterfererType> sensorInterfererTypes,
     int area,
     Output output) throws InterruptedException, ExecutionException {
@@ -178,7 +191,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     List<SensorInterfererType> sensorInterfererTypes,
     int area,
     Output output) throws InterruptedException, ExecutionException {
-    JaxRSCoordinate randomPosition = null;
+    BaseCoordinate randomPosition = null;
     return createPhotovoltaikSensor(randomPosition,
       sensorInterfererTypes,
       area,
@@ -191,7 +204,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
     Output output)
     throws InterruptedException, ExecutionException {
     if (sensorType.equals(EnergySensorTypeEnum.PHOTOVOLTAIK)) {
-      JaxRSCoordinate position = createRandomPositionEnergySensor();
+      BaseCoordinate position = createRandomPositionEnergySensor();
       return new PhotovoltaikSensor(this.getIdGenerator().getNextId(),
         output,
         position,
@@ -205,7 +218,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
 
     } else if (sensorType.equals(
       EnergySensorTypeEnum.WINDPOWERSENSOR)) {
-      JaxRSCoordinate position = createRandomPositionEnergySensor();
+      BaseCoordinate position = createRandomPositionEnergySensor();
       return new WindPowerSensor(this.getIdGenerator().getNextId(),
         output,
         position,
@@ -220,7 +233,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         this.createEnergyInterferer(sensorInterfererTypes));
 
     } else if (sensorType.equals(WeatherSensorTypeEnum.THERMOMETER)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new Thermometer(getIdGenerator().getNextId(),
         output,
         position,
@@ -228,7 +241,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(WeatherSensorTypeEnum.WINDFLAG)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new WindFlagSensor(getIdGenerator().getNextId(),
         output,
         position,
@@ -236,7 +249,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(WeatherSensorTypeEnum.BAROMETER)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new Barometer(getIdGenerator().getNextId(),
         output,
         position,
@@ -244,7 +257,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(WeatherSensorTypeEnum.HYGROMETER)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new Hygrometer(getIdGenerator().getNextId(),
         output,
         position,
@@ -252,7 +265,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(WeatherSensorTypeEnum.PYRANOMETER)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new Pyranometer(getIdGenerator().getNextId(),
         output,
         position,
@@ -260,7 +273,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(WeatherSensorTypeEnum.RAIN)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new RainSensor(getIdGenerator().getNextId(),
         output,
         position,
@@ -268,7 +281,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(WeatherSensorTypeEnum.ANEMOMETER)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new Anemometer(getIdGenerator().getNextId(),
         output,
         position,
@@ -276,7 +289,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(WeatherSensorTypeEnum.LUXMETER)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new Luxmeter(getIdGenerator().getNextId(),
         output,
         position,
@@ -284,7 +297,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         getUpdateLimit(),
         this.createWeatherInterferer(sensorInterfererTypes));
     } else if (sensorType.equals(EnergySensorTypeEnum.SMARTMETER)) {
-      JaxRSCoordinate position = createRandomPositionWeatherSensor();
+      BaseCoordinate position = createRandomPositionWeatherSensor();
       return new SmartMeterSensor(this.getIdGenerator().getNextId(),
         output,
         position,
@@ -320,7 +333,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         infraredInterferer = new InfraredNoInterferer();
       }
 
-      JaxRSCoordinate position = createRandomPositionInfraredSensor();
+      BaseCoordinate position = createRandomPositionInfraredSensor();
       return new InfraredSensor(getIdGenerator().getNextId(),
         output,
         null,
@@ -349,7 +362,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         inductionLoopInterferer = new InductionLoopNoInterferer();
       }
 
-      JaxRSCoordinate position = createRandomPositionInductionLoopSensor();
+      BaseCoordinate position = createRandomPositionInductionLoopSensor();
       return new InductionLoopSensor(getIdGenerator().getNextId(),
         output,
         null,
@@ -378,7 +391,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         toporadarInterferer = new TopoRadarNoInterferer();
       }
 
-      JaxRSCoordinate position = createRandomPositionTopoRadarSensor();
+      BaseCoordinate position = createRandomPositionTopoRadarSensor();
       return new TopoRadarSensor(getIdGenerator().getNextId(),
         output,
         null,
@@ -391,26 +404,21 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
       if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
 
         List<GpsInterferer> gpsInterferes = new ArrayList<>();
-        gpsInterferer = new CompositeGpsInterferer(gpsInterferes);
+        gpsInterferer = new CompositeGpsInterferer(gpsInterferes, getIdGenerator());
 
         for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
           switch (sensorInterfererType) {
             case GPS_ATMOSPHERE_INTERFERER:
-              gpsInterferes.add(new GpsAtmosphereInterferer(this.
-                getRandomSeedService(),
-                this.getWeatherController()));
+              gpsInterferes.add(gpsAtmosphereInterferer);
               break;
             case GPS_CLOCK_INTERFERER:
-              gpsInterferes.add(new GpsClockInterferer(this.
-                getRandomSeedService()));
+              gpsInterferes.add(gpsClockInterferer);
               break;
             case GPS_RECEIVER_INTERFERER:
-              gpsInterferes.add(new GpsReceiverInterferer(this.
-                getRandomSeedService()));
+              gpsInterferes.add(gpsReceiverInterferer);
               break;
             case GPS_WHITE_NOISE_INTERFERER:
-              gpsInterferes.add(new GpsWhiteNoiseInterferer(this.
-                getRandomSeedService()));
+              gpsInterferes.add(gpsWhiteNoiseInterferer);
               break;
             default:
               break;
@@ -418,7 +426,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
         }
 
       } else {
-        gpsInterferer = new GpsNoInterferer();
+        gpsInterferer = gpsNoInterferer;
       }
 
       return new GpsSensor(getIdGenerator().getNextId(),
@@ -521,7 +529,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
   }
 
   @Override
-  public JaxRSCoordinate createEnergySensor(JaxRSCoordinate position,
+  public BaseCoordinate createEnergySensor(BaseCoordinate position,
     List<SensorInterfererType> sensorInterfererTypes,
     Output output) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

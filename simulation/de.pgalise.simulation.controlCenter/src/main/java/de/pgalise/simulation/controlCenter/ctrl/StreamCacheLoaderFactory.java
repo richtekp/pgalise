@@ -23,69 +23,74 @@ import net.sf.ehcache.loader.CacheLoaderFactory;
  */
 public class StreamCacheLoaderFactory extends CacheLoaderFactory {
 
-	public StreamCacheLoaderFactory() {
-	}
+  /**
+   * Parameterless constructor is required by implementation (either specified 
+   * or a bug)
+   */
+  public StreamCacheLoaderFactory() {
+  }
 
-	@Override
-	public CacheLoader createCacheLoader(Ehcache cache,
-		Properties properties) {
-		return new CacheLoader() {
-			@Override
-			public Object load(Object key) throws CacheException {
-				if (!(key instanceof String)) {
-					throw new IllegalArgumentException();
-				}
-				String keyCast = (String) key;
-				try {
-					return new FileInputStream(new File(MainCtrlUtils.CACHE_DATA_DIR,
-						keyCast));
-				} catch (FileNotFoundException ex) {
-					throw new RuntimeException(ex);
-				}
-			}
+  @Override
+  public CacheLoader createCacheLoader(Ehcache cache,
+    Properties properties) {
+    final String fileDataDir = properties.getProperty("fileDataDir");
+    return new CacheLoader() {
+      @Override
+      public Object load(Object key) throws CacheException {
+        if (!(key instanceof String)) {
+          throw new IllegalArgumentException();
+        }
+        String keyCast = (String) key;
+        try {
+          return new FileInputStream(new File(fileDataDir,
+            keyCast));
+        } catch (FileNotFoundException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
 
-			@Override
-			public Map loadAll(Collection keys) {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
+      @Override
+      public Map loadAll(Collection keys) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
 
-			@Override
-			public Object load(Object key,
-				Object argument) {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
+      @Override
+      public Object load(Object key,
+        Object argument) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
 
-			@Override
-			public Map loadAll(Collection keys,
-				Object argument) {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
+      @Override
+      public Map loadAll(Collection keys,
+        Object argument) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
 
-			@Override
-			public String getName() {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
+      @Override
+      public String getName() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
 
-			@Override
-			public CacheLoader clone(Ehcache cache) throws CloneNotSupportedException {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
+      @Override
+      public CacheLoader clone(Ehcache cache) throws CloneNotSupportedException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
 
-			@Override
-			public void init() {
+      @Override
+      public void init() {
 
-			}
+      }
 
-			@Override
-			public void dispose() throws CacheException {
+      @Override
+      public void dispose() throws CacheException {
 
-			}
+      }
 
-			@Override
-			public Status getStatus() {
-				throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-			}
-		};
-	}
+      @Override
+      public Status getStatus() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      }
+    };
+  }
 
 }

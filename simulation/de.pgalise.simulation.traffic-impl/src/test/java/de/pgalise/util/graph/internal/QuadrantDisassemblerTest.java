@@ -12,62 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
- *//* 
- * Copyright 2013 PG Alise (http://www.pg-alise.de/)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License. 
  */
 package de.pgalise.util.graph.internal;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import org.junit.Test;
-
 import com.vividsolutions.jts.geom.Geometry;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -75,12 +27,19 @@ import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.util.graph.DisassemblerTest;
 import de.pgalise.util.graph.disassembler.Disassembler;
+import java.util.List;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.geotools.geometry.jts.JTS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the {@link QuadrantDisassembler}
@@ -112,35 +71,35 @@ public class QuadrantDisassemblerTest {
 
     // erster qudrant
     TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(10,
+      new Coordinate(10,
         10));
     graph.addVertex(a);
     TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(25,
+      new Coordinate(25,
         25));
     graph.addVertex(b);
     TrafficNode c = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(20,
+      new Coordinate(20,
         25));
     graph.addVertex(c);
 
 // zweiter quadrant
     TrafficNode d = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(18,
+      new Coordinate(18,
         45));
     graph.addVertex(d);
     TrafficNode e = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(40,
+      new Coordinate(40,
         50));
     graph.addVertex(e);
 
     // dritter quadrant
     TrafficNode f = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(75,
+      new Coordinate(75,
         30));
     graph.addVertex(f);
     TrafficNode g = new TrafficNode(idGenerator.getNextId(),
-      new JaxRSCoordinate(80,
+      new Coordinate(80,
         45));
     graph.addVertex(e);
 

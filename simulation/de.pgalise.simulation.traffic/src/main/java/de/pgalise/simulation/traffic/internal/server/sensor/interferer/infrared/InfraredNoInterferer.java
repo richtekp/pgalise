@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared;
 
-import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
 
 /**
  * Represents an interferer that shows no errors

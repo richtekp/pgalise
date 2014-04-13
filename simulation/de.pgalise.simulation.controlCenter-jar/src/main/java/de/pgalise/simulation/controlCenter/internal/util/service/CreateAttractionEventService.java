@@ -18,7 +18,7 @@ package de.pgalise.simulation.controlCenter.internal.util.service;
 
 import de.pgalise.simulation.controlCenter.model.RandomVehicleBundle;
 import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
@@ -53,7 +53,7 @@ public interface CreateAttractionEventService {
 			RandomSeedService randomSeedService,
 			boolean withSensorInterferer,
 			TrafficNode nodeID,
-			JaxRSCoordinate position,
+			BaseCoordinate position,
 			long startTimestamp,
 			long endTimestamp);
 }

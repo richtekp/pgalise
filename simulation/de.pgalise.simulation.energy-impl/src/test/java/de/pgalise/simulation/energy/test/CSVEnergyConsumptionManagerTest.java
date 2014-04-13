@@ -19,10 +19,10 @@ import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.profile.CSVProfileLoader;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.entity.Building;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.CityDataService;
 import de.pgalise.testutils.TestUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,14 +63,7 @@ public class CSVEnergyConsumptionManagerTest {
   /**
    * Test location as GeoLocation
    */
-  private static final JaxRSCoordinate testLocationAsGL = new JaxRSCoordinate(
-    53.136765,
-    8.216524);
-
-  /**
-   * Test location as Vector2d
-   */
-  private static final JaxRSCoordinate testLocation = CSVEnergyConsumptionManagerTest.testLocationAsGL;
+  private BaseCoordinate testLocationAsGL;
 
   /**
    * The used energy profile loader.
@@ -87,20 +80,24 @@ public class CSVEnergyConsumptionManagerTest {
   public void setUp() throws NamingException {
     TestUtils.getContext().bind("inject",
       this);
+    testLocationAsGL = new BaseCoordinate(idGenerator.getNextId(),
+    53.136765,
+    8.216524);
+    
     Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
     List<Building> buildingList = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
       buildingList.add(new Building(idGenerator.getNextId(),
-        new JaxRSCoordinate(53.136765,
+        new BaseCoordinate(idGenerator.getNextId(), 53.136765,
           8.216524),
         null));
     }
     map.put(EnergyProfileEnum.HOUSEHOLD,
       buildingList);
-    CityInfrastructureDataService citydata = EasyMock.createNiceMock(
-      CityInfrastructureDataService.class);
+    CityDataService citydata = EasyMock.createNiceMock(
+      CityDataService.class);
     EasyMock.expect(citydata.getBuildings(
-      CSVEnergyConsumptionManagerTest.testLocationAsGL,
+      testLocationAsGL,
       5)).andStubReturn(map);
     EasyMock.replay(citydata);
 
@@ -161,7 +158,7 @@ public class CSVEnergyConsumptionManagerTest {
     double actValue = CSVEnergyConsumptionManagerTest.testclass.
       getEnergyConsumptionInKWh(testTime,
         EnergyProfileEnum.HOUSEHOLD,
-        CSVEnergyConsumptionManagerTest.testLocation);
+        testLocationAsGL);
 
     /*
      * Test 1 : Test the testTime

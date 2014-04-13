@@ -17,7 +17,7 @@ package de.pgalise.staticsensor.internal.sensor.weather;
 
 import de.pgalise.simulation.weather.entity.WeatherStationData;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,7 +61,7 @@ public class WeatherStation extends WeatherSensor<WeatherStationData> {
 	 */
 	public WeatherStation(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		final WeatherInterferer weatherInterferer,
 		WeatherSensor... sensors) {
@@ -87,7 +87,7 @@ public class WeatherStation extends WeatherSensor<WeatherStationData> {
 	 */
 	public WeatherStation(Long id,
 		Output output,
-		JaxRSCoordinate position,
+		BaseCoordinate position,
 		WeatherController weatherController,
 		final WeatherInterferer weatherInterferer,
 		int updateLimit,

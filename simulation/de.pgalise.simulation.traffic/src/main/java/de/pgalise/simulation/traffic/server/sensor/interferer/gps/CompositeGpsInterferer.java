@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
+package de.pgalise.simulation.traffic.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.exception.ExceptionMessages;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
+import javax.ejb.EJB;
+import javax.ejb.Stateful;
 
 /**
  * Implementation of an {@link GpsInterferer} that hold several other
@@ -29,9 +31,13 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
  * @author Marcus
  * @version 1.0
  */
+/*
+not an EJB because instance handling of stateful EJB is too complicated with 
+no advantage over this POJO
+*/
 public class CompositeGpsInterferer implements GpsInterferer {
-
 	private static final long serialVersionUID = 1L;
+  private IdGenerator idGenerator;
 
 	/**
 	 * the composite {@link GpsInterferer}s
@@ -42,8 +48,8 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	 * Creates a {@link CompositeGpsInterferer} with no composite
 	 * {@link GpsInterferer}s attached.
 	 */
-	public CompositeGpsInterferer() {
-		this(new LinkedList<GpsInterferer>());
+	public CompositeGpsInterferer(IdGenerator idGenerator) {
+		this(new LinkedList<GpsInterferer>(), idGenerator);
 	}
 
 	/**
@@ -53,12 +59,13 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	 * @param interferers the {@link CompositeGpsInterferer}s to attach
 	 * @throws IllegalArgumentException if argument 'interferers' is 'null'
 	 */
-	public CompositeGpsInterferer(List<GpsInterferer> interferers) throws IllegalArgumentException {
+	public CompositeGpsInterferer(List<GpsInterferer> interferers, IdGenerator idGenerator) throws IllegalArgumentException {
 		if (interferers == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"interferers"));
 		}
 		this.interferers = new LinkedList<>(interferers);
+    this.idGenerator = idGenerator;
 	}
 
 	/**
@@ -92,10 +99,10 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	}
 
 	@Override
-	public JaxRSCoordinate interfere(final JaxRSCoordinate mutablePosition,
-		final JaxRSCoordinate realPosition,
+	public BaseCoordinate interfere(final BaseCoordinate mutablePosition,
+		final BaseCoordinate realPosition,
 		final long simTime) {
-		JaxRSCoordinate result = new JaxRSCoordinate(mutablePosition.getX(),
+		BaseCoordinate result = new BaseCoordinate(idGenerator.getNextId(),mutablePosition.getX(),
 			mutablePosition.getY());
 		for (final GpsInterferer interferer : this.interferers) {
 			result = interferer.interfere(result,

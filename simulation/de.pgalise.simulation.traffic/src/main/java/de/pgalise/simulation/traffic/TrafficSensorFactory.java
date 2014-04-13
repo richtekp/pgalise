@@ -6,16 +6,16 @@
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.staticsensor.SensorFactory;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.TopoRadarSensor;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -26,7 +26,7 @@ import javax.ejb.Local;
 @Local
 public interface TrafficSensorFactory extends SensorFactory {
 
-  public InfraredSensor createInfraredSensor(JaxRSCoordinate position,
+  public InfraredSensor createInfraredSensor(BaseCoordinate position,
     List<InfraredInterferer> sensorInterfererTypes,
     Output output);
 
@@ -34,7 +34,7 @@ public interface TrafficSensorFactory extends SensorFactory {
     List<InfraredInterferer> sensorInterfererTypes,
     Output output);
 
-  public InductionLoopSensor createInductionLoopSensor(JaxRSCoordinate position,
+  public InductionLoopSensor createInductionLoopSensor(BaseCoordinate position,
     List<InductionLoopInterferer> sensorInterfererTypes,
     Output output);
 
@@ -42,7 +42,7 @@ public interface TrafficSensorFactory extends SensorFactory {
     List<InductionLoopInterferer> sensorInterfererTypes,
     Output output);
 
-  public TopoRadarSensor createTopoRadarSensor(JaxRSCoordinate position,
+  public TopoRadarSensor createTopoRadarSensor(BaseCoordinate position,
     List<TopoRadarInterferer> sensorInterfererTypes,
     Output output);
 

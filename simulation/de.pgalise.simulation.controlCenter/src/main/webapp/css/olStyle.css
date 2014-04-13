@@ -2,88 +2,109 @@
 
 /* General */
 .olControlPanel {
-    top: 10px;
-    left: 40px;
-    height: 40px;
-    position: absolute;
-    cursor: pointer;
+	top: 10px;
+	left: 40px;
+	height: 40px;
+	position: absolute;
+	cursor: pointer;
 }
 
 .olControlPanel div {
-    float: left;
-    margin-right: 5px;
-    height: 40px;
-    width: 40px;
-    background-size: 40px 40px;
+	float: left;
+	margin-right: 5px;
+	height: 40px;
+	width: 40px;
+	background-size: 40px 40px;
 }
 
 /* Icons */
 .olControlTrafficLightItemInactive {
-    background-image: url(../../img/traffic_light.png);
-    background-repeat: no-repeat;
+	background-image: url(../../img/traffic_light.png);
+	background-repeat: no-repeat;
 }
+
 .olControlTrafficLightItemActive {
-    background-image: url(../../img/traffic_lightC.png);
+	background-image: url(../../img/traffic_lightC.png);
 }
+
 .olControlWindPowerSensorItemInactive {
-    background-image: url(../../img/wind_power_plant.png);
+	background-image: url(../../img/wind_power_plant.png);
 }
+
 .olControlWindPowerSensorItemActive {
-    background-image: url(../../img/wind_power_plantC.png);
+	background-image: url(../../img/wind_power_plantC.png);
 }
+
 .olControlPhotovoltaikItemInactive {
-    background-image: url(../../img/photovoltaik.png);
+	background-image: url(../../img/photovoltaik.png);
 }
+
 .olControlPhotovoltaikItemActive {
-    background-image: url(../../img/photovoltaikC.png);
+	background-image: url(../../img/photovoltaikC.png);
 }
+
 .olControlInductionLoopItemInactive {
-    background-image: url(../../img/induction_loop.png);
+	background-image: url(../../img/induction_loop.png);
 }
+
 .olControlInductionLoopItemActive {
-    background-image: url(../../img/induction_loopC.png);
+	background-image: url(../../img/induction_loopC.png);
 }
+
 .olControlWeatherStationItemInactive {
-    background-image: url(../../img/weather_station.png);
+	background-image: url(../../img/weather_station.png);
 }
+
 .olControlWeatherStationItemActive {
-    background-image: url(../../img/weather_stationC.png);
+	background-image: url(../../img/weather_stationC.png);
 }
+
 .olControlSmartMeterItemInactive {
-    background-image: url(../../img/smart_meter.png);
+	background-image: url(../../img/smart_meter.png);
 }
+
 .olControlSmartMeterItemActive {
-    background-image: url(../../img/smart_meterC.png);
+	background-image: url(../../img/smart_meterC.png);
 }
+
 .olControlTopoRadarItemInactive {
-    background-image: url(../../img/toporadar.png);
+	background-image: url(../../img/toporadar.png);
 }
+
 .olControlTopoRadarItemActive {
-    background-image: url(../../img/toporadarC.png);
+	background-image: url(../../img/toporadarC.png);
 }
+
 .olControlPathItemInactive {
-    background-image: url(../../img/trip_flag.png);
-    margin-left: 35px;
+	background-image: url(../../img/trip_flag.png);
+	margin-left: 35px;
 }
+
 .olControlPathItemActive {
-    background-image: url(../../img/trip_flagC.png);
-    margin-left: 35px;
+	background-image: url(../../img/trip_flagC.png);
+	margin-left: 35px;
 }
+
 .olControlAttractionItemInactive {
-    background-image: url(../../img/attraction.png);
+	background-image: url(../../img/attraction.png);
 }
+
 .olControlAttractionItemActive {
-    background-image: url(../../img/attractionC.png);
+	background-image: url(../../img/attractionC.png);
 }
+
 .olControlStreetBlockItemInactive {
-    background-image: url(../../img/street_block.png);
+	background-image: url(../../img/street_block.png);
 }
+
 .olControlStreetBlockItemActive {
-    background-image: url(../../img/street_blockC.png);
+	background-image: url(../../img/street_blockC.png);
 }
+
 .olControlEnergyEventItemInactive {
-    background-image: url(../../img/energyevent.png);
+	background-image: url(../../img/energyevent.png);
 }
+
 .olControlEnergyEventItemActive {
-    background-image: url(../../img/energyeventC.png);
+	background-image: url(../../img/energyeventC.png);
 }

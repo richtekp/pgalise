@@ -16,7 +16,7 @@
  
 package de.pgalise.simulation.traffic.graphextension;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
@@ -43,7 +43,7 @@ public interface GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	public JaxRSCoordinate getPosition(final NavigationNode node);
+	public BaseCoordinate getPosition(final NavigationNode node);
 
 	/**
 	 * Returns the vector between the two nodes as difference.
@@ -77,7 +77,7 @@ public interface GraphExtensions {
 	 *            the new position of the node
 	 * @return the passed node for method chaining
 	 */
-	public TrafficNode setPosition(final TrafficNode node, final JaxRSCoordinate position);
+	public TrafficNode setPosition(final TrafficNode node, final BaseCoordinate position);
 
 	/**
 	 * Returns the length between two nodes.

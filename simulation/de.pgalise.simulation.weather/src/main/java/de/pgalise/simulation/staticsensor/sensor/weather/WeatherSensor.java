@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.staticsensor.sensor.weather;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -60,7 +60,7 @@ public abstract class WeatherSensor<X extends SensorData> extends AbstractStatic
 	 */
 	protected WeatherSensor(Long id,
 		Output output,
-		final JaxRSCoordinate position,
+		final BaseCoordinate position,
 		WeatherController weatherController,
 		int updateLimit,
 		final WeatherInterferer weatherInterferer,

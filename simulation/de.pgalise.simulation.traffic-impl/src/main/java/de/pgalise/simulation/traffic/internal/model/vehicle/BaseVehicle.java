@@ -15,7 +15,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -73,7 +73,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
   /**
    * Position
    */
-  private JaxRSCoordinate position;
+  private BaseCoordinate position;
 
   /**
    * Direction
@@ -163,7 +163,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
   public BaseVehicle(Long id,
     D data,
     TrafficGraphExtensions trafficGraphExtensions,
-    JaxRSCoordinate position) {
+    BaseCoordinate position) {
     super(id);
     this.vehicleData = data;
     this.trafficGraphExtensions = trafficGraphExtensions;
@@ -222,7 +222,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
   }
 
   @Override
-  public JaxRSCoordinate getPosition() {
+  public BaseCoordinate getPosition() {
     return this.position;
   }
 
@@ -312,7 +312,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
     this.edgePath = path;
     this.nodePath = BaseVehicle.creaeteNodePath(path);
     this.currentNode = this.nodePath.get(0);
-    this.position = this.currentNode.getGeoLocation();
+    this.position = this.currentNode;
     this.currentEdge = path.get(0);
     // calculate direction from currentNode to nextNode
     this.direction = this.getDirection(this.getTrafficGraphExtensions().
@@ -323,7 +323,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
   }
 
   @Override
-  public void setPosition(JaxRSCoordinate position) {
+  public void setPosition(BaseCoordinate position) {
     this.position = position;
   }
 
@@ -420,8 +420,8 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
     return nextNode;
   }
 
-  protected JaxbVector2d getDirection(JaxRSCoordinate a,
-    JaxRSCoordinate b) {
+  protected JaxbVector2d getDirection(BaseCoordinate a,
+    BaseCoordinate b) {
     JaxbVector2d dir = new JaxbVector2d(b.getX(),
       b.getY());
     JaxbVector2d aVector = new JaxbVector2d(a.getX(),
@@ -457,7 +457,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
       // calculate new position on the path
       JaxbVector2d positionVector = new JaxbVector2d(this.position.getX(),
         this.position.getY());
-      JaxRSCoordinate nextNodePosition = this.getTrafficGraphExtensions().
+      BaseCoordinate nextNodePosition = this.getTrafficGraphExtensions().
         getPosition(this._getNextNode());
       JaxbVector2d nextNodeVector = new JaxbVector2d(nextNodePosition.getX(),
         nextNodePosition.getY());
@@ -518,14 +518,21 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
    * @return true, if the next node is reached
    */
   protected boolean hasReachedNextNode(Orientation orientation,
-    JaxRSCoordinate position) {
+    BaseCoordinate position) {
     return Orientation.isBeyond(orientation,
       position,
       this.getTrafficGraphExtensions().getPosition(this._getNextNode()));
   }
 
-  protected JaxRSCoordinate update(long elapsedTime,
-    JaxRSCoordinate pos,
+  /**
+   * overwrites the values of pos and returns a reference to pos
+   * @param elapsedTime
+   * @param pos
+   * @param dir
+   * @return 
+   */
+  protected BaseCoordinate update(long elapsedTime,
+    BaseCoordinate pos,
     JaxbVector2d dir) {
     // log.debug("elapsedTime == 0 " + (elapsedTime == 0) + ", velocity == 0 " + (this.velocity == 0));
     if (elapsedTime == 0 || this.velocity == 0) {
@@ -541,8 +548,9 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
     posVector.add(dir);
     // log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
     // ", direction: " + dir);
-    return new JaxRSCoordinate(posVector.getX(),
-      posVector.getY());
+    pos.setX(posVector.getX());
+    pos.setY(posVector.getY());
+    return pos;
   }
 
   @Override

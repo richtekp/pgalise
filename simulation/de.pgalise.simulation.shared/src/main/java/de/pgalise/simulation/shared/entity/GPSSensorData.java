@@ -17,7 +17,6 @@
 package de.pgalise.simulation.shared.entity;
 
 import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -35,7 +34,7 @@ public class GPSSensorData extends SensorData {
 	 */
 	private static final long serialVersionUID = -4537439047671111611L;
 	@Embedded
-	private JaxRSCoordinate position;
+	private BaseCoordinate position;
 	private double distanceInMperStep;
 	private int totalDistanceInM, speedInKmh, avgSpeedInKmh, directionInGrad;
 	private long travelTimeInMs;
@@ -46,7 +45,7 @@ public class GPSSensorData extends SensorData {
 	public GPSSensorData( ) {
 	}
 
-	public GPSSensorData(JaxRSCoordinate position,
+	public GPSSensorData(BaseCoordinate position,
 		double distanceInMperStep,
 		int totalDistanceInM,
 		int speedInKmh,
@@ -62,11 +61,11 @@ public class GPSSensorData extends SensorData {
 		this.travelTimeInMs = travelTimeInMs;
 	}
 
-	public JaxRSCoordinate getPosition() {
+	public BaseCoordinate getPosition() {
 		return position;
 	}
 
-	public void setPosition(JaxRSCoordinate position) {
+	public void setPosition(BaseCoordinate position) {
 		this.position = position;
 	}
 

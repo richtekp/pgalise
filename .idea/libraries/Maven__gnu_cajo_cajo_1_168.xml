@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: gnu.cajo:cajo:1.168">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/gnu/cajo/cajo/1.168/cajo-1.168.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/gnu/cajo/cajo/1.168/cajo-1.168-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/gnu/cajo/cajo/1.168/cajo-1.168-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

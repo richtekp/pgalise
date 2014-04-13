@@ -33,7 +33,7 @@
 			<artifactId>postgis-jdbc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax</groupId>
+			<groupId>java3d</groupId>
 			<artifactId>vecmath</artifactId>
 			<type>jar</type>
 		</dependency>
@@ -77,7 +77,13 @@
 			<version>5.2.3</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
+	 <dependency>
+	  <groupId>storm</groupId>
+	  <artifactId>storm</artifactId>
+	  <version>0.8.2</version>
+	  <type>jar</type>
+	 </dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<type>jar</type>

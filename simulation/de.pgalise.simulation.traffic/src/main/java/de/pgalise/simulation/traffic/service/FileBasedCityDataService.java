@@ -9,16 +9,16 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * An extension of {@link CityDataService} to parseFile one File.
+ * For possibility to parseFile multiple files see
  *
  * @author richter
  */
-public interface FileBasedCityInfrastructureDataService extends
-  CityInfrastructureDataService {
+public interface FileBasedCityDataService extends
+  CityDataService {
 
-  void parse(File osmFile,
-    File busStopFile) throws IOException;
+  void parseFile(File osmFile) throws IOException;
 
-  void parse(InputStream osmIN,
-    InputStream busStopIN) throws IOException;
+  void parseStream(InputStream osmIN) throws IOException;
 
 }

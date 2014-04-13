@@ -181,7 +181,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
     } else {
       if (cityZone == null || cityZone.covers(GeoToolsBootstrapping.
         getGEOMETRY_FACTORY().createPoint(
-          nodeID.getGeoLocation()))) {
+          nodeID))) {
         return this.randomVehicleTripGenerator.createVehicleTrip(nodeID,
           getAllHomeNodes(),
           startTimestamp);

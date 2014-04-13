@@ -30,9 +30,9 @@ import org.junit.Test;
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.traffic.service.CityInfrastructureDataService;
+import de.pgalise.simulation.traffic.service.CityDataService;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.entity.Building;
 import javax.annotation.ManagedBean;
@@ -51,7 +51,8 @@ import org.junit.Ignore;
  */
 @LocalClient
 @ManagedBean
-@Ignore //@loads EnergyProfileLocal as EJB which doesn't have an implementation which is annotated as EJB (how did this work before?)
+@Ignore //@loads EnergyProfileLocal as EJB which doesn't have an implementation 
+  //which is annotated as EJB (how did this work before?)
 public class EnergyConsumptionManagerSyncTest {
 
   /**
@@ -72,14 +73,7 @@ public class EnergyConsumptionManagerSyncTest {
   /**
    * Test location as Geolocation
    */
-  private static final JaxRSCoordinate testLocation = new JaxRSCoordinate(
-    53.136765,
-    8.216524);
-
-  /**
-   * Test location as Vector2d
-   */
-  private static final JaxRSCoordinate testLocationAsV2d = EnergyConsumptionManagerSyncTest.testLocation;
+  private BaseCoordinate testLocation ;
   /**
    * Number of test threads
    */
@@ -94,21 +88,24 @@ public class EnergyConsumptionManagerSyncTest {
   public void setUp() throws NamingException {
     TestUtils.getContext().bind("inject",
       this);
+    testLocation = new BaseCoordinate(idGenerator.getNextId(),
+    53.136765,
+    8.216524);
 
     Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
     List<Building> buildingList = new ArrayList<>();
 
     for (int i = 0; i < 100; i++) {
       buildingList.add(new Building(idGenerator.getNextId(),
-        new JaxRSCoordinate(53.136765,
+        new BaseCoordinate(idGenerator.getNextId(), 53.136765,
           8.216524),
         null));
     }
 
-    CityInfrastructureDataService citydata = EasyMock.createNiceMock(
-      CityInfrastructureDataService.class);
+    CityDataService citydata = EasyMock.createNiceMock(
+      CityDataService.class);
     EasyMock.expect(citydata.getBuildings(
-      EnergyConsumptionManagerSyncTest.testLocation,
+      testLocation,
       5)).andStubReturn(map);
     EasyMock.replay(citydata);
 
@@ -184,7 +181,7 @@ public class EnergyConsumptionManagerSyncTest {
             getEnergyConsumptionInKWh(
               EnergyConsumptionManagerSyncTest.startTime,
               EnergyProfileEnum.HOUSEHOLD,
-              EnergyConsumptionManagerSyncTest.testLocationAsV2d) > 0);
+              testLocation) > 0);
         }
       });
 
