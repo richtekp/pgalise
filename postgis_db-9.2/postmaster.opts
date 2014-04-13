@@ -1,1 +1,0 @@
-/usr/lib/postgresql/9.2/bin/postgres "-D" "/mnt/DATA/richter/DropBox/stratosphere/pgalise/postgis_db-9.2" "-p" "5201" "-h" "localhost" "-k" "/tmp"
