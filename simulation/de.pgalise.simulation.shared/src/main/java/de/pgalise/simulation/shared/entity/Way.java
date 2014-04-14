@@ -41,11 +41,14 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 	private static final long serialVersionUID = 2942128399393060939L;
 	@OneToMany(targetEntity = NavigationEdge.class)
 	private List<E> edgeList = new LinkedList<>();
-	private String streetName;
 	@ElementCollection
 	private Set<String> tags = new HashSet<>();
 	@ElementCollection
 	private Set<String> landuseTags = new HashSet<>();
+  /**
+   * an identifer code, like highway E7, bicycle route R6, etc. 
+   */
+  private String wayIdentifier = "";
 
 	/**
 	 * Default
@@ -58,9 +61,8 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
   }
 
 	public Way(Long id,
-		List<E> edgeList,
-		String streetname) {
-    this(id, edgeList, streetname, new HashSet<String>());
+		List<E> edgeList) {
+    this(id, edgeList,  new HashSet<String>());
 	}
 
 	/**
@@ -72,20 +74,17 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 	 */
 	public Way(Long id,
     List<E> edgeList,
-		String streetname,
 		Set<String> wayTags) {
 		this(id,edgeList,
-			streetname, wayTags, new HashSet<String>());
+			 wayTags, new HashSet<String>());
 	}
 
 	public Way(Long id,
 		List<E> edgeList,
-		String streetname,
 		Set<String> tags,
 		Set<String> landuseTags) {
     this(id);
     this.edgeList = edgeList;
-    this.streetName = streetname;
     this.tags = tags;
 		this.landuseTags = landuseTags;
 	}
@@ -115,13 +114,13 @@ public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends 
 		this.edgeList = edgeList;
 	}
 
-	public String getStreetName() {
-		return this.streetName;
-	}
+  public void setWayIdentifier(String wayIdentifier) {
+    this.wayIdentifier = wayIdentifier;
+  }
 
-	public void setStreetName(String streetname) {
-		this.streetName = streetname;
-	}
+  public String getWayIdentifier() {
+    return wayIdentifier;
+  }
 
 	/**
 	 * retrieves the nodes of the way for the edge list. Usage is discouraged due

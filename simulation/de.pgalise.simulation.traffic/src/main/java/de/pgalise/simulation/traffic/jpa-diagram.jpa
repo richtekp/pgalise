@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jpa:entity-mappings id="_1397440604844514" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_1.xsd" xmlns:ns4="http://nbmodeler.java.net" xmlns:jpa="http://java.sun.com/xml/ns/persistence/orm" xmlns:java="http://jcp.org/en/jsr/detail?id=270" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <jpa:mapped-superclass class="JaxRSCoordinate" compositePrimaryKeyType="NONE" minimized="false" id="_1397440604860517">
+        <jpa:attributes/>
+    </jpa:mapped-superclass>
+    <jpa:entity class="BaseCoordinate" compositePrimaryKeyType="NONE" superclass="JaxRSCoordinate" superclassId="_1397440604860517" minimized="false" id="_1397440604860518">
+        <jpa:attributes>
+            <jpa:id name="id" attribute-type="java.lang.Long" id="_1397440604860519"/>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:entity class="GPSSensorData" compositePrimaryKeyType="NONE" minimized="false" id="_1397440604873520">
+        <jpa:attributes>
+            <jpa:basic name="distanceInMperStep" attribute-type="double" id="_1397440604914524"/>
+            <jpa:basic name="totalDistanceInM" attribute-type="int" id="_1397440604914525"/>
+            <jpa:basic name="speedInKmh" attribute-type="int" id="_1397440604914526"/>
+            <jpa:basic name="avgSpeedInKmh" attribute-type="int" id="_1397440604914527"/>
+            <jpa:basic name="directionInGrad" attribute-type="int" id="_1397440604914528"/>
+            <jpa:basic name="travelTimeInMs" attribute-type="long" id="_1397440604914529"/>
+            <jpa:embedded name="position" connected-class-id="_1397440604914522" attribute-type="BaseCoordinate" id="_1397440604873521"/>
+        </jpa:attributes>
+    </jpa:entity>
+    <jpa:embeddable class="BaseCoordinate" minimized="false" id="_1397440604914522">
+        <jpa:attributes>
+            <jpa:basic name="id" attribute-type="java.lang.Long" id="_1397440604914523"/>
+        </jpa:attributes>
+    </jpa:embeddable>
+    <jpa:diagram id="_1397440604844515">
+        <plane elementRef="_1397440604844514" id="_1397440604844516_p">
+            <shape elementRef="_1397440604860517" id="_1397440604860517_gui">
+                <Bounds x="589.0" y="30.0" width="215.0" height="25.0"/>
+            </shape>
+            <shape elementRef="_1397440604860518" id="_1397440604860518_gui">
+                <Bounds x="589.0" y="293.0" width="212.0" height="59.0"/>
+            </shape>
+            <shape elementRef="_1397440604873520" id="_1397440604873520_gui">
+                <Bounds x="32.0" y="30.0" width="213.0" height="198.0"/>
+            </shape>
+            <shape elementRef="_1397440604914522" id="_1397440604914522_gui">
+                <Bounds x="309.0" y="292.0" width="216.0" height="60.0"/>
+            </shape>
+        </plane>
+    </jpa:diagram>
+</jpa:entity-mappings>

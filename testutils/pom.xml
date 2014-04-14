@@ -19,5 +19,6 @@
 		<module>testutils-shared</module>
 		<module>testutils-traffic</module>
     <module>testutils-weather</module>
-  </modules>
+	 <module>de.pgalise.testutils-resources</module>
+	</modules>
 </project>

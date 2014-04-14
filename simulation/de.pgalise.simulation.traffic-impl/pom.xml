@@ -59,6 +59,11 @@
 			<scope>test</scope>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-resources</artifactId>
+			<scope>test</scope>
+		</dependency>
 		
 		<!-- unclassified dependencies -->
 		<!-- 
@@ -126,32 +131,30 @@
 			<scope>test</scope>
 			<type>jar</type>
 		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+<!--		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
 		</dependency>
-	 <dependency>
-	  <groupId>woodstox</groupId>
-	  <artifactId>wstx-asl</artifactId>
-	  <version>3.2.7</version>
-	  <type>jar</type>
-	 </dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>-->
 	</dependencies>
 
 	<build>
 		<finalName>de.pgalise.simulation.traffic-impl</finalName>
 		<plugins>
-			<!--			<plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-						<configuration>
-							<source>${java.compiler.source}</source>
-							<target>${java.compiler.target}</target>
-							<debug>true</debug>
-							<debuglevel>lines,vars,source</debuglevel>
-						</configuration>
-			</plugin>-->
+				<version>3.1</version>
+				<configuration>
+					<source>${java.compiler.source}</source>
+					<target>${java.compiler.target}</target>
+					<debug>true</debug>
+					<debuglevel>lines,vars,source</debuglevel>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-ejb-plugin</artifactId>
 			</plugin>

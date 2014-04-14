@@ -30,6 +30,14 @@ public class OSMTrafficNode extends TrafficNode {
     this.osmId = osmId;
   }
 
+  public OSMTrafficNode(
+    Long id,String osmId,
+    double x, double y) {
+    super(id,
+      x,y);
+    this.osmId = osmId;
+  }
+
   public void setOsmId(String osmId) {
     this.osmId = osmId;
   }

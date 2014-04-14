@@ -20,6 +20,7 @@ import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorDat
 import javax.faces.bean.ManagedBean;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 /**
  * Data from a GPS sensor. E.g. for for a {@link SensorHelper} with type {@link SensorType#GPS_CAR}.
@@ -33,7 +34,7 @@ public class GPSSensorData extends SensorData {
 	 * A GPSSensor with latitude and longitude as sensor values.
 	 */
 	private static final long serialVersionUID = -4537439047671111611L;
-	@Embedded
+	@OneToOne
 	private BaseCoordinate position;
 	private double distanceInMperStep;
 	private int totalDistanceInM, speedInKmh, avgSpeedInKmh, directionInGrad;

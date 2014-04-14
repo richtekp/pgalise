@@ -84,7 +84,7 @@ public class LinearWeatherPositionConverterTest {
        */
       BaseCoordinate referencePoint = new BaseCoordinate(idGenerator.getNextId(), 20,
         20);
-      Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+      Polygon referenceArea = GeoToolsBootstrapping.getGeometryFactory().
         createPolygon(
           new BaseCoordinate[]{
             new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,

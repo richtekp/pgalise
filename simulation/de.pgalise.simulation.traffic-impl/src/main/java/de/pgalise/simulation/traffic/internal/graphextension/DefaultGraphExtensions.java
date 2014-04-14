@@ -276,8 +276,8 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public String getStreetName(final TrafficEdge edge) throws IllegalArgumentException {
-		return edge.getWay().getStreetName();
+	public String getWayIdentifier(final TrafficEdge edge) throws IllegalArgumentException {
+		return edge.getWay().getWayIdentifier();
 	}
 
 	/**
@@ -318,8 +318,8 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public boolean hasStreetName(final TrafficEdge edge) throws IllegalArgumentException {
-		return edge.getWay() != null && edge.getWay().getStreetName() != null;
+	public boolean hasWayIdentifier(final TrafficEdge edge) throws IllegalArgumentException {
+		return edge.getWay() != null && edge.getWay().getWayIdentifier()!= null;
 	}
 
 	/**
@@ -353,18 +353,18 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	 *             if argument 'edge' is 'null'
 	 */
 	@Override
-	public TrafficEdge setStreetName(final TrafficEdge edge, final String streetName) throws IllegalArgumentException {
+	public TrafficEdge setWayIdentifier(final TrafficEdge edge, final String streetName) throws IllegalArgumentException {
 		if(edge.getWay() == null) {
 			throw new IllegalStateException("way of node %s not set");
 		}
-		if(edge.getWay().getStreetName() == null) {
-			edge.getWay().setStreetName(streetName);
+		if(edge.getWay().getWayIdentifier()== null) {
+			edge.getWay().setWayIdentifier(streetName);
 		}else {
-			if(edge.getWay().getStreetName() == null ? streetName != null : !edge.getWay().getStreetName().
+			if(edge.getWay().getWayIdentifier() == null ? streetName != null : !edge.getWay().getWayIdentifier().
 				equals(streetName)) {
 				throw new IllegalArgumentException(String.format("if streetName of node.way is already set, the streetName can only be identical"));
 			}
-			edge.getWay().setStreetName(streetName);
+			edge.getWay().setWayIdentifier(streetName);
 		}
 		return edge;
 	}

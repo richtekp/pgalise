@@ -7,7 +7,7 @@
 package de.pgalise.simulation.traffic.entity.osm;
 
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.entity.TrafficWay;
+import de.pgalise.simulation.traffic.entity.MotorWay;
 import java.util.List;
 import javax.persistence.Entity;
 
@@ -16,9 +16,12 @@ import javax.persistence.Entity;
  * @author richter
  */
 @Entity
-public class OSMTrafficWay extends TrafficWay {
+public class OSMTrafficWay extends MotorWay {
   private static final long serialVersionUID = 1L;
   private String osmId;
+
+  protected OSMTrafficWay() {
+  }
 
   public OSMTrafficWay(Long id, String osmId) {
     super(id);

@@ -25,6 +25,7 @@ import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.BusTrip;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.MotorWay;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.TrafficWay;
 import de.pgalise.simulation.traffic.entity.gtfs.GTFSBusAgency;

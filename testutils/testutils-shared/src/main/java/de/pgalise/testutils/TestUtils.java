@@ -79,7 +79,7 @@ public class TestUtils {
 
     BaseCoordinate referencePoint = new BaseCoordinate(idGenerator.getNextId(), 52.516667,
       13.4);
-    Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+    Polygon referenceArea = GeoToolsBootstrapping.getGeometryFactory().
       createPolygon(
         new BaseCoordinate[]{
           new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,

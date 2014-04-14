@@ -15,23 +15,22 @@
  */
 package de.pgalise.simulation.traffic.internal.server.route;
 
-import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
-import de.pgalise.simulation.shared.tag.LanduseTagEnum;
-import java.awt.Polygon;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.shared.entity.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.shared.entity.Way;
+import de.pgalise.simulation.shared.tag.LanduseTagEnum;
+import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
+import de.pgalise.simulation.traffic.entity.MotorWay;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.TrafficWay;
 import de.pgalise.simulation.traffic.server.route.EnrichedPolygon;
+import java.awt.Polygon;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import javax.ejb.Stateful;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Lena
@@ -78,8 +77,8 @@ public class DefaultRegionParser implements RegionParser {
 	public void parseLanduse(TrafficGraph graph,
 		CityInfrastructureData trafficInformation) {
 		List<EnrichedPolygon> polygons = new ArrayList<>();
-		List<TrafficWay> ways = trafficInformation.getMotorWays();
-		List<TrafficWay> landuses = trafficInformation.getLandUseWays();
+		Set<MotorWay> ways = trafficInformation.getMotorWays();
+		Set<TrafficWay> landuses = trafficInformation.getLandUseWays();
 
 		for (Way<?, ?> landuse : landuses) {
 			int npoints = landuse.getNodeList().size();
@@ -100,7 +99,7 @@ public class DefaultRegionParser implements RegionParser {
 				landuse.getLanduseTags()));
 		}
 
-		for (TrafficWay way : ways) {
+		for (MotorWay way : ways) {
 			for (TrafficNode node : way.getNodeList()) {
 				for (EnrichedPolygon p : polygons) {
 					if (p.getPolygon().contains(

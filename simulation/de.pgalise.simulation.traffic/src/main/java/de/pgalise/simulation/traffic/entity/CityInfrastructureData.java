@@ -7,8 +7,6 @@ package de.pgalise.simulation.traffic.entity;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -32,28 +30,28 @@ public class CityInfrastructureData extends Identifiable {
   private static final long serialVersionUID = 1L;
 
   @ManyToMany
-  private List<TrafficWay> cycleWays = new LinkedList<>();
+  private Set<CycleWay> cycleWays = new HashSet<>();
   @ManyToMany
-  private List<TrafficWay> landUseWays = new LinkedList<>();
+  private Set<TrafficWay> landUseWays = new HashSet<>();
   @ManyToMany
-  private List<TrafficWay> motorWays = new LinkedList<>();
+  private Set<MotorWay> motorWays = new HashSet<>();
   @ManyToMany
-  private List<TrafficWay> motorWaysWithBusStops = new LinkedList<>();
+  private Set<MotorWay> motorWaysWithBusStops = new HashSet<>();
   @ManyToMany
-  private List<TrafficNode> junctionNodes = new LinkedList<>();
+  private Set<TrafficNode> junctionNodes = new HashSet<>();
   @ManyToMany
-  private List<TrafficNode> nodes = new LinkedList<>();
+  private Set<TrafficNode> nodes = new HashSet<>();
   @ManyToMany
-  private List<TrafficNode> streetNodes = new LinkedList<>();
+  private Set<TrafficNode> streetNodes = new HashSet<>();
   @ManyToMany
-  private List<TrafficWay> ways = new LinkedList<>();
+  private Set<TrafficWay> ways = new HashSet<>();
 
   @ManyToMany
-  private List<TrafficWay> cycleAndMotorways = new LinkedList<>();
+  private Set<TrafficWay> cycleAndMotorways = new HashSet<>();
   @ManyToMany
-  private List<TrafficNode> roundAbouts = new LinkedList<>();
+  private Set<TrafficNode> roundAbouts = new HashSet<>();
   @ManyToMany
-  private List<Building> buildings = new LinkedList<>();
+  private Set<Building> buildings = new HashSet<>();
   @ManyToMany
   private Set<BusStop> busStops = new HashSet<>();
   @ManyToMany
@@ -66,90 +64,89 @@ public class CityInfrastructureData extends Identifiable {
     super(id);
   }
 
-  public List<TrafficNode> getRoundAbouts() {
+  public Set<TrafficNode> getRoundAbouts() {
     return roundAbouts;
   }
 
   public void setRoundAbouts(
-    List<TrafficNode> roundAbouts) {
+    Set<TrafficNode> roundAbouts) {
     this.roundAbouts = roundAbouts;
   }
 
-  public void setWays(
-    List<TrafficWay> ways) {
+  public Set<TrafficWay> getWays() {
+    return ways;
+  }
+
+  public void setWays(    Set<TrafficWay> ways) {
     this.ways = ways;
   }
 
-  public void setStreetNodes(List<TrafficNode> streetNodes) {
+  public void setStreetNodes(Set<TrafficNode> streetNodes) {
     this.streetNodes = streetNodes;
   }
 
-  public void setNodes(List<TrafficNode> nodes) {
+  public void setNodes(Set<TrafficNode> nodes) {
     this.nodes = nodes;
   }
 
   public void setMotorWaysWithBusStops(
-    List<TrafficWay> motorWaysWithBusStops) {
+    Set<MotorWay> motorWaysWithBusStops) {
     this.motorWaysWithBusStops = motorWaysWithBusStops;
   }
 
   public void setMotorWays(
-    List<TrafficWay> motorWays) {
+    Set<MotorWay> motorWays) {
     this.motorWays = motorWays;
   }
 
   public void setLandUseWays(
-    List<TrafficWay> landUseWays) {
+    Set<TrafficWay> landUseWays) {
     this.landUseWays = landUseWays;
   }
 
-  public void setJunctionNodes(List<TrafficNode> junctionNodes) {
+  public void setJunctionNodes(Set<TrafficNode> junctionNodes) {
     this.junctionNodes = junctionNodes;
   }
 
   public void setCycleWays(
-    List<TrafficWay> cycleWays) {
+    Set<CycleWay> cycleWays) {
     this.cycleWays = cycleWays;
   }
 
   public void setCycleAndMotorways(
-    List<TrafficWay> cycleAndMotorways) {
+    Set<TrafficWay> cycleAndMotorways) {
     this.cycleAndMotorways = cycleAndMotorways;
   }
 
-  public List<TrafficWay> getWays() {
-    return ways;
-  }
-
-  public List<TrafficNode> getStreetNodes() {
+  public Set<TrafficNode> getStreetNodes() {
     return streetNodes;
   }
 
-  public List<TrafficNode> getNodes() {
+  public Set<TrafficNode> getNodes() {
     return nodes;
   }
 
-  public List<TrafficWay> getWaysWithBusStops() {
+  public Set<MotorWay> getWaysWithBusStops() {
     return motorWaysWithBusStops;
   }
 
-  public List<TrafficWay> getMotorWays() {
+  public Set<MotorWay> getMotorWays() {
     return motorWays;
   }
 
-  public List<TrafficWay> getLandUseWays() {
+  public Set<TrafficWay> getLandUseWays() {
     return landUseWays;
   }
 
-  public List<TrafficNode> getJunctionNodes() {
+  public Set<TrafficNode> getJunctionNodes() {
     return junctionNodes;
   }
 
-  public List<TrafficWay> getCycleWays() {
+  public Set<CycleWay> getCycleWays() {
     return cycleWays;
   }
 
-  public List<TrafficWay> getCycleAndMotorways() {
+  public Set<TrafficWay> getCycleAndMotorways() {
     return cycleAndMotorways;
   }
 
@@ -161,11 +158,11 @@ public class CityInfrastructureData extends Identifiable {
     this.busStops = busStops;
   }
 
-  public List<Building> getBuildings() {
+  public Set<Building> getBuildings() {
     return buildings;
   }
 
-  public void setBuildings(List<Building> buildings) {
+  public void setBuildings(Set<Building> buildings) {
     this.buildings = buildings;
   }
 

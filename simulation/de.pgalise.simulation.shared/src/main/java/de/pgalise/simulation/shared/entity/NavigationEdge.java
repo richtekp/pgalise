@@ -69,7 +69,7 @@ public class NavigationEdge<N extends NavigationNode> extends Identifiable {
    */
   public LineString getEdgeLine() {
     if (edgeLine == null) {
-      this.edgeLine = GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+      this.edgeLine = GeoToolsBootstrapping.getGeometryFactory().
         createLineString(
           new BaseCoordinate[]{
             getSource(), getTarget()

@@ -179,8 +179,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
         nodeID,
         startTimestamp);
     } else {
-      if (cityZone == null || cityZone.covers(GeoToolsBootstrapping.
-        getGEOMETRY_FACTORY().createPoint(
+      if (cityZone == null || cityZone.covers(GeoToolsBootstrapping.getGeometryFactory().createPoint(
           nodeID))) {
         return this.randomVehicleTripGenerator.createVehicleTrip(nodeID,
           getAllHomeNodes(),
@@ -323,7 +322,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
   public List<TrafficNode> getStartHomeNodes(Geometry cityZone) {
     List<TrafficNode> nodes = new ArrayList<>();
     for (TrafficNode node : getAllHomeNodes()) {
-      if (cityZone.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+      if (cityZone.covers(GeoToolsBootstrapping.getGeometryFactory().
         createPoint(
           this.trafficGraphExtensions.getPosition(node)))) {
         nodes.add(node);
@@ -336,7 +335,7 @@ public class DefaultRouteConstructor implements RouteConstructor {
   public List<TrafficNode> getStartWorkNodes(Geometry cityZone) {
     List<TrafficNode> nodes = new ArrayList<>();
     for (TrafficNode node : getAllWorkNodes()) {
-      if (cityZone.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+      if (cityZone.covers(GeoToolsBootstrapping.getGeometryFactory().
         createPoint(
           this.trafficGraphExtensions.getPosition(node)))) {
         nodes.add(node);

@@ -1,14 +1,15 @@
 /*
- * To change this template, choose Tools | Templates
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package de.pgalise.simulation.traffic.entity;
 
-import de.pgalise.simulation.traffic.entity.TrafficNode;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.shared.entity.Way;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.MappedSuperclass;
 
 /**
  *
@@ -16,32 +17,18 @@ import javax.persistence.Entity;
  */
 @Entity
 public class TrafficWay extends Way<TrafficEdge, TrafficNode> {
+  private static final long serialVersionUID = 1L;
 
-	private static final long serialVersionUID = 1L;
-
-	protected TrafficWay() {
-	}
+  public TrafficWay() {
+    super();
+  }
   
   public TrafficWay(Long id) {
     super(id);
   }
-
-	public TrafficWay(Long id,
-		List<TrafficEdge> edgeList,
-		String streetname) {
-		super(id,edgeList,
-			streetname);
-	}
-
-	public void applyMaxSpeed(int maxSpeed) {
-		for (TrafficEdge edge : getEdgeList()) {
-			if (edge.getMaxSpeed() != -1) {
-				throw new IllegalStateException(String.format(
-					"oneWay flag of edge %s already set (flags on all edges have to be null before a whole way can be set to one way)",
-					edge));
-			}
-			edge.setMaxSpeed(maxSpeed);
-		}
-	}
-
+  
+  public TrafficWay(Long id, List<TrafficEdge> edgeList) {
+    super(id, edgeList);
+  }
+  
 }

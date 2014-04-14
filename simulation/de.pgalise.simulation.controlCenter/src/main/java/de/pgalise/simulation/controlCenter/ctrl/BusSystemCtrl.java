@@ -101,7 +101,7 @@ public class BusSystemCtrl implements Serializable {
         newBusStopFileNamesBoundaryCoordinates.add(busRouteBusStop);
       }
     }
-    MultiPoint newBusStopFileNamesBoundaryMultipoint = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createMultiPoint(newBusStopFileNamesBoundaryCoordinates.toArray(new Coordinate[newBusStopFileNamesBoundaryCoordinates.size()]));
+    MultiPoint newBusStopFileNamesBoundaryMultipoint = GeoToolsBootstrapping.getGeometryFactory().createMultiPoint(newBusStopFileNamesBoundaryCoordinates.toArray(new Coordinate[newBusStopFileNamesBoundaryCoordinates.size()]));
     Envelope newBusStopFileNamesBoundaryEnvelope = newBusStopFileNamesBoundaryMultipoint.getEnvelopeInternal();
     Rectangle newBusStopFileNamesBoundaryOverlay = new Rectangle(new LatLngBounds(new LatLng(newBusStopFileNamesBoundaryEnvelope.getMinX(),newBusStopFileNamesBoundaryEnvelope.getMinY()), new LatLng(newBusStopFileNamesBoundaryEnvelope.getMaxX(),
         newBusStopFileNamesBoundaryEnvelope.getMaxY())));

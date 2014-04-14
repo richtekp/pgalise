@@ -6,7 +6,7 @@ package de.pgalise.util.cityinfrastructure.impl;
 
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficWay;
-import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -21,6 +21,6 @@ public interface GraphConstructor {
    * @return Graph
    */
   TrafficGraph createGraph(
-    List<TrafficWay> ways);
+    Set<TrafficWay> ways);
 
 }

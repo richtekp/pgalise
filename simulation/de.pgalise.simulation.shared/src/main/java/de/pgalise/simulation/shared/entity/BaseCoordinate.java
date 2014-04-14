@@ -7,12 +7,8 @@ package de.pgalise.simulation.shared.entity;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * <tt>BaseCoordinate</tt> contains any geographical information for a point. 

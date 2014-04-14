@@ -106,13 +106,14 @@ public interface GraphExtensions {
 	public Double getMaxSpeed(final TrafficEdge edge);
 
 	/**
-	 * Returns the street name of the passed edge.
+	 * Returns the way Identifier of the way which is associated with the passed 
+   * edge.
 	 * 
 	 * @param edge
 	 *            the edge which street name is asked
 	 * @return the street name of the passed edge or null if streetName havn't been set yet
 	 */
-	public String getStreetName(final TrafficEdge edge);
+	public String getWayIdentifier(final TrafficEdge edge);
 
 	/**
 	 * Returns the Vector of the passed edge.
@@ -139,7 +140,7 @@ public interface GraphExtensions {
 	 *            the edge that has to be checked
 	 * @return true if the passed edge has attached the streetName property, otherwise false
 	 */
-	public boolean hasStreetName(final TrafficEdge edge);
+	public boolean hasWayIdentifier(final TrafficEdge edge);
 
 	/**
 	 * Sets the maximum speed of the passed edge.
@@ -160,7 +161,7 @@ public interface GraphExtensions {
 	 * @param streetName 
 	 * @return  
 	 */
-	public TrafficEdge setStreetName(final TrafficEdge edge, final String streetName);
+	public TrafficEdge setWayIdentifier(final TrafficEdge edge, final String streetName);
 
 	/**
 	 * Determines whether the passed edge is a street for cars.

@@ -75,6 +75,12 @@ public class TrafficNode extends NavigationNode {
       geoLocation);
   }
 
+  public TrafficNode(Long id,
+    double x, double y) {
+    super(id,
+      x,y);
+  }
+
   public boolean isOnJunction() {
     return onJunction;
   }

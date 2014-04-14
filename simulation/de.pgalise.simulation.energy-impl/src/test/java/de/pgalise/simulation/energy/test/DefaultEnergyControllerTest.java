@@ -154,7 +154,7 @@ public class DefaultEnergyControllerTest {
           new BaseCoordinate(idGenerator.getNextId(), 53.136765,
             8.216524),
           new BaseBoundary(idGenerator.getNextId(),
-            GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+            GeoToolsBootstrapping.getGeometryFactory().createPolygon(
               new BaseCoordinate[]{
                 new BaseCoordinate(idGenerator.getNextId(), 1,
                   1),

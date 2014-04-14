@@ -7,6 +7,7 @@
 package de.pgalise.simulation.shared;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import javax.persistence.MappedSuperclass;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,13 +19,14 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@MappedSuperclass
 public class JaxRSCoordinate extends Coordinate {
+  private static final long serialVersionUID = 1L;
   
 
 	/**
 	 * Constructs a <code>Coordinate</code> at (x,y,z).
 	 *
-   * @param id
 	 * @param x the x-value
 	 * @param y the y-value
 	 * @param z the z-value
@@ -48,7 +50,6 @@ public class JaxRSCoordinate extends Coordinate {
 	 * Constructs a <code>Coordinate</code> having the same (x,y,z) values as
 	 * <code>other</code>.
 	 *
-   * @param id
 	 * @param c the <code>Coordinate</code> to copy.
 	 */
 	public JaxRSCoordinate(Coordinate c) {
@@ -58,7 +59,6 @@ public class JaxRSCoordinate extends Coordinate {
 	/**
 	 * Constructs a <code>Coordinate</code> at (x,y,NaN).
 	 *
-   * @param id
 	 * @param x the x-value
 	 * @param y the y-value
 	 */

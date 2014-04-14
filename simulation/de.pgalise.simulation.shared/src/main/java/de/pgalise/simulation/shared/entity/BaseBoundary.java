@@ -9,9 +9,11 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 /**
@@ -29,7 +31,8 @@ public class BaseBoundary extends BaseCoordinate {
   //@TODO: re-enable hibernate-spatial as soon as hibernate spatial is compatible Java EE 7 and/or integrated in hibernate-orm 5.x
 //	@Type(type="org.hibernate.spatial.GeometryType")
 //	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
-  List<BaseCoordinate> boundaryCoordinates;
+  @OneToMany
+  private List<BaseCoordinate> boundaryCoordinates = new LinkedList<>();
   @Transient
   private Polygon boundary;
   @Transient
@@ -68,8 +71,15 @@ public class BaseBoundary extends BaseCoordinate {
    */
   public Polygon retrieveBoundary() {
     if (boundary == null) {
-      boundary = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
-        boundaryCoordinates.toArray(new Coordinate[boundaryCoordinates.size()]));
+      Coordinate[] boundaryCoordinatesArray = new Coordinate[boundaryCoordinates.size()+1];
+      System.arraycopy(boundaryCoordinates.toArray(new Coordinate[boundaryCoordinates.size()+1]),
+        0,
+        boundaryCoordinatesArray,
+        0,
+        boundaryCoordinates.size());
+      boundaryCoordinatesArray[boundaryCoordinates.size()] = boundaryCoordinatesArray[0];
+      boundary = GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+        boundaryCoordinatesArray);
     }
     return this.boundary;
   }

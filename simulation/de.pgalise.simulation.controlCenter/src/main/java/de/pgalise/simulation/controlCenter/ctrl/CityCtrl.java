@@ -414,7 +414,7 @@ public class CityCtrl implements Serializable {
     if (useFileBoundaries) {
       return fileBasedCityDataService.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal();
     } else {
-      return GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
+      return GeoToolsBootstrapping.getGeometryFactory().createPolygon(
         customFileBoundaries.toArray(new BaseCoordinate[customFileBoundaries.
           size()])).getEnvelopeInternal();
     }

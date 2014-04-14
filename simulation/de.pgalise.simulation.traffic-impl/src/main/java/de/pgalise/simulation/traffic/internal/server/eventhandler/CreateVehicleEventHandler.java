@@ -104,7 +104,7 @@ public class CreateVehicleEventHandler<D extends VehicleData> extends AbstractVe
       data.getVehicleInformation().setTrip(trip);
 
       if (this.getResponsibleServer().getCityZone().covers(
-        GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPoint(
+        GeoToolsBootstrapping.getGeometryFactory().createPoint(
           trip.getStartNode()))) {
         // Create vehicle
         Vehicle<?> v = this.createVehicle(data,

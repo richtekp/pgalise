@@ -203,7 +203,7 @@ public class DisassemblerTest {
     Geometry geometry) {
     Set<TrafficNode> str = new HashSet<>();
     for (TrafficNode node : nodes) {
-      if (geometry.covers(GeoToolsBootstrapping.getGEOMETRY_FACTORY().
+      if (geometry.covers(GeoToolsBootstrapping.getGeometryFactory().
         createPoint(node))) {
         str.add(node);
       }

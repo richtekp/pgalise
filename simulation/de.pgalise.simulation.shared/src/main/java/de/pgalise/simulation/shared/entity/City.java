@@ -88,7 +88,7 @@ public class City extends BaseCoordinate {
    * a point which is considered the most important in the geometry which is not
    * forcibly always the geographical center of the referenced area
    */
-  @Embedded
+  @OneToOne
   private BaseCoordinate referencePoint;
 
   /**

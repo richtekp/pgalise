@@ -10,25 +10,29 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.entity.Way;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.service.PublicTransportDataService;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.util.cityinfrastructure.impl.GraphConstructor;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import static org.junit.Assert.*;
@@ -43,6 +47,19 @@ import org.junit.Test;
 @LocalClient
 @ManagedBean
 public class OSMFileBasedCityDataServiceTest {
+  static {
+    if(System.getProperty("org.jboss.logging.provider") == null) {
+      try {
+        InputStream testPropertiesInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.properties");
+        Properties testProperties = new Properties();
+        testProperties.load(testPropertiesInputStream);
+        System.setProperty("org.jboss.logging.provider",
+          testProperties.getProperty("org.jboss.logging.provider"));
+      } catch (IOException ex) {
+        throw new ExceptionInInitializerError(ex);
+      }
+    }
+  }
 
   private final static String OSM_FILE_NAME = 
     "dbis_institute_berlin_reduced.osm";
@@ -148,13 +165,15 @@ public class OSMFileBasedCityDataServiceTest {
     InputStream osmIN = Thread.currentThread().getContextClassLoader().
       getResourceAsStream(OSM_FILE_NAME);
     osmParser.parseStream(osmIN);
-    NavigationNode tmpNode = osmParser.createCity().getCityInfrastructureData().getNodes().
-      get(
-        (int) (Math.random() * osmParser.createCity().getCityInfrastructureData().
-        getNodes().size()));
-    BaseCoordinate centerPoint = new BaseCoordinate(idGenerator.getNextId(), tmpNode.
-      getX(),
-      tmpNode.getY());
+    List<TrafficNode> randomNodeList = new LinkedList<>(osmParser.createCity().getCityInfrastructureData().getNodes());
+    Collections.shuffle(randomNodeList);
+    NavigationNode randomNode = 
+      randomNodeList.      get(        (int) (Math.random() * randomNodeList.size()));
+    BaseCoordinate centerPoint = new BaseCoordinate(
+      idGenerator.getNextId(), 
+      randomNode.      getX(),
+      randomNode.getY()
+    );
     for (Building building : osmParser.getBuildingsInRadius(centerPoint,
       radiusInMeter)) {
       assertTrue(this.getDistanceInMeter(centerPoint,
@@ -180,10 +199,11 @@ public class OSMFileBasedCityDataServiceTest {
     InputStream osmIN = Thread.currentThread().getContextClassLoader().
       getResourceAsStream(OSM_FILE_NAME);
     osmParser.parseStream(osmIN);
-    NavigationNode givenNode = osmParser.createCity().getCityInfrastructureData().
-      getNodes().get(
-        (int) (Math.random() * osmParser.createCity().getCityInfrastructureData().
-        getNodes().size()));
+    List<TrafficNode> randomNodeList = new LinkedList<>(osmParser.createCity().getCityInfrastructureData().
+      getNodes());
+    Collections.shuffle(randomNodeList);
+    NavigationNode givenNode = randomNodeList.get(
+        (int) (Math.random() * randomNodeList.size()));
     NavigationNode returnedNode = osmParser.getNearestNode(givenNode.
       getX(),
       givenNode.getY());
@@ -222,6 +242,7 @@ public class OSMFileBasedCityDataServiceTest {
         graphConstructor,
         cityInfrastructureData);
     instance.parseStream(osmIN);
+    assertEquals(2, instance.createCity().getCityInfrastructureData().getNodes().size());
     assertEquals(instance.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal().getMinX(),
       53,
       1);

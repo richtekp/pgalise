@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*- 
 
 import subprocess as sp
-import check_os
 import re
+import os
 
 def check_linux():
     if not check_python3():
@@ -22,13 +22,14 @@ def check_opensuse():
 
 def check_ubuntu():
     try:
-        lsb_release_id_short = sp.check_output(["lsb_release", "-d", "-s"])
-        return "Ubuntu" in lsb_release_id_short
+        lsb_release_id_short = sp.check_output(["lsb_release", "-d", "-s"]).strip().decode("utf-8")
+        ret_value = "Ubuntu" in lsb_release_id_short
+        return ret_value
     except Exception:
         return False
 
 def check_root():
-    uid = check_output(["id","-u"]).strip()
+    uid = sp.check_output(["id","-u"]).strip()
     ret_value = int(uid) == 0
     return ret_value
 
@@ -40,4 +41,29 @@ def check_python3():
 def findout_architecture():
     architecture = sp.check_output(["uname","-m"]).strip()
     return architecture
+
+#lsb_release only works with python2.x
+def findout_release():
+#    python2=None
+#    if os.path.isfile("/usr/bin/python2.6"):
+#        python2="/usr/bin/python2.6"
+#    elif os.path.isfile("/usr/bin/python2.7"):
+#        python2="/usr/bin/python2.7"
+#    else:
+#        print("Neither python2.6 nor python 2.7 could be found in /usr/bin/. It's necessary to determine your distribution release")
+#        exit(5)
+    while not os.path.isfile("/usr/bin/python2.6") and not os.path.isfile("/usr/bin/python2.7"):
+        print("Neither python2.6 nor python 2.7 could be found in /usr/bin/. It's necessary to determine your distribution release")
+        confirm("proceed","Install python 2.6 or 2.7 and make it available at /usr/bin/python2.6 or /usr/lib/python2.7")
+    release= sp.check_output(["lsb_release","-cs"]).strip().decode("utf-8")
+    return release
+
+# useful is a feature is available for any version up from a certain (the tuple contains ints because strings are less comparable)
+def findout_release_tuple():
+    while not os.path.isfile("/usr/bin/python2.6") and not os.path.isfile("/usr/bin/python2.7"):
+        print("Neither python2.6 nor python 2.7 could be found in /usr/bin/. It's necessary to determine your distribution release")
+        confirm("proceed","Install python 2.6 or 2.7 and make it available at /usr/bin/python2.6 or /usr/lib/python2.7")
+    release_number = sp.check_output(["lsb_release", "-rs"]).strip().decode("utf-8")
+    release_tuple = tuple([int(x) for x in release_number.split(".")])
+    return release_tuple
 

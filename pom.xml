@@ -121,26 +121,26 @@ but also buggy (NPE at
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
 				</dependency>
-				<dependency>
+<!--				<dependency>
 					<groupId>org.slf4j</groupId>
 					<artifactId>log4j-over-slf4j</artifactId>
 				</dependency>
 				<dependency>
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-core</artifactId>
-				</dependency>
+				</dependency>-->
 				<dependency>
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-classic</artifactId>
 				</dependency>
-				<dependency>
+<!--				<dependency>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-simple</artifactId>
 				</dependency>
 				<dependency> 
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
-				</dependency>
+				</dependency>-->
 	
 				<!-- Test dependencies -->		
 				<dependency>
@@ -172,6 +172,11 @@ but also buggy (NPE at
 					<dependency>
 						<groupId>de.pgalise</groupId>
 						<artifactId>testutils-traffic</artifactId>
+						<version>2.0-SNAPSHOT</version>
+					</dependency>					
+					<dependency>
+						<groupId>de.pgalise</groupId>
+						<artifactId>testutils-resources</artifactId>
 						<version>2.0-SNAPSHOT</version>
 					</dependency>
 					<dependency>
@@ -346,8 +351,7 @@ but also buggy (NPE at
 						<groupId>de.pgalise</groupId>
 						<artifactId>testutils-weather</artifactId>
 						<version>1.0.0-SNAPSHOT</version>
-					</dependency>
-          	
+					</dependency>          	
 					<!-- logging -->	
 					<dependency>
 						<groupId>ch.qos.logback</groupId>
@@ -355,29 +359,9 @@ but also buggy (NPE at
 						<version>1.1.1</version>
 					</dependency>	
 					<dependency>
-						<groupId>ch.qos.logback</groupId>
-						<artifactId>logback-core</artifactId>
-						<version>1.1.1</version>
-					</dependency>	
-					<dependency>
 						<groupId>org.slf4j</groupId>
 						<artifactId>slf4j-api</artifactId>
 						<version>1.7.6</version>
-					</dependency>
-					<dependency>
-						<groupId>org.slf4j</groupId>
-						<artifactId>log4j-over-slf4j</artifactId>
-						<version>1.7.6</version>
-					</dependency> 
-					<dependency>
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-simple</artifactId>
-						<version>1.7.6</version>
-					</dependency>
-					<dependency> 
-						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-log4j12</artifactId>
-						 <version>1.7.6</version> 
 					</dependency>
 					<!-- test related dependencies -->
 					<dependency>
@@ -502,26 +486,12 @@ but also buggy (NPE at
 						<groupId>org.apache.openejb</groupId>
 						<artifactId>openejb-core</artifactId>
 						<version>${de.pgalise.openejb.version}</version>
-						<!--<version>4.6.1-20140323.041002-113</version>-->
 						<scope>test</scope>
 						<exclusions>
-<!--							<exclusion>
+							<exclusion>
 								<groupId>org.slf4j</groupId>
 								<artifactId>slf4j-jdk14</artifactId>
 							</exclusion>
-							<exclusion>
-								<groupId>commons-logging</groupId>
-								<artifactId>commons-logging</artifactId>
-							</exclusion>-->
-							
-							<!--					<exclusion>
-											<groupId>org.apache.openejb</groupId>
-											<artifactId>openejb-jpa-integration</artifactId>
-							</exclusion>-->
-							<!--					<exclusion>
-											<groupId>org.apache.openejb.patch</groupId>
-											<artifactId>openjpa</artifactId>
-							</exclusion>-->
 						</exclusions>
 					</dependency>
 					<dependency>
@@ -529,28 +499,7 @@ but also buggy (NPE at
 						<artifactId>servlet-api</artifactId>
 						<version>2.5</version>
 						<scope>provided</scope>
-					</dependency>			
-					<!--			<dependency>
-					 <groupId>org.apache.tomcat</groupId>
-					 <artifactId>tomcat-catalina</artifactId>
-					 <version>7.0.47</version>
-		</dependency>
-		<dependency>
-					 <groupId>org.apache.tomcat</groupId>
-					 <artifactId>tomcat-util</artifactId>
-					 <version>7.0.47</version>
-		</dependency>
-		<dependency>
-					 <groupId>org.apache.tomcat</groupId>
-					 <artifactId>tomcat-juli</artifactId>
-					 <version>7.0.47</version>
-		</dependency>
-		<dependency>
-					 <groupId>org.apache.tomcat</groupId>
-					 <artifactId>tomcat-coyote</artifactId>
-					 <version>7.0.47</version>
-					</dependency>-->
-              	
+					</dependency>
 					<dependency>
 						<groupId>net.sf.json-lib</groupId>
 						<artifactId>json-lib</artifactId>
@@ -727,6 +676,8 @@ but also buggy (NPE at
 						<version>1.0-alpha-2</version>
 						<executions>
 							<execution>
+								<id>set-hibernate-logging-system-property</id>
+								<phase>test</phase>
 								<goals>
 									<goal>set-system-properties</goal>
 								</goals>
@@ -745,10 +696,10 @@ but also buggy (NPE at
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>2.17</version>
-						<!--            <configuration>
+						            <configuration>
 							<trimStackTrace>false</trimStackTrace>
-							<forkCount>0</forkCount>
-						</configuration>-->
+							<!--<forkCount>0</forkCount>-->
+						</configuration>
 					</plugin>
 				</plugins>
 

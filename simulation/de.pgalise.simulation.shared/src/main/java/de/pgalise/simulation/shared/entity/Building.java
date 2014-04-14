@@ -15,13 +15,10 @@
  */
 package de.pgalise.simulation.shared.entity;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
-import javax.xml.bind.annotation.XmlAnyElement;
 
 /**
  * A building is a {@link NavigationNode} which referes to the reference point 
@@ -53,6 +50,7 @@ public class Building extends NavigationNode {
 
   @Transient
   private Double squareMeter;
+  @OneToOne
   private BaseBoundary geoInfo;
 
   protected Building() {

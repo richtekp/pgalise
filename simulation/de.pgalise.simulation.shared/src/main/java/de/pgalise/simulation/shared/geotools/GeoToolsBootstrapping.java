@@ -26,7 +26,7 @@ public class GeoToolsBootstrapping {
   private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
   public final static CoordinateReferenceSystem COORDINATE_REFERENCE_SYSTEM = DefaultGeographicCRS.WGS84;
 
-  public static GeometryFactory getGEOMETRY_FACTORY() {
+  public static GeometryFactory getGeometryFactory() {
     return GEOMETRY_FACTORY;
   }
 

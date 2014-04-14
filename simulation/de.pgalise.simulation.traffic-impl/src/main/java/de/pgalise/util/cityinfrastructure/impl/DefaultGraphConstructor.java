@@ -16,16 +16,17 @@
 package de.pgalise.util.cityinfrastructure.impl;
 
 import de.pgalise.simulation.shared.entity.Way;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
+import de.pgalise.simulation.traffic.entity.MotorWay;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.entity.TrafficWay;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The GraphConstrcutor is used to construct a graph based upon the results of
@@ -58,7 +59,7 @@ public class DefaultGraphConstructor implements GraphConstructor {
    */
   @Override
   public TrafficGraph createGraph(
-    List<TrafficWay> ways) {
+    Set<TrafficWay> ways) {
     if (ways == null) {
       return null;
     }

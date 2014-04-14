@@ -4,8 +4,7 @@
  */
 package de.pgalise.simulation.traffic.entity.osm;
 
-import de.pgalise.simulation.traffic.entity.BusStop;
-import de.pgalise.simulation.traffic.entity.BusStopInformation;
+import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.BusStopInformation;
@@ -28,11 +27,23 @@ public class OSMBusStop extends BusStop {
     String osmId,
     String stopName,
     BusStopInformation busStopInformation,
-    BaseCoordinate geoLocation) {
+    Coordinate geoLocation) {
     super(id,
       stopName,
       busStopInformation,
       geoLocation);
+    this.osmId = osmId;
+  }
+
+  public OSMBusStop(Long id,
+    String osmId,
+    String stopName,
+    BusStopInformation busStopInformation,
+    double x, double y) {
+    super(id,
+      stopName,
+      busStopInformation,
+      x,y);
     this.osmId = osmId;
   }
 

@@ -43,10 +43,10 @@
 			<version>3.1</version>
 			<type>jar</type>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>com.javadocmd</groupId>
 			<artifactId>simplelatlng</artifactId>
@@ -77,13 +77,7 @@
 			<version>5.2.3</version>
 			<type>jar</type>
 		</dependency>
-	 <dependency>
-	  <groupId>storm</groupId>
-	  <artifactId>storm</artifactId>
-	  <version>0.8.2</version>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
+		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<type>jar</type>
@@ -91,7 +85,7 @@
 	</dependencies>
 	<build>
 		<plugins>
-<!--			<plugin>
+			<!--			<plugin>
 				<groupId>org.apache.openjpa</groupId>
 				<artifactId>openjpa-maven-plugin</artifactId>
 				<version>2.2.0</version>
