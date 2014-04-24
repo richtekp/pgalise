@@ -57,3 +57,7 @@ postgis_db-9.2/*
 /external
 /bootstrap.pyc
 
+##########
+# IDE related
+##########
+.idea
