@@ -61,3 +61,4 @@ postgis_db-9.2/*
 # IDE related
 ##########
 .idea
+parent-pom.iml
