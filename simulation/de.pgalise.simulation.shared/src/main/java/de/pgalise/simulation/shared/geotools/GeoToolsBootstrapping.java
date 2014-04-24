@@ -8,7 +8,6 @@ import com.javadocmd.simplelatlng.LatLng;
 import com.javadocmd.simplelatlng.LatLngTool;
 import com.javadocmd.simplelatlng.util.LengthUnit;
 import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
@@ -110,8 +109,8 @@ public class GeoToolsBootstrapping {
    * @param target
    * @return
    */
-  public static double getDistanceInMeter(JaxRSCoordinate start,
-    JaxRSCoordinate target) {
+  public static double getDistanceInMeter(BaseCoordinate start,
+    BaseCoordinate target) {
 
     if ((start.getX() == target.getX())
       && (start.getY() == target.getY())) {

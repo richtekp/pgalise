@@ -221,7 +221,7 @@ public class DefaultOCSensorStreamController implements OCSensorStreamController
             Sensor sensor = entityManager.find(Sensor.class,
               Long.valueOf(text[1]));
             sensorData = new GPSSensorData(new BaseCoordinate(
-              idGenerator.getNextId(),
+              
               Double.valueOf(text[3]),
               Double.valueOf(text[4])),
               0d,

@@ -63,7 +63,6 @@ import org.junit.Test;
  */
 @LocalClient
 @ManagedBean
-@LocalBean
 public class DefaultWeatherServiceTest {
 
   @PersistenceContext(unitName = "pgalise-weather")
@@ -100,8 +99,6 @@ public class DefaultWeatherServiceTest {
 
   @Before
   public void setUp() throws NamingException {
-    TestUtils.getContext().bind("inject",
-      this);
     TestUtils.getContainer().getContext().bind("inject",
       this);
 

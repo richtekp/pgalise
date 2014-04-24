@@ -117,13 +117,13 @@ public class VehicleTest {
 
   @Test
   public void drivingTest() throws InterruptedException {
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(1,
         1));
-    TrafficNode b = new TrafficNode((idGenerator.getNextId()),
+    TrafficNode b = new TrafficNode(
       new Coordinate(1,
         2));
-    TrafficNode c = new TrafficNode((idGenerator.getNextId()),
+    TrafficNode c = new TrafficNode(
       new Coordinate(2,
         2));
     TrafficGraph graph = new DefaultTrafficGraph();
@@ -235,23 +235,23 @@ public class VehicleTest {
   @Test
   public void multipleItermediateNodeTest() {
     TrafficGraph graph = new DefaultTrafficGraph();
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(
         0,
         0));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(
         0,
         1));
-    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode c = new TrafficNode(
       new Coordinate(
         -1 * Math.sqrt(15),
         2));
-    TrafficNode d = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode d = new TrafficNode(
       new Coordinate(
         0,
         3));
-    TrafficNode e = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode e = new TrafficNode(
       new Coordinate(
         0,
         4));
@@ -320,15 +320,15 @@ public class VehicleTest {
   @Test
   public void registerOnEdgeTest() {
     TrafficGraph graph = new DefaultTrafficGraph();
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(
         0,
         0));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(
         2,
         0));
-    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode c = new TrafficNode(
       new Coordinate(
         2,
         2));
@@ -364,6 +364,7 @@ public class VehicleTest {
     carA.setName("carA");
     carA.setPath(shortestPath);
     carA.setVelocity(1);
+    carA.setCurrentNode(shortestPath.get(0).getSource());
 
     List<TrafficEdge> revPath = new LinkedList<>(shortestPath);
     Collections.reverse(revPath);
@@ -375,6 +376,7 @@ public class VehicleTest {
     carB.setName("carB");
     carB.setPath(revPath);
     carB.setVelocity(1);
+    carB.setCurrentNode(revPath.get(0).getSource());
 
     carA.update(1000);
     carB.update(1000);
@@ -444,15 +446,15 @@ public class VehicleTest {
     log.info("################");
 
     TrafficGraph graph = new DefaultTrafficGraph();
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(
         0,
         0));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(
         2,
         0));
-    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode c = new TrafficNode(
       new Coordinate(
         2,
         2));

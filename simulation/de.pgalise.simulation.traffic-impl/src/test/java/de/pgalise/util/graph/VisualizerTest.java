@@ -101,22 +101,22 @@ public class VisualizerTest {
    */
   private TrafficGraph createGraph() {
     TrafficGraph graph = new DefaultTrafficGraph();
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(1,
         1));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(2,
         2));
-    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode c = new TrafficNode(
       new Coordinate(4,
         7));
-    TrafficNode d = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode d = new TrafficNode(
       new Coordinate(9,
         4));
-    TrafficNode e = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode e = new TrafficNode(
       new Coordinate(11,
         7));
-    TrafficNode f = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode f = new TrafficNode(
       new Coordinate(2,
         10));
     TrafficEdge e1 = graph.addEdge(a,

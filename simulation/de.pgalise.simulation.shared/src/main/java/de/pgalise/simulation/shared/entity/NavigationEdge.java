@@ -7,6 +7,7 @@ package de.pgalise.simulation.shared.entity;
 import de.pgalise.simulation.shared.JaxbVector2d;
 import com.vividsolutions.jts.geom.LineString;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -162,5 +163,33 @@ public class NavigationEdge<N extends NavigationNode> extends Identifiable {
 
   public void setOneWay(Boolean oneWay) {
     this.oneWay = oneWay;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 13 * hash + Objects.hashCode(this.source);
+    hash = 13 * hash + Objects.hashCode(this.target);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final NavigationEdge<?> other = (NavigationEdge<?>) obj;
+    if (!Objects.equals(this.source,
+      other.source)) {
+      return false;
+    }
+    if (!Objects.equals(this.target,
+      other.target)) {
+      return false;
+    }
+    return true;
   }
 }

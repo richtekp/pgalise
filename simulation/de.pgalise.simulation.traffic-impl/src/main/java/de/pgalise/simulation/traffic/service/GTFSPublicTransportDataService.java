@@ -291,10 +291,10 @@ public class GTFSPublicTransportDataService implements PublicTransportDataServic
       String stopName = rowAsTokens.get(indexStopName);
       String lat = rowAsTokens.get(indexLat);
       String lng = rowAsTokens.get(indexLong);
-      BusStop busStop = new BusStop(idGenerator.getNextId(),
+      BusStop busStop = new BusStop(
         stopName,
         null,
-        new BaseCoordinate(idGenerator.getNextId(),Double.parseDouble(lat),
+        new BaseCoordinate(Double.parseDouble(lat),
           Double.parseDouble(lng)));
     }
     

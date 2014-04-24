@@ -105,55 +105,57 @@ public abstract class ExtendedMotorizedVehicle<T extends VehicleData> extends Ba
     final double vel = this.getVelocity();
     this.setVelocity(0);
     this.setVehicleState(VehicleStateEnum.STOPPED);
-    this.getTrafficGraphExtensions().getTrafficRule(passedNode)
-      .register(this,
-        this.getPreviousNode(),
-        this.getNextNode(),
-        new TrafficRuleCallback() {
+    if (passedNode.getTrafficRule() != null) {
+      passedNode.getTrafficRule()
+        .register(this,
+          this.getPreviousNode(),
+          this.getNextNode(),
+          new TrafficRuleCallback() {
 
-          @Override
-          public boolean onEnter() {
-            // is allowed to drive
-            ExtendedMotorizedVehicle.this.setVehicleState(
-              VehicleStateEnum.IN_TRAFFIC_RULE);
-            return true;
-          }
-
-          @Override
-          public boolean onExit() {
-            // leaves the trafficRule
-            ExtendedMotorizedVehicle.this.setVehicleState(
-              VehicleStateEnum.DRIVING);
-            ExtendedMotorizedVehicle.this.setVelocity(vel);
-
-            if (ExtendedMotorizedVehicle.this.getPreviousEdge() != null) {
-              // log.debug("Unregister car " + this.getName() + " from edge: " +
-              // this.getPreviousEdge().getId());
-              ExtendedMotorizedVehicle.this.getTrafficGraphExtensions().
-              unregisterFromEdge(
-                ExtendedMotorizedVehicle.this.getPreviousEdge(),
-                ExtendedMotorizedVehicle.this.getPreviousNode(),
-                ExtendedMotorizedVehicle.this.getCurrentNode(),
-                ExtendedMotorizedVehicle.this);
+            @Override
+            public boolean onEnter() {
+              // is allowed to drive
+              ExtendedMotorizedVehicle.this.setVehicleState(
+                VehicleStateEnum.IN_TRAFFIC_RULE);
+              return true;
             }
 
-            if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(
-              ExtendedMotorizedVehicle.this.getVehicleState())) {
-              if (ExtendedMotorizedVehicle.this.getCurrentEdge() != null) {
-                // log.debug("Register car " + this.getName() + " on edge: " +
-                // this.getCurrentEdge().getId());
+            @Override
+            public boolean onExit() {
+              // leaves the trafficRule
+              ExtendedMotorizedVehicle.this.setVehicleState(
+                VehicleStateEnum.DRIVING);
+              ExtendedMotorizedVehicle.this.setVelocity(vel);
+
+              if (ExtendedMotorizedVehicle.this.getPreviousEdge() != null) {
+              // log.debug("Unregister car " + this.getName() + " from edge: " +
+                // this.getPreviousEdge().getId());
                 ExtendedMotorizedVehicle.this.getTrafficGraphExtensions().
-                registerOnEdge(
-                  ExtendedMotorizedVehicle.this.getCurrentEdge(),
+                unregisterFromEdge(
+                  ExtendedMotorizedVehicle.this.getPreviousEdge(),
+                  ExtendedMotorizedVehicle.this.getPreviousNode(),
                   ExtendedMotorizedVehicle.this.getCurrentNode(),
-                  ExtendedMotorizedVehicle.this.getNextNode(),
                   ExtendedMotorizedVehicle.this);
               }
-            }
 
-            return true;
-          }
-        });
+              if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(
+                ExtendedMotorizedVehicle.this.getVehicleState())) {
+                if (ExtendedMotorizedVehicle.this.getCurrentEdge() != null) {
+                // log.debug("Register car " + this.getName() + " on edge: " +
+                  // this.getCurrentEdge().getId());
+                  ExtendedMotorizedVehicle.this.getTrafficGraphExtensions().
+                  registerOnEdge(
+                    ExtendedMotorizedVehicle.this.getCurrentEdge(),
+                    ExtendedMotorizedVehicle.this.getCurrentNode(),
+                    ExtendedMotorizedVehicle.this.getNextNode(),
+                    ExtendedMotorizedVehicle.this);
+                }
+              }
+
+              return true;
+            }
+          });
+    }
   }
 
   @Override
@@ -168,7 +170,7 @@ public abstract class ExtendedMotorizedVehicle<T extends VehicleData> extends Ba
           log.debug("Registering car "
             + this.getName()
             + " on node "
-            + passedNode.getId()
+            + passedNode
             + ", new size: "
             + this.getTrafficGraphExtensions().getVehiclesOnNode(passedNode,
               this.getData().getType())
@@ -185,7 +187,7 @@ public abstract class ExtendedMotorizedVehicle<T extends VehicleData> extends Ba
           log.debug("Unregistering car "
             + this.getName()
             + " from node "
-            + lastRegisteredNode.getId()
+            + lastRegisteredNode
             + ", new size: "
             + this.getTrafficGraphExtensions()
             .getVehiclesOnNode(lastRegisteredNode,

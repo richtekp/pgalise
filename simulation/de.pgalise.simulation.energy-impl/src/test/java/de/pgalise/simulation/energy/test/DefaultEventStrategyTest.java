@@ -53,8 +53,8 @@ public class DefaultEventStrategyTest {
   
   @Before
   public void setUp() {
-    testGeoLocation = new BaseCoordinate(idGenerator.getNextId(), 50, 50);
-    testGeoLocationOutsideEvent = new BaseCoordinate(idGenerator.getNextId(), 90, 90);
+    testGeoLocation = new BaseCoordinate( 50, 50);
+    testGeoLocationOutsideEvent = new BaseCoordinate( 90, 90);
   }
 
 	@Test

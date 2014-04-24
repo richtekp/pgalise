@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.model.vehicle;
 
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
@@ -28,8 +28,9 @@ import de.pgalise.simulation.shared.JaxbVector2d;
 import de.pgalise.simulation.traffic.entity.TrafficTrip;
 
 /**
- * Model for traffic entities that move along the traffic graph (e.g. bicycles or cars).
- * 
+ * Model for traffic entities that move along the traffic graph (e.g. bicycles
+ * or cars).
+ *
  * @author Mustafa
  * @author Marina
  * @version 1.0 (Nov 12, 2012)
@@ -37,184 +38,179 @@ import de.pgalise.simulation.traffic.entity.TrafficTrip;
  */
 public interface Vehicle<D extends VehicleData> {
 
-	public Long getId();
-	
-	/**
-	 * @return the velocity
-	 */
-	public double getVelocity();
+  public Long getId();
 
-	/**
-	 * Sets the velocity if this vehicle's status is not STOPPED.
-	 * 
-	 * @param velocity
-	 *            the velocity to set
-	 */
-	public void setVelocity(double velocity);
+  /**
+   * @return the velocity
+   */
+  public double getVelocity();
 
-	/**
-	 * @return the currentNode
-	 */
-	public TrafficNode getCurrentNode();
+  /**
+   * Sets the velocity if this vehicle's status is not STOPPED.
+   *
+   * @param velocity the velocity to set
+   */
+  public void setVelocity(double velocity);
 
-	/**
-	 * @param currentNode
-	 *            the currentNode to set
-	 */
-	public void setCurrentNode(TrafficNode currentNode);
+  /**
+   * @return the currentNode
+   */
+  public TrafficNode getCurrentNode();
 
-	/**
-	 * @return the nextNode
-	 */
-	public TrafficNode getNextNode();
+  /**
+   * @param currentNode the currentNode to set
+   */
+  public void setCurrentNode(TrafficNode currentNode);
 
-	public TrafficNode getPreviousNode();
+  /**
+   * @return the nextNode
+   */
+  public TrafficNode getNextNode();
 
-	/**
-	 * @return the path
-	 */
-	public List<TrafficEdge> getPath();
-	
-	public List<TrafficNode> getNodePath();
+  public TrafficNode getPreviousNode();
 
-	/**
-	 * Sets the path of this vehicle. Simultaneously the currentNode and nextNode property will be set to the first and
-	 * second node of the path.
-	 * 
-	 * @param path
-	 *            the path to set
-	 */
-	public void setPath(List<TrafficEdge> path);
+  /**
+   * @return the path
+   */
+  public List<TrafficEdge> getPath();
 
-	/**
-	 * @return the position
-	 */
-	public BaseCoordinate getPosition();
+  public List<TrafficNode> getNodePath();
 
-	/**
-	 * @param position
-	 *            the position to set
-	 */
-	public void setPosition(BaseCoordinate position);
+  /**
+   * Sets the path of this vehicle. Simultaneously the currentNode and nextNode
+   * property will be set to the first and second node of the path.
+   *
+   * @param path the path to set
+   */
+  public void setPath(List<TrafficEdge> path);
 
-	/**
-	 * @return the direction
-	 */
-	public JaxbVector2d getDirection();
+  /**
+   * @return the position
+   */
+  public BaseCoordinate getPosition();
 
-	/**
-	 * @param direction
-	 *            the direction to set
-	 */
-	public void setDirection(JaxbVector2d direction);
+  /**
+   * @param position the position to set
+   */
+  public void setPosition(BaseCoordinate position);
 
-	/**
-	 * @return the name or 'unnamed' if no name is specified
-	 */
-	public String getName();
+  /**
+   * @return the direction
+   */
+  public JaxbVector2d getDirection();
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name);
+  /**
+   * @param direction the direction to set
+   */
+  public void setDirection(JaxbVector2d direction);
 
-	/**
-	 * Sets the state of this vehicle.
-	 * 
-	 * @param state
-	 *            state to set
-	 */
-	public void setVehicleState(VehicleStateEnum state);
+  /**
+   * @return the name or 'unnamed' if no name is specified
+   */
+  public String getName();
 
-	/**
-	 * @return the state
-	 */
-	public VehicleStateEnum getVehicleState();
+  /**
+   * @param name the name to set
+   */
+  public void setName(String name);
 
-	/**
-	 * Updates this vehicle's position, direction, orientation and status. If this vehicle reaches its target its status
-	 * changes from DRIVING to REACHED_TARGET. Initial status is NOT_STARTED; will change to DRIVING when #update is
-	 * called for the first time with parameter elapsedTime > 0. Update has no effect when this vehicle's status is
-	 * STOPPED or RECHED_TARGET or NOT_STARTED.
-	 * 
-	 * @param elapsedTime
-	 *            elapsed time in ms since this vehicle has been updated the last time
-	 */
-	public void update(long elapsedTime);
+  /**
+   * Sets the state of this vehicle.
+   *
+   * @param state state to set
+   */
+  public void setVehicleState(VehicleStateEnum state);
+
+  /**
+   * @return the state
+   */
+  public VehicleStateEnum getVehicleState();
+
+  /**
+   * Updates this vehicle's position, direction, orientation and status. If this
+   * vehicle reaches its target its status changes from DRIVING to
+   * REACHED_TARGET. Initial status is NOT_STARTED; will change to DRIVING when
+   * #update is called for the first time with parameter elapsedTime > 0. Update
+   * has no effect when this vehicle's status is STOPPED or RECHED_TARGET or
+   * NOT_STARTED.
+   *
+   * @param elapsedTime elapsed time in ms since this vehicle has been updated
+   * the last time
+   */
+  public void update(long elapsedTime);
 
 	// /**
-	// * Will be invoked whenever an event occurs. Subclasses can overwrite this
-	// * method to handle these events.
-	// *
-	// * @param event
-	// * occurred event
-	// */
-	// public void handleEvent(Event event);
+  // * Will be invoked whenever an event occurs. Subclasses can overwrite this
+  // * method to handle these events.
+  // *
+  // * @param event
+  // * occurred event
+  // */
+  // public void handleEvent(Event event);
+  /**
+   * Returns current edge.
+   *
+   * @return current edge
+   */
+  public TrafficEdge getCurrentEdge();
 
-	/**
-	 * Returns current edge.
-	 * 
-	 * @return current edge
-	 */
-	public TrafficEdge getCurrentEdge();
+  /**
+   * Sets the current edge.
+   *
+   *
+   * @param edge
+   */
+  public void setCurrentEdge(TrafficEdge edge);
 
-	/**
-	 * Sets the current edge.
-	 * 
-	 * 
-	 * @param edge 
-	 */
-	public void setCurrentEdge(TrafficEdge edge);
+  /**
+   * Returns the next edge.
+   *
+   * @return edge after the current edge
+   */
+  public TrafficEdge getNextEdge();
 
-	/**
-	 * Returns the next edge.
-	 * 
-	 * @return edge after the current edge
-	 */
-	public TrafficEdge getNextEdge();
+  /**
+   * Return the previous edge.
+   *
+   * @return edge before the current edge
+   */
+  public TrafficEdge getPreviousEdge();
 
-	/**
-	 * Return the previous edge.
-	 * 
-	 * @return edge before the current edge
-	 */
-	public TrafficEdge getPreviousEdge();
+  /**
+   * Returns the vehicle data
+   *
+   * @return VehicleData
+   */
+  public D getData();
 
-	/**
-	 * Returns the vehicle data
-	 * 
-	 * @return VehicleData
-	 */
-	public D getData();
+  /**
+   * Sets the vehicle data
+   *
+   * @param data Vehicle data to set
+   */
+  public void setData(D data);
 
-	/**
-	 * Sets the vehicle data
-	 * 
-	 * @param data
-	 *            Vehicle data to set
-	 */
-	public void setData(D data);
-	
-	public TrafficGraphExtensions getTrafficGraphExtensions();
+  public TrafficGraphExtensions getTrafficGraphExtensions();
 
-	public void setTrafficGraphExtensions(TrafficGraphExtensions trafficGraphExtensions);
-	
-	/**
-	 * 
-	 * @param node
-	 * @return index of the passed node in the path otherwise -1
-	 */
-	public int getIndex(TrafficNode node);
-	
-	GpsSensor getGpsSensor();
-	
-	void setGpsSensor(GpsSensor gpsSensor);
-	
-	/**
-	 * the traffic trip which is associated with the vehicles or 
-	 * <code>null</code> if the vehicle is currently not on a trip
-	 * @return 
-	 */
-	TrafficTrip getTrafficTrip();
+  public void setTrafficGraphExtensions(
+    TrafficGraphExtensions trafficGraphExtensions);
+
+  /**
+   *
+   * @param node
+   * @return index of the passed node in the path otherwise -1
+   */
+  public int getIndex(TrafficNode node);
+
+  GpsSensor getGpsSensor();
+
+  void setGpsSensor(GpsSensor gpsSensor);
+
+  /**
+   * the traffic trip which is associated with the vehicles or <code>null</code>
+   * if the vehicle is currently not on a trip
+   *
+   * @return
+   */
+  TrafficTrip getTrafficTrip();
 }

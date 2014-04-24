@@ -132,13 +132,13 @@ public class SchedulerTest {
   public void setUp() throws NamingException {
     TestUtils.getContext().bind("inject",
       this);
-    nodeA = new TrafficNode(idGenerator.getNextId(),
+    nodeA = new TrafficNode(
       new Coordinate(0,
         0));
-    nodeB = new TrafficNode(idGenerator.getNextId(),
+    nodeB = new TrafficNode(
       new Coordinate(2,
         0));
-    nodeC = new TrafficNode(idGenerator.getNextId(),
+    nodeC = new TrafficNode(
       new Coordinate(2,
         2));
     graph.addVertex(nodeA);

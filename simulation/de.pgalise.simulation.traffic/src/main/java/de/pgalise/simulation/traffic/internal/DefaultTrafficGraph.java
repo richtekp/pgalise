@@ -7,17 +7,13 @@ package de.pgalise.simulation.traffic.internal;
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.NavigationEdge;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
-import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.util.Set;
-import org.jgrapht.EdgeFactory;
 
 /**
  * a graph of {@link NavigationNode}s connected with {@link NavigationEdge}s.
@@ -93,13 +89,13 @@ public class DefaultTrafficGraph extends TrafficGraph {
   }
 
   @Override
-  public TrafficNode getNodeClosestTo(JaxRSCoordinate position) {
+  public TrafficNode getNodeClosestTo(BaseCoordinate position) {
     return getNodeClosestTo(position,
       Integer.MAX_VALUE);
   }
 
   @Override
-  public TrafficNode getNodeClosestTo(JaxRSCoordinate position,
+  public TrafficNode getNodeClosestTo(BaseCoordinate position,
     int distanceTolerance) {
 
     TrafficNode minDistanceNode = null;

@@ -72,15 +72,15 @@ public class PathTest {
 
     // log.debug("velocity = " + velocity);
     // log.debug("distance 2000m = " + distance);
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(0,
         0));
     graph.addVertex(a);
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(distance,
         0));
     graph.addVertex(b);
-    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode c = new TrafficNode(
       new Coordinate(distance,
         distance));
     graph.addVertex(c);

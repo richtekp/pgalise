@@ -31,9 +31,7 @@ import javax.ejb.EJB;
 import de.pgalise.simulation.energy.EnergyConsumptionManagerLocal;
 import de.pgalise.simulation.energy.profile.EnergyProfile;
 import de.pgalise.simulation.energy.profile.EnergyProfileLoader;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherControllerLocal;
 
 /**

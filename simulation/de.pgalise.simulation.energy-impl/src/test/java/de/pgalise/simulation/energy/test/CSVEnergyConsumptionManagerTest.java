@@ -80,7 +80,7 @@ public class CSVEnergyConsumptionManagerTest {
   public void setUp() throws NamingException {
     TestUtils.getContext().bind("inject",
       this);
-    testLocationAsGL = new BaseCoordinate(idGenerator.getNextId(),
+    testLocationAsGL = new BaseCoordinate(
     53.136765,
     8.216524);
     
@@ -88,7 +88,7 @@ public class CSVEnergyConsumptionManagerTest {
     List<Building> buildingList = new ArrayList<>();
     for (int i = 0; i < 100; i++) {
       buildingList.add(new Building(idGenerator.getNextId(),
-        new BaseCoordinate(idGenerator.getNextId(), 53.136765,
+        new BaseCoordinate( 53.136765,
           8.216524),
         null));
     }
@@ -96,7 +96,7 @@ public class CSVEnergyConsumptionManagerTest {
       buildingList);
     CityDataService citydata = EasyMock.createNiceMock(
       CityDataService.class);
-    EasyMock.expect(citydata.getBuildings(
+    EasyMock.expect(citydata.getBuildingEnergyProfileMap(
       testLocationAsGL,
       5)).andStubReturn(map);
     EasyMock.replay(citydata);

@@ -195,7 +195,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
   @Override
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
     this.output = param.getOutput();
-    cityZone = param.getCity().getGeoInfo().retrieveBoundary();
+    cityZone = param.getCity().retrieveBoundary();
     init0(); //initializes vehicleEventHandlerManager
     this.vehicleEventHandlerManager.init(param);
     try {
@@ -478,7 +478,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
           vehicles.add(managedVehicle);
           log.debug(
             "Vehicle " + managedVehicle.getName() + " registered on node "
-            + managedVehicle.getCurrentNode().getId());
+            + managedVehicle.getCurrentNode());
         }
         managedVehicle.setVehicleState(VehicleStateEnum.NOT_STARTED);
         ScheduleItem item = new ScheduleItem(managedVehicle,
@@ -623,7 +623,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
                 0,
                 vehicle,
                 VehicleEventTypeEnum.VEHICLE_PASSED_NODE));
-          } else if (!varNode.getId().equals(curNode.getId()) && (vehicle.
+          } else if (!varNode.equals(curNode) && (vehicle.
             getVehicleState() == VehicleStateEnum.REACHED_TARGET)) {
             removeableVehicles.add(vehicle);
             this.vehicleEventHandlerManager.handleEvent(
@@ -635,11 +635,11 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
           }
         }
 
-        if (varNode.getId().equals(vehicle.getNodePath().get(0).getId())
+        if (varNode.equals(vehicle.getNodePath().get(0))
           && (item.getScheduleTime() == currentTime)) {
           log.debug(
-            "Vehicle " + vehicle.getName() + " passed startNode " + varNode.
-            getId());
+            "Vehicle " + vehicle.getName() + " passed startNode " + varNode
+            );
           this.vehicleEventHandlerManager.handleEvent(new GenericVehicleEvent<>(
             this,
             currentTime,

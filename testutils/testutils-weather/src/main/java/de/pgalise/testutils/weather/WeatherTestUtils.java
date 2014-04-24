@@ -6,6 +6,7 @@
 package de.pgalise.testutils.weather;
 
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
@@ -64,7 +65,6 @@ public class WeatherTestUtils {
     long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
       endTimestamp);
     Map<Date, ServiceDataForecast> retValue;
-    entityManager.merge(city.getGeoInfo());
     entityManager.merge(city);
     long start = preceedingDayTimestampMidnight;
     retValue = new HashMap<>();
@@ -126,7 +126,10 @@ public class WeatherTestUtils {
     long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
       endTimestamp);
     Map<Date, ServiceDataCurrent> retValue;
-    entityManager.merge(city.getGeoInfo());
+    entityManager.merge(city.getReferencePoint());
+    for(BaseCoordinate baseCoordinate : city.getBoundaryCoordinates()) {
+      entityManager.merge(baseCoordinate);
+    }
     entityManager.merge(city);
     long start = preceedingDayTimestampMidnight;
     retValue = new HashMap<>();

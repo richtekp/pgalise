@@ -123,13 +123,13 @@ public class SchedulerScaleTest {
   public void setUp() throws NamingException {
     TestUtils.getContext().bind("inject",
       this);
-    a = new TrafficNode(idGenerator.getNextId(),
+    a = new TrafficNode(
       new Coordinate(0,
         0));
-    b = new TrafficNode(idGenerator.getNextId(),
+    b = new TrafficNode(
       new Coordinate(2,
         0));
-    c = new TrafficNode(idGenerator.getNextId(),
+    c = new TrafficNode(
       new Coordinate(2,
         2));
     this.trafficGraphExtensions = new DefaultTrafficGraphExtensions(

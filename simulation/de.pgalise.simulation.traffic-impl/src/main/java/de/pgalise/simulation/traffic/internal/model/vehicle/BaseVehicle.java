@@ -15,24 +15,23 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.shared.entity.BaseCoordinate;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.Orientation;
+import de.pgalise.simulation.shared.JaxbVector2d;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import java.util.LinkedList;
-import de.pgalise.simulation.shared.JaxbVector2d;
-import de.pgalise.simulation.traffic.entity.TrafficTrip;
+import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Superclass for vehicles
@@ -342,8 +341,13 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
     this.velocity = velocity;
   }
 
+  /**
+   * 
+   * @param elapsedTime
+   */
   @Override
   public void update(long elapsedTime) {
+    TrafficEdge eventuallyPassedEdge = currentEdge;
     this.preUpdate(elapsedTime);
     if (!(VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.vehicleState))) {
       return;
@@ -370,10 +374,14 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
     if (this.isVirgin) {
       this.passedNode(passedNode);
     }
-    // if(passedNode!=null)
-    // log.info("postUpdate on "+this.getName()+", passedNode: "+passedNode.getId());
-    // else
-    // log.info("postUpdate on "+this.getName()+", passedNode: null");
+    if (!this.getCurrentEdge().equals(eventuallyPassedEdge)) {
+      eventuallyPassedEdge.getVehicles().remove(this);
+      getCurrentEdge().getVehicles().add(this);
+    }
+
+    log.debug(String.format("postUpdate on %s, passedNode: %s",
+      this,
+      passedNode));
     this.postUpdate(passedNode);
     // logger.debug(String.format("Vehicle '%s' position and velocity after update: %s, %s", this.name,
     // this.position,
@@ -449,9 +457,8 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
       this.nodePath.size() - 1))) {
       // new direction and orientation
       this.direction = this.getDirection(
-        this.getTrafficGraphExtensions().getPosition(this._getNextNode()),
-        this.getTrafficGraphExtensions().getPosition(
-          this.nodePath.get(this.nodePath.indexOf(this._getNextNode()) + 1)));
+        this._getNextNode(),
+        this.nodePath.get(this.nodePath.indexOf(this._getNextNode()) + 1));
       this.orientation = this.getOrientation(this.direction);
 
       // calculate new position on the path
@@ -467,14 +474,13 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
       // log.debug("Drüber gefahren: "+scale);
       // log.debug(String.format("Edge (%s, %s): ", getNextNode().getId(),
       // path.get(path.indexOf(getNextNode()) + 1).getId()));
-      // log.debug("DIR: "+NodeExtensions.getInstance().getPosition(path.get(path.indexOf(getNextNode())
+      // log.debug("DIR: "+Node.getInstance().getPosition(path.get(path.indexOf(getNextNode())
       // + 1)).
-      // sub(NodeExtensions.getInstance().getPosition(getNextNode())));
+      // sub(Node.getInstance().getPosition(getNextNode())));
       this.direction.scale(scale);
       nextNodeVector
         .add(this.direction);
-      this.position = this.getTrafficGraphExtensions().getPosition(this.
-        _getNextNode());
+      this.position = this._getNextNode();
 
       // log.debug(String.format("Vehicle \"%s\" passed by intermediate node \"%s\" (index: %s)", this.name,
       // this._getNextNode().getId(), this.getIndex(this._getNextNode())));
@@ -498,7 +504,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
 
       log.debug(String.format("Vehicle \"%s\" arrived at target node \"%s\"",
         this.name,
-        this.currentNode.getId()));
+        this.currentNode));
 
       this.prevNode = this.currentNode;
       this.currentNode = this._getNextNode();
@@ -525,11 +531,19 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
   }
 
   /**
-   * overwrites the values of pos and returns a reference to pos
+   * calculates an updated position based on <tt>pos</tt> and returns this 
+   * value.
+   *
    * @param elapsedTime
    * @param pos
    * @param dir
-   * @return 
+   * @param idGenerator  the {@link IdGenerator} to produce the return value
+   * @return
+   */
+  /*
+   overwriting would prevent the class or method from the necesity of a 
+  reference to IdGenerator, but reference has to be passed anyway if use of 
+  coordinate with id ought to be enforced
    */
   protected BaseCoordinate update(long elapsedTime,
     BaseCoordinate pos,
@@ -548,9 +562,9 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
     posVector.add(dir);
     // log.debug("After calc: elapsedTime: " + elapsedTime + ", velocity: " + this.velocity + ", position: " + pos +
     // ", direction: " + dir);
-    pos.setX(posVector.getX());
-    pos.setY(posVector.getY());
-    return pos;
+    BaseCoordinate retValue = new BaseCoordinate(posVector.x,
+      posVector.y);
+    return retValue;
   }
 
   @Override
@@ -568,7 +582,7 @@ public abstract class BaseVehicle<D extends VehicleData> extends Identifiable
   public int getIndex(TrafficNode node) {
     for (int i = 0; i < this.edgePath.size(); i++) {
       TrafficNode n = this.nodePath.get(i);
-      if (n.getId().equals(node.getId())) {
+      if (n.equals(node)) {
         return i;
       }
     }

@@ -5,7 +5,7 @@
 			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
-
+	<!-- hibernate related loggers -->
 	<logger name="org.hibernate" level="OFF" />
 	<logger name="org.apache.openejb" level="OFF" />
 	<logger name="org.glassfish" level="OFF" />
@@ -18,7 +18,7 @@
 	<logger name="org.hibernate.cache" level="OFF" />
 	<logger name="org.hibernate.jdbc" level="OFF" />
 
-	<root level="OFF">
+	<root level="INFO">
 		<appender-ref ref="console" />
 	</root>
 </configuration>

@@ -10,9 +10,13 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.testutils.TestUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import org.junit.Before;
@@ -23,7 +27,8 @@ import org.junit.Test;
  *
  * @author richter
  */
-@LocalBean
+@LocalClient
+@ManagedBean
 public class XMLStartParameterSerializerServiceTest {
 
   @EJB

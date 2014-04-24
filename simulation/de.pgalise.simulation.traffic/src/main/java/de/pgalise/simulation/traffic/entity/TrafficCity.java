@@ -5,8 +5,8 @@
 package de.pgalise.simulation.traffic.entity;
 
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
-import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.City;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 
@@ -38,6 +38,7 @@ public class TrafficCity extends City {
    * @param altitude
    * @param nearRiver
    * @param nearSea
+   * @param referencePoint
    * @param geoInfo
    * @param cityInfrastructureData
    * @throws NullPointerException if <tt>geoInfo</tt> is <code>null</code>
@@ -48,7 +49,8 @@ public class TrafficCity extends City {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseBoundary geoInfo,
+    BaseCoordinate referencePoint,
+    List<BaseCoordinate> geoInfo,
     CityInfrastructureData cityInfrastructureData) {
     super(id,
       name,
@@ -56,28 +58,8 @@ public class TrafficCity extends City {
       altitude,
       nearRiver,
       nearSea,
+      referencePoint,
       geoInfo
-    );
-    this.cityInfrastructureData = cityInfrastructureData;
-  }
-
-  public TrafficCity(Long id,
-    String name,
-    int population,
-    int altitude,
-    boolean nearRiver,
-    boolean nearSea,
-    BaseBoundary geoInfo,
-    CityInfrastructureData cityInfrastructureData,
-    BaseCoordinate referencePoint) {
-    super(id,
-      name,
-      population,
-      altitude,
-      nearRiver,
-      nearSea,
-      geoInfo,
-      referencePoint
     );
     this.cityInfrastructureData = cityInfrastructureData;
   }

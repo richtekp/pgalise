@@ -21,10 +21,10 @@ public class OSMNavigationNode extends TrafficNode {
   protected OSMNavigationNode() {
   }
 
-  public OSMNavigationNode(Long id,
+  public OSMNavigationNode(
     String OSMId,
     BaseCoordinate geoLocation) {
-    super(id,
+    super(
       geoLocation);
     this.OSMId = OSMId;
   }

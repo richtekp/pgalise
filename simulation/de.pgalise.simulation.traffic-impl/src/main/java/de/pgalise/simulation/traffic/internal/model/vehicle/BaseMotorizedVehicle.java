@@ -122,7 +122,7 @@ public abstract class BaseMotorizedVehicle<T extends VehicleData> extends BaseVe
           log.debug("Registering car "
             + this.getName()
             + " on node "
-            + passedNode.getId()
+            + passedNode
             + ", new size: "
             + this.getTrafficGraphExtensions().getVehiclesOnNode(passedNode,
               this.getData().getType())
@@ -139,7 +139,7 @@ public abstract class BaseMotorizedVehicle<T extends VehicleData> extends BaseVe
           log.debug("Unregisterering car "
             + this.getName()
             + " from node "
-            + lastRegisteredNode.getId()
+            + lastRegisteredNode
             + ", new size: "
             + this.getTrafficGraphExtensions()
             .getVehiclesOnNode(lastRegisteredNode,

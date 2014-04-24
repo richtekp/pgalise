@@ -64,6 +64,9 @@
     <class>de.pgalise.simulation.weather.entity.WeatherStationData</class>
     <class>de.pgalise.simulation.weather.entity.WindFlagSensorData</class>
     <class>de.pgalise.simulation.traffic.entity.MotorWay</class>
+    <class>de.pgalise.simulation.shared.entity.Area</class>
+    <class>de.pgalise.simulation.shared.entity.OSMArea</class>
+    <class>de.pgalise.simulation.traffic.entity.TrafficWay</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>
       <property name="javax.persistence.jdbc.password" value="somepw"/>

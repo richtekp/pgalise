@@ -5,6 +5,7 @@
 			<pattern>[%-5level] #%line (%d{HH:mm:ss}\) %logger{30} [%thread] - %msg%n</pattern>
 		</encoder>
 	</appender>
+	<logger name="de.pgalise.weather" level="DEBUG"/>
 	
 	<logger name="org.hibernate" level="OFF"/>
 	<logger name="org.apache.openejb" level="OFF"/>

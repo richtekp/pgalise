@@ -54,7 +54,6 @@ import org.junit.Test;
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 10, 2012)
  */
-@LocalBean
 @ManagedBean
 @LocalClient
 public class CityClimateTest {

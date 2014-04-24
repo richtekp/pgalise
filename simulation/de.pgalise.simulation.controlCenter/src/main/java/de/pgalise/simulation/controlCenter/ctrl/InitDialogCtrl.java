@@ -10,7 +10,6 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpForceCloseStrategy;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
@@ -136,10 +135,10 @@ public class InitDialogCtrl implements Serializable {
   }
 
   public String getNextGpsSensor() {
-    JaxRSCoordinate peekCoordinate = uiVehicles.peek().getGpsSensor().
+    BaseCoordinate peekCoordinate = uiVehicles.peek().getGpsSensor().
       getSensorData().
       getPosition();
-    peekCoordinate = new JaxRSCoordinate(45,
+    peekCoordinate = new BaseCoordinate(45,
       55);
     return String.format("[%f,%f]",
       peekCoordinate.getX(),

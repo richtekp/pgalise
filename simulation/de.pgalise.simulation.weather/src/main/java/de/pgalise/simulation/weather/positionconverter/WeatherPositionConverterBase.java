@@ -89,7 +89,7 @@ public abstract class WeatherPositionConverterBase implements
 			throw new IllegalStateException("grid has not been set (is null). Init the converter before invoking methods");
 		}
     Point centroid = this.grid.getCentroid();
-    return new BaseCoordinate(idGenerator.getNextId(), centroid.getX(),
+    return new BaseCoordinate( centroid.getX(),
       centroid.getY());
   }
 

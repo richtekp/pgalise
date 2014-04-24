@@ -1,19 +1,22 @@
 
 package de.pgalise.testutils;
 
-import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Properties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.ejb.embeddable.EJBContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -77,31 +80,28 @@ public class TestUtils {
 
   public static City createDefaultTestCityInstance(IdGenerator idGenerator) {
 
-    BaseCoordinate referencePoint = new BaseCoordinate(idGenerator.getNextId(), 52.516667,
+    BaseCoordinate referencePoint = new BaseCoordinate( 52.516667,
       13.4);
-    Polygon referenceArea = GeoToolsBootstrapping.getGeometryFactory().
-      createPolygon(
-        new BaseCoordinate[]{
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
+    List<BaseCoordinate> referenceArea = new LinkedList<>(Arrays.asList(
+          new BaseCoordinate( referencePoint.getX() - 1,
             referencePoint.getY() - 1),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
-            referencePoint.getY()),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
-            referencePoint.getY()),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
+          new BaseCoordinate( referencePoint.getX() - 1,
+            referencePoint.getY()+1),
+          new BaseCoordinate( referencePoint.getX()+1,
+            referencePoint.getY()+1),
+          new BaseCoordinate( referencePoint.getX()+1,
             referencePoint.getY() - 1),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
-            referencePoint.getY() - 1)
-        }
-      );
+          new BaseCoordinate( referencePoint.getX() - 1,
+            referencePoint.getY() - 1)        
+      ));
     City city = new City(idGenerator.getNextId(),
       "Berlin",
       3375222,
       80,
       true,
       true,
-      new BaseBoundary(idGenerator.getNextId(),
-        referenceArea));
+      referencePoint,
+        referenceArea);
     return city;
   }
 

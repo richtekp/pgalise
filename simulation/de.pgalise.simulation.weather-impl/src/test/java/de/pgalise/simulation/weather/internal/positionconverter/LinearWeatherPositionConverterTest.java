@@ -42,7 +42,6 @@ import org.junit.Test;
  * @author Andreas Rehfeldt
  * @version 1.0 (Oct 22, 2012)
  */
-@LocalBean
 @ManagedBean
 @LocalClient
 public class LinearWeatherPositionConverterTest {
@@ -76,26 +75,26 @@ public class LinearWeatherPositionConverterTest {
        */
       Timestamp testTime = DateConverter.convertTimestamp("2012-10-08 12:00:00",
         "YYYY-MM-dd HH:mm:ss");
-      BaseCoordinate testPosition = new BaseCoordinate(idGenerator.getNextId(), 1,
+      BaseCoordinate testPosition = new BaseCoordinate(1,
         1);
       double value;
       /*
        * Test: Temperature
        */
-      BaseCoordinate referencePoint = new BaseCoordinate(idGenerator.getNextId(), 20,
+      BaseCoordinate referencePoint = new BaseCoordinate(20,
         20);
       Polygon referenceArea = GeoToolsBootstrapping.getGeometryFactory().
         createPolygon(
           new BaseCoordinate[]{
-            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
+            new BaseCoordinate(referencePoint.getX() - 1,
               referencePoint.getY() - 1),
-            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
+            new BaseCoordinate(referencePoint.getX() - 1,
               referencePoint.getY()),
-            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
+            new BaseCoordinate(referencePoint.getX(),
               referencePoint.getY()),
-            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
+            new BaseCoordinate(referencePoint.getX(),
               referencePoint.getY() - 1),
-            new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
+            new BaseCoordinate(referencePoint.getX() - 1,
               referencePoint.getY() - 1)
           }
         );

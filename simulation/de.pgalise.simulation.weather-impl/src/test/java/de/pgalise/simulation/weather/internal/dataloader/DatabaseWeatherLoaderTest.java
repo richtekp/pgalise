@@ -48,7 +48,6 @@ import org.junit.Test;
  * @author richter
  */
 @LocalClient
-@LocalBean
 @ManagedBean
 public class DatabaseWeatherLoaderTest {
 

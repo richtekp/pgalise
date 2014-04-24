@@ -202,7 +202,6 @@ public class DefaultWeatherService implements WeatherService {
   @PostConstruct
   public void initialize() {
     init0();
-    this.gridConverter.setGrid(city.getGeoInfo().retrieveBoundary());
   }
 
   @Override
@@ -213,7 +212,8 @@ public class DefaultWeatherService implements WeatherService {
       initParameter.getStartTimestamp().getTime(),
       loader);
     this.gridConverter.init(new WeatherPositionInitParameter(initParameter.
-      getCity().getGeoInfo().retrieveBoundary()));
+      getCity().retrieveBoundary()));
+    this.gridConverter.setGrid(initParameter.getCity().retrieveBoundary());
   }
 
   /**
@@ -515,7 +515,7 @@ public class DefaultWeatherService implements WeatherService {
       time,
       position,
       value,
-      city.getGeoInfo().retrieveBoundary()
+      city.retrieveBoundary()
     );
   }
 

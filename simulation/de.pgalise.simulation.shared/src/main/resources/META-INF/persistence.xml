@@ -12,6 +12,8 @@
     <class>de.pgalise.simulation.shared.entity.NavigationNode</class>
     <class>de.pgalise.simulation.shared.entity.SimpleSensorData</class>
     <class>de.pgalise.simulation.shared.entity.Way</class>
+    <class>de.pgalise.simulation.shared.entity.Area</class>
+    <class>de.pgalise.simulation.shared.entity.OSMArea</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>

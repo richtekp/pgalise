@@ -70,7 +70,7 @@ public class DefaultGpsAtmosphereInterferer extends GpsBaseInterferer implements
 		if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
 			double radiation = this.weatherController.getValue(WeatherParameterEnum.RADIATION, simTime, realPosition)
 					.doubleValue();
-			return new BaseCoordinate(idGenerator.getNextId(),mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
+			return new BaseCoordinate(mutablePosition.getX() + radiation, mutablePosition.getY() + radiation);
 		}
 		// Returns with no change
 		return mutablePosition;

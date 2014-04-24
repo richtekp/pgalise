@@ -66,7 +66,6 @@ import org.junit.Test;
  */
 @ManagedBean
 @LocalClient
-@LocalBean
 public class DefaultSimulationControllerTest {
 
   private static final long START_TIMESTAMP = 0;

@@ -105,6 +105,11 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.bbn</groupId>
 			<artifactId>openmap</artifactId>
 			<type>jar</type>
@@ -131,7 +136,7 @@
 			<scope>test</scope>
 			<type>jar</type>
 		</dependency>
-<!--		<dependency>
+		<!--		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 		</dependency>

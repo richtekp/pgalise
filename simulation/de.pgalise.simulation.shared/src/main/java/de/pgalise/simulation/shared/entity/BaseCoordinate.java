@@ -3,65 +3,80 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package de.pgalise.simulation.shared.entity;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * <tt>BaseCoordinate</tt> contains any geographical information for a point. 
- * It should not be used for navigation - use {@link NavigationNode} for that.
+ * An extension of {@link Coordinate} which is necessary to reach JaxRS 
+ * compliance (e.g. getter and setter for properties x and y).
  * @author richter
  */
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-public class BaseCoordinate extends JaxRSCoordinate {
-	private static final long serialVersionUID = 1L;
-  @Id
-  private Long id;
-
-  protected BaseCoordinate() {
-  }
-
-  public BaseCoordinate(Long id) {
-    super();
-    this.id = id;
-  }
-
-  /**
-	 * Constructs a <code>Coordinate</code> having the same (x,y,z) values as
-	 * <code>other</code>.
-	 *
-   * @param id
-	 * @param c the <code>Coordinate</code> to copy.
-	 */
-  public BaseCoordinate(Long id,
-    Coordinate c) {
-    super(
-      c); 
-    this.id = id;
-  }
+@IdClass(BaseCoordinatePK.class)
+/*
+BaseCoordinate doesn't have a business id because it is not allowed that two 
+Coordinates with the same x and y property exist (therefore defining a 
+composite key over x and y makes sense)
+*/
+public class BaseCoordinate extends Coordinate {
+  private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs a <code>Coordinate</code> at (x,y,NaN).
+	 * Constructs a <code>Coordinate</code> at (x,y,z).
 	 *
-   * @param id
 	 * @param x the x-value
 	 * @param y the y-value
 	 */
-	public BaseCoordinate(Long id,double x,
+	public BaseCoordinate(double x,
 		double y) {
 		super(x,
 			y);
-    this.id = id;
 	}
 
-  protected void setId(Long id) {
-    this.id = id;
-  }
+	/**
+	 * Constructs a <code>Coordinate</code> at (0,0,NaN).
+	 */
+	protected BaseCoordinate() {
+		super();
+	}
 
-  public Long getId() {
-    return id;
-  }
+	/**
+	 * Constructs a <code>Coordinate</code> having the same (x,y,z) values as
+	 * <code>other</code>.
+	 *
+	 * @param c the <code>Coordinate</code> to copy.
+	 */
+	public BaseCoordinate(Coordinate c) {
+		super(c);
+	}
+
+  @Id
+	public double getX() {
+		return super.getOrdinate(X);
+	}
+
+	public void setX(double x) {
+		super.setOrdinate(X,
+			x);
+	}
+
+  @Id
+	public double getY() {
+		return super.getOrdinate(Y);
+	}
+
+	public void setY(double y) {
+		super.setOrdinate(Y,
+			y);
+	}
 }

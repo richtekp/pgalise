@@ -25,82 +25,82 @@ import javax.ejb.Stateful;
  */
 @Stateful
 public class DefaultWeatherSensorController extends AbstractController<WeatherEvent, StartParameter, InitParameter>
-	implements WeatherSensorController {
+  implements WeatherSensorController {
 
-	private final Set<WeatherSensor<?>> sensors = new HashSet<>();
+  private final Set<WeatherSensor<?>> sensors = new HashSet<>();
 
-	public DefaultWeatherSensorController() {
-	}
+  public DefaultWeatherSensorController() {
+  }
 
-	@Override
-	protected void onInit(InitParameter param) throws InitializationException {
-		//nothing to do
-	}
+  @Override
+  protected void onInit(InitParameter param) throws InitializationException {
+    //nothing to do
+  }
 
-	/**
-	 * clears the collection of managed sensors
-	 */
-	@Override
-	protected void onReset() {
-		sensors.clear();
-	}
+  /**
+   * clears the collection of managed sensors
+   */
+  @Override
+  protected void onReset() {
+    sensors.clear();
+  }
 
-	@Override
-	protected void onStart(StartParameter param) {
-		//nothing to do
-	}
+  @Override
+  protected void onStart(StartParameter param) {
+    //nothing to do
+  }
 
-	@Override
-	protected void onStop() {
-		//nothing to do
-	}
+  @Override
+  protected void onStop() {
+    //nothing to do
+  }
 
-	@Override
-	protected void onResume() {
-		//nothing to do
-	}
+  @Override
+  protected void onResume() {
+    //nothing to do
+  }
 
-	@Override
-	protected void onUpdate(EventList<WeatherEvent> simulationEventList) {
-		for (WeatherSensor<?> sensor : sensors) {
-			sensor.update(simulationEventList);
-		}
-	}
+  @Override
+  protected void onUpdate(EventList<WeatherEvent> simulationEventList) {
+    for (WeatherSensor<?> sensor : sensors) {
+      sensor.update(simulationEventList);
+    }
+  }
 
-	@Override
-	public void createSensor(WeatherSensor<?> sensor) {
-		this.sensors.add(sensor);
-	}
+  @Override
+  public void createSensor(WeatherSensor<?> sensor) {
+    this.sensors.add(sensor);
+  }
 
-	@Override
-	public void createSensors(
-		Set<WeatherSensor<?>> sensors) {
-		for (WeatherSensor<?> sensor : sensors) {
-			this.createSensor(sensor);
-		}
-	}
+  @Override
+  public void createSensors(
+    Set<WeatherSensor<?>> sensors) {
+    for (WeatherSensor<?> sensor : sensors) {
+      this.createSensor(sensor);
+    }
+  }
 
-	@Override
-	public void deleteSensor(WeatherSensor<?> sensor) {
-		this.sensors.remove(sensor);
-	}
+  @Override
+  public void deleteSensor(WeatherSensor<?> sensor) {
+    this.sensors.remove(sensor);
+  }
 
-	@Override
-	public void deleteSensors(
-		Set<WeatherSensor<?>> sensors) {
-		for (WeatherSensor<?> sensor : sensors) {
-			this.deleteSensor(sensor);
-		}
-	}
+  @Override
+  public void deleteSensors(
+    Set<WeatherSensor<?>> sensors) {
+    for (WeatherSensor<?> sensor : sensors) {
+      this.deleteSensor(sensor);
+    }
+  }
 
-	@Override
-	public boolean isActivated(WeatherSensor<?> sensor) {
-		return sensor.isActivated();
-	}
+  @Override
+  public boolean isActivated(WeatherSensor<?> sensor) {
+    return sensor.isActivated();
+  }
 
-	@Override
-	public Set<WeatherSensor<?>> getAllManagedSensors() {
-		return sensors;
-	}
+  @Override
+  public Set<WeatherSensor<?>> getAllManagedSensors() {
+    return sensors;
+  }
 
 }

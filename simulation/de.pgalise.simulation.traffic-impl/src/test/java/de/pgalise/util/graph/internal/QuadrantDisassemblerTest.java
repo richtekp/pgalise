@@ -70,35 +70,35 @@ public class QuadrantDisassemblerTest {
     NavigationNode node;
 
     // erster qudrant
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(10,
         10));
     graph.addVertex(a);
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(25,
         25));
     graph.addVertex(b);
-    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode c = new TrafficNode(
       new Coordinate(20,
         25));
     graph.addVertex(c);
 
 // zweiter quadrant
-    TrafficNode d = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode d = new TrafficNode(
       new Coordinate(18,
         45));
     graph.addVertex(d);
-    TrafficNode e = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode e = new TrafficNode(
       new Coordinate(40,
         50));
     graph.addVertex(e);
 
     // dritter quadrant
-    TrafficNode f = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode f = new TrafficNode(
       new Coordinate(75,
         30));
     graph.addVertex(f);
-    TrafficNode g = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode g = new TrafficNode(
       new Coordinate(80,
         45));
     graph.addVertex(e);

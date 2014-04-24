@@ -21,9 +21,9 @@ import de.pgalise.simulation.energy.internal.DefaultEnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
@@ -38,9 +38,11 @@ import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.traffic.TrafficTestUtils;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.ManagedBean;
@@ -135,7 +137,7 @@ public class DefaultEnergyControllerTest {
     TestUtils.getContext().bind("inject",
       this);
 
-    testLocation = new BaseCoordinate(idGenerator.getNextId(), 1.5,
+    testLocation = new BaseCoordinate( 1.5,
     1.5);
     Calendar cal = new GregorianCalendar();
 
@@ -151,32 +153,30 @@ public class DefaultEnergyControllerTest {
     for (int i = 0; i < 100; i++) {
       buildingList.add(
         new Building(idGenerator.getNextId(),
-          new BaseCoordinate(idGenerator.getNextId(), 53.136765,
+          new BaseCoordinate( 53.136765,
             8.216524),
-          new BaseBoundary(idGenerator.getNextId(),
-            GeoToolsBootstrapping.getGeometryFactory().createPolygon(
-              new BaseCoordinate[]{
-                new BaseCoordinate(idGenerator.getNextId(), 1,
+          new LinkedList<>(Arrays.asList(
+                new BaseCoordinate( 1,
                   1),
-                new BaseCoordinate(idGenerator.getNextId(), 1,
+                new BaseCoordinate( 1,
                   2),
-                new BaseCoordinate(idGenerator.getNextId(), 2,
+                new BaseCoordinate( 2,
                   2),
-                new BaseCoordinate(idGenerator.getNextId(), 2,
+                new BaseCoordinate( 2,
                   1),
-                new BaseCoordinate(idGenerator.getNextId(), 1,
+                new BaseCoordinate( 1,
                   1)
-              }
+          )
             )
           )
-        )
+        
       );
     }
 
     DefaultEnergyControllerTest.information = EasyMock.createNiceMock(
       FileBasedCityDataService.class);
     EasyMock.expect(
-      DefaultEnergyControllerTest.information.getBuildings(
+      DefaultEnergyControllerTest.information.getBuildingEnergyProfileMap(
         testLocation,
         3))
       .andStubReturn(map);

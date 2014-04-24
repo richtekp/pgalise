@@ -91,7 +91,7 @@ public class FuzzyEnergyConsumptionManagerTest {
   
   @Before
   public void setUp() {
-    testLocation = new BaseCoordinate(idGenerator.getNextId(),0.0, 0.0);
+    testLocation = new BaseCoordinate(0.0, 0.0);
 
     /* Mock the weathercontroller: */
     FuzzyEnergyConsumptionManagerTest.weatherController = EasyMock.createNiceMock(WeatherControllerLocal.class);

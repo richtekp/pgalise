@@ -38,7 +38,7 @@ public interface CityDataService extends Serializable {
    * @param radiusInMeter
    * @return
    */
-  Map<EnergyProfileEnum, List<Building>> getBuildings(
+  Map<EnergyProfileEnum, List<Building>> getBuildingEnergyProfileMap(
     BaseCoordinate geolocation,
     int radiusInMeter);
 

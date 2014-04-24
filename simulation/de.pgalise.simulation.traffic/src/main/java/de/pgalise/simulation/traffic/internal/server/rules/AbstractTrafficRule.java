@@ -103,16 +103,16 @@ TrafficRule {
 					"Parameter 'to' must not be null");
 		}
 
-		log.debug("from:"+ from.getId());
-		log.debug("to:"+ to.getId());
-		log.debug("this.node:"+ this.node.getId());
+		log.debug("from:"+ from);
+		log.debug("to:"+ to);
+		log.debug("this.node:"+ this.node);
 		
 		TrafficEdge edgeFrom = null;
 		log.debug("#Edges conntected to node 'from': "
 				+ graph.edgesOf(from).size());
 		for (final TrafficEdge edge : graph.edgesOf(from)) {
-			log.debug("Node conntected with edge: "+edge.getOpposite(from).getId());
-			if (edge.getOpposite(from).getId().equals(this.getNode().getId())) {
+			log.debug("Node conntected with edge: "+edge.getOpposite(from));
+			if (edge.getOpposite(from).equals(this.getNode())) {
 				edgeFrom = edge;
 			}
 		}
@@ -125,7 +125,7 @@ TrafficRule {
 
 		TrafficEdge edgeTo = null;
 		for (final TrafficEdge edge : graph.edgesOf(to)) {
-			if (edge.getOpposite(to).getId().equals(this.getNode().getId())) {
+			if (edge.getOpposite(to).equals(this.getNode())) {
 				edgeTo = edge;
 			}
 		}

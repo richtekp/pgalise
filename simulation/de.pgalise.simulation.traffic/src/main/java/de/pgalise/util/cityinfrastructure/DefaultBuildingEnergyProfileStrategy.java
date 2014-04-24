@@ -73,7 +73,7 @@ public class DefaultBuildingEnergyProfileStrategy implements
 
   @Override
   public EnergyProfileEnum getEnergyProfile(Building building) {
-    if (building.getSquareMeter() <= tooSmallBuilding) {
+    if (building.retrieveBoundary().getArea() <= tooSmallBuilding) {
       throw new IllegalArgumentException("Building is too small");
     }
     if (building.getPublicTransportTags() != null && building.
@@ -154,7 +154,7 @@ public class DefaultBuildingEnergyProfileStrategy implements
       return EnergyProfileEnum.SHOP;
     }
 
-    if (building.getSquareMeter() < minSquareMetersForIndustry) {
+    if (building.retrieveBoundary().getArea() < minSquareMetersForIndustry) {
       return EnergyProfileEnum.HOUSEHOLD;
     }
 

@@ -8,6 +8,7 @@ package de.pgalise.simulation.traffic.entity.osm;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
+import java.util.Objects;
 import javax.persistence.Entity;
 
 /**
@@ -23,17 +24,17 @@ public class OSMTrafficNode extends TrafficNode {
   }
 
   public OSMTrafficNode(
-    Long id,String osmId,
+    String osmId,
     Coordinate geoLocation) {
-    super(id,
+    super(
       geoLocation);
     this.osmId = osmId;
   }
 
   public OSMTrafficNode(
-    Long id,String osmId,
+    String osmId,
     double x, double y) {
-    super(id,
+    super(
       x,y);
     this.osmId = osmId;
   }

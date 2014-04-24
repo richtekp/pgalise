@@ -163,7 +163,7 @@ public class DefaultGraphVisualizer<D extends VehicleData> extends JPanel
 				Font.PLAIN,
 				12);
 			g2d.setFont(font);
-			g2d.drawString(String.valueOf(node.getId()),
+			g2d.drawString(String.valueOf(node),
 				(int) (vec.getX() + 5),
 				(int) (vec.getY() - 5));
 		}

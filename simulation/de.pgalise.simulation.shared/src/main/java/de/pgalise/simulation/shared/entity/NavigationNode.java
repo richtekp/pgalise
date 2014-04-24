@@ -6,10 +6,10 @@ package de.pgalise.simulation.shared.entity;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,11 +23,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * <tt>NavigtionNode</tt> provides the base tags which might be used by 
  * subclasses in a different way (consider making a NavigationNode an office - 
  * doesn't make a lot of sense, but it is possible). Use tags carefully.
+ * 
+ * <tt>NavigationNode</tt>s with different tags are considered equal.
+ * 
  * @author richter
  */
 @Entity
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@Access(AccessType.FIELD)
 public class NavigationNode extends BaseCoordinate {
 
   private static final long serialVersionUID = 1L;
@@ -70,24 +74,20 @@ public class NavigationNode extends BaseCoordinate {
 
   protected NavigationNode() {
   }
-  
-  public NavigationNode(Long id) {
-    super(id);
-  }
 
-  public NavigationNode(Long id,
+  public NavigationNode(
     double x, double y) {
-    super(id, x,
+    super( x,
       y);
   }
   
-  public NavigationNode(Long id,
+  public NavigationNode(
     Coordinate geoLocation) {
-    super(id,
+    super(
       geoLocation);
   }
 
-  public NavigationNode(Long id,
+  public NavigationNode(
     double x, double y, 
     Set<String> tourismTags,
     Set<String> serviceTags,
@@ -105,7 +105,7 @@ public class NavigationNode extends BaseCoordinate {
     Set<String> landuseTags,
     boolean office,
     boolean military) {
-    this(id, x,y);
+    this( x,y);
     this.tourismTags = tourismTags;
     this.serviceTags = serviceTags;
     this.sportTags = sportTags;

@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.BusStopInformation;
+import java.util.Objects;
 import javax.persistence.Entity;
 
 /**
@@ -23,24 +24,24 @@ public class OSMBusStop extends BusStop {
   protected OSMBusStop() {
   }
 
-  public OSMBusStop(Long id,
+  public OSMBusStop(
     String osmId,
     String stopName,
     BusStopInformation busStopInformation,
     Coordinate geoLocation) {
-    super(id,
+    super(
       stopName,
       busStopInformation,
       geoLocation);
     this.osmId = osmId;
   }
 
-  public OSMBusStop(Long id,
+  public OSMBusStop(
     String osmId,
     String stopName,
     BusStopInformation busStopInformation,
     double x, double y) {
-    super(id,
+    super(
       stopName,
       busStopInformation,
       x,y);

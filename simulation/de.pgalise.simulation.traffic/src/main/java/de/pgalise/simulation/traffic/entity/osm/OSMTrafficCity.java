@@ -5,9 +5,11 @@
  */
 package de.pgalise.simulation.traffic.entity.osm;
 
-import de.pgalise.simulation.shared.entity.BaseBoundary;
+import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
+import java.util.List;
 import javax.persistence.Entity;
 
 /**
@@ -30,7 +32,8 @@ public class OSMTrafficCity extends TrafficCity {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseBoundary position,
+    BaseCoordinate referencePoint,
+    List<BaseCoordinate> position,
     CityInfrastructureData trafficInfrastructureData) {
     super(id,
       name,
@@ -38,6 +41,7 @@ public class OSMTrafficCity extends TrafficCity {
       altitude,
       nearRiver,
       nearSea,
+      referencePoint,
       position,
       trafficInfrastructureData);
     this.osmId = osmId;

@@ -26,8 +26,8 @@ import de.pgalise.simulation.service.Controller;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
@@ -55,7 +55,9 @@ import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
@@ -68,7 +70,7 @@ import org.junit.Test;
  *
  * @author Timo
  */
-@LocalBean
+@LocalClient
 @ManagedBean
 public class DefaultEventInitiatorTest {
 

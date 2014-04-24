@@ -15,7 +15,7 @@
 		<java.compiler.target>1.7</java.compiler.target>
 		<de.pgalise.openejb.version>4.6.1-SNAPSHOT</de.pgalise.openejb.version>
 		<de.pgalise.geotools.version>9.3</de.pgalise.geotools.version>
-		<de.pgalise.hibernate.version>4.3.0.Final</de.pgalise.hibernate.version>
+		<de.pgalise.hibernate.version>4.3.5.Final</de.pgalise.hibernate.version>
 		<!--4.3.0.Final is the only stable version which is compatible with Java EE 7, 
 but also buggy (NPE at 
 		org.hibernate.engine.transaction.internal.jta.JtaStatusHelper.getStatus(
@@ -86,18 +86,42 @@ but also buggy (NPE at
 					<name>maven.nuiton.org</name>
 					<url>http://maven.nuiton.org/nexus/content/repositories/thirdparty/com/bbn/openmap/</url>
 					<!--provides openmap-->
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+					</snapshots>
 				</repository>
 				<repository>
 					<id>dev.nightlabs.org</id>
 					<name>dev.nightlabs.org</name>
 					<url>http://dev.nightlabs.org/maven-repository/maven.jahia.org-cache</url>
 					<!--provides tablib-unstandard-->
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+					</snapshots>
 				</repository>
 				<repository>
 					<id>central.maven.org</id>
 					<name>central.maven.org</name>
 					<url>http://central.maven.org/maven2</url>
 					<!--provides jgrapht-->
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>never</updatePolicy>
+					</snapshots>
 				</repository>
 			</repositories>
 			<pluginRepositories>
@@ -493,6 +517,11 @@ but also buggy (NPE at
 								<artifactId>slf4j-jdk14</artifactId>
 							</exclusion>
 						</exclusions>
+					</dependency>
+					<dependency>
+						<groupId>org.apache.openejb</groupId>
+						<artifactId>openejb-api</artifactId>
+						<version>${de.pgalise.openejb.version}</version>
 					</dependency>
 					<dependency>
 						<groupId>javax.servlet</groupId>

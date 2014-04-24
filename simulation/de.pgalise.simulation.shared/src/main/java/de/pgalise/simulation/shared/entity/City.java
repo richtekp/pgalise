@@ -16,6 +16,7 @@
 package de.pgalise.simulation.shared.entity;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -40,7 +41,7 @@ to modularisation
 @Entity
 @NamedQuery(name = "City.getAll",
   query = "SELECT i FROM City i")
-public class City extends BaseCoordinate {
+public class City extends BaseBoundary {
 
   /**
    * Serial
@@ -82,14 +83,6 @@ public class City extends BaseCoordinate {
    */
   @Transient
   private int rate = 0;
-  @OneToOne
-  private BaseBoundary geoInfo;
-  /**
-   * a point which is considered the most important in the geometry which is not
-   * forcibly always the geographical center of the referenced area
-   */
-  @OneToOne
-  private BaseCoordinate referencePoint;
 
   /**
    * Default constructor
@@ -101,8 +94,8 @@ public class City extends BaseCoordinate {
     super(id);
   }
   
-  public City(Long id, Coordinate referencePoint) {
-    super(id,referencePoint);
+  public City(Long id, BaseCoordinate referencePoint, List<BaseCoordinate> boundaryCoordinates) {
+    super(id,referencePoint, boundaryCoordinates);
   }
 
   /**
@@ -114,7 +107,7 @@ public class City extends BaseCoordinate {
    * @param altitude Altitude
    * @param nearRiver Option that the city is near a river
    * @param nearSea Option that the city is near the sea
-   * @param geoInfo
+   * @param boundaryCoordinates
    * @param referencePoint explicit reference point which might be different
    * from the center point of <tt>geoInfo</tt>
    */
@@ -124,45 +117,14 @@ public class City extends BaseCoordinate {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseBoundary geoInfo,
-    Coordinate referencePoint) {
-    this(id, referencePoint);
-    this.geoInfo = geoInfo;
+    BaseCoordinate referencePoint,
+    List<BaseCoordinate> boundaryCoordinates) {
+    this(id, referencePoint, boundaryCoordinates);
     this.name = name;
     this.population = population;
     this.altitude = altitude;
     this.nearRiver = nearRiver;
     this.nearSea = nearSea;
-  }
-
-  /**
-   * Creates a <tt>City</tt> with center point of <tt>geoInfo</tt> as reference
-   * point
-   *
-   * @param id
-   * @param name Name
-   * @param population Population
-   * @param altitude Altitude
-   * @param nearRiver Option that the city is near a river
-   * @param nearSea Option that the city is near the sea
-   * @param geoInfo
-   * @throws NullPointerException if <tt>geoInfo</tt> is <code>null</code>
-   */
-  public City(Long id,
-    String name,
-    int population,
-    int altitude,
-    boolean nearRiver,
-    boolean nearSea,
-    BaseBoundary geoInfo) {
-    this(id,
-      name,
-      population,
-      altitude,
-      nearRiver,
-      nearSea,
-      geoInfo,
-      geoInfo.retrieveCenterPoint());
   }
 
   public int getAltitude() {
@@ -213,22 +175,6 @@ public class City extends BaseCoordinate {
     this.rate = rate;
   }
 
-  public void setGeoInfo(BaseBoundary geoInfo) {
-    this.geoInfo = geoInfo;
-  }
-
-  public BaseBoundary getGeoInfo() {
-    return geoInfo;
-  }
-
-  public void setReferencePoint(BaseCoordinate referencePoint) {
-    this.referencePoint = referencePoint;
-  }
-
-  public BaseCoordinate getReferencePoint() {
-    return referencePoint;
-  }
-
   @Override
   public int hashCode() {
     int hash = 5;
@@ -238,8 +184,6 @@ public class City extends BaseCoordinate {
     hash = 29 * hash + (this.nearSea ? 1 : 0);
     hash = 29 * hash + this.population;
     hash = 29 * hash + this.rate;
-    hash = 29 * hash + Objects.hashCode(this.geoInfo);
-    hash = 29 * hash + Objects.hashCode(this.referencePoint);
     return hash;
   }
 
@@ -261,14 +205,6 @@ public class City extends BaseCoordinate {
       return false;
     }
     if (this.rate != other.rate) {
-      return false;
-    }
-    if (!Objects.equals(this.geoInfo,
-      other.geoInfo)) {
-      return false;
-    }
-    if (!Objects.equals(this.referencePoint,
-      other.referencePoint)) {
       return false;
     }
     return true;

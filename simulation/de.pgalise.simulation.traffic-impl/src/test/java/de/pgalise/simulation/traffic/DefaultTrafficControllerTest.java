@@ -246,11 +246,11 @@ public class DefaultTrafficControllerTest {
     NavigationNode nodeForStaticSensor = null;
 
     if (VEHICLE_TYPE.equals("car") || VEHICLE_TYPE.equals("all")) {
-      TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-        new BaseCoordinate(idGenerator.getNextId(), 30,
+      TrafficNode a = new TrafficNode(
+        new BaseCoordinate( 30,
           30));
-      TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-        new BaseCoordinate(idGenerator.getNextId(), 60,
+      TrafficNode b = new TrafficNode(
+        new BaseCoordinate( 60,
           60));
       TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
         a,
@@ -428,8 +428,8 @@ public class DefaultTrafficControllerTest {
       TrafficStartParameter.class);
 
     // create sensors
-    TrafficNode someNode = new TrafficNode(idGenerator.getNextId(),
-      new BaseCoordinate(idGenerator.getNextId(), 1,
+    TrafficNode someNode = new TrafficNode(
+      new BaseCoordinate( 1,
         2));
     TrafficSensor<?> sensor = new InductionLoopSensor(idGenerator.getNextId(),
       tcpIpOutput,
@@ -578,18 +578,18 @@ public class DefaultTrafficControllerTest {
     TrafficCity city = TrafficTestUtils.createDefaultTestCityInstance(
       idGenerator);
 
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new BaseCoordinate(idGenerator.getNextId(), 30,
+    TrafficNode a = new TrafficNode(
+      new BaseCoordinate( 30,
         30));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new BaseCoordinate(idGenerator.getNextId(), 60,
+    TrafficNode b = new TrafficNode(
+      new BaseCoordinate( 60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
       b);
-    TrafficTrip trip0 = ctrl.createTrip(city.getGeoInfo().retrieveBoundary(),
+    TrafficTrip trip0 = ctrl.createTrip(city.retrieveBoundary(),
       VehicleTypeEnum.CAR);
-    TrafficTrip trip1 = ctrl.createTrip(city.getGeoInfo().retrieveBoundary(),
+    TrafficTrip trip1 = ctrl.createTrip(city.retrieveBoundary(),
       VehicleTypeEnum.CAR);
 
     List<TrafficEdge> path = ctrl.getShortestPath(a,
@@ -683,11 +683,11 @@ public class DefaultTrafficControllerTest {
       output,
       null,
       new DefaultGpsNoInterferer());
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
-      new BaseCoordinate(idGenerator.getNextId(), 30,
+    TrafficNode a = new TrafficNode(
+      new BaseCoordinate( 30,
         30));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
-      new BaseCoordinate(idGenerator.getNextId(), 60,
+    TrafficNode b = new TrafficNode(
+      new BaseCoordinate( 60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
@@ -696,9 +696,9 @@ public class DefaultTrafficControllerTest {
       new HashSet<TrafficEdge>(Arrays.asList(ab)),
       output);
     car2.setName("Car " + i);
-    TrafficNode startNode = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode startNode = new TrafficNode(
       new Coordinate(1,
-        2)), endNode = new TrafficNode(idGenerator.getNextId(),
+        2)), endNode = new TrafficNode(
         new Coordinate(3,
           6));
     car2.setPath(server2.getShortestPath(startNode,
@@ -893,10 +893,10 @@ public class DefaultTrafficControllerTest {
     instance.reset();
     instance.start(startParam);
 
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(30,
         30));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
@@ -941,9 +941,9 @@ public class DefaultTrafficControllerTest {
 
         List<Sensor<?, ?>> sensorLists = new ArrayList<>();
         sensorLists.add(gpsSensor);
-        TrafficNode startNode = new TrafficNode(idGenerator.getNextId(),
+        TrafficNode startNode = new TrafficNode(
           new Coordinate(1,
-            2)), endNode = new TrafficNode(idGenerator.getNextId(),
+            2)), endNode = new TrafficNode(
             new Coordinate(2,
               3));
         trip = new TrafficTrip(startNode,
@@ -994,10 +994,10 @@ public class DefaultTrafficControllerTest {
     log.debug("CREATE ATTRACTION EVENT TEST");
     log.debug("###########");
 
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(30,
         30));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(60,
         60));
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
@@ -1053,7 +1053,7 @@ public class DefaultTrafficControllerTest {
             null,
             "K.A.R.R")));
 
-        TrafficNode node = new TrafficNode(idGenerator.getNextId(),
+        TrafficNode node = new TrafficNode(
           new Coordinate(4,
             4));
         list.add(new AttractionTrafficEvent(instance,

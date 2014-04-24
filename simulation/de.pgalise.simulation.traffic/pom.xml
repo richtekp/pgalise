@@ -38,6 +38,12 @@
 			<artifactId>weather</artifactId>
 			<type>jar</type>
 		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-impl</artifactId>
+			<type>ejb</type>
+			<scope>test</scope>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.onebusaway</groupId>
@@ -82,6 +88,11 @@
 	  <groupId>com.google.guava</groupId>
 	  <artifactId>guava</artifactId>
 	  <type>jar</type>
+	 </dependency>
+	 <dependency>
+		 <groupId>org.apache.openejb</groupId>
+		 <artifactId>openejb-core</artifactId>
+		 <scope>test</scope>
 	 </dependency>
 	</dependencies>
 	<build>

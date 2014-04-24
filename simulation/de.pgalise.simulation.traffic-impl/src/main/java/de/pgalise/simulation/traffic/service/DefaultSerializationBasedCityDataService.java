@@ -145,7 +145,7 @@ public class DefaultSerializationBasedCityDataService implements
   }
 
   @Override
-  public Map<EnergyProfileEnum, List<Building>> getBuildings(
+  public Map<EnergyProfileEnum, List<Building>> getBuildingEnergyProfileMap(
     BaseCoordinate geolocation,
     int radiusInMeter) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

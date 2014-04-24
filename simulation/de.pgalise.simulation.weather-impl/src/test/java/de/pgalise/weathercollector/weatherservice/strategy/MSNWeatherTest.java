@@ -28,7 +28,6 @@ import org.junit.Test;
  *
  * @author richter
  */
-@LocalBean
 @LocalClient
 @ManagedBean
 @Ignore
@@ -62,7 +61,6 @@ public class MSNWeatherTest {
     userTransaction.begin();
     try {
       City city = TestUtils.createDefaultTestCityInstance(idGenerator);
-      entityManager.merge(city.getGeoInfo());
       entityManager.merge(city);
       MSNWeather instance = new MSNWeather(idGenerator,
         baseDatabaseManager);

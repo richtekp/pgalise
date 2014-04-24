@@ -102,7 +102,7 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	public BaseCoordinate interfere(final BaseCoordinate mutablePosition,
 		final BaseCoordinate realPosition,
 		final long simTime) {
-		BaseCoordinate result = new BaseCoordinate(idGenerator.getNextId(),mutablePosition.getX(),
+		BaseCoordinate result = new BaseCoordinate(mutablePosition.getX(),
 			mutablePosition.getY());
 		for (final GpsInterferer interferer : this.interferers) {
 			result = interferer.interfere(result,

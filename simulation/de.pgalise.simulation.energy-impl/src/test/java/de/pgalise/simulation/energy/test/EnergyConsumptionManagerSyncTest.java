@@ -88,7 +88,7 @@ public class EnergyConsumptionManagerSyncTest {
   public void setUp() throws NamingException {
     TestUtils.getContext().bind("inject",
       this);
-    testLocation = new BaseCoordinate(idGenerator.getNextId(),
+    testLocation = new BaseCoordinate(
     53.136765,
     8.216524);
 
@@ -97,14 +97,14 @@ public class EnergyConsumptionManagerSyncTest {
 
     for (int i = 0; i < 100; i++) {
       buildingList.add(new Building(idGenerator.getNextId(),
-        new BaseCoordinate(idGenerator.getNextId(), 53.136765,
+        new BaseCoordinate( 53.136765,
           8.216524),
         null));
     }
 
     CityDataService citydata = EasyMock.createNiceMock(
       CityDataService.class);
-    EasyMock.expect(citydata.getBuildings(
+    EasyMock.expect(citydata.getBuildingEnergyProfileMap(
       testLocation,
       5)).andStubReturn(map);
     EasyMock.replay(citydata);

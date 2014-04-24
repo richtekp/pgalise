@@ -5,16 +5,16 @@
  */
 package de.pgalise.testutils.traffic;
 
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
 import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -25,22 +25,20 @@ public class TrafficTestUtils {
   public static TrafficCity createDefaultTestCityInstance(
     IdGenerator idGenerator) {
 
-    BaseCoordinate referencePoint = new BaseCoordinate(idGenerator.getNextId(), 52.516667,
+    BaseCoordinate referencePoint = new BaseCoordinate( 52.516667,
       13.4);
-    Polygon referenceArea = GeoToolsBootstrapping.getGeometryFactory().
-      createPolygon(
-        new BaseCoordinate[]{
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
+    List<BaseCoordinate> referenceArea = new LinkedList<>(Arrays.asList(
+          new BaseCoordinate( referencePoint.getX() - 1,
             referencePoint.getY() - 1),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
+          new BaseCoordinate( referencePoint.getX() - 1,
             referencePoint.getY()),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
+          new BaseCoordinate( referencePoint.getX(),
             referencePoint.getY()),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX(),
+          new BaseCoordinate( referencePoint.getX(),
             referencePoint.getY() - 1),
-          new BaseCoordinate(idGenerator.getNextId(), referencePoint.getX() - 1,
+          new BaseCoordinate( referencePoint.getX() - 1,
             referencePoint.getY() - 1)
-        }
+    )
       );
     InputStream osmFileInputStream = Thread.currentThread().
       getContextClassLoader().getResourceAsStream("oldenburg_pg.osm");
@@ -62,8 +60,8 @@ public class TrafficTestUtils {
       80,
       true,
       true,
-      new BaseBoundary(idGenerator.getNextId(),
-        referenceArea),
+      referencePoint,
+        referenceArea,
       trafficInfrastructureData);
     return city;
   }

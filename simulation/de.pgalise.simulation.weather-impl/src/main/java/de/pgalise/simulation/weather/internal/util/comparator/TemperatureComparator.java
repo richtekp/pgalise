@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.util.comparator;
 
 import de.pgalise.simulation.weather.entity.AbstractStationData;
@@ -23,23 +22,25 @@ import javax.measure.unit.SI;
 
 /**
  * Comparator for temperature
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
-public class TemperatureComparator implements Comparator<AbstractStationData>, Serializable {
+public class TemperatureComparator implements Comparator<AbstractStationData>,
+  Serializable {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -3365797876211189282L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -3365797876211189282L;
 
-	@Override
-	public int compare(AbstractStationData o1, AbstractStationData o2) {
-		float thisValue = o1.getTemperature().floatValue(SI.CELSIUS);
-		float anotherValue = o2.getTemperature().floatValue(SI.CELSIUS);
+  @Override
+  public int compare(AbstractStationData o1,
+    AbstractStationData o2) {
+    float thisValue = o1.getTemperature().floatValue(SI.CELSIUS);
+    float anotherValue = o2.getTemperature().floatValue(SI.CELSIUS);
 
-		return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
-	}
+    return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
+  }
 
 }

@@ -165,7 +165,7 @@ public class DefaultWeatherControllerTest {
       // Local test variables
       long valueTime = startTimestamp + 360000;
       WeatherParameterEnum testParameter = WeatherParameterEnum.WIND_VELOCITY;
-      BaseCoordinate testPosition = new BaseCoordinate(idGenerator.getNextId(), 2,
+      BaseCoordinate testPosition = new BaseCoordinate(2,
         3);
       List<WeatherEvent> testEventList = new ArrayList<>(1);
       testEventList.add(new ChangeWeatherEvent(idGenerator.getNextId(),
@@ -256,7 +256,7 @@ public class DefaultWeatherControllerTest {
       try {
         testNumber = ctrl.getValue(testParameter,
           0,
-          new BaseCoordinate(idGenerator.getNextId(), -1,
+          new BaseCoordinate(-1,
             -2));
         Assert.assertNull(testNumber);
       } catch (Exception expected) {

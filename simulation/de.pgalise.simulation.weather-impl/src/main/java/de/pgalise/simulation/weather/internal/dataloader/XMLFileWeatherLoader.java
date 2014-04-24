@@ -43,123 +43,123 @@ import de.pgalise.simulation.weather.entity.ServiceDataForecast;
  */
 public class XMLFileWeatherLoader implements WeatherLoader {
 
-	/**
-	 * File extension of the file
-	 */
-	public static final String FILE_EXTENSION = ".xml";
+  /**
+   * File extension of the file
+   */
+  public static final String FILE_EXTENSION = ".xml";
 
-	/**
-	 * Prefix of the file
-	 */
-	public static final String PREFIX = "weather_";
+  /**
+   * Prefix of the file
+   */
+  public static final String PREFIX = "weather_";
 
-	/**
-	 * File path for property file
-	 */
-	private static final String PROPERTIES_FILE_PATH = "/weatherloader.properties";
+  /**
+   * File path for property file
+   */
+  private static final String PROPERTIES_FILE_PATH = "/weatherloader.properties";
 
-	/**
-	 * File path to the xml file
-	 */
-	private String filePath = "";
+  /**
+   * File path to the xml file
+   */
+  private String filePath = "";
 
-	/**
-	 * Constructor
-	 */
-	public XMLFileWeatherLoader() {
-		// Read props
-		Properties prop = null;
-		try (InputStream propInFile = XMLFileWeatherLoader.class
-			.getResourceAsStream(XMLFileWeatherLoader.PROPERTIES_FILE_PATH)) {
-			prop = new Properties();
-			prop.loadFromXML(propInFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+  /**
+   * Constructor
+   */
+  public XMLFileWeatherLoader() {
+    // Read props
+    Properties prop = null;
+    try (InputStream propInFile = XMLFileWeatherLoader.class
+      .getResourceAsStream(XMLFileWeatherLoader.PROPERTIES_FILE_PATH)) {
+      prop = new Properties();
+      prop.loadFromXML(propInFile);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
-		// Set xml file path
-		this.filePath = prop.getProperty("station_data_xml_filepath");
-	}
+    // Set xml file path
+    this.filePath = prop.getProperty("station_data_xml_filepath");
+  }
 
-	@Override
-	public boolean checkStationDataForDay(long timestamp) {
-		File file = new File(this.getFilePath(timestamp));
-		return (file.exists());
-	}
+  @Override
+  public boolean checkStationDataForDay(long timestamp) {
+    File file = new File(this.getFilePath(timestamp));
+    return (file.exists());
+  }
 
-	/**
-	 * Returns the file path
-	 *
-	 * @param timestamp Timestamp
-	 * @return file path
-	 */
-	public String getFilePath(long timestamp) {
-		DateFormat formatter = new SimpleDateFormat("YYYY_MM_dd");
-		String dateString = formatter.format(timestamp);
+  /**
+   * Returns the file path
+   *
+   * @param timestamp Timestamp
+   * @return file path
+   */
+  public String getFilePath(long timestamp) {
+    DateFormat formatter = new SimpleDateFormat("YYYY_MM_dd");
+    String dateString = formatter.format(timestamp);
 
-		return this.filePath + XMLFileWeatherLoader.PREFIX + dateString + XMLFileWeatherLoader.FILE_EXTENSION;
-	}
+    return this.filePath + XMLFileWeatherLoader.PREFIX + dateString + XMLFileWeatherLoader.FILE_EXTENSION;
+  }
 
-	@Override
-	public ServiceDataCurrent loadCurrentServiceWeatherData(long timestamp,
-		City city) {
-		throw new RuntimeException("Not implemented!");
-	}
+  @Override
+  public ServiceDataCurrent loadCurrentServiceWeatherData(long timestamp,
+    City city) {
+    throw new RuntimeException("Not implemented!");
+  }
 
-	@Override
-	public ServiceDataForecast loadForecastServiceWeatherData(
-		long timestamp,
-		City city) {
-		throw new RuntimeException("Not implemented!");
-	}
+  @Override
+  public ServiceDataForecast loadForecastServiceWeatherData(
+    long timestamp,
+    City city) {
+    throw new RuntimeException("Not implemented!");
+  }
 
-	@Override
-	public WeatherMap loadStationData(long timestamp) {
-		// Deserialize
-		WeatherMap map = null;
-		long loadeddate;
-		try (XMLDecoder dec = new XMLDecoder(new FileInputStream(this.getFilePath(
-			timestamp)))) {
-			// Load map
-			loadeddate = (long) dec.readObject();
-			map = (WeatherMap) dec.readObject();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+  @Override
+  public WeatherMap loadStationData(long timestamp) {
+    // Deserialize
+    WeatherMap map = null;
+    long loadeddate;
+    try (XMLDecoder dec = new XMLDecoder(new FileInputStream(this.getFilePath(
+      timestamp)))) {
+      // Load map
+      loadeddate = (long) dec.readObject();
+      map = (WeatherMap) dec.readObject();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
-		// Check if the date is correct
-		if (loadeddate == timestamp) {
-			return map;
-		} else {
-			throw new IllegalStateException(String.format(
-				"loaded timestamp %d doesn't correspond to the requested timestamp %d",
-				loadeddate,
-				timestamp));
-		}
-	}
+    // Check if the date is correct
+    if (loadeddate == timestamp) {
+      return map;
+    } else {
+      throw new IllegalStateException(String.format(
+        "loaded timestamp %d doesn't correspond to the requested timestamp %d",
+        loadeddate,
+        timestamp));
+    }
+  }
 
-	/**
-	 * Saves weather informations to XML
-	 *
-	 * @param timestamp Timestamp
-	 * @param map WeatherMap
-	 */
-	public void saveWeatherMapToXML(WeatherMap map,
-		long timestamp) {
-		// Serialize
-		try (XMLEncoder enc = new XMLEncoder(new FileOutputStream(this.getFilePath(
-			timestamp)))) {
-			// Save map
-			enc.writeObject(timestamp);
-			enc.writeObject(map);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("timestamp");
-		}
-	}
+  /**
+   * Saves weather informations to XML
+   *
+   * @param timestamp Timestamp
+   * @param map WeatherMap
+   */
+  public void saveWeatherMapToXML(WeatherMap map,
+    long timestamp) {
+    // Serialize
+    try (XMLEncoder enc = new XMLEncoder(new FileOutputStream(this.getFilePath(
+      timestamp)))) {
+      // Save map
+      enc.writeObject(timestamp);
+      enc.writeObject(map);
+    } catch (IOException e) {
+      throw new IllegalArgumentException("timestamp");
+    }
+  }
 
-	@Override
-	public void setLoadOption(boolean takeNormalData) {
-		// Do nothing
-	}
+  @Override
+  public void setLoadOption(boolean takeNormalData) {
+    // Do nothing
+  }
 
 }

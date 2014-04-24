@@ -111,7 +111,7 @@ public class WeatherInterfererTest {
 		testTimestamp = cal.getTimeInMillis();
 
 		// Test position
-		testPosition = new BaseCoordinate(idGenerator.getNextId(), 1.0,
+		testPosition = new BaseCoordinate( 1.0,
 			10.0);
 
 		/*

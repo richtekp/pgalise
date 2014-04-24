@@ -10,8 +10,8 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.operation.BoundaryOp;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
@@ -23,6 +23,7 @@ import de.pgalise.util.cityinfrastructure.DefaultBuildingEnergyProfileStrategy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -214,7 +215,7 @@ public class CityCtrl implements Serializable {
     List<LatLng> cityInfrastructureDataBounds = new LinkedList<>();
 //    List<Coordinate> boundaryMultiPointCoords = new LinkedList<>(); //there's 
     //no implementation of CoordinateSequence which is a linked list
-    for (Coordinate n : trafficCity.getGeoInfo().retrieveBoundary().getCoordinates()) {
+    for (Coordinate n : trafficCity.retrieveBoundary().getCoordinates()) {
       cityInfrastructureDataBounds.add(new LatLng(n.x,
         n.y));
     }
@@ -240,7 +241,8 @@ public class CityCtrl implements Serializable {
   public void onCityNameValueChange(ValueChangeEvent valueChangeEvent) {
     TrafficCity newCity = (TrafficCity) valueChangeEvent.getNewValue();
     this.city.setName(newCity.getName());
-    this.city.setGeoInfo(newCity.getGeoInfo());
+    this.city.setReferencePoint(newCity.getReferencePoint());
+    this.city.setBoundaryCoordinates(newCity.getBoundaryCoordinates());
   }
 
   //////
@@ -286,14 +288,19 @@ public class CityCtrl implements Serializable {
           String name = (String) nextFeature.getAttribute("name");
           com.vividsolutions.jts.geom.Polygon polygon = (com.vividsolutions.jts.geom.Polygon) nextFeature.
             getAttribute("way");
+          List<BaseCoordinate> autocompletionValueCoordiantes= new LinkedList<>();
+          for(Coordinate autocompletionValueCoordiante : polygon.getCoordinates()) {
+            autocompletionValueCoordiantes.add(new BaseCoordinate(
+              autocompletionValueCoordiante));
+          }
           TrafficCity autocompletionValue = new TrafficCity(idGenerator.getNextId(),
             name,
             -1,
             -1,
             false,
             false,
-            new BaseBoundary(idGenerator.getNextId(),
-              polygon),
+            new BaseCoordinate(polygon.getCentroid().getCoordinate()),
+            autocompletionValueCoordiantes,
             null);
           retValue.add(autocompletionValue);
         }
@@ -319,12 +326,12 @@ public class CityCtrl implements Serializable {
     List<LatLng> citySelectionBounds = new LinkedList<>();
     Polygon citySelectionBoundsPolygon = new Polygon();
     for (com.vividsolutions.jts.geom.Coordinate coordinate : selectedCity.
-      getGeoInfo().retrieveBoundary().getCoordinates()) {
+      retrieveBoundary().getCoordinates()) {
       citySelectionBoundsPolygon.getPaths().add(new LatLng(coordinate.y,
         coordinate.x));
     }
-    mapCenter = selectedCity.getGeoInfo().retrieveCenterPoint().getY() + ", " + selectedCity.
-      getGeoInfo().retrieveCenterPoint().getX();
+    mapCenter = selectedCity.retrieveCenterPoint().getY() + ", " + selectedCity.
+      retrieveCenterPoint().getX();
     mapModel.getPolygons().clear();
     citySelectionBoundsPolygon.setStrokeColor("#FF9900");
     citySelectionBoundsPolygon.setFillColor("#FF9900");
@@ -412,7 +419,7 @@ public class CityCtrl implements Serializable {
    */
   public Envelope retrieveEnvelope() {
     if (useFileBoundaries) {
-      return fileBasedCityDataService.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal();
+      return fileBasedCityDataService.createCity().retrieveBoundary().getEnvelopeInternal();
     } else {
       return GeoToolsBootstrapping.getGeometryFactory().createPolygon(
         customFileBoundaries.toArray(new BaseCoordinate[customFileBoundaries.

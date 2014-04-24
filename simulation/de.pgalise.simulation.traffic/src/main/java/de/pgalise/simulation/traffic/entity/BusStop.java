@@ -16,7 +16,7 @@
 package de.pgalise.simulation.traffic.entity;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
@@ -64,21 +64,21 @@ public class BusStop extends TrafficNode {
   protected BusStop() {
   }
 
-  public BusStop(Long id,
+  public BusStop(
     String name,
     BusStopInformation busStopInformation,
     Coordinate geoLocation) {
-    super(id,
+    super(
       geoLocation);
     this.stopName = name;
     this.busStopInformation = busStopInformation;
   }
 
-  public BusStop(Long id,
+  public BusStop(
     String name,
     BusStopInformation busStopInformation,
     double x, double y) {
-    super(id,
+    super(
       x,y);
     this.stopName = name;
     this.busStopInformation = busStopInformation;
@@ -161,5 +161,4 @@ public class BusStop extends TrafficNode {
   public BusStopInformation getBusStopInformation() {
     return busStopInformation;
   }
-
 }

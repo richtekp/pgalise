@@ -35,6 +35,12 @@ import org.jgrapht.DirectedGraph;
  * @param <N>
  * @author Timo
  */
+/*
+Do not use the term way like in OSM specification because it is highly contra-
+intuitive and not useful for this simulation. There's no reason to rely to 
+OSM's (tag based) data model because it makes no use to object oriented 
+programming features.
+*/
 @Entity
 public class Way<E extends NavigationEdge<N>, N extends NavigationNode> extends Identifiable {
 

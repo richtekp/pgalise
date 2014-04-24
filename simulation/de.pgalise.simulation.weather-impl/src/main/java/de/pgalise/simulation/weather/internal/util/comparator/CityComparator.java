@@ -13,33 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.util.comparator;
 
 import de.pgalise.simulation.shared.entity.City;
 import java.io.Serializable;
 import java.util.Comparator;
 
-
 /**
  * Comparator for cities
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
 public class CityComparator implements Comparator<City>, Serializable {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -267884673879582253L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -267884673879582253L;
 
-	@Override
-	public int compare(City o1, City o2) {
-		float thisValue = o1.getRate();
-		float anotherValue = o2.getRate();
+  @Override
+  public int compare(City o1,
+    City o2) {
+    float thisValue = o1.getRate();
+    float anotherValue = o2.getRate();
 
-		return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
-	}
+    return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
+  }
 
 }

@@ -7,8 +7,6 @@ package de.pgalise.simulation.traffic;
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
-import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
@@ -92,12 +90,12 @@ public abstract class TrafficGraph extends AsWeightedGraph<TrafficNode, TrafficE
     return minDistanceEdge; //if it is null it fulfills the last condition;
   }
 
-  public TrafficNode getNodeClosestTo(JaxRSCoordinate position) {
+  public TrafficNode getNodeClosestTo(BaseCoordinate position) {
     return getNodeClosestTo(position,
       Integer.MAX_VALUE);
   }
 
-  public TrafficNode getNodeClosestTo(JaxRSCoordinate position,
+  public TrafficNode getNodeClosestTo(BaseCoordinate position,
     int distanceTolerance) {
 
     TrafficNode minDistanceNode = null;

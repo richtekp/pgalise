@@ -50,7 +50,6 @@ import org.junit.Test;
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 10, 2012)
  */
-@LocalBean
 @ManagedBean
 @LocalClient
 public class ColdDayEventTest {
@@ -133,8 +132,6 @@ public class ColdDayEventTest {
 
   @Before
   public void setUp() throws Exception {
-    TestUtils.getContext().bind("inject",
-      this);
     TestUtils.getContainer().getContext().bind("inject",
       this);
     userTransaction.begin();

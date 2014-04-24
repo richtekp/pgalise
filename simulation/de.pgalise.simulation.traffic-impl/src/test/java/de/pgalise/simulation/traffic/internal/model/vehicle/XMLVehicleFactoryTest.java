@@ -106,10 +106,10 @@ public class XMLVehicleFactoryTest {
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
     TrafficGraph graph = new DefaultTrafficGraph();
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(30,
         30));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(60,
         60));
     graph.addVertex(a);
@@ -186,10 +186,10 @@ public class XMLVehicleFactoryTest {
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
     TrafficGraph graph = new DefaultTrafficGraph();
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(30,
         30));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(60,
         60));
     graph.addVertex(a);

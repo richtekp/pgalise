@@ -21,7 +21,6 @@
 		<dependency>
 			<groupId>de.pgalise.util</groupId>
 			<artifactId>btree</artifactId>
-			<type>jar</type>
 		</dependency>
 		
 		<dependency>
@@ -35,18 +34,12 @@
 		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>vecmath</artifactId>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 			<version>3.1</version>
-			<type>jar</type>
 		</dependency>
-<!--		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>com.javadocmd</groupId>
 			<artifactId>simplelatlng</artifactId>
@@ -58,7 +51,6 @@
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -75,12 +67,10 @@
 			<groupId>org.javolution</groupId>
 			<artifactId>javolution</artifactId>
 			<version>5.2.3</version>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<type>jar</type>
 		</dependency>
 	</dependencies>
 	<build>

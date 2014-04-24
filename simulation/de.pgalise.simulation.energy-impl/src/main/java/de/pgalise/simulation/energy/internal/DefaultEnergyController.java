@@ -222,7 +222,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
     Map<EnergyProfileEnum, List<Building>> list = this.buildingsMap
       .get(geoRadiusWrapper);
     if (list == null) {
-      list = this.cityInfrastructure.getBuildings(position,
+      list = this.cityInfrastructure.getBuildingEnergyProfileMap(position,
         measureRadiusInMeter);
       this.buildingsMap.put(geoRadiusWrapper,
         list);
@@ -236,8 +236,8 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
           .getEnergyConsumptionInKWh(
             timestamp,
             entry.getKey(),
-            new BaseCoordinate(idGenerator.getNextId(),
-            building.getGeoInfo().retrieveCenterPoint()));
+            new BaseCoordinate(
+            building.retrieveCenterPoint()));
       }
     }
 

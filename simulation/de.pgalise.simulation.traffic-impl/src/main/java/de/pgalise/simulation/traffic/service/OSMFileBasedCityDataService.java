@@ -15,15 +15,19 @@
  */
 package de.pgalise.simulation.traffic.service;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.shared.entity.Area;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.Building;
 import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.shared.entity.OSMArea;
 import de.pgalise.simulation.shared.entity.Way;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.shared.tag.LanduseTagEnum;
@@ -33,10 +37,10 @@ import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.CycleWay;
+import de.pgalise.simulation.traffic.entity.MotorWay;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
-import de.pgalise.simulation.traffic.entity.MotorWay;
 import de.pgalise.simulation.traffic.entity.TrafficWay;
 import de.pgalise.simulation.traffic.entity.osm.OSMBuilding;
 import de.pgalise.simulation.traffic.entity.osm.OSMBusRoute;
@@ -83,13 +87,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The OSMFileBasedCityDataService is the used
- * {@link CityInfrastructureDataService} in this prototype. It parsed the needed
- * information from given openstreetmap and busstop files. The methods null {@link CityInfrastructureDataService#getNearestJunctionNode(double, double)},
+ * An <tt>OSMFileBasedCityDataService</tt> parses OSM files[1] for useful
+ * information for the simulation. After invoking {@link #parseStream(java.io.InputStream)
+ * } the information is available as {@link City} object returned by {@link #createCity()
+ * }. Multiple files can be parsed and their content will be added the
+ * simulation objects (new retrieval of the data is necessary though).
+ *
+ * The methods {@link CityInfrastructureDataService#getNearestJunctionNode(double, double)},
  * {@link CityInfrastructureDataService#getNearestNode(double, double)},
  * {@link CityInfrastructureDataService#getNearestStreetNode(double, double)}
  * and {@link CityInfrastructureDataService#getNodesInBoundary(Boundary)} are
- * implements with a PR-Tree.
+ * implemented with a PR-Tree.
  *
  * Parsing of bus system data takes place seperately in
  * {@link PublicTransportDataService}. Because {@link CityInfrastructureData} is
@@ -100,6 +108,20 @@ import org.slf4j.LoggerFactory;
  * Properties of this class, e.g. boundary, refer to all files passed to it with
  * {@link #parseFile(java.io.File)} or
  * {@link #parseStream(java.io.InputStream)}.
+ *
+ * If you intend to use this class different from a black box, good knowledge of
+ * the OSM data model and the usage of its very contra intuitive terms (e.g.
+ * buildings are ways) is absolutely necessary. You can get started at <a
+ * href="http://wiki.openstreetmap.org/wiki/Data_model">http://wiki.openstreetmap.org/wiki/Data_model</a>. Note the usage of certain tags in both ways and 
+ * relations with different or identical meaning.
+ *
+ * ---------- [1] OSM files can be retrieved at various locations for predefined
+ * areas, the planet Earth (and possibly others) or for arbitrary rectangles,
+ * see http://wiki.openstreetmap.org/wiki/Downloading_data for details and
+ * respect the <a href="http://wiki.openstreetmap.org/wiki/API_usage_policy">OSM
+ * API usage policy</a> and <a
+ * href="http://wiki.openstreetmap.org/wiki/Tile_Usage_Policy">OSM Tile usage
+ * policy</a>.
  *
  * @author Timo
  */
@@ -262,7 +284,7 @@ public class OSMFileBasedCityDataService implements
       double t = Math.PI * (i / (pointNumber / 2.0));
       double lat = centerPoint.getX() + (rlat * Math.cos(t));
       double lng = centerPoint.getY() + (rlng * Math.sin(t));
-      tmpPoints.add(new BaseCoordinate(idGenerator.getNextId(),
+      tmpPoints.add(new BaseCoordinate(
         lat,
         lng));
     }
@@ -287,10 +309,10 @@ public class OSMFileBasedCityDataService implements
       }
     }
 
-    return new Envelope(new BaseCoordinate(idGenerator.getNextId(),
+    return new Envelope(new BaseCoordinate(
       northEastLat,
       northEastLng),
-      new BaseCoordinate(idGenerator.getNextId(),
+      new BaseCoordinate(
         southWestLat,
         southWestLng));
   }
@@ -298,298 +320,7 @@ public class OSMFileBasedCityDataService implements
   public TrafficGraph getTrafficGraph() {
     return trafficGraph;
   }
-
-  /**
-   * Returns a list of buildings.
-   *
-   * @param wayList
-   * @return
-   */
-  private Set<Building> extractBuildings(Set<TrafficWay> wayList) {
-    Set<Building> buildingList = new HashSet<>();
-
-    List<String> tmpLandUseList = new ArrayList<>();
-
-    /* Build a map with interesting landuse polygons: */
-    /**
-     * Map<String = landuse tag, List<SimplePolygon2D = polygon of the landuse
-     * are.
-     */
-    Map<String, List<Polygon>> landUseMap = new HashMap<>();
-    for (Way<?, ?> landuse : this.city.getCityInfrastructureData().
-      getLandUseWays()) {
-      if (landuse.getLanduseTags().contains(LanduseTagEnum.INDUSTRY)) {
-        List<Polygon> polygonList = landUseMap.get("industrial");
-        if (polygonList == null) {
-          polygonList = new ArrayList<>();
-          landUseMap.put("industrial",
-            polygonList);
-        }
-        polygonList.add(this.wayToPolygon2d(landuse));
-      } else if (landuse.getLanduseTags().contains(LanduseTagEnum.RETAIL)) {
-        List<Polygon> polygonList = landUseMap.get("retail");
-        if (polygonList == null) {
-          polygonList = new ArrayList<>();
-          landUseMap.put("retail",
-            polygonList);
-        }
-        polygonList.add(this.wayToPolygon2d(landuse));
-      } else if (landuse.getLanduseTags().contains(LanduseTagEnum.FARMYARD)) {
-        List<Polygon> polygonList = landUseMap.get("farmyard");
-        if (polygonList == null) {
-          polygonList = new ArrayList<>();
-          landUseMap.put("farmyard",
-            polygonList);
-        }
-        polygonList.add(this.wayToPolygon2d(landuse));
-      } else if (landuse.getLanduseTags().contains(LanduseTagEnum.MILITARY)) {
-        List<Polygon> polygonList = landUseMap.get("military");
-        if (polygonList == null) {
-          polygonList = new ArrayList<>();
-          landUseMap.put("military",
-            polygonList);
-        }
-        polygonList.add(this.wayToPolygon2d(landuse));
-      } else if (landuse.getLanduseTags().contains(LanduseTagEnum.RESIDENTIAL)) {
-        List<Polygon> polygonList = landUseMap.get("residential");
-        if (polygonList == null) {
-          polygonList = new ArrayList<>();
-          landUseMap.put("residential",
-            polygonList);
-        }
-        polygonList.add(this.wayToPolygon2d(landuse));
-      } else if (landuse.getLanduseTags().contains(LanduseTagEnum.FARMLAND)) {
-        List<Polygon> polygonList = landUseMap.get("farmland");
-        if (polygonList == null) {
-          polygonList = new ArrayList<>();
-          landUseMap.put("farmland",
-            polygonList);
-        }
-        polygonList.add(this.wayToPolygon2d(landuse));
-      } else if (landuse.getLanduseTags().contains(LanduseTagEnum.COMMERCIAL)) {
-        List<Polygon> polygonList = landUseMap.get("commercial");
-        if (polygonList == null) {
-          polygonList = new ArrayList<>();
-          landUseMap.put("commercial",
-            polygonList);
-        }
-        polygonList.add(this.wayToPolygon2d(landuse));
-      }
-    }
-
-    for (Way<?, ?> way : wayList) {
-      //if (way.isBuilding()) {
-      if (way.getNodeList().isEmpty()) {
-        continue;
-      }
-      /* find bound and tags: */
-      Set<String> tourism = null;
-      Set<String> sport = null;
-      Set<String> service = null;
-      Set<String> school = null;
-      Set<String> repair = null;
-      Set<String> amenity = null;
-      Set<String> attraction = null;
-      Set<String> shop = null;
-      Set<String> emergencyService = null;
-      boolean office = false;
-      Set<String> craft = null;
-      Set<String> leisure = null;
-      boolean military = false;
-      Set<String> publicTransport = null;
-      Set<String> gambling = null;
-
-      double minLat = Double.MAX_VALUE;
-      double minLng = Double.MAX_VALUE;
-      double maxLat = Double.MIN_VALUE;
-      double maxLng = Double.MIN_VALUE;
-
-      for (NavigationNode node : way.getNodeList()) {
-
-        if (node.getTourismTags() != null) {
-          tourism = node.getTourismTags();
-        }
-        if (node.getSportTags() != null) {
-          sport = node.getSportTags();
-        }
-        if (node.getServiceTags() != null) {
-          service = node.getServiceTags();
-        }
-        if (node.getSchoolTags() != null) {
-          school = node.getSchoolTags();
-        }
-        if (node.getRepairTags() != null) {
-          repair = node.getRepairTags();
-        }
-        if (node instanceof Building) {
-          Building nodeCast = (Building) node;
-          if (nodeCast.getAmenityTags() != null) {
-            amenity = nodeCast.getAmenityTags();
-          }
-          if (nodeCast.isOffice()) {
-            office = nodeCast.isOffice();
-          }
-        }
-        if (node.getAttractionTags() != null) {
-          attraction = node.getAttractionTags();
-        }
-        if (node.getShopTags() != null) {
-          shop = node.getShopTags();
-        }
-        if (node.getEmergencyServiceTags() != null) {
-          emergencyService = node.getEmergencyServiceTags();
-        }
-        if (node.getCraftTags() != null) {
-          craft = node.getCraftTags();
-        }
-        if (node.getLeisureTags() != null) {
-          leisure = node.getLeisureTags();
-        }
-        if (node.isMilitary()) {
-          military = node.isMilitary();
-        }
-        if (node.getPublicTransportTags() != null) {
-          publicTransport = node.getPublicTransportTags();
-        }
-        if (node.getGamblingTags() != null) {
-          gambling = node.getGamblingTags();
-        }
-
-        if (node.getX() > maxLat) {
-          maxLat = node.getX();
-        }
-        if (node.getX() < minLat) {
-          minLat = node.getX();
-        }
-        if (node.getY() > maxLng) {
-          maxLng = node.getY();
-        }
-        if (node.getY() < minLng) {
-          minLng = node.getY();
-        }
-      }
-
-      /* find other tags */
-      for (NavigationNode node : this.getNodesInBoundary(new Envelope(
-        new BaseCoordinate(idGenerator.getNextId(),
-          maxLat,
-          maxLng),
-        new BaseCoordinate(idGenerator.getNextId(),
-          minLat,
-          minLng)))) {
-        if (node.getTourismTags() != null) {
-          tourism = node.getTourismTags();
-        }
-        if (node.getSportTags() != null) {
-          sport = node.getSportTags();
-        }
-        if (node.getServiceTags() != null) {
-          service = node.getServiceTags();
-        }
-        if (node.getSchoolTags() != null) {
-          school = node.getSchoolTags();
-        }
-        if (node.getRepairTags() != null) {
-          repair = node.getRepairTags();
-        }
-        if (node instanceof Building) {
-          Building nodeCast = (Building) node;
-          if (nodeCast.getAmenityTags() != null) {
-            amenity = nodeCast.getAmenityTags();
-          }
-          if (nodeCast.isOffice()) {
-            office = nodeCast.isOffice();
-          }
-        }
-        if (node.getAttractionTags() != null) {
-          attraction = node.getAttractionTags();
-        }
-        if (node.getShopTags() != null) {
-          shop = node.getShopTags();
-        }
-        if (node.getEmergencyServiceTags() != null) {
-          emergencyService = node.getEmergencyServiceTags();
-        }
-        if (node.getCraftTags() != null) {
-          craft = node.getCraftTags();
-        }
-        if (node.getLeisureTags() != null) {
-          leisure = node.getLeisureTags();
-        }
-        if (node.isMilitary()) {
-          military = node.isMilitary();
-        }
-        if (node.getPublicTransportTags() != null) {
-          publicTransport = node.getPublicTransportTags();
-        }
-        if (node.getGamblingTags() != null) {
-          gambling = node.getGamblingTags();
-        }
-      }
-
-      double centerLon = minLng + ((maxLng - minLng) / 2.0);
-      double centerLat = minLat + ((maxLat - minLat) / 2.0);
-
-      /* find landuse area: */
-      String landUseArea = null;
-      outerLoop:
-      for (Entry<String, List<Polygon>> entry : landUseMap.entrySet()) {
-        for (Polygon landUsePolygon : entry.getValue()) {
-          if (landUsePolygon.covers(GeoToolsBootstrapping.getGeometryFactory().
-            createPoint(new Coordinate(centerLat,
-                centerLon)))) {
-            tmpLandUseList.add(entry.getKey());
-            landUseArea = entry.getKey();
-            break outerLoop;
-          }
-        }
-      }
-
-      /* calc area in m² */
-      double length = GeoToolsBootstrapping.getDistanceInKM(maxLat,
-        maxLng,
-        maxLat,
-        minLng) * 1000.0;
-      double width = GeoToolsBootstrapping.getDistanceInKM(maxLat,
-        maxLng,
-        minLat,
-        maxLng) * 1000.0;
-      double area = length * width;
-      area *= area;
-
-      BaseBoundary buildingPosition = new BaseBoundary(idGenerator.getNextId(),
-        GeoToolsBootstrapping.getGeometryFactory().createPolygon(
-          new BaseCoordinate[]{new BaseCoordinate(idGenerator.getNextId(),
-              maxLat,
-              maxLng), new BaseCoordinate(idGenerator.getNextId(),
-              minLat,
-              minLng)}));
-      buildingList.add(
-        new Building(idGenerator.getNextId(),
-          new BaseCoordinate(idGenerator.getNextId(),
-            buildingPosition.retrieveCenterPoint()),
-          new BaseBoundary(idGenerator.getNextId()),
-          tourism,
-          service,
-          sport,
-          school,
-          repair,
-          attraction,
-          shop,
-          emergencyService,
-          craft,
-          leisure,
-          publicTransport,
-          gambling,
-          amenity,
-          null,
-          office,
-          military));
-    }
-
-    return buildingList;
-  }
-
+  
   /**
    * Extracts the cycle ways.
    *
@@ -679,7 +410,7 @@ public class OSMFileBasedCityDataService implements
   }
 
   @Override
-  public Map<EnergyProfileEnum, List<Building>> getBuildings(
+  public Map<EnergyProfileEnum, List<Building>> getBuildingEnergyProfileMap(
     BaseCoordinate geolocation,
     int radiusInMeter) {
 
@@ -727,7 +458,7 @@ public class OSMFileBasedCityDataService implements
     List<Building> buildings0 = new ArrayList<>();
     for (Building building : tmpBuildings) {
       if (GeoToolsBootstrapping.getDistanceInMeter(centerPoint,
-        building.getGeoInfo().retrieveCenterPoint()) <= radiusInMeter) {
+        building.retrieveCenterPoint()) <= radiusInMeter) {
         buildings0.add(building);
       }
     }
@@ -807,6 +538,7 @@ public class OSMFileBasedCityDataService implements
     Set<BusRoute> busRoutes = new HashSet<>();
     Set<Building> buildings = new HashSet<>();
     Set<TrafficWay> ways = new HashSet<>();
+    Set<Area> areas = new HashSet<>();
 
     XMLStreamReader parser = null;
     try {
@@ -817,46 +549,22 @@ public class OSMFileBasedCityDataService implements
       //lastBusRoute. Only one of them is != null. If no check for current 
       //context succeeds, a new context is created (this means the parser 
       //enters a relevant child of the osm root element (currently all used 
-      //childs node, way and relation are used). If a context is created 
-      //(currently a context will be created every time as all element matter), 
+      //childs node, way and relation are used). If a context is created, 
       //one of lastFoundWay, lastBustop, lastNode and lastBusRoute will be 
       //initialized with the information contained in attribute of the start 
       //element (as this information will be gone in iteration of streaming 
-      //based parsing when entering the child nodes)
+      //based parsing when entering the child nodes). If a xml node has no 
+      //children (like node elements can(!) have), the required actions take 
+      //place after discovery of the element and no context is created.
       BusStop lastBusstop = null;
       TrafficNode lastNode = null;
-      BusRoute lastBusRoute = null;
 
       String osmWayId = null;
-      List<String> osmNodeRefs = new LinkedList<>();
-      String routeLongName = null;
-
-      Map<Integer, String> eventTypeMap = new HashMap<Integer, String>();
-      eventTypeMap.put(XMLStreamConstants.START_ELEMENT,
-        "start element");
-      eventTypeMap.put(XMLStreamConstants.END_ELEMENT,
-        "end element");
-      eventTypeMap.put(XMLStreamConstants.ATTRIBUTE,
-        "attribute");
-      eventTypeMap.put(XMLStreamConstants.CHARACTERS,
-        "characters");
-      eventTypeMap.put(XMLStreamConstants.END_DOCUMENT,
-        "end document");
-      eventTypeMap.put(XMLStreamConstants.START_DOCUMENT,
-        "start document");
-      eventTypeMap.put(XMLStreamConstants.START_DOCUMENT,
-        "start document");
+      String osmRelationId = null;
 
       while (parser.hasNext()) {
-        if (parser.getEventType() == XMLStreamConstants.START_ELEMENT || parser.
-          getEventType() == XMLStreamConstants.END_ELEMENT) {
-          log.info(String.format("%s %s",
-            eventTypeMap.get(parser.getEventType()),
-            parser.getLocalName()));
-        } else {
-          log.info(String.format("%s",
-            eventTypeMap.get(parser.getEventType())));
-        }
+        log.debug(String.format("%s",
+          parser.getEventType()));
         switch (parser.getEventType()) {
           case XMLStreamConstants.START_ELEMENT:
             //First check wether there's a context. In every context parse all 
@@ -880,10 +588,10 @@ public class OSMFileBasedCityDataService implements
 
                     if (kValue.equalsIgnoreCase("highway")) {
                       if (vValue.equalsIgnoreCase("bus_stop")) {
-                        lastBusstop = new BusStop(idGenerator.getNextId(),
+                        lastBusstop = new BusStop(
                           "",
                           null,
-                          new BaseCoordinate(idGenerator.getNextId(),
+                          new BaseCoordinate(
                             lastNode.getX(),
                             lastNode.getY()));
                         city.getCityInfrastructureData().getBusStops().add(
@@ -947,6 +655,7 @@ public class OSMFileBasedCityDataService implements
               }
               nodes.add(lastNode);
               lastNode = null;
+              parser.next();
             } else if (osmWayId != null) {
               //current context is way
               //inside a way element, parse all nd elements and tag elements
@@ -960,6 +669,21 @@ public class OSMFileBasedCityDataService implements
               Boolean oneWay = null;
               Set<String> landuseTags = new HashSet<>();
               Set<String> railwayTags = new HashSet<>();
+              Set<String> tourismTags = new HashSet<>();
+              Set<String> sportTags = new HashSet<>();
+              Set<String> serviceTags = new HashSet<>();
+              Set<String> schoolTags = new HashSet<>();
+              Set<String> repairTags = new HashSet<>();
+              Set<String> amenityTags = new HashSet<>();
+              Set<String> attractionTags = new HashSet<>();
+              Set<String> shopTags = new HashSet<>();
+              Set<String> emergencyServiceTags = new HashSet<>();
+              Set<String> officeTags = new HashSet<>();
+              Set<String> craftTags = new HashSet<>();
+              Set<String> leisureTags = new HashSet<>();
+              Set<String> militaryTags = new HashSet<>();
+              Set<String> publicTransportTags = new HashSet<>();
+              Set<String> gamblingTags = new HashSet<>();
               Set<String> buildingTags = new HashSet<>();
               Set<String> cycleWayTags = new HashSet<>();
               wayChildrenParsing:
@@ -1000,13 +724,9 @@ public class OSMFileBasedCityDataService implements
                         }
                       }
                     } else if (kValue.equalsIgnoreCase("highway")) {
-                      for (String nonInterestingHighway : NON_INTERESTING_HIGHWAYS) {
-                        if (vValue.equalsIgnoreCase(nonInterestingHighway)) {
-                          osmWayId = null;
-                          break wayChildrenParsing;
-                        }
+                      if (!NON_INTERESTING_HIGHWAYS.contains(vValue)) {
+                        motorWayTags.add(vValue);                        
                       }
-                      motorWayTags.add(vValue);
                     } else if (kValue.equalsIgnoreCase("oneway") && vValue.
                       equalsIgnoreCase("yes")) {
                       oneWay = true;
@@ -1018,9 +738,39 @@ public class OSMFileBasedCityDataService implements
                       buildingTags.add(vValue);
                     } else if (kValue.equalsIgnoreCase("cycleway")) {
                       cycleWayTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("tourism")) {
+                      tourismTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("sport")) {
+                      sportTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("school")) {
+                      schoolTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("shop")) {
+                      shopTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("service")) {
+                      serviceTags.add( vValue);
+                    } else if (kValue.equalsIgnoreCase("repair")) {
+                      repairTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("amenity")) {
+                      amenityTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("attraction")) {
+                      attractionTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("emergency_service")) {
+                      emergencyServiceTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("office")) {
+                      officeTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("craft")) {
+                      craftTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("leisure")) {
+                      leisureTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("military")) {
+                      militaryTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("public_transport")) {
+                      publicTransportTags.add(vValue);
+                    } else if (kValue.equalsIgnoreCase("gambling")) {
+                      gamblingTags.add(vValue);
                     }
                   }
-                }
+                } //end if event == START_ELEMENT
                 parser.next();
               } //end while parsing child nodes
               //evalutate parsed information (create way object or throw away);
@@ -1031,7 +781,7 @@ public class OSMFileBasedCityDataService implements
                 for (String osmWayNodeRef : osmWayNodeRefs) {
                   TrafficNode osmWayNode = osmIdNodeMap.get(osmWayNodeRef);
                   if (osmWayNode == null) {
-                    osmWayNode = new OSMTrafficNode(idGenerator.getNextId(),
+                    osmWayNode = new OSMTrafficNode(
                       osmWayNodeRef,
                       -1, //passing null as geoLocation causes 
                       //NullPointerException
@@ -1040,19 +790,35 @@ public class OSMFileBasedCityDataService implements
                     osmIdNodeMap.put(osmWayNodeRef,
                       osmWayNode);
                   }
-                  if (lastBuilding.getGeoInfo() == null) {
-                    lastBuilding.setGeoInfo(new BaseBoundary(idGenerator.
-                      getNextId()));
-                  }
-                  lastBuilding.getGeoInfo().getBoundaryCoordinates().add(
+                  lastBuilding.getBoundaryCoordinates().add(
                     osmWayNode);
                 }
                 buildings.add(lastBuilding);
+              } else if(!landuseTags.isEmpty()) {
+                Area newArea = new OSMArea(idGenerator.getNextId(), osmWayId);
+                for (String osmWayNodeRef : osmWayNodeRefs) {
+                  TrafficNode osmWayNode = osmIdNodeMap.get(osmWayNodeRef);
+                  if (osmWayNode == null) {
+                    osmWayNode = new OSMTrafficNode(
+                      osmWayNodeRef,
+                      -1, //passing null as geoLocation causes 
+                      //NullPointerException
+                      -1
+                    );
+                    osmIdNodeMap.put(osmWayNodeRef,
+                      osmWayNode);
+                  }
+                  newArea.getBoundaryCoordinates().add(
+                    osmWayNode);
+                }
+                areas.add(newArea);
               } else {
+                //neither building, motor way, cycle way, etc.
                 if (osmWayNodeRefs.size() < 2) {
                   log.
-                    info("way with less than 2 nodes with OSM id %s, skipping",
-                      osmWayId);
+                    info(String.format(
+                        "way with less than 2 nodes with OSM id %s, skipping",
+                        osmWayId));
                 } else {
                   TrafficWay lastWay = null;
                   if (!motorWayTags.isEmpty()) {
@@ -1076,7 +842,7 @@ public class OSMFileBasedCityDataService implements
                   for (String osmWayNodeRef : osmWayNodeRefs) {
                     TrafficNode trafficNode = osmIdNodeMap.get(osmWayNodeRef);
                     if (trafficNode == null) {
-                      trafficNode = new OSMTrafficNode(idGenerator.getNextId(),
+                      trafficNode = new OSMTrafficNode(
                         osmWayNodeRef,
                         -1, //passing null as geoLocation causes 
                         //NullPointerException
@@ -1099,42 +865,93 @@ public class OSMFileBasedCityDataService implements
                     wayEdge.setOneWay(oneWay);
                     lastWay.getEdgeList().add(wayEdge);
                   }
-                  ways.add(lastWay);
+                  ways.add(lastWay);                  
                 }
               }
               osmWayId = null; //reset to null in order to leave context
-            } else if (lastBusRoute != null) {
-              //current context is relation/bus route
-              for (String osmNodeRef : osmNodeRefs) {
-                TrafficNode trafficNode = osmIdNodeMap.get(osmNodeRef);
-                BusStop busStop = null;
-                if (trafficNode != null) {
-                  //make the trafficNode a busStop
-                  if (!(trafficNode instanceof BusStop)) {
-                    busStop = new OSMBusStop(idGenerator.getNextId(),
+              parser.next();
+            } else if (osmRelationId != null) {
+              //current context is relation/bus route   
+              List<String> osmNodeRefs = new LinkedList<>();      
+              BusRoute lastBusRoute = null; //initializing lastBusRoute 
+                //indicates that the relation refers to a bus route (which 
+                //might not be the case)
+              String routeLongName = null;
+              while (!(parser.getEventType() == XMLStreamConstants.END_ELEMENT && parser.
+                getLocalName().equals("relation"))) {
+                if (parser.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                  if (parser.getLocalName().equals("member")) {
+                    String type = parser.getAttributeValue(null,
+                      "type");
+                    if (type != null && type.equals("node")) {
+                      String role = parser.getAttributeValue(null,
+                        "role");
+                      if (role != null && role.equals("stop")) {
+                        String ref = parser.getAttributeValue(null,
+                          "ref");
+                        if (ref == null) {
+                          log.info("node without ref attribute, skipping");
+                        } else {
+                          osmNodeRefs.add(ref);
+                        }
+                      }
+                    }
+                  } else if (parser.getLocalName().equals("tag")) {
+                    String k = parser.getAttributeValue(null,
+                      "k");
+                    if (k != null) {
+                      if (k.equals("route")) {
+                        String v = parser.getAttributeValue(null,
+                          "v");
+                        if (v != null && v.equals("bus")) {
+                          lastBusRoute = new OSMBusRoute(idGenerator.
+                            getNextId());
+                        }
+                      } else if (k.equals("name")) {
+                        String v = parser.getAttributeValue(null,
+                          "v");
+                        routeLongName = v;
+                      }
+                    }
+                  }
+                }
+                parser.next();
+              } //end while for relation children parsing  
+              if(lastBusRoute != null) {
+                for (String osmNodeRef : osmNodeRefs) {
+                  TrafficNode trafficNode = osmIdNodeMap.get(osmNodeRef);
+                  BusStop busStop = null;
+                  if (trafficNode != null) {
+                    //make the trafficNode a busStop
+                    if (!(trafficNode instanceof BusStop)) {
+                      busStop = new OSMBusStop(
+                        osmNodeRef,
+                        null, //@TODO busStopName
+                        null, //busStopInformation 
+                        trafficNode);
+                      osmIdNodeMap.put(osmNodeRef,
+                        busStop);
+                    }
+                  } else {
+                    busStop = new OSMBusStop(
                       osmNodeRef,
-                      null, //@TODO busStopName
-                      null, //busStopInformation 
-                      trafficNode);
+                      null,
+                      null,
+                      -1, //passing null as geoLocation causes 
+                      //NullPointerException
+                      -1);
                     osmIdNodeMap.put(osmNodeRef,
                       busStop);
                   }
-                } else {
-                  busStop = new OSMBusStop(idGenerator.getNextId(),
-                    osmNodeRef,
-                    null,
-                    null,
-                    -1, //passing null as geoLocation causes 
-                    //NullPointerException
-                    -1);
-                  osmIdNodeMap.put(osmNodeRef,
-                    busStop);
+                  lastBusRoute.getBusStops().add(busStop);
+                  busStops.add(busStop);
+                  nodes.add(busStop);
                 }
-                lastBusRoute.getBusStops().add(busStop);
+                lastBusRoute.setRouteLongName(routeLongName);
+                busRoutes.add(lastBusRoute);
               }
-              lastBusRoute.setRouteLongName(routeLongName);
-              busRoutes.add(lastBusRoute);
-              lastBusRoute = null;
+              osmRelationId = null;
+              parser.next();
             } else {
               //... if there's no current context, create new context 
               if (parser.getLocalName().equalsIgnoreCase("node")) {
@@ -1142,7 +959,6 @@ public class OSMFileBasedCityDataService implements
                 Double nodeLat = null;
                 Double nodeLon = null;
                 for (int i = 0; i < parser.getAttributeCount(); i++) {
-
                   if (parser.getAttributeLocalName(i).equalsIgnoreCase("id")) {
                     osmId = parser.getAttributeValue(i);
                   } else if (parser.getAttributeLocalName(i).equalsIgnoreCase(
@@ -1153,17 +969,22 @@ public class OSMFileBasedCityDataService implements
                     nodeLon = Double.valueOf(parser.getAttributeValue(i));
                   }
                 }
-
                 if ((osmId != null) && (nodeLat != null) && (nodeLon != null)) {
-                  lastNode = new OSMTrafficNode(idGenerator.getNextId(),
+                  lastNode = new OSMTrafficNode(
                     osmId,
-                    new BaseCoordinate(idGenerator.getNextId(),
+                    new BaseCoordinate(
                       nodeLat,
                       nodeLon));
                   osmIdNodeMap.put(osmId,
                     lastNode);
                 } else {
                   log.info("missing id, lat or lng on node, skipped");
+                }
+                parser.next();
+                if (parser.getEventType() == XMLStreamConstants.END_ELEMENT) {
+                  //node node doesn't have children -> don't create context
+                  nodes.add(lastNode);
+                  lastNode = null;
                 }
                 /* Collect all the ways */
               } else if (parser.getLocalName().equalsIgnoreCase("way")) {
@@ -1174,62 +995,44 @@ public class OSMFileBasedCityDataService implements
                 }
                 //no further interesting attributes in way element
                 /* Collect node references <way>..<nd ref="180449581"/>..</way>  in first if statements */
+                parser.next();
+                if (parser.getEventType() == XMLStreamConstants.END_ELEMENT) {
+                  log.info(String.format(
+                    "way element with id %s without child nodes, skipping",
+                    osmWayId));
+                  osmWayId = null;
+                }
               } else if (parser.getLocalName().equalsIgnoreCase("relation")) {
                 //parse bus routes
                 //save all content from stream and treat it in the next step
-                osmNodeRefs = new LinkedList<>();
-                routeLongName = null;
+                osmRelationId = parser.getAttributeValue(null,
+                  "id");
                 parser.next();
-                while (!(parser.getEventType() == XMLStreamConstants.END_ELEMENT && parser.
-                  getLocalName().equals("relation"))) {
-                  if (parser.getEventType() == XMLStreamConstants.START_ELEMENT) {
-                    if (parser.getLocalName().equals("member")) {
-                      String type = parser.getAttributeValue(null,
-                        "type");
-                      if (type != null && type.equals("node")) {
-                        String role = parser.getAttributeValue(null,
-                          "role");
-                        if (role != null && role.equals("stop")) {
-                          String ref = parser.getAttributeValue(null,
-                            "ref");
-                          if (ref == null) {
-                            log.info("node without ref attribute, skipping");
-                          } else {
-                            osmNodeRefs.add(ref);
-                          }
-                        }
-                      }
-                    } else if (parser.getLocalName().equals("tag")) {
-                      String k = parser.getAttributeValue(null,
-                        "k");
-                      if (k != null) {
-                        if (k.equals("route")) {
-                          String v = parser.getAttributeValue(null,
-                            "v");
-                          if (v != null && v.equals("bus")) {
-                            lastBusRoute = new OSMBusRoute(idGenerator.
-                              getNextId());
-                          }
-                        } else if (k.equals("name")) {
-                          String v = parser.getAttributeValue(null,
-                            "v");
-                          routeLongName = v;
-                        }
-                      }
-                    }
-                  }
-                  parser.next();
+                if (parser.getEventType() == XMLStreamConstants.END_ELEMENT) {
+                  log.info(String.format(
+                    "relation element with id %s without child nodes, skipping",
+                    osmRelationId));
+                  osmRelationId = null;
                 }
-              }
-            }
+              } else {
+                if (!parser.getLocalName().equals("osm") && !parser.
+                  getLocalName().equals("bounds")) {
+                  log.info(String.format(
+                    "unknown element %s encountered in OSM file, skipping",
+                    parser.getLocalName()));
+                }
+                parser.next();
+              }//end if relation
+            } //end else for context creation
             break;
           //end case XMLStreamConstants.START_ELEMENT
           case XMLStreamConstants.END_ELEMENT:
+            parser.next();
             break;
           default:
+            parser.next();
             break;
         } //end switch
-        parser.next();
       }
     } catch (FactoryConfigurationError | XMLStreamException | NumberFormatException e) {
       log.error(
@@ -1340,9 +1143,6 @@ public class OSMFileBasedCityDataService implements
     this.junctionNodesTree.load(this.city.getCityInfrastructureData().
       getJunctionNodes());
 
-    if (this.city.getGeoInfo() == null) {
-      this.city.setGeoInfo(new BaseBoundary(idGenerator.getNextId()));
-    }
     List<BaseCoordinate> boundaryCoordinates = new LinkedList<>();
     for (Coordinate boundaryCoordinate : GeoToolsBootstrapping.
       getGeometryFactory().createMultiPoint(
@@ -1350,12 +1150,11 @@ public class OSMFileBasedCityDataService implements
           new Coordinate[nodes.size()]
         )
       ).getEnvelope().getCoordinates()) {
-      boundaryCoordinates.add(new BaseCoordinate(idGenerator.getNextId(),
+      boundaryCoordinates.add(new BaseCoordinate(
         boundaryCoordinate));
     }
-    this.city.getGeoInfo().setBoundaryCoordinates(boundaryCoordinates);
-    this.city.getCityInfrastructureData().setBuildings(this.extractBuildings(
-      ways));
+    this.city.setBoundaryCoordinates(boundaryCoordinates);
+    this.city.getCityInfrastructureData().setBuildings(buildings);
     /* build the pr-tree for buildings */
     this.buildingTree = new PRTree<>(new BuildingMBRConverter(),
       prTreeBranchFactor);
@@ -1437,10 +1236,10 @@ public class OSMFileBasedCityDataService implements
       PointND p) {
       /* euclidean distance */
       return Math.sqrt(Math.pow(
-        (b.getGeoInfo().retrieveCenterPoint().getX() - p.
+        (b.retrieveCenterPoint().getX() - p.
         getOrd(0)),
         2)
-        + Math.pow((b.getGeoInfo().retrieveCenterPoint().getY() - p.getOrd(1)),
+        + Math.pow((b.retrieveCenterPoint().getY() - p.getOrd(1)),
           2));
     }
   }
@@ -1462,15 +1261,15 @@ public class OSMFileBasedCityDataService implements
     @Override
     public double getMax(int arg0,
       Building arg1) {
-      return arg0 == 0 ? arg1.getGeoInfo().retrieveCenterPoint().getX() : arg1.
-        getGeoInfo().retrieveCenterPoint().getY();
+      return arg0 == 0 ? arg1.retrieveCenterPoint().getX() : arg1.
+        retrieveCenterPoint().getY();
     }
 
     @Override
     public double getMin(int arg0,
       Building arg1) {
-      return arg0 == 0 ? arg1.getGeoInfo().retrieveCenterPoint().getX() : arg1.
-        getGeoInfo().retrieveCenterPoint().getY();
+      return arg0 == 0 ? arg1.retrieveCenterPoint().getX() : arg1.
+        retrieveCenterPoint().getY();
     }
   }
 

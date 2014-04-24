@@ -62,7 +62,7 @@ public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<Vehicl
       // only at busstops the amount of passengers can change
       if (n != null) {
         int lastBusStop = ((BusData) event.getVehicle().getData()).
-          getBusStopOrder().indexOf(n.getId());
+          getBusStopOrder().indexOf(n);
         ((BusData) event.getVehicle().getData()).setLastBusStop(lastBusStop);
         Random random = new Random(getRandomSeedService()
           .getSeed(VehiclePassedNodeHandler.class.getName()));

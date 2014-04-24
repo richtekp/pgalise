@@ -41,6 +41,7 @@ import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,7 +55,7 @@ import org.junit.Test;
  *
  * @author Timo
  */
-@LocalBean
+@LocalClient
 @ManagedBean
 public class DefaultCreateRandomVehicleServiceTest {
 

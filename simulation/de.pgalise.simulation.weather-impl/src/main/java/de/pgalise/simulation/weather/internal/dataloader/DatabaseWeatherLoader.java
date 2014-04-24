@@ -223,7 +223,7 @@ public class DatabaseWeatherLoader implements WeatherLoader {
   public ServiceDataForecast loadForecastServiceWeatherData(long timestamp,
     City city) throws NoWeatherDataFoundException {
     //check that city has been persisted to avoid exception query in following method invocations
-    this.entityManager.merge(city.getGeoInfo());
+    this.entityManager.merge(city.getReferencePoint());
     this.entityManager.merge(city);
 
     // Get the data

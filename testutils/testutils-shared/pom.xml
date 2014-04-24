@@ -15,6 +15,7 @@
 	<properties>
 			<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
 			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	 <glassfish.embedded-static-shell.jar>/home/richter/glassfish-4.0/glassfish/lib/embedded/glassfish-embedded-static-shell.jar</glassfish.embedded-static-shell.jar>
 	</properties>
 
 	<name>de.pgalise.testutils-shared</name>
@@ -42,7 +43,6 @@
 	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
 <!--		<dependency>
 			<groupId>ch.qos.logback</groupId>

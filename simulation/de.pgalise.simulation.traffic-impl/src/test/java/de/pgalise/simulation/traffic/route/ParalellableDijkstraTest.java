@@ -67,13 +67,13 @@ public class ParalellableDijkstraTest {
     double velocity = 50;
     double distance = 200;
 
-    TrafficNode a = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode a = new TrafficNode(
       new Coordinate(0,
         0));
-    TrafficNode b = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode b = new TrafficNode(
       new Coordinate(distance,
         0));
-    TrafficNode c = new TrafficNode(idGenerator.getNextId(),
+    TrafficNode c = new TrafficNode(
       new Coordinate(distance,
         distance));
 

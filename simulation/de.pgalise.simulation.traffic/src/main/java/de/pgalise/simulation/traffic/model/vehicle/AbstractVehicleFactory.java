@@ -171,7 +171,7 @@ public abstract class AbstractVehicleFactory implements BaseVehicleFactory {
       getX(),
       chosenEdge.getSource().getY());
     positionVector.add(offsetVector);
-    return new BaseCoordinate(idGenerator.getNextId(),positionVector.getX(),
+    return new BaseCoordinate(positionVector.getX(),
       positionVector.getY());
   }
 

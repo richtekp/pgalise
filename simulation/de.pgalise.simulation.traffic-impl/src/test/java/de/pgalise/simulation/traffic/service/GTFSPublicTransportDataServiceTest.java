@@ -73,10 +73,9 @@ public class GTFSPublicTransportDataServiceTest {
     instance.parse(zis);
     assertEquals(12845, instance.getBusStops().size());
     CityInfrastructureData cityInfrastructureData = null;
-    Set<BusStop> busStops = new HashSet<>(Arrays.asList(new BusStop(idGenerator.getNextId()
-      ,"somename",
+    Set<BusStop> busStops = new HashSet<>(Arrays.asList(new BusStop("somename",
       null,
-      null), new BusStop(idGenerator.getNextId(),
+      null), new BusStop(
         "someothername",
         null,
         null)));

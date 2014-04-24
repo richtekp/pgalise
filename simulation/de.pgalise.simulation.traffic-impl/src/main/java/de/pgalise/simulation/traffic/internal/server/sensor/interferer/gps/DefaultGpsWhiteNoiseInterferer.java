@@ -61,7 +61,7 @@ public class DefaultGpsWhiteNoiseInterferer extends GpsBaseInterferer implements
 				getChangeAmplitude()) + Double.MIN_NORMAL)));
 			final double y = 1d / ((1d / ((this.getRandom().nextDouble() * this.
 				getChangeAmplitude()) + Double.MIN_NORMAL)));
-			return new BaseCoordinate(idGenerator.getNextId(),
+			return new BaseCoordinate(
 				this.getRandom().nextBoolean() ? mutablePosition.getX() + x : mutablePosition.
 				getX() - x,
 				this

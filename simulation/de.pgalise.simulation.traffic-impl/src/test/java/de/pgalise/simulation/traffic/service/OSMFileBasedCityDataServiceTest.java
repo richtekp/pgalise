@@ -47,10 +47,12 @@ import org.junit.Test;
 @LocalClient
 @ManagedBean
 public class OSMFileBasedCityDataServiceTest {
+
   static {
-    if(System.getProperty("org.jboss.logging.provider") == null) {
+    if (System.getProperty("org.jboss.logging.provider") == null) {
       try {
-        InputStream testPropertiesInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("test.properties");
+        InputStream testPropertiesInputStream = Thread.currentThread().
+          getContextClassLoader().getResourceAsStream("test.properties");
         Properties testProperties = new Properties();
         testProperties.load(testPropertiesInputStream);
         System.setProperty("org.jboss.logging.provider",
@@ -61,26 +63,25 @@ public class OSMFileBasedCityDataServiceTest {
     }
   }
 
-  private final static String OSM_FILE_NAME = 
-    "dbis_institute_berlin_reduced.osm";
+  private final static String OSM_FILE_NAME
+    = "dbis_institute_berlin_reduced.osm";
 //    "oldenburg_pg.osm";
   @EJB
   private IdGenerator idGenerator;
   @EJB
   private GraphConstructor graphConstructor;
 
-  public OSMFileBasedCityDataServiceTest() {    
+  public OSMFileBasedCityDataServiceTest() {
   }
-    
-    @Before
+
+  @Before
   public void setUp() throws NamingException {
     TestUtils.getContainer().getContext().bind("inject",
       this);
   }
 
   /**
-   * Test of getBoundary method, of class
- OSMFileBasedCityDataService.
+   * Test of getBoundary method, of class OSMFileBasedCityDataService.
    */
   @Test
   @Ignore
@@ -88,7 +89,7 @@ public class OSMFileBasedCityDataServiceTest {
     System.out.println("getBoundary");
     OSMFileBasedCityDataService instance = new OSMFileBasedCityDataService();
     Envelope expResult = null;
-    Polygon result = instance.createCity().getGeoInfo().retrieveBoundary();
+    Polygon result = instance.createCity().retrieveBoundary();
     assertEquals(expResult,
       result);
     // TODO review the generated test code and remove the default call to fail.
@@ -96,8 +97,7 @@ public class OSMFileBasedCityDataServiceTest {
   }
 
   /**
-   * Test of initialize method, of class
- OSMFileBasedCityDataService.
+   * Test of initialize method, of class OSMFileBasedCityDataService.
    */
   @Test
   @Ignore
@@ -110,8 +110,7 @@ public class OSMFileBasedCityDataServiceTest {
   }
 
   /**
-   * Test of getTrafficGraph method, of class
- OSMFileBasedCityDataService.
+   * Test of getTrafficGraph method, of class OSMFileBasedCityDataService.
    */
   @Test
   @Ignore
@@ -127,8 +126,8 @@ public class OSMFileBasedCityDataServiceTest {
   }
 
   /**
-   * Test of getBuildings method, of class
- OSMFileBasedCityDataService.
+   * Test of getBuildingEnergyProfileMap method, of class
+   * OSMFileBasedCityDataService.
    */
   @Test
   @Ignore
@@ -138,9 +137,10 @@ public class OSMFileBasedCityDataServiceTest {
     int radiusInMeter = 0;
     OSMFileBasedCityDataService instance = new OSMFileBasedCityDataService();
     Map<EnergyProfileEnum, List<Building>> expResult = null;
-    Map<EnergyProfileEnum, List<Building>> result = instance.getBuildings(
-      geolocation,
-      radiusInMeter);
+    Map<EnergyProfileEnum, List<Building>> result = instance.
+      getBuildingEnergyProfileMap(
+        geolocation,
+        radiusInMeter);
     assertEquals(expResult,
       result);
     // TODO review the generated test code and remove the default call to fail.
@@ -148,8 +148,7 @@ public class OSMFileBasedCityDataServiceTest {
   }
 
   /**
-   * Test of getBuildingsInRadius method, of class
- OSMFileBasedCityDataService.
+   * Test of getBuildingsInRadius method, of class OSMFileBasedCityDataService.
    */
   @Test
   public void testGetBuildingsInRadius() throws Exception {
@@ -165,25 +164,24 @@ public class OSMFileBasedCityDataServiceTest {
     InputStream osmIN = Thread.currentThread().getContextClassLoader().
       getResourceAsStream(OSM_FILE_NAME);
     osmParser.parseStream(osmIN);
-    List<TrafficNode> randomNodeList = new LinkedList<>(osmParser.createCity().getCityInfrastructureData().getNodes());
+    List<TrafficNode> randomNodeList = new LinkedList<>(osmParser.createCity().
+      getCityInfrastructureData().getNodes());
     Collections.shuffle(randomNodeList);
-    NavigationNode randomNode = 
-      randomNodeList.      get(        (int) (Math.random() * randomNodeList.size()));
+    NavigationNode randomNode
+      = randomNodeList.get((int) (Math.random() * randomNodeList.size()));
     BaseCoordinate centerPoint = new BaseCoordinate(
-      idGenerator.getNextId(), 
-      randomNode.      getX(),
+      randomNode.getX(),
       randomNode.getY()
     );
     for (Building building : osmParser.getBuildingsInRadius(centerPoint,
       radiusInMeter)) {
       assertTrue(this.getDistanceInMeter(centerPoint,
-        building.getGeoInfo().retrieveCenterPoint()) <= radiusInMeter);
+        building.retrieveCenterPoint()) <= radiusInMeter);
     }
   }
 
   /**
-   * Test of getNearestStreetNode method, of class
- OSMFileBasedCityDataService.
+   * Test of getNearestStreetNode method, of class OSMFileBasedCityDataService.
    */
   @Test
   public void testGetNearestStreetNode() throws Exception {
@@ -199,11 +197,12 @@ public class OSMFileBasedCityDataServiceTest {
     InputStream osmIN = Thread.currentThread().getContextClassLoader().
       getResourceAsStream(OSM_FILE_NAME);
     osmParser.parseStream(osmIN);
-    List<TrafficNode> randomNodeList = new LinkedList<>(osmParser.createCity().getCityInfrastructureData().
+    List<TrafficNode> randomNodeList = new LinkedList<>(osmParser.createCity().
+      getCityInfrastructureData().
       getNodes());
     Collections.shuffle(randomNodeList);
     NavigationNode givenNode = randomNodeList.get(
-        (int) (Math.random() * randomNodeList.size()));
+      (int) (Math.random() * randomNodeList.size()));
     NavigationNode returnedNode = osmParser.getNearestNode(givenNode.
       getX(),
       givenNode.getY());
@@ -213,7 +212,8 @@ public class OSMFileBasedCityDataServiceTest {
       getY());
 
     boolean isDifferent = false;
-    for (NavigationNode node : osmParser.createCity().getCityInfrastructureData().
+    for (NavigationNode node : osmParser.createCity().
+      getCityInfrastructureData().
       getNodes()) {
       if (!node.equals(osmParser.getNearestStreetNode(node.
         getX(),
@@ -226,13 +226,12 @@ public class OSMFileBasedCityDataServiceTest {
   }
 
   /**
-   * Test of parseFile method, of class
- OSMFileBasedCityDataService.
+   * Test of parseFile method, of class OSMFileBasedCityDataService.
    */
   @Test
   public void testParseStream() throws Exception {
     InputStream osmIN = Thread.currentThread().getContextClassLoader().
-      getResourceAsStream("dbis_institute_berlin_reduced_few_nodes.osm");    
+      getResourceAsStream("dbis_institute_berlin_reduced_few_nodes.osm");
     TrafficCity cityInfrastructureData = new TrafficCity(idGenerator.getNextId(),
       new CityInfrastructureData(idGenerator.getNextId()));
     TrafficGraph trafficGraph = new DefaultTrafficGraph();
@@ -242,24 +241,28 @@ public class OSMFileBasedCityDataServiceTest {
         graphConstructor,
         cityInfrastructureData);
     instance.parseStream(osmIN);
-    assertEquals(2, instance.createCity().getCityInfrastructureData().getNodes().size());
-    assertEquals(instance.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal().getMinX(),
+    assertEquals(2,
+      instance.createCity().getCityInfrastructureData().getNodes().size());
+    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+      getMinX(),
       53,
       1);
-    assertEquals(instance.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal().getMaxX(),
+    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+      getMaxX(),
       53,
       1);
-    assertEquals(instance.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal().getMinY(),
+    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+      getMinY(),
       13,
       1);
-    assertEquals(instance.createCity().getGeoInfo().retrieveBoundary().getEnvelopeInternal().getMaxY(),
+    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+      getMaxY(),
       13,
       1);
   }
 
   /**
-   * Test of getNodesInBoundary method, of class
- OSMFileBasedCityDataService.
+   * Test of getNodesInBoundary method, of class OSMFileBasedCityDataService.
    */
   @Test
   @Ignore
@@ -277,7 +280,7 @@ public class OSMFileBasedCityDataServiceTest {
 
   /**
    * Test of getNearestJunctionNode method, of class
- OSMFileBasedCityDataService.
+   * OSMFileBasedCityDataService.
    */
   @Test
   @Ignore
@@ -297,7 +300,7 @@ public class OSMFileBasedCityDataServiceTest {
 
   /**
    * Test of createCityInfrastructureData method, of class
- OSMFileBasedCityDataService.
+   * OSMFileBasedCityDataService.
    */
   @Test
   @Ignore
@@ -317,7 +320,7 @@ public class OSMFileBasedCityDataServiceTest {
    */
   @Test
   public void testBusStops() throws IOException {
-    TrafficGraph trafficGraph = new DefaultTrafficGraph();    
+    TrafficGraph trafficGraph = new DefaultTrafficGraph();
     TrafficCity cityInfrastructureData = new TrafficCity(idGenerator.getNextId(),
       new CityInfrastructureData(idGenerator.getNextId()));
     OSMFileBasedCityDataService osmParser = new OSMFileBasedCityDataService(
@@ -330,12 +333,11 @@ public class OSMFileBasedCityDataServiceTest {
     osmParser.parseStream(osmIN);
     boolean foundBusstop = false;
     outerLoop:
-    for (Way<?, ?> way : osmParser.createCity().getCityInfrastructureData().getWaysWithBusStops()) {
-      for (NavigationNode node : way.getNodeList()) {
-        if (node instanceof BusStop) {
-          foundBusstop = true;
-          break outerLoop;
-        }
+    for (NavigationNode node : osmParser.createCity().
+      getCityInfrastructureData().getNodes()) {
+      if (node instanceof BusStop) {
+        foundBusstop = true;
+        break outerLoop;
       }
     }
 
@@ -352,7 +354,7 @@ public class OSMFileBasedCityDataServiceTest {
   private double getDistanceInMeter(Coordinate start,
     Coordinate target) {
 
-    if ((start.x== target.y)
+    if ((start.x == target.y)
       && (start.x == target.y)) {
       return 0.0;
     }

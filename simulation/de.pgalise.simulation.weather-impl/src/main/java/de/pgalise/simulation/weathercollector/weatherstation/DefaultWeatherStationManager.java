@@ -44,107 +44,107 @@ import org.slf4j.LoggerFactory;
 @Stateful
 public class DefaultWeatherStationManager implements WeatherStationManager {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(
-		DefaultWeatherStationManager.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(
+    DefaultWeatherStationManager.class);
 
-	/**
-	 * Path to the file with strategies
-	 */
-	public static final String FILEPATH = "/weatherstations.xml";
+  /**
+   * Path to the file with strategies
+   */
+  public static final String FILEPATH = "/weatherstations.xml";
 
-	/**
-	 * Class to save the informations
-	 */
-	@EJB
-	private DatabaseManager saver;
+  /**
+   * Class to save the informations
+   */
+  @EJB
+  private DatabaseManager saver;
 
-	private Set<StationStrategy> stationStrategys;
+  private Set<StationStrategy> stationStrategys;
 
-	public DefaultWeatherStationManager() {
-	}
+  public DefaultWeatherStationManager() {
+  }
 
-	/**
-	 * Constructor
-	 *
-	 *
-	 * @param weatherStationSaver
-	 */
-	public DefaultWeatherStationManager(DatabaseManager weatherStationSaver) {
-		this(weatherStationSaver,
-			loadStrategiesFromFile());
-	}
+  /**
+   * Constructor
+   *
+   *
+   * @param weatherStationSaver
+   */
+  public DefaultWeatherStationManager(DatabaseManager weatherStationSaver) {
+    this(weatherStationSaver,
+      loadStrategiesFromFile());
+  }
 
-	public DefaultWeatherStationManager(DatabaseManager weatherStationSaver,
-		Set<StationStrategy> stationStrategys) {
-		this.saver = weatherStationSaver;
-		this.stationStrategys = stationStrategys;
-	}
+  public DefaultWeatherStationManager(DatabaseManager weatherStationSaver,
+    Set<StationStrategy> stationStrategys) {
+    this.saver = weatherStationSaver;
+    this.stationStrategys = stationStrategys;
+  }
 
-	/**
-	 * Saves all informations of the weather stations
-	 */
-	@Override
-	public void saveInformations() {
-		// Execute all strategies
-		for (StationStrategy strategy : stationStrategys) {
-			strategy.saveWeather(this.getSaver());
-		}
-	}
+  /**
+   * Saves all informations of the weather stations
+   */
+  @Override
+  public void saveInformations() {
+    // Execute all strategies
+    for (StationStrategy strategy : stationStrategys) {
+      strategy.saveWeather(this.getSaver());
+    }
+  }
 
-	/**
-	 * Loads the strategies for the weather stations
-	 *
-	 * @return list with available strategies
-	 */
-	private static Set<StationStrategy> loadStrategiesFromFile() {
-		Set<StationStrategy> list = new HashSet<>(3);
+  /**
+   * Loads the strategies for the weather stations
+   *
+   * @return list with available strategies
+   */
+  private static Set<StationStrategy> loadStrategiesFromFile() {
+    Set<StationStrategy> list = new HashSet<>(3);
 
-		try (InputStream propInFile = DefaultWeatherStationManager.class.
-			getResourceAsStream(FILEPATH)) {
-			// Read file
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(propInFile);
-			doc.getDocumentElement().normalize();
+    try (InputStream propInFile = DefaultWeatherStationManager.class.
+      getResourceAsStream(FILEPATH)) {
+      // Read file
+      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+      Document doc = dBuilder.parse(propInFile);
+      doc.getDocumentElement().normalize();
 
-			// Get strategies node
-			NodeList nList = doc.getElementsByTagName("strategy");
+      // Get strategies node
+      NodeList nList = doc.getElementsByTagName("strategy");
 
-			// Get all strategies
-			for (int temp = 0; temp < nList.getLength(); temp++) {
-				Node nNode = nList.item(temp);
-				String classname = nNode.getTextContent();
+      // Get all strategies
+      for (int temp = 0; temp < nList.getLength(); temp++) {
+        Node nNode = nList.item(temp);
+        String classname = nNode.getTextContent();
 
-				// Add strategy
-				Object strategyRaw = Class.forName(classname).newInstance();
-				if (!(strategyRaw instanceof StationStrategy)) {
-					throw new IllegalArgumentException(
-						"file in %s contains invalid classname %s");
-				}
-				StationStrategy strategy = (StationStrategy) strategyRaw;
-				list.add(strategy);
-			}
-		} catch (ParserConfigurationException | SAXException | IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			throw new RuntimeException(
-				"Could not load the XML file for weather stations");
-		}
+        // Add strategy
+        Object strategyRaw = Class.forName(classname).newInstance();
+        if (!(strategyRaw instanceof StationStrategy)) {
+          throw new IllegalArgumentException(
+            "file in %s contains invalid classname %s");
+        }
+        StationStrategy strategy = (StationStrategy) strategyRaw;
+        list.add(strategy);
+      }
+    } catch (ParserConfigurationException | SAXException | IOException | InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+      throw new RuntimeException(
+        "Could not load the XML file for weather stations");
+    }
 
-		// Return list
-		return list;
-	}
+    // Return list
+    return list;
+  }
 
-	/**
-	 * @return the saver
-	 */
-	public DatabaseManager getSaver() {
-		return saver;
-	}
+  /**
+   * @return the saver
+   */
+  public DatabaseManager getSaver() {
+    return saver;
+  }
 
-	/**
-	 * @param saver the saver to set
-	 */
-	public void setSaver(
-		DatabaseManager saver) {
-		this.saver = saver;
-	}
+  /**
+   * @param saver the saver to set
+   */
+  public void setSaver(
+    DatabaseManager saver) {
+    this.saver = saver;
+  }
 }

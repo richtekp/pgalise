@@ -21,7 +21,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -37,11 +36,9 @@ import javax.persistence.TemporalType;
 public class BusStopTime extends Identifiable {
 	private static final long serialVersionUID = 1L;
 	
-	@JoinColumn(name = "TRIP_ID")
 	@OneToOne
 	private BusTrip busTrip;
 	
-	@JoinColumn(name = "STOP_ID")
 	@OneToOne
 	private BusStop busStop;
 	

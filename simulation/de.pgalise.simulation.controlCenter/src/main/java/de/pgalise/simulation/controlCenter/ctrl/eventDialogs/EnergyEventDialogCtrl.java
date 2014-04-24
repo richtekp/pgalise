@@ -75,7 +75,7 @@ public class EnergyEventDialogCtrl extends BaseMapDialogCtrl {
 	
 	public void saveEnergyEvent() {
 		energyController.update(new EventList(idGenerator.getNextId(),
-			new LinkedList<>(Arrays.asList(new PercentageChangeEnergyEvent(new BaseCoordinate(idGenerator.getNextId(), getCoordinate()),
+			new LinkedList<>(Arrays.asList(new PercentageChangeEnergyEvent(new BaseCoordinate( getCoordinate()),
 						chosenDuration,
 						chosenDuration,
 						chosenDuration,

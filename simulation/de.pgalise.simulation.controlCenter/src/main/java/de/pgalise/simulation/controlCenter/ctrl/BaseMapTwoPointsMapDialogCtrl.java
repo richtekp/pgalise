@@ -7,11 +7,8 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import org.primefaces.event.map.MarkerDragEvent;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.Marker;
@@ -42,7 +39,7 @@ public abstract class BaseMapTwoPointsMapDialogCtrl extends BaseMapDialogCtrl {
 		this.endCoordinate = endCoordinate;
 	}
 
-	public JaxRSCoordinate getEndCoordinate() {
+	public BaseCoordinate getEndCoordinate() {
 		return endCoordinate;
 	}
 
@@ -50,10 +47,10 @@ public abstract class BaseMapTwoPointsMapDialogCtrl extends BaseMapDialogCtrl {
 	public void onMarkerDrag(MarkerDragEvent event) {
 		Marker marker = event.getMarker();
 		if(marker == startMarker) {
-			setCoordinate(new BaseCoordinate(idGenerator.getNextId(), marker.getLatlng().getLat(),
+			setCoordinate(new BaseCoordinate( marker.getLatlng().getLat(),
 				marker.getLatlng().getLng()));
 		}else {
-			endCoordinate = new BaseCoordinate(idGenerator.getNextId(), marker.getLatlng().getLat(),
+			endCoordinate = new BaseCoordinate( marker.getLatlng().getLat(),
 				marker.getLatlng().getLng());
 		}
 	}

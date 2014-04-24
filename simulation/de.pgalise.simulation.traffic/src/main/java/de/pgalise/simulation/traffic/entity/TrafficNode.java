@@ -12,8 +12,11 @@ import de.pgalise.simulation.traffic.entity.BusStop;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.rules.TrafficRule;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -45,6 +48,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * usage for Graph.addEdge (no idea why)
  */
 @Entity
+@Access(AccessType.FIELD)
 public class TrafficNode extends NavigationNode {
 
   private static final long serialVersionUID = 1L;
@@ -53,14 +57,14 @@ public class TrafficNode extends NavigationNode {
 
   private boolean onStreet;
   private boolean roundabout;
-  @Transient
   @XmlTransient
+  @Transient
   private Set<StaticTrafficSensor<?>> sensors;
-  @Transient
   @XmlTransient
+  @Transient
   private Set<Vehicle<?>> vehicles;
-  @Transient
   @XmlTransient
+  @Transient
   private TrafficRule trafficRule;
   @OneToOne
   private BusStop busStop;
@@ -69,15 +73,15 @@ public class TrafficNode extends NavigationNode {
     super();
   }
 
-  public TrafficNode(Long id,
+  public TrafficNode(
     Coordinate geoLocation) {
-    super(id,
+    super(
       geoLocation);
   }
 
-  public TrafficNode(Long id,
+  public TrafficNode(
     double x, double y) {
-    super(id,
+    super(
       x,y);
   }
 
@@ -132,4 +136,5 @@ public class TrafficNode extends NavigationNode {
   public BusStop getBusStop() {
     return busStop;
   }
+  
 }

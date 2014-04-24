@@ -7,7 +7,6 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.JaxRSCoordinate;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import java.io.Serializable;
 import javax.ejb.EJB;
@@ -50,7 +49,7 @@ public abstract class BaseMapDialogCtrl implements Serializable {
 
 	public void onMarkerDrag(MarkerDragEvent event) {
 		Marker marker = event.getMarker();
-		coordinate = new BaseCoordinate(idGenerator.getNextId(), marker.getLatlng().getLat(),
+		coordinate = new BaseCoordinate( marker.getLatlng().getLat(),
 				marker.getLatlng().getLng());
 	}
 

@@ -15,10 +15,15 @@
  */
 package de.pgalise.simulation.shared.entity;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAnyElement;
 
 /**
  * A building is a {@link NavigationNode} which referes to the reference point 
@@ -44,14 +49,43 @@ import javax.persistence.Transient;
  * @author Timo
  */
 @Entity
-public class Building extends NavigationNode {
+public class Building extends BaseBoundary {
 
   private static final long serialVersionUID = 5874106158590082263L;
 
   @Transient
   private Double squareMeter;
-  @OneToOne
-  private BaseBoundary geoInfo;
+  @ElementCollection
+  private Set<String> tourismTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> serviceTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> sportTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> schoolTags = new HashSet<>();
+  @ElementCollection
+  @XmlAnyElement
+  private Set<String> repairTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> attractionTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> shopTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> emergencyServiceTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> craftTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> leisureTags = new HashSet<>();
+  private Boolean military = false;
+  @ElementCollection
+  private Set<String> publicTransportTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> gamblingTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> amenityTags = new HashSet<>();
+  @ElementCollection
+  private Set<String> landuseTags = new HashSet<>();
+  private boolean office = false; // this should be in Building (research OSM specification what office is supposed to mean)
 
   protected Building() {
   }
@@ -63,21 +97,18 @@ public class Building extends NavigationNode {
   /**
    *
    * @param id
-   * @param navigationNodes positions at the border of the building or 
-   * accessible in side the building's boundary (e.g. in a court) which can be 
-   * used for navigation (The most important point, e.g. pointing to the main 
-   * enterance, can be accessed through the geoInfo.centerPoint property)
-   * @param position
+   * @param referencePoint
+   * @param boundaryCoordinates
    */
-  public Building(Long id,BaseCoordinate geoLocation,
-    BaseBoundary position) {
-    this(id);
-    this.geoInfo = position;
+  public Building(Long id, BaseCoordinate referencePoint, List<BaseCoordinate> boundaryCoordinates) {
+    super(id,
+      referencePoint,
+      boundaryCoordinates);
   }
 
   public Building(Long id,
-    BaseCoordinate geoLocation,
-    BaseBoundary geoInfo,
+    BaseCoordinate referencePoint,
+    List<BaseCoordinate> boundaryCoordinates,
     Set<String> tourismTags,
     Set<String> serviceTags,
     Set<String> sportTags,
@@ -94,39 +125,242 @@ public class Building extends NavigationNode {
     Set<String> landuseTags,
     boolean office,
     boolean military) {
-    super(id,
-      geoLocation.x,
-      geoLocation.y,
-      tourismTags,
-      serviceTags,
-      sportTags,
-      schoolTags,
-      repairTags,
-      attractionTags,
-      shopTags,
-      emergencyServiceTags,
-      craftTags,
-      leisureTags,
-      publicTransportTags,
-      gamblingTags,
-      amenityTags,
-      landuseTags,
-      office,
-      military);
+    super(id,referencePoint,
+      boundaryCoordinates);
+    this.tourismTags = tourismTags;
+    this.serviceTags = serviceTags;
+    this.sportTags = sportTags;
+    this.schoolTags = schoolTags;
+    this.repairTags = repairTags;
+    this.attractionTags = attractionTags;
+    this.shopTags = shopTags;
+    this.emergencyServiceTags = emergencyServiceTags;
+    this.craftTags = craftTags;
+    this.leisureTags = leisureTags;
+    this.publicTransportTags = publicTransportTags;
+    this.gamblingTags = gamblingTags;
+    this.amenityTags = amenityTags;
+    this.office = office;
+    this.military = military;
   }
 
-  public double getSquareMeter() {
-    if (squareMeter == null) {
-      squareMeter = geoInfo.retrieveBoundary().getArea();
-    }
-    return squareMeter;
+  public boolean isMilitary() {
+    return military;
   }
 
-  public void setGeoInfo(BaseBoundary geoInfo) {
-    this.geoInfo = geoInfo;
+  public void setMilitary(boolean military) {
+    this.military = military;
   }
 
-  public BaseBoundary getGeoInfo() {
-    return geoInfo;
+  public void setOffice(boolean office) {
+    this.office = office;
+  }
+
+  public boolean isOffice() {
+    return office;
+  }
+
+  /**
+   * @return the tourismTags
+   */
+  public Set<String> getTourismTags() {
+    return tourismTags;
+  }
+
+  /**
+   * @return the serviceTags
+   */
+  public Set<String> getServiceTags() {
+    return serviceTags;
+  }
+
+  /**
+   * @return the sportTags
+   */
+  public Set<String> getSportTags() {
+    return sportTags;
+  }
+
+  /**
+   * @return the schoolTags
+   */
+  public Set<String> getSchoolTags() {
+    return schoolTags;
+  }
+
+  /**
+   * @return the repairTags
+   */
+  public Set<String> getRepairTags() {
+    return repairTags;
+  }
+
+  /**
+   * @return the attractionTags
+   */
+  public Set<String> getAttractionTags() {
+    return attractionTags;
+  }
+
+  /**
+   * @return the shopTags
+   */
+  public Set<String> getShopTags() {
+    return shopTags;
+  }
+
+  /**
+   * @return the emergencyServiceTags
+   */
+  public Set<String> getEmergencyServiceTags() {
+    return emergencyServiceTags;
+  }
+
+  /**
+   * @return the craftTags
+   */
+  public Set<String> getCraftTags() {
+    return craftTags;
+  }
+
+  /**
+   * @return the leisureTags
+   */
+  public Set<String> getLeisureTags() {
+    return leisureTags;
+  }
+
+  /**
+   * @return the publicTransportTags
+   */
+  public Set<String> getPublicTransportTags() {
+    return publicTransportTags;
+  }
+
+  /**
+   * @return the gamblingTags
+   */
+  public Set<String> getGamblingTags() {
+    return gamblingTags;
+  }
+
+  /**
+   * @param tourismTags the tourismTags to set
+   */
+  protected void setTourismTags(
+    Set<String> tourismTags) {
+    this.tourismTags = tourismTags;
+  }
+
+  /**
+   * @param serviceTags the serviceTags to set
+   */
+  protected void setServiceTags(
+    Set<String> serviceTags) {
+    this.serviceTags = serviceTags;
+  }
+
+  /**
+   * @param sportTags the sportTags to set
+   */
+  protected void setSportTags(
+    Set<String> sportTags) {
+    this.sportTags = sportTags;
+  }
+
+  /**
+   * @param schoolTags the schoolTags to set
+   */
+  protected void setSchoolTags(
+    Set<String> schoolTags) {
+    this.schoolTags = schoolTags;
+  }
+
+  /**
+   * @param repairTags the repairTags to set
+   */
+  protected void setRepairTags(
+    Set<String> repairTags) {
+    this.repairTags = repairTags;
+  }
+
+  /**
+   * @param attractionTags the attractionTags to set
+   */
+  protected void setAttractionTags(
+    Set<String> attractionTags) {
+    this.attractionTags = attractionTags;
+  }
+
+  /**
+   * @param shopTags the shopTags to set
+   */
+  protected void setShopTags(
+    Set<String> shopTags) {
+    this.shopTags = shopTags;
+  }
+
+  /**
+   * @param emergencyServiceTags the emergencyServiceTags to set
+   */
+  protected void setEmergencyServiceTags(
+    Set<String> emergencyServiceTags) {
+    this.emergencyServiceTags = emergencyServiceTags;
+  }
+
+  /**
+   * @param craftTags the craftTags to set
+   */
+  protected void setCraftTags(
+    Set<String> craftTags) {
+    this.craftTags = craftTags;
+  }
+
+  /**
+   * @param leisureTags the leisureTags to set
+   */
+  protected void setLeisureTags(
+    Set<String> leisureTags) {
+    this.leisureTags = leisureTags;
+  }
+
+  /**
+   * @param military the military to set
+   */
+  protected void setMilitary(Boolean military) {
+    this.military = military;
+  }
+
+  /**
+   * @param publicTransportTags the publicTransportTags to set
+   */
+  protected void setPublicTransportTags(
+    Set<String> publicTransportTags) {
+    this.publicTransportTags = publicTransportTags;
+  }
+
+  /**
+   * @param gamblingTags the gamblingTags to set
+   */
+  protected void setGamblingTags(
+    Set<String> gamblingTags) {
+    this.gamblingTags = gamblingTags;
+  }
+
+  public void setAmenityTags(
+    Set<String> amenityTags) {
+    this.amenityTags = amenityTags;
+  }
+
+  public Set<String> getAmenityTags() {
+    return amenityTags;
+  }
+
+  public void setLanduseTags(Set<String> landuseTags) {
+    this.landuseTags = landuseTags;
+  }
+
+  public Set<String> getLanduseTags() {
+    return landuseTags;
   }
 }

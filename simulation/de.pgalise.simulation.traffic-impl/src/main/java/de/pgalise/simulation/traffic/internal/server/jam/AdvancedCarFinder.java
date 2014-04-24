@@ -112,7 +112,7 @@ public class AdvancedCarFinder implements SurroundingCarsFinder {
 		dir.scale(diff);
 		JaxbVector2d endPositionVector = new JaxbVector2d(toNodePosition.getX(), toNodePosition.getY());
 		endPositionVector.sub(dir);
-		BaseCoordinate endPosition = new BaseCoordinate(idGenerator.getNextId(), endPositionVector.getX(), endPositionVector.getY());
+		BaseCoordinate endPosition = new BaseCoordinate( endPositionVector.getX(), endPositionVector.getY());
 
 		// AdvancedCarFinder.log.debug("Endposition: " + endPosition.toString());
 

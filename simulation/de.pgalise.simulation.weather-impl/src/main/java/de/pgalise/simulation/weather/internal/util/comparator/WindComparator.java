@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.util.comparator;
 
 import de.pgalise.simulation.weather.entity.AbstractStationData;
@@ -22,23 +21,25 @@ import java.util.Comparator;
 
 /**
  * Comparator for wind velocity
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
-public class WindComparator implements Comparator<AbstractStationData>, Serializable {
+public class WindComparator implements Comparator<AbstractStationData>,
+  Serializable {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -2071861916907372961L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -2071861916907372961L;
 
-	@Override
-	public int compare(AbstractStationData o1, AbstractStationData o2) {
-		float thisValue = o1.getWindVelocity();
-		float anotherValue = o2.getWindVelocity();
+  @Override
+  public int compare(AbstractStationData o1,
+    AbstractStationData o2) {
+    float thisValue = o1.getWindVelocity();
+    float anotherValue = o2.getWindVelocity();
 
-		return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
-	}
+    return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
+  }
 
 }

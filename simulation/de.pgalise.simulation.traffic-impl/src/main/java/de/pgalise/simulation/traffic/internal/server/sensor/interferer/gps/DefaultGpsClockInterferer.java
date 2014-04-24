@@ -50,7 +50,7 @@ public class DefaultGpsClockInterferer extends GpsBaseInterferer implements GpsC
     if (this.getRandom().nextDouble() <= this.getChangeProbability()) {
       double changeValue = (this.getChangeAmplitude() / VECTOR_UNIT) * this.
         getRandom().nextGaussian();
-      return new BaseCoordinate(idGenerator.getNextId(), mutablePosition.getX() + changeValue,
+      return new BaseCoordinate( mutablePosition.getX() + changeValue,
         mutablePosition.getY() + changeValue);
     }
 
