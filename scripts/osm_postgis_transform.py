@@ -124,8 +124,8 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
                 install_prequisites_package_manager(skip_apt_update=skip_apt_update)
     # always check, even after install_prequisites
     #@TODO: not sufficient to binary name; necessary to evaluate absolute path with respect to $PATH
-    #if not os.path.exists(osm2pgsql):
-    #    raise RuntimeError("osm2pgsql %s not found, make sure to install it or invoke the script with -%s (--%s)" % (osm2pgsql, install_prequisites_option, install_prequisites_option_long))
+    if which(osm2pgsql) is None:
+        raise RuntimeError("osm2pgsql %s not found, make sure to install it or invoke the script with -%s (--%s)" % (osm2pgsql, install_prequisites_option, install_prequisites_option_long))
     
     # parsing
     # postgres binary refuses to run when process uid and effective uid are not identical
@@ -180,6 +180,15 @@ def install_prequisites_package_manager(skip_apt_update=skip_apt_update_default)
                     ], package_manager="apt-get", skip_apt_update=skip_apt_update)
     else:
         raise RuntimeError("operating system not supported!")
+        
+# replacement for python3's shutil.which
+def which(pgm):
+    path=os.getenv('PATH')
+    for p in path.split(os.path.pathsep):
+        p=os.path.join(p,pgm)
+        if os.path.exists(p) and os.access(p,os.X_OK):
+            return p
+    return os.path.exists(pgm) and os.access(pgm,os.X_OK)
 
 if __name__ == "__main__":
     args = vars(parser.parse_args())
