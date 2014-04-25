@@ -13,8 +13,9 @@ import subprocess as sp
 import time
 import re
 import sys
+# further imports below
 
-pg_version="9.2" # provides best compatibility with OpenSUSE because in Ubuntu OpenDSG repository can be used
+pg_version="9.2" # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
 
 base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 script_dir = os.path.join(base_dir, "scripts")
@@ -22,6 +23,7 @@ bootstrap_dir = os.path.realpath(os.path.join(base_dir, "..", "pgalise-bootstrap
 sys.path.append(os.path.join(script_dir, "lib"))
 import check_os
 import user_group_utils
+import postgis_utils
 external_dir = os.path.join(bootstrap_dir, "external")
 internal_dir = os.path.join(bootstrap_dir, "internal")
 # used for postgresql socket
