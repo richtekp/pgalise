@@ -123,9 +123,9 @@ pgalise_db_test_name = "pgalise_test"
 def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, privileged_uid=0, unprivileged_uid=1000):
     if int(sp.check_output(["id", "-u"]).strip().decode("utf-8")) != privileged_uid:
         raise RuntimeError("script has to be invoked as priviledged user with id %s!" % str(privileged_uid)) #@TODO: more sophisticated privileges check
-    if not os.path.exists(base_dir):
-        os.makedirs(base_dir)
-        os.chown(base_dir, unprivileged_uid, unprivileged_uid)
+    if not os.path.exists(bootstrap_dir):
+        os.makedirs(bootstrap_dir)
+        os.chown(bootstrap_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_dir):
         os.makedirs(external_dir)
         os.chown(external_dir, unprivileged_uid, unprivileged_uid)

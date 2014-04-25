@@ -3,6 +3,13 @@
 
 __name__ = "pm_utils"
 
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
+
 import subprocess as sp
 import os
 import time
@@ -29,7 +36,7 @@ def bootstrap_datadir(datadir_path, db_port, db_host, db_user, db_name, password
     os.remove(pwfile_path)
     postgres_process = sp.Popen([postgres, "-D", datadir_path, "-p", str(db_port), "-h", db_host, "-k", socket_dir])
     try:
-        print("sleeping 10 s to ensure postgres server started")
+        logger.info("sleeping 10 s to ensure postgres server started")
         time.sleep(10) # not nice (should poll connection until success instead)
         sp.check_call([createdb, "-p", str(db_port), "-h", db_host, "--username=%s" % db_user, db_name])
         #sp.check_call([psql, "-c", "create role pgalise login;", "-p", db_port, "-h", db_host, "--username=%s" % user]) # unnecessary if initdb is invoked with --username
@@ -44,5 +51,6 @@ def bootstrap_datadir(datadir_path, db_port, db_host, db_user, db_name, password
         sp.check_call([psql, "-d", db_name, "-c", "create extension hstore;", "-p", str(db_port), "-h", db_host, "--username=%s" % db_user, "-v", "ON_ERROR_STOP=1"]) # no sql file for hstore found, so install it from postgresql-contrib-x.x deb package (find another way (check wiki for existing solutions) if trouble occurs)
     finally:
         postgres_process.terminate()
+        logger.info("waiting for postgres process to terminate")
         postgres_process.wait()
 
