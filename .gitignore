@@ -12,6 +12,7 @@ target
 *.exe
 *.o
 *.so
+*.pyc
 
 # Packages #
 ############
@@ -55,7 +56,6 @@ postgis_db-9.2/*
 
 # bootstrapping and external sources
 /external
-/bootstrap.pyc
 scripts/tmp
 
 ##########
