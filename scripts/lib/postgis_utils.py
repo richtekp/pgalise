@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
-__name__ = "pm_utils"
+__name__ = "postgis_utils"
 
 import logging
 logger = logging.getLogger(__name__)
