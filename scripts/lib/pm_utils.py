@@ -22,7 +22,7 @@ aptuptodate = False
 dpkglock = "/var/lib/dpkg/lock"
 apt_get= "apt-get"
 
-assume_yes_default = True
+assume_yes_default = False
 skip_apt_update_default = False
 
 ##############################

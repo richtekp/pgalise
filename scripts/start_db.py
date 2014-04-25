@@ -1,11 +1,20 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*- 
 
 import os
 import sys
 import datetime
-import subprocess as sp
+#import subprocess as sp
 import argparse
 import string
+pip = "pip"
+try:
+    import subprocess32 as sp # subprocess32 is necessary in order to provide secure (preexec_fn has security issues) way of launching postgres processes and intercepting SIGINT without them getting killed
+except ImportError as ex:
+    if os_utils.which(pip) is None:
+        pm_utils.install_packages(["python-pip"], package_manager="apt-get")
+    sp.check_call([pip, "install", "subprocess32"]) # pip manages update of available import automatically so that import xxx can be invoked
+    import subprocess32 as sp
 
 base_dir_path = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 script_dir = os.path.join(base_dir_path, "scripts")
@@ -86,14 +95,34 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
 
     postgres_log_file_path = os.path.join(log_dir, "postgis-%s.log" % timestamp_suffix)
     postgres_log_file = None # open(postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (no output) (not sure which xterm version)
-    postgres_proc = sp.Popen(terminal_cmds+[pgalise_postgres, "-D", pgalise_data_dir, "-p", "5201", "-h", "localhost", "-k", tmp_dir], stdout=postgres_log_file)
-    print("started pgalise postgresql database process with data directory %s, logging to %s" % (pgalise_data_dir, postgres_log_file_path))
+    postgres_proc = sp.Popen(terminal_cmds+[pgalise_postgres, "-D", pgalise_data_dir, "-p", "5201", "-h", "localhost", "-k", tmp_dir], stdout=postgres_log_file, start_new_session=True)
+    print("started pgalise postgresql database process with data directory %s" % postgres_log_file_path)
+    if postgres_log_file_path != None:
+        print("logging output of postgres process to %s" % (postgres_log_file_path))
     osm_postgres_log_file_path = os.path.join(log_dir, "postgis-osm-%s.log" % timestamp_suffix)
     osm_postgres_log_file = None # open(osm_postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (no output) (not sure which xterm version)
-    osm_postgres_proc = sp.Popen(terminal_cmds+[osm_postgres, "-D", osm_data_dir, "-p", "5204", "-h", "localhost", "-k", tmp_dir], stdout=osm_postgres_log_file)
-    print("started PostGIS postgresql database process with data directory %s, logging to %s" % (osm_data_dir, osm_postgres_log_file_path))
+    osm_postgres_proc = sp.Popen(terminal_cmds+[osm_postgres, "-D", osm_data_dir, "-p", "5204", "-h", "localhost", "-k", tmp_dir], stdout=osm_postgres_log_file, start_new_session=True)
+    print("started PostGIS postgresql database process with data directory %s" % (osm_data_dir))
+    if osm_postgres_log_file != None:
+        print("logging output of OSM postgres process to %s" % osm_postgres_log_file_path)
         
-    print("waiting for both terminal processes (of pgalise and PostGIS database processes) to terminate")
+    print("waiting for both terminal processes (of pgalise and PostGIS database processes) to terminate (kill them with SIGTERM signal (on Debian systems and other with Strg+C) and close terminal windows)")
+    
+    import signal
+    import sys
+    global shutdown_requested
+    shutdown_requested = False
+    def signal_handler(signal, frame):
+        global shutdown_requested
+        if not shutdown_requested:
+            print('You pressed Ctrl+C or sent SIGINT with a command, try to close send SIGINT to the database processes first (press Ctrl+C in the child terminals and close the windows) in order to shutdown the database processes gracefully! Press Ctrl+C again to force shutdown')
+            shutdown_requested = True
+            return
+        print("abc")
+        postgres_proc.terminate()
+        osm_postgres_proc.terminate()
+    signal.signal(signal.SIGINT, signal_handler)
+    
     postgres_proc.communicate() # necessary to prevent Popen from waiting for ever
     postgres_proc.wait()
     osm_postgres_proc.communicate()
