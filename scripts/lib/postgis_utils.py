@@ -22,6 +22,8 @@ extension_install_default = EXTENSION_INSTALLS[0]
 
 pwfile_path = "./pwfile" # it's not wise to write to a file in system's temporary file directory which is readable for everybody
 
+postgres_server_start_timeout = 5
+
 # user privileges should be handled by caller (e.g. with os.fork)
 # @args extension_install on of EXTENSION_INSTALLS
 # @raise ValueError is extension_install is not one of EXTENSION_INSTALLS
@@ -38,8 +40,8 @@ def bootstrap_database(datadir_path, db_port, db_host, db_user, db_name, passwor
         raise ValueError("extension_install has to be one of %s" % str(EXTENSION_INSTALLS))
     postgres_process = sp.Popen([postgres, "-D", datadir_path, "-p", str(db_port), "-h", db_host, "-k", socket_dir])
     try:
-        logger.info("sleeping 10 s to ensure postgres server started")
-        time.sleep(10) # not nice (should poll connection until success instead)
+        logger.info("sleeping %s s to ensure postgres server started" % postgres_server_start_timeout)
+        time.sleep(postgres_server_start_timeout) # not nice (should poll connection until success instead)
         sp.check_call([createdb, "-p", str(db_port), "-h", db_host, "--username=%s" % db_user, db_name])
         #sp.check_call([psql, "-c", "create role pgalise login;", "-p", db_port, "-h", db_host, "--username=%s" % user]) # unnecessary if initdb is invoked with --username
         sp.check_call([psql, "-c", "grant all on database %s to %s;" % (db_name, db_user), "-p", str(db_port), "-h", db_host, "--username=%s" % db_user])

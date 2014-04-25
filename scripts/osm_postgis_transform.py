@@ -70,6 +70,9 @@ install_prequisites_default = False
 install_prequisites_option = "i"
 install_prequisites_option_long = "install-prequisites"
 
+# the time the scripts (main thread) waits for the postgres server to be available and accepting connections
+postgres_server_start_timeout = 5
+
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-%s" % data_dir_option, "--%s" % data_dir_option_long, type=str, nargs='?',
                    help='', dest=data_dir_option_long, required=True)
@@ -141,10 +144,17 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
                     postgis_utils.bootstrap_database(data_dir, db_port, db_host, db_user, db_name, password=db_password, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql, socket_dir=db_socket_dir)
                 if postgres_proc is None:
                     postgres_proc = sp.Popen([postgres, "-D", data_dir, "-p", str(db_port), "-h", db_host, "-k", db_socket_dir])
-                    print("sleeping 10 s to ensure postgres server started")
-                    time.sleep(10) # not nice (should poll connection until success instead)
-            osm2pgsql_proc = sp.Popen([osm2pgsql, "--create", "--database", db_name, "--cache", str(cache_size), "--number-processes", str(osm2pgsql_number_processes), "--slim", "--port", str(db_port), "--host", db_host, "--username", db_user, "--latlong", "--password", "--keep-coastlines", "--extra-attributes", "--hstore-all"]+osm_files)
-            #osm2pgsql_proc.communicate(db_password) # doesn't seem to be possible to pipe the password into the prompt and there's no option to pass password or a password file @TODO: check whether piping to stdin works
+                    logger.info("sleeping %s s to ensure postgres server started" % postgres_server_start_timeout)
+                    time.sleep(postgres_server_start_timeout) # not nice (should poll connection until success instead)
+            osm2pgsql_proc = sp.Popen([osm2pgsql, "--create", "--database", db_name, "--cache", str(cache_size), "--number-processes", str(osm2pgsql_number_processes), "--slim", "--port", str(db_port), "--host", db_host, "--username", db_user, "--latlong", "--password", "--keep-coastlines", "--extra-attributes", "--hstore-all"]+osm_files, stdin=sp.PIPE)
+            osm2pgsql_proc.communicate(db_password+"\x1a")
+            #osm2pgsql_proc.stdin.write(db_password+"\x1a")
+            #osm2pgsql_proc.stdin.flush()
+            #import pexpect
+            #osm2pgsql_proc = pexpect.spawn(string.join([osm2pgsql, "--create", "--database", db_name, "--cache", str(cache_size), "--number-processes", str(osm2pgsql_number_processes), "--slim", "--port", str(db_port), "--host", db_host, "--username", db_user, "--latlong", "--password", "--keep-coastlines", "--extra-attributes", "--hstore-all"]+osm_files, " "))
+            #osm2pgsql_proc.logfile_read = sys.stdout
+            #osm2pgsql_proc.expect_exact('Password:')
+            #osm2pgsql_proc.sendline(db_password)
             osm2pgsql_proc.wait()
         finally:
             if not postgres_proc is None:
