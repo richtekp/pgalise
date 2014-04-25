@@ -135,7 +135,7 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
         postgres_proc = None
         try:
             if start_db:
-                if not os.path.exists(data_dir) or len(data_dir) == 0:
+                if not os.path.exists(data_dir) or len(os.listdir(data_dir)) == 0:
                     postgis_utils.bootstrap_datadir(data_dir, db_user, password=db_password, initdb=initdb)
                     postgis_utils.bootstrap_database(data_dir, db_port, db_host, db_user, db_name, password=db_password, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql, socket_dir=db_socket_dir)
                 if postgres_proc is None:
