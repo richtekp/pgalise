@@ -127,8 +127,6 @@ postgres_socket_dir = tmp_dir # is this ok?
 pgalise_db_name = "pgalise"
 pgalise_db_test_name = "pgalise_test"
 
-postgres_datadir_path_default 
-
 parser = argparse.ArgumentParser(description="Bootstrap the PGALISE simulation, including installation of dependencies (those which can't be fetched by maven), binaries (postgresql, postgis, etc.), setup of database in ")
 parser.add_argument("-%s" % postgres_datadir_path_option, "--%s" % postgres_datadir_path_option_long, type=str, nargs='?',
                    help='', dest=postgres_datadir_path_option_long, default = postgres_datadir_path_default)
