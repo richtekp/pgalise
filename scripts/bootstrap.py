@@ -250,7 +250,11 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         apt_sources_file.seek(0, 0) # reset pointer to 0 for writing
         #apt_sources_file.close()
         #apt_sources_file = open(apt_sources_file_path, "w")
-        apt_line = "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main\n"
+        if check_os.check_ubuntu():
+            release = check_os.findout_release_ubuntu()
+        else:
+            release = check_os.findout_release_debian()
+        apt_line = "deb http://apt.postgresql.org/pub/repos/apt/ %s-pgdg main\n" % release
         if not apt_line in apt_sources_file_lines:
             apt_sources_file.writelines(apt_sources_file_lines+[apt_line])
             apt_sources_file.flush()

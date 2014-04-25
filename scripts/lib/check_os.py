@@ -67,6 +67,9 @@ def findout_release_ubuntu():
     release= sp.check_output(["lsb_release","-cs"]).strip().decode("utf-8")
     return release
 
+def findout_release_debian():
+    return findout_release_ubuntu()
+
 # useful is a feature is available for any version up from a certain (the tuple contains ints because strings are less comparable)
 def findout_release_ubuntu_tuple():
     while not os.path.isfile("/usr/bin/python2.6") and not os.path.isfile("/usr/bin/python2.7"):
