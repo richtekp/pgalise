@@ -15,6 +15,8 @@ except ImportError as ex:
         pm_utils.install_packages(["python-pip"], package_manager="apt-get")
     sp.check_call([pip, "install", "subprocess32"]) # pip manages update of available import automatically so that import xxx can be invoked
     import subprocess32 as sp
+import signal
+import sys
 
 base_dir_path = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 script_dir = os.path.join(base_dir_path, "scripts")
@@ -108,8 +110,6 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
         
     print("waiting for both terminal processes (of pgalise and PostGIS database processes) to terminate (kill them with SIGTERM signal (on Debian systems and other with Strg+C) and close terminal windows)")
     
-    import signal
-    import sys
     global shutdown_requested
     shutdown_requested = False
     def signal_handler(signal, frame):
@@ -118,7 +118,6 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
             print('You pressed Ctrl+C or sent SIGINT otherwise, try to send SIGINT to the database processes first (press Ctrl+C in the child terminals and close the windows) in order to shutdown the database processes gracefully! Press Ctrl+C again to force shutdown')
             shutdown_requested = True
             return
-        print("abc")
         postgres_proc.terminate()
         osm_postgres_proc.terminate()
     signal.signal(signal.SIGINT, signal_handler)
