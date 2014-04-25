@@ -213,3 +213,4 @@ def lazy_add_apt_source_line(deb_line_re, ppa_sources_d_file, ppa_spec):
         command_args.remove("--enable-source")
     subprocess.check_call(["add-apt-repository"]+comman_args+[ppa_spec])
     return True
+
