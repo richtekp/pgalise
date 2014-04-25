@@ -125,14 +125,19 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         raise RuntimeError("script has to be invoked as priviledged user with id %s!" % str(privileged_uid)) #@TODO: more sophisticated privileges check
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
+        os.chown(base_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_dir):
         os.makedirs(external_dir)
+        os.chown(external_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_bin_dir):
         os.makedirs(external_bin_dir)
+        os.chown(external_bin_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_src_dir):
-        os.makedirs(external_src_dir)
+        os.makedirs(external_src_dir)        
+        os.chown(external_src_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
+        os.chown(tmp_dir, unprivileged_uid, unprivileged_uid)
     # install prequisites
     if check_os.check_ubuntu() or check_os.check_debian():
         sp.check_call([sudo, apt_get, "install", "maven", "openjdk-7-jdk"])
@@ -250,8 +255,12 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         apt_sources_file.seek(0, 0) # reset pointer to 0 for writing
         #apt_sources_file.close()
         #apt_sources_file = open(apt_sources_file_path, "w")
-        if check_os.check_ubuntu():
-            release = check_os.findout_release_ubuntu()
+        if check_os.check_ubuntu():            
+            release_tuple = check_os.finout_release_ubuntu_tuple()
+            if release_tuple > (12,4):
+                release = "precise" # latest supported release for the repository
+            else:
+                release = check_os.findout_release_ubuntu()
         else:
             release = check_os.findout_release_debian()
         apt_line = "deb http://apt.postgresql.org/pub/repos/apt/ %s-pgdg main\n" % release
@@ -298,29 +307,8 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         if newpid == 0:
             os.setuid(unprivileged_uid)
             # os.makedirs(postgres_datadir_path) # causes error if directory exists and is not necessary
-            sp.check_call([initdb, "-D", postgres_datadir_path, "--username=%s" % postgres_user])
-            postgres_process = sp.Popen([postgres, "-D", postgres_datadir_path, "-p", postgres_port, "-h", postgres_host, "-k", postgres_socket_dir])
-            try:
-                print("sleeping 10 s to ensure postgres server started")
-                time.sleep(10) # not nice (should poll connection until success instead)
-                # sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user, postgres_user]) # unnecessary because created in initdb invokation if --username is specified
-                sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user, pgalise_db_name])
-                sp.check_call([createdb, "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user, pgalise_db_test_name]) # database name in TestUtils class of de.pgalise.shared-testutils
-                #sp.check_call([psql, "-c", "create role pgalise login;", "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user]) # unnecessary if initdb is invoked with --username
-                sp.check_call([psql, "-c", "grant all on database %s to %s;" % (pgalise_db_name, postgres_user), "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user])
-                sp.check_call([psql, "-c", "grant all on database %s to %s;" % (pgalise_db_test_name, postgres_user), "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user])
-                sp.check_call([psql, "-d", pgalise_db_name, "-c", "create extension postgis; create extension postgis_topology;create extension hstore;", "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user])
-                sp.check_call([psql, "-d", pgalise_db_test_name, "-c", "create extension postgis; create extension postgis_topology;create extension hstore;", "-p", postgres_port, "-h", postgres_host, "--username=%s" % postgres_user])
-                #os.system("echo '%(command)s' | %(psql)s -p %(port)s -h %(host)s" % {"command": "create role pgalise login;", "port": postgres_port, "host": postgres_host, "psql": psql}) # specifying command using --command parameter of psql doesn't seem to work
-                #os.system("echo '%(command)s' | %(psql)s -p %(port)s -h %(host)s" % {"command": "grant all on database pgalise to pgalise", "port": postgres_port, "host": postgres_host, "psql": psql})
-                #os.system("echo '%(command)s' | %(psql)s -p %(port)s -h %(host)s" % {"command": "grant all on database pgalise_test to pgalise", "port": postgres_port, "host": postgres_host, "psql": psql})
-                # postgis extension(s) has(ve) to be created on every database
-                #os.system("echo '%(command)s' | %(psql)s -p %(port)s -h %(host)s -d pgalise" % {"command": "create extension postgis; create extension postgis_topology;", "port": postgres_port, "host": postgres_host, "psql": psql})
-                #os.system("echo '%(command)s' | %(psql)s -p %(port)s -h %(host)s -d pgalise_test" % {"command": "create extension postgis; create extension postgis_topology;", "port": postgres_port, "host": postgres_host, "psql": psql})
-            except Exception as ex:
-                raise ex
-            finally:
-                postgres_process.terminate()
+            postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_port, postgres_host, postgres_user, ppgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, pgsql=pgsql)
+            postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_test_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, pgsql=pgsql)
             os._exit(0)
         else:
             os.waitpid(newpid,0)
