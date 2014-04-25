@@ -110,7 +110,7 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
     if install_prequisites:
         if check_os.check_ubuntu() or check_os.check_debian():
             if not start_db:
-                pm_utils.install_packages(["osm2pgsql"], package_manager="apt-get")
+                pm_utils.install_packages(["osm2pgsql"], package_manager="apt-get", skip_apt_update=skip_apt_update, assume_yes=False)
             else:
                 release_tuple = check_os.findout_release_ubuntu_tuple()
                 if release_tuple == (14,04):
