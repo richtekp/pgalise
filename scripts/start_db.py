@@ -82,11 +82,11 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
     terminal_cmds = ["xterm", "-hold", "-e"]
 
     postgres_log_file_path = os.path.join(log_dir, "postgis-%s.log" % timestamp_suffix)
-    postgres_log_file = None # open(postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (not sure which xterm version)
+    postgres_log_file = None # open(postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (no output) (not sure which xterm version)
     postgres_proc = sp.Popen(terminal_cmds+[pgalise_postgres, "-D", pgalise_data_dir, "-p", "5201", "-h", "localhost", "-k", tmp_dir], stdout=postgres_log_file)
     print("started pgalise postgresql database process with data directory %s, logging to %s" % (pgalise_data_dir, postgres_log_file_path))
     osm_postgres_log_file_path = os.path.join(log_dir, "postgis-osm-%s.log" % timestamp_suffix)
-    osm_postgres_log_file = None # open(osm_postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (not sure which xterm version)
+    osm_postgres_log_file = None # open(osm_postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (no output) (not sure which xterm version)
     osm_postgres_proc = sp.Popen(terminal_cmds+[osm_postgres, "-D", osm_data_dir, "-p", "5204", "-h", "localhost", "-k", tmp_dir], stdout=osm_postgres_log_file)
     print("started PostGIS postgresql database process with data directory %s, logging to %s" % (osm_data_dir, osm_postgres_log_file_path))
         
