@@ -25,15 +25,17 @@ pwfile_path = "./pwfile" # it's not wise to write to a file in system's temporar
 # user privileges should be handled by caller (e.g. with os.fork)
 # @args extension_install on of EXTENSION_INSTALLS
 # @raise ValueError is extension_install is not one of EXTENSION_INSTALLS
-def bootstrap_datadir(datadir_path, db_port, db_host, db_user, db_name, password="somepw", initdb="initdb", postgres="postgres", createdb="createdb", psql="psql", socket_dir="/tmp", extension_install=extension_install_default):
-    if not extension_install in EXTENSION_INSTALLS:
-        raise ValueError("extension_install has to be one of %s" % str(EXTENSION_INSTALLS))
+def bootstrap_datadir(datadir_path, db_user, password="somepw", initdb="initdb"):
     pwfile = open(pwfile_path, "w")
     pwfile.write(password)
     pwfile.flush()
     pwfile.close()
     sp.check_call([initdb, "-D", datadir_path, "--username=%s" % db_user, "--pwfile=%s" % pwfile_path])
     os.remove(pwfile_path)
+
+def bootstrap_database(datadir_path, db_port, db_host, db_user, db_name, password="somepw", initdb="initdb", postgres="postgres", createdb="createdb", psql="psql", socket_dir="/tmp", extension_install=extension_install_default):    
+    if not extension_install in EXTENSION_INSTALLS:
+        raise ValueError("extension_install has to be one of %s" % str(EXTENSION_INSTALLS))
     postgres_process = sp.Popen([postgres, "-D", datadir_path, "-p", str(db_port), "-h", db_host, "-k", socket_dir])
     try:
         logger.info("sleeping 10 s to ensure postgres server started")

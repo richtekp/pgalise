@@ -13,6 +13,7 @@ import subprocess as sp
 import time
 import re
 import sys
+import argparse
 # further imports below
 
 pg_version="9.2" # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
@@ -114,15 +115,28 @@ chown = "chown"
 #postgres_user = sp.check_output(["id", "-u", "-n"]).strip()
 postgres_user = "pgalise"
 postgres_pw = "somepw"
-postgres_datadir_path = os.path.join(base_dir, "postgis_db-%s" % pg_version)
+postgres_datadir_path_default = os.path.join(base_dir, "postgis_db-%s" % pg_version)
+postgres_datadir_path_option = "p"
+postgres_datadir_path_option_long = "postgres-datadir"
+force_overwrite_postgres_datadir_option = "o"
+force_overwrite_postgres_datadir_option_long = "force-overwrite-datadir"
 postgres_port = "5201"
 postgres_host = "localhost"
 postgres_socket_dir = tmp_dir # is this ok?
 pgalise_db_name = "pgalise"
 pgalise_db_test_name = "pgalise_test"
 
+postgres_datadir_path_default 
+
+parser = argparse.ArgumentParser(description="Bootstrap the PGALISE simulation, including installation of dependencies (those which can't be fetched by maven), binaries (postgresql, postgis, etc.), setup of database in ")
+parser.add_argument("-%s" % postgres_datadir_path_option, "--%s" % postgres_datadir_path_option_long, type=str, nargs='?',
+                   help='', dest=postgres_datadir_path_option_long, default = postgres_datadir_path_default)
+parser.add_argument("-%s" % force_overwrite_postgres_datadir_option, "--%s" % force_overwrite_postgres_datadir_option_long, type=bool, nargs='?',
+                   help='', dest=force_overwrite_postgres_datadir_option_long)
+
 # @args skip_build skip building of packages if directories exist
-def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, privileged_uid=0, unprivileged_uid=1000):
+# @args remove_datadir <code>True</code> or <code>False</code> for removal of stored data in <tt>postgres_datadir_path</tt> or <code>None</code> to interact with the user with a prompt 
+def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, privileged_uid=0, unprivileged_uid=1000, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None):
     if int(sp.check_output(["id", "-u"]).strip().decode("utf-8")) != privileged_uid:
         raise RuntimeError("script has to be invoked as priviledged user with id %s!" % str(privileged_uid)) #@TODO: more sophisticated privileges check
     if not os.path.exists(bootstrap_dir):
@@ -140,6 +154,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
         os.chown(tmp_dir, unprivileged_uid, unprivileged_uid)
+        
     # install prequisites
     if check_os.check_ubuntu() or check_os.check_debian():
         sp.check_call([sudo, apt_get, "install", "maven", "openjdk-7-jdk"])
@@ -304,16 +319,20 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     else:
         # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("operating system not supported!")
-    if not os.path.exists(postgres_datadir_path) or len(os.listdir(postgres_datadir_path)) == 0:
+        
+    if not os.path.exists(postgres_datadir_path) or len(os.listdir(postgres_datadir_path)) == 0 or force_overwrite_postgres_datadir:
         newpid = os.fork()
         if newpid == 0:
             os.setuid(unprivileged_uid)
             # os.makedirs(postgres_datadir_path) # causes error if directory exists and is not necessary
-            postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_port, postgres_host, postgres_user, ppgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, pgsql=pgsql)
-            postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_test_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, pgsql=pgsql)
+            postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_user, password=postgres_pw, initdb=initdb)            
+            postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
+            postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_test_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
             os._exit(0)
         else:
             os.waitpid(newpid,0)
+    else:
+        logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
         
 def retrieve_md5sum(path):
     md5sum_output = sp.check_output([md5sum, path]).strip().decode('utf-8') # subprocess.check_output returns byte string which has to be decoded
@@ -321,5 +340,7 @@ def retrieve_md5sum(path):
     return ret_value
         
 if __name__ == "__main__":
-    bootstrap()
+    args = vars(parser.parse_args())
+    bootstrap(postgres_datadir_path=args[postgres_datadir_path_option_long], force_overwrite_postgres_datadir=args[force_overwrite_postgres_datadir_option_long])
+
 

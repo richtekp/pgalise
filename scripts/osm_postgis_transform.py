@@ -71,9 +71,9 @@ install_prequisites_option_long = "install-prequisites"
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-%s" % data_dir_option, "--%s" % data_dir_option_long, type=str, nargs='?',
-                   help='', dest=data_dir_option_long)
+                   help='', dest=data_dir_option_long, required=True)
 parser.add_argument("-%s" % osm_files_option, "--%s" % osm_files_option_long, type=str, nargs='+',
-                   help='list of OSM files to be passed to osm2pgsql', dest=osm_files_option_long)
+                   help='list of OSM files to be passed to osm2pgsql', dest=osm_files_option_long, required=True)
 parser.add_argument("-%s" % cache_size_option, "--%s" % cache_size_option_long, type=int, nargs='?', default=cache_size_default, 
                    help='size of osm2pgsql cache', dest=cache_size_option_long)
 parser.add_argument("-%s" % skip_apt_update_option, "--%s" % skip_apt_update_option_long, default=skip_apt_update_default, type=bool, nargs='?',
@@ -81,9 +81,9 @@ parser.add_argument("-%s" % skip_apt_update_option, "--%s" % skip_apt_update_opt
 parser.add_argument("-%s" % install_prequisites_option, "--%s" % install_prequisites_option_long, default=install_prequisites_default, type=bool, nargs='?',
                    help='install postgresql and postgis packages with package manager', dest=install_prequisites_option_long)                   
 parser.add_argument("-%s" % start_db_option, "--%s" % start_db_option_long, default=start_db_default, type=bool, nargs='?',
-                   help='@TODO', dest=start_db_option_long)
+                   help='whether to start an postgres process as a child of the script process  (using the following arguments) or to connect to an already running process (using the following arguments)', dest=start_db_option_long)
 parser.add_argument("-%s" % db_host_option, "--%s" % db_host_option_long, default=db_host_default, type=str, nargs='?',
-                   help='@TODO', dest=db_host_option_long)
+                   help='host where the database ought to be available for further connections (if -%s (--%s) is True) or the host where to reach the already running postgres process (if -%s (--%s) is False)' % (start_db_option, start_db_option_long, start_db_option, start_db_option_long), dest=db_host_option_long)
 parser.add_argument("-%s" % db_port_option, "--%s" % db_port_option_long, default=db_port_default, type=int, nargs='?',
                    help='@TODO', dest=db_port_option_long)
 parser.add_argument("-%s" % db_user_option, "--%s" % db_user_option_long, default=db_user_default, type=str, nargs='?',
@@ -136,7 +136,8 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
         try:
             if start_db:
                 if not os.path.exists(data_dir) or len(data_dir) == 0:
-                    postgis_utils.bootstrap_datadir(data_dir, db_port, db_host, db_user, db_name, password=db_password, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql, socket_dir="/tmp", extension_install=postgis_utils.extension_install_default)
+                    postgis_utils.bootstrap_datadir(data_dir, db_user, password=db_password, initdb=initdb)
+                    postgis_utils.bootstrap_database(data_dir, db_port, db_host, db_user, db_name, password=db_password, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql, socket_dir=db_socket_dir)
                 if postgres_proc is None:
                     postgres_proc = sp.Popen([postgres, "-D", data_dir, "-p", str(db_port), "-h", db_host, "-k", db_socket_dir])
                     print("sleeping 10 s to ensure postgres server started")
@@ -183,7 +184,5 @@ def install_prequisites_package_manager(skip_apt_update=skip_apt_update_default)
 if __name__ == "__main__":
     args = vars(parser.parse_args())
     data_dir = args[data_dir_option_long]
-    if data_dir is None:
-        raise ValueError("data_dir has to be specified on command line")
     osm_postgis_transform(data_dir = data_dir, osm_files=args[osm_files_option_long], cache_size=args[cache_size_option_long],skip_apt_update=args[skip_apt_update_option_long], install_prequisites=args[install_prequisites_option_long], db_user=args[db_user_option_long], db_password=args[db_password_option_long], db_host=args[db_host_option_long], db_port=args[db_port_option_long], db_name=args[db_name_option_long], start_db=args[start_db_option_long])
 
