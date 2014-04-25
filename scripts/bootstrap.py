@@ -256,7 +256,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         #apt_sources_file.close()
         #apt_sources_file = open(apt_sources_file_path, "w")
         if check_os.check_ubuntu():            
-            release_tuple = check_os.finout_release_ubuntu_tuple()
+            release_tuple = check_os.findout_release_ubuntu_tuple()
             if release_tuple > (12,4):
                 release = "precise" # latest supported release for the repository
             else:
