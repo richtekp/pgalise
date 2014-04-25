@@ -8,9 +8,6 @@
 # not using Ubuntu ppa on https://launchpad.net/~ubuntugis/ because it is not available for saucy, so reducing portablility
 # not yet paying attention to pg_version (e.g. in OpenSUSE)
 
-# @TODO
-# - (minor, low priority) fix fork idiom in favor of preexec_fn and demote function (more elegant)
-
 import os
 import subprocess as sp
 import time
@@ -141,16 +138,10 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         #sp.check_call([sudo, "/sbin/OCICLI", "http://software.opensuse.org/ymp/Application:Geo/openSUSE_12.3/maven.ymp?base=openSUSE%3A12.3&query=maven"]) # (not sure whether this installs futher instable software, provided maven version 3.0.4 isn't a hit neither)
         maven_bin_dir = os.path.join(external_bin_dir, maven_bin_dir_name)
         if not os.path.exists(maven_bin_dir) or len(os.listdir(maven_bin_dir)) == 0:
-            newpid = os.fork()
-            if newpid == 0:
-                os.setuid(unprivileged_uid)
-                maven_bin_archive = os.path.join(external_bin_dir, maven_bin_archive_name)
-                if not os.path.exists(maven_bin_archive) or not retrieve_md5sum(maven_bin_archive) == maven_bin_archive_md5:
-                    sp.check_call([wget, maven_bin_dir_url], cwd=external_bin_dir)
-                sp.check_call([tar, "xf", maven_bin_archive], cwd=external_bin_dir)
-                os._exit(0)
-            else:
-                os.waitpid(newpid, 0)
+            maven_bin_archive = os.path.join(external_bin_dir, maven_bin_archive_name)
+            if not os.path.exists(maven_bin_archive) or not retrieve_md5sum(maven_bin_archive) == maven_bin_archive_md5:
+                sp.check_call([wget, maven_bin_dir_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_bin_dir)
+            sp.check_call([tar, "xf", maven_bin_archive], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_bin_dir)
             shutil.copytree(maven_bin_dir, maven_bin_dir_install_target)
             for  dirpath, dirnames, filenames in os.walk(maven_bin_dir_install_target):
                 os.chown(dirpath, privileged_uid)
@@ -231,25 +222,14 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     if check_os.check_ubuntu() or check_os.check_debian():
         postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
         if not os.path.exists(postgis_src_dir) or len(os.listdir(postgis_src_dir)) == 0:
-            newpid = os.fork()
-            if newpid == 0:
-                os.setuid(unprivileged_uid)
-                sp.check_call([wget, postgis_url], cwd=tmp_dir)
-                sp.check_call([tar, "xf", os.path.join(tmp_dir, postgis_archive_name)], cwd=external_src_dir)
-                os._exit(0)
-            else:
-                os.waitpid(newpid,0)
+            sp.check_call([wget, postgis_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
+            sp.check_call([tar, "xf", os.path.join(tmp_dir, postgis_archive_name)], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_src_dir)
         if not skip_build:
             sp.check_call([sudo, apt_get, "build-dep", "--assume-yes", "postgis"]) # might not be sufficient because Ubuntu 13.10's version of postgis is 1.5.x (we're using 2.x)
             sp.check_call([sudo, apt_get, "install", "--assume-yes", "libgdal-dev"]) # not covered by 1.5.x requirements (see above)    
-            newpid = os.fork()
-            if newpid == 0:
-                sp.check_call([bash, "autogen.sh"], cwd=postgis_src_dir)
-                sp.check_call([bash, "configure"], cwd=postgis_src_dir)
-                sp.check_call([make, "-j8"], cwd=postgis_src_dir)
-                os._exit(0)
-            else:
-                os.waitpid(newpid, 0)
+            sp.check_call([bash, "autogen.sh"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
+            sp.check_call([bash, "configure"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
+            sp.check_call([make, "-j8"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
             sp.check_call([sudo, make, "install"], cwd=postgis_src_dir)
     elif check_os.check_opensuse():
         sp.check_call([sudo, zypper, "install", "postgis2", "postgis2-devel", "postgis2-utils"])
@@ -280,12 +260,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             sp.check_call([sudo, apt_get, "remove", "--assume-yes", "postgresql", "postgresql-common"]) 
             postgresql_deb_path = os.path.join(tmp_dir, postgresql_deb_name)
             if not os.path.exists(postgresql_deb_path) or retrieve_md5sum(postgresql_deb_path) != postgresql_deb_md5:
-                newpid = os.fork()
-                if newpid == 0:
-                    sp.check_call([wget, postgresql_deb_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
-                    os._exit(0)
-                else:
-                    os.waitpid(newpid, 0)
+                sp.check_call([wget, postgresql_deb_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
                 sp.check_call([sudo, dpkg, "-i", postgresql_deb_path])
             psql = "/opt/postgres/%s/bin/psql" % pg_version
             initdb = "/opt/postgres/%s/bin/initdb" % pg_version
