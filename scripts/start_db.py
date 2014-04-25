@@ -54,7 +54,7 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
         os.makedirs(tmp_dir)
     postgresql_pgalise_version_string = string.join([str(x) for x in postgresql_pgalise_version], ".")
     postgresql_osm_version_string = string.join([str(x) for x in postgresql_osm_version], ".")
-    if check_os.check_ubuntu():
+    if check_os.check_ubuntu() or check_os.check_debian():
         pgalise_psql = "/usr/lib/postgresql/%s/bin/psql" % postgresql_pgalise_version_string
         pgalise_initdb = "/usr/lib/postgresql/%s/bin/initdb" % postgresql_pgalise_version_string
         pgalise_createdb = "/usr/lib/postgresql/%s/bin/createdb" % postgresql_pgalise_version_string
@@ -74,6 +74,9 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
         osm_initdb = "/usr/lib/postgresql%s/bin/initdb"  % opensuse_postgresql_osm_version_string
         osm_createdb = "/usr/lib/postgresql%s/bin/createdb" % opensuse_postgresql_osm_version_string
         osm_postgres = "/usr/lib/postgresql%s/bin/postgres" % opensuse_postgresql_osm_version_string
+    else:
+        # better to let the script fail here than to get some less comprehensive error message later        
+        raise RuntimeError("operating system not supported!")
 
     log_dir = os.path.join(base_dir_path, "log")
     if not os.path.exists(log_dir):

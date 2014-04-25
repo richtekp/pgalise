@@ -42,6 +42,7 @@ if pg_version == "9.2":
         postgresql_deb_name = "postgres_9.2.7-1.i386.openscg.deb"
         postgresql_deb_md5 = "c180d526ef27c31c8e140583bc64a88f"
     else:
+        # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("architecture %s not supported" % arch)
 elif pg_version == "9.3":
     postgresql_jdbc_name = "postgresql-9.2-1004.jdbc4.jar" #@TODO: not optimal
@@ -56,8 +57,10 @@ elif pg_version == "9.3":
         postgresql_deb_name = "postgres_9.3.1-1.i386.openscg.deb"
         postgresql_deb_md5 = "a659ccb8b5fc838a494780ad05a5f856"
     else:
+        # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("architecture %s not supported" % arch)
 else:
+    # better to let the script fail here than to get some less comprehensive error message later
     raise RuntimeError("postgresql version %s is not supported (this needs to be fixed in sources)" % pg_version)
 geotools_url = "http://downloads.sourceforge.net/project/geotools/GeoTools%209%20Releases/9.2/geotools-9.2-project.zip"
 geotools_md5 = "18cc0f21557b2187a89eebd965cbe409"
@@ -155,6 +158,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         # install remaining prequisites
         sp.check_call([sudo, zypper, "install", "java-1_7_0-openjdk", "java-1_7_0-openjdk-devel", "java-1_7_0-openjdk-src", "java-1_7_0-openjdk-javadoc"])
     else:
+        # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("operating system not supported!")
         
     newpid = os.fork()
@@ -234,6 +238,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     elif check_os.check_opensuse():
         sp.check_call([sudo, zypper, "install", "postgis2", "postgis2-devel", "postgis2-utils"])
     else:
+        # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("Operating system not supported!")
         
     # setup postgis datadir and configuration
@@ -274,8 +279,10 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             createdb = "/usr/lib/postgresql92/bin/createdb"
             postgres = "/usr/lib/postgresql92/bin/postgres"
         else:
+            # better to let the script fail here than to get some less comprehensive error message later
             raise RuntimeError("postgresql version %s not supported" % pg_version)
     else:
+        # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("operating system not supported!")
     if not os.path.exists(postgres_datadir_path) or len(os.listdir(postgres_datadir_path)) == 0:
         newpid = os.fork()
