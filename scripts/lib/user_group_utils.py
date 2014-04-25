@@ -3,6 +3,7 @@
 
 import file_line_utils
 import subprocess
+import os
 
 ##############################
 # user and group tools 
@@ -41,8 +42,14 @@ def id_by_username(username):
 def id_by_groupname(groupname):
     if not check_group_exists(groupname):
         return -1
-    ret_value = subprocess.check_output(["id", "-g", groupname])
-    return int(ret_value)
+    group_lines = file_line_utils.file_lines("/etc/group", comment_symbol="#")
+    for group_line in group_lines:
+        group_line_content = group_line.split(":")
+        if (group_line_content[0]) == groupname:
+            return int(group_line_content[2])
+    return None
+# implementation notes:
+# - <code>id -g username</code> is simply wrong
 
 # doesn't handle lines which start with whitespace in <tt>/etc/passwd</tt> correctly
 # @return <code>True</code> if <tt>username</tt> exists (in <tt>/etc/passwd</tt>)
@@ -61,4 +68,16 @@ def check_group_exists(groupname):
         if group_line.startswith(groupname):
             return True
     return False
+
+# to be passed to <tt>preexec_fn</tt> argument of relevant subprocess.* functions, e.g. <pre>
+# return_code = sp.check_call(["git", "rev-parse"], stderr=sp.PIPE, cwd=base_dir, preexec_fn=user_group_utils.demote_uid(user_group_utils.id_by_username(build_user)))
+# </pre>
+def demote_uid(uid):
+    return demote_uid_gid(uid,uid)
+
+def demote_uid_gid(uid, gid):
+    def ret_value():
+        os.setgid(gid)
+        os.setuid(uid)
+    return ret_value
 

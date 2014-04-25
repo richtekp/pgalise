@@ -4,6 +4,7 @@
 import subprocess as sp
 import re
 import os
+import sys
 
 def check_linux():
     if not check_python3():
@@ -28,6 +29,14 @@ def check_ubuntu():
     except Exception:
         return False
 
+def check_debian():
+    try:
+        lsb_release_id_short = sp.check_output(["lsb_release", "-d", "-s"]).strip().decode("utf-8")
+        ret_value = "Debian" in lsb_release_id_short
+        return ret_value
+    except Exception:
+        return False
+
 def check_root():
     uid = sp.check_output(["id","-u"]).strip()
     ret_value = int(uid) == 0
@@ -43,7 +52,7 @@ def findout_architecture():
     return architecture
 
 #lsb_release only works with python2.x
-def findout_release():
+def findout_release_ubuntu():
 #    python2=None
 #    if os.path.isfile("/usr/bin/python2.6"):
 #        python2="/usr/bin/python2.6"
@@ -59,7 +68,7 @@ def findout_release():
     return release
 
 # useful is a feature is available for any version up from a certain (the tuple contains ints because strings are less comparable)
-def findout_release_tuple():
+def findout_release_ubuntu_tuple():
     while not os.path.isfile("/usr/bin/python2.6") and not os.path.isfile("/usr/bin/python2.7"):
         print("Neither python2.6 nor python 2.7 could be found in /usr/bin/. It's necessary to determine your distribution release")
         confirm("proceed","Install python 2.6 or 2.7 and make it available at /usr/bin/python2.6 or /usr/lib/python2.7")

@@ -8,6 +8,9 @@
 # not using Ubuntu ppa on https://launchpad.net/~ubuntugis/ because it is not available for saucy, so reducing portablility
 # not yet paying attention to pg_version (e.g. in OpenSUSE)
 
+# @TODO
+# - (minor, low priority) fix fork idiom in favor of preexec_fn and demote function (more elegant)
+
 import os
 import subprocess as sp
 import time
@@ -21,6 +24,7 @@ script_dir = os.path.join(base_dir, "scripts")
 bootstrap_dir = os.path.realpath(os.path.join(base_dir, "..", "pgalise-bootstrap"))
 sys.path.append(os.path.join(script_dir, "lib"))
 import check_os
+import user_group_utils
 external_dir = os.path.join(bootstrap_dir, "external")
 internal_dir = os.path.join(bootstrap_dir, "internal")
 # used for postgresql socket
@@ -56,6 +60,8 @@ elif pg_version == "9.3":
         postgresql_deb_md5 = "a659ccb8b5fc838a494780ad05a5f856"
     else:
         raise RuntimeError("architecture %s not supported" % arch)
+else:
+    raise RuntimeError("postgresql version %s is not supported (this needs to be fixed in sources)" % pg_version)
 geotools_url = "http://downloads.sourceforge.net/project/geotools/GeoTools%209%20Releases/9.2/geotools-9.2-project.zip"
 geotools_md5 = "18cc0f21557b2187a89eebd965cbe409"
 geotools_src_dir_name = "geotools-9.2"
@@ -114,9 +120,9 @@ pgalise_db_name = "pgalise"
 pgalise_db_test_name = "pgalise_test"
 
 # @args skip_build skip building of packages if directories exist
-def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, priviledged_user=0, unpriviledged_user=1000):
-    if int(sp.check_output(["id", "-u"]).strip()) != priviledged_user:
-        raise RuntimeError("script has to be invoked as priviledged user %s!" % str(priviledged_user))
+def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, privileged_uid=0, unprivileged_uid=1000):
+    if int(sp.check_output(["id", "-u"]).strip().decode("utf-8")) != privileged_uid:
+        raise RuntimeError("script has to be invoked as priviledged user with id %s!" % str(privileged_uid)) #@TODO: more sophisticated privileges check
     if not os.path.exists(base_dir):
         os.makedirs(base_dir)
     if not os.path.exists(external_dir):
@@ -128,7 +134,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
     # install prequisites
-    if check_os.check_ubuntu():
+    if check_os.check_ubuntu() or check_os.check_debian():
         sp.check_call([sudo, apt_get, "install", "maven", "openjdk-7-jdk"])
     elif check_os.check_opensuse():
         # install maven
@@ -137,7 +143,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         if not os.path.exists(maven_bin_dir) or len(os.listdir(maven_bin_dir)) == 0:
             newpid = os.fork()
             if newpid == 0:
-                os.setuid(unpriviledged_user)
+                os.setuid(unprivileged_uid)
                 maven_bin_archive = os.path.join(external_bin_dir, maven_bin_archive_name)
                 if not os.path.exists(maven_bin_archive) or not retrieve_md5sum(maven_bin_archive) == maven_bin_archive_md5:
                     sp.check_call([wget, maven_bin_dir_url], cwd=external_bin_dir)
@@ -147,14 +153,14 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
                 os.waitpid(newpid, 0)
             shutil.copytree(maven_bin_dir, maven_bin_dir_install_target)
             for  dirpath, dirnames, filenames in os.walk(maven_bin_dir_install_target):
-                os.chown(dirpath, priviledged_user)
-                os.chgrp(dirpath, priviledged_user)
+                os.chown(dirpath, privileged_uid)
+                os.chgrp(dirpath, privileged_uid)
                 for dirname in dirnames:
-                    os.chown(os.path.join(dirpath, dirname), priviledged_user)
-                    os.chgrp(os.path.join(dirpath, dirname), priviledged_user)
+                    os.chown(os.path.join(dirpath, dirname), privileged_uid)
+                    os.chgrp(os.path.join(dirpath, dirname), privileged_uid)
                 for filename in filenames:
-                    os.chown(os.path.join(dirpath, filename), priviledged_user)
-                    os.chgrp(os.path.join(dirpath, filename), priviledged_user)
+                    os.chown(os.path.join(dirpath, filename), privileged_uid)
+                    os.chgrp(os.path.join(dirpath, filename), privileged_uid)
         # install remaining prequisites
         sp.check_call([sudo, zypper, "install", "java-1_7_0-openjdk", "java-1_7_0-openjdk-devel", "java-1_7_0-openjdk-src", "java-1_7_0-openjdk-javadoc"])
     else:
@@ -162,7 +168,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         
     newpid = os.fork()
     if newpid == 0:
-        os.setuid(unpriviledged_user)
+        os.setuid(unprivileged_uid)
         # install postgresql jdbc driver
         postgresql_jdbc_file = os.path.join(external_bin_dir, postgresql_jdbc_name)
         if not os.path.exists(postgresql_jdbc_file):
@@ -213,8 +219,8 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         # install commons-collections 4
         commons_src_dir = os.path.join(external_src_dir, commons_src_dir_name)
         if not os.path.exists(commons_src_dir) or len(os.listdir(commons_src_dir)) == 0:
-            sp.check_call([wget, "http://mirror.derwebwolf.net/apache//commons/collections/source/commons-collections4-4.0-src.tar.gz"], user=unpriviledged_user, cwd=tmp_dir)
-            sp.check_call([tar, "xf", os.path.join(tmp_dir, "commons-collections4-4.0-src.tar.gz")], user=unpriviledged_user, cwd=external_src_dir)
+            sp.check_call([wget, "http://mirror.derwebwolf.net/apache//commons/collections/source/commons-collections4-4.0-src.tar.gz"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
+            sp.check_call([tar, "xf", os.path.join(tmp_dir, "commons-collections4-4.0-src.tar.gz")], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_src_dir)
         if not skip_build:
             sp.check_call([mvn, "install"], cwd=commons_src_dir)
         os._exit(0)
@@ -222,12 +228,12 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         os.waitpid(newpid, 0)
 
     # install postgis
-    if check_os.check_ubuntu():
+    if check_os.check_ubuntu() or check_os.check_debian():
         postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
         if not os.path.exists(postgis_src_dir) or len(os.listdir(postgis_src_dir)) == 0:
             newpid = os.fork()
             if newpid == 0:
-                os.setuid(unpriviledged_user)
+                os.setuid(unprivileged_uid)
                 sp.check_call([wget, postgis_url], cwd=tmp_dir)
                 sp.check_call([tar, "xf", os.path.join(tmp_dir, postgis_archive_name)], cwd=external_src_dir)
                 os._exit(0)
@@ -251,7 +257,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         raise RuntimeError("Operating system not supported!")
         
     # setup postgis datadir and configuration
-    if check_os.check_ubuntu():
+    if check_os.check_ubuntu() or check_os.check_debian():
         apt_sources_file_path = "/etc/apt/sources.list"
         apt_sources_file = open(apt_sources_file_path, "rw+") # don't trust a = append mode of file, file.write overwrite the whole file nevertheless (doc of file.write contains to information at all !!)
         apt_sources_file_lines = apt_sources_file.readlines()
@@ -276,11 +282,11 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             if not os.path.exists(postgresql_deb_path) or retrieve_md5sum(postgresql_deb_path) != postgresql_deb_md5:
                 newpid = os.fork()
                 if newpid == 0:
-                    sp.check_call([wget, postgresql_deb_url], user=unpriviledged_user, cwd=tmp_dir)
+                    sp.check_call([wget, postgresql_deb_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
                     os._exit(0)
                 else:
                     os.waitpid(newpid, 0)
-                sp.check_call([sudo, dpkg, "-i", postgresql_deb_path], user=priviledged_user)
+                sp.check_call([sudo, dpkg, "-i", postgresql_deb_path])
             psql = "/opt/postgres/%s/bin/psql" % pg_version
             initdb = "/opt/postgres/%s/bin/initdb" % pg_version
             createdb = "/opt/postgres/%s/bin/createdb" % pg_version
@@ -299,7 +305,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     if not os.path.exists(postgres_datadir_path) or len(os.listdir(postgres_datadir_path)) == 0:
         newpid = os.fork()
         if newpid == 0:
-            os.setuid(unpriviledged_user)
+            os.setuid(unprivileged_uid)
             # os.makedirs(postgres_datadir_path) # causes error if directory exists and is not necessary
             sp.check_call([initdb, "-D", postgres_datadir_path, "--username=%s" % postgres_user])
             postgres_process = sp.Popen([postgres, "-D", postgres_datadir_path, "-p", postgres_port, "-h", postgres_host, "-k", postgres_socket_dir])

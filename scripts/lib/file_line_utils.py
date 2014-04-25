@@ -30,13 +30,12 @@ def file_replace_line(file_path, old_line_re, new_line):
 # retrieves the entry in the <tt>column</tt>th column in the line which has probably been retrieved from a file with lines in form of a table separated by one or more characters matching <tt>whitespace</tt>
 def retrieve_column_from_line(line, column, whitespace="\\s"):
     result = re.findall("[^"+whitespace+"]+", line) # findall finds non-overlapping matches
-    print(result, line)
     if len(result) <= column:
         raise ValueError("the requested column doesn't match the number of columns in the specified line")
     return result[column]# creates <code>file_</code> if it doesn't exist
 
 def retrieve_column_values(output, column_count, comment_symbol="#"):
-    output_lines0 = output_lines(output, comment_symbol=comment_symbol)
+    output_lines0 = filter_output_lines(output, comment_symbol=comment_symbol)
     ret_value = []
     for output_line in output_lines0:
         column_value = retrieve_column_from_line(output_line, column_count)
@@ -66,12 +65,12 @@ def file_lines(file_, comment_symbol="#"):
     file_content = file_obj.read()
     file_obj.close()
     file_lines = file_content.split("\n")
-    ret_value = output_lines(file_lines, comment_symbol)
+    ret_value = filter_output_lines(file_lines, comment_symbol)
     return ret_value
 
 # removes all empty lines and lines which start with <tt>comment_symbol</tt> (after eventual whitespace) from <tt>lines</tt> which is supposed to be splitted content of a file or splitted output of a command
 # @args comment_symbol can be <code>None</code> in order to include all lines, must not be the empty string '' (<tt>ValueError</tt> will be raised)
-def output_lines(lines, comment_symbol="#"):
+def filter_output_lines(lines, comment_symbol="#"):
     if comment_symbol == "":
         raise ValueError("comment_symbol mustn't be the empty string ''")
     ret_value = []
@@ -101,7 +100,7 @@ def file_lines_matches(file_,pattern,comment_symbol="#"):
 
 def output_lines_matches(lines, pattern, comment_symbol="#"):
     retvalue = []
-    lines = output_lines(lines, comment_symbol=comment_symbol) # remove comment lines and 
+    lines = filter_output_lines(lines, comment_symbol=comment_symbol) # remove comment lines and 
     for line in lines:
         if re.match(pattern,line) != None:
             retvalue.append(line)
@@ -120,7 +119,7 @@ def file_lines_match(file_, pattern, comment_symbol="#"):
 def output_lines_match(lines, pattern, comment_symbol="#"):
     if comment_symbol == "":
         raise ValueError("comment_symbol mustn't be the empty string ''")
-    lines = output_lines(lines,comment_symbol=comment_symbol)
+    lines = filter_output_lines(lines,comment_symbol=comment_symbol)
     for line in lines:
         if re.match(pattern, line):
             return True
