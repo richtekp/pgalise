@@ -246,10 +246,15 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         apt_sources_file_path = "/etc/apt/sources.list"
         apt_sources_file = open(apt_sources_file_path, "rw+") # don't trust a = append mode of file, file.write overwrite the whole file nevertheless (doc of file.write contains to information at all !!)
         apt_sources_file_lines = apt_sources_file.readlines()
-        apt_sources_file.seek(0) # reset pointer to 0 for writing
+        # file.seek doesn't seem to work on Debian 7.0.4 -> close and open a new instance
+        apt_sources_file.seek(0, 0) # reset pointer to 0 for writing
+        #apt_sources_file.close()
+        #apt_sources_file = open(apt_sources_file_path, "w")
         apt_line = "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main\n"
         if not apt_line in apt_sources_file_lines:
             apt_sources_file.writelines(apt_sources_file_lines+[apt_line])
+            apt_sources_file.flush()
+            apt_sources_file.close()
         os.system("wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -")
         try:
             sp.check_call([sudo, apt_get, "update"])
