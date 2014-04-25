@@ -871,6 +871,7 @@ but also buggy (NPE at
 								<copy file="${myenv.HOME}/scripts/python/osm_postgis_transform.py" tofile="scripts/osm_postgis_transform.py" overwrite="true"/>
 								<copy file="${myenv.HOME}/scripts/python/lib/pm_utils.py" tofile="scripts/lib/pm_utils.py" overwrite="true"/>
                                 <copy file="${myenv.HOME}/scripts/python/lib/postgis_utils.py" tofile="scripts/lib/postgis_utils.py" overwrite="true"/>
+                                <copy file="${myenv.HOME}/scripts/python/lib/os_utils.py" tofile="scripts/lib/os_utils.py" overwrite="true"/>
 							</target>
 						</configuration>
 					</plugin>
