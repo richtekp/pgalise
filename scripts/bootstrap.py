@@ -162,7 +162,9 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         
     # install prequisites
     if check_os.check_ubuntu() or check_os.check_debian():
-        sp.check_call([sudo, apt_get, "install", "maven", "openjdk-7-jdk"])
+        sp.check_call([sudo, apt_get, "install", "maven", "openjdk-7-jdk", 
+            "ant", # for postgis-jdbc
+        ])
     elif check_os.check_opensuse():
         # install maven
         #sp.check_call([sudo, "/sbin/OCICLI", "http://software.opensuse.org/ymp/Application:Geo/openSUSE_12.3/maven.ymp?base=openSUSE%3A12.3&query=maven"]) # (not sure whether this installs futher instable software, provided maven version 3.0.4 isn't a hit neither)
@@ -212,7 +214,6 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         sp.check_call([mvn, "install:install-file", \
             "-Dfile=%s" % jgrapht_file, "-DartifactId=jgrapht",
             "-DgroupId=org.jgrapht", "-Dversion=0.8.3", "-Dpackaging=jar"], cwd=external_bin_dir)
-        os._exit(0)
 
         # install jfuzzylogic
         jfuzzy_file = os.path.join(external_bin_dir, jfuzzy_name)
@@ -232,12 +233,6 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             mvn_settings_file_path = os.path.join(script_dir, "settings.xml")
             sp.check_call([mvn, "--global-settings", mvn_settings_file_path, "--settings", mvn_settings_file_path, "install", "-Dall", "-DskipTests=true"], cwd=geotools_src_dir)
         
-        # install postgis
-        # install from mvn project from internal directory and not from source to have consistent installation behavior
-        postgis_mvn_project_path = os.path.join(internal_dir, "postgis-jdbc-2.1.0SVN")
-        sp.check_call([ant], cwd=postgis_mvn_project_path) # generates maven project
-        sp.check_call([mvn, "install"], cwd=postgis_mvn_project_path)
-        
         # install commons-collections 4
         commons_src_dir = os.path.join(external_src_dir, commons_src_dir_name)
         if not os.path.exists(commons_src_dir) or len(os.listdir(commons_src_dir)) == 0:
@@ -250,8 +245,8 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         os.waitpid(newpid, 0)
 
     # install postgis
+    postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
     if check_os.check_ubuntu() or check_os.check_debian():
-        postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
         if not os.path.exists(postgis_src_dir) or len(os.listdir(postgis_src_dir)) == 0:
             sp.check_call([wget, postgis_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
             sp.check_call([tar, "xf", os.path.join(tmp_dir, postgis_archive_name)], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_src_dir)
@@ -267,6 +262,11 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     else:
         # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("Operating system not supported!")
+        
+    # install postgis-jdbc (project is shipped inside postgis project (as long as a fixed version of postgis is used here, the version of postgis-jdbc will be fixed, too (postgis 2.1.1 -> postgis-jdbc 2.1.0SVN)
+    postgis_mvn_project_path = os.path.join(postgis_src_dir, "java/jdbc")
+    sp.check_call([ant], cwd=postgis_mvn_project_path) # generates maven project
+    sp.check_call([mvn, "install"], cwd=postgis_mvn_project_path)
         
     # setup postgis datadir and configuration
     if check_os.check_ubuntu() or check_os.check_debian():
