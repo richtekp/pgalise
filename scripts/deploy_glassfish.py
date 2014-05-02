@@ -65,7 +65,7 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
         logger.warn("environment variable AS_JAVA not set, this might cause trouble if a JRE 6 is found before 7")
     try:
         sp.check_call([asadmin, "version"], cwd=glassfish_dir)
-    except CalledProcessError as ex:
+    except sp.CalledProcessError as ex:
         logger.error("execution of glassfish main command asadmin failed, make sure you have a JRE 7 installed and environment variable AS_JAVA pointing to it (check warnings above)")
         raise ex   
     
