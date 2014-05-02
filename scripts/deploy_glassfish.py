@@ -37,7 +37,7 @@ base_dir = os.path.realpath(os.path.join(__file__, "..", ".."))
 app_name = "PG_Alise_Component"
 ear_name = "simulation.ear"
 ear_path = os.path.join(base_dir, "ear/target/", ear_name)
-domain_name = "netbeans_domain"
+domain_name = "pgalise"
 
 def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glassfish_version_default):
     if glassfish_version != (4,0):
