@@ -54,7 +54,7 @@ public class GTFSPublicTransportDataServiceTest {
   @Test
   public void testParse() throws Exception {
     ZipInputStream zis = new ZipInputStream(Thread.currentThread().getContextClassLoader().getResourceAsStream("verkehrsverbund_berlin_brandenburg-gtfs.zip"));
-    GTFSPublicTransportDataService instance = new GTFSPublicTransportDataService(idGenerator);
+    DefaultGTFSPublicTransportDataService instance = new DefaultGTFSPublicTransportDataService(idGenerator);
     instance.parse(zis);
     assertEquals(51, instance.getBusAgencys().size());
     assertEquals(12845, instance.getBusStops().size());
@@ -69,7 +69,7 @@ public class GTFSPublicTransportDataServiceTest {
   @Test
   public void testInsertBusStops() throws IOException {
     ZipInputStream zis = new ZipInputStream(Thread.currentThread().getContextClassLoader().getResourceAsStream("verkehrsverbund_berlin_brandenburg-gtfs.zip"));
-    GTFSPublicTransportDataService instance = new GTFSPublicTransportDataService(idGenerator);
+    DefaultGTFSPublicTransportDataService instance = new DefaultGTFSPublicTransportDataService(idGenerator);
     instance.parse(zis);
     assertEquals(12845, instance.getBusStops().size());
     CityInfrastructureData cityInfrastructureData = null;

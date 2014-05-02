@@ -6,6 +6,7 @@
 package de.pgalise.testutils.traffic;
 
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
@@ -60,8 +61,8 @@ public class TrafficTestUtils {
       80,
       true,
       true,
-      referencePoint,
-        referenceArea,
+      new BaseBoundary(idGenerator.getNextId(), referencePoint,
+        referenceArea),
       trafficInfrastructureData);
     return city;
   }

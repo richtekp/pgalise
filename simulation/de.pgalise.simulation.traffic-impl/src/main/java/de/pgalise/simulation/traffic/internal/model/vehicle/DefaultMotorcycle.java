@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
@@ -27,6 +28,13 @@ public class DefaultMotorcycle extends ExtendedMotorizedVehicle<MotorcycleData>
     super(id,
       data,
       trafficGraphExtensions);
+  }
+  
+  public DefaultMotorcycle(Long id,
+          MotorcycleData data,
+          TrafficGraphExtensions trafficGraphExtensions,
+          BaseCoordinate position) {
+    super(id, data, trafficGraphExtensions, position);
   }
 
 }

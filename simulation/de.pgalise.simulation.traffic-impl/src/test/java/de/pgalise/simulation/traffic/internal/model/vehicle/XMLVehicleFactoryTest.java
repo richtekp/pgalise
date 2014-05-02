@@ -15,7 +15,7 @@ import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
-import de.pgalise.simulation.traffic.internal.model.factory.XMLVehicleFactory;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLCompositeVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
@@ -64,14 +64,14 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createBicycle method, of class XMLVehicleFactory.
+   * Test of createBicycle method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateBicycle() {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
@@ -81,14 +81,14 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createBus method, of class XMLVehicleFactory.
+   * Test of createBus method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateBus() {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
@@ -98,7 +98,7 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createCar method, of class XMLVehicleFactory.
+   * Test of createCar method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateCar() {
@@ -116,7 +116,7 @@ public class XMLVehicleFactoryTest {
     graph.addVertex(b);
     graph.addEdge(a,
       b);
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
@@ -127,31 +127,31 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createMotorcycle method, of class XMLVehicleFactory.
+   * Test of createMotorcycle method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateMotorcycle() {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Motorcycle result = instance.createMotorcycle();
+    Motorcycle result = instance.createMotorcycle(output);
     assertNotNull(result);
   }
 
   /**
-   * Test of createRandomBicycle method, of class XMLVehicleFactory.
+   * Test of createRandomBicycle method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateRandomBicycle() {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
@@ -161,14 +161,14 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createRandomBus method, of class XMLVehicleFactory.
+   * Test of createRandomBus method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateRandomBus() {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
@@ -178,7 +178,7 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createRandomCar method, of class XMLVehicleFactory.
+   * Test of createRandomCar method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateRandomCar() {
@@ -196,7 +196,7 @@ public class XMLVehicleFactoryTest {
     graph.addVertex(b);
     graph.addEdge(a,
       b);
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
@@ -207,31 +207,31 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createRandomMotorcycle method, of class XMLVehicleFactory.
+   * Test of createRandomMotorcycle method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateRandomMotorcycle() {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
       sensorFactory);
-    Motorcycle result = instance.createRandomMotorcycle();
+    Motorcycle result = instance.createRandomMotorcycle(output);
     assertNotNull(result);
   }
 
   /**
-   * Test of createRandomTruck method, of class XMLVehicleFactory.
+   * Test of createRandomTruck method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateRandomTruck() {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,
@@ -241,14 +241,14 @@ public class XMLVehicleFactoryTest {
   }
 
   /**
-   * Test of createTruck method, of class XMLVehicleFactory.
+   * Test of createTruck method, of class XMLCompositeVehicleFactory.
    */
   @Test
   public void testCreateTruck() throws NamingException {
     Output output = EasyMock.createNiceMock(Output.class);
     InputStream inputStream = Thread.currentThread().getContextClassLoader().
       getResourceAsStream("defaultvehicles.xml");
-    XMLVehicleFactory instance = new XMLVehicleFactory(randomSeedService,
+    XMLCompositeVehicleFactory instance = new XMLCompositeVehicleFactory(randomSeedService,
       idGenerator,
       trafficGraphExtensions,
       inputStream,

@@ -104,7 +104,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
       if (trip.getBusStops().size() > 0) {
         List<TrafficEdge> path = this.server.getBusRoute(trip.getBusStops());
         if (path != null) {
-          Vehicle<BusData> b = this.server.getBusFactory().createRandomBus(
+          Vehicle<BusData> b = this.server.getBusFactory().createVehicle(
             getOutput());
           b.getData().setBusStopOrder(trip.getBusStops());
           b.setName(trip.getRouteShortName() + " " + trip.getRouteLongName());
@@ -183,7 +183,7 @@ public class CreateBussesEventHandler extends AbstractTrafficEventHandler<BusDat
       getCreateRandomVehicleDataList()) {
       GpsSensor gpsSensor = vehicleData.getGpsSensor();
       InfraredSensor infraredSensor = vehicleData.getInfraredSensor();
-      Bus bus = new RandomBusFactory().createRandomBus(getOutput());
+      Bus bus = new RandomBusFactory().createVehicle(getOutput());
       buses.add(bus);
     }
 

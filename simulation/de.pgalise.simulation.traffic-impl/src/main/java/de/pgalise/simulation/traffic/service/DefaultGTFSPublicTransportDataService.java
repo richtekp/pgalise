@@ -54,6 +54,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.ejb.EJB;
 import javax.ejb.Local;
+import javax.ejb.Stateful;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.prefs.CsvPreference;
 
@@ -61,8 +62,8 @@ import org.supercsv.prefs.CsvPreference;
  * 
  * @author Lena
  */
-@Local
-public class GTFSPublicTransportDataService implements PublicTransportDataService<ZipInputStream> {
+@Stateful
+public class DefaultGTFSPublicTransportDataService implements GTFSPublicTransportDataService {
   private static final long serialVersionUID = 1L;
   private final Set<BusStop> busStops = new HashSet<>();
   private final Set<BusRoute> busRoutes = new HashSet<>();
@@ -71,10 +72,10 @@ public class GTFSPublicTransportDataService implements PublicTransportDataServic
   private final Set<GTFSBusAgency> busAgencys = new HashSet<>();
   private final Set<GTFSBusCalendar> busCalendars = new HashSet<>();
 
-	public GTFSPublicTransportDataService() {
+	public DefaultGTFSPublicTransportDataService() {
 	}
 
-  public GTFSPublicTransportDataService(IdGenerator idGenerator) {
+  public DefaultGTFSPublicTransportDataService(IdGenerator idGenerator) {
     this.idGenerator = idGenerator;
   }
 
@@ -105,6 +106,7 @@ public class GTFSPublicTransportDataService implements PublicTransportDataServic
   }
   
   @SuppressWarnings("NestedAssignment")
+  @Override
   public void parseFiles(InputStream agency_txt, InputStream calendar_txt, InputStream routes_txt, InputStream stops_txt, InputStream trips_txt, InputStream stop_times_txt) throws UnsupportedEncodingException, IOException {
 			List<String> firstRow;
 			List<String> rowAsTokens = new ArrayList<>();
@@ -216,7 +218,7 @@ public class GTFSPublicTransportDataService implements PublicTransportDataServic
             SimpleDateFormat.getTimeInstance().parse(endDate)
           );
         } catch (ParseException ex) {
-          Logger.getLogger(GTFSPublicTransportDataService.class.getName()).
+          Logger.getLogger(DefaultGTFSPublicTransportDataService.class.getName()).
             log(Level.SEVERE,
             null,
             ex);
@@ -521,10 +523,12 @@ public class GTFSPublicTransportDataService implements PublicTransportDataServic
     return busRoutes;
   }
 
+  @Override
   public Set<GTFSBusCalendar> getBusCalendars() {
     return busCalendars;
   }
 
+  @Override
   public Set<GTFSBusAgency> getBusAgencys() {
     return busAgencys;
   }

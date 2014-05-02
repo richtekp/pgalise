@@ -20,6 +20,7 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.BusData;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultBus;
 import de.pgalise.simulation.traffic.model.vehicle.Bus;
@@ -77,6 +78,7 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
 
   /**
    * Create new BicycleData
+   * @return 
    */
   @Override
   public BusData getRandomVehicleData() {
@@ -86,7 +88,7 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
   }
 
   @Override
-  public Bus createRandomBus(Output output) {
+  public Bus createVehicle(Set<TrafficEdge> edges, Output output) {
     BusData data = getRandomVehicleData();
     return new DefaultBus(getIdGenerator().getNextId(),
       data,
@@ -94,8 +96,8 @@ public class XMLBusFactory extends AbstractXMLVehicleFactory<BusData>
   }
 
   @Override
-  public Bus createBus(Output output) {
-    return createRandomBus(output);
+  public Bus createVehicle(Output output) {
+    return createVehicle(null, output);
   }
 
   @Override

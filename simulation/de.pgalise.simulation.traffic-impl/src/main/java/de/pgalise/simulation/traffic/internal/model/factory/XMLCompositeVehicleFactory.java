@@ -22,6 +22,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.model.factory.CompositeVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
@@ -33,10 +34,12 @@ import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Truck;
 import de.pgalise.simulation.traffic.model.vehicle.TruckFactory;
+import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.VehicleDataList;
 import java.awt.Color;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import javax.xml.bind.JAXBContext;
@@ -50,8 +53,8 @@ import javax.xml.bind.Unmarshaller;
  * @author Andreas Rehfeldt
  * @version 1.0 (Dec 24, 2012)
  */
-public class XMLVehicleFactory extends AbstractVehicleFactory implements
-  VehicleFactory {
+public class XMLCompositeVehicleFactory extends AbstractCompositeVehicleFactory implements
+  CompositeVehicleFactory {
 
   private static final long serialVersionUID = 1L;
 
@@ -79,7 +82,7 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
    * Bicycle factory
    */
   private final XMLBicycleFactory bicycleFactory;
-
+  private final Set<VehicleFactory> FACTORIES;
   /**
    * Constructor
    *
@@ -87,16 +90,16 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
    * @param idGenerator
    * @param xmlInputStream Input stream to the XML file
    * @param trafficGraphExtensions
+   * @param sensorFactory
    */
-  public XMLVehicleFactory(RandomSeedService randomSeedService,
+  public XMLCompositeVehicleFactory(RandomSeedService randomSeedService,
     IdGenerator idGenerator,
     TrafficGraphExtensions trafficGraphExtensions,
     InputStream xmlInputStream,
     TrafficSensorFactory sensorFactory) {
-    super(
-      trafficGraphExtensions,
+    super(randomSeedService,
       idGenerator,
-      randomSeedService);
+      trafficGraphExtensions);
     if (xmlInputStream == null) {
       throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
         "input"));
@@ -126,59 +129,71 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
       trafficGraphExtensions,
       randomSeedService,
       new HashSet<>(vehicleDataList.getCarData().getList()));
+    FACTORIES = new HashSet<VehicleFactory>(Arrays.asList(carFactory, busFactory, truckFactory, bicycleFactory, motorcycleFactory));
+
   }
 
   @Override
   public Bicycle createBicycle(Set<TrafficEdge> edges,
     Output output) {
-    return this.bicycleFactory.createBicycle(edges,
+    return this.bicycleFactory.createVehicle(edges,
       output);
   }
 
   @Override
   public Bus createBus(Output output) {
-    return this.busFactory.createBus(output);
+    return this.busFactory.createVehicle(output);
   }
 
   @Override
   public Car createCar(Set<TrafficEdge> edges,
     Output output) {
-    return this.carFactory.createCar(edges,
+    return this.carFactory.createVehicle(edges,
       output);
   }
 
   @Override
-  public Motorcycle createMotorcycle() {
-    return this.motorcycleFactory.createMotorcycle();
+  public Motorcycle createMotorcycle(Set<TrafficEdge> edges, Output output) {
+    return this.motorcycleFactory.createVehicle(edges, output);
+  }
+  
+  @Override
+  public Motorcycle createMotorcycle(Output output) {
+    return this.motorcycleFactory.createVehicle(output);
   }
 
   @Override
   public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
     Output output) {
-    return this.bicycleFactory.createRandomBicycle(edges,
+    return this.bicycleFactory.createVehicle(edges,
       output);
   }
 
   @Override
   public Bus createRandomBus(Output output) {
-    return this.busFactory.createRandomBus(output);
+    return this.busFactory.createVehicle(output);
   }
 
   @Override
   public Car createRandomCar(Set<TrafficEdge> edges,
     Output output) {
-    return this.carFactory.createRandomCar(edges,
+    return this.carFactory.createVehicle(edges,
       output);
   }
 
   @Override
-  public Motorcycle createRandomMotorcycle() {
-    return this.motorcycleFactory.createRandomMotorcycle();
+  public Motorcycle createRandomMotorcycle(Set<TrafficEdge> edges, Output output) {
+    return this.motorcycleFactory.createVehicle(edges, output);
+  }
+
+  @Override
+  public Motorcycle createRandomMotorcycle(Output output) {
+    return this.motorcycleFactory.createVehicle(output);
   }
 
   @Override
   public Truck createRandomTruck(Output output) {
-    return this.truckFactory.createRandomTruck(output);
+    return this.truckFactory.createVehicle(output);
   }
 
   @Override
@@ -248,6 +263,11 @@ public class XMLVehicleFactory extends AbstractVehicleFactory implements
   public Bicycle createRandomBicycle(Output output) {
     return createRandomBicycle(null,
       output);
+  }
+
+  @Override
+  protected Set<VehicleFactory> getVehicleFactories() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }

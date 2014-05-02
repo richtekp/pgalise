@@ -93,7 +93,7 @@ public class NewServlet extends HttpServlet {
       randomSeedService);
     Sensor<?, ?> windSensor = new RainSensor(idGenerator.getNextId(),
       MainCtrlUtils.OUTPUT,
-      city.getReferencePoint(),
+      city.getBoundary().getReferencePoint(),
       weatherController,
       weatherInterferer);
     Set<Sensor<?, ?>> sensorHelpers = new HashSet<Sensor<?, ?>>(

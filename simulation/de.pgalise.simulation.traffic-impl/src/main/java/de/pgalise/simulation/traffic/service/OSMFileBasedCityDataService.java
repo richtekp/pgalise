@@ -1153,7 +1153,7 @@ public class OSMFileBasedCityDataService implements
       boundaryCoordinates.add(new BaseCoordinate(
         boundaryCoordinate));
     }
-    this.city.setBoundaryCoordinates(boundaryCoordinates);
+    this.city.getBoundary().setBoundaryCoordinates(boundaryCoordinates);
     this.city.getCityInfrastructureData().setBuildings(buildings);
     /* build the pr-tree for buildings */
     this.buildingTree = new PRTree<>(new BuildingMBRConverter(),

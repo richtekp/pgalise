@@ -264,7 +264,7 @@ public class RandomVehiclesCtrl {
     for (int i = 0; i < randomBikes; i++) {
       Long id = idGenerator.getNextId();
       Vehicle<BicycleData> bicycle = vehicleFactory.
-        createRandomBicycle(MainCtrlUtils.OUTPUT);
+        createVehicle(MainCtrlUtils.OUTPUT);
       bikes.add(bicycle);
     }
     CreateVehiclesEvent createBicyclesEvent = new CreateVehiclesEvent(
@@ -277,7 +277,7 @@ public class RandomVehiclesCtrl {
     for (int i = 0; i < randomTrucks; i++) {
       Long id = idGenerator.getNextId();
       Vehicle<TruckData> truck = trafficControllerLocal.getTruckFactory().
-        createRandomTruck(MainCtrlUtils.OUTPUT);
+        createVehicle(MainCtrlUtils.OUTPUT);
       trucks.add(truck);
     }
     CreateVehiclesEvent createTrucksEvent = new CreateVehiclesEvent(
@@ -290,7 +290,7 @@ public class RandomVehiclesCtrl {
     for (int i = 0; i < randomCars; i++) {
       Long id = idGenerator.getNextId();
       Vehicle<CarData> car = trafficControllerLocal.getCarFactory().
-        createRandomCar(MainCtrlUtils.OUTPUT);
+        createVehicle(MainCtrlUtils.OUTPUT);
       cars.add(car);
     }
     CreateVehiclesEvent createCarsEvent = new CreateVehiclesEvent(
@@ -303,7 +303,7 @@ public class RandomVehiclesCtrl {
     for (int i = 0; i < randomMotorcycles; i++) {
       Long id = idGenerator.getNextId();
       Vehicle<MotorcycleData> bicycle = trafficControllerLocal.
-        getMotorcycleFactory().createRandomMotorcycle();
+        getMotorcycleFactory().createVehicle(MainCtrlUtils.OUTPUT);
       motorcycles.add(bicycle);
     }
     CreateVehiclesEvent createMotorcyclesEvent = new CreateVehiclesEvent(

@@ -105,22 +105,22 @@ public class SchedulerTest {
   public List<Vehicle<?>> createVehicles(TrafficGraphExtensions ee) {
     List<Vehicle<?>> vehicles = new ArrayList<>();
 
-    Vehicle<?> a1 = carFactory.createCar(graph.edgeSet(),
+    Vehicle<?> a1 = carFactory.createVehicle(graph.edgeSet(),
       output);
     a1.setPath(shortestPath);
     vehicles.add(a1);
 
-    Vehicle<?> b1 = carFactory.createCar(graph.edgeSet(),
+    Vehicle<?> b1 = carFactory.createVehicle(graph.edgeSet(),
       output);
     b1.setPath(shortestPath);
     vehicles.add(b1);
 
-    Vehicle<?> c1 = carFactory.createCar(graph.edgeSet(),
+    Vehicle<?> c1 = carFactory.createVehicle(graph.edgeSet(),
       output);
     c1.setPath(shortestPath);
     vehicles.add(c1);
 
-    Vehicle<?> d1 = carFactory.createCar(graph.edgeSet(),
+    Vehicle<?> d1 = carFactory.createVehicle(graph.edgeSet(),
       output);
     d1.setPath(shortestPath);
     vehicles.add(d1);

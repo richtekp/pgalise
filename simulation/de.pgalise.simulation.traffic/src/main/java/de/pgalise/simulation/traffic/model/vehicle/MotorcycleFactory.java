@@ -21,19 +21,6 @@ package de.pgalise.simulation.traffic.model.vehicle;
  * @author Andreas
  * @version 1.0
  */
-public interface MotorcycleFactory extends BaseVehicleFactory {
+public interface MotorcycleFactory extends VehicleFactory<Motorcycle> {
 
-  /**
-   * Method to create a {@link Motorcycle} with the given typeId.
-   *
-   * @return created {@link Motorcycle}
-   */
-  Motorcycle createMotorcycle();
-
-  /**
-   * Method to create a random {@link Motorcycle}.
-   *
-   * @return created {@link Motorcycle}
-   */
-  Motorcycle createRandomMotorcycle();
 }

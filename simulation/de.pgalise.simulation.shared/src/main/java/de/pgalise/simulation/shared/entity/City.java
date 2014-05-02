@@ -15,11 +15,8 @@
  */
 package de.pgalise.simulation.shared.entity;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
@@ -41,7 +38,7 @@ to modularisation
 @Entity
 @NamedQuery(name = "City.getAll",
   query = "SELECT i FROM City i")
-public class City extends BaseBoundary {
+public class City extends Identifiable {
 
   /**
    * Serial
@@ -83,6 +80,8 @@ public class City extends BaseBoundary {
    */
   @Transient
   private int rate = 0;
+  @OneToOne
+  private BaseBoundary boundary;
 
   /**
    * Default constructor
@@ -94,8 +93,9 @@ public class City extends BaseBoundary {
     super(id);
   }
   
-  public City(Long id, BaseCoordinate referencePoint, List<BaseCoordinate> boundaryCoordinates) {
-    super(id,referencePoint, boundaryCoordinates);
+  public City(Long id, BaseBoundary boundary) {
+    super(id);
+    this.boundary = boundary;
   }
 
   /**
@@ -107,8 +107,7 @@ public class City extends BaseBoundary {
    * @param altitude Altitude
    * @param nearRiver Option that the city is near a river
    * @param nearSea Option that the city is near the sea
-   * @param boundaryCoordinates
-   * @param referencePoint explicit reference point which might be different
+   * @param boundary explicit reference point which might be different
    * from the center point of <tt>geoInfo</tt>
    */
   public City(Long id,
@@ -117,9 +116,9 @@ public class City extends BaseBoundary {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseCoordinate referencePoint,
-    List<BaseCoordinate> boundaryCoordinates) {
-    this(id, referencePoint, boundaryCoordinates);
+    BaseBoundary boundary) {
+    this(id);
+    this.boundary = boundary;
     this.name = name;
     this.population = population;
     this.altitude = altitude;
@@ -184,6 +183,7 @@ public class City extends BaseBoundary {
     hash = 29 * hash + (this.nearSea ? 1 : 0);
     hash = 29 * hash + this.population;
     hash = 29 * hash + this.rate;
+    hash = 29 * hash + Objects.hashCode(boundary);
     return hash;
   }
 
@@ -207,6 +207,9 @@ public class City extends BaseBoundary {
     if (this.rate != other.rate) {
       return false;
     }
+    if (!this.boundary.equals(other.boundary)) {
+      return false;
+    }
     return true;
   }
 
@@ -220,5 +223,13 @@ public class City extends BaseBoundary {
     }
     final City other = (City) obj;
     return equalsTransitive(other);
+  }
+
+  public void setBoundary(BaseBoundary boundary) {
+    this.boundary = boundary;
+  }
+
+  public BaseBoundary getBoundary() {
+    return boundary;
   }
 }

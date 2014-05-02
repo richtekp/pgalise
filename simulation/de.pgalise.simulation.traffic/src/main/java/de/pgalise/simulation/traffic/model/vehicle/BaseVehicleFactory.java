@@ -7,12 +7,13 @@ package de.pgalise.simulation.traffic.model.vehicle;
 
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
+import java.io.Serializable;
 
 /**
  *
  * @author richter
  */
-public interface BaseVehicleFactory {
+public interface BaseVehicleFactory extends Serializable {
 
   IdGenerator getIdGenerator();
 

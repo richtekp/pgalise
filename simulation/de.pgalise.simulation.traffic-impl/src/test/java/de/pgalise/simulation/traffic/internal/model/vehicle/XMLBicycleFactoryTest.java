@@ -82,10 +82,10 @@ public class XMLBicycleFactoryTest {
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH)
     );
 
-    Vehicle<BicycleData> vehicle1 = factory.createRandomBicycle(output);
+    Vehicle<BicycleData> vehicle1 = factory.createVehicle(output);
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<BicycleData> vehicle2 = factory.createBicycle(output);
+    Vehicle<BicycleData> vehicle2 = factory.createVehicle(output);
     Assert.assertNotNull(vehicle2);
   }
 

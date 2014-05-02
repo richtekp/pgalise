@@ -78,16 +78,11 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createRandomBicycle(Output output) {
+  public Bicycle createVehicle(Output output) {
     BicycleData data = getRandomVehicleData();
     return new DefaultBicycle(getIdGenerator().getNextId(),
       data,
       this.getTrafficGraphExtensions());
-  }
-
-  @Override
-  public Bicycle createBicycle(Output output) {
-    return createRandomBicycle(output);
   }
 
   /**
@@ -177,20 +172,9 @@ public class XMLBicycleFactory extends AbstractXMLVehicleFactory<BicycleData>
   }
 
   @Override
-  public Bicycle createBicycle(Set<TrafficEdge> edges,
+  public Bicycle createVehicle(Set<TrafficEdge> edges,
     Output output) {
-    Bicycle retValue = createBicycle(output);
-    if (edges != null) {
-      BaseCoordinate position = generateRandomPosition(edges);
-      retValue.setPosition(position);
-    }
-    return retValue;
-  }
-
-  @Override
-  public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
-    Output output) {
-    Bicycle retValue = createRandomBicycle(output);
+    Bicycle retValue = createVehicle(output);
     if (edges != null) {
       BaseCoordinate position = generateRandomPosition(edges);
       retValue.setPosition(position);

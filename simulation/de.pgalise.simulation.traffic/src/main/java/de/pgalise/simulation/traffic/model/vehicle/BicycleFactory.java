@@ -15,39 +15,12 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import java.util.Set;
-
 /**
  * Interface to provide methods to create different types of {@link Bike}.
  *
  * @author Andreas
  * @version 1.0
  */
-public interface BicycleFactory extends BaseVehicleFactory {
+public interface BicycleFactory extends VehicleFactory<Bicycle> {
 
-  /**
-   * Method to create a {@link Bike} with the given typeId.All position related
-   * data is <code>null</code>
-   *
-   * @param output
-   * @return created {@link Bike}
-   */
-  public Bicycle createBicycle(Output output);
-
-  /**
-   * Method to create a random {@link Bike}.All position related data is
-   * <code>null</code>
-   *
-   * @param output
-   * @return created {@link Bike}
-   */
-  public Bicycle createRandomBicycle(Output output);
-
-  public Bicycle createBicycle(Set<TrafficEdge> edges,
-    Output output);
-
-  public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
-    Output output);
 }

@@ -7,6 +7,7 @@
  */
 package de.pgalise.simulation.weathercollector.util;
 
+import de.pgalise.simulation.shared.PersistenceUtil;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weathercollector.exceptions.SaveStationDataException;
 import de.pgalise.simulation.weather.entity.WeatherCondition;
@@ -99,7 +100,8 @@ public class DefaultDatabaseManager implements DatabaseManager {
   public void saveServiceData(ServiceDataHelper weather) {
     // Get city
     City city = weather.getCity();
-    em.merge(city);
+    PersistenceUtil.saveOrUpdateCity(em,
+      city);
 
     // Current weather
     this.saveCurrentWeather(city,

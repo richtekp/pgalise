@@ -57,17 +57,17 @@ public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFacto
       asList(retrieveGpsInterferer())),
       output);
     if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BIKE)) {
-      return bicycleFactory.createBicycle(output);
+      return bicycleFactory.createVehicle(output);
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.BUS)) {
-      return busFactory.createBus(output);
+      return busFactory.createVehicle(output);
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.CAR)) {
-      return carFactory.createCar(edges,
+      return carFactory.createVehicle(edges,
         output);
     } else if (vehicleInformation.getVehicleType().equals(
       VehicleTypeEnum.MOTORCYCLE)) {
-      motorcycleFactory.createRandomMotorcycle();
+      return motorcycleFactory.createVehicle(edges, output);
     } else if (vehicleInformation.getVehicleType().equals(VehicleTypeEnum.TRUCK)) {
-      return truckFactory.createRandomTruck(output);
+      return truckFactory.createVehicle(output);
     }
     throw new IllegalArgumentException();
   }
@@ -76,6 +76,6 @@ public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFacto
   public Vehicle<?> createVehicle(VehicleInformation vehicleInformation,
     Output output) {
     return createVehicle(vehicleInformation,
-      null);
+      null, output);
   }
 }

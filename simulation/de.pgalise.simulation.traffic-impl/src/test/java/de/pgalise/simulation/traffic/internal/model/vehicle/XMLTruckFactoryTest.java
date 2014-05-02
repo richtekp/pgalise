@@ -87,7 +87,7 @@ public class XMLTruckFactoryTest {
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH),
       sensorFactory);
 
-    Vehicle<TruckData> vehicle1 = factory.createRandomTruck(output);
+    Vehicle<TruckData> vehicle1 = factory.createVehicle(output);
     Assert.assertNotNull(vehicle1);
 
     Vehicle<TruckData> vehicle2 = factory.createTruck(Color.GRAY,
