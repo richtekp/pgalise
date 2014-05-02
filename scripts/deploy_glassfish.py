@@ -60,6 +60,15 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
     
     # glassfish's main command is asadmin
     asadmin = os.path.join(glassfish_dir, "bin/asadmin")
+    # check asadmin working
+    if not "AS_JAVA" in os.environ or os.environ["AS_JAVA"] == "":
+        logger.warn("environment variable AS_JAVA not set, this might cause trouble if a JRE 6 is found before 7")
+    try:
+        sp.check_call([asadmin, "version"], cwd=glassfish_dir)
+    except CalledProcessError as ex:
+        logger.error("execution of glassfish main command asadmin failed, make sure you have a JRE 7 installed and environment variable AS_JAVA pointing to it (check warnings above)")
+        raise ex   
+    
     list_domains_output_lines = sp.check_output([asadmin, "list-domains"], cwd=glassfish_dir).decode("utf-8").strip().split("\n")
     domain_line = None
     for line in list_domains_output_lines:
