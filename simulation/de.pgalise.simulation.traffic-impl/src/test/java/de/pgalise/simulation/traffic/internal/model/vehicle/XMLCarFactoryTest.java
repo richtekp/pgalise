@@ -107,11 +107,11 @@ public class XMLCarFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<CarData> vehicle1 = factory.createRandomCar(graph.edgeSet(),
+    Vehicle<CarData> vehicle1 = factory.createVehicle(graph.edgeSet(),
       output);
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<CarData> vehicle2 = factory.createCar(graph.edgeSet(),
+    Vehicle<CarData> vehicle2 = factory.createVehicle(graph.edgeSet(),
       output);
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,

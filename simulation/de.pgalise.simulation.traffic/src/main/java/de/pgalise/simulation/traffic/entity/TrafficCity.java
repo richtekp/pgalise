@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.traffic.entity;
 
+import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.City;
 import java.util.List;
@@ -49,8 +50,7 @@ public class TrafficCity extends City {
     int altitude,
     boolean nearRiver,
     boolean nearSea,
-    BaseCoordinate referencePoint,
-    List<BaseCoordinate> geoInfo,
+          BaseBoundary boundary,
     CityInfrastructureData cityInfrastructureData) {
     super(id,
       name,
@@ -58,8 +58,7 @@ public class TrafficCity extends City {
       altitude,
       nearRiver,
       nearSea,
-      referencePoint,
-      geoInfo
+      boundary
     );
     this.cityInfrastructureData = cityInfrastructureData;
   }

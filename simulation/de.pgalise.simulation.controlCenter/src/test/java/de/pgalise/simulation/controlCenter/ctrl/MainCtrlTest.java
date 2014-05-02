@@ -12,8 +12,9 @@ import de.pgalise.simulation.controlCenter.model.MapAndBusstopFileData;
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.traffic.service.PublicTransportDataService;
 import de.pgalise.simulation.traffic.service.FileBasedCityDataService;
+import de.pgalise.simulation.traffic.service.GTFSPublicTransportDataService;
+import de.pgalise.simulation.traffic.service.PublicTransportDataService;
 import de.pgalise.simulation.weathercollector.ServiceStrategyManager;
 import de.pgalise.simulation.weathercollector.WeatherCollector;
 import de.pgalise.testutils.TestUtils;
@@ -55,7 +56,7 @@ public class MainCtrlTest implements Serializable {
   @EJB
   private ServiceStrategyManager serviceStrategyManager;
   @EJB
-  private PublicTransportDataService busStopDataService;
+  private GTFSPublicTransportDataService busStopDataService;
 
   public MainCtrlTest() {
   }

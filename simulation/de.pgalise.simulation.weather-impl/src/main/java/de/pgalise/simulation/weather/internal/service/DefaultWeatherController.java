@@ -445,6 +445,6 @@ public class DefaultWeatherController extends AbstractController<WeatherEvent, S
 
   @Override
   public BaseCoordinate getReferencePosition() {
-    return this.city.getReferencePoint();
+    return this.city.getBoundary().getReferencePoint();
   }
 }

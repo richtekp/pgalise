@@ -79,21 +79,15 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
       wheelbaseLengthDifferenceMax);
   }
 
-  @Override
-  public Car createCar(Set<TrafficEdge> edges,
-    Output output) {
-    return createRandomCar(edges,
-      output);
-  }
-
   /**
    *
    * @param edges if edges is <code>null</code> this no position information is
    * generated
+   * @param output
    * @return
    */
   @Override
-  public Car createRandomCar(Set<TrafficEdge> edges,
+  public Car createVehicle(Set<TrafficEdge> edges,
     Output output) {
     BaseCoordinate randomPosition = null;
     if (edges != null) {
@@ -129,14 +123,7 @@ public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
   }
 
   @Override
-  public Car createCar(Output output) {
-    return createCar(null,
-      output);
-  }
-
-  @Override
-  public Car createRandomCar(Output output) {
-    return createRandomCar(null,
-      output);
+  public Car createVehicle(Output output) {
+    return createVehicle(null, output);
   }
 }

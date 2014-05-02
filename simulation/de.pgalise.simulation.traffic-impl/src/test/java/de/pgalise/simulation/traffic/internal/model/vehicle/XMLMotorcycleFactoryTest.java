@@ -15,27 +15,26 @@
  */
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-import de.pgalise.simulation.traffic.internal.model.factory.XMLMotorcycleFactory;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
-import java.awt.Color;
-
-import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Test;
-
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
+import de.pgalise.simulation.traffic.internal.DefaultTrafficGraph;
+import de.pgalise.simulation.traffic.internal.model.factory.XMLMotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.testutils.TestUtils;
+import java.awt.Color;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests the {@link XMLMotorcycleFactoryTest}
@@ -53,6 +52,7 @@ public class XMLMotorcycleFactoryTest {
   public static final String FILEPATH = "/motorcycles.xml";
   @EJB
   private IdGenerator idGenerator;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
   public XMLMotorcycleFactoryTest() {
   }
@@ -82,10 +82,10 @@ public class XMLMotorcycleFactoryTest {
       random,
       XMLBicycleFactoryTest.class.getResourceAsStream(FILEPATH));
 
-    Vehicle<MotorcycleData> vehicle1 = factory.createRandomMotorcycle();
+    Vehicle<MotorcycleData> vehicle1 = factory.createVehicle(output);
     Assert.assertNotNull(vehicle1);
 
-    Vehicle<MotorcycleData> vehicle2 = factory.createMotorcycle();
+    Vehicle<MotorcycleData> vehicle2 = factory.createVehicle(output);
     Assert.assertNotNull(vehicle2);
     Assert.assertEquals(Color.GRAY,
       vehicle2.getData().getColor());

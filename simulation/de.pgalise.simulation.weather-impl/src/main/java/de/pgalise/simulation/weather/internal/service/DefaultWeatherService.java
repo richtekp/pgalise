@@ -191,7 +191,7 @@ public class DefaultWeatherService implements WeatherService {
       throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
         "city"));
     }
-    this.referencePosition = city.getReferencePoint();
+    this.referencePosition = city.getBoundary().getReferencePoint();
     this.loader = loader;
 
     // Init maps
@@ -212,8 +212,8 @@ public class DefaultWeatherService implements WeatherService {
       initParameter.getStartTimestamp().getTime(),
       loader);
     this.gridConverter.init(new WeatherPositionInitParameter(initParameter.
-      getCity().retrieveBoundary()));
-    this.gridConverter.setGrid(initParameter.getCity().retrieveBoundary());
+      getCity().getBoundary().retrieveBoundary()));
+    this.gridConverter.setGrid(initParameter.getCity().getBoundary().retrieveBoundary());
   }
 
   /**
@@ -515,7 +515,7 @@ public class DefaultWeatherService implements WeatherService {
       time,
       position,
       value,
-      city.retrieveBoundary()
+      city.getBoundary().retrieveBoundary()
     );
   }
 

@@ -17,6 +17,7 @@ import java.util.Set;
 /**
  *
  * @author richter
+ * @param <I>
  */
 public interface PublicTransportDataService<I extends InputStream> extends Serializable {
 
@@ -31,6 +32,7 @@ public interface PublicTransportDataService<I extends InputStream> extends Seria
    *
    * @param cityInfrastructureData
    * @param busStops
+   * @param trafficGraph
    * @see CityInfrastructureData#getMotorWaysWithBusStops()
    */
   /*

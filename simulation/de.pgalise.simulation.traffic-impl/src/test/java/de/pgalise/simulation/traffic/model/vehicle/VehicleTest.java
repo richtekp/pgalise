@@ -141,7 +141,7 @@ public class VehicleTest {
     List<TrafficEdge> shortestPath = algo.getPathEdgeList();
     log.debug("Shortest path: " + shortestPath.toString());
 
-    Vehicle<CarData> car = factory.createRandomCar(graph.edgeSet(),
+    Vehicle<CarData> car = factory.createVehicle(graph.edgeSet(),
       output);
 
     car.setCurrentNode(a);
@@ -287,7 +287,7 @@ public class VehicleTest {
       e);
     List<TrafficEdge> shortestPath = algo.getPathEdgeList();
 
-    Vehicle<BicycleData> v = bicycleFactory.createBicycle(output);
+    Vehicle<BicycleData> v = bicycleFactory.createVehicle(output);
     v.setVelocity(9.5);
     v.setPath(shortestPath);
 
@@ -358,7 +358,7 @@ public class VehicleTest {
      * "b", 2, 0); Node c = this.addNode(graph, "c", 2, 2);
      */
     // Creating the cars
-    Vehicle<?> carA = factory.createRandomCar(graph.edgeSet(),
+    Vehicle<?> carA = factory.createVehicle(graph.edgeSet(),
       output);
     carA.setTrafficGraphExtensions(ee);
     carA.setName("carA");
@@ -370,7 +370,7 @@ public class VehicleTest {
     Collections.reverse(revPath);
     Collections.reverse(revPath);
 
-    Vehicle<?> carB = factory.createRandomCar(graph.edgeSet(),
+    Vehicle<?> carB = factory.createVehicle(graph.edgeSet(),
       output);
     carB.setTrafficGraphExtensions(ee);
     carB.setName("carB");
@@ -473,7 +473,7 @@ public class VehicleTest {
     graph.setEdgeWeight(bc,
       1);
 
-    Vehicle<CarData> originalCar = factory.createCar(graph.edgeSet(),
+    Vehicle<CarData> originalCar = factory.createVehicle(graph.edgeSet(),
       output);
 
     DijkstraShortestPath<TrafficNode, TrafficEdge> algo = new DijkstraShortestPath<>(

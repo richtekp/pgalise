@@ -10,6 +10,7 @@ import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.entity.BusData;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultBus;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
@@ -19,6 +20,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterf
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -96,12 +98,7 @@ public abstract class AbstractBusFactory extends AbstractMotorizedVehicleFactory
   }
 
   @Override
-  public Bus createBus(Output output) {
-    return createRandomBus(output);
-  }
-
-  @Override
-  public Bus createRandomBus(Output output) {
+  public Bus createVehicle(Set<TrafficEdge> edges, Output output) {
     GpsSensor gpsSensor = sensorFactory.createGpsSensor(
       new ArrayList<>(Arrays.
         asList(retrieveGpsInterferer())),
@@ -139,6 +136,11 @@ public abstract class AbstractBusFactory extends AbstractMotorizedVehicleFactory
     return new DefaultBus(getIdGenerator().getNextId(),
       busData,
       trafficGraphExtensions);
+  }
+
+  @Override
+  public Bus createVehicle( Output output) {
+    return createVehicle(null, output);
   }
 
 }

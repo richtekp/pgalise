@@ -215,7 +215,7 @@ public class CityCtrl implements Serializable {
     List<LatLng> cityInfrastructureDataBounds = new LinkedList<>();
 //    List<Coordinate> boundaryMultiPointCoords = new LinkedList<>(); //there's 
     //no implementation of CoordinateSequence which is a linked list
-    for (Coordinate n : trafficCity.retrieveBoundary().getCoordinates()) {
+    for (Coordinate n : trafficCity.getBoundary().retrieveBoundary().getCoordinates()) {
       cityInfrastructureDataBounds.add(new LatLng(n.x,
         n.y));
     }
@@ -241,8 +241,8 @@ public class CityCtrl implements Serializable {
   public void onCityNameValueChange(ValueChangeEvent valueChangeEvent) {
     TrafficCity newCity = (TrafficCity) valueChangeEvent.getNewValue();
     this.city.setName(newCity.getName());
-    this.city.setReferencePoint(newCity.getReferencePoint());
-    this.city.setBoundaryCoordinates(newCity.getBoundaryCoordinates());
+    this.city.getBoundary().setReferencePoint(newCity.getBoundary().getReferencePoint());
+    this.city.getBoundary().setBoundaryCoordinates(newCity.getBoundary().getBoundaryCoordinates());
   }
 
   //////
@@ -299,8 +299,8 @@ public class CityCtrl implements Serializable {
             -1,
             false,
             false,
-            new BaseCoordinate(polygon.getCentroid().getCoordinate()),
-            autocompletionValueCoordiantes,
+            new BaseBoundary(idGenerator.getNextId(),new BaseCoordinate(polygon.getCentroid().getCoordinate()),
+            autocompletionValueCoordiantes),
             null);
           retValue.add(autocompletionValue);
         }
@@ -326,12 +326,12 @@ public class CityCtrl implements Serializable {
     List<LatLng> citySelectionBounds = new LinkedList<>();
     Polygon citySelectionBoundsPolygon = new Polygon();
     for (com.vividsolutions.jts.geom.Coordinate coordinate : selectedCity.
-      retrieveBoundary().getCoordinates()) {
+      getBoundary().retrieveBoundary().getCoordinates()) {
       citySelectionBoundsPolygon.getPaths().add(new LatLng(coordinate.y,
         coordinate.x));
     }
-    mapCenter = selectedCity.retrieveCenterPoint().getY() + ", " + selectedCity.
-      retrieveCenterPoint().getX();
+    mapCenter = selectedCity.getBoundary().retrieveCenterPoint().getY() + ", " + selectedCity.
+      getBoundary().retrieveCenterPoint().getX();
     mapModel.getPolygons().clear();
     citySelectionBoundsPolygon.setStrokeColor("#FF9900");
     citySelectionBoundsPolygon.setFillColor("#FF9900");
@@ -419,7 +419,7 @@ public class CityCtrl implements Serializable {
    */
   public Envelope retrieveEnvelope() {
     if (useFileBoundaries) {
-      return fileBasedCityDataService.createCity().retrieveBoundary().getEnvelopeInternal();
+      return fileBasedCityDataService.createCity().getBoundary().retrieveBoundary().getEnvelopeInternal();
     } else {
       return GeoToolsBootstrapping.getGeometryFactory().createPolygon(
         customFileBoundaries.toArray(new BaseCoordinate[customFileBoundaries.
@@ -444,8 +444,7 @@ public class CityCtrl implements Serializable {
       getChosenAltitude(),
       getNearRiver(),
       getNearSea(),
-      null, //geoInformation (set later)
-      null, //cityInfrastructureData (set later)
+      null, //boundary (set later)
       null //need to set referencePoint explicitly in order to avoid NullPointerException
     );
     for (String initialOsmFileName : MainCtrlUtils.INITIAL_OSM_FILE_NAMES) {

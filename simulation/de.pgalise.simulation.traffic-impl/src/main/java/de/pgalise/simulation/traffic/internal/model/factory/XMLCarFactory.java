@@ -22,7 +22,6 @@ import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
 import de.pgalise.simulation.traffic.entity.CarData;
 import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultCar;
 import de.pgalise.simulation.traffic.model.vehicle.Car;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
@@ -48,14 +47,14 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
   CarFactory {
 
   @Override
-  public Car createCar(Set<TrafficEdge> edges,
+  public Car createVehicle(
     Output output) {
-    return createRandomCar(edges,
+    return createVehicle(null,
       output);
   }
 
   @Override
-  public Car createRandomCar(Set<TrafficEdge> edges,
+  public Car createVehicle(Set<TrafficEdge> edges,
     Output output) {
     CarData data = getRandomVehicleData();
     BaseCoordinate position = null;
@@ -211,18 +210,6 @@ public class XMLCarFactory extends AbstractXMLVehicleFactory<CarData> implements
     } catch (JAXBException ex) {
       throw new RuntimeException(ex);
     }
-  }
-
-  @Override
-  public Car createRandomCar(Output output) {
-    return createRandomCar(null,
-      output);
-  }
-
-  @Override
-  public Car createCar(Output output) {
-    return createCar(null,
-      output);
   }
 
 }

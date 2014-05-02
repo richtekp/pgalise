@@ -24,7 +24,7 @@ import java.awt.Color;
  * @author Andreas
  * @version 1.0
  */
-public interface TruckFactory extends BaseVehicleFactory {
+public interface TruckFactory extends VehicleFactory<Truck> {
 
   /**
    * Method to create a {@link Truck} with the given typeId.All position related
@@ -40,12 +40,4 @@ public interface TruckFactory extends BaseVehicleFactory {
     Output output
   );
 
-  /**
-   * Method to create a random {@link Truck}.All position related data is
-   * <code>null</code>
-   *
-   * @param output
-   * @return created {@link Truck}
-   */
-  public Truck createRandomTruck(Output output);
 }

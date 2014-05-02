@@ -112,6 +112,16 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
   private TrafficGraphExtensions trafficGraphExtensions;
   @EJB
   private VehicleFactory vehicleFactory;
+  @EJB
+  private BicycleFactory bicycleFactory;
+  @EJB
+  private BusFactory busFactory;
+  @EJB
+  private TruckFactory truckFactory;
+  @EJB
+  private MotorcycleFactory motorcycleFactory;
+  @EJB
+  private CarFactory carFactory;
   private long trafficServerUpdateInterval = 10L;
   @EJB
   private RouteConstructor routeConstructor;
@@ -195,7 +205,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
   @Override
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
     this.output = param.getOutput();
-    cityZone = param.getCity().retrieveBoundary();
+    cityZone = param.getCity().getBoundary().retrieveBoundary();
     init0(); //initializes vehicleEventHandlerManager
     this.vehicleEventHandlerManager.init(param);
     try {
@@ -364,12 +374,12 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
 
   @Override
   public BicycleFactory getBikeFactory() {
-    return this.vehicleFactory;
+    return this.bicycleFactory;
   }
 
   @Override
   public BusFactory getBusFactory() {
-    return this.vehicleFactory;
+    return this.busFactory;
   }
 
   @Override
@@ -379,7 +389,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
 
   @Override
   public CarFactory getCarFactory() {
-    return this.vehicleFactory;
+    return this.carFactory;
   }
 
   @Override
@@ -394,7 +404,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
 
   @Override
   public MotorcycleFactory getMotorcycleFactory() {
-    return this.vehicleFactory;
+    return this.motorcycleFactory;
   }
 
   @Override
@@ -416,7 +426,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
 
   @Override
   public TruckFactory getTruckFactory() {
-    return this.vehicleFactory;
+    return this.truckFactory;
   }
 
   @Override

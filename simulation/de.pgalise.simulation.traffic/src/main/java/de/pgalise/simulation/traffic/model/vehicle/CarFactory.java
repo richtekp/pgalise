@@ -15,53 +15,12 @@
  */
 package de.pgalise.simulation.traffic.model.vehicle;
 
-import de.pgalise.simulation.sensorFramework.output.Output;
-import de.pgalise.simulation.traffic.entity.TrafficEdge;
-import java.util.Set;
-
 /**
  * Interface to provide methods to create different types of {@link Car}.
  *
  * @author Andreas
  * @version 1.0
  */
-public interface CarFactory extends BaseVehicleFactory {
+public interface CarFactory extends VehicleFactory<Car> {
 
-  /**
-   * creates a {@link Car} without position information, i.e. all position
-   * related properties are <code>null</code>.
-   *
-   * @return
-   */
-  public Car createRandomCar(Output output);
-
-  /**
-   * the same as {@link #createRandomCar() }
-   *
-   * @return
-   */
-  public Car createCar(Output output);
-
-  /**
-   * Method to create a {@link Car} with a random position on a random edge of
-   * <tt>edges</tt>.
-   *
-   * @TODO: so far this does the same as {@link #createRandomCar(java.util.Set)
-   * }, but there should be more options to customize the creation apart from a
-   * complete random process like in createRandomCar.
-   *
-   * @return created {@link Car}
-   */
-  public Car createCar(Set<TrafficEdge> edges,
-    Output output);
-
-  /**
-   * Method to create a random {@link Car} with a random position on a random
-   * edge of
-   * <tt>edges</tt>.
-   *
-   * @return created {@link Car}
-   */
-  Car createRandomCar(Set<TrafficEdge> edges,
-    Output output);
 }

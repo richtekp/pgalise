@@ -259,7 +259,7 @@ public class DefaultTrafficControllerTest {
         output,
         null,
         new DefaultGpsNoInterferer());
-      Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
+      Vehicle<CarData> car = instance.getCarFactory().createVehicle(
         new HashSet<>(Arrays.asList(ab)),
         output);
       car.setName("K.I.T.T");
@@ -279,7 +279,7 @@ public class DefaultTrafficControllerTest {
         output,
         null,
         new DefaultGpsNoInterferer());
-      Vehicle<TruckData> truck = instance.getTruckFactory().createRandomTruck(
+      Vehicle<TruckData> truck = instance.getTruckFactory().createVehicle(
         output);
       truck.setName("Coca Cola Truck");
       TrafficTrip tripTruck = instance.createTrip(instance.getCityZone(),
@@ -297,7 +297,7 @@ public class DefaultTrafficControllerTest {
         null,
         new DefaultGpsNoInterferer());
       Vehicle<BicycleData> bike = instance.getBikeFactory().
-        createRandomBicycle(output);
+        createVehicle(output);
       bike.setName("tlottmann's Fahrrad");
       TrafficTrip tripBike = instance.createTrip(instance.getCityZone(),
         bike.getData().getType());
@@ -315,7 +315,7 @@ public class DefaultTrafficControllerTest {
         null,
         new DefaultGpsNoInterferer());
       Vehicle<MotorcycleData> motorcycle = instance.getMotorcycleFactory().
-        createRandomMotorcycle();
+        createVehicle(output);
       motorcycle.setName("Jens' Kawasaki");
       TrafficTrip tripMotorcycle = instance.createTrip(instance.getCityZone(),
         motorcycle.getData().getType());
@@ -587,9 +587,9 @@ public class DefaultTrafficControllerTest {
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
       b);
-    TrafficTrip trip0 = ctrl.createTrip(city.retrieveBoundary(),
+    TrafficTrip trip0 = ctrl.createTrip(city.getBoundary().retrieveBoundary(),
       VehicleTypeEnum.CAR);
-    TrafficTrip trip1 = ctrl.createTrip(city.retrieveBoundary(),
+    TrafficTrip trip1 = ctrl.createTrip(city.getBoundary().retrieveBoundary(),
       VehicleTypeEnum.CAR);
 
     List<TrafficEdge> path = ctrl.getShortestPath(a,
@@ -602,7 +602,7 @@ public class DefaultTrafficControllerTest {
       output,
       null,
       null);
-    Vehicle<CarData> car = ctrl.getCarFactory().createRandomCar(
+    Vehicle<CarData> car = ctrl.getCarFactory().createVehicle(
       new HashSet<>(Arrays.asList(ab)),
       output);
     car.setName("Car A");
@@ -615,7 +615,7 @@ public class DefaultTrafficControllerTest {
       output,
       null,
       new DefaultGpsNoInterferer());
-    Vehicle<CarData> car3 = ctrl.getCarFactory().createRandomCar(
+    Vehicle<CarData> car3 = ctrl.getCarFactory().createVehicle(
       new HashSet<>(Arrays.asList(ab)),
       output);
     car3.setName("Car B");
@@ -692,8 +692,8 @@ public class DefaultTrafficControllerTest {
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
       b);
-    Vehicle<CarData> car2 = server2.getCarFactory().createRandomCar(
-      new HashSet<TrafficEdge>(Arrays.asList(ab)),
+    Vehicle<CarData> car2 = server2.getCarFactory().createVehicle(
+      new HashSet<>(Arrays.asList(ab)),
       output);
     car2.setName("Car " + i);
     TrafficNode startNode = new TrafficNode(
@@ -906,7 +906,7 @@ public class DefaultTrafficControllerTest {
       output,
       null,
       new DefaultGpsNoInterferer());
-    Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
+    Vehicle<CarData> car = instance.getCarFactory().createVehicle(
       new HashSet<>(Arrays.asList(ab)),
       output);
     car.setName("K.I.T.T");
@@ -1012,7 +1012,7 @@ public class DefaultTrafficControllerTest {
       = (TrafficControllerLocal) TestUtils.getContext().lookup(
         "java:global/classpath.ear/de.pgalise.simulation.traffic-impl/DefaultTrafficController!de.pgalise.simulation.traffic.TrafficControllerLocal");
 
-    Vehicle<CarData> car = instance.getCarFactory().createRandomCar(
+    Vehicle<CarData> car = instance.getCarFactory().createVehicle(
       new HashSet<>(Arrays.asList(ab)),
       output);
     car.setName("K.I.T.T");

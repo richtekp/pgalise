@@ -15,13 +15,15 @@
  */
 package de.pgalise.simulation.traffic.internal.model.factory;
 
-import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
+import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.entity.MotorcycleData;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.internal.model.factory.AbstractXMLVehicleFactory;
 import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorcycle;
+import de.pgalise.simulation.traffic.model.vehicle.Motorcycle;
 import de.pgalise.simulation.traffic.model.vehicle.MotorcycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.xml.MotorcycleDataList;
 import java.awt.Color;
@@ -74,7 +76,9 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
   }
 
   @Override
-  public Motorcycle createRandomMotorcycle() {
+  public Motorcycle createVehicle(Set<TrafficEdge> edges, Output output) {
+    
+
     MotorcycleData data = getRandomVehicleData();
     return new DefaultMotorcycle(getIdGenerator().getNextId(),
       data,
@@ -82,8 +86,8 @@ public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleDa
   }
 
   @Override
-  public Motorcycle createMotorcycle() {
-    return createRandomMotorcycle();
+  public Motorcycle createVehicle(Output output) {
+    return createVehicle(null, output);
   }
 
   /**

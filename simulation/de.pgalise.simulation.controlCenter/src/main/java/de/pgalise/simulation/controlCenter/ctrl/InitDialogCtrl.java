@@ -12,6 +12,7 @@ import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpForceCloseStrateg
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.model.factory.CompositeVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.InformationBasedVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleFactory;
 import de.pgalise.simulation.traffic.service.FileBasedCityDataService;
@@ -60,7 +61,7 @@ public class InitDialogCtrl implements Serializable {
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private VehicleFactory vehicleFactory;
+  private CompositeVehicleFactory vehicleFactory;
   @ManagedProperty(value = "#{cityCtrl}")
   private CityCtrl cityCtrl;
   @EJB
@@ -83,9 +84,9 @@ public class InitDialogCtrl implements Serializable {
   public void initialize() {
     chosenInitialType = InitDialogCtrlInitialTypeEnum.create.ordinal();
     recentScenarioMap = new HashMap<>();
-    uiVehicles = new LinkedList<VehicleData>(
+    uiVehicles = new LinkedList<>(
       Arrays.asList(
-        vehicleFactory.createCar(output).getData()));
+        vehicleFactory.createVehicle(output).getData()));
   }
 
   public void setCityCtrl(CityCtrl cityCtrl) {

@@ -92,15 +92,15 @@
           <modules> 
             <webModule>
               <groupId>de.pgalise.simulation</groupId>
-              <artifactId>operationCenter</artifactId> 
-              <contextRoot>/operationCenter</contextRoot>
-              <moduleId>operation-center</moduleId>
-            </webModule>
-            <webModule>
-              <groupId>de.pgalise.simulation</groupId>
               <artifactId>controlCenter</artifactId> 
               <contextRoot>/controlCenter</contextRoot>
               <moduleId>control-center</moduleId>
+            </webModule>
+            <webModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>operationCenter</artifactId> 
+              <contextRoot>/operationCenter</contextRoot>
+              <moduleId>operation-center</moduleId>
             </webModule>
             <ejbModule>
               <groupId>de.pgalise.simulation</groupId>

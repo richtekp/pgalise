@@ -12,6 +12,7 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.BusStop;
+import de.pgalise.simulation.traffic.service.GTFSPublicTransportDataService;
 import de.pgalise.simulation.traffic.service.PublicTransportDataService;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +25,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
+import java.util.zip.ZipInputStream;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
@@ -64,7 +66,7 @@ public class BusSystemCtrl implements Serializable {
    */
   private Set<String> busStopFileNames = new HashSet<>();
   @EJB
-  private PublicTransportDataService busStopDataService;
+  private GTFSPublicTransportDataService busStopDataService;
   private MapModel previewMapModel = new DefaultMapModel();
 
   /**
@@ -73,7 +75,7 @@ public class BusSystemCtrl implements Serializable {
   public BusSystemCtrl() {
   }
 
-  public BusSystemCtrl(PublicTransportDataService busStopDataService) {
+  public BusSystemCtrl(GTFSPublicTransportDataService busStopDataService) {
     this.busStopDataService = busStopDataService;
   }
 
@@ -240,8 +242,9 @@ public class BusSystemCtrl implements Serializable {
         public Void call() throws Exception {
           InputStream busStopFileBytes = MainCtrlUtils.BUS_STOP_FILE_CACHE.get(
             busStopFileName);
+          ZipInputStream busStopZipInputStream = new ZipInputStream(busStopFileBytes);
           busStopDataService.parse(
-            busStopFileBytes);
+            busStopZipInputStream);
           busRoutes = Sets.union(busRoutes, busStopDataService.getBusRoutes());
           busStopFileNamesParsing.remove(busStopFileName);
           busStopFileNamesParsed.add(busStopFileName);

@@ -36,12 +36,14 @@ import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -60,6 +62,8 @@ import org.slf4j.LoggerFactory;
 @TODO: implement parallel testing with arquillian, testing in multiple threads 
 doesn't make sense (container needs to handle parallelism)
 */
+//@Ignore //@TODO: implement parallel test with arquillian (the current attempt 
+//with multiple thread doesn't seem to be JEE conform
 public class DefaultWeatherServiceSyncTest {
 
 //  @Deployment
@@ -114,6 +118,13 @@ public class DefaultWeatherServiceSyncTest {
 
   @EJB
   private IdGenerator idGenerator;
+  
+  /**
+   * useful for debugging, provides a possibility to check whether transactions 
+   * are marked for rollback
+   */
+  @Resource
+  private SessionContext context;
 
   public DefaultWeatherServiceSyncTest() {
   }

@@ -21,7 +21,7 @@ public class BaseCoordinatePK implements Serializable {
   BaseCoordinatePK() {
   }
 
-  BaseCoordinatePK(double x,
+  public BaseCoordinatePK(double x,
     double y) {
     this.x = x;
     this.y = y;

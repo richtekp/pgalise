@@ -52,13 +52,7 @@ public abstract class AbstractBicycleFactory extends AbstractVehicleFactory
   }
 
   @Override
-  public Bicycle createBicycle(Set<TrafficEdge> edges,
-    Output output) {
-    return createRandomBicycle(null);
-  }
-
-  @Override
-  public Bicycle createRandomBicycle(Set<TrafficEdge> edges,
+  public Bicycle createVehicle(Set<TrafficEdge> edges,
     Output output) {
     BaseCoordinate randomPosition = null;
     if (edges != null) {
@@ -94,14 +88,7 @@ public abstract class AbstractBicycleFactory extends AbstractVehicleFactory
   }
 
   @Override
-  public Bicycle createBicycle(Output output) {
-    return createBicycle(null,
-      output);
-  }
-
-  @Override
-  public Bicycle createRandomBicycle(Output output) {
-    return createRandomBicycle(null,
-      output);
+  public Bicycle createVehicle(Output output) {
+    return createVehicle(null, output);
   }
 }

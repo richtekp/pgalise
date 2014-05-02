@@ -19,22 +19,13 @@ import javax.ejb.Stateful;
  */
 @Stateful
 @Local(TruckFactory.class)
-public class RandomTruckFactory extends AbstractVehicleFactory implements
+public class RandomTruckFactory extends AbstractTruckFactory implements
   TruckFactory {
 
   private static final long serialVersionUID = 1L;
 
-  @Override
-  public Truck createTruck(Color color,
-    int trailercount,
-    Output output
-  ) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public Truck createRandomTruck(Output output) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public RandomTruckFactory() {
+    super();
   }
 
 }

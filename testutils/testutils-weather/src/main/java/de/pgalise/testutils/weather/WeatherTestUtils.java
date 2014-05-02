@@ -6,7 +6,9 @@
 package de.pgalise.testutils.weather;
 
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.PersistenceUtil;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinatePK;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.Identifiable;
 import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
@@ -14,6 +16,7 @@ import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.entity.WeatherCondition;
 import de.pgalise.simulation.weather.util.DateConverter;
+import de.pgalise.testutils.TestUtils;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
@@ -65,7 +68,7 @@ public class WeatherTestUtils {
     long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
       endTimestamp);
     Map<Date, ServiceDataForecast> retValue;
-    entityManager.merge(city);
+    PersistenceUtil.saveOrUpdateCity(entityManager, city);
     long start = preceedingDayTimestampMidnight;
     retValue = new HashMap<>();
     while (start < endTimestampMidnight + DateConverter.ONE_DAY_IN_MILLIS) {
@@ -86,8 +89,10 @@ public class WeatherTestUtils {
         WeatherCondition.retrieveCondition(idGenerator,
           WeatherCondition.UNKNOWN_CONDITION_CODE)
       );
-      entityManager.merge(
-        serviceDataForecast);
+      PersistenceUtil.saveOrUpdate(entityManager,
+        serviceDataForecast,
+        ServiceDataForecast.class,
+        serviceDataForecast.getId());
       retValue.put(new Date(start),
         serviceDataForecast);
       start += DateConverter.ONE_DAY_IN_MILLIS;
@@ -126,11 +131,7 @@ public class WeatherTestUtils {
     long endTimestampMidnight = DateConverter.convertTimestampToMidnight(
       endTimestamp);
     Map<Date, ServiceDataCurrent> retValue;
-    entityManager.merge(city.getReferencePoint());
-    for(BaseCoordinate baseCoordinate : city.getBoundaryCoordinates()) {
-      entityManager.merge(baseCoordinate);
-    }
-    entityManager.merge(city);
+    PersistenceUtil.saveOrUpdateCity(entityManager, city);
     long start = preceedingDayTimestampMidnight;
     retValue = new HashMap<>();
     while (start < endTimestampMidnight + DateConverter.ONE_DAY_IN_MILLIS) {
@@ -149,7 +150,10 @@ public class WeatherTestUtils {
         WeatherCondition.retrieveCondition(idGenerator,
           WeatherCondition.UNKNOWN_CONDITION_CODE)
       );
-      entityManager.merge(serviceDataCurrent);
+      PersistenceUtil.saveOrUpdate(entityManager,
+        serviceDataCurrent,
+        ServiceDataCurrent.class,
+        serviceDataCurrent.getId());
       retValue.put(new Date(start),
         serviceDataCurrent);
       start += DateConverter.ONE_DAY_IN_MILLIS;
@@ -208,7 +212,10 @@ public class WeatherTestUtils {
         1.0f,
         1.0f,
         1.0f);
-      entityManager.merge(stationDataNormal);
+      PersistenceUtil.saveOrUpdate(entityManager,
+        stationDataNormal,
+        StationDataNormal.class,
+        stationDataNormal.getId());
       retValue.put(new Date(start),
         stationDataNormal);
       start += DateConverter.ONE_DAY_IN_MILLIS;
@@ -228,7 +235,10 @@ public class WeatherTestUtils {
       1.0f,
       1.0f,
       1.0f);
-    entityManager.merge(stationDataNormal);
+    PersistenceUtil.saveOrUpdate(entityManager,
+      stationDataNormal,
+      StationDataNormal.class,
+      stationDataNormal.getId());
     retValue.put(new Date(startTimestamp),
       stationDataNormal);
 //		LOGGER.debug(String.format("persisting %s entities for following timestamps: preceedingDay=%d (%s), startMidnight=%d (%s), start=%d (%s), endMidnight=%d (%s)", StationDataNormal.class.getName(), preceedingDayTimestamp, new Timestamp(preceedingDayTimestamp).toString(), startTimestampMidnight, new Timestamp(startTimestampMidnight).toString(), startTimestamp, new Timestamp(startTimestamp).toString(), endTimestampMidnight, new Timestamp(endTimestampMidnight).toString()));

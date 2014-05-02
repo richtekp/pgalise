@@ -89,7 +89,7 @@ public class OSMFileBasedCityDataServiceTest {
     System.out.println("getBoundary");
     OSMFileBasedCityDataService instance = new OSMFileBasedCityDataService();
     Envelope expResult = null;
-    Polygon result = instance.createCity().retrieveBoundary();
+    Polygon result = instance.createCity().getBoundary().retrieveBoundary();
     assertEquals(expResult,
       result);
     // TODO review the generated test code and remove the default call to fail.
@@ -243,19 +243,19 @@ public class OSMFileBasedCityDataServiceTest {
     instance.parseStream(osmIN);
     assertEquals(2,
       instance.createCity().getCityInfrastructureData().getNodes().size());
-    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+    assertEquals(instance.createCity().getBoundary().retrieveBoundary().getEnvelopeInternal().
       getMinX(),
       53,
       1);
-    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+    assertEquals(instance.createCity().getBoundary().retrieveBoundary().getEnvelopeInternal().
       getMaxX(),
       53,
       1);
-    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+    assertEquals(instance.createCity().getBoundary().retrieveBoundary().getEnvelopeInternal().
       getMinY(),
       13,
       1);
-    assertEquals(instance.createCity().retrieveBoundary().getEnvelopeInternal().
+    assertEquals(instance.createCity().getBoundary().retrieveBoundary().getEnvelopeInternal().
       getMaxY(),
       13,
       1);

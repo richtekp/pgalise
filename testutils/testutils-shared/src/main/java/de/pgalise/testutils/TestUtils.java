@@ -3,8 +3,10 @@ package de.pgalise.testutils;
 
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.PersistenceUtil;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinatePK;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,8 +103,8 @@ public class TestUtils {
       80,
       true,
       true,
-      referencePoint,
-        referenceArea);
+      new BaseBoundary(idGenerator.getNextId(),referencePoint,
+        referenceArea));
     return city;
   }
 
