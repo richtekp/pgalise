@@ -9,6 +9,9 @@
 # not using Ubuntu ppa on https://launchpad.net/~ubuntugis/ because it is not available for saucy, so reducing portablility
 # not yet paying attention to pg_version (e.g. in OpenSUSE)
 
+# internal implementation notes:
+# - gaining privileges with sudo has the advantage of easiest error handling and debugging while forcing the invokation of the script with sudo allows the usage of python function for UNIX commands like chown
+
 import os
 import subprocess as sp
 import time
@@ -96,6 +99,7 @@ maven_bin_dir_install_target = "/usr/local/share/maven-3.2.1"
 
 # necessary build tools and helpers 
 # <ul>
+ant = "/home/richter/apache-ant-1.7.1/bin/ant"
 wget = "wget"
 unzip="unzip"
 mvn = "mvn"
@@ -103,7 +107,6 @@ tar = "tar"
 bash = "dash" # bash and ksh cause error when running autogen.sh and configure
 make = "make"
 sudo = "sudo"
-ant = "ant"
 su = "su"
 psql = "/usr/lib/postgresql/%s/bin/psql" % pg_version
 initdb = "/usr/lib/postgresql/%s/bin/initdb" % pg_version
@@ -116,6 +119,7 @@ dpkg = "dpkg"
 add_apt_repo = "add-apt-repository"
 cp="cp"
 chown = "chown"
+whoami = "whoami"
 # </ul>
 
 # some variables to be changed at will (would be more elegant to enable controll as options of this script)
@@ -141,24 +145,25 @@ parser.add_argument("-%s" % force_overwrite_postgres_datadir_option, "--%s" % fo
 
 # @args skip_build skip building of packages if directories exist
 # @args remove_datadir <code>True</code> or <code>False</code> for removal of stored data in <tt>postgres_datadir_path</tt> or <code>None</code> to interact with the user with a prompt 
-def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, privileged_uid=0, unprivileged_uid=1000, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None):
-    if int(sp.check_output(["id", "-u"]).strip().decode("utf-8")) != privileged_uid:
-        raise RuntimeError("script has to be invoked as priviledged user with id %s!" % str(privileged_uid)) #@TODO: more sophisticated privileges check
+def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None, privileged_uid=0):
+    if int(sp.check_output(["id", "-u"]).strip().decode("utf-8")) == privileged_uid:
+        raise RuntimeError("script has to be invoked as unpriviledged user, sudo will be used to acquire privileges!" ) #@TODO: more sophisticated privileges check
     if not os.path.exists(bootstrap_dir):
         os.makedirs(bootstrap_dir)
-        os.chown(bootstrap_dir, unprivileged_uid, unprivileged_uid)
+        #os.chown(bootstrap_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_dir):
         os.makedirs(external_dir)
-        os.chown(external_dir, unprivileged_uid, unprivileged_uid)
+        #os.chown(external_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_bin_dir):
         os.makedirs(external_bin_dir)
-        os.chown(external_bin_dir, unprivileged_uid, unprivileged_uid)
+        #os.chown(external_bin_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_src_dir):
         os.makedirs(external_src_dir)        
-        os.chown(external_src_dir, unprivileged_uid, unprivileged_uid)
+        #os.chown(external_src_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
-        os.chown(tmp_dir, unprivileged_uid, unprivileged_uid)
+        #os.chown(tmp_dir, unprivileged_uid, unprivileged_uid)
+    user = sp.check_call([whoami])
         
     # install prequisites
     if check_os.check_ubuntu() or check_os.check_debian():
@@ -172,90 +177,76 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         if not os.path.exists(maven_bin_dir) or len(os.listdir(maven_bin_dir)) == 0:
             maven_bin_archive = os.path.join(external_bin_dir, maven_bin_archive_name)
             if not os.path.exists(maven_bin_archive) or not retrieve_md5sum(maven_bin_archive) == maven_bin_archive_md5:
-                sp.check_call([wget, maven_bin_dir_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_bin_dir)
-            sp.check_call([tar, "xf", maven_bin_archive], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_bin_dir)
+                sp.check_call([wget, maven_bin_dir_url], cwd=external_bin_dir)
+            sp.check_call([tar, "xf", maven_bin_archive], cwd=external_bin_dir)
             shutil.copytree(maven_bin_dir, maven_bin_dir_install_target)
-            for  dirpath, dirnames, filenames in os.walk(maven_bin_dir_install_target):
-                os.chown(dirpath, privileged_uid)
-                os.chgrp(dirpath, privileged_uid)
-                for dirname in dirnames:
-                    os.chown(os.path.join(dirpath, dirname), privileged_uid)
-                    os.chgrp(os.path.join(dirpath, dirname), privileged_uid)
-                for filename in filenames:
-                    os.chown(os.path.join(dirpath, filename), privileged_uid)
-                    os.chgrp(os.path.join(dirpath, filename), privileged_uid)
+            sp.check_call(sudo, chown, "-Rc", "%s:%s" %(user,user), dirpath)
         # install remaining prequisites
         sp.check_call([sudo, zypper, "install", "java-1_7_0-openjdk", "java-1_7_0-openjdk-devel", "java-1_7_0-openjdk-src", "java-1_7_0-openjdk-javadoc"])
     else:
         # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("operating system not supported!")
         
-    newpid = os.fork()
-    if newpid == 0:
-        os.setuid(unprivileged_uid)
-        # install postgresql jdbc driver
-        postgresql_jdbc_file = os.path.join(external_bin_dir, postgresql_jdbc_name)
-        if not os.path.exists(postgresql_jdbc_file):
-            sp.check_call([wget, postgresql_jdbc_url], cwd=external_bin_dir)
-        if pg_version == "9.2":
-            postgresql_jdbc_mvn_version = "9.2-1004.jdbc4"
-        elif pg_version == "9.3":
-            postgresql_jdbc_mvn_version = "9.2-1004.jdbc4" #@TODO: not optimal
-        else:
-            raise RuntimeError("postgresql version %s not supported" % pg_version)
-        sp.check_call([mvn, "install:install-file", \
-            "-Dfile=%s" % postgresql_jdbc_file, "-DartifactId=postgresql",  \
-            "-DgroupId=postgresql", "-Dversion=%s" % postgresql_jdbc_mvn_version, "-Dpackaging=jar"], cwd=external_bin_dir)
-    
-        # install jgrapht (install net.sf.jgrapht:jgrapht:0.8.3 as org.jgrapht:jgrapht:0.8.3 (could not be found in any repository))
-        jgrapht_file = os.path.join(external_bin_dir, jgrapht_name)
-        if not os.path.exists(jgrapht_file) or retrieve_md5sum(jgrapht_file) != jgrapht_md5:
-            sp.check_call([wget, jgrapht_url], cwd=external_bin_dir)
-        sp.check_call([mvn, "install:install-file", \
-            "-Dfile=%s" % jgrapht_file, "-DartifactId=jgrapht",
-            "-DgroupId=org.jgrapht", "-Dversion=0.8.3", "-Dpackaging=jar"], cwd=external_bin_dir)
-
-        # install jfuzzylogic
-        jfuzzy_file = os.path.join(external_bin_dir, jfuzzy_name)
-        if not os.path.exists(jfuzzy_file) or retrieve_md5sum(jfuzzy_file) != jfuzzy_md5:
-            sp.check_call([wget, "--output-document=%s" % jfuzzy_name, jfuzzy_url], cwd=external_bin_dir)
-        sp.check_call([mvn, "install:install-file", \
-            "-Dfile=%s" % jfuzzy_file, "-DartifactId=jfuzzy", 
-            "-DgroupId=pcingola", "-Dversion=3.0", "-Dpackaging=jar"], cwd=external_bin_dir)
-            
-        # install geotools
-        geotools_src_dir = os.path.join(external_src_dir, geotools_src_dir_name)
-        if not os.path.exists(geotools_src_dir) or len(os.listdir(geotools_src_dir)) == 0:
-            if not os.path.exists(os.path.join(external_src_dir, geotools_src_archive_name)) or retrieve_md5sum(os.path.join(external_src_dir, geotools_src_archive_name)) != geotools_md5:
-                sp.check_call([wget, geotools_url], cwd=tmp_dir)
-            sp.check_call([unzip, os.path.join(tmp_dir, geotools_src_archive_name)], cwd=external_src_dir)
-        if not skip_build:
-            mvn_settings_file_path = os.path.join(script_dir, "settings.xml")
-            sp.check_call([mvn, "--global-settings", mvn_settings_file_path, "--settings", mvn_settings_file_path, "install", "-Dall", "-DskipTests=true"], cwd=geotools_src_dir)
-        
-        # install commons-collections 4
-        commons_src_dir = os.path.join(external_src_dir, commons_src_dir_name)
-        if not os.path.exists(commons_src_dir) or len(os.listdir(commons_src_dir)) == 0:
-            sp.check_call([wget, "http://mirror.derwebwolf.net/apache//commons/collections/source/commons-collections4-4.0-src.tar.gz"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
-            sp.check_call([tar, "xf", os.path.join(tmp_dir, "commons-collections4-4.0-src.tar.gz")], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_src_dir)
-        if not skip_build:
-            sp.check_call([mvn, "install"], cwd=commons_src_dir)
-        os._exit(0)
+    # install postgresql jdbc driver
+    postgresql_jdbc_file = os.path.join(external_bin_dir, postgresql_jdbc_name)
+    if not os.path.exists(postgresql_jdbc_file):
+        sp.check_call([wget, postgresql_jdbc_url], cwd=external_bin_dir)
+    if pg_version == "9.2":
+        postgresql_jdbc_mvn_version = "9.2-1004.jdbc4"
+    elif pg_version == "9.3":
+        postgresql_jdbc_mvn_version = "9.2-1004.jdbc4" #@TODO: not optimal
     else:
-        os.waitpid(newpid, 0)
+        raise RuntimeError("postgresql version %s not supported" % pg_version)
+    sp.check_call([mvn, "install:install-file", \
+        "-Dfile=%s" % postgresql_jdbc_file, "-DartifactId=postgresql",  \
+        "-DgroupId=postgresql", "-Dversion=%s" % postgresql_jdbc_mvn_version, "-Dpackaging=jar"], cwd=external_bin_dir)
+
+    # install jgrapht (install net.sf.jgrapht:jgrapht:0.8.3 as org.jgrapht:jgrapht:0.8.3 (could not be found in any repository))
+    jgrapht_file = os.path.join(external_bin_dir, jgrapht_name)
+    if not os.path.exists(jgrapht_file) or retrieve_md5sum(jgrapht_file) != jgrapht_md5:
+        sp.check_call([wget, jgrapht_url], cwd=external_bin_dir)
+    sp.check_call([mvn, "install:install-file", \
+        "-Dfile=%s" % jgrapht_file, "-DartifactId=jgrapht",
+        "-DgroupId=org.jgrapht", "-Dversion=0.8.3", "-Dpackaging=jar"], cwd=external_bin_dir)
+
+    # install jfuzzylogic
+    jfuzzy_file = os.path.join(external_bin_dir, jfuzzy_name)
+    if not os.path.exists(jfuzzy_file) or retrieve_md5sum(jfuzzy_file) != jfuzzy_md5:
+        sp.check_call([wget, "--output-document=%s" % jfuzzy_name, jfuzzy_url], cwd=external_bin_dir)
+    sp.check_call([mvn, "install:install-file", \
+        "-Dfile=%s" % jfuzzy_file, "-DartifactId=jfuzzy", 
+        "-DgroupId=pcingola", "-Dversion=3.0", "-Dpackaging=jar"], cwd=external_bin_dir)
+        
+    # install geotools
+    #geotools_src_dir = os.path.join(external_src_dir, geotools_src_dir_name)
+    #if not os.path.exists(geotools_src_dir) or len(os.listdir(geotools_src_dir)) == 0:
+    #    if not os.path.exists(os.path.join(external_src_dir, geotools_src_archive_name)) or retrieve_md5sum(os.path.join(external_src_dir, geotools_src_archive_name)) != geotools_md5:
+    #        sp.check_call([wget, geotools_url], cwd=tmp_dir)
+    #    sp.check_call([unzip, os.path.join(tmp_dir, geotools_src_archive_name)], cwd=external_src_dir)
+    #if not skip_build:
+    #    mvn_settings_file_path = os.path.join(script_dir, "settings.xml")
+    #    sp.check_call([mvn, "-e", "--global-settings", mvn_settings_file_path, "--settings", mvn_settings_file_path, "install", "-Dall", "-DskipTests=true"], cwd=geotools_src_dir)
+    
+    # install commons-collections 4
+    commons_src_dir = os.path.join(external_src_dir, commons_src_dir_name)
+    if not os.path.exists(commons_src_dir) or len(os.listdir(commons_src_dir)) == 0:
+        sp.check_call([wget, "http://mirror.derwebwolf.net/apache//commons/collections/source/commons-collections4-4.0-src.tar.gz"], cwd=tmp_dir)
+        sp.check_call([tar, "xf", os.path.join(tmp_dir, "commons-collections4-4.0-src.tar.gz")], cwd=external_src_dir)
+    if not skip_build:
+        sp.check_call([mvn, "install"], cwd=commons_src_dir)
 
     # install postgis
     postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
     if check_os.check_ubuntu() or check_os.check_debian():
         if not os.path.exists(postgis_src_dir) or len(os.listdir(postgis_src_dir)) == 0:
-            sp.check_call([wget, postgis_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
-            sp.check_call([tar, "xf", os.path.join(tmp_dir, postgis_archive_name)], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_src_dir)
+            sp.check_call([wget, postgis_url], cwd=tmp_dir)
+            sp.check_call([tar, "xf", os.path.join(tmp_dir, postgis_archive_name)], cwd=external_src_dir)
         if not skip_build:
             sp.check_call([sudo, apt_get, "build-dep", "postgis"]) # might not be sufficient because Ubuntu 13.10's version of postgis is 1.5.x (we're using 2.x)
             sp.check_call([sudo, apt_get, "install", "libgdal-dev"]) # not covered by 1.5.x requirements (see above)    
-            sp.check_call([bash, "autogen.sh"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
-            sp.check_call([bash, "configure"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
-            sp.check_call([make, "-j8"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
+            sp.check_call([bash, "autogen.sh"], cwd=postgis_src_dir)
+            sp.check_call([bash, "configure"], cwd=postgis_src_dir)
+            sp.check_call([make, "-j8"], cwd=postgis_src_dir)
             sp.check_call([sudo, make, "install"], cwd=postgis_src_dir)
     elif check_os.check_opensuse():
         sp.check_call([sudo, zypper, "install", "postgis2", "postgis2-devel", "postgis2-utils"])
@@ -271,7 +262,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
     # setup postgis datadir and configuration
     if check_os.check_ubuntu() or check_os.check_debian():
         apt_sources_file_path = "/etc/apt/sources.list"
-        apt_sources_file = open(apt_sources_file_path, "rw+") # don't trust a = append mode of file, file.write overwrite the whole file nevertheless (doc of file.write contains to information at all !!)
+        apt_sources_file = open(apt_sources_file_path, "r") # don't trust a = append mode of file, file.write overwrite the whole file nevertheless (doc of file.write contains to information at all !!)
         apt_sources_file_lines = apt_sources_file.readlines()
         # file.seek doesn't seem to work on Debian 7.0.4 -> close and open a new instance
         apt_sources_file.seek(0, 0) # reset pointer to 0 for writing
@@ -287,9 +278,11 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             release = check_os.findout_release_debian()
         apt_line = "deb http://apt.postgresql.org/pub/repos/apt/ %s-pgdg main\n" % release
         if not apt_line in apt_sources_file_lines:
-            apt_sources_file.writelines(apt_sources_file_lines+[apt_line])
-            apt_sources_file.flush()
-            apt_sources_file.close()
+            apt_sources_output = string.join(apt_sources_file_lines+[apt_line], "\n")
+            sp.check_call([bash, "-c", "echo %s > /etc/apt/sources.list" % apt_sources_output])
+            #apt_sources_file.writelines(apt_sources_file_lines+[apt_line])
+            #apt_sources_file.flush()
+            #apt_sources_file.close()
         os.system("wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -")
         try:
             sp.check_call([sudo, apt_get, "update"])
@@ -305,7 +298,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             sp.check_call([sudo, apt_get, "remove", "postgresql", "postgresql-common"]) 
             postgresql_deb_path = os.path.join(tmp_dir, postgresql_deb_name)
             if not os.path.exists(postgresql_deb_path) or retrieve_md5sum(postgresql_deb_path) != postgresql_deb_md5:
-                sp.check_call([wget, postgresql_deb_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
+                sp.check_call([wget, postgresql_deb_url], cwd=tmp_dir)
                 sp.check_call([sudo, dpkg, "-i", postgresql_deb_path])
             psql = "/opt/postgres/%s/bin/psql" % pg_version
             initdb = "/opt/postgres/%s/bin/initdb" % pg_version
@@ -326,16 +319,11 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         raise RuntimeError("operating system not supported!")
         
     if not os.path.exists(postgres_datadir_path) or len(os.listdir(postgres_datadir_path)) == 0 or force_overwrite_postgres_datadir:
-        newpid = os.fork()
-        if newpid == 0:
-            os.setuid(unprivileged_uid)
-            # os.makedirs(postgres_datadir_path) # causes error if directory exists and is not necessary
-            postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_user, password=postgres_pw, initdb=initdb)            
-            postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
-            postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_test_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
-            os._exit(0)
-        else:
-            os.waitpid(newpid,0)
+        os.setuid(unprivileged_uid)
+        # os.makedirs(postgres_datadir_path) # causes error if directory exists and is not necessary
+        postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_user, password=postgres_pw, initdb=initdb)            
+        postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
+        postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_test_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
     else:
         logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (postgres_datadir_path, force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
         
