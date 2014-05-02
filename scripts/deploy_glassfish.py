@@ -78,7 +78,9 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
     if domain_line is None:
         # domain not yet created
         logger.info("Creating missing domain %s" % domain_name)
-        sp.check_call([asadmin, "create-domain", "--adminport", "4848", domain_name], cwd=glassfish_dir) # check whether domain is started
+        sp.check_call([asadmin, "create-domain", "--adminport", "4848", domain_name], cwd=glassfish_dir) # server is not started after domain creation
+        logger.info("Starting domain %s" % domain_name)
+        sp.check_call([asadmin, "start-domain", domain_name], cwd=glassfish_dir)
     else:
         if glassfish_version < (4,0) and domain_line == "Name: %s Status: Not Running" % domain_name or glassfish_version >= (4,0) and domain_line == "%s not running" % domain_name:
             # domain needs to be started
