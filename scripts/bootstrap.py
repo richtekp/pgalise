@@ -337,7 +337,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         else:
             os.waitpid(newpid,0)
     else:
-        logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
+        logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (postgres_datadir_path, force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
         
 def retrieve_md5sum(path):
     md5sum_output = sp.check_output([md5sum, path]).strip().decode('utf-8') # subprocess.check_output returns byte string which has to be decoded
