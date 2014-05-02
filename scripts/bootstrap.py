@@ -230,7 +230,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             sp.check_call([unzip, os.path.join(tmp_dir, geotools_src_archive_name)], cwd=external_src_dir)
         if not skip_build:
             mvn_settings_file_path = os.path.join(script_dir, "settings.xml")
-            #sp.check_call([mvn, "--global-settings", mvn_settings_file_path, "--settings", mvn_settings_file_path, "install", "-Dall", "-DskipTests=true"], cwd=geotools_src_dir)
+            sp.check_call([mvn, "--global-settings", mvn_settings_file_path, "--settings", mvn_settings_file_path, "install", "-Dall", "-DskipTests=true"], cwd=geotools_src_dir)
         
         # install postgis
         # install from mvn project from internal directory and not from source to have consistent installation behavior
