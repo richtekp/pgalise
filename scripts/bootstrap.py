@@ -256,8 +256,8 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             sp.check_call([wget, postgis_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
             sp.check_call([tar, "xf", os.path.join(tmp_dir, postgis_archive_name)], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=external_src_dir)
         if not skip_build:
-            sp.check_call([sudo, apt_get, "build-dep", "--assume-yes", "postgis"]) # might not be sufficient because Ubuntu 13.10's version of postgis is 1.5.x (we're using 2.x)
-            sp.check_call([sudo, apt_get, "install", "--assume-yes", "libgdal-dev"]) # not covered by 1.5.x requirements (see above)    
+            sp.check_call([sudo, apt_get, "build-dep", "postgis"]) # might not be sufficient because Ubuntu 13.10's version of postgis is 1.5.x (we're using 2.x)
+            sp.check_call([sudo, apt_get, "install", "libgdal-dev"]) # not covered by 1.5.x requirements (see above)    
             sp.check_call([bash, "autogen.sh"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
             sp.check_call([bash, "configure"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
             sp.check_call([make, "-j8"], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=postgis_src_dir)
@@ -293,7 +293,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         os.system("wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -")
         try:
             sp.check_call([sudo, apt_get, "update"])
-            sp.check_call([sudo, apt_get, "--assume-yes", "install", 
+            sp.check_call([sudo, apt_get, "install", 
                 "postgresql-%s" % pg_version, 
                 "postgresql-%s-postgis-2.1" % pg_version, 
                 "postgresql-%s-postgis-2.1-scripts" % pg_version,
@@ -302,7 +302,7 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
             ])
         except:
             print("postgresql installation failed (which is possible due to broken package in Ubuntu 13.10")
-            sp.check_call([sudo, apt_get, "remove", "--assume-yes", "postgresql", "postgresql-common"]) 
+            sp.check_call([sudo, apt_get, "remove", "postgresql", "postgresql-common"]) 
             postgresql_deb_path = os.path.join(tmp_dir, postgresql_deb_name)
             if not os.path.exists(postgresql_deb_path) or retrieve_md5sum(postgresql_deb_path) != postgresql_deb_md5:
                 sp.check_call([wget, postgresql_deb_url], preexec_fn=user_group_utils.demote_uid(unprivileged_uid), cwd=tmp_dir)
