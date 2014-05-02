@@ -16,6 +16,12 @@ import re
 import sys
 import argparse
 # further imports below
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
 
 pg_version="9.2" # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
 
