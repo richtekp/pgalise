@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.modifier;
 
+import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
@@ -89,6 +90,8 @@ public class ReferenceCityTest {
   private WeatherLoader loader;
   @EJB
   private IdGenerator idGenerator;
+  @EJB
+  private PersistenceUtil persistenceUtil;
 
   public ReferenceCityTest() {
     // Start
@@ -137,18 +140,21 @@ public class ReferenceCityTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       service.addNewWeather(startTimestamp,

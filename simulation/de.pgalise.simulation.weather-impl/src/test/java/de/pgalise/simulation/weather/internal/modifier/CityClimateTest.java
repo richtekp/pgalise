@@ -15,20 +15,21 @@
  */
 package de.pgalise.simulation.weather.internal.modifier;
 
+import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
-import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
-import de.pgalise.simulation.weather.entity.AbstractStationData;
+import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
+import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
 import de.pgalise.simulation.weather.service.WeatherService;
-import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Collections;
@@ -89,6 +90,8 @@ public class CityClimateTest {
 
   @Resource
   private UserTransaction userTransaction;
+  @EJB
+  private PersistenceUtil persistenceUtil;
 
   public CityClimateTest() throws NamingException {
     // Start
@@ -137,18 +140,21 @@ public class CityClimateTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManagerFactory,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManagerFactory,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManagerFactory,
           idGenerator);
       service.addNewWeather(startTimestamp,

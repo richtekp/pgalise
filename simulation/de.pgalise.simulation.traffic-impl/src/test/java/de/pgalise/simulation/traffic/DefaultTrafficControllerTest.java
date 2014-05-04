@@ -587,9 +587,9 @@ public class DefaultTrafficControllerTest {
     TrafficEdge ab = new TrafficEdge(idGenerator.getNextId(),
       a,
       b);
-    TrafficTrip trip0 = ctrl.createTrip(city.getBoundary().retrieveBoundary(),
+    TrafficTrip trip0 = ctrl.createTrip(city.getBoundary().getBoundary(),
       VehicleTypeEnum.CAR);
-    TrafficTrip trip1 = ctrl.createTrip(city.getBoundary().retrieveBoundary(),
+    TrafficTrip trip1 = ctrl.createTrip(city.getBoundary().getBoundary(),
       VehicleTypeEnum.CAR);
 
     List<TrafficEdge> path = ctrl.getShortestPath(a,

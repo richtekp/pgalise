@@ -15,13 +15,10 @@
  */
 package de.pgalise.simulation.shared.entity;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAnyElement;
 
@@ -49,7 +46,7 @@ import javax.xml.bind.annotation.XmlAnyElement;
  * @author Timo
  */
 @Entity
-public class Building extends BaseBoundary {
+public class Building extends Identifiable {
 
   private static final long serialVersionUID = 5874106158590082263L;
 
@@ -86,7 +83,8 @@ public class Building extends BaseBoundary {
   @ElementCollection
   private Set<String> landuseTags = new HashSet<>();
   private boolean office = false; // this should be in Building (research OSM specification what office is supposed to mean)
-
+  private BaseBoundary boundary;
+  
   protected Building() {
   }
   
@@ -100,15 +98,12 @@ public class Building extends BaseBoundary {
    * @param referencePoint
    * @param boundaryCoordinates
    */
-  public Building(Long id, BaseCoordinate referencePoint, List<BaseCoordinate> boundaryCoordinates) {
-    super(id,
-      referencePoint,
-      boundaryCoordinates);
+  public Building(Long id, BaseBoundary boundaryCoordinates) {
+    super(id);
   }
 
   public Building(Long id,
-    BaseCoordinate referencePoint,
-    List<BaseCoordinate> boundaryCoordinates,
+    BaseBoundary referencePoint,
     Set<String> tourismTags,
     Set<String> serviceTags,
     Set<String> sportTags,
@@ -125,8 +120,7 @@ public class Building extends BaseBoundary {
     Set<String> landuseTags,
     boolean office,
     boolean military) {
-    super(id,referencePoint,
-      boundaryCoordinates);
+    this(id,referencePoint);
     this.tourismTags = tourismTags;
     this.serviceTags = serviceTags;
     this.sportTags = sportTags;
@@ -142,6 +136,14 @@ public class Building extends BaseBoundary {
     this.amenityTags = amenityTags;
     this.office = office;
     this.military = military;
+  }
+
+  public void setBoundary(BaseBoundary boundary) {
+    this.boundary = boundary;
+  }
+
+  public BaseBoundary getBoundary() {
+    return boundary;
   }
 
   public boolean isMilitary() {

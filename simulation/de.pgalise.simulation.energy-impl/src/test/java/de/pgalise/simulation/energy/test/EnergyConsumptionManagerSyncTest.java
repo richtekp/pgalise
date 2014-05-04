@@ -32,6 +32,7 @@ import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.traffic.service.CityDataService;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.simulation.shared.entity.Building;
@@ -96,10 +97,10 @@ public class EnergyConsumptionManagerSyncTest {
     List<Building> buildingList = new ArrayList<>();
 
     for (int i = 0; i < 100; i++) {
+      BaseCoordinate referencePoint = new BaseCoordinate( 53.136765,
+          8.216524);
       buildingList.add(new Building(idGenerator.getNextId(),
-        new BaseCoordinate( 53.136765,
-          8.216524),
-        null));
+        new BaseBoundary(idGenerator.getNextId(), referencePoint, null)));
     }
 
     CityDataService citydata = EasyMock.createNiceMock(

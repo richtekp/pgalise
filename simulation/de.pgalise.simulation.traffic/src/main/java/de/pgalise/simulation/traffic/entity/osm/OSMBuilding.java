@@ -7,6 +7,7 @@
 package de.pgalise.simulation.traffic.entity.osm;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.entity.BasePolygon;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.Building;
@@ -34,18 +35,15 @@ public class OSMBuilding extends Building {
 
   public OSMBuilding(String osmId,
     Long id,
-    BaseCoordinate geoLocation,
-    List<BaseCoordinate> position) {
+    BaseBoundary geoLocation) {
     super(id,
-      geoLocation,
-      position);
+      geoLocation);
     this.osmId = osmId;
   }
 
   public OSMBuilding(String osmId,
     Long id,
-    BaseCoordinate geoLocation,
-    List<BaseCoordinate> geoInfo,
+    BaseBoundary geoInfo,
     Set<String> tourismTags,
     Set<String> serviceTags,
     Set<String> sportTags,
@@ -63,7 +61,6 @@ public class OSMBuilding extends Building {
     boolean office,
     boolean military) {
     super(id,
-      geoLocation,
       geoInfo,
       tourismTags,
       serviceTags,

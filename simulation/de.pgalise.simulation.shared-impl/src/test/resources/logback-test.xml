@@ -6,19 +6,19 @@
 		</encoder>
 	</appender>
 	
-	<logger name="org.hibernate" level="OFF"/>
-	<logger name="org.apache.openejb" level="OFF"/>
-	<logger name="org.glassfish" level="OFF"/>
-	<logger name="org.hibernate" level="OFF"/>
-	<logger name="org.hibernate.SQL" level="OFF"/>
-	<logger name="org.hibernate.type" level="OFF"/>
-	<logger name="org.hibernate.hql.ast.AST" level="OFF"/>
-	<logger name="org.hibernate.tool.hbm2ddl" level="OFF"/>
-	<logger name="org.hibernate.hql" level="OFF"/>
-	<logger name="org.hibernate.cache" level="OFF"/>
-	<logger name="org.hibernate.jdbc" level="OFF"/>
+	<logger name="org.hibernate" level="WARN"/>
+	<logger name="org.apache.openejb" level="WARN"/>
+	<logger name="org.glassfish" level="WARN"/>
+	<logger name="org.hibernate" level="WARN"/>
+	<logger name="org.hibernate.SQL" level="WARN"/>
+	<logger name="org.hibernate.type" level="WARN"/>
+	<logger name="org.hibernate.hql.ast.AST" level="WARN"/>
+	<logger name="org.hibernate.tool.hbm2ddl" level="WARN"/>
+	<logger name="org.hibernate.hql" level="WARN"/>
+	<logger name="org.hibernate.cache" level="WARN"/>
+	<logger name="org.hibernate.jdbc" level="WARN"/>
 
-	<root level="OFF">
+	<root level="WARN">
 		<appender-ref ref="CONSOLE" />
 	</root>	
 </configuration>

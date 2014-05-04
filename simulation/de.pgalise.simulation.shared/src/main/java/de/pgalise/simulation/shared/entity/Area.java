@@ -25,7 +25,7 @@ public class Area extends BaseBoundary {
     super(id);
   }
   
-  public Area(Long id, BaseCoordinate referencePoint, List<BaseCoordinate> boundaryCoordinates) {
+  public Area(Long id, BaseCoordinate referencePoint, BasePolygon boundaryCoordinates) {
     super(id, referencePoint,
       boundaryCoordinates);
   }

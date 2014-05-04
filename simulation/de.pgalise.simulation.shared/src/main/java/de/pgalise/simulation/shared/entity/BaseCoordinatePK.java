@@ -68,4 +68,8 @@ public class BaseCoordinatePK implements Serializable {
     }
     return true;
   }
+  
+  public static BaseCoordinatePK create(BaseCoordinate from) {
+    return new BaseCoordinatePK(from.getX(), from.getY());
+  }
 }

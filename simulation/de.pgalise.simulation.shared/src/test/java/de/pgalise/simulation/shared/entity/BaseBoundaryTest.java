@@ -45,30 +45,16 @@ public class BaseBoundaryTest {
     City testCity = createDefaultTestCityInstance(idGenerator);
     BaseBoundary instance = new BaseBoundary(idGenerator.getNextId(),
             testCity.getBoundary().getReferencePoint(),
-            testCity.getBoundary().getBoundaryCoordinates());
+            testCity.getBoundary().getBoundary());
     Coordinate expResult
-            = GeoToolsBootstrapping.getGeometryFactory().createMultiPoint(testCity.getBoundary().getBoundaryCoordinates().toArray(new Coordinate[testCity.getBoundary().getBoundaryCoordinates().size()])).getCentroid().getCoordinate();
-    BaseCoordinate result = instance.retrieveCenterPoint();
+            = GeoToolsBootstrapping.getGeometryFactory().createMultiPoint(
+                    testCity.getBoundary().getBoundary().getCoordinates()
+            ).getCentroid().getCoordinate();
+    Coordinate result = instance.retrieveCenterPoint();
     assertEquals(expResult.x,
             result.x, 0.5);
     assertEquals(expResult.y,
             result.y, 0.5);
-  }
-
-  /**
-   * Test of retrieveBoundary method, of class BaseBoundary.
-   */
-  @Test
-  public void testRetrieveBoundary() {
-    City testCity = createDefaultTestCityInstance(idGenerator);
-    BaseBoundary instance = new BaseBoundary(idGenerator.getNextId(),
-            testCity.getBoundary().getReferencePoint(),
-            testCity.getBoundary().getBoundaryCoordinates());
-    Polygon expResult
-            = GeoToolsBootstrapping.getGeometryFactory().createPolygon(testCity.getBoundary().getBoundaryCoordinates().toArray(new Coordinate[testCity.getBoundary().getBoundaryCoordinates().size()]));
-    Polygon result = instance.retrieveBoundary();
-    assertEquals(expResult,
-            result);
   }
 
   /*
@@ -78,7 +64,10 @@ public class BaseBoundaryTest {
 
     BaseCoordinate referencePoint = new BaseCoordinate(52.516667,
             13.4);
-    List<BaseCoordinate> referenceArea = new LinkedList<>(Arrays.asList(
+    BasePolygon referenceArea = new BasePolygon(idGenerator.getNextId(),
+      GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+        new LinkedList<Coordinate>(
+          Arrays.asList(
             new BaseCoordinate(referencePoint.getX() - 1,
                     referencePoint.getY() - 1),
             new BaseCoordinate(referencePoint.getX() - 1,
@@ -89,7 +78,10 @@ public class BaseBoundaryTest {
                     referencePoint.getY() - 1),
             new BaseCoordinate(referencePoint.getX() - 1,
                     referencePoint.getY() - 1)
-    ));
+          )
+        ).toArray(new Coordinate[5])
+      )
+    );
     City city = new City(idGenerator.getNextId(),
             "Berlin",
             3375222,

@@ -176,35 +176,6 @@ public class DefaultGraphExtensions implements GraphExtensions {
 	}
 
 	/**
-	 * Sets the position of the passed node argument. Additionally the new lengths and vectors for each edge of the
-	 * passed node are calculated.
-	 * 
-	 * @param node
-	 *            the node which positions shall be set
-	 * @param position
-	 *            the new position of the node
-	 * @return the passed node for method chaining
-	 * @throws IllegalArgumentException
-	 *             if argument 'node' is 'null'
-	 */
-	@Override
-	public TrafficNode setPosition(final TrafficNode node, final BaseCoordinate position) throws IllegalArgumentException {
-		DefaultGraphExtensions.checkNode(node);
-		if (node == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("node"));
-		}
-		if (position == null) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull("position"));
-		}
-		if ((position.getX() < 0) || (position.getY() < 0)) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("position", true));
-		}
-		node.setX(position.x);
-    node.setY(position.y);
-		return node;
-	}
-
-	/**
 	 * Sets the lengths of the passed edge.
 	 * 
 	 * @param edge

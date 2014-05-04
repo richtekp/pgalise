@@ -6,8 +6,10 @@
 package de.pgalise.testutils.traffic;
 
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BasePolygon;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import de.pgalise.simulation.traffic.entity.CityInfrastructureData;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
 import de.pgalise.util.cityinfrastructure.BuildingEnergyProfileStrategy;
@@ -61,8 +63,13 @@ public class TrafficTestUtils {
       80,
       true,
       true,
-      new BaseBoundary(idGenerator.getNextId(), referencePoint,
-        referenceArea),
+      new BaseBoundary(idGenerator.getNextId(),referencePoint,
+        new BasePolygon(idGenerator.getNextId(),
+          GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+            referenceArea.toArray(new BaseCoordinate[referenceArea.size()])
+          )
+        )
+      ),
       trafficInfrastructureData);
     return city;
   }

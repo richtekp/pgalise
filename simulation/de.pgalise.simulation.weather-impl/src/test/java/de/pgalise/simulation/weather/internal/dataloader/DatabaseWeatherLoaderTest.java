@@ -4,22 +4,23 @@
  */
 package de.pgalise.simulation.weather.internal.dataloader;
 
+import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ServiceDataForecast;
-import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
-import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.entity.WeatherCondition;
+import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
+import de.pgalise.simulation.weather.model.StationDataMap;
 import de.pgalise.simulation.weather.service.WeatherService;
-import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.Calendar;
@@ -62,6 +63,8 @@ public class DatabaseWeatherLoaderTest {
   private UserTransaction userTransaction;
   @EJB
   private IdGenerator idGenerator;
+  @EJB
+  private PersistenceUtil persistenceUtil;
 
   public DatabaseWeatherLoaderTest() {
   }
@@ -98,18 +101,21 @@ public class DatabaseWeatherLoaderTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       service.addNewWeather(startTimestamp,
@@ -161,18 +167,21 @@ public class DatabaseWeatherLoaderTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       service.addNewWeather(startTimestamp,
@@ -229,18 +238,21 @@ public class DatabaseWeatherLoaderTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       service.addNewWeather(startTimestamp,
@@ -320,18 +332,21 @@ public class DatabaseWeatherLoaderTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       service.addNewWeather(startTimestamp,

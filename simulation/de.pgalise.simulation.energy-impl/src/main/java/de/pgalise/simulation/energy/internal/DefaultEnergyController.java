@@ -237,7 +237,7 @@ public class DefaultEnergyController extends AbstractController<EnergyEvent, Sta
             timestamp,
             entry.getKey(),
             new BaseCoordinate(
-            building.retrieveCenterPoint()));
+            building.getBoundary().retrieveCenterPoint()));
       }
     }
 

@@ -16,7 +16,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * An extension of {@link Coordinate} which is necessary to reach JaxRS 
- * compliance (e.g. getter and setter for properties x and y).
+ * compliance (e.g. getter and setter for properties x and y). The values 
+ * of properties x and y are forming the {@link Id} of the entity and are 
+ * therefore immutable.
  * @author richter
  */
 @XmlRootElement
@@ -26,11 +28,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 /*
 BaseCoordinate doesn't have a business id because it is not allowed that two 
 Coordinates with the same x and y property exist (therefore defining a 
-composite key over x and y makes sense)
+composite key over x and y makes sense) AND changing the values is not 
+necessary
 */
 public class BaseCoordinate extends Coordinate {
   private static final long serialVersionUID = 1L;
 
+  /*
+  internal implementation notes:
+  - only serves to hide the public field of the super class, operations are
+  performed on it though (passed in constructor)
+  */
+  @SuppressWarnings("FieldNameHidesFieldInSuperclass")
+  private double x;
+  /*
+  internal implementation notes:
+  - only serves to hide the public field of the super class, operations are
+  performed on it though (passed in constructor)
+  */
+  @SuppressWarnings("FieldNameHidesFieldInSuperclass")
+  private double y;
+  /*
+  internal implementation notes:
+  - only serves to hide the public field of the super class, operations are
+  performed on it though (passed in constructor)
+  */
+  @SuppressWarnings("FieldNameHidesFieldInSuperclass")
+  private double z;
+  
 	/**
 	 * Constructs a <code>Coordinate</code> at (x,y,z).
 	 *
@@ -65,7 +90,7 @@ public class BaseCoordinate extends Coordinate {
 		return super.getOrdinate(X);
 	}
 
-	public void setX(double x) {
+	protected void setX(double x) {
 		super.setOrdinate(X,
 			x);
 	}
@@ -75,7 +100,7 @@ public class BaseCoordinate extends Coordinate {
 		return super.getOrdinate(Y);
 	}
 
-	public void setY(double y) {
+	protected void setY(double y) {
 		super.setOrdinate(Y,
 			y);
 	}

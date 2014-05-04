@@ -21,6 +21,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BasePolygon;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.entity.Area;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
@@ -458,7 +459,7 @@ public class OSMFileBasedCityDataService implements
     List<Building> buildings0 = new ArrayList<>();
     for (Building building : tmpBuildings) {
       if (GeoToolsBootstrapping.getDistanceInMeter(centerPoint,
-        building.retrieveCenterPoint()) <= radiusInMeter) {
+        building.getBoundary().retrieveCenterPoint()) <= radiusInMeter) {
         buildings0.add(building);
       }
     }
@@ -778,6 +779,7 @@ public class OSMFileBasedCityDataService implements
               if (!buildingTags.isEmpty()) {
                 Building lastBuilding = new OSMBuilding(idGenerator.getNextId(),
                   osmWayId);
+                List<BaseCoordinate> lastBuildingCoordinates = new LinkedList<>();
                 for (String osmWayNodeRef : osmWayNodeRefs) {
                   TrafficNode osmWayNode = osmIdNodeMap.get(osmWayNodeRef);
                   if (osmWayNode == null) {
@@ -790,12 +792,20 @@ public class OSMFileBasedCityDataService implements
                     osmIdNodeMap.put(osmWayNodeRef,
                       osmWayNode);
                   }
-                  lastBuilding.getBoundaryCoordinates().add(
+                  lastBuildingCoordinates.add(
                     osmWayNode);
                 }
+                lastBuilding.getBoundary().setBoundary(
+                  new BasePolygon(idGenerator.getNextId(),
+                    GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+                      lastBuildingCoordinates.toArray(new BaseCoordinate[lastBuildingCoordinates.size()])
+                    )
+                  )
+                );
                 buildings.add(lastBuilding);
               } else if(!landuseTags.isEmpty()) {
                 Area newArea = new OSMArea(idGenerator.getNextId(), osmWayId);
+                List<BaseCoordinate> newAreaCoordinates = new LinkedList<>();
                 for (String osmWayNodeRef : osmWayNodeRefs) {
                   TrafficNode osmWayNode = osmIdNodeMap.get(osmWayNodeRef);
                   if (osmWayNode == null) {
@@ -808,9 +818,16 @@ public class OSMFileBasedCityDataService implements
                     osmIdNodeMap.put(osmWayNodeRef,
                       osmWayNode);
                   }
-                  newArea.getBoundaryCoordinates().add(
+                  newAreaCoordinates.add(
                     osmWayNode);
                 }
+                newArea.setBoundary(
+                  new BasePolygon(idGenerator.getNextId(),
+                    GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+                      newAreaCoordinates.toArray(new BaseCoordinate[newAreaCoordinates.size()])
+                    )
+                  )
+                );
                 areas.add(newArea);
               } else {
                 //neither building, motor way, cycle way, etc.
@@ -1153,7 +1170,13 @@ public class OSMFileBasedCityDataService implements
       boundaryCoordinates.add(new BaseCoordinate(
         boundaryCoordinate));
     }
-    this.city.getBoundary().setBoundaryCoordinates(boundaryCoordinates);
+    this.city.getBoundary().setBoundary(
+      new BasePolygon(idGenerator.getNextId(),
+        GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+          boundaryCoordinates.toArray(new BaseCoordinate[boundaryCoordinates.size()])
+        )
+      )
+    );
     this.city.getCityInfrastructureData().setBuildings(buildings);
     /* build the pr-tree for buildings */
     this.buildingTree = new PRTree<>(new BuildingMBRConverter(),
@@ -1236,10 +1259,10 @@ public class OSMFileBasedCityDataService implements
       PointND p) {
       /* euclidean distance */
       return Math.sqrt(Math.pow(
-        (b.retrieveCenterPoint().getX() - p.
+        (b.getBoundary().retrieveCenterPoint().getX() - p.
         getOrd(0)),
         2)
-        + Math.pow((b.retrieveCenterPoint().getY() - p.getOrd(1)),
+        + Math.pow((b.getBoundary().retrieveCenterPoint().getY() - p.getOrd(1)),
           2));
     }
   }
@@ -1261,15 +1284,15 @@ public class OSMFileBasedCityDataService implements
     @Override
     public double getMax(int arg0,
       Building arg1) {
-      return arg0 == 0 ? arg1.retrieveCenterPoint().getX() : arg1.
-        retrieveCenterPoint().getY();
+      return arg0 == 0 ? arg1.getBoundary().retrieveCenterPoint().getX() : arg1.
+        getBoundary().retrieveCenterPoint().getY();
     }
 
     @Override
     public double getMin(int arg0,
       Building arg1) {
-      return arg0 == 0 ? arg1.retrieveCenterPoint().getX() : arg1.
-        retrieveCenterPoint().getY();
+      return arg0 == 0 ? arg1.getBoundary().retrieveCenterPoint().getX() : arg1.
+        getBoundary().retrieveCenterPoint().getY();
     }
   }
 

@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
+import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
@@ -125,6 +126,8 @@ public class DefaultWeatherServiceSyncTest {
    */
   @Resource
   private SessionContext context;
+  @EJB
+  private PersistenceUtil persistenceUtil;
 
   public DefaultWeatherServiceSyncTest() {
   }
@@ -176,18 +179,21 @@ public class DefaultWeatherServiceSyncTest {
       entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManager,
           idGenerator);
       entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManager,
           idGenerator);
       testclass.addNewWeather(startTimestamp,

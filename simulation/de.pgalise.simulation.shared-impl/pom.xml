@@ -36,11 +36,19 @@
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>shared</artifactId>
 		</dependency>
+    
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
 		</dependency>
+	 <dependency>
+	  <groupId>de.pgalise</groupId>
+	  <artifactId>de.pgalise.testutils-shared-resources</artifactId>
+	  <version>1.0.0-SNAPSHOT</version>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 
 	<build>

@@ -418,7 +418,7 @@ but also buggy (NPE at
 						<version>4.0</version>
 					</dependency>
 					<!-- JPA related dependencies -->
-					<!--			<dependency>
+<!--								<dependency>
 									<groupId>org.hibernate</groupId>
 									<artifactId>hibernate-spatial</artifactId>
 									<version>4.0</version>

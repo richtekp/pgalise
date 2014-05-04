@@ -3,6 +3,7 @@
   <persistence-unit name="pgalise-shared" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/pgalise</jta-data-source>
+    <class>de.pgalise.simulation.shared.entity.Area</class>
     <class>de.pgalise.simulation.shared.entity.BaseBoundary</class>
     <class>de.pgalise.simulation.shared.entity.BaseCoordinate</class>
     <class>de.pgalise.simulation.shared.entity.Building</class>
@@ -10,10 +11,9 @@
     <class>de.pgalise.simulation.shared.entity.GPSSensorData</class>
     <class>de.pgalise.simulation.shared.entity.NavigationEdge</class>
     <class>de.pgalise.simulation.shared.entity.NavigationNode</class>
+    <class>de.pgalise.simulation.shared.entity.OSMArea</class>
     <class>de.pgalise.simulation.shared.entity.SimpleSensorData</class>
     <class>de.pgalise.simulation.shared.entity.Way</class>
-    <class>de.pgalise.simulation.shared.entity.Area</class>
-    <class>de.pgalise.simulation.shared.entity.OSMArea</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://127.0.0.1:5201/pgalise"/>

@@ -7,14 +7,10 @@ package de.pgalise.simulation.shared.entity;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 /**
@@ -34,8 +30,12 @@ import javax.persistence.Transient;
  * @author richter
  */
 /*
-BaseBoundary has a business id because two different BaseBoundaries with the 
+internal implementation notes:
+- BaseBoundary has a business id because two different BaseBoundaries with the 
 same reference point (denoted by x and y) might have differet boundary
+- saving boundary coordinates as a list doesn't make sense because functionality 
+of polygon is required to validate the form of the coordinates (overlapping 
+of coordinates and connections between coordinates)
 */
 @Entity
 public class BaseBoundary extends Identifiable {
@@ -43,14 +43,12 @@ public class BaseBoundary extends Identifiable {
   private static final long serialVersionUID = 1L;
   @ManyToOne
   private BaseCoordinate referencePoint;
-
-  //@TODO: re-enable hibernate-spatial as soon as hibernate spatial is compatible Java EE 7 and/or integrated in hibernate-orm 5.x
-//	@Type(type="org.hibernate.spatial.GeometryType")
-//	@Column(name = "geometry", columnDefinition="Geometry", nullable = true) 
-  @OneToMany
-  private List<BaseCoordinate> boundaryCoordinates = new LinkedList<>();
-  @Transient
-  private Polygon boundary;
+  @Embedded
+  private BasePolygon boundary;
+  /*
+  internal implementation notes:
+  - see retrieveCenterPoint
+  */
   @Transient
   private BaseCoordinate centerPoint;
 
@@ -70,55 +68,42 @@ public class BaseBoundary extends Identifiable {
    */
   public BaseBoundary(Long id,
     BaseCoordinate referencePoint, 
-    List<BaseCoordinate> boundaryCoordinates ) {
+    BasePolygon boundaryCoordinates ) {
     super(id);
     this.referencePoint = referencePoint;
-    this.boundaryCoordinates = boundaryCoordinates;
-    if(!boundaryCoordinates.get(0).equals(boundaryCoordinates.get(boundaryCoordinates.size()-1))) {
-      throw new IllegalArgumentException("boundaryCoordinates don't form a closed polygon");
-    }
+    this.boundary = boundaryCoordinates;
   }
 
   /**
    * lazily calculates the geometrical center point based on the boundary
    * @return 
    */
+  /*
+  internal implementation notes:
+  - return a BaseCoordinate to avoid some code changes, but it is not 
+  necessary (can be a Coordinate as well)
+  */
   public BaseCoordinate retrieveCenterPoint() {
     if (centerPoint == null) {
-      Point centroid = retrieveBoundary().getCentroid();
+      Point centroid = boundary.getCentroid();
       this.centerPoint = new BaseCoordinate(centroid.getX(),
         centroid.getY());
     }
     return this.centerPoint;
   }
-  
-  /**
-   * lazily calculates the geometrical boundary based on the bondary 
-   * coordinates. 
-   * @return 
-   */
-  public Polygon retrieveBoundary() {
-    if (boundary == null) {
-      boundary = GeoToolsBootstrapping.getGeometryFactory().createPolygon(
-        //boundaryCoordinatesArray
-        boundaryCoordinates.toArray(new Coordinate[boundaryCoordinates.size()])
-      );
-    }
-    return this.boundary;
+
+  public void setBoundary(BasePolygon boundary) {
+    this.boundary = boundary;
   }
 
-  public void setBoundaryCoordinates(List<BaseCoordinate> boundaryCoordinates) {
-    this.boundaryCoordinates = boundaryCoordinates;
-  }
-
-  public List<BaseCoordinate> getBoundaryCoordinates() {
-    return boundaryCoordinates;
+  public BasePolygon getBoundary() {
+    return boundary;
   }
 
 	@Override
 	public int hashCode() {
 		int hash = 3;
-		hash = 17 * hash + Objects.hashCode(boundaryCoordinates);
+		hash = 17 * hash + Objects.hashCode(boundary);
 		return hash;
 	}
 
@@ -131,8 +116,8 @@ public class BaseBoundary extends Identifiable {
 			return false;
 		}
 		final BaseBoundary other = (BaseBoundary) obj;
-		if (!Objects.equals(this.boundaryCoordinates,
-			other.getBoundaryCoordinates())) {
+		if (!Objects.equals(this.boundary,
+			other.getBoundary())) {
 			return false;
 		}
 		return true;

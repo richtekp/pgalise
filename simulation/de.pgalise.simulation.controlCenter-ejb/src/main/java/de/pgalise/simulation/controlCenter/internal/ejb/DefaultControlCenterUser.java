@@ -258,7 +258,7 @@ public class DefaultControlCenterUser extends Endpoint implements
               new File(path + osmAndBusstopFileMessage.
                 getContent().getOsmFileNames()));
             this.sendMessage(new OSMParsedMessage(ccWebSocketMessage.getId(),
-              this.cityInfrastructureManager.createCity().getBoundary().retrieveBoundary().getEnvelopeInternal()));
+              this.cityInfrastructureManager.createCity().getBoundary().getBoundary().getEnvelopeInternal()));
             return;
           }
 

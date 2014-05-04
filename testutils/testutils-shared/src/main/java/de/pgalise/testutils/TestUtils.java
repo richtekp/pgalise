@@ -1,12 +1,10 @@
 
 package de.pgalise.testutils;
 
-import com.vividsolutions.jts.geom.Polygon;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.shared.PersistenceUtil;
+import de.pgalise.simulation.shared.entity.BasePolygon;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
-import de.pgalise.simulation.shared.entity.BaseCoordinatePK;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
 import java.util.Arrays;
@@ -17,7 +15,6 @@ import javax.ejb.embeddable.EJBContainer;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +54,8 @@ public class TestUtils {
     p.setProperty("openejb.classloader.forced-skip",
       "org.xml.sax");
 //      p.setProperty("openejb.validation.output.level",
-//        "VERBOSE");
+//        "VERBOSE");      
+    p.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 //      container = EJBContainer.createEJBContainer(p);
 //    }
   }
@@ -104,7 +102,13 @@ public class TestUtils {
       true,
       true,
       new BaseBoundary(idGenerator.getNextId(),referencePoint,
-        referenceArea));
+        new BasePolygon(idGenerator.getNextId(),
+          GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+            referenceArea.toArray(new BaseCoordinate[referenceArea.size()])
+          )
+        )
+      )
+    );
     return city;
   }
 

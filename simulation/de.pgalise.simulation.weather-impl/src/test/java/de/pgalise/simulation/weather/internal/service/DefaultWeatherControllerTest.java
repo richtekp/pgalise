@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
+import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
@@ -104,6 +105,8 @@ public class DefaultWeatherControllerTest {
   private IdGenerator idGenerator;
   @EJB
   private WeatherControllerLocal ctrl;
+  @EJB
+  private PersistenceUtil persistenceUtil;
 
   public DefaultWeatherControllerTest() {
   }
@@ -207,6 +210,7 @@ public class DefaultWeatherControllerTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManagerFactory,
           idGenerator);
       ctrl.start(parameter);

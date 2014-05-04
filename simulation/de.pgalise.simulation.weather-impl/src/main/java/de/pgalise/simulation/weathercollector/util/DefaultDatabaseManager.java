@@ -7,18 +7,19 @@
  */
 package de.pgalise.simulation.weathercollector.util;
 
-import de.pgalise.simulation.shared.PersistenceUtil;
+import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.shared.entity.City;
-import de.pgalise.simulation.weathercollector.exceptions.SaveStationDataException;
-import de.pgalise.simulation.weather.entity.WeatherCondition;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.entity.ExtendedServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ExtendedServiceDataForecast;
 import de.pgalise.simulation.weather.entity.ServiceDataHelper;
-import de.pgalise.simulation.weather.entity.AbstractStationData;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
+import de.pgalise.simulation.weathercollector.exceptions.SaveStationDataException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -46,6 +47,8 @@ public class DefaultDatabaseManager implements DatabaseManager {
    */
   @PersistenceContext(unitName = "pgalise-weather")
   private EntityManager em;
+  @EJB
+  private PersistenceUtil persistenceUtil;
 
   public DefaultDatabaseManager() {
   }
@@ -100,7 +103,7 @@ public class DefaultDatabaseManager implements DatabaseManager {
   public void saveServiceData(ServiceDataHelper weather) {
     // Get city
     City city = weather.getCity();
-    PersistenceUtil.saveOrUpdateCity(em,
+    persistenceUtil.saveOrUpdateCity(em,
       city);
 
     // Current weather

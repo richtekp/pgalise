@@ -15,6 +15,7 @@
  */
 package de.pgalise.simulation.weather.internal.modifier;
 
+import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
@@ -101,6 +102,8 @@ public class StormDayEventTest {
   private UserTransaction userTransaction;
   @EJB
   private IdGenerator idGenerator;
+  @EJB
+  private PersistenceUtil persistenceUtil;
 
   public StormDayEventTest() throws NamingException {
     // Start
@@ -154,18 +157,21 @@ public class StormDayEventTest {
       Map<Date, StationDataNormal> entities = WeatherTestUtils.
         setUpWeatherStationData(startTimestamp,
           endTimestamp,
+          persistenceUtil,
           entityManagerFactory,
           idGenerator);
       Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
         setUpWeatherServiceDataCurrent(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManagerFactory,
           idGenerator);
       Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
         setUpWeatherServiceDataForecast(startTimestamp,
           endTimestamp,
           city,
+          persistenceUtil,
           entityManagerFactory,
           idGenerator);
       service.addNewWeather(startTimestamp,

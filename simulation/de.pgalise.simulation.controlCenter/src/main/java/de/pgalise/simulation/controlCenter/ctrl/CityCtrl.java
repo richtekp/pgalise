@@ -10,6 +10,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.operation.BoundaryOp;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BasePolygon;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.entity.City;
@@ -215,7 +216,7 @@ public class CityCtrl implements Serializable {
     List<LatLng> cityInfrastructureDataBounds = new LinkedList<>();
 //    List<Coordinate> boundaryMultiPointCoords = new LinkedList<>(); //there's 
     //no implementation of CoordinateSequence which is a linked list
-    for (Coordinate n : trafficCity.getBoundary().retrieveBoundary().getCoordinates()) {
+    for (Coordinate n : trafficCity.getBoundary().getBoundary().getCoordinates()) {
       cityInfrastructureDataBounds.add(new LatLng(n.x,
         n.y));
     }
@@ -242,7 +243,7 @@ public class CityCtrl implements Serializable {
     TrafficCity newCity = (TrafficCity) valueChangeEvent.getNewValue();
     this.city.setName(newCity.getName());
     this.city.getBoundary().setReferencePoint(newCity.getBoundary().getReferencePoint());
-    this.city.getBoundary().setBoundaryCoordinates(newCity.getBoundary().getBoundaryCoordinates());
+    this.city.getBoundary().setBoundary(newCity.getBoundary().getBoundary());
   }
 
   //////
@@ -299,9 +300,19 @@ public class CityCtrl implements Serializable {
             -1,
             false,
             false,
-            new BaseBoundary(idGenerator.getNextId(),new BaseCoordinate(polygon.getCentroid().getCoordinate()),
-            autocompletionValueCoordiantes),
-            null);
+            new BaseBoundary(
+              idGenerator.getNextId(),
+              new BaseCoordinate(polygon.getCentroid().getCoordinate()),
+              new BasePolygon(idGenerator.getNextId(),
+                GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+                  autocompletionValueCoordiantes.toArray(
+                    new BaseCoordinate[autocompletionValueCoordiantes.size()]
+                  )
+                )
+              )
+            ),
+            null //infrastructure data
+          );
           retValue.add(autocompletionValue);
         }
       }
@@ -326,7 +337,7 @@ public class CityCtrl implements Serializable {
     List<LatLng> citySelectionBounds = new LinkedList<>();
     Polygon citySelectionBoundsPolygon = new Polygon();
     for (com.vividsolutions.jts.geom.Coordinate coordinate : selectedCity.
-      getBoundary().retrieveBoundary().getCoordinates()) {
+      getBoundary().getBoundary().getCoordinates()) {
       citySelectionBoundsPolygon.getPaths().add(new LatLng(coordinate.y,
         coordinate.x));
     }
@@ -419,7 +430,7 @@ public class CityCtrl implements Serializable {
    */
   public Envelope retrieveEnvelope() {
     if (useFileBoundaries) {
-      return fileBasedCityDataService.createCity().getBoundary().retrieveBoundary().getEnvelopeInternal();
+      return fileBasedCityDataService.createCity().getBoundary().getBoundary().getEnvelopeInternal();
     } else {
       return GeoToolsBootstrapping.getGeometryFactory().createPolygon(
         customFileBoundaries.toArray(new BaseCoordinate[customFileBoundaries.

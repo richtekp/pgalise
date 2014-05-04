@@ -21,6 +21,7 @@ import de.pgalise.simulation.energy.internal.DefaultEnergyController;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.ControllerStatusEnum;
 import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.shared.entity.BasePolygon;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
 import de.pgalise.simulation.shared.entity.BaseBoundary;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
@@ -153,9 +154,11 @@ public class DefaultEnergyControllerTest {
     for (int i = 0; i < 100; i++) {
       buildingList.add(
         new Building(idGenerator.getNextId(),
-          new BaseCoordinate( 53.136765,
+          new BaseBoundary(idGenerator.getNextId(), new BaseCoordinate( 53.136765,
             8.216524),
-          new LinkedList<>(Arrays.asList(
+          new BasePolygon(idGenerator.getNextId(),
+            GeoToolsBootstrapping.getGeometryFactory().createPolygon(
+              new LinkedList<>(Arrays.asList(
                 new BaseCoordinate( 1,
                   1),
                 new BaseCoordinate( 1,
@@ -166,11 +169,11 @@ public class DefaultEnergyControllerTest {
                   1),
                 new BaseCoordinate( 1,
                   1)
-          )
+              )).toArray(new BaseCoordinate[5])
             )
           )
-        
-      );
+        )      
+      ));
     }
 
     DefaultEnergyControllerTest.information = EasyMock.createNiceMock(

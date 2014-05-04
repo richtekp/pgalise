@@ -205,7 +205,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
   @Override
   protected void onInit(final TrafficInitParameter param) throws InitializationException {
     this.output = param.getOutput();
-    cityZone = param.getCity().getBoundary().retrieveBoundary();
+    cityZone = param.getCity().getBoundary().getBoundary().getBoundary();
     init0(); //initializes vehicleEventHandlerManager
     this.vehicleEventHandlerManager.init(param);
     try {

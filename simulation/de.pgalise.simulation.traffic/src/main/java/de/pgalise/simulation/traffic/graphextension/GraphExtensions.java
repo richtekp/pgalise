@@ -66,19 +66,7 @@ public interface GraphExtensions {
 	 * @return true if the node has an attached position property, otherwise false
 	 */
 	public boolean hasPosition(final TrafficNode node);
-
-	/**
-	 * Sets the position of the passed node argument. Additionally the new lengths and vectors for each edge of the
-	 * passed node are calculated.
-	 * 
-	 * @param node
-	 *            the node which positions shall be set
-	 * @param position
-	 *            the new position of the node
-	 * @return the passed node for method chaining
-	 */
-	public TrafficNode setPosition(final TrafficNode node, final BaseCoordinate position);
-
+  
 	/**
 	 * Returns the length between two nodes.
 	 * @param node1
