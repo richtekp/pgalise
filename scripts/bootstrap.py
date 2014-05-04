@@ -270,12 +270,14 @@ def bootstrap(skip_build=False, psql=psql, initdb=initdb, createdb=createdb, pos
         #apt_sources_file = open(apt_sources_file_path, "w")
         if check_os.check_ubuntu():            
             release_tuple = check_os.findout_release_ubuntu_tuple()
-            if release_tuple > (12,4):
-                release = "precise" # latest supported release for the repository
+            if release_tuple > (12,4) and release_tuple < (13,10):
+                release = "precise" # repository provides for precise, saucy and trusty
             else:
                 release = check_os.findout_release_ubuntu()
-        else:
+        elif check_os.check_debian():
             release = check_os.findout_release_debian()
+        else:
+            raise RuntimeError("operating system not supported")
         apt_line = "deb http://apt.postgresql.org/pub/repos/apt/ %s-pgdg main\n" % release
         if not apt_line in apt_sources_file_lines:
             apt_sources_output = string.join(apt_sources_file_lines+[apt_line], "\n")
