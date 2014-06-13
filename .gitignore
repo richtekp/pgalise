@@ -71,6 +71,9 @@ scripts/osm_postgis_transform.py
 scripts/lib/postgis_utils.py
 scripts/osm_postgis_transform.py
 
+# purpose unclear
+pyftpdlib
+
 ##########
 # IDE related
 ##########
