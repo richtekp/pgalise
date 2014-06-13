@@ -55,8 +55,21 @@ postgis_db-9.2/
 postgis_db-9.2/*
 
 # bootstrapping and external sources
-/external
 scripts/tmp
+scripts/tests/ftp-base
+pgalise-bootstrap
+
+# script tests
+scripts/tests/lxc-btrfs.img
+scripts/tests/lxc/*
+
+# copied by mvn
+scripts/lib/mount_utils.py
+scripts/lib/sparse_file_utils.py
+scripts/osm_postgis_transform_prequisites.py
+scripts/osm_postgis_transform.py
+scripts/lib/postgis_utils.py
+scripts/osm_postgis_transform.py
 
 ##########
 # IDE related
