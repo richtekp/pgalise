@@ -4,23 +4,23 @@
 import os
 import sys
 import datetime
-#import subprocess as sp
+import subprocess as sp # overridden by import of subprocess32 later, but 
+        # necessary initially
 import argparse
 import string
-pip = "pip"
-try:
-    import subprocess32 as sp # subprocess32 is necessary in order to provide secure (preexec_fn has security issues) way of launching postgres processes and intercepting SIGINT without them getting killed
-except ImportError as ex:
-    if os_utils.which(pip) is None:
-        pm_utils.install_packages(["python-pip"], package_manager="apt-get")
-    sp.check_call([pip, "install", "subprocess32"]) # pip manages update of available import automatically so that import xxx can be invoked
-    import subprocess32 as sp
-import signal
-import sys
-
 base_dir_path = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 script_dir = os.path.join(base_dir_path, "scripts")
 sys.path.append(os.path.join(script_dir, "lib"))
+import os_utils
+pip = "pip"
+sudo = "sudo"
+try:
+    import subprocess32 as sp # subprocess32 is necessary in order to provide secure (preexec_fn has security issues) way of launching postgres processes and intercepting SIGINT without them getting killed
+except ImportError as ex:
+    logger.error("subprocess32 isn't availble did you invoke scripts/bootstrap.py")
+import signal
+import sys
+
 sys.path.append("lib")
 import check_os
 

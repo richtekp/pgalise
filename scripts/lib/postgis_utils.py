@@ -24,7 +24,7 @@ pwfile_path = "./pwfile" # it's not wise to write to a file in system's temporar
 
 postgres_server_start_timeout = 5
 
-# user privileges should be handled by caller (e.g. with os.fork)
+# runs an appropriate initdb routine and initializes md5 login for <tt>db_user</tt>
 # @args extension_install on of EXTENSION_INSTALLS
 # @raise ValueError is extension_install is not one of EXTENSION_INSTALLS
 def bootstrap_datadir(datadir_path, db_user, password="somepw", initdb="initdb"):
@@ -53,6 +53,7 @@ def bootstrap_database(datadir_path, db_port, db_host, db_user, db_name, passwor
             sp.check_call([psql, "-d", db_name, "-f", "/usr/share/postgresql/%s/contrib/postgis-%s/topology.sql" % (pg_version, postgis_version_string), "-p", str(db_port), "-h", db_host, "--username=%s" % db_user, "-v", "ON_ERROR_STOP=1"])
             sp.check_call([psql, "-d", db_name, "-f", "/usr/share/postgresql/%s/contrib/postgis-%s/spatial_ref_sys.sql" % (pg_version, postgis_version_string), "-p", str(db_port), "-h", db_host, "--username=%s" % db_user, "-v", "ON_ERROR_STOP=1"])
         sp.check_call([psql, "-d", db_name, "-c", "create extension hstore;", "-p", str(db_port), "-h", db_host, "--username=%s" % db_user, "-v", "ON_ERROR_STOP=1"]) # no sql file for hstore found, so install it from postgresql-contrib-x.x deb package (find another way (check wiki for existing solutions) if trouble occurs)
+        sp.check_call([psql, "-c", "ALTER USER %s WITH PASSWORD '%s';" % (db_user, password), "-p", str(db_port), "-h", db_host, "--username=%s" % db_user])
     finally:
         postgres_process.terminate()
         logger.info("waiting for postgres process to terminate")

@@ -42,18 +42,6 @@ def retrieve_column_values(output, column_count, comment_symbol="#"):
         ret_value.append(column_value)
     return ret_value
 
-# appends <tt>what</tt> to file with path <tt>file0</tt>. Creates file if it doesn't exist. Newline character is appended if <tt>lazy_newline</tt> is <code>True</code> and <tt>what</tt> doesn't end with a newline yet.
-# raises <tt>ValueError</tt> if <tt>file0</tt> is a directory
-def append_file(file0, what, lazy_newline=True):
-    if os.path.isdir(file0):
-        raise ValueError("file %s is a directory" % file0)
-    if lazy_newline and not what.endswith("\n"):
-        what = "%s\n" % what
-    file_obj = open(file0, 'a')
-    file_obj.write(what)
-    file_obj.flush()
-    file_obj.close()
-
 # reads <tt>file_</tt> and returns the return value of <tt>output_lines</tt> invoked with the read file content and the specified <tt>comment_symbol</tt>
 # @args comment_symbol can be <code>None</code> in order to include all lines, must not be the empty string '' (<tt>ValueError</tt> will be raised)
 def file_lines(file_, comment_symbol="#"):

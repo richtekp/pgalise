@@ -42,7 +42,7 @@ domain_name = "pgalise"
 def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glassfish_version_default):
     if glassfish_version != (4,0):
         raise ValueError("glassfish version != 4.0 not supported")
-    logger.info("checking glassfish dirs")
+    logger.info("checking glassfish some directories where glassfish is expected")
     if not os.path.exists(glassfish_dir):
         logger.info("%s doesn't exist" % glassfish_dir)
         glassfish_dir = os.path.join(os.environ["HOME"], "glassfish-current")
@@ -52,10 +52,14 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
             if not os.path.exists(glassfish_dir):
                 logger.info("%s doesn't exist" % glassfish_dir)
                 logger.info("Enter path to glassfish directory interactively (skip this with -%s (--%s))" % (glassfish_dir_option, glassfish_dir_option_long))
-                glassfish_dir = raw_input("Enter path to glassfish directory: ")
+                # python has no do-while-loop :(, but nested functions :)
+                glassfish_dir = None
+                def test():
+                    glassfish_dir = os.path.join(os.getcwd(), raw_input("Enter path to glassfish directory (relative or absolut): "))
+                test()
                 while not os.path.exists(glassfish_dir):
                     logger.error("%s doesn't exist" % glassfish_dir)
-                    glassfish_dir = raw_input("Enter path to glassfish directory: ")
+                    test()
     logger.info("glassfish directory is %s" % glassfish_dir)
     
     # glassfish's main command is asadmin
