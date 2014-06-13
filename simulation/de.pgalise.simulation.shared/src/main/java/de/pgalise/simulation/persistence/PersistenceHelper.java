@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
  *
  * @author richter
  */
-public interface PersistenceUtil {
+public interface PersistenceHelper extends Serializable {
   
   void saveOrUpdate(EntityManager entityManager, Serializable instance, Class<?> clazz, Object id) ;
 

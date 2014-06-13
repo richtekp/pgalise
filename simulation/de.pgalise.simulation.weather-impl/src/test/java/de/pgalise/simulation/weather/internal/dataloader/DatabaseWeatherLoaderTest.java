@@ -4,7 +4,7 @@
  */
 package de.pgalise.simulation.weather.internal.dataloader;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
+import de.pgalise.simulation.persistence.PersistenceHelper;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.exception.NoWeatherDataFoundException;
@@ -17,6 +17,7 @@ import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.entity.WeatherCondition;
 import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
 import de.pgalise.simulation.weather.model.StationDataMap;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.testutils.TestUtils;
@@ -64,7 +65,7 @@ public class DatabaseWeatherLoaderTest {
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private WeatherPersistenceHelper persistenceUtil;
 
   public DatabaseWeatherLoaderTest() {
   }

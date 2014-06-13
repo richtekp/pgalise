@@ -19,6 +19,7 @@ import de.pgalise.simulation.shared.entity.City;
 import java.util.Objects;
 import javax.measure.Measure;
 import javax.measure.quantity.Temperature;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
@@ -41,6 +42,7 @@ public class ServiceDataCurrent extends AbstractServiceData {
    * Temperature
    */
   @Column(name = "TEMPERATURE")
+  @Basic
   private Measure<Float, Temperature> temperature;
 
   protected ServiceDataCurrent() {

@@ -18,6 +18,7 @@
 
 	<!-- Hier die Abhängigkeiten definieren -->
 	<dependencies>
+    <!--pgalise dependencies (all mvn scopes)-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>weather</artifactId>
@@ -81,12 +82,19 @@
 			<groupId>org.jfree</groupId>
 			<artifactId>jfreechart</artifactId>
 		</dependency>
+    
+    <!-- test dependencies -->
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 			<scope>test</scope>
 			<type>jar</type>
 		</dependency>
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>openejb-api</artifactId>
+      <scope>test</scope>
+    </dependency>
 <!--		<dependency>
 			<groupId>org.jboss.arquillian.junit</groupId>
 			<artifactId>arquillian-junit-container</artifactId>
@@ -97,6 +105,13 @@
 			<artifactId>arquillian-tomee-embedded</artifactId>
 			<version>1.6.1-SNAPSHOT</version>
 		</dependency>-->
+	 <dependency>
+	  <groupId>apache-lang</groupId>
+	  <artifactId>commons-lang</artifactId>
+	  <version>2.0</version>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 <!--	<dependencyManagement>
 		<dependencies>			

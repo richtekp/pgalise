@@ -35,14 +35,9 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import javax.annotation.PostConstruct;
 
-/**
- * Abstract XML factory for the vehicle factories.
- *
- * @author Andreas Rehfeldt
- * @version 1.0 (Dec 26, 2012)
- * @param <D> Extension of the VehicleData
- */
+
 public abstract class AbstractXMLVehicleFactory<D extends VehicleData> extends AbstractVehicleFactory {
+  private static final long serialVersionUID = 1L;
 
   private Random random;
 

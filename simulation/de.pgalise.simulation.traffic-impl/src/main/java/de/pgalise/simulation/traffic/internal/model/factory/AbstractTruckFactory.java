@@ -34,11 +34,9 @@ import java.util.Set;
 import javax.ejb.EJB;
 import org.apache.commons.lang3.tuple.Pair;
 
-/**
- *
- * @author richter
- */
+
 public class AbstractTruckFactory extends AbstractMotorizedVehicleFactory implements TruckFactory {
+  private static final long serialVersionUID = 1L;
   
   private InfraredInterferer infraredInterferer;
 

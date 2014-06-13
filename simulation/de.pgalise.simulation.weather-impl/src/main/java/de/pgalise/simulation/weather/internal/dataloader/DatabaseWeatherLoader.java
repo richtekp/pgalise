@@ -80,13 +80,12 @@ import org.apache.commons.lang3.time.DateUtils;
 //@Stateful currently DBBackedServiceWeatherLoader in use
 public class DatabaseWeatherLoader implements WeatherLoader {
 
-  @PersistenceContext(unitName = "pgalise-weather")
-  private EntityManager entityManager;
-
   /**
    * File path for property file
    */
   private static final String PROPERTIES_FILE_PATH = "/weatherloader.properties";
+  @PersistenceContext(unitName = "pgalise-weather")
+  private EntityManager entityManager;
 
   /**
    * Option to load station data

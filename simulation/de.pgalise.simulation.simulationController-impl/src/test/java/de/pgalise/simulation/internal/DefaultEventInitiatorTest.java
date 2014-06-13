@@ -31,7 +31,6 @@ import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.shared.event.weather.WeatherEvent;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
 import de.pgalise.simulation.traffic.TrafficController;
@@ -40,7 +39,6 @@ import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.TrafficSensorController;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
-import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherInitParameter;
 import de.pgalise.testutils.TestUtils;
@@ -53,13 +51,12 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,7 +76,7 @@ public class DefaultEventInitiatorTest {
   @EJB
   private DefaultEventInitiator eventInitiator;
   private static EnergyControllerMock energyController;
-  private static WeatherControllerMock weatherController;
+  private final WeatherController weatherController = EasyMock.createStrictMock(WeatherController.class);
   private static TrafficControllerMock trafficController;
   private static long startTimestamp, endTimestamp;
   private static WeatherInitParameter initParameter;
@@ -130,11 +127,8 @@ public class DefaultEventInitiatorTest {
       null);
 
     energyController = new EnergyControllerMock();
-    weatherController = new WeatherControllerMock();
     trafficController = new TrafficControllerMock();
     simulationController = new SimulationControllerMock();
-
-    IdGenerator idGenerator = EasyMock.createNiceMock(IdGenerator.class);
 
     eventInitiator = new DefaultEventInitiator(idGenerator,
       null);
@@ -144,7 +138,10 @@ public class DefaultEventInitiatorTest {
 
   @Test
   public void test() throws IllegalStateException, InitializationException, InterruptedException {
-    long updateIntervals = ((endTimestamp - startTimestamp) / INTERVAL) + 1;
+    int updateIntervals = (int)((endTimestamp - startTimestamp) / INTERVAL) + 1;
+    
+    weatherController.update(anyObject(EventList.class));
+    EasyMock.expectLastCall().times(0, updateIntervals);
 
     // Status test
     assertEquals(ControllerStatusEnum.INIT,
@@ -167,8 +164,7 @@ public class DefaultEventInitiatorTest {
     // Test all counters
     assertEquals(updateIntervals,
       energyController.getUpdateCounter());
-    assertEquals(updateIntervals,
-      weatherController.getUpdateCounter());
+    verify(weatherController);
     assertEquals(updateIntervals,
       trafficController.getUpdateCounter());
     eventInitiator.stop();
@@ -257,76 +253,6 @@ public class DefaultEventInitiatorTest {
     @Override
     public Set<TrafficSensor> getAllManagedSensors() {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Long getId() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-  }
-
-  /**
-   * WeatherController mock which can count the update steps.
-   *
-   * @author Timo
-   */
-  private static class WeatherControllerMock implements WeatherController {
-
-    private int updateCounter;
-
-    WeatherControllerMock() {
-      this.updateCounter = 0;
-    }
-
-    @Override
-    public void init(WeatherInitParameter param) throws IllegalStateException {
-    }
-
-    @Override
-    public void reset() throws IllegalStateException {
-    }
-
-    @Override
-    public void start(StartParameter param) throws IllegalStateException {
-    }
-
-    @Override
-    public void stop() throws IllegalStateException {
-    }
-
-    @Override
-    public void update(EventList<WeatherEvent> simulationEventList) throws IllegalStateException {
-      this.updateCounter++;
-    }
-
-    @Override
-    public ControllerStatusEnum getStatus() {
-      return null;
-    }
-
-    @Override
-    public void checkDate(long timestamp) throws IllegalArgumentException {
-    }
-
-    @Override
-    public BaseCoordinate getReferencePosition() {
-      return null;
-    }
-
-    @Override
-    public Number getValue(WeatherParameterEnum key,
-      long timestamp,
-      BaseCoordinate position) {
-      return null;
-    }
-
-    public int getUpdateCounter() {
-      return updateCounter;
-    }
-
-    @Override
-    public String getName() {
-      return "EventInitiator";
     }
 
     @Override

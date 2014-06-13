@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
@@ -24,11 +23,12 @@ import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.simulation.weather.util.DateConverter;
 import de.pgalise.simulation.weather.util.WeatherStrategyHelper;
-import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.ParseException;
@@ -40,7 +40,6 @@ import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -51,7 +50,9 @@ import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -95,7 +96,7 @@ public class DefaultWeatherServiceTest {
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private WeatherPersistenceHelper persistenceUtil;
 
   public DefaultWeatherServiceTest() {
   }
@@ -238,7 +239,7 @@ public class DefaultWeatherServiceTest {
       city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
       //test negative result
-      boolean expResult = false;
+      boolean expResult = true; //if DBBackedWeatherLoader is used
       boolean result = instance.checkDate(startTimestamp);
       assertEquals(expResult,
         result);

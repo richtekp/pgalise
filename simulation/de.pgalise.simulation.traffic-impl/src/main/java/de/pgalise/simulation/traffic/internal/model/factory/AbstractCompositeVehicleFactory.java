@@ -21,11 +21,9 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.Set;
 
-/**
- *
- * @author richter
- */
+
 public abstract class AbstractCompositeVehicleFactory extends AbstractVehicleFactory implements CompositeVehicleFactory {
+  private static final long serialVersionUID = 1L;
 
   public AbstractCompositeVehicleFactory() {
   }  

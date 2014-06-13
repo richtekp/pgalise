@@ -24,12 +24,10 @@ import java.util.Arrays;
 import java.util.Set;
 import javax.ejb.EJB;
 
-/**
- *
- * @author richter
- */
+
 public class AbstractInformationBasedVehicleFactory extends AbstractVehicleFactory
   implements InformationBasedVehicleFactory {
+  private static final long serialVersionUID = 1L;
 
   @EJB
   private BicycleFactory bicycleFactory;

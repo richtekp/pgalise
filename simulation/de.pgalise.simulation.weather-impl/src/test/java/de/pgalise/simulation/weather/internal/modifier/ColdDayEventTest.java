@@ -15,20 +15,20 @@
  */
 package de.pgalise.simulation.weather.internal.modifier;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
-import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
+import de.pgalise.simulation.weather.internal.modifier.events.ColdDayEvent;
 import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weather.service.WeatherService;
-import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,7 +36,6 @@ import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
@@ -54,6 +53,14 @@ import org.junit.Test;
 @ManagedBean
 @LocalClient
 public class ColdDayEventTest {
+  /**
+   * Test value
+   */
+  private static final float testValue = -10.0f;
+  /**
+   * Test duration
+   */
+  private static final long testDuration = 4;
 
   @PersistenceContext(unitName = "pgalise-weather")
   private EntityManager entityManagerFactory;
@@ -61,27 +68,18 @@ public class ColdDayEventTest {
   /**
    * End timestamp
    */
-  private long endTimestamp;
+  private final long endTimestamp;
 
   /**
    * Start timestamp
    */
-  private long startTimestamp;
+  private final long startTimestamp;
 
   /**
    * Test timestamp
    */
-  private long testTimestamp;
+  private final long testTimestamp;
 
-  /**
-   * Test value
-   */
-  private float testValue = -10.0f;
-
-  /**
-   * Test duration
-   */
-  private long testDuration = 4;
 
   /**
    * Service Class
@@ -102,7 +100,7 @@ public class ColdDayEventTest {
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private WeatherPersistenceHelper persistenceUtil;
 
   public ColdDayEventTest() {
     Calendar cal = new GregorianCalendar();

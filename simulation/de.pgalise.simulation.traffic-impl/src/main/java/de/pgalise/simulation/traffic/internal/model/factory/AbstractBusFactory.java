@@ -25,13 +25,11 @@ import javax.ejb.EJB;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-/**
- *
- * @author richter
- */
+
 public abstract class AbstractBusFactory extends AbstractMotorizedVehicleFactory
   implements
   BusFactory {
+  private static final long serialVersionUID = 1L;
 
   private InfraredInterferer infraredInterferer;
 

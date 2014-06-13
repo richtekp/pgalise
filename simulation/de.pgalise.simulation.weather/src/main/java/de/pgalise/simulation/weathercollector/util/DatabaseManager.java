@@ -9,6 +9,7 @@ import de.pgalise.simulation.weather.entity.WeatherCondition;
 import de.pgalise.simulation.weathercollector.exceptions.SaveStationDataException;
 import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.simulation.weather.entity.AbstractStationData;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import java.util.Set;
  *
  * @author richter
  */
-public interface DatabaseManager {
+public interface DatabaseManager extends Serializable {
 
 	/**
 	 * Returns a list of reference cities from the database

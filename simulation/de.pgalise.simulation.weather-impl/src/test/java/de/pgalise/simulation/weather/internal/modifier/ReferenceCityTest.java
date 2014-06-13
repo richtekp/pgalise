@@ -15,21 +15,21 @@
  */
 package de.pgalise.simulation.weather.internal.modifier;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
-import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
-import de.pgalise.simulation.weather.entity.AbstractStationData;
+import de.pgalise.simulation.weather.internal.modifier.simulationevents.ReferenceCityModifier;
+import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weather.service.WeatherService;
-import de.pgalise.testutils.weather.WeatherTestUtils;
 import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Collections;
@@ -38,7 +38,6 @@ import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.measure.unit.SI;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -59,9 +58,6 @@ import org.junit.Test;
 @LocalClient
 public class ReferenceCityTest {
 
-  @PersistenceContext(unitName = "pgalise-weather")
-  private EntityManager entityManager;
-
   /**
    * End timestamp
    */
@@ -71,6 +67,8 @@ public class ReferenceCityTest {
    * Start timestamp
    */
   private static long startTimestamp;
+  @PersistenceContext(unitName = "pgalise-weather")
+  private EntityManager entityManager;
 
   /**
    * Service Class
@@ -91,7 +89,7 @@ public class ReferenceCityTest {
   @EJB
   private IdGenerator idGenerator;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private WeatherPersistenceHelper persistenceUtil;
 
   public ReferenceCityTest() {
     // Start

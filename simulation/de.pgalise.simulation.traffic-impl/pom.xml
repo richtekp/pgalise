@@ -99,12 +99,11 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.openejb</groupId>
-			<artifactId>openejb-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
+	 <dependency>
+	  <groupId>org.geotools</groupId>
+	  <artifactId>gt-cql</artifactId>
+	 </dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 			<scope>provided</scope>
@@ -130,6 +129,8 @@
 			<version>2.1</version>
 			<type>jar</type>
 		</dependency>
+    
+    <!-- test dependencies -->
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
@@ -144,6 +145,62 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 		</dependency>-->
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>openejb-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<scope>test</scope>
+		</dependency>    
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-client</artifactId>
+			<scope>test</scope>
+		</dependency>           
+          <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>cdi-embedded</artifactId>
+            <version>1.6.1-SNAPSHOT</version>
+            <scope>test</scope>
+          </dependency>      
+          <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>openejb-server</artifactId>
+            <scope>test</scope>
+          </dependency> 
+<!--          <dependency>
+            <groupId>org.apache.openejb</groupId>
+            <artifactId>deps</artifactId>
+            <version>4.6.1-SNAPSHOT</version>
+          </dependency>-->
+          <dependency>
+          <groupId>org.apache.openwebbeans</groupId>
+          <artifactId>openwebbeans-ee</artifactId>
+          <version>1.1.0</version>
+          </dependency>  
+          <dependency>
+          <groupId>org.apache.openwebbeans</groupId>
+          <artifactId>openwebbeans-spi</artifactId>
+          <version>1.1.0</version>
+          </dependency>   
+          <dependency>
+          <groupId>org.apache.openwebbeans</groupId>
+          <artifactId>openwebbeans-impl</artifactId>
+          <version>1.1.0</version>
+          </dependency>
+          <dependency>
+            <groupId>org.metatype.sxc</groupId>
+            <artifactId>sxc-jaxb-core</artifactId>
+            <version>0.8</version>
+            </dependency>
+          <dependency>
+            <groupId>org.apache.geronimo</groupId>
+            <artifactId>geronimo-core</artifactId>
+            <version>1.0</version>
+          </dependency>
 	</dependencies>
 
 	<build>

@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.weather.internal.service;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
@@ -23,10 +22,10 @@ import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.weather.WeatherTestUtils;
-import java.net.URL;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +35,6 @@ import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.ejb.SessionContext;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -44,9 +42,7 @@ import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +62,16 @@ doesn't make sense (container needs to handle parallelism)
 //@Ignore //@TODO: implement parallel test with arquillian (the current attempt 
 //with multiple thread doesn't seem to be JEE conform
 public class DefaultWeatherServiceSyncTest {
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    DefaultWeatherServiceSyncTest.class);
+  /**
+   * Number of test threads
+   */
+  private static final int NUMBER_OF_THREADS = 20;
+  private static final long THREAD_WAIT_MILLIS = 0;
 
 //  @Deployment
 //  public static JavaArchive createDeployment() {
@@ -83,11 +89,6 @@ public class DefaultWeatherServiceSyncTest {
    */
   private long endTimestamp;
 
-  /**
-   * Logger
-   */
-  private static final Logger log = LoggerFactory.getLogger(
-    DefaultWeatherServiceSyncTest.class);
 
   /**
    * Start timestamp
@@ -100,11 +101,6 @@ public class DefaultWeatherServiceSyncTest {
   @EJB
   private WeatherService testclass;
 
-  /**
-   * Number of test threads
-   */
-  private final static int NUMBER_OF_THREADS = 20;
-  private final static long THREAD_WAIT_MILLIS = 0;
 
   /**
    * Weather loader
@@ -127,7 +123,7 @@ public class DefaultWeatherServiceSyncTest {
   @Resource
   private SessionContext context;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private WeatherPersistenceHelper persistenceUtil;
 
   public DefaultWeatherServiceSyncTest() {
   }
@@ -257,9 +253,6 @@ public class DefaultWeatherServiceSyncTest {
         ServiceDataForecast.class,
         entityManager);
 
-    } catch (Throwable ex) {
-      log.error("",
-        ex);
     } finally {
       userTransaction.commit();
     }

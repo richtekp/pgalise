@@ -36,15 +36,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-/**
- * Implements a factory for {@link Truck}. The vehicles are loaded by a XML
- * file.
- *
- * @author Andreas Rehfeldt
- * @version 1.0 (Dec 24, 2012)
- */
+
 public class XMLTruckFactory extends AbstractXMLVehicleFactory<TruckData>
   implements TruckFactory {
+  private static final long serialVersionUID = 1L;
 
   @EJB
   private TrafficSensorFactory sensorFactory;

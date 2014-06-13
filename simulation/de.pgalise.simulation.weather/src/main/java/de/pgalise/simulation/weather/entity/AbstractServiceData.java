@@ -13,16 +13,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 
-/**
- *
- * @author richter
- */
-/*
- * persistable WeatherCondition needs to be enforced already at the level of 
- * the MappedSuperclass (if usage of @Type annotation should be avoided)
- */
+
 @MappedSuperclass
 public abstract class AbstractServiceData extends AbstractTimeSensitive {
+  private static final long serialVersionUID = 1L;
 
   /**
    * City

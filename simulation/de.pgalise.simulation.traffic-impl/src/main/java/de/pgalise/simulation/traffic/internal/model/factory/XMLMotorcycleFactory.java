@@ -34,15 +34,10 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-/**
- * Implements a factory for {@link Motorcycle}. The vehicles are loaded by a XML
- * file.
- *
- * @author Andreas Rehfeldt
- * @version 1.0 (Dec 24, 2012)
- */
+
 public class XMLMotorcycleFactory extends AbstractXMLVehicleFactory<MotorcycleData>
   implements MotorcycleFactory {
+  private static final long serialVersionUID = 1L;
 
   public XMLMotorcycleFactory() {
   }

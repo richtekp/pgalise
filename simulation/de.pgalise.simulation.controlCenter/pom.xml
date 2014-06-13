@@ -76,12 +76,6 @@
     </dependency>
 
     <dependency>
-      <groupId>de.akquinet.jbosscc</groupId>
-      <artifactId>jbosscc-needle</artifactId>
-      <version>2.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <version>3.1.0</version>
@@ -235,11 +229,6 @@
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>org.apache.openejb</groupId>
-      <artifactId>openejb-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>net.sf.ehcache</groupId>
       <artifactId>ehcache</artifactId>
       <version>2.8.2</version>
@@ -266,6 +255,24 @@
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
       <version>2.3</version>
+    </dependency>
+    
+    <!--test dependencies-->
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>openejb-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>openejb-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.akquinet.jbosscc</groupId>
+      <artifactId>jbosscc-needle</artifactId>
+      <version>2.1</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
   <build>

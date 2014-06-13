@@ -24,16 +24,14 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-/**
- *
- * @author richter
- */
+
 public abstract class AbstractBicycleFactory extends AbstractVehicleFactory
   implements BicycleFactory {
 
   public final static List<String> MATERIALS = Collections.unmodifiableList(
     new ArrayList<>(Arrays.asList("steel",
         "carbon fibre")));
+  private static final long serialVersionUID = 1L;
 
   public AbstractBicycleFactory() {
     super(new ArrayList<Pair<Integer, Integer>>(Arrays.asList(new MutablePair<>(

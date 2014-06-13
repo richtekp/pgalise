@@ -15,7 +15,6 @@
  */
 package de.pgalise.simulation.weather.internal.modifier;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
@@ -27,6 +26,7 @@ import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.simulationevents.CityClimateModifier;
 import de.pgalise.simulation.weather.internal.util.comparator.TemperatureComparator;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.testutils.TestUtils;
 import de.pgalise.testutils.weather.WeatherTestUtils;
@@ -38,7 +38,6 @@ import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
 import javax.measure.unit.SI;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
@@ -58,6 +57,11 @@ import org.junit.Test;
 @ManagedBean
 @LocalClient
 public class CityClimateTest {
+  /**
+   * Weather Loader
+   */
+  @EJB
+  private WeatherLoader loader;
 
   @PersistenceContext(unitName = "pgalise-weather")
   private EntityManager entityManagerFactory;
@@ -78,11 +82,6 @@ public class CityClimateTest {
   @EJB
   private WeatherService service;
 
-  /**
-   * Weather Loader
-   */
-  @EJB
-  private static WeatherLoader loader;
   @EJB
   private IdGenerator idGenerator;
 
@@ -91,7 +90,7 @@ public class CityClimateTest {
   @Resource
   private UserTransaction userTransaction;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private WeatherPersistenceHelper persistenceUtil;
 
   public CityClimateTest() throws NamingException {
     // Start

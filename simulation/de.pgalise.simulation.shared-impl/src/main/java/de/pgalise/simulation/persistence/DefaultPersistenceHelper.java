@@ -20,44 +20,16 @@ import javax.persistence.PersistenceContext;
  */
 /*
  internal implementation notes:
- - putting DefaultPersistenceUtil in shared module prevents JTA tests as the 
+ - putting DefaultPersistenceHelper in shared module prevents JTA tests as the 
  EntityManager and UserTransaction has to be injected; putting it in 
  shared-impl messes up packaging because EJB modules mustn't extend depend on  
  each other; creating two separate packages with interface and implementation 
  makes sense
  */
 @Stateless
-public class DefaultPersistenceUtil implements PersistenceUtil {
+public class DefaultPersistenceHelper extends AbstractPersistenceHelper implements PersistenceHelper {
+  private static final long serialVersionUID = 1L;
 
-  public DefaultPersistenceUtil() {
-  }
-
-  @Override
-  public void saveOrUpdate(EntityManager entityManager, Serializable instance, Class<?> clazz, Object id) {
-    if (entityManager.find(clazz,
-            id) == null) {
-      entityManager.persist(instance);
-    } else {
-      entityManager.merge(instance);
-    }
-    entityManager.flush();
-  }
-
-  @Override
-  public void saveOrUpdateCity(EntityManager entityManager,
-          City city) {
-    saveOrUpdate(entityManager,
-            city.getBoundary().getReferencePoint(),
-            BaseCoordinate.class,
-            new BaseCoordinatePK(city.getBoundary().getReferencePoint().getX(), 
-                    city.getBoundary().getReferencePoint().getY()));
-    saveOrUpdate(entityManager, city.getBoundary(), 
-            BaseBoundary.class, 
-            city.getBoundary().getId()
-    );
-    saveOrUpdate(entityManager,
-            city,
-            City.class,
-            city.getId());
+  public DefaultPersistenceHelper() {
   }
 }

@@ -9,26 +9,30 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.Objects;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-/**
- *
- * @author richter
- */
-/*
- As long as JPA is incapable to specifying useful query of date, we have to 
- save duplicate information in a date field (providing fast query of date) and a time field
- */
+
 @MappedSuperclass
 public abstract class AbstractTimeSensitive extends Identifiable {
+  private static final long serialVersionUID = 1L;
+
+  public static Long generateId(Date measureDate, Time measureTime) {
+    if (measureDate == null) {
+      throw new IllegalArgumentException("measureDate");
+    }
+    if (measureTime == null) {
+      throw new IllegalArgumentException("measureTime");
+    }
+    return measureDate.getTime() + measureTime.getTime();
+  }
 
   /**
    * Timestamp
    */
-//	@Column(name = "MEASURE_DATE")
-//	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.DATE)
   private java.util.Date measureDate;
 
-//	@Temporal(TemporalType.TIME)
   private Time measureTime;
 
   protected AbstractTimeSensitive() {
@@ -58,46 +62,36 @@ public abstract class AbstractTimeSensitive extends Identifiable {
     this.measureDate = measureDate;
   }
 
-  public static Long generateId(Date measureDate,
-    Time measureTime) {
-    if (measureDate == null) {
-      throw new IllegalArgumentException("measureDate");
-    }
-    if (measureTime == null) {
-      throw new IllegalArgumentException("measureTime");
-    }
-    return measureDate.getTime() + measureTime.getTime();
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 31 * hash + Objects.hashCode(this.measureDate);
+    hash = 31 * hash + Objects.hashCode(this.measureTime);
+    return hash;
   }
 
-	@Override
-	public int hashCode() {
-		int hash = 7;
-		hash = 31 * hash + Objects.hashCode(this.measureDate);
-		hash = 31 * hash + Objects.hashCode(this.measureTime);
-		return hash;
-	}
-	
 	protected boolean equalsTransitive(AbstractTimeSensitive other) {
-		if (!Objects.equals(this.measureDate,
-			other.measureDate)) {
-			return false;
-		}
-		if (!Objects.equals(this.measureTime,
-			other.measureTime)) {
-			return false;
-		}
-		return true;
-	} 
-
-	@Override
+    if (!Objects.equals(this.measureDate,
+      other.measureDate)) {
+      return false;
+    }
+    if (!Objects.equals(this.measureTime,
+      other.measureTime)) {
+      return false;
+    }
+    return true;
+  }
+	
+  @Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		final AbstractTimeSensitive other = (AbstractTimeSensitive) obj;
-		return equalsTransitive(other);
-	}
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final AbstractTimeSensitive other = (AbstractTimeSensitive) obj;
+    return equalsTransitive(other);
+  }
+
 }

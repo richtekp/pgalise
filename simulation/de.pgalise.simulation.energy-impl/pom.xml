@@ -17,6 +17,7 @@
 	<name>de.pgalise.simulation.energy-impl</name>
 
 	<dependencies>
+    <!--pgalise dependencies (all mvn scopes)-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>energy</artifactId>
@@ -58,11 +59,18 @@
 			<artifactId>simplelatlng</artifactId>
 			<type>jar</type>
 		</dependency>
+    
+    <!-- test dependencies -->
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
 		</dependency>
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>openejb-api</artifactId>
+      <scope>test</scope>
+    </dependency>
 	</dependencies>
 	
 	<build>

@@ -5,14 +5,11 @@
  */
 package de.pgalise.simulation.persistence;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.BaseCoordinatePK;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.testutils.TestUtils;
-import java.util.LinkedList;
-import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.naming.NamingException;
@@ -39,7 +36,7 @@ a class without transitive properties, use the simplest one instead of
 creating an extra project (which won't be recognized correctly probably 
 anyway)
 */
-public class DefaultPersistenceUtilTest {
+public class DefaultPersistenceHelperTest {
   /*
    internal implementation notes:
    - no need to test injection here as this is not EJB module
@@ -52,9 +49,9 @@ public class DefaultPersistenceUtilTest {
   @Resource
   private UserTransaction userTransaction;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private PersistenceHelper persistenceUtil;
 
-  public DefaultPersistenceUtilTest() {
+  public DefaultPersistenceHelperTest() {
   }
 
   @Before
@@ -63,7 +60,7 @@ public class DefaultPersistenceUtilTest {
   }
 
   /**
-   * Test of saveOrUpdate method, of class PersistenceUtil.
+   * Test of saveOrUpdate method, of class PersistenceHelper.
    *
    * @throws javax.transaction.NotSupportedException
    * @throws javax.transaction.SystemException
@@ -125,7 +122,7 @@ public class DefaultPersistenceUtilTest {
   }
 
   /**
-   * Test of saveOrUpdateCity method, of class PersistenceUtil.
+   * Test of saveOrUpdateCity method, of class PersistenceHelper.
    *
    * @throws javax.transaction.NotSupportedException
    * @throws javax.transaction.SystemException

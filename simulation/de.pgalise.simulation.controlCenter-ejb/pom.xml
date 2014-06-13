@@ -21,6 +21,7 @@
 	</properties>
 
 	<dependencies>
+    <!-- pgalise dependencies (all mvn scopes)-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
 			<artifactId>controlCenter-jar</artifactId>
@@ -60,7 +61,19 @@
 			<scope>test</scope>
 			<type>jar</type>
 		</dependency>
+    
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<classifier>jdk15</classifier>
+		</dependency>
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 		
+    <!--test dependencies-->
 		<dependency>
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-core</artifactId>
@@ -77,22 +90,16 @@
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<classifier>jdk15</classifier>
-		</dependency>
+    <dependency>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>openejb-api</artifactId>
+      <scope>test</scope>
+    </dependency>
 	 <dependency>
 	  <groupId>org.easymock</groupId>
 	  <artifactId>easymock</artifactId>
-	  <version>3.2</version>
 	  <scope>test</scope>
 	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>javax</groupId>
-	  <artifactId>javaee-api</artifactId>
-	  <scope>provided</scope>
 	 </dependency>
 	</dependencies>
 	

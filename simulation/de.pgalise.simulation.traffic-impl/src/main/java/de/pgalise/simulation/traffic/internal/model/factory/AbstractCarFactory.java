@@ -20,13 +20,11 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-/**
- *
- * @author richter
- */
+
 public abstract class AbstractCarFactory extends AbstractMotorizedVehicleFactory
   implements
   CarFactory {
+  private static final long serialVersionUID = 1L;
 
   public AbstractCarFactory() {
     super(60,

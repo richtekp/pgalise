@@ -5,11 +5,21 @@
  */
 package de.pgalise.simulation.operationCenter.internal;
 
-/**
- *
- * @author richter
- */
-public class StormStreamController {
+import java.io.IOException;
+import java.net.UnknownHostException;
+
+
+public class StormStreamController implements OCSensorStreamController {
+
+  @Override
+  public void listenStream(OCSimulationController ocSimulationController, String socketStaticSensorIP, int socketStaticSensorPort, String socketDynamicSensorIP, int socketDynamicSensorPort, String socketTopoRadarIP, int socketTopoRadarPort, String socketTrafficLightIP, int socketTrafficLightPort) throws UnknownHostException, IOException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void unlistenStream() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 
 //  TopologyBuilder builder = new TopologyBuilder();
 //

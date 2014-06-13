@@ -7,13 +7,14 @@
  */
 package de.pgalise.simulation.weathercollector.util;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
+import de.pgalise.simulation.persistence.PersistenceHelper;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.entity.AbstractStationData;
 import de.pgalise.simulation.weather.entity.ExtendedServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ExtendedServiceDataForecast;
 import de.pgalise.simulation.weather.entity.ServiceDataHelper;
 import de.pgalise.simulation.weather.entity.WeatherCondition;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weathercollector.exceptions.SaveStationDataException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +28,7 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author richter
- */
+
 @Stateful
 public class DefaultDatabaseManager implements DatabaseManager {
 
@@ -41,6 +39,7 @@ public class DefaultDatabaseManager implements DatabaseManager {
    * File path for property file
    */
   private static final String DATABASE_FILE_PATH = "/database.properties";
+  private static final long serialVersionUID = 1L;
 
   /**
    * Name of the persistent unit
@@ -48,7 +47,9 @@ public class DefaultDatabaseManager implements DatabaseManager {
   @PersistenceContext(unitName = "pgalise-weather")
   private EntityManager em;
   @EJB
-  private PersistenceUtil persistenceUtil;
+  private PersistenceHelper persistenceUtil;
+  @EJB
+  private WeatherPersistenceHelper persistenceHelper;
 
   public DefaultDatabaseManager() {
   }
@@ -130,15 +131,15 @@ public class DefaultDatabaseManager implements DatabaseManager {
     boolean result = true;
     int count = 0;
     long actTime;
-    for (AbstractStationData station_data : list) {
-      actTime = station_data.getMeasureDate().getTime() + station_data.
+    for (AbstractStationData stationData : list) {
+      actTime = stationData.getMeasureDate().getTime() + stationData.
         getMeasureTime().getTime();
       // Check if there is any data
       if (actTime <= lastTime) {
         LOGGER.debug(
-          "Holen von Daten abgebrochen! Datensaetze bis zum " + station_data.
+          "Holen von Daten abgebrochen! Datensaetze bis zum " + stationData.
           getMeasureDate() + " - "
-          + station_data.getMeasureTime() + " wurden gespeichert.",
+          + stationData.getMeasureTime() + " wurden gespeichert.",
           Level.INFO);
 
         // Break!
@@ -147,7 +148,7 @@ public class DefaultDatabaseManager implements DatabaseManager {
       }
 
       // Save data
-      em.merge(station_data);
+      em.merge(stationData);
       count++;
     }
 

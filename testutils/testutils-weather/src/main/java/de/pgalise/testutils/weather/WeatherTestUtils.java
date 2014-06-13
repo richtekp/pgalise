@@ -5,7 +5,7 @@
  */
 package de.pgalise.testutils.weather;
 
-import de.pgalise.simulation.persistence.PersistenceUtil;
+import de.pgalise.simulation.persistence.PersistenceHelper;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.shared.entity.Identifiable;
@@ -13,6 +13,7 @@ import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
 import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.entity.WeatherCondition;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
 import de.pgalise.simulation.weather.util.DateConverter;
 import java.sql.Date;
 import java.sql.Time;
@@ -58,7 +59,7 @@ public class WeatherTestUtils {
     long startTimestamp,
     long endTimestamp,
     City city,
-          PersistenceUtil persistenceUtil,
+          PersistenceHelper persistenceUtil,
     EntityManager entityManager,
     IdGenerator idGenerator) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
     long preceedingDayTimestampMidnight = DateConverter.
@@ -108,6 +109,7 @@ public class WeatherTestUtils {
    * @param startTimestamp
    * @param endTimestamp
    * @param city
+   * @param persistenceUtil
    * @param entityManager
    * @param idGenerator
    * @return
@@ -122,7 +124,7 @@ public class WeatherTestUtils {
     long startTimestamp,
     long endTimestamp,
     City city,
-    PersistenceUtil persistenceUtil,
+    WeatherPersistenceHelper persistenceUtil,
     EntityManager entityManager,
     IdGenerator idGenerator) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
     long preceedingDayTimestampMidnight = DateConverter.
@@ -150,10 +152,8 @@ public class WeatherTestUtils {
         WeatherCondition.retrieveCondition(idGenerator,
           WeatherCondition.UNKNOWN_CONDITION_CODE)
       );
-      persistenceUtil.saveOrUpdate(entityManager,
-        serviceDataCurrent,
-        ServiceDataCurrent.class,
-        serviceDataCurrent.getId());
+      persistenceUtil.saveOrUpdateServiceDataCurrent(entityManager,
+        serviceDataCurrent);
       retValue.put(new Date(start),
         serviceDataCurrent);
       start += DateConverter.ONE_DAY_IN_MILLIS;
@@ -171,6 +171,7 @@ public class WeatherTestUtils {
    *
    * @param startTimestamp
    * @param endTimestamp
+   * @param persistenceUtil
    * @param entityManager
    * @param idGenerator
    * @return
@@ -186,7 +187,7 @@ public class WeatherTestUtils {
   public static Map<Date, StationDataNormal> setUpWeatherStationData(
     long startTimestamp,
     long endTimestamp,
-    PersistenceUtil persistenceUtil,
+    PersistenceHelper persistenceUtil,
     EntityManager entityManager,
     IdGenerator idGenerator) throws NotSupportedException, SystemException, HeuristicMixedException, HeuristicRollbackException, IllegalStateException, RollbackException {
     long preceedingDayTimestampMidnight = DateConverter.

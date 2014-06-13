@@ -9,11 +9,9 @@ import de.pgalise.simulation.traffic.model.vehicle.AbstractVehicleFactory;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
-/**
- *
- * @author richter
- */
+
 public abstract class AbstractMotorizedVehicleFactory extends AbstractVehicleFactory {
+  private static final long serialVersionUID = 1L;
 
   private double powerMin, powerMax;
 
