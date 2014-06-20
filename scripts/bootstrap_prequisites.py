@@ -39,6 +39,7 @@ skip_apt_update_default=False
 skip_apt_update_option = "s"
 skip_apt_update_option_long = "skip-apt-update"
 
+# directories
 bin_dir = bootstrap.bin_dir
 base_dir = bootstrap.base_dir
 
@@ -47,6 +48,9 @@ parser.add_argument("-%s" % skip_apt_update_option, "--%s" % skip_apt_update_opt
                    help='', dest=skip_apt_update_option_long, default = skip_apt_update_default)
 
 def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_install=postgis_install_default, pg_version=pg_version_default):
+    if not os.path.exists(bin_dir):
+        os.makedirs(bin_dir)
+    
     if check_os.check_ubuntu() or check_os.check_debian():
         pm_utils.install_packages(["maven", "openjdk-7-jdk", 
             "ant", # for postgis-jdbc
