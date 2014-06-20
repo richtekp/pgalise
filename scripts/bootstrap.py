@@ -210,7 +210,7 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     tmp_dir = os.path.join(script_dir, "tmp") # "/tmp less save than dir only readable by user"
     external_bin_dir = os.path.join(external_dir, "bin")
     external_src_dir = os.path.join(external_dir, "src")
-    if not os.path.exsits(bin_dir):
+    if not os.path.exists(bin_dir):
         os.makedirs(bin_dir)
     if not os.path.exists(bootstrap_dir):
         os.makedirs(bootstrap_dir)
