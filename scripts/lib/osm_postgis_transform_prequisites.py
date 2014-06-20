@@ -11,6 +11,12 @@ import os_utils
 import subprocess as sp
 import string
 
+postgis_src_dir_name="postgis-2.1.1"
+postgis_url_default = "http://download.osgeo.org/postgis/source/postgis-2.1.1.tar.gz"
+postgis_src_archive_name = "postgis-2.1.1.tar.gz"
+postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
+postgis_jdbc_name = "postgis-jdbc-2.1.0SVN.jar"
+
 skip_apt_update_default = False
 skip_apt_update_option = "s"
 skip_apt_update_option_long = "skip-apt-update"
@@ -20,7 +26,7 @@ parser.add_argument("-%s" % skip_apt_update_option, "--%s" % skip_apt_update_opt
                    help='whether invokation of `apt-get update` ought to be skipped (useful if it has been issues shortly before the invokation of the script and changes are unlikely', dest=skip_apt_update_option_long)
 
 # @args also install db (postgresql and postgis) related prequisites
-def install_prequisites(db=True, skip_apt_update=skip_apt_update_default):
+def install_prequisites(db=True, skip_apt_update=skip_apt_update_default, postgis_url=postgis_url_default,):
     if check_os.check_ubuntu() or check_os.check_debian():
         if not db:
             pm_utils.install_packages(["osm2pgsql"], package_manager="apt-get", skip_apt_update=skip_apt_update, assume_yes=False)

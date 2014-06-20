@@ -86,13 +86,6 @@ geotools_url_default = "http://downloads.sourceforge.net/project/geotools/GeoToo
 geotools_src_archive_name = "geotools-9.2-project.zip"
 geotools_src_archive_md5 = "18cc0f21557b2187a89eebd965cbe409"
 geotools_src_dir_name = "geotools-9.2"
-postgis_installs = ["source", "pm"]
-postgis_install_default = postgis_installs[1]
-postgis_src_dir_name="postgis-2.1.1"
-postgis_url_default = "http://download.osgeo.org/postgis/source/postgis-2.1.1.tar.gz"
-postgis_src_archive_name = "postgis-2.1.1.tar.gz"
-postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
-postgis_jdbc_name = "postgis-jdbc-2.1.0SVN.jar"
 commons_src_dir_name = "commons-collections4-4.0-src"
 commons_src_archive_url_default = "http://mirror.derwebwolf.net/apache//commons/collections/source/commons-collections4-4.0-src.tar.gz"
 commons_src_archive_md5 = "d0f1e679725945eaf3e2f0c0a33532a5"
@@ -111,6 +104,7 @@ maven_bin_dir_name = "apache-maven-3.2.1"
 maven_bin_archive_name = "apache-maven-3.2.1-bin.tar.gz"
 maven_bin_archive_url_default = "http://ftp.fau.de/apache/maven/maven-3/3.2.1/binaries/apache-maven-3.2.1-bin.tar.gz"
 maven_bin_dir_install_target = "/usr/local/share/maven-3.2.1"
+postgis_jdbc_name = "postgis-jdbc-2.1.0SVN.jar"
 
 # necessary build tools and helpers 
 # <ul>
@@ -207,7 +201,7 @@ def do_wget(url, target):
 
 # @args skip_build skip building of packages if directories exist
 # @args remove_datadir <code>True</code> or <code>False</code> for removal of stored data in <tt>postgres_datadir_path</tt> or <code>None</code> to interact with the user with a prompt 
-def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None, privileged_uid=0, postgresql_jdbc_url=postgresql_jdbc_url_default, postgresql_deb_url=postgresql_deb_url_default, geotools_url=geotools_url_default, postgis_url=postgis_url_default, jgrapht_url=jgrapht_url_default, jfuzzy_url=jfuzzy_url_default, maven_bin_archive_url=maven_bin_archive_url_default, commons_src_archive_url=commons_src_archive_url_default, skip_tests=skip_tests_default, postgis_install=postgis_install_default):
+def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None, privileged_uid=0, postgresql_jdbc_url=postgresql_jdbc_url_default, postgresql_deb_url=postgresql_deb_url_default, geotools_url=geotools_url_default, jgrapht_url=jgrapht_url_default, jfuzzy_url=jfuzzy_url_default, maven_bin_archive_url=maven_bin_archive_url_default, commons_src_archive_url=commons_src_archive_url_default, skip_tests=skip_tests_default, postgis_install="pm"):
     # setup directories
     script_dir = os.path.join(base_dir, "scripts")
     external_dir = os.path.join(bootstrap_dir, "external")
@@ -295,6 +289,43 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     #        sp.check_call([tar, "xf", commons_src_archive_file], cwd=external_src_dir)
     #if not skip_build:
     #    mvn_install(commons_src_dir, skip_tests)
+    
+    # install postgis from source (installation with package manager occurs in 
+    # bootstrap_privileged.py
+    if postgis_install == "source":
+        postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
+        if check_os.check_ubuntu() or check_os.check_debian():
+            if not check_dir(postgis_src_dir):
+                postgis_src_archive_file = os.path.join(external_src_dir, postgis_src_archive_name)
+                if not check_file(postgis_src_archive_file, postgis_src_archive_md5):
+                    do_wget(postgis_url, postgis_src_archive_file)
+                    sp.check_call([tar, "xf", postgis_src_archive_file], cwd=external_src_dir)
+            if not skip_build:
+                pm_utils.install_apt_get_build_dep(["postgis"], package_manager=apt_get, skip_apt_update=skip_apt_update) # might not be sufficient because Ubuntu 13.10's version of postgis is 1.5.x (we're using 2.x)
+                pm_utils.install_packages(["libgdal-dev"], package_manager=apt_get, skip_apt_update=skip_apt_update) # not covered by 1.5.x requirements (see above)    
+                sp.check_call([bash, "autogen.sh"], cwd=postgis_src_dir)
+                sp.check_call([bash, "configure"], cwd=postgis_src_dir)
+                sp.check_call([make, "-j8"], cwd=postgis_src_dir)
+                sp.check_call([make, "install"], cwd=postgis_src_dir)
+                
+            # install postgis-jdbc (project is shipped inside postgis project (as long as a fixed version of postgis is used here, the version of postgis-jdbc will be fixed, too (postgis 2.1.1 -> postgis-jdbc 2.1.0SVN)
+            postgis_mvn_project_path = os.path.join(postgis_src_dir, "java/jdbc")
+            sp.check_call([ant], cwd=postgis_mvn_project_path) # generates maven project
+            mvn_install(postgis_mvn_project_path, skip_tests)
+        elif check_os.check_opensuse():
+            raise RuntimeError("PostGIS source installation not supported")
+        else:
+            # better to let the script fail here than to get some less comprehensive error message later
+            raise RuntimeError("Operating system not supported!")
+    elif postgis_install == "pm":
+        logger.info("installation of postgis with package manager occurs in bootstrap_prequistes.py")
+    else:
+        raise RuntimeError()
+    # install postgis from scripts/bin (as it is not available from somewhere online)
+    postgis_jdbc_file = os.path.join(bin_dir, postgis_jdbc_name)
+    sp.check_call([mvn, "install:install-file", \
+        "-Dfile=%s" % postgis_jdbc_file, "-DartifactId=postgis-jdbc", 
+        "-DgroupId=org.postgis", "-Dversion=2.1.0SVN", "-Dpackaging=jar"], cwd=bin_dir)
         
     # setup postgis datadir and configuration    
     if not check_dir(postgres_datadir_path) or force_overwrite_postgres_datadir:

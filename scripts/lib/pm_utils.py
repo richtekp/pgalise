@@ -117,6 +117,8 @@ def remove_packages(packages, package_manager="apt-get", assume_yes=assume_yes_d
 # quiet flag doesn't make sense because update can't be performed quietly obviously (maybe consider to switch to apt-api)
 # @args a list of command to be inserted after the package manager command and default options and before the package list
 def __package_manager_action__(packages, package_manager, package_manager_action, assumeyes, skip_apt_update=skip_apt_update_default, stdout=None):
+    if not "<type 'list'>" == str(type(packages)):
+        raise ValueError("packages isn't a list")
     if len(packages) == 0:
         return 0
     assumeyescommand = ""
