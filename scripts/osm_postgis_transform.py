@@ -28,7 +28,6 @@ initdb = "/usr/lib/postgresql/%s/bin/initdb" % pg_version
 postgres = "/usr/lib/postgresql/%s/bin/postgres" % pg_version
 psql = "/usr/lib/postgresql/%s/bin/psql" % pg_version
 createdb = "/usr/lib/postgresql/%s/bin/createdb" % pg_version
-osm2pgsql = "osm2pgsql"
 osm2pgsql_number_processes = int(sp.check_output(["grep", "-c", "^processor", "/proc/cpuinfo"]).strip())
 db_socket_dir = "/tmp"
 unprivileged_uid = 1000
@@ -51,6 +50,9 @@ db_password_option_long = "password"
 db_name_default = "postgis"
 db_name_option = "n"
 db_name_option_long = "database-name"
+osm2pgsql_default = "osm2pgsql"
+osm2pgsql_option = "q"
+osm2pgsql_option_long = "osm2pgsql"
 
 data_dir_default = "/mnt/osm_postgis/postgis-%s" % pg_version
 data_dir_option = "d"
@@ -85,10 +87,12 @@ parser.add_argument("-%s" % db_password_option, "--%s" % db_password_option_long
                    help='@TODO', dest=db_password_option_long)
 parser.add_argument("-%s" % db_name_option, "--%s" % db_name_option_long, default=db_name_default, type=str, nargs='?',
                    help='@TODO', dest=db_name_option_long)
+parser.add_argument("-%s" % osm2pgsql_option, "--%s" % osm2pgsql_option_long, default=osm2pgsql_default, type=str, nargs='?',
+                   help='path to the osm2pgsql binary', dest=osm2pgsql_option_long)
 
 # fails by default because osm_files mustn't be empty
 # @args db_user when <tt>start_db</tt> is <code>True</code> used as superuser name, otherwise user to connect as to the database denotes by <tt>db_*</tt> parameter of this function
-def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=cache_size_default, start_db=start_db_default, db_host=db_host_default, db_port=db_port_default, db_user=db_user_default, db_password=db_password_default, db_name=db_name_default):
+def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=cache_size_default, start_db=start_db_default, db_host=db_host_default, db_port=db_port_default, db_user=db_user_default, db_password=db_password_default, db_name=db_name_default, osm2pgsql=osm2pgsql_default):
     if osm_files is None:
         raise ValueError("osm_files mustn't be None")
     if str(type(osm_files)) != "<type 'list'>":
@@ -113,22 +117,27 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
                 postgis_utils.bootstrap_datadir(data_dir, db_user, password=db_password, initdb=initdb)
                 postgis_utils.bootstrap_database(data_dir, db_port, db_host, db_user, db_name, password=db_password, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql, socket_dir=db_socket_dir)
             if postgres_proc is None:
-                postgres_proc = pexpect.spawn(string.join([postgres, "-D", data_dir, "-p", str(db_port), "-h", db_host, "-k", db_socket_dir], " "))
-                postgres_proc.logfile = sys.stdout
+                postgres_proc = sp.Popen([postgres, "-D", data_dir, "-p", str(db_port), "-h", db_host, "-k", db_socket_dir])
                 logger.info("sleeping %s s to ensure postgres server started" % postgres_server_start_timeout)
                 time.sleep(postgres_server_start_timeout) # not nice (should poll connection until success instead)
+        logger.debug("using osm2pgsql binary %s" % osm2pgsql)
         osm2pgsql_proc = pexpect.spawn(string.join([osm2pgsql, "--create", "--database", db_name, "--cache", str(cache_size), "--number-processes", str(osm2pgsql_number_processes), "--slim", "--port", str(db_port), "--host", db_host, "--username", db_user, "--latlong", "--password", "--keep-coastlines", "--extra-attributes", "--hstore-all"]+osm_files, " "))
+        osm2pgsql_proc.logfile = sys.stdout
         osm2pgsql_proc.expect('Password:')
         osm2pgsql_proc.sendline(db_password)
-        osm2pgsql_proc.wait()
+        osm2pgsql_proc.timeout = 100000000
+        osm2pgsql_proc.expect(pexpect.EOF)
     except Exception as ex:
         logger.error(ex)
     finally:
-        if not postgres_proc is None and postgres_proc.isalive():
-            postgres_proc.terminate()
+        if not postgres_proc is None:
+            postgres_proc.terminate() # there's no check for subprocess.Popen 
+                    # whether it is alive, subprocess.Popen.terminate can be 
+                    # invoked without risk on a terminated process
 
 if __name__ == "__main__":
     args = vars(parser.parse_args())
     data_dir = args[data_dir_option_long]
-    osm_postgis_transform(data_dir = data_dir, osm_files=args[osm_files_option_long], cache_size=args[cache_size_option_long], db_user=args[db_user_option_long], db_password=args[db_password_option_long], db_host=args[db_host_option_long], db_port=args[db_port_option_long], db_name=args[db_name_option_long], start_db=args[start_db_option_long])
+    osm2pgsql = args[osm2pgsql_option_long]
+    osm_postgis_transform(data_dir = data_dir, osm_files=args[osm_files_option_long], cache_size=args[cache_size_option_long], db_user=args[db_user_option_long], db_password=args[db_password_option_long], db_host=args[db_host_option_long], db_port=args[db_port_option_long], db_name=args[db_name_option_long], start_db=args[start_db_option_long], osm2pgsql=osm2pgsql)
 

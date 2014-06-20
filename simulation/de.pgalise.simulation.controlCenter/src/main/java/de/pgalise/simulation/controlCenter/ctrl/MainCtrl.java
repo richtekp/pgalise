@@ -1,6 +1,7 @@
 package de.pgalise.simulation.controlCenter.ctrl;
 
 import de.pgalise.simulation.SimulationControllerLocal;
+import de.pgalise.simulation.controlCenter.ControlCenterConstants;
 import de.pgalise.simulation.controlCenter.internal.message.ControlCenterMessage;
 import de.pgalise.simulation.controlCenter.internal.util.service.StartParameterSerializerService;
 import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
@@ -110,21 +111,6 @@ public class MainCtrl implements Serializable {
   private int startProgress = 0;
   @ManagedProperty(value = "#{busSystemCtrl}")
   private BusSystemCtrl busSystemCtrl;
-  private Thread rmiControlCenterThread = new Thread() {
-    @Override
-    public void run() {
-      try {
-        Object operationCenter = Remote.getItem(
-          "//127.0.0.1:1198/operationCenter");
-        Remote.invoke(operationCenter,
-          "hallo",
-          "Wiki");
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-  };
-  private boolean rmiControlCenterThreadRunning = true;
 
   /**
    * initializes a MainCtrl without it's RMI thread being started (has to be
@@ -178,14 +164,6 @@ public class MainCtrl implements Serializable {
         "busSystemCtrl");
     busSystemCtrl.initializeBusStopParsing();
     this.simulationControllerStatus = simulationController.getStatus();
-  }
-
-  public void startRmiOperationCenterThread() {
-    rmiControlCenterThread.start();
-  }
-
-  public void stopRmiOperationCenterThread() {
-    rmiControlCenterThreadRunning = false;
   }
 
   public void cancelStart() {

@@ -42,6 +42,8 @@ domain_name = "pgalise"
 def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glassfish_version_default):
     if glassfish_version != (4,0):
         raise ValueError("glassfish version != 4.0 not supported")
+    if not os.path.exists(ear_path):
+        raise ValueError("ear_path %s doesn't exist" % ear_path)
     logger.info("checking glassfish some directories where glassfish is expected")
     if not os.path.exists(glassfish_dir):
         logger.info("%s doesn't exist" % glassfish_dir)
@@ -92,6 +94,21 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
             sp.check_call([asadmin, "start-domain", domain_name], cwd=glassfish_dir)
         else:
             logger.info("An instance of glassfish is already running, deploying to it")
+    
+    # setting options is simply ignored though command return successfully which is very strange
+    #jvm_options = ["'-XX:MaxPermSize=1024m'", "-Xmx4096m", ] # wrap in '' in order to distinguish : in -XX: from separator for multiple options
+    #logger.info("Setting JVM options %s" % str(jvm_options))
+    #list_jvm_options_output = sp.check_output([asadmin, "list-jvm-options"])
+    ## delete all -Xmx and -XX:MaxPermSize options because overwriten isn't possible
+    #for list_jvm_options_line in list_jvm_options_output.split("\n"):
+    #    if list_jvm_options_line.startswith("-Xmx"):
+    #        sp.check_call([asadmin, "delete-jvm-options", list_jvm_options_line.strip()])
+    #    elif list_jvm_options_line.startswith("-XX:MaxPermSize"):
+    #        sp.check_call([asadmin, "delete-jvm-options", list_jvm_options_line.strip()])
+    #for jvm_option in jvm_options:
+    #    sp.check_call([asadmin, "create-jvm-options", jvm_option])
+    
+    logger.info("Undeploying eventually deployed instances of the applications")
     sp.call([asadmin, "undeploy", app_name], cwd=glassfish_dir) # use subprocess.call because this might fail if the application if deployed for the first time (the undeployment failure doesn't matter in this case)
     try:
         sp.check_call([asadmin, "deploy", ear_path], cwd=glassfish_dir)

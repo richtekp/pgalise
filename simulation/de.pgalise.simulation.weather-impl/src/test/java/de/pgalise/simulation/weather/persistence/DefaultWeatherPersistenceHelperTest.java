@@ -12,10 +12,11 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -38,6 +39,7 @@ public class DefaultWeatherPersistenceHelperTest {
    * Test of saveOrUpdateServiceDataCurrent method, of class DefaultWeatherPersistenceHelper.
    */
   @Test
+  @Ignore
   public void testSaveOrUpdateServiceDataCurrent() throws Exception {
     System.out.println("saveOrUpdateServiceDataCurrent");
     EntityManager entityManager = null;

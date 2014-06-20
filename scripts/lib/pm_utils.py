@@ -58,21 +58,12 @@ def install_apt_get_build_dep(packages, package_manager="apt-get", assume_yes=as
     if not skip_apt_update:
         aptupdate()
     for package in packages:
-        output = subprocess.check_output([apt_get, "--dry-run", "build-dep", package]).strip().decode("utf-8")
-        start_marker = "Die folgenden NEUEN Pakete werden installiert:"
-        try:
-            start = output.index(start_marker)
-        except ValueError:
-            # now new packages will be installed
-            continue
-        start = start+len(start_marker)
-        end_marker = "[0-9]+ aktualisiert,.*"
-        end = re.search(end_marker, output).start()
-        output = output[start : end].strip()
-        build_dep_packages = [x.strip() for x in output.split(" ")] # remove leading and trailing whitespace and newlines which may all be part of the output
-        for build_dep_package in build_dep_packages:
-            if build_dep_package == "":
-                build_dep_packages.remove(build_dep_package)
+        apt_get_output = subprocess.check_output([apt_get, "--dry-run", "build-dep", package]).strip().decode("utf-8")
+        apt_get_output_lines = apt_get_output.split("\n")
+        build_dep_packages = []
+        for apt_get_output_line in apt_get_output_lines:
+            if apt_get_output_line.startswith("  "):
+                build_dep_packages += re.split("[\\s]+", apt_get_output_line)
         install_packages(build_dep_packages, package_manager, assume_yes, skip_apt_update=skip_apt_update) 
         
 # @return <code>True</code> if all packages in <tt>packages</tt> are installed via <tt>package_manager</tt>, <code>False</code> otherwise

@@ -28,7 +28,7 @@ public interface Output extends Serializable {
 	/**
 	 * Starts the transmission process.
 	 *
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void beginTransmit() throws IllegalStateException;
@@ -36,7 +36,7 @@ public interface Output extends Serializable {
 	/**
 	 * Ends the transmission process.
 	 *
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void endTransmit() throws IllegalStateException;
@@ -52,7 +52,7 @@ public interface Output extends Serializable {
 	 * Transmits the passed boolean value.
 	 *
 	 * @param value any boolean value
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void transmitBoolean(final boolean value) throws IllegalStateException;
@@ -61,7 +61,7 @@ public interface Output extends Serializable {
 	 * Transmits the passed byte value.
 	 *
 	 * @param value any byte value
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void transmitByte(final byte value) throws IllegalStateException;
@@ -70,7 +70,7 @@ public interface Output extends Serializable {
 	 * Transmits the passed short value.
 	 *
 	 * @param value any short value
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void transmitShort(final short value) throws IllegalStateException;
@@ -79,7 +79,7 @@ public interface Output extends Serializable {
 	 * Transmits the passed int value.
 	 *
 	 * @param value any int value
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void transmitInt(final int value) throws IllegalStateException;
@@ -88,7 +88,7 @@ public interface Output extends Serializable {
 	 * Transmits the passed long value.
 	 *
 	 * @param value any long value
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void transmitLong(final long value) throws IllegalStateException;
@@ -97,7 +97,7 @@ public interface Output extends Serializable {
 	 * Transmits the passed float value.
 	 *
 	 * @param value any float value
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void transmitFloat(final float value) throws IllegalStateException;
@@ -106,7 +106,7 @@ public interface Output extends Serializable {
 	 * Transmits the passed double value.
 	 *
 	 * @param value any double value
-	 * @throws {@link IllegalStateException} if output is not in \"Transmitting\"
+	 * @throws IllegalStateException if output is not in \"Transmitting\"
 	 * state
 	 */
 	void transmitDouble(final double value) throws IllegalStateException;

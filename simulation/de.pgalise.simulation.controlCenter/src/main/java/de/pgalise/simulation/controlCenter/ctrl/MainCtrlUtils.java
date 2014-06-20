@@ -243,8 +243,10 @@ public class MainCtrlUtils {
       busStopParsingCacheName);
   }
 
-  public final static Output OUTPUT = new DefaultTcpIpOutput("localhost",
-    6666,
+  public final static int OUTPUT_PORT = 6666;
+  public final static String OUTPUT_HOST = "localhost";
+  public final static Output OUTPUT = new DefaultTcpIpOutput(OUTPUT_HOST,
+    OUTPUT_PORT,
     TcpIpForceCloseStrategy.getInstance());
 
   public final static Executor EXECUTOR = new ScheduledThreadPoolExecutor(

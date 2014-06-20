@@ -23,6 +23,7 @@ extension_install_default = EXTENSION_INSTALLS[0]
 pwfile_path = "./pwfile" # it's not wise to write to a file in system's temporary file directory which is readable for everybody
 
 postgres_server_start_timeout = 5
+postgres_server_stop_timeout = postgres_server_start_timeout
 
 # runs an appropriate initdb routine and initializes md5 login for <tt>db_user</tt>
 # @args extension_install on of EXTENSION_INSTALLS
@@ -56,6 +57,6 @@ def bootstrap_database(datadir_path, db_port, db_host, db_user, db_name, passwor
         sp.check_call([psql, "-c", "ALTER USER %s WITH PASSWORD '%s';" % (db_user, password), "-p", str(db_port), "-h", db_host, "--username=%s" % db_user])
     finally:
         postgres_process.terminate()
-        logger.info("waiting for postgres process to terminate")
-        postgres_process.wait()
+        logger.info("sleeping %s s to ensure postgres server stopped" % postgres_server_stop_timeout)
+        time.sleep(postgres_server_stop_timeout)
 

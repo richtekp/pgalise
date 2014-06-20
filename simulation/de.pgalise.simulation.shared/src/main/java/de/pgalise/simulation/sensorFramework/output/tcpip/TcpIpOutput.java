@@ -18,6 +18,7 @@ import java.util.concurrent.Semaphore;
  * @author richter
  */
 public interface TcpIpOutput extends Output {
+  public final static int PORT_DEFAULT = 6666;
 
 	/**
 	 * Returns the address to connect on of this output.

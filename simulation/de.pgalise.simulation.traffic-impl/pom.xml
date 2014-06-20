@@ -154,53 +154,7 @@
 			<groupId>org.apache.openejb</groupId>
 			<artifactId>openejb-core</artifactId>
 			<scope>test</scope>
-		</dependency>    
-		<dependency>
-			<groupId>org.apache.openejb</groupId>
-			<artifactId>openejb-client</artifactId>
-			<scope>test</scope>
-		</dependency>           
-          <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>cdi-embedded</artifactId>
-            <version>1.6.1-SNAPSHOT</version>
-            <scope>test</scope>
-          </dependency>      
-          <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>openejb-server</artifactId>
-            <scope>test</scope>
-          </dependency> 
-<!--          <dependency>
-            <groupId>org.apache.openejb</groupId>
-            <artifactId>deps</artifactId>
-            <version>4.6.1-SNAPSHOT</version>
-          </dependency>-->
-          <dependency>
-          <groupId>org.apache.openwebbeans</groupId>
-          <artifactId>openwebbeans-ee</artifactId>
-          <version>1.1.0</version>
-          </dependency>  
-          <dependency>
-          <groupId>org.apache.openwebbeans</groupId>
-          <artifactId>openwebbeans-spi</artifactId>
-          <version>1.1.0</version>
-          </dependency>   
-          <dependency>
-          <groupId>org.apache.openwebbeans</groupId>
-          <artifactId>openwebbeans-impl</artifactId>
-          <version>1.1.0</version>
-          </dependency>
-          <dependency>
-            <groupId>org.metatype.sxc</groupId>
-            <artifactId>sxc-jaxb-core</artifactId>
-            <version>0.8</version>
-            </dependency>
-          <dependency>
-            <groupId>org.apache.geronimo</groupId>
-            <artifactId>geronimo-core</artifactId>
-            <version>1.0</version>
-          </dependency>
+		</dependency> 
 	</dependencies>
 
 	<build>

@@ -9,6 +9,7 @@ import de.pgalise.simulation.controlCenter.model.ControlCenterStartParameter;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.tcpip.DefaultTcpIpOutput;
 import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpForceCloseStrategy;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.entity.VehicleData;
@@ -54,9 +55,7 @@ public class InitDialogCtrl implements Serializable {
 
   @EJB
   private InformationBasedVehicleFactory informationBasedVehicleFactory;
-  private Output output = new DefaultTcpIpOutput("localhost",
-    6666,
-    TcpIpForceCloseStrategy.getInstance());
+  private Output output = MainCtrlUtils.OUTPUT;
   private Queue<VehicleData> uiVehicles;
   @EJB
   private IdGenerator idGenerator;

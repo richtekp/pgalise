@@ -16,12 +16,13 @@
 package de.pgalise.simulation.controlCenter.model;
 
 import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.output.tcpip.TcpIpOutput;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.event.weather.WeatherEvent;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.entity.BusRoute;
 import de.pgalise.simulation.traffic.entity.TrafficCity;
-import de.pgalise.simulation.traffic.TrafficStartParameter;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightIntersectionSensor;
 import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
 import de.pgalise.simulation.traffic.internal.server.sensor.GpsSensor;
@@ -52,6 +53,8 @@ import java.util.Map;
 import java.util.Set;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlTransient;
 import javolution.xml.XMLSerializable;
 
@@ -157,6 +160,8 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 	private String importedInstanceFileContent = null;
 
 	private Map<Class<? extends Sensor>, Long> specificUpdateSteps = new HashMap<>();
+  @Min(1024) @Max(65536)
+  private int outputPort = TcpIpOutput.PORT_DEFAULT;
 
 	public ControlCenterStartParameter() {
 		for (Class<? extends Sensor> supportedSensorType : SUPPORTED_SENSOR_TYPES) {
@@ -238,6 +243,81 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		this.mapAndBusstopFileData = mapAndBusstopFileData;
 		this.trafficServerCount = trafficServerCount;
 	}
+
+	/**
+	 * handles the import of a serialized {@link ControlCenterStartParameter}
+	 * using the serialized instance passed to
+	 * <tt>importedInstanceFileContent</tt>
+	 */
+	/*
+	 this allows to avoid the a handler for the selected start parameter because 
+	 the values can be written into 
+	 */
+	public void overwriteWithImportedInstanceProperties() {
+		throw new UnsupportedOperationException("implement");
+	}
+
+	public void
+		addPropertyChangeListener(PropertyChangeListener listener) {
+		mPcs.addPropertyChangeListener(listener);
+	}
+
+	public void
+		removePropertyChangeListener(PropertyChangeListener listener) {
+		mPcs.removePropertyChangeListener(listener);
+	}
+
+//	public static class XML extends XMLFormat<ControlCenterStartParameter> {
+//
+//		@Override
+//		public void write(ControlCenterStartParameter g,
+//			OutputElement xml) throws XMLStreamException {
+//			xml.setAttribute("withSensorInterferes",
+//				g.withSensorInterferes);
+//			xml.setAttribute("startTimestamp",
+//				g.startTimestamp);
+//			xml.setAttribute("endTimestamp",
+//				g.endTimestamp);
+//			xml.setAttribute("interval",
+//				g.interval);
+//			xml.setAttribute("clockGeneratorInterval",
+//				g.clockGeneratorInterval);
+//			xml.setAttribute("sensorUpdateSteps",
+//				g.sensorUpdateSteps);
+//			xml.setAttribute("ipSimulationController",
+//				g.ipSimulationController);
+//			xml.setAttribute("ipTrafficController",
+//				g.ipTrafficController);
+//			xml.setAttribute("ipWeatherController",
+//				g.ipWeatherController);
+//			xml.setAttribute("ipStaticSensorController",
+//				g.ipStaticSensorController);
+//			xml.setAttribute("ipEnergyController",
+//				g.ipEnergyController);
+//			xml.setAttribute("operationCenterAddress",
+//				g.operationCenterAddress);
+//			xml.setAttribute("name",
+//				g.name);
+//			xml.add(g.trafficServerIPs);
+//			xml.add(g.simulationEventLists);
+//			xml.add(g.mapAndBusstopFileData);
+//			xml.add(g.randomDynamicSensorBundle);
+//			xml.add(g.busRouteList);
+//			xml.add(g.trafficFuzzyData);
+//			xml.add(g.attractionCollection);
+//			xml.add(g.specificUpdateSteps);
+//		}
+//
+//		@Override
+//		public void read(InputElement xml,
+//			ControlCenterStartParameter g) throws XMLStreamException {
+//			throw new UnsupportedOperationException();
+//		}
+//	}
+    
+  //////////////////////////////////////////////////////////////////////////////
+  // getter and setter
+  //////////////////////////////////////////////////////////////////////////////
 
 	public void setSpecificUpdateSteps(
 		Map<Class<? extends Sensor>, Long> specificUpdateSteps) {
@@ -393,19 +473,6 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 	}
 
 	/**
-	 * handles the import of a serialized {@link ControlCenterStartParameter}
-	 * using the serialized instance passed to
-	 * <tt>importedInstanceFileContent</tt>
-	 */
-	/*
-	 this allows to avoid the a handler for the selected start parameter because 
-	 the values can be written into 
-	 */
-	public void overwriteWithImportedInstanceProperties() {
-		throw new UnsupportedOperationException("implement");
-	}
-
-	/**
 	 * @return the importedInstanceFileContent
 	 */
 	public String getImportedInstanceFileContent() {
@@ -419,62 +486,4 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		String importedInstanceFileContent) {
 		this.importedInstanceFileContent = importedInstanceFileContent;
 	}
-
-	public void
-		addPropertyChangeListener(PropertyChangeListener listener) {
-		mPcs.addPropertyChangeListener(listener);
-	}
-
-	public void
-		removePropertyChangeListener(PropertyChangeListener listener) {
-		mPcs.removePropertyChangeListener(listener);
-	}
-
-//	public static class XML extends XMLFormat<ControlCenterStartParameter> {
-//
-//		@Override
-//		public void write(ControlCenterStartParameter g,
-//			OutputElement xml) throws XMLStreamException {
-//			xml.setAttribute("withSensorInterferes",
-//				g.withSensorInterferes);
-//			xml.setAttribute("startTimestamp",
-//				g.startTimestamp);
-//			xml.setAttribute("endTimestamp",
-//				g.endTimestamp);
-//			xml.setAttribute("interval",
-//				g.interval);
-//			xml.setAttribute("clockGeneratorInterval",
-//				g.clockGeneratorInterval);
-//			xml.setAttribute("sensorUpdateSteps",
-//				g.sensorUpdateSteps);
-//			xml.setAttribute("ipSimulationController",
-//				g.ipSimulationController);
-//			xml.setAttribute("ipTrafficController",
-//				g.ipTrafficController);
-//			xml.setAttribute("ipWeatherController",
-//				g.ipWeatherController);
-//			xml.setAttribute("ipStaticSensorController",
-//				g.ipStaticSensorController);
-//			xml.setAttribute("ipEnergyController",
-//				g.ipEnergyController);
-//			xml.setAttribute("operationCenterAddress",
-//				g.operationCenterAddress);
-//			xml.setAttribute("name",
-//				g.name);
-//			xml.add(g.trafficServerIPs);
-//			xml.add(g.simulationEventLists);
-//			xml.add(g.mapAndBusstopFileData);
-//			xml.add(g.randomDynamicSensorBundle);
-//			xml.add(g.busRouteList);
-//			xml.add(g.trafficFuzzyData);
-//			xml.add(g.attractionCollection);
-//			xml.add(g.specificUpdateSteps);
-//		}
-//
-//		@Override
-//		public void read(InputElement xml,
-//			ControlCenterStartParameter g) throws XMLStreamException {
-//			throw new UnsupportedOperationException();
-//		}
-//	}
 }

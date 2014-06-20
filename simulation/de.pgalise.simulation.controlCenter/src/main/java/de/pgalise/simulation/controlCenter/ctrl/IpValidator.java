@@ -13,21 +13,20 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 
 @FacesValidator("IpValidator")
-public class IpValidator implements Validator {
-
-	private static final String IP_ADDRESS_PATTERN
-		= "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
-		+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
-		+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\."
-		+ "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+public class IpValidator extends BaseIpValidator implements Validator {
+  private static final long serialVersionUID = 1L;
 
 	@Override
 	public void validate(FacesContext context,
 		UIComponent component,
 		Object value) {
-		if (!((String) value).matches(IP_ADDRESS_PATTERN)) {
-			throw new ValidatorException(
+    if(!(value instanceof String)) {
+      throw new RuntimeException(String.format("value %s isn't an instance of %s", value, String.class.getName()));
+    }
+    String valueCast = (String) value;
+		if (!validIp((valueCast))) {
+      throw new ValidatorException(
 				new FacesMessage("IP address does not valid!"));
-		}
+    }
 	}
 }
