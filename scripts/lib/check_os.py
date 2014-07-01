@@ -48,19 +48,11 @@ def check_python3():
     return ret_value
 
 def findout_architecture():
-    architecture = sp.check_output(["uname","-m"]).strip()
+    architecture = sp.check_output(["uname","-m"]).strip().decode("utf-8")
     return architecture
 
 #lsb_release only works with python2.x
 def findout_release_ubuntu():
-#    python2=None
-#    if os.path.isfile("/usr/bin/python2.6"):
-#        python2="/usr/bin/python2.6"
-#    elif os.path.isfile("/usr/bin/python2.7"):
-#        python2="/usr/bin/python2.7"
-#    else:
-#        print("Neither python2.6 nor python 2.7 could be found in /usr/bin/. It's necessary to determine your distribution release")
-#        exit(5)
     while not os.path.isfile("/usr/bin/python2.6") and not os.path.isfile("/usr/bin/python2.7"):
         print("Neither python2.6 nor python 2.7 could be found in /usr/bin/. It's necessary to determine your distribution release")
         confirm("proceed","Install python 2.6 or 2.7 and make it available at /usr/bin/python2.6 or /usr/lib/python2.7")

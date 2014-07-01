@@ -61,6 +61,8 @@ def file_lines(file_, comment_symbol="#"):
 def filter_output_lines(lines, comment_symbol="#"):
     if comment_symbol == "":
         raise ValueError("comment_symbol mustn't be the empty string ''")
+    if str(type(lines)) != "<type 'list'>" and str(type(lines)) != "<class 'list'>":
+        raise ValueError("lines %s isn't a list" % (lines,))
     ret_value = []
     for i in lines:
         i = i.strip()
@@ -115,33 +117,35 @@ def output_lines_match(lines, pattern, comment_symbol="#"):
 
 # @args line the line to be commented out (can be a regular expression or a literal) (leading and trailing whitespace in lines in the file will be ignored)
 # @args comment_symbol can be <code>None</code> in order to include all lines, must not be the empty string '' (<tt>ValueError</tt> will be raised)
-def comment_out(file0, line, comment_symbol):
+def comment_out(file_path, line, comment_symbol):
     if comment_symbol == "":
         raise ValueError("comment_symbol mustn't be the empty string ''")
     new_lines = []
-    file_lines0 = file_lines(file0, comment_symbol=None)
+    file_lines0 = file_lines(file_path, comment_symbol=None)
     for file_line in file_lines0:
         if not re.match("[\\s]*%s[\\s]*" % line):
             new_lines.append(file_line)
         else:
             new_lines.append("%s %s" % (comment_symbol, line))
-    file_obj = open(file0, "rw+")
+    file_obj = open(file_path, "rw+")
     for new_line in new_lines:
         file_obj.write("%s\n" % new_line)
+    file_obj.flush()
     file_obj.close()
     
 # @args line the line to be commented in (can be a regular expression or a literal)
-def comment_in(file0, line, comment_symbol):
+def comment_in(file_path, line, comment_symbol):
     new_lines = []
-    file_lines0 = file_lines(file0, comment_symbol=None)
+    file_lines0 = file_lines(file_path, comment_symbol=None)
     for file_line in file_lines0:
         if not re.match("[\\s]*%s[\\s]*%s" % (comment_symbol, line), line):
             new_lines.append(file_line)
         else:
             new_lines.append(re.search(line, file_line).group(0))
-    file_obj = open(file0, "rw+")
+    file_obj = open(file_path, "w")
     for new_line in new_lines:
         file_obj.write("%s\n" % new_line)
+    file_obj.flush()
     file_obj.close()
 
 def create_file_wrapper(path):
