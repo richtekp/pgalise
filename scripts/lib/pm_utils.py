@@ -32,6 +32,14 @@ add_apt_repository = "add-apt-repository"
 
 assume_yes_default = False
 skip_apt_update_default = False
+install_recommends_default=True
+install_suggests_default = False
+
+APT_OUTPUT_CONSOLE=1
+APT_OUTPUT_TMP_FILE=2
+APT_OUTPUT=APT_OUTPUT_CONSOLE
+
+PACKAGE_MANAGER_APT_GET="apt-get"
 
 ##############################
 # dpkg tools
@@ -45,65 +53,52 @@ def dpkg_check_package_installed(package_name):
 # apt-get tools
 ##############################
 # a wrapper around <tt>apt-get dist-upgrade</tt> to use the internal aptuptodate flag
-def apt_get_dist_upgrade(skip_apt_update=skip_apt_update_default):
-    if not skip_apt_update:
-        aptupdate()
-    subprocess.check_call([apt_get, "dist-upgrade"])
+def upgrade(package_manager=PACKAGE_MANAGER_APT_GET , assume_yes=assume_yes_default, skip_apt_update=skip_apt_update_default, install_recommends=install_recommends_default, install_suggests=install_suggests_default):
+    if package_manager == PACKAGE_MANAGER_APT_GET:
+        aptupdate(skip_apt_update)
+        command_list = [apt_get, "dist-upgrade"]
+        options_command_list = __generate_apt_options_command_list__(assume_yes=assume_yes, install_recommends=install_recommends, install_suggests=install_suggests)
+        subprocess.check_call(command_list+options_command_list)
+    else:
+        raise RuntimeError("package_manager %s not yet supported" % (package_manager,))
 
 def install_apt_get_build_dep(packages, package_manager="apt-get", assume_yes=assume_yes_default, skip_apt_update=skip_apt_update_default):
     if packages == None or not type(packages) == type([]):
         raise Exception("packages has to be not None and a list")
     if len(packages) == 0:
         return 0
-    if not skip_apt_update:
-        aptupdate()
+    aptupdate(skip_apt_update)
     for package in packages:
-        apt_get_output = subprocess.check_output([apt_get, "--dry-run", "build-dep", package]).strip().decode("utf-8")
+        apt_get_output = subprocess.check_output([apt_get, "--dry-run", "build-dep", package]).strip()
         apt_get_output_lines = apt_get_output.split("\n")
         build_dep_packages = []
         for apt_get_output_line in apt_get_output_lines:
             if apt_get_output_line.startswith("  "):
                 build_dep_packages += re.split("[\\s]+", apt_get_output_line)
+        build_dep_packages = [x for x in build_dep_packages if x != ""]
         install_packages(build_dep_packages, package_manager, assume_yes, skip_apt_update=skip_apt_update) 
-        
+
+# only checks for the specified packages, no for their recommends or suggests
 # @return <code>True</code> if all packages in <tt>packages</tt> are installed via <tt>package_manager</tt>, <code>False</code> otherwise
 def check_packages_installed(packages, package_manager="apt-get", skip_apt_update=skip_apt_update_default):
     package_managers = ["apt-get"]
     if package_manager == "apt-get":
-        #try:
-        #    import apt
-        #    import apt_pkg
-        #except ImportError:
-        #    print("installing missing apt python library")
-        #    install_apt_python()
-        #apt_pkg.init()
-        #cache = apt.Cache()
         for package in packages:
             package_installed = dpkg_check_package_installed(package)
             if not package_installed:
-                return False            
-            #found = False
-            #for cache_entry in cache:
-            #    if cache_entry.name == package:
-            #        found = True
-            #        if not cache_entry.is_installed: # cache_entry.isInstalled in version ?? before ??
-            #            cache.close()
-            #            return False
-            #        break
-            #if not found:
-            #    cache.close()
-            #    return False
-        #cache.close()
+                return False
         return True
     else:
         raise Exception("package_manager has to be one of "+str(package_managers))
+# internal implementation notes:
+# - python-apt bindings have been dropped due to slow speed (dpkg queries are much faster)
 
 # quiet flag doesn't make sense because update can't be performed quietly obviously (maybe consider to switch to apt-api)
 # return apt-get return code or <code>0</code> if <tt>packages</tt> are already installed or <tt>packages</tt> is empty
-def install_packages(packages, package_manager="apt-get", assume_yes=assume_yes_default, skip_apt_update=skip_apt_update_default):
+def install_packages(packages, package_manager="apt-get", assume_yes=assume_yes_default, skip_apt_update=skip_apt_update_default, install_recommends=install_recommends_default, install_suggests=install_suggests_default):
     if check_packages_installed(packages, package_manager, skip_apt_update=skip_apt_update):
         return 0
-    return __package_manager_action__(packages, package_manager, ["install"], assume_yes, skip_apt_update=skip_apt_update)
+    return __package_manager_action__(packages, package_manager, ["install"], assume_yes, skip_apt_update=skip_apt_update, install_recommends=install_recommends, install_suggests=install_suggests)
 
 # doesn't check whether packages are installed
 # @return apt-get return code or <code>0</code> if <tt>packages</tt> is empty
@@ -114,33 +109,37 @@ def reinstall_packages(packages, package_manager="apt-get", assume_yes=assume_ye
 def remove_packages(packages, package_manager="apt-get", assume_yes=assume_yes_default, skip_apt_update=skip_apt_update_default):
     return __package_manager_action__(packages, package_manager, ["remove"], assume_yes, skip_apt_update=skip_apt_update)
 
+def __generate_apt_options_command_list__(assume_yes=assume_yes_default, install_recommends=install_recommends_default, install_suggests=install_suggests_default):
+    # apt-get installs recommended packages by default, therefore the 
+    # option to deactivate it is negative (--no-install-recommends), while 
+    # the option to install suggests is option, there the option is positive 
+    command_list = []
+    if not install_recommends:
+        command_list.append("--no-install-recommends")
+    if install_suggests:
+        command_list.append("--install-suggests")
+    if assume_yes:
+        command_list.append("--assume-yes")
+    return command_list
+
 # quiet flag doesn't make sense because update can't be performed quietly obviously (maybe consider to switch to apt-api)
 # @args a list of command to be inserted after the package manager command and default options and before the package list
-def __package_manager_action__(packages, package_manager, package_manager_action, assumeyes, skip_apt_update=skip_apt_update_default, stdout=None):
-    if not "<type 'list'>" == str(type(packages)):
+def __package_manager_action__(packages, package_manager, package_manager_action, assume_yes, skip_apt_update=skip_apt_update_default, stdout=None, install_recommends=install_recommends_default, install_suggests=install_suggests_default):
+    if not "<type 'list'>" == str(type(packages)) and str(type(packages)) != "<class 'list'>":
         raise ValueError("packages isn't a list")
     if len(packages) == 0:
         return 0
-    assumeyescommand = ""
-    if assumeyes:
-        assumeyescommand = "--assume-yes"
     if package_manager == "apt-get":
-        packagestring = string.join(packages, " ")
-        if not skip_apt_update:
-            aptupdate()
-        command_list = [apt_get, "--no-install-recommends"]
-        if assumeyes:
-            command_list.append("--assume-yes")
-        try:
-            subprocess.check_call(command_list+package_manager_action+packages)
-        except subprocess.CalledProcessError as ex:
-            raise ex
+        aptupdate(skip_apt_update)
+        command_list = [apt_get]
+        options_command_list = __generate_apt_options_command_list__(assume_yes=assume_yes, install_recommends=install_recommends, install_suggests=install_suggests)
+        subprocess.check_call(command_list+options_command_list+package_manager_action+packages)
     elif package_manager == "yast2":
         subprocess.check_call(["/sbin/yast2", "--"+package_manager_action]+packages) # yast2 doesn't accept string concatenation of packages with blank, but the passed list (it's acutually better style...)
     elif package_manager == "zypper":
-        subprocess.check_call(["zypper", package_manager_action, packagestring])
+        subprocess.check_call(["zypper", package_manager_action]+packages)
     elif package_manager == "equo":
-        subprocess.check_call(["equo", package_manager_action, packagestring])
+        subprocess.check_call(["equo", package_manager_action]+packages)
     else:
         raise ValueError(str(package_manager)+" is not a supported package manager")
 # implementation notes:
@@ -150,22 +149,23 @@ def __package_manager_action__(packages, package_manager, package_manager_action
 
 # updates apt using apt-get update command. Throws exceptions as specified by subprocess.check_call if the command fails
 def invalidate_apt():
+    logger.debug("invalidating apt status (update forced at next package manager action)")
     global apt_invalid
     apt_invalid = True
     global aptuptodate
     aptuptodate = False
 
 # updates apt using subprocess.check_call, i.e. caller has to take care to handle exceptions which happen during execution
-def aptupdate(force=False):
+def aptupdate(skip=skip_apt_update_default, force=False):
     global aptuptodate
-    if not aptuptodate or force or apt_invalid:
+    if (not aptuptodate and not skip) or force or apt_invalid:
         print("updating apt sources")
-        try:
+        apt_stdout = None
+        if APT_OUTPUT == APT_OUTPUT_TMP_FILE:
             apt_get_update_log_file_tuple = tempfile.mkstemp("libinstall_apt_get_update.log")
             logger.info ("logging output of apt-get update to %s" % apt_get_update_log_file_tuple[1])
-            subprocess.check_call([apt_get, "--quiet", "update"], stdout=apt_get_update_log_file_tuple[0])
-        except subprocess.CalledProcessError as ex:
-            raise ex       
+            apt_stdout = apt_get_update_log_file_tuple[0]
+        subprocess.check_call([apt_get, "--quiet", "update"], stdout=apt_stdout)
         aptuptodate = True
 
 def generate_deb_line(url, release, identifier):
@@ -196,12 +196,12 @@ def lazy_add_apt_source_line(deb_line_re, ppa_sources_d_file, ppa_spec):
         if file_line_utils.file_lines_match(ppa_sources_d_file, deb_line_re, comment_symbol=None):
             # line is in ppa file but commented
             file_line_utils.comment_in(ppa_sources_d_file, deb_line_re, "#")
-            logger.debug("deb_line_re %s found commented in %s; commenting in; content of %s:\n%s" % (deb_line_re, ppa_sources_d_file, ppa_sources_d_file, file(ppa_sources_d_file, "r").read()))
+            logger.debug("deb_line_re %s found commented in %s; commenting in; content of %s:\n%s" % (deb_line_re, ppa_sources_d_file, ppa_sources_d_file, open(ppa_sources_d_file, "r").read()))
             return False
     logger.debug("adding package source %s with add-apt-repository" % ppa_spec)
     command_args = ["--yes", "--enable-source"]
     if check_os.check_debian():
         command_args.remove("--enable-source")
-    subprocess.check_call([add_apt_repository]+command_args+[ppa_spec])
+    subprocess.check_call([add_apt_repository]+command_args+["\"%s\"" % (ppa_spec,)]) # "" is necessary for deb lines to be passed and doesn't hurt for others
     return True
 
