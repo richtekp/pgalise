@@ -25,7 +25,11 @@ target
 *.rar
 *.tar
 *.zip
-*.jar
+
+# @TODO
+# *.jar # we need script/bin/*.jar
+simulation/de.pgalise.simulation.shared-resources/lib/unknown/ # what is this
+
 *.war
 *.ear
 
