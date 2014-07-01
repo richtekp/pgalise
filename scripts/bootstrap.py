@@ -42,9 +42,11 @@ import user_group_utils
 import postgis_utils
 import string
 import pm_utils
+import file_utils
+import bootstrap_globals
 
-base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
-bin_dir = os.path.join(base_dir, "scripts/bin")
+bin_dir = bootstrap_globals.bin_dir
+base_dir = bootstrap_globals.base_dir
 bootstrap_dir_default = os.path.realpath(os.path.join(base_dir, "pgalise-bootstrap"))
 pg_version=(9,2) # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
 arch = check_os.findout_architecture()
@@ -56,7 +58,7 @@ if pg_version == (9,2):
         postgresql_deb_url_default = "http://oscg-downloads.s3.amazonaws.com/packages/postgres_9.2.7-1.amd64.openscg.deb"
         postgresql_deb_name = "postgres_9.2.7-1.amd64.openscg.deb"
         postgresql_deb_md5 = "cea3857cdf42cf18d3995333532e46d0"
-    elif arch == "i386":
+    elif arch == "i386" or arch == "i686":
         postgresql_deb_url_default = "http://oscg-downloads.s3.amazonaws.com/packages/postgres_9.2.7-1.i386.openscg.deb"
         postgresql_deb_name = "postgres_9.2.7-1.i386.openscg.deb"
         postgresql_deb_md5 = "c180d526ef27c31c8e140583bc64a88f"
@@ -105,6 +107,10 @@ maven_bin_archive_name = "apache-maven-3.2.1-bin.tar.gz"
 maven_bin_archive_url_default = "http://ftp.fau.de/apache/maven/maven-3/3.2.1/binaries/apache-maven-3.2.1-bin.tar.gz"
 maven_bin_dir_install_target = "/usr/local/share/maven-3.2.1"
 postgis_jdbc_name = "postgis-jdbc-2.1.0SVN.jar"
+postgis_src_dir_name="postgis-2.1.1"
+postgis_url_default = "http://download.osgeo.org/postgis/source/postgis-2.1.1.tar.gz"
+postgis_src_archive_name = "postgis-2.1.1.tar.gz"
+postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
 
 # necessary build tools and helpers 
 # <ul>
@@ -122,7 +128,6 @@ createdb = "/usr/lib/postgresql/%s/bin/createdb" % string.join([str(x) for x in 
 postgres = "/usr/lib/postgresql/%s/bin/postgres" % string.join([str(x) for x in pg_version],".")
 apt_get = "apt-get"
 zypper = "zypper"
-md5sum = "md5sum"
 dpkg = "dpkg"
 add_apt_repo = "add-apt-repository"
 cp="cp"
@@ -155,38 +160,6 @@ parser.add_argument("-%s" % force_overwrite_postgres_datadir_option, "--%s" % fo
 parser.add_argument("-%s" % skip_tests_option, "--%s" % skip_tests_option_long, type=bool, nargs='?',
                    help='Whether tests for maven build actions ought to be skipped', dest=skip_tests_option_long)
 
-def check_dir(dir_path):
-    if not os.path.exists(dir_path):
-        return False
-    if not os.path.isdir(dir_path):
-        raise ValueError("dir_path has to point to a directory")
-    if len(os.listdir(dir_path)) == 0:
-        logger.debug("%s is empty" % dir_path)
-        return False
-    return True
-
-def create_dir(dir_path, allow_content):
-    if os.path.exists(dir_path):
-        if os.path.isdir(dir_path):
-            if len(os.listdir(dir_path)) > 0 and not allow_content:
-                raise RuntimeError("%s exists and has content, a directory is supposed to be created. Remove or move the content of the directory" % dir_path)
-        else:
-            # file
-            raise RuntimeError("%s exists, a directory is supposed to be created. Remove or move the file" % dir_path)
-    else:
-        os.makedirs(dir_path)
-
-def check_file(file_path, md5sum):
-    if not os.path.exists(file_path):
-        return False
-    if not os.path.isfile(file_path):
-        raise ValueError("file_path has to point to a file")
-    retrieved_md5sum = retrieve_md5sum(file_path)
-    if not retrieved_md5sum == md5sum:
-        logger.debug("%s has md5 sum %s instead of %s" % (file_path, retrieved_md5sum, md5sum))
-        return False
-    return True
-
 # provides a wrapper around the <code>mvn install</code> command for source builds to handle 
 # conditional invokation with <code>-DskipTests=true</code> 
 def mvn_install(dir_path, skip_tests=skip_tests_default):
@@ -201,7 +174,7 @@ def do_wget(url, target):
 
 # @args skip_build skip building of packages if directories exist
 # @args remove_datadir <code>True</code> or <code>False</code> for removal of stored data in <tt>postgres_datadir_path</tt> or <code>None</code> to interact with the user with a prompt 
-def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None, privileged_uid=0, postgresql_jdbc_url=postgresql_jdbc_url_default, postgresql_deb_url=postgresql_deb_url_default, geotools_url=geotools_url_default, jgrapht_url=jgrapht_url_default, jfuzzy_url=jfuzzy_url_default, maven_bin_archive_url=maven_bin_archive_url_default, commons_src_archive_url=commons_src_archive_url_default, skip_tests=skip_tests_default, postgis_install="pm"):
+def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None, postgresql_jdbc_url=postgresql_jdbc_url_default, postgresql_deb_url=postgresql_deb_url_default, geotools_url=geotools_url_default, jgrapht_url=jgrapht_url_default, jfuzzy_url=jfuzzy_url_default, maven_bin_archive_url=maven_bin_archive_url_default, commons_src_archive_url=commons_src_archive_url_default, skip_tests=skip_tests_default, postgis_install="pm", postgis_url=postgis_url_default):
     # setup directories
     script_dir = os.path.join(base_dir, "scripts")
     external_dir = os.path.join(bootstrap_dir, "external")
@@ -214,19 +187,14 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         os.makedirs(bin_dir)
     if not os.path.exists(bootstrap_dir):
         os.makedirs(bootstrap_dir)
-        #os.chown(bootstrap_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_dir):
         os.makedirs(external_dir)
-        #os.chown(external_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_bin_dir):
         os.makedirs(external_bin_dir)
-        #os.chown(external_bin_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(external_src_dir):
         os.makedirs(external_src_dir)        
-        #os.chown(external_src_dir, unprivileged_uid, unprivileged_uid)
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
-        #os.chown(tmp_dir, unprivileged_uid, unprivileged_uid)
     user = sp.check_output([whoami])
     postgres_socket_dir = tmp_dir # is this ok?
     
@@ -239,7 +207,7 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         
     # install postgresql jdbc driver
     postgresql_jdbc_file = os.path.join(external_bin_dir, postgresql_jdbc_name)
-    if not check_file(postgresql_jdbc_file, postgresql_jdbc_md5):
+    if not file_utils.check_file(postgresql_jdbc_file, postgresql_jdbc_md5):
         do_wget(postgresql_jdbc_url, postgresql_jdbc_file)
     if pg_version == (9,2):
         postgresql_jdbc_mvn_version = "9.2-1004.jdbc4"
@@ -252,7 +220,7 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         "-DgroupId=postgresql", "-Dversion=%s" % postgresql_jdbc_mvn_version, "-Dpackaging=jar"], cwd=external_bin_dir)
     # install jgrapht (install net.sf.jgrapht:jgrapht:0.8.3 as org.jgrapht:jgrapht:0.8.3 (could not be found in any repository))
     jgrapht_file = os.path.join(external_bin_dir, jgrapht_name)
-    if not check_file(jgrapht_file, jgrapht_md5):
+    if not file_utils.check_file(jgrapht_file, jgrapht_md5):
         do_wget(jgrapht_url, jgrapht_file)
     sp.check_call([mvn, "install:install-file", \
         "-Dfile=%s" % jgrapht_file, "-DartifactId=jgrapht",
@@ -260,7 +228,7 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
 
     # install jfuzzylogic
     jfuzzy_file = os.path.join(external_bin_dir, jfuzzy_name)
-    if not check_file(jfuzzy_file, jfuzzy_md5):
+    if not file_utils.check_file(jfuzzy_file, jfuzzy_md5):
         do_wget(jfuzzy_url, jfuzzy_file)
     sp.check_call([mvn, "install:install-file", \
         "-Dfile=%s" % jfuzzy_file, "-DartifactId=jfuzzy", 
@@ -274,8 +242,8 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     
     # install geotools
     #geotools_src_dir = os.path.join(external_src_dir, geotools_src_dir_name)
-    #if not check_dir(geotools_src_dir):
-    #    if not ch...le(os.path.join(external_src_dir, geotools_src_archive_name)) or retrieve_md5sum(os.path.join(external_src_dir, geotools_src_archive_name)) != geotools_src_archive_md5:
+    #if not file_utils.check_dir(geotools_src_dir):
+    #    if not ch...le(os.path.join(external_src_dir, geotools_src_archive_name)) or file_utils.retrieve_md5sum(os.path.join(external_src_dir, geotools_src_archive_name)) != geotools_src_archive_md5:
     #        do_wget() ... sp.check_call([wget, geotools_url], cwd=tmp_dir)
     #    sp.check_call([unzip, os.path.join(tmp_dir, geotools_src_archive_name)], cwd=external_src_dir)
     #if not skip_build:
@@ -284,9 +252,9 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     
     # install commons-collections 4
     #commons_src_dir = os.path.join(external_src_dir, commons_src_dir_name)
-    #if not check_dir(commons_src_dir):
+    #if not file_utils.check_dir(commons_src_dir):
     #    commons_src_archive_file = os.path.join(external_src_dir, commons_src_archive_name)
-    #    if not check_file(commons_src_archive_file, commons_src_archive_md5):
+    #    if not file_utils.check_file(commons_src_archive_file, commons_src_archive_md5):
     #        do_wget(commons_src_archive_url, commons_src_archive_file)
     #        sp.check_call([tar, "xf", commons_src_archive_file], cwd=external_src_dir)
     #if not skip_build:
@@ -297,9 +265,9 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     if postgis_install == "source":
         postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
         if check_os.check_ubuntu() or check_os.check_debian():
-            if not check_dir(postgis_src_dir):
+            if not file_utils.check_dir(postgis_src_dir):
                 postgis_src_archive_file = os.path.join(external_src_dir, postgis_src_archive_name)
-                if not check_file(postgis_src_archive_file, postgis_src_archive_md5):
+                if not file_utils.check_file(postgis_src_archive_file, postgis_src_archive_md5):
                     do_wget(postgis_url, postgis_src_archive_file)
                     sp.check_call([tar, "xf", postgis_src_archive_file], cwd=external_src_dir)
             if not skip_build:
@@ -330,8 +298,7 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         "-DgroupId=org.postgis", "-Dversion=2.1.0SVN", "-Dpackaging=jar"], cwd=bin_dir)
         
     # setup postgis datadir and configuration    
-    if not check_dir(postgres_datadir_path) or force_overwrite_postgres_datadir:
-        os.setuid(unprivileged_uid)
+    if not file_utils.check_dir(postgres_datadir_path) or force_overwrite_postgres_datadir:
         # os.makedirs(postgres_datadir_path) # causes error if directory exists and is not necessary
         postgis_utils.bootstrap_datadir(postgres_datadir_path, postgres_user, password=postgres_pw, initdb=initdb)            
         postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
@@ -340,11 +307,6 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (postgres_datadir_path, force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
 # internal implementation notes:
 # - passing base_dir as argument of the bootstrap function or in another way doesn't necessarily make sense (default values can be set based on base_dir=source root though)
-
-def retrieve_md5sum(path):
-    md5sum_output = sp.check_output([md5sum, path]).strip().decode('utf-8') # subprocess.check_output returns byte string which has to be decoded
-    ret_value = str(re.split("[\\s]+", md5sum_output) [0])
-    return ret_value
         
 if __name__ == "__main__":
     args = vars(parser.parse_args())

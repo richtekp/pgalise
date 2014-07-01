@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
+# internal implementation notes:
+# - @TODO: handle i18n for pexpect
+
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -35,7 +38,7 @@ unprivileged_uid = 1000
 start_db_default = False
 start_db_option = "t"
 start_db_option_long = "start-db"
-db_host_default = "richter-local.de"
+db_host_default = "localhost"
 db_host_option = "j"
 db_host_option_long = "host"
 db_port_default = 5204
@@ -106,7 +109,7 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
     # always check, even after install_prequisites
     #@TODO: not sufficient to binary name; necessary to evaluate absolute path with respect to $PATH
     if os_utils.which(osm2pgsql) is None:
-        raise RuntimeError("osm2pgsql not found, make sure you have invoked osm_postgis_transform.py")
+        raise RuntimeError("osm2pgsql not found, make sure you have invoked osm_postgis_transform_prequisites.py")
     
     # parsing
     # postgres binary refuses to run when process uid and effective uid are not identical    
@@ -117,13 +120,14 @@ def osm_postgis_transform(data_dir=data_dir_default, osm_files=[], cache_size=ca
                 postgis_utils.bootstrap_datadir(data_dir, db_user, password=db_password, initdb=initdb)
                 postgis_utils.bootstrap_database(data_dir, db_port, db_host, db_user, db_name, password=db_password, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql, socket_dir=db_socket_dir)
             if postgres_proc is None:
-                postgres_proc = sp.Popen([postgres, "-D", data_dir, "-p", str(db_port), "-h", db_host, "-k", db_socket_dir])
+                postgres_proc = pexpect.spawn(str.join(" ", [postgres, "-D", data_dir, "-p", str(db_port), "-h", db_host, "-k", db_socket_dir]))
+                postgres_proc.logfile = sys.stdout
                 logger.info("sleeping %s s to ensure postgres server started" % postgres_server_start_timeout)
                 time.sleep(postgres_server_start_timeout) # not nice (should poll connection until success instead)
         logger.debug("using osm2pgsql binary %s" % osm2pgsql)
         osm2pgsql_proc = pexpect.spawn(string.join([osm2pgsql, "--create", "--database", db_name, "--cache", str(cache_size), "--number-processes", str(osm2pgsql_number_processes), "--slim", "--port", str(db_port), "--host", db_host, "--username", db_user, "--latlong", "--password", "--keep-coastlines", "--extra-attributes", "--hstore-all"]+osm_files, " "))
         osm2pgsql_proc.logfile = sys.stdout
-        osm2pgsql_proc.expect('Password:')
+        osm2pgsql_proc.expect(['Password:', "Passwort:"])
         osm2pgsql_proc.sendline(db_password)
         osm2pgsql_proc.timeout = 100000000
         osm2pgsql_proc.expect(pexpect.EOF)

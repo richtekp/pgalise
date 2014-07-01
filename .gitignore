@@ -58,6 +58,7 @@ postgis_db-9.2/*
 scripts/tmp
 scripts/tests/ftp-base
 pgalise-bootstrap
+tmp
 
 # script tests
 scripts/tests/lxc-btrfs.img

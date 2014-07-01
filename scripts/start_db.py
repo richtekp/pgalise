@@ -12,12 +12,10 @@ base_dir_path = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 script_dir = os.path.join(base_dir_path, "scripts")
 sys.path.append(os.path.join(script_dir, "lib"))
 import os_utils
-pip = "pip"
-sudo = "sudo"
 try:
-    import subprocess32 as sp # subprocess32 is necessary in order to provide secure (preexec_fn has security issues) way of launching postgres processes and intercepting SIGINT without them getting killed
+    import subprocess32 as sp32 # subprocess32 is necessary in order to provide secure (preexec_fn has security issues) way of launching postgres processes and intercepting SIGINT without them getting killed
 except ImportError as ex:
-    logger.error("subprocess32 isn't availble did you invoke scripts/bootstrap.py")
+    logger.error("subprocess32 isn't availble, did you invoke scripts/bootstrap_prequisites.py?")
 import signal
 import sys
 
@@ -97,13 +95,21 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
 
     postgres_log_file_path = os.path.join(log_dir, "postgis-%s.log" % timestamp_suffix)
     postgres_log_file = None # open(postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (no output) (not sure which xterm version)
-    postgres_proc = sp.Popen(terminal_cmds+[pgalise_postgres, "-D", pgalise_data_dir, "-p", "5201", "-h", "localhost", "-k", tmp_dir], stdout=postgres_log_file, start_new_session=True)
+    postgres_proc = sp32.Popen(
+        terminal_cmds+[pgalise_postgres, "-D", pgalise_data_dir, "-p", "5201", "-h", "localhost", "-k", tmp_dir],
+        stdout=postgres_log_file, 
+        start_new_session=True, # necessary in order to prevent SIGINT being sent to postgres process which causes messed up data directries and stale pid files
+    )
     print("started pgalise postgresql database process with data directory %s" % postgres_log_file_path)
     if postgres_log_file_path != None:
         print("logging output of postgres process to %s" % (postgres_log_file_path))
     osm_postgres_log_file_path = os.path.join(log_dir, "postgis-osm-%s.log" % timestamp_suffix)
     osm_postgres_log_file = None # open(osm_postgres_log_file_path, "w") # None doesn't work correctly on OpenSUSE (no output) (not sure which xterm version)
-    osm_postgres_proc = sp.Popen(terminal_cmds+[osm_postgres, "-D", osm_data_dir, "-p", "5204", "-h", "localhost", "-k", tmp_dir], stdout=osm_postgres_log_file, start_new_session=True)
+    osm_postgres_proc = sp32.Popen(
+        terminal_cmds+[osm_postgres, "-D", osm_data_dir, "-p", "5204", "-h", "localhost", "-k", tmp_dir], 
+        stdout=osm_postgres_log_file, 
+        start_new_session=True, # necessary in order to prevent SIGINT being sent to postgres process which causes messed up data directries and stale pid files
+    )
     print("started PostGIS postgresql database process with data directory %s" % (osm_data_dir))
     if osm_postgres_log_file != None:
         print("logging output of OSM postgres process to %s" % osm_postgres_log_file_path)

@@ -11,7 +11,7 @@ import pm_utils
 import argparse
 import osm_postgis_transform_prequisites
 import subprocess as sp
-import bootstrap
+import bootstrap_globals
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -28,11 +28,6 @@ pip = "pip"
 postgis_installs = ["source", "pm"]
 postgis_install_default = postgis_installs[1]
 
-postgis_src_dir_name="postgis-2.1.1"
-postgis_url_default = "http://download.osgeo.org/postgis/source/postgis-2.1.1.tar.gz"
-postgis_src_archive_name = "postgis-2.1.1.tar.gz"
-postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
-
 pg_version_default = (9,2)
 
 skip_apt_update_default=False
@@ -40,8 +35,8 @@ skip_apt_update_option = "s"
 skip_apt_update_option_long = "skip-apt-update"
 
 # directories
-bin_dir = bootstrap.bin_dir
-base_dir = bootstrap.base_dir
+bin_dir = bootstrap_globals.bin_dir
+base_dir = bootstrap_globals.base_dir
 
 parser = argparse.ArgumentParser(description="Bootstrap the PGALISE simulation, including installation of dependencies (those which can't be fetched by maven), binaries (postgresql, postgis, etc.), setup of database in ")
 parser.add_argument("-%s" % skip_apt_update_option, "--%s" % skip_apt_update_option_long, type=str, nargs='?',
@@ -55,6 +50,8 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
         pm_utils.install_packages(["maven", "openjdk-7-jdk", 
             "ant", # for postgis-jdbc
             "sudo", # very small probability that it is not installed, but it is a prequisite of the script...
+            "software-properties-common", # provides add-apt-repository which is used by pm_utils module in osm_postgis_transform_prequisites.install_postgresql
+            "python-software-properties", # provides add-apt-repository on Ubuntu 12.04.4, is available in Ubuntu 14.04
         ], package_manager=apt_get, skip_apt_update=skip_apt_update)
     elif check_os.check_opensuse():
         # install maven
@@ -98,8 +95,12 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
         raise ValueError("postgis_install has to be one of %s" % str(postgis_installs))
 
     # prequisites for start_db
-    pm_utils.install_packages(["python-pip"], package_manager="apt-get")
-    sp.check_call([pip, "install", "subprocess32"]) # pip manages update of available import automatically so that import xxx can be invoked
+    pm_utils.install_packages([
+        "python-pip", 
+        "python-dev", # soft dependency of `pip install subprocess32`, not fulfilled, e.g. on Debian 7.4
+    ], package_manager="apt-get")
+    sp.check_call([pip, "install", "--upgrade", "setuptools"]) # saves a lot of trouble and hurts much less than it helps
+    sp.check_call([pip, "install", "subprocess32", "pexpect"]) # pip manages update of available import automatically so that import xxx can be invoked, already installed packages don't cause returncode != 0
 
 if __name__ == "__main__":    
     args = vars(parser.parse_args())
