@@ -46,8 +46,35 @@ but also buggy (NPE at
 
       <repositories>
         <repository>
+            <!--seems to be offline/unreachable from outside-->
           <id>PGAliseRepository</id>
           <url>http://134.106.56.230:18081/nexus/content/groups/public</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>        
+        <repository>
+            <!--provides slf4j-->
+          <id>central</id>
+          <url>http://repo.maven.apache.org/maven2/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+            <!--provides logback-->
+          <id>ibiblio</id>
+          <url>http://mirrors.ibiblio.org/maven2/</url>
           <releases>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
@@ -129,6 +156,7 @@ but also buggy (NPE at
           <name>Open Source Geospatial Foundation Repository</name>
           <url>http://download.osgeo.org/webdav/geotools/</url>
         </repository>
+        
       </repositories>
       <pluginRepositories>
         <pluginRepository>
