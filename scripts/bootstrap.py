@@ -17,6 +17,13 @@
 # a hell of maintainance overhead -> source out to bootstrap_privileged and 
 # check whether prequisites are met and display warning when not (is an 
 # overhead, too, but a more elegant solution)
+#
+################################################################################
+# A Note on pitfalls                                                           #
+################################################################################
+# - maven doesn't complain if the file it is supposed to install doesn't exist 
+# (which makes debugging harder for no reason), so verify that yourself
+# 
 
 import os
 import subprocess as sp
@@ -111,6 +118,7 @@ postgis_src_dir_name="postgis-2.1.1"
 postgis_url_default = "http://download.osgeo.org/postgis/source/postgis-2.1.1.tar.gz"
 postgis_src_archive_name = "postgis-2.1.1.tar.gz"
 postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
+openejb_jar_file_name = "openejb-core-4.7.0-20140619.040749-30.jar"
 
 # necessary build tools and helpers 
 # <ul>
@@ -263,6 +271,7 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     # install postgis from source (installation with package manager occurs in 
     # bootstrap_privileged.py
     if postgis_install == "source":
+        # installation of postgis-jdbc from bin directory should not occur in sources installation as this refers to the version shipped with the tarball -> will install mvn project in subdirectory of tarball root
         postgis_src_dir = os.path.join(external_src_dir, postgis_src_dir_name)
         if check_os.check_ubuntu() or check_os.check_debian():
             if not file_utils.check_dir(postgis_src_dir):
@@ -288,14 +297,23 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
             # better to let the script fail here than to get some less comprehensive error message later
             raise RuntimeError("Operating system not supported!")
     elif postgis_install == "pm":
-        logger.info("installation of postgis with package manager occurs in bootstrap_prequistes.py")
+        # install postgis from scripts/bin (as it is not available from somewhere online)
+        postgis_jdbc_file = os.path.join(bin_dir, postgis_jdbc_name)
+        if not os.path.exists(postgis_jdbc_file):
+            raise RuntimeError("postgis JDBC jar %s doesn't exist, can't continue, consider fetching it manually" % (postgis_jdbc_file,))
+        sp.check_call([mvn, "install:install-file", \
+            "-Dfile=%s" % postgis_jdbc_file, "-DartifactId=postgis-jdbc", 
+            "-DgroupId=org.postgis", "-Dversion=2.1.0SVN", "-Dpackaging=jar"], cwd=bin_dir)
     else:
-        raise RuntimeError()
-    # install postgis from scripts/bin (as it is not available from somewhere online)
-    postgis_jdbc_file = os.path.join(bin_dir, postgis_jdbc_name)
+        raise RuntimeError("postgis_install %s isn't supported" % (postgis_install,))
+    
+    # always install openejb from bin directory (might be made flexible with source installation like postgis (see above) later)
+    openejb_jar_file_path = os.path.join(bin_dir, openejb_jar_file_name)
+    if not os.path.exists(openejb_jar_file_path):
+        raise RuntimeError("OpenEJB jar %s doesn't exist, can't continue, consider fetching it manually" % (openejb_jar_file_path,))
     sp.check_call([mvn, "install:install-file", \
-        "-Dfile=%s" % postgis_jdbc_file, "-DartifactId=postgis-jdbc", 
-        "-DgroupId=org.postgis", "-Dversion=2.1.0SVN", "-Dpackaging=jar"], cwd=bin_dir)
+        "-Dfile=%s" % (openejb_jar_file_path,), "-DartifactId=openejb-core", 
+        "-DgroupId=org.apache.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
         
     # setup postgis datadir and configuration    
     if not file_utils.check_dir(postgres_datadir_path) or force_overwrite_postgres_datadir:
