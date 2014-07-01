@@ -313,7 +313,7 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         raise RuntimeError("OpenEJB jar %s doesn't exist, can't continue, consider fetching it manually" % (openejb_jar_file_path,))
     sp.check_call([mvn, "install:install-file", \
         "-Dfile=%s" % (openejb_jar_file_path,), "-DartifactId=openejb-core", 
-        "-DgroupId=org.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
+        "-DgroupId=org.apache.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
         
     # setup postgis datadir and configuration    
     if not file_utils.check_dir(postgres_datadir_path) or force_overwrite_postgres_datadir:
