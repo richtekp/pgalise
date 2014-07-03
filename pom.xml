@@ -85,6 +85,32 @@ but also buggy (NPE at
           </snapshots>
         </repository>
         <repository>
+            <!--provides slf4j-->
+          <id>central</id>
+          <url>http://repo.maven.apache.org/maven2/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+            <!--provides logback-->
+          <id>ibiblio</id>
+          <url>http://mirrors.ibiblio.org/maven2/</url>
+          <releases>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
           <id>mapfish</id>
           <url>http://dev.mapfish.org/maven/repository</url>
           <releases>
