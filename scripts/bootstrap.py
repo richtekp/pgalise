@@ -297,13 +297,13 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
             # better to let the script fail here than to get some less comprehensive error message later
             raise RuntimeError("Operating system not supported!")
     elif postgis_install == "pm":
-        # install postgis from scripts/bin (as it is not available from somewhere online)
-        postgis_jdbc_file = os.path.join(bin_dir, postgis_jdbc_name)
+    # install postgis from scripts/bin (as it is not available from somewhere online)
+    postgis_jdbc_file = os.path.join(bin_dir, postgis_jdbc_name)
         if not os.path.exists(postgis_jdbc_file):
             raise RuntimeError("postgis JDBC jar %s doesn't exist, can't continue, consider fetching it manually" % (postgis_jdbc_file,))
-        sp.check_call([mvn, "install:install-file", \
-            "-Dfile=%s" % postgis_jdbc_file, "-DartifactId=postgis-jdbc", 
-            "-DgroupId=org.postgis", "-Dversion=2.1.0SVN", "-Dpackaging=jar"], cwd=bin_dir)
+    sp.check_call([mvn, "install:install-file", \
+        "-Dfile=%s" % postgis_jdbc_file, "-DartifactId=postgis-jdbc", 
+        "-DgroupId=org.postgis", "-Dversion=2.1.0SVN", "-Dpackaging=jar"], cwd=bin_dir)
     else:
         raise RuntimeError("postgis_install %s isn't supported" % (postgis_install,))
     
