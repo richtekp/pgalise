@@ -44,11 +44,7 @@
 			<type>ejb</type>
 			<scope>test</scope>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.onebusaway</groupId>
-			<artifactId>onebusaway-gtfs</artifactId>
-		</dependency>
+	
 		<dependency>
 			<groupId>org.jgrapht</groupId>
 			<artifactId>jgrapht-core</artifactId>
