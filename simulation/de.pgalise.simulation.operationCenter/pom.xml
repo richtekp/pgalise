@@ -125,6 +125,12 @@
 	  <artifactId>storm-core</artifactId>
 	  <version>0.9.0.1</version>
 	 </dependency>
+	 <dependency>
+	  <groupId>org.easymock</groupId>
+	  <artifactId>easymock</artifactId>
+	  <scope>test</scope>
+	  <type>jar</type>
+	 </dependency>
 	</dependencies>
 	<build>
 		<finalName>de.pgalise.simulation.operationCenter</finalName>

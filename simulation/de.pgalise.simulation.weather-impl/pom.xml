@@ -112,6 +112,15 @@
 	  <scope>test</scope>
 	  <type>jar</type>
 	 </dependency>
+	 <dependency>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-api</artifactId>
+	 </dependency>
+	 <dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	  <scope>test</scope>
+	 </dependency>
 	</dependencies>
 <!--	<dependencyManagement>
 		<dependencies>			
