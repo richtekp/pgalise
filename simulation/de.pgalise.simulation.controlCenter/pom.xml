@@ -85,12 +85,6 @@
       <artifactId>cajo</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-jcs</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
@@ -215,11 +209,6 @@
             <version>0.0.2-SNAPSHOT</version>
             <type>jar</type>
     </dependency>-->
-    <dependency>
-      <groupId>taglibs</groupId>
-      <artifactId>taglibs-unstandard</artifactId>
-      <version>20060829</version>
-    </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
