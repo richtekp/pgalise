@@ -119,6 +119,7 @@ postgis_url_default = "http://download.osgeo.org/postgis/source/postgis-2.1.1.ta
 postgis_src_archive_name = "postgis-2.1.1.tar.gz"
 postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
 openejb_jar_file_name = "openejb-core-4.7.0-20140619.040749-30.jar"
+openejb_api_jar_file_name = "openejb-api-4.7.0-20140619.040641-30.jar"
 
 # necessary build tools and helpers 
 # <ul>
@@ -313,6 +314,12 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         raise RuntimeError("OpenEJB jar %s doesn't exist, can't continue, consider fetching it manually" % (openejb_jar_file_path,))
     sp.check_call([mvn, "install:install-file", \
         "-Dfile=%s" % (openejb_jar_file_path,), "-DartifactId=openejb-core", 
+        "-DgroupId=org.apache.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
+    openejb_api_jar_file_path = os.path.join(bin_dir, openejb_api_jar_file_name)
+    if not os.path.exists(openejb_api_jar_file_path):
+        raise RuntimeError("OpenEJB API jar %s doesn't exist, can't continue, consider fetching it manually" % (openejb_api_jar_file_path,))
+    sp.check_call([mvn, "install:install-file", 
+        "-Dfile=%s" % (openejb_api_jar_file_path,), "-DartifactId=openejb-api", 
         "-DgroupId=org.apache.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
         
     # setup postgis datadir and configuration    
