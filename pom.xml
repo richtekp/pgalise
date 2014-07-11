@@ -146,7 +146,20 @@ but also buggy (NPE at
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
       </snapshots>
-    </repository>    --> 
+    </repository>    -->
+    <repository>
+      <id>jboss</id>
+      <name>JBoss' default public repository</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>    
+    </repository>
   </repositories>
   <!--<pluginRepositories>
     <pluginRepository>
