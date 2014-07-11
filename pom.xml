@@ -162,9 +162,8 @@ but also buggy (NPE at
       </snapshots>    
     </repository>
     <repository>
-      <id>clojars</id>
-      <name>clojars public repository</name>
-      <url>https://clojars.org/</url>
+      <id>clojars.org</id>
+      <url>http://clojars.org/repo</url>
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
