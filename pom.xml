@@ -188,6 +188,17 @@ but also buggy (NPE at
       </snapshots>
     </pluginRepository>
   </pluginRepositories>	-->
+  
+  <dependencies>    
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+  </dependencies>
 
   <!-- Werden in einem Modul als Abhängigkeit definiert, wenn sie da explizit eingetragen werden-->
   <!-- Allerdings kann hier bestimmt werden, welche Versionen verwendet werden sollen! -->
@@ -419,7 +430,7 @@ but also buggy (NPE at
       <dependency>
         <groupId>org.primefaces</groupId>
         <artifactId>primefaces</artifactId>
-        <version>4.0</version>
+        <version>5.0</version>
       </dependency>
       <!-- JPA related dependencies -->
       <!--								<dependency>

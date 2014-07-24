@@ -35,7 +35,7 @@ import argparse
 import logging
 import multiprocessing
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("bootstrap")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
@@ -142,6 +142,8 @@ add_apt_repo = "add-apt-repository"
 cp="cp"
 chown = "chown"
 whoami = "whoami"
+git="git"
+svn="svn"
 # </ul>
 
 # some variables to be changed at will (would be more elegant to enable controll as options of this script)
@@ -322,6 +324,8 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         "-Dfile=%s" % (openejb_api_jar_file_path,), "-DartifactId=openejb-api", 
         "-DgroupId=org.apache.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
         
+    openejb_snapshot_ahtutils_workaround(external_src_dir)
+        
     # setup postgis datadir and configuration    
     if not file_utils.check_dir(postgres_datadir_path) or force_overwrite_postgres_datadir:
         # os.makedirs(postgres_datadir_path) # causes error if directory exists and is not necessary
@@ -332,7 +336,37 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (postgres_datadir_path, force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
 # internal implementation notes:
 # - passing base_dir as argument of the bootstrap function or in another way doesn't necessarily make sense (default values can be set based on base_dir=source root though)
-        
+
+# I forgot which openejb version has been used originally and after skipping of 
+# 4.6.2-SNAPSHOT in favor of 4.7-SNAPSHOT it is hard to reconstruct (the 
+# easiest way of dealing with this is to keep this function until 4.7 is 
+# released)
+def openejb_snapshot_ahtutils_workaround(external_src_dir):
+    metachart_path = os.path.join(external_src_dir, "metachart")
+    if not os.path.exists(metachart_path) or len(os.listdir(metachart_path)) == 0:
+        logger.info("cloning metachart")
+        sp.check_call([git, "clone", "https://github.com/metachart/metachart.git"], cwd=external_src_dir)
+    logger.info("building metachart")
+    sp.check_call([mvn, "install"], cwd=metachart_path)
+    openfuxml_path = os.path.join(external_src_dir, "openfuxml")    
+    if not os.path.exists(openfuxml_path) or len(os.listdir(openfuxml_path)) == 0:
+        logger.info("checking out openfuxml")
+        sp.check_call([svn, "checkout", "svn://svn.code.sf.net/p/openfuxml/code/trunk", openfuxml_path], cwd=external_src_dir)
+    logger.info("building openfuxml")
+    sp.check_call([mvn, "install"], cwd=openfuxml_path)
+    exlp_path = os.path.join(external_src_dir, "exlp")
+    if not os.path.exists(exlp_path) or len(os.listdir(exlp_path)) == 0:
+        logger.info("checking out exlp")
+        sp.check_call([svn, "checkout", "svn://svn.code.sf.net/p/exlp/code/trunk", exlp_path], cwd=external_src_dir)
+    logger.info("building exlp")
+    sp.check_call([mvn, "install"], cwd=exlp_path)
+    ahtutils_path = os.path.join(external_src_dir, "ahtutils")
+    if not os.path.exists(ahtutils_path) or len(os.listdir(ahtutils_path)) == 0:
+        logger.info("checking out ahtutils")
+        sp.check_call([svn, "checkout", "svn://svn.code.sf.net/p/ahtutils/code/trunk", ahtutils_path], cwd=external_src_dir)
+    logger.info("building ahtutils")
+    sp.check_call([mvn, "install"], cwd=ahtutils_path)
+
 if __name__ == "__main__":
     args = vars(parser.parse_args())
     skip_tests = args[skip_tests_option_long]

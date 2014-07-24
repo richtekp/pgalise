@@ -96,7 +96,17 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
             logger.info("An instance of glassfish is already running, deploying to it")
     
     # setting options is simply ignored though command return successfully which is very strange
-    #jvm_options = ["'-XX:MaxPermSize=1024m'", "-Xmx4096m", ] # wrap in '' in order to distinguish : in -XX: from separator for multiple options
+    jvm_options = ["-XX:MaxPermSize=1024m", "-Xmx8192m", ] # wrap in '' in order to distinguish : in -XX: from separator for multiple options
+    jvm_options_output_before = sp.check_output([asadmin, "list-jvm-options"])
+    for jvm_option in jvm_options:
+        if jvm_option in jvm_options_output_before:
+            continue # adding the exact same option causes error (see also stackoverflow.com/questions/24699202/how-to-add-a-jvm-option-to-glassfish-4-0)
+        sp.check_call([asadmin, "create-jvm-options", jvm_option])
+    jvm_options_output_after = sp.check_output([asadmin, "list-jvm-options"])
+    if not jvm_options_output_before == jvm_options_output_after:
+        logger.info("JVM options applied, restart of domain is necessary and done now")
+        sp.check_call([asadmin, "restart-domain", domain_name]) # if this isn't sufficient, use subcommands stop-domain and start-domain explicitly or visit http://yourhost:4848/__asadmin/restart-domain programmatically
+    
     #logger.info("Setting JVM options %s" % str(jvm_options))
     #list_jvm_options_output = sp.check_output([asadmin, "list-jvm-options"])
     ## delete all -Xmx and -XX:MaxPermSize options because overwriten isn't possible
@@ -107,14 +117,19 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
     #        sp.check_call([asadmin, "delete-jvm-options", list_jvm_options_line.strip()])
     #for jvm_option in jvm_options:
     #    sp.check_call([asadmin, "create-jvm-options", jvm_option])
-    
-    logger.info("Undeploying eventually deployed instances of the applications")
-    sp.call([asadmin, "undeploy", app_name], cwd=glassfish_dir) # use subprocess.call because this might fail if the application if deployed for the first time (the undeployment failure doesn't matter in this case)
+     
+     
+     
+    # redeploy subcommand is recommended in the GF 4.0 deployment guid (https://glassfish.java.net/docs/4.0/application-deployment-guide.pdf), i.e. undeploying and deploying should be unless issues are encountered
     try:
         sp.check_call([asadmin, "deploy", ear_path], cwd=glassfish_dir)
     except sp.CalledProcessError as ex:
-        logger.error("Deployment failed. If this continues to happen, login as admin (default admin username is 'admin') at the admin console (default admin console URL is 'https://localhost:4848') and deactive/remove the application manually")
-        raise ex
+        logger.info("initial deployment failed, forcing the deployment")
+        try:
+            sp.check_call([asadmin, "deploy", "--force=true", ear_path], cwd=glassfish_dir)
+        except sp.CalledProcessError as ex1:
+            logger.error("Deployment failed. If this continues to happen, login as admin (default admin username is 'admin') at the admin console (default admin console URL is 'https://localhost:4848') and deactive/remove the application manually")
+            raise ex1
     
 if __name__ == "__main__":
     args = vars(parser.parse_args())

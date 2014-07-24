@@ -4,21 +4,36 @@
 import argparse
 import subprocess as sp
 import os
+import sys
+import re
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+logger.addHandler(ch)
+
+try:
+    import file_line_utils
+    import pm_utils
+except ImportError as ex:
+    logger.error("Import of modules failed (see following exception for details). Make sure the containing directory is in the PYTHONPATH variable and that it is passed correctly during environment changes (e.g. sudo)")
+    raise ex
 
 # binaries
 mount = "mount"
-sudo = "sudo"
 bash = "dash"
 ifconfig = "ifconfig"
 losetup = "losetup"
 partprobe = "partprobe"
 btrfs = "btrfs"
+umount = "umount"
 
 IMAGE_MODE_PT="partition-table"
 IMAGE_MODE_FS="file-system"
 image_modes = [IMAGE_MODE_PT, IMAGE_MODE_FS]
 
-SOURCES = "sources"
 # asserts that the corresponding NFS is mounted (includes checking and lazily 
 # initializing (including driver installation) of required network interface 
 # (might differ for access to NAS which might be resticted to certain LANs))
@@ -29,15 +44,46 @@ MOUNT_CHECK_ALL = MOUNT_CHECK_NFS+MOUNT_CHECK_NFS_INSTALL
 
 skip_apt_update_default = False
 
+MOUNT_MODE_NFS = 1
+MOUNT_MODE_CIFS = 2
+mount_mode_default = MOUNT_MODE_CIFS
+
+# a wrapper around <tt>mount_sparse_file</tt> and different remote mount methods (NFS, cifs, etc.) (sparse file support is horrible for all of them...) of Synology DSM 5.0 (path specifications, etc.)
+# @args credentials_file if not <code>None</code> the credentials option will be passed to the <tt>mount</tt> command, otherwise the <tt>username</tt> option with value <tt>richter</tt> will be passed to the <tt>mount</tt> command which will request the password from input at a prompt
+def mount_dsm_sparse_file(shared_folder_name, image_mount_target, network_mount_target, image_file_name, remote_host, mount_mode=mount_mode_default, credentials_file=None):
+    if mount_mode == MOUNT_MODE_NFS:
+        lazy_mount(source="%s:/volume1/%s" % (remote_host, shared_folder_name), target=network_mount_target, fs_type="nfs", options_str="nfsvers=4") 
+                # handles inexistant target
+                # omitting nfsvers=4 causes 'mount.nfs: requested NFS version or transport protocol is not supported' (not clear with which protocol this non-sense error message refers to)
+    elif mount_mode == MOUNT_MODE_CIFS:
+        if credentials_file is None:
+            options_str="username=richter,rw,uid=1000,gid=1000"
+        else:
+            if not os.path.exists(credentials_file):
+                raise ValueError("credentials_file '%s' doesn't exist" % (credentials_file,))
+            options_str="credentials=%s,rw,uid=1000,gid=1000" % credentials_file
+        lazy_mount(source="//%s/%s" % (remote_host, shared_folder_name), target=network_mount_target, fs_type="cifs", options_str=options_str) # handles inexistant target
+    else:
+        raise ValueError("mount_mode '%s' not supported" % (mount_mode,))
+    mount_sparse_file(
+        image_file=os.path.join(network_mount_target, image_file_name), 
+        image_mount_target=image_mount_target, 
+        image_mode=IMAGE_MODE_FS
+    )
+
 def mount_prequisites():
     return mount_prequisites_software() and mount_prequisites_network()
 
 # @return True if packages have been installed
 def mount_prequisites_software(skip_apt_update=skip_apt_update_default):
+    installed = False
     if not pm_utils.dpkg_check_package_installed("nfs-common"):
         pm_utils.install_packages(["nfs-common"], skip_apt_update=skip_apt_update)
-        return True
-    return False
+        installed = True
+    if not pm_utils.dpkg_check_package_installed("cifs-utils"):
+        pm_utils.install_packages(["cifs-utils"], skip_apt_update=skip_apt_update)
+        installed = True
+    return installed
 
 # as the host diskstation will always be connected through either LAN or WLAN 
 # (i.e. maybe at some point), it will receive an appropriate IP of the 
@@ -58,9 +104,8 @@ def mount_prequisites_network(assure_own_ip="192.168.178.62", own_ip_if="eth1"):
         return True
     return False
 
-def mount_sparse_file(nfs_mount_source, nfs_mount_target, image_file, image_mount_target, image_mode=IMAGE_MODE_FS):
-    lazy_mount(nfs_mount_source, nfs_mount_target, "nfs") # handles inexistant target
-
+# should be able to handle both NFS and CIFS specifications as mount_source
+def mount_sparse_file(image_file, image_mount_target, image_mode=IMAGE_MODE_FS):
     image_file_loop_dev = losetup_wrapper(image_file)
     if image_mode == IMAGE_MODE_PT:
         sp.check_call([partprobe, image_file_loop_dev])
@@ -75,6 +120,22 @@ def mount_sparse_file(nfs_mount_source, nfs_mount_target, image_file, image_moun
     else:
         raise ValueError("image_mode has to be one of %s, but is %s" % (str(image_modes), image_mode))
 
+# @args mount_target the mount point of the image (loopback device will be 
+# determined automatically and teared down)
+def unmount_sparse_file(mount_target):
+    mount_source = get_mount_source(mount_target)
+    if mount_source is None:
+        raise ValueError("mount_target '%s' isn't using a loop device" % (mount_target,))
+    logger.info("mount_target '%s' was using loop device '%s'" % (mount_target, mount_source))
+    sp.check_call([umount, mount_target])
+    sp.check_call([losetup, "-d", mount_source])
+
+def get_mount_source(mount_target):
+    for mount_source, mount_target0 in [tuple(re.split("[\\s]+", x)[0:2]) for x in file_line_utils.file_lines("/proc/mounts", comment_symbol="#")]:
+        if mount_target0 == mount_target:
+            return mount_source
+    return None
+
 # a wrapper around losetup, finding the next free loop device and returning it
 # @return the loop device which has been found and setup up for the image file
 def losetup_wrapper(file):
@@ -85,26 +146,28 @@ def losetup_wrapper(file):
     sp.check_call([losetup, loop_dev, file])
     return loop_dev
 
-# checks if <tt>source</tt> is already mounted under <tt>target</tt> and skips (if it is) or mounts <tt>source</tt> under <tt>target</tt>
-def lazy_mount(source, target, fs_type):
+# @return <code>True</code> iff source is mounted under target
+def check_mounted(source, target):
     mount_lines = open("/proc/mounts", "r").readlines()
     for mount_line in mount_lines:
         mount_line_split = mount_line.split(" ")
-        source0 = mount_line_split[0]
         target0 = mount_line_split[1]
-        if source0 == source and target0 == target:
-            return
+        if target0 == target: # don't check equality of source with (1st column of) mount output because multiple usage of mount target isn't possible and therefore the check should already succeed if the mount target is used by a (possibly other) mount source
+            return True
+    return False
+
+# checks if <tt>source</tt> is already mounted under <tt>target</tt> and skips (if it is) or mounts <tt>source</tt> under <tt>target</tt>
+def lazy_mount(source, target, fs_type, options_str=None):
+    if check_mounted(source, target):
+        return
     if not os.path.exists(target):
         if os.path.isfile(source):
             os.mknod(target, 755)
         else:
-            os.makedirs(target)    
-    sp.check_call([sudo, mount, "-t", fs_type, source, target])
-
-if __name__ == "__main__":
-    predefined = SOURCES
-    if predefined == SOURCES:
-        mount_sources_image()
-    else:
-        raise ValueError("predefined mount behavior %s not supported" % predefined)
+            os.makedirs(target)
+    cmds = [mount, "-t", fs_type,]
+    if not options_str is None and options_str != "":
+        cmds += ["-o", options_str]
+    cmds += [ source, target]
+    sp.check_call(cmds)
 

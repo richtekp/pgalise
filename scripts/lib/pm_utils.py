@@ -21,6 +21,10 @@ sys.path.append(os.path.realpath(os.path.join(__file__, "..", 'lib')))
 import check_os
 import file_line_utils
 import string
+try:
+    import mount_sources_image
+except ImportError:
+    logger.error("import of module 'mount_sources_image' failed, did you add the required path to the PYTHONPATH variable?")
 
 # indicates whether apt is up to date, i.e. whether `apt-get update` has been invoked already
 aptuptodate = False
@@ -202,6 +206,6 @@ def lazy_add_apt_source_line(deb_line_re, ppa_sources_d_file, ppa_spec):
     command_args = ["--yes", "--enable-source"]
     if check_os.check_debian():
         command_args.remove("--enable-source")
-    subprocess.check_call([add_apt_repository]+command_args+["\"%s\"" % (ppa_spec,)]) # "" is necessary for deb lines to be passed and doesn't hurt for others
+    subprocess.check_call([add_apt_repository]+command_args+["%s" % (ppa_spec,)]) # adding "" around ppa_spec causes "Error: '"deb http://archive.canonical.com/ubuntu trusty partner"' invalid"
     return True
 

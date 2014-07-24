@@ -103,6 +103,8 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
     sp.check_call([pip, "install", "subprocess32", "pexpect"]) # pip manages update of available import automatically so that import xxx can be invoked, already installed packages don't cause returncode != 0
 
 if __name__ == "__main__":    
+    if os.getuid() != 0:
+        raise RuntimeError("installation script has to be invoked as privileged user with uid 0")
     args = vars(parser.parse_args())
     skip_apt_update = args[skip_apt_update_option_long]
     bootstrap_privileged(skip_apt_update=skip_apt_update)

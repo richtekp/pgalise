@@ -6,6 +6,18 @@ import re
 import os
 import sys
 
+# constants
+ARCHITECTURE_X86_64 = "x86_64"
+ARCHITECTURE_I386 = "i386"
+ARCHITECTURE_I686 = "i686"
+INSTRUCTION_SET_AMD64 = "amd64"
+INSTRUCTION_SET_I386 = "i386"
+ARCHITECTURE_INSTRUCTION_SET_DICT = {
+    ARCHITECTURE_X86_64: INSTRUCTION_SET_AMD64,
+    ARCHITECTURE_I386: INSTRUCTION_SET_I386,
+    ARCHITECTURE_I686: INSTRUCTION_SET_I386,
+}
+
 def check_linux():
     if not check_python3():
         ret_value = sys.platform == "linux2"
@@ -50,6 +62,11 @@ def check_python3():
 def findout_architecture():
     architecture = sp.check_output(["uname","-m"]).strip().decode("utf-8")
     return architecture
+
+def findout_instruction_set():
+    architecture = findout_architecture()
+    instruction_set = ARCHITECTURE_INSTRUCTION_SET_DICT[architecture]
+    return instruction_set
 
 #lsb_release only works with python2.x
 def findout_release_ubuntu():
