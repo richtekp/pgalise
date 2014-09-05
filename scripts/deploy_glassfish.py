@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 # This script requires a "Full Java EE Platform" version of glassfish (which 
 # you can usually get at https://glassfish.java.net/download.html). The 
@@ -56,12 +56,13 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
                 logger.info("Enter path to glassfish directory interactively (skip this with -%s (--%s))" % (glassfish_dir_option, glassfish_dir_option_long))
                 # python has no do-while-loop :(, but nested functions :)
                 glassfish_dir = None
-                def test():
-                    glassfish_dir = os.path.join(os.getcwd(), raw_input("Enter path to glassfish directory (relative or absolut): "))
-                test()
+                def __test__():
+                    ret_value = os.path.join(os.getcwd(), str(raw_input("Enter path to glassfish directory (relative or absolut): ")))
+                    return ret_value
+                glassfish_dir = __test__()
                 while not os.path.exists(glassfish_dir):
                     logger.error("%s doesn't exist" % glassfish_dir)
-                    test()
+                    glassfish_dir = __test__()
     logger.info("glassfish directory is %s" % glassfish_dir)
     
     # glassfish's main command is asadmin
@@ -96,16 +97,22 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
             logger.info("An instance of glassfish is already running, deploying to it")
     
     # setting options is simply ignored though command return successfully which is very strange
-    jvm_options = ["-XX:MaxPermSize=1024m", "-Xmx8192m", ] # wrap in '' in order to distinguish : in -XX: from separator for multiple options
+    jvm_options = ["-XX\\:MaxPermSize=1024m", "-Xmx8192m", ] # wrap in '' in order to distinguish : in -XX: from separator for multiple options -> yes, this //is// nonsense!
+        # "-XX:-MaxPermSize=1024m" causes `Unrecognized option: -XX`
     jvm_options_output_before = sp.check_output([asadmin, "list-jvm-options"])
     for jvm_option in jvm_options:
-        if jvm_option in jvm_options_output_before:
+        jvm_option_escaped = jvm_option.replace("\\","")
+        if jvm_option_escaped in jvm_options_output_before:
             continue # adding the exact same option causes error (see also stackoverflow.com/questions/24699202/how-to-add-a-jvm-option-to-glassfish-4-0)
         sp.check_call([asadmin, "create-jvm-options", jvm_option])
     jvm_options_output_after = sp.check_output([asadmin, "list-jvm-options"])
     if not jvm_options_output_before == jvm_options_output_after:
-        logger.info("JVM options applied, restart of domain is necessary and done now")
-        sp.check_call([asadmin, "restart-domain", domain_name]) # if this isn't sufficient, use subcommands stop-domain and start-domain explicitly or visit http://yourhost:4848/__asadmin/restart-domain programmatically
+        logger.info("JVM options applied, restart of domain is necessary and performed now")
+        #sp.check_call([asadmin, "restart-domain", domain_name]) 
+        sp.check_call([asadmin, "stop-domain", domain_name]) 
+        sp.check_call([asadmin, "start-domain", domain_name]) 
+        
+        # if this isn't sufficient, use subcommands stop-domain and start-domain explicitly or visit http://yourhost:4848/__asadmin/restart-domain programmatically
     
     #logger.info("Setting JVM options %s" % str(jvm_options))
     #list_jvm_options_output = sp.check_output([asadmin, "list-jvm-options"])
@@ -113,7 +120,7 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
     #for list_jvm_options_line in list_jvm_options_output.split("\n"):
     #    if list_jvm_options_line.startswith("-Xmx"):
     #        sp.check_call([asadmin, "delete-jvm-options", list_jvm_options_line.strip()])
-    #    elif list_jvm_options_line.startswith("-XX:MaxPermSize"):
+    #    elif list_jvm_options_line.startswith("-XX:-MaxPermSize"):
     #        sp.check_call([asadmin, "delete-jvm-options", list_jvm_options_line.strip()])
     #for jvm_option in jvm_options:
     #    sp.check_call([asadmin, "create-jvm-options", jvm_option])
