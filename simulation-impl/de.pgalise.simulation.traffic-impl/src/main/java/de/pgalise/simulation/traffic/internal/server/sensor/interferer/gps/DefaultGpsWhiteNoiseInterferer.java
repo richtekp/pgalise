@@ -20,6 +20,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 /**
  * Represents an interferer that creates generally low errors
@@ -27,6 +28,7 @@ import javax.ejb.EJB;
  * @author Marcus
  * @version 1.0 (Nov 17, 2012)
  */
+@Stateless
 public class DefaultGpsWhiteNoiseInterferer extends GpsBaseInterferer implements GpsWhiteNoiseInterferer {
 
 	private static final long serialVersionUID = 1L;

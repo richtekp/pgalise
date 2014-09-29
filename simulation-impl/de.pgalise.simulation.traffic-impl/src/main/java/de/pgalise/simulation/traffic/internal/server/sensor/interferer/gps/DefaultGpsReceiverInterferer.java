@@ -20,6 +20,7 @@ import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsReceiverInterferer;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 /**
  * Represents an interferer that shows errors caused by corrupted antenna
@@ -28,6 +29,7 @@ import javax.ejb.EJB;
  * @author Andreas
  * @version 1.0 (Nov 12, 2012)
  */
+@Stateless
 public class DefaultGpsReceiverInterferer extends GpsBaseInterferer implements GpsReceiverInterferer {
 
 

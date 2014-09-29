@@ -18,6 +18,7 @@ package de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsNoInterferer;
+import javax.ejb.Stateless;
 
 /**
  * Represents an interferer that shows no errors
@@ -25,6 +26,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsNoInterfere
  * @author Marcus
  * @version 1.0 (Nov 12, 2012)
  */
+@Stateless
 public class DefaultGpsNoInterferer implements GpsNoInterferer {
 
 	private static final long serialVersionUID = 1L;

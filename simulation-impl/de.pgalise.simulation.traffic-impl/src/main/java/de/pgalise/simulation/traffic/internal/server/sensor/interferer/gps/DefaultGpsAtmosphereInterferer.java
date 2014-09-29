@@ -24,6 +24,7 @@ import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsAtmosphereI
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 import de.pgalise.simulation.weather.service.WeatherController;
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 /**
  * Represents an interferer that shows errors caused by the atmosphere
@@ -31,6 +32,7 @@ import javax.ejb.EJB;
  * @author Marcus
  * @version 1.0 (Nov 14, 2012)
  */
+@Stateless
 public class DefaultGpsAtmosphereInterferer extends GpsBaseInterferer implements GpsAtmosphereInterferer {
 
 	private static final long serialVersionUID = 1L;
