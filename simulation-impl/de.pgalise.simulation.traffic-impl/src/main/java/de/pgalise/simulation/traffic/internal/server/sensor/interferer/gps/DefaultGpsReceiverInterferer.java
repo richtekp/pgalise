@@ -39,6 +39,9 @@ public class DefaultGpsReceiverInterferer extends GpsBaseInterferer implements G
   @EJB
   private IdGenerator idGenerator;
 
+    public DefaultGpsReceiverInterferer() {
+    }
+
 	/**
 	 * Constructor
 	 *

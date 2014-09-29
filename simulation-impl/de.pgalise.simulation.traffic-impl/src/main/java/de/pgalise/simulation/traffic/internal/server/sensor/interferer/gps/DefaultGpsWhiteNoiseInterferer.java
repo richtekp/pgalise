@@ -34,6 +34,9 @@ public class DefaultGpsWhiteNoiseInterferer extends GpsBaseInterferer implements
 	private static final long serialVersionUID = 1L;
   @EJB
   private IdGenerator idGenerator;
+
+    public DefaultGpsWhiteNoiseInterferer() {
+    }
 	
 	public DefaultGpsWhiteNoiseInterferer(RandomSeedService randomseedservice) {
 		this(randomseedservice,
