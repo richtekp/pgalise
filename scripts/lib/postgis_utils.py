@@ -53,7 +53,7 @@ def bootstrap_datadir(datadir_path, db_user, password="somepw", initdb="initdb")
 def __pe_wrapper__(cmds, password):
     psql_proc = pe.spawn(str.join(" ", cmds)) # hstore handled below
     psql_proc.logfile = sys.stdout
-    psql_proc.expect(["Password:", "Passwort:", "postgis:"])
+    psql_proc.expect(["Password", "Passwort", "postgis"])
     psql_proc.sendline(password)
     psql_proc.wait()
 
