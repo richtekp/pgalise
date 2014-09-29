@@ -213,8 +213,9 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     java_home = os.getenv("JAVA_HOME") # necessary for mvn
     if java_home is None or java_home == "":
         raise RuntimeError("JAVA_HOME is not set")
-    if not os.path.exists(os.path.join(java_home, "bin/java")):
-        raise RuntimeError("JAVA_HOME %s doesn't seem to point to a valid JDK" % java_home)
+    java_binary = os.path.join(java_home, "bin/java")
+    if not os.path.exists(java_binary):
+        raise RuntimeError("JAVA_HOME %s doesn't seem to point to a valid JDK (java binary '%s' doesn't exist)" % (java_home, java_binary))
         
     # install postgresql jdbc driver
     postgresql_jdbc_file = os.path.join(external_bin_dir, postgresql_jdbc_name)
