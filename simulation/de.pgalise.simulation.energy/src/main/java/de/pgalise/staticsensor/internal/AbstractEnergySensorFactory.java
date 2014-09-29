@@ -1,3 +1,5 @@
+package de.pgalise.staticsensor.internal;
+
 /* 
  * Copyright 2013 PG Alise (http://www.pg-alise.de/)
  *
@@ -13,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
-package de.pgalise.staticsensor.internal;
+
 
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
@@ -102,8 +104,6 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
   private WeatherControllerLocal weatherController;
   @EJB
   private EnergyControllerLocal energyController;
-  @EJB
-  private CompositeGpsInterferer compositeGpsInterferer;
   @EJB
   private GpsClockInterferer gpsClockInterferer;
   @EJB
@@ -404,7 +404,7 @@ public class AbstractEnergySensorFactory extends AbstractSensorFactory<Sensor<?,
       if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
 
         List<GpsInterferer> gpsInterferes = new ArrayList<>();
-        gpsInterferer = new CompositeGpsInterferer(gpsInterferes, getIdGenerator());
+        gpsInterferer = new CompositeGpsInterferer(gpsInterferes);
 
         for (SensorInterfererType sensorInterfererType : sensorInterfererTypes) {
           switch (sensorInterfererType) {

@@ -5,6 +5,7 @@
  */
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
+import de.pgalise.staticsensor.internal.AbstractEnergySensorFactory;
 import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorType;
@@ -15,7 +16,6 @@ import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 import de.pgalise.simulation.traffic.TrafficSensorFactory;
 import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
-import de.pgalise.simulation.traffic.server.sensor.interferer.gps.CompositeGpsInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.DefaultGpsNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.CompositeInductionLoopInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopNoInterferer;
@@ -23,13 +23,13 @@ import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.InfraredNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.CompositeTopoRadarInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.TopoRadarNoInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.CompositeGpsInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
 import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
 import de.pgalise.simulation.weather.service.WeatherController;
 import de.pgalise.simulation.weather.service.WeatherControllerLocal;
-import de.pgalise.staticsensor.internal.AbstractEnergySensorFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -140,7 +140,7 @@ public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
     Output output) {
     GpsInterferer gpsInterferer;
     if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
-      gpsInterferer = new CompositeGpsInterferer(sensorInterfererTypes, getIdGenerator());
+      gpsInterferer = new CompositeGpsInterferer(sensorInterfererTypes);
     } else {
       gpsInterferer = new DefaultGpsNoInterferer();
     }
