@@ -52,6 +52,7 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
             "sudo", # very small probability that it is not installed, but it is a prequisite of the script...
             "software-properties-common", # provides add-apt-repository which is used by pm_utils module in osm_postgis_transform_prequisites.install_postgresql
             "python-software-properties", # provides add-apt-repository on Ubuntu 12.04.4, is available in Ubuntu 14.04
+            "subversion", # necessary in order to checkout openfuxml (as long as it is built in place rather than provided as binary)
         ], package_manager=apt_get, skip_apt_update=skip_apt_update)
     elif check_os.check_opensuse():
         # install maven
@@ -65,7 +66,7 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
             shutil.copytree(maven_bin_dir, maven_bin_dir_install_target)
             sp.check_call(chown, "-Rc", "%s:%s" %(user,user), dirpath)
         # install remaining prequisites
-        sp.check_call([zypper, "install", "java-1_7_0-openjdk", "java-1_7_0-openjdk-devel", "java-1_7_0-openjdk-src", "java-1_7_0-openjdk-javadoc"])
+        sp.check_call([zypper, "install", "java-1_7_0-openjdk", "java-1_7_0-openjdk-devel", "java-1_7_0-openjdk-src", "java-1_7_0-openjdk-javadoc", "subversion", ])
     else:
         # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("operating system not supported!")
@@ -101,6 +102,7 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
     ], package_manager="apt-get")
     sp.check_call([pip, "install", "--upgrade", "setuptools"]) # saves a lot of trouble and hurts much less than it helps
     sp.check_call([pip, "install", "subprocess32", "pexpect"]) # pip manages update of available import automatically so that import xxx can be invoked, already installed packages don't cause returncode != 0
+    sp.check_call([pip, "install", "plac"])
 
 if __name__ == "__main__":    
     if os.getuid() != 0:
