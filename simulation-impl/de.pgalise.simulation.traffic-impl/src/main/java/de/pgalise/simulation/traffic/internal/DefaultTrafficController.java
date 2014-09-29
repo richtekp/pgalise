@@ -47,6 +47,7 @@ import de.pgalise.simulation.traffic.internal.server.scheduler.ListScheduler;
 import de.pgalise.simulation.traffic.internal.server.scheduler.SchedulerComposite;
 import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.model.RoadBarrier;
+import de.pgalise.simulation.traffic.model.factory.CompositeVehicleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BicycleFactory;
 import de.pgalise.simulation.traffic.model.vehicle.BusFactory;
 import de.pgalise.simulation.traffic.model.vehicle.CarFactory;
@@ -111,7 +112,7 @@ public class DefaultTrafficController extends AbstractController<VehicleEvent, T
   @EJB
   private TrafficGraphExtensions trafficGraphExtensions;
   @EJB
-  private VehicleFactory vehicleFactory;
+  private CompositeVehicleFactory vehicleFactory;
   @EJB
   private BicycleFactory bicycleFactory;
   @EJB
