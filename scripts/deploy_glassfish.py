@@ -27,6 +27,7 @@ glassfish_dir_option = "g"
 glassfish_dir_option_long = "glassfish-dir"
 
 glassfish_version_default = (4,0)
+glassfish_supported_versions = [(4,0), (4,1)]
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-%s" % glassfish_dir_option, "--%s" % glassfish_dir_option_long, nargs="?", type=str, default=glassfish_dir_default,
@@ -40,8 +41,8 @@ ear_path = os.path.join(base_dir, "ear/target/", ear_name)
 domain_name = "pgalise"
 
 def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glassfish_version_default):
-    if glassfish_version != (4,0):
-        raise ValueError("glassfish version != 4.0 not supported")
+    if not glassfish_version in glassfish_supported_versions:
+        raise ValueError("glassfish version has to be one of '%s'. '%s' is not supported" % (glassfish_supported_version, glassfish_version))
     if not os.path.exists(ear_path):
         raise ValueError("ear_path %s doesn't exist" % ear_path)
     logger.info("checking glassfish some directories where glassfish is expected")
@@ -125,9 +126,20 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
     #for jvm_option in jvm_options:
     #    sp.check_call([asadmin, "create-jvm-options", jvm_option])
      
+    # check whether JDBC connection 'pgalise' is present and create if not
+    connection_pool_name = "pgalise"
+    # in order to be able to invoke ping-connection-pool the driver has to be in glassfish/domains/<domain-name>/lib/ext [http://stackoverflow.com/questions/8349970/connecting-a-mysql-database-to-glassfish-classpath-is-not-set-or-classname-is-wr]
+    lib_copy_target = os.path.join(glassfish_dir, "glassfish", "domains", domain_name, "lib", "ext")
+    logger.info("copying postgres driver jar into %s" % (lib_copy_target,))
+    shutil.copy2(os.path.join(__file__, "bin", "postgresql-9.3-1102.jdbc41.jar"), lib_copy_target)
+    try:
+        sp.check_call([asadmin, "ping-connection-pool", connection_pool_name], cwd=glassfish_dir)
+    except:
+        # @TODO: check ping-connection-pool exit codes and distinguish different failures, currently all of them are treated as if connection pool doesn't exist (seems to be 1 for all kind of failures anyway (at least errornous classpath and inexisting pool -> makes parsing of output necessary))
+        sp.check_call([asadmin, "create-jdbc-connection-pool", "--restype", "javax.sql.DataSource", "--datasourceclassname", "org.postgresql.ds.PGSimpleDataSource", "--property", "username=pgalise:password=somepw:url=jdbc\\:postgresql\\://localhost\\:5201/pgalise:port=5201:serverName=localhost", connection_pool_name, ], cwd=glassfish_dir)
+        sp.check_call([asadmin, "create-jdbc-resource", "--connectionpoolid", connection_pool_name, "--enabled", "true", "--target", "domain", "jdbc/%s" % (connection_pool_name,)], cwd=glassfish_dir)
      
-     
-    # redeploy subcommand is recommended in the GF 4.0 deployment guid (https://glassfish.java.net/docs/4.0/application-deployment-guide.pdf), i.e. undeploying and deploying should be unless issues are encountered
+    # redeploy subcommand is recommended in the GF 4.0 deployment guide (https://glassfish.java.net/docs/4.0/application-deployment-guide.pdf), i.e. undeploying and deploying (instead of redeploy) shouldn't be necessary unless issues are encountered
     try:
         sp.check_call([asadmin, "deploy", ear_path], cwd=glassfish_dir)
     except sp.CalledProcessError as ex:
