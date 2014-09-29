@@ -22,7 +22,6 @@ import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.sensorFramework.output.OutputDecorator;
 import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
 import de.pgalise.simulation.service.RandomSeedService;
-import javax.ejb.Stateful;
 
 /**
  * Output decorator to imitate radio transmission

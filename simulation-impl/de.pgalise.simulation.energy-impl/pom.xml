@@ -4,47 +4,72 @@
 
 	<parent>
 		<groupId>de.pgalise</groupId>
-		<artifactId>simulation</artifactId>
+		<artifactId>simulation-impl</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>de.pgalise.simulation</groupId>
-	<artifactId>simulationController-impl</artifactId>
+	<artifactId>energy-impl</artifactId>
 	<version>2.0-SNAPSHOT</version>
 
 	<packaging>ejb</packaging>
 
-	<name>de.pgalise.simulation.simulationController-impl</name>
+	<name>de.pgalise.simulation.energy-impl</name>
 
-	<!-- Hier die Abhängigkeiten definieren -->
 	<dependencies>
     <!--pgalise dependencies (all mvn scopes)-->
 		<dependency>
 			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>simulationController</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>traffic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.util</groupId>
-			<artifactId>generic</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared</artifactId>
+			<artifactId>energy</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>de.pgalise</groupId>
 			<artifactId>testutils-shared</artifactId>
 			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-traffic</artifactId>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+	 
+		<dependency>
+			<groupId>net.sf.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>pcingola</groupId>
+			<artifactId>jfuzzy</artifactId>
+		</dependency>		
+		<dependency>
+			<groupId>com.javadocmd</groupId>
+			<artifactId>simplelatlng</artifactId>
+			<type>jar</type>
+		</dependency>
+    
+    <!-- test dependencies -->
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<scope>test</scope>
 		</dependency>
     <dependency>
-      <groupId>de.pgalise</groupId>
-      <artifactId>testutils-traffic</artifactId>
+      <groupId>org.apache.openejb</groupId>
+      <artifactId>openejb-api</artifactId>
       <scope>test</scope>
-      <type>jar</type>
     </dependency>
 	 <dependency>
 	  <groupId>org.easymock</groupId>
@@ -58,35 +83,13 @@
 	  <scope>test</scope>
 	  <type>jar</type>
 	 </dependency>
-	 <dependency>
-			<groupId>javax</groupId>
-			<artifactId>javaee-api</artifactId>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-	 
-    <!-- test dependencies -->
-		<dependency>
-			<groupId>org.apache.openejb</groupId>
-			<artifactId>openejb-core</artifactId>
-			<scope>test</scope>
-		</dependency>
-<!--		<dependency>
-			<groupId>org.apache.openjpa</groupId>
-			<artifactId>openjpa</artifactId>
-		</dependency>-->
-    <dependency>
-      <groupId>org.apache.openejb</groupId>
-      <artifactId>openejb-api</artifactId>
-      <scope>test</scope>
-    </dependency>
 	</dependencies>
-
+	
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-ejb-plugin</artifactId>
 			</plugin>
 		</plugins>
-	</build>
+	</build>	
 </project>

@@ -13,7 +13,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.compiler.source>1.7</java.compiler.source>
     <java.compiler.target>1.7</java.compiler.target>
-    <de.pgalise.openejb.version>4.7.0-SNAPSHOT</de.pgalise.openejb.version>
+    <de.pgalise.openejb.version>4.7.1</de.pgalise.openejb.version>
     <de.pgalise.geotools.version>9.3</de.pgalise.geotools.version>
     <de.pgalise.hibernate.version>4.3.5.Final</de.pgalise.hibernate.version>
     <!--4.3.0.Final is the only stable version which is compatible with Java EE 7, 
@@ -96,7 +96,7 @@ but also buggy (NPE at
       <id>nuiton</id>
       <name>maven.nuiton.org</name>
       <url>http://maven.nuiton.org/nexus/content/repositories/thirdparty/</url>
-      <!--provides openmap-->
+      <!--provides openmap and cajo-->
       <releases>
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
@@ -172,6 +172,18 @@ but also buggy (NPE at
         <enabled>true</enabled>
         <updatePolicy>never</updatePolicy>
       </snapshots>    
+    </repository>
+    <repository>
+        <id>geotoolkit.org</id>
+        <url>http://maven.geotoolkit.org/</url>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
     </repository>
   </repositories>
   <!--<pluginRepositories>
@@ -701,6 +713,7 @@ but also buggy (NPE at
         <module>util</module>
         <module>simulation</module>
         <module>testutils</module>
+        <module>simulation-impl</module>
         <module>ear</module>
       </modules>
 
@@ -873,7 +886,7 @@ but also buggy (NPE at
           <id>PGAliseRepository</id>
           <name>PG ALISE Repository</name>
           <url>http://134.106.56.230:18081/nexus/content/repositories/snapshots</url>
-        </snapshotRepository>
+        </snapshotRepository>modules
       </distributionManagement>-->
     </profile>
     <profile>

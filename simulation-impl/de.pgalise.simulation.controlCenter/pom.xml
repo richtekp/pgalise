@@ -5,7 +5,7 @@
 
   <parent>
     <groupId>de.pgalise</groupId>
-    <artifactId>simulation</artifactId>
+		<artifactId>simulation-impl</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
@@ -148,11 +148,11 @@
     </dependency>
     <!-- Tomcat 6 needs this <dependency> <groupId>com.sun.el</groupId> <artifactId>el-ri</artifactId> 
     <version>1.0</version> </dependency> -->
-    <dependency>
+    <!--<dependency>
       <groupId>org.primefaces.themes</groupId>
       <artifactId>bootstrap</artifactId>
       <version>1.0.9</version>
-    </dependency>
+    </dependency>--> <!-- @TODO: can't be found in any repository, check ambiguity-->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
@@ -241,11 +241,11 @@
             <version>6626</version>
             <type>jar</type>
     </dependency>-->
-    <dependency>
+    <!--<dependency>
       <groupId>org.geojsf</groupId>
       <artifactId>geojsf-component</artifactId>
       <version>0.1.1-SNAPSHOT</version>
-    </dependency>
+    </dependency>--> <!--@TODO: checkout when new release comes out -->
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
