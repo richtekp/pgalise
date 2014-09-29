@@ -21,13 +21,14 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 import argparse
 import subprocess as sp
+import shutil
 
-glassfish_dir_default = os.path.join(os.environ["HOME"], "glassfish-4.0")
+glassfish_version_default = (4,1)
+glassfish_supported_versions = [(4,0), (4,1)]
+
+glassfish_dir_default = os.path.join(os.environ["HOME"], "glassfish-%s" % (str.join(".", [str(x) for x in glassfish_version_default]),))
 glassfish_dir_option = "g"
 glassfish_dir_option_long = "glassfish-dir"
-
-glassfish_version_default = (4,0)
-glassfish_supported_versions = [(4,0), (4,1)]
 
 parser = argparse.ArgumentParser(description='Process some integers.')
 parser.add_argument("-%s" % glassfish_dir_option, "--%s" % glassfish_dir_option_long, nargs="?", type=str, default=glassfish_dir_default,
@@ -129,9 +130,10 @@ def deploy_glassfish(glassfish_dir=glassfish_dir_default, glassfish_version=glas
     # check whether JDBC connection 'pgalise' is present and create if not
     connection_pool_name = "pgalise"
     # in order to be able to invoke ping-connection-pool the driver has to be in glassfish/domains/<domain-name>/lib/ext [http://stackoverflow.com/questions/8349970/connecting-a-mysql-database-to-glassfish-classpath-is-not-set-or-classname-is-wr]
+    lib_copy_source = os.path.realpath(os.path.join(__file__, "..", "bin", "postgresql-9.3-1102.jdbc41.jar"))
     lib_copy_target = os.path.join(glassfish_dir, "glassfish", "domains", domain_name, "lib", "ext")
     logger.info("copying postgres driver jar into %s" % (lib_copy_target,))
-    shutil.copy2(os.path.join(__file__, "bin", "postgresql-9.3-1102.jdbc41.jar"), lib_copy_target)
+    shutil.copy2(lib_copy_source, lib_copy_target)
     try:
         sp.check_call([asadmin, "ping-connection-pool", connection_pool_name], cwd=glassfish_dir)
     except:
