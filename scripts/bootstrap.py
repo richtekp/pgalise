@@ -335,7 +335,7 @@ def bootstrap(ignore_root_warning, force_overwrite_postgres_datadir, skip_tests,
         postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
         postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_test_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
     else:
-        logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (postgres_datadir_path, force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
+        logger.info("Postgres datadir %s has not been overwritten. Check output of script invoked with -h/--help on how to do that." % (postgres_datadir_path, ))
 # internal implementation notes:
 # - passing base_dir as argument of the bootstrap function or in another way doesn't necessarily make sense (default values can be set based on base_dir=source root though)
 
