@@ -795,6 +795,9 @@ public class OSMFileBasedCityDataService implements
                   lastBuildingCoordinates.add(
                     osmWayNode);
                 }
+                if(lastBuilding.getBoundary() == null) {
+                    lastBuilding.setBoundary(new BaseBoundary(idGenerator.getNextId()));
+                }
                 lastBuilding.getBoundary().setBoundary(
                   new BasePolygon(idGenerator.getNextId(),
                     GeoToolsBootstrapping.getGeometryFactory().createPolygon(
@@ -1065,6 +1068,11 @@ public class OSMFileBasedCityDataService implements
             ex);
         }
       }
+    }
+    
+    //@TODO: should not be contained, but is somehow...
+    while(nodes.contains(null)) {
+        nodes.remove(null);
     }
 
     /* Set real nodes for all ways and save used nodes */
