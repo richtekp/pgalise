@@ -28,11 +28,15 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
+import java.util.logging.Level;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import net.sf.ehcache.Element;
 import org.geotools.data.DataStore;
@@ -49,6 +53,7 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.filter.Filter;
 import org.opengis.filter.FilterFactory2;
 import org.postgresql.util.PSQLException;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.UploadedFile;
@@ -86,9 +91,9 @@ public class CityCtrl implements Serializable {
   private List<BaseCoordinate> customFileBoundaries = new LinkedList<>();
   private String dbHost = "127.0.0.1";
   private int dbPort = 5204;
-  private String dbDatabase = "postgis1";
-  private String dbUser = "pgalise";
-  private String dbPassword = "somepw";
+  private String dbDatabase = "postgis";
+  private String dbUser = "postgis";
+  private String dbPassword = "postgis";
   private List<String> osmFileNamesParsing = new LinkedList<>();
   private List<String> osmFileNamesParsed = new LinkedList<>();
   /**
@@ -115,9 +120,12 @@ public class CityCtrl implements Serializable {
    necessary because osmParsingProgress can't be final
    */
   private final Object osmParsingProgressLock = new Object();
-  private String cityNameAutocompleteWarning = "";
   
-  private DataStore currentDataStore;
+  /*
+  internal implemenatation notes:
+  - DataStore isn't serializable and causes trouble in JEE server
+  */
+  private transient DataStore currentDataStore;
   private Map<String,Object> currentDataStoreConnectionParameters;
 
   /**
@@ -145,8 +153,10 @@ public class CityCtrl implements Serializable {
     try {
       this.currentDataStore = retrieveDataStore();
     } catch (PSQLException ex) {
-      //skip because connection parameter are just not right (will be fixed 
-      //by user when input fields are available
+      //create initial message
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesMessage facesMessage = new FacesMessage("This is a message");
+        facesContext.addMessage("postgisPreviewFormMessages", facesMessage);
     } catch (IOException ex) {
       throw new RuntimeException(ex);
     }
@@ -234,7 +244,14 @@ public class CityCtrl implements Serializable {
   
   public void onCityNameValueChange(ValueChangeEvent valueChangeEvent) {
     TrafficCity newCity = (TrafficCity) valueChangeEvent.getNewValue();
+    if (newCity == null) {
+        return; //@TODO: check if functionality below shouldn't be in another 
+        //method and reused
+    }
     this.city.setName(newCity.getName());
+    if(this.city.getBoundary() == null) {
+        this.city.setBoundary(new BaseBoundary(idGenerator.getNextId()));
+    }
     this.city.getBoundary().setReferencePoint(newCity.getBoundary().getReferencePoint());
     this.city.getBoundary().setBoundary(newCity.getBoundary().getBoundary());
   }
@@ -309,11 +326,13 @@ public class CityCtrl implements Serializable {
           retValue.add(autocompletionValue);
         }
       }
-      cityNameAutocompleteWarning = "";
+      //clear warnings??
       return retValue;
     }catch(PSQLException | RuntimeException ex) {
-      cityNameAutocompleteWarning = String.format("Postgis database returns errornous message or warning %s",
-        ex.getMessage());
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesMessage facesMessage = new FacesMessage(String.format("Postgis database returns errornous message or warning %s",
+        ex.getMessage()));
+        facesContext.addMessage("postgisPreviewFormMessages", facesMessage);
       return null;
     } catch (IOException ex) {
       throw new RuntimeException (ex);
@@ -342,6 +361,17 @@ public class CityCtrl implements Serializable {
     citySelectionBoundsPolygon.setStrokeOpacity(0.7);
     citySelectionBoundsPolygon.setFillOpacity(0.7);
     mapModel.addOverlay(citySelectionBoundsPolygon);
+  }
+  
+  public void onPostgisConnectionParameterChange(ActionEvent actionEvent) {
+      try {
+          this.currentDataStore = retrieveDataStore();
+      } catch (PSQLException | IOException ex) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        FacesMessage facesMessage = new FacesMessage(String.format("Postgis database returns errornous message or warning %s",
+        ex.getMessage()));
+        facesContext.addMessage("postgisPreviewFormMessages", facesMessage);
+      }
   }
 
   /**
@@ -525,6 +555,10 @@ public class CityCtrl implements Serializable {
         }
       });
     return retValue;
+  }
+  
+  public boolean connectionEstablished() {
+      return currentDataStore != null;
   }
 
   //////
@@ -716,14 +750,6 @@ public class CityCtrl implements Serializable {
 
   protected void setOsmParsingProgress(Integer osmParsingProgress) {
     this.osmParsingProgress = osmParsingProgress;
-  }
-
-  public void setCityNameAutocompleteWarning(String cityNameAutocompleteWarning) {
-    this.cityNameAutocompleteWarning = cityNameAutocompleteWarning;
-  }
-
-  public String getCityNameAutocompleteWarning() {
-    return cityNameAutocompleteWarning;
   }
 
 }
