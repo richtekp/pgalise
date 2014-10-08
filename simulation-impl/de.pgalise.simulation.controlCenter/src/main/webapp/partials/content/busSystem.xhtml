@@ -30,7 +30,7 @@
 	</script>
 	<div class="contentDiv">
 		<h2>Bus system</h2>
-		<h:form>
+		<h:form  enctype="multipart/form-data">
 			<h3>Public transport data</h3>
 			<h:outputLabel for="busStopFileNamesParsingDataTable" value="Pending BusStop parsing files"/>
 			<h:dataTable value="#{busSystemCtrl.busStopFileNamesParsing}" id="busStopFileNamesParsingDataTable" var="busStopFileNameParsing">
@@ -58,7 +58,7 @@
 				</c:otherwise>
 			</c:choose>
 			<h:outputLabel for="busStopFileUpload" value="Upload other bus stop file to be parsed"/>
-			<p:fileUpload id="busStopFileUpload" fileUploadListener="#{cityCtrl.onGTFSFileUpload}" />
+                        <p:fileUpload id="busStopFileUpload" fileUploadListener="#{busSystemCtrl.onGTFSFileUpload}" />
 		</h:form>
 		<h:panelGrid>
 			<p:gmap center="3,4" type="HYBRID" zoom="13" />
