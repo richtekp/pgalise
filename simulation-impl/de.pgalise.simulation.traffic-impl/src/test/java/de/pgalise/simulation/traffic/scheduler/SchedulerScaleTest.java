@@ -17,7 +17,7 @@ package de.pgalise.simulation.traffic.scheduler;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
@@ -62,6 +62,8 @@ public class SchedulerScaleTest {
 
   @EJB
   private IdGenerator idGenerator;
+  @EJB
+  private RandomSeedService randomSeedService;
   private TrafficNode a;
   private TrafficNode b;
   private TrafficNode c;
@@ -133,7 +135,7 @@ public class SchedulerScaleTest {
       new Coordinate(2,
         2));
     this.trafficGraphExtensions = new DefaultTrafficGraphExtensions(
-      new DefaultRandomSeedService(),
+      randomSeedService,
       graph);
     SchedulerScaleTest.graph = createGraph();
   }

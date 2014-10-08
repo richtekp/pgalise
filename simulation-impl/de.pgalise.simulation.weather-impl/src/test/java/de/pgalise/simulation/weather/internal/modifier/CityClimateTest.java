@@ -16,7 +16,7 @@
 package de.pgalise.simulation.weather.internal.modifier;
 
 import de.pgalise.simulation.service.IdGenerator;
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
@@ -91,6 +91,8 @@ public class CityClimateTest {
   private UserTransaction userTransaction;
   @EJB
   private WeatherPersistenceHelper persistenceUtil;
+  @EJB
+  private RandomSeedService randomSeedService;
 
   public CityClimateTest() throws NamingException {
     // Start
@@ -177,7 +179,7 @@ public class CityClimateTest {
 
       // Deploy strategy
       CityClimateModifier modifier = new CityClimateModifier(city,
-        new DefaultRandomSeedService().getSeed(CityClimateTest.class.toString()),
+        randomSeedService.getSeed(CityClimateTest.class.toString()),
         loader
       );
       service.deployStrategy(modifier,
