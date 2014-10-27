@@ -13,7 +13,11 @@ Currently there's a bunch of `python` scripts which serve a very straight-forwar
     git clone https://github.com/richtekp/pgalise.git
     cd pgalise
     sudo python scripts/bootstrap_prequisites.py # currently we use the system package manager as much as possible, consider setting up a lxc or VirtualBox for a Debian 7.4 or Ubuntu 14.04
-    python scripts/bootstrap.py # sets up a database for you as well
+    python scripts/bootstrap.py # sets up a database as well
+    python scripts/start_db.py
+    mvn clean install # add -DskipTests=true if test failures occur
+    python scripts/deploy_glassfish.py # interactively asks you to specify a location for an installation of an Oracle GlassFish instance
+    # point your browser to http://localhost:8081/controlCenter
 
 Furthermore you might be interested in the `osm_postgis_transform.py` script which facilitates the creation of PostGIS databases from OSM data, see `python osm_postgis_transform.py --help` for details and instructions.
 
