@@ -24,6 +24,11 @@ import de.pgalise.simulation.shared.event.AbstractEvent;
  */
 public abstract class EnergyEvent extends AbstractEvent {
 	/**
+	 * Serial
+	 */
+	private static final long serialVersionUID = -6014165630218562952L;
+	
+	/**
 	 * Constructor
 	 * 
 	 * @param id
@@ -31,12 +36,13 @@ public abstract class EnergyEvent extends AbstractEvent {
 	 * @param eventType
 	 * Event type
 	 */
-	
-	public EnergyEvent() {
+	protected EnergyEvent() {
 	}
-
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -6014165630218562952L;
+	
+	public EnergyEvent(Long id) {
+		super(id);
+	}
+	
+	@Override
+	public abstract EnergyEventType getType();
 }

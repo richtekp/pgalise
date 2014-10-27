@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bicycles>
+		<bicycle>
+			<typeid>bicycle001</typeid>
+			<description>Children Bike</description>
+			<weight>9.5</weight>
+			<maxSpeed>14</maxSpeed>
+			<material>alu</material>	
+			<length>1500</length>
+			<wheelbase>730</wheelbase>
+		</bicycle>
+		<bicycle>
+			<typeid>bicycle002</typeid>
+			<description>Gazelle Bike</description>
+			<weight>18.9</weight>
+			<maxSpeed>20</maxSpeed>
+			<material>steel</material>	
+			<length>1800</length>
+			<wheelbase>1009</wheelbase>
+		</bicycle>
+		<bicycle>
+			<typeid>bicycle003</typeid>
+			<description>Mountain Bike</description>
+			<weight>13.25</weight>
+			<maxSpeed>16</maxSpeed>
+			<material>alu</material>	
+			<length>1750</length>
+			<wheelbase>1166</wheelbase>
+		</bicycle>
+		<bicycle>
+			<typeid>bicycle004</typeid>
+			<description>Recument Bike</description>
+			<weight>15.3</weight>
+			<maxSpeed>17</maxSpeed>
+			<material>alu</material>	
+			<length>1750</length>
+			<wheelbase>1090</wheelbase>
+		</bicycle>
+	</bicycles>

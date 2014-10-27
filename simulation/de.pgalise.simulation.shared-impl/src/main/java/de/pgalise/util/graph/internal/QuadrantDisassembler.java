@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.util.graph.internal;
 
 import com.vividsolutions.jts.geom.Envelope;
@@ -30,110 +29,113 @@ import org.geotools.geometry.jts.JTS;
 
 /**
  * Disassemble the graph
- * 
+ *
  * @author Mustafa
  * @version 1.0 (Mar 20, 2013)
  */
 @Stateless
-@Local
+@Local(Disassembler.class)
 public class QuadrantDisassembler implements Disassembler {
-	@Override
-	public List<Geometry> disassemble(Geometry geometry, int numServers) {
-		final List<Geometry> result = new ArrayList<>();
 
-		BTree<Geometry> tree = this.getTree(geometry, numServers);
-		for (int i = 0; i < tree.getLeafs().size(); i++) {
-			Geometry geo = tree.getLeafs().get(i).getData();
-			result.add(geo);
-		}
+  @Override
+  public List<Geometry> disassemble(Geometry geometry,
+    int numServers) {
+    final List<Geometry> result = new ArrayList<>();
 
-		return result;
-	}
+    BTree<Geometry> tree = this.getTree(geometry,
+      numServers);
+    for (int i = 0; i < tree.getLeafs().size(); i++) {
+      Geometry geo = tree.getLeafs().get(i).getData();
+      result.add(geo);
+    }
 
-	/**
-	 * Returns the tree
-	 * 
-	 * @param rootData
-	 *            Geometry
-	 * @param numServers
-	 *            Number of servers
-	 * @return BTree
-	 */
-	public BTree<Geometry> getTree(Geometry rootData, int numServers) {
-		BTree<Geometry> tree = new BTree<>();
-		tree.getRoot().setData(rootData);
-		if (numServers > 1) {
-			do {
-				BNode<Geometry> current = tree.getLowestLeaf();
-				// log.debug("Lowest leaf: " + current.getData());
-				if (current.getData().getEnvelopeInternal().getWidth() >= current.getData().getEnvelopeInternal().getHeight()) {
-					// vertikal aufteilen
-					current.setLeft(
-						new BNode<Geometry>(
-							JTS.toGeometry(
-								new Envelope(
-									current.getData().getEnvelopeInternal().getMinX(), 
-									current.getData().getEnvelopeInternal().getMinX() 
-										+ (current.getData().getEnvelopeInternal().getWidth() / 2), 
-									current.getData().getEnvelopeInternal().getMinY(), 
-									current.getData().getEnvelopeInternal().getMinY() 
-										+ current.getData().getEnvelopeInternal().getHeight()
-								)
-							)
-						)
-					);
-					current.setRight(
-						new BNode<Geometry>(
-							JTS.toGeometry(
-								new Envelope(
-									current.getData().getEnvelopeInternal().getMinX()
-										+ (current.getData().getEnvelopeInternal().getWidth() / 2), 
-									(current.getData().getEnvelopeInternal().getWidth() / 2) 
-										+ (current.getData().getEnvelopeInternal().getWidth() / 2), 
-									current.getData().getEnvelopeInternal().getMinY(), 
-									current.getData().getEnvelopeInternal().getMinY()
-										+ current.getData().getEnvelopeInternal().getHeight()
-								)
-							)
-						)
-					);
-					// log.debug(String.format("Splitting node (%s) vertical to (%s) and (%s) ", current.getData(),
-					// current.getLeft().getData(), current.getRight().getData()));
-				} else {
-					// horizontal aufteilen
-					current.setLeft(
-						new BNode<Geometry>(
-							JTS.toGeometry(
-								new Envelope(
-									current.getData().getEnvelopeInternal().getMinX(), 
-									current.getData().getEnvelopeInternal().getMinX() 
-										+ current.getData().getEnvelopeInternal().getWidth(),
-									current.getData().getEnvelopeInternal().getMinY(), 
-									current.getData().getEnvelopeInternal().getMinY() 
-										+ (current.getData().getEnvelopeInternal().getHeight() / 2)
-								)
-							)
-						)
-					);
-					current.setRight(
-						new BNode<Geometry>(
-							JTS.toGeometry(
-								new Envelope(
-									current.getData().getEnvelopeInternal().getMinX(), 
-									current.getData().getEnvelopeInternal().getMinX() 
-										+ current.getData().getEnvelopeInternal().getWidth(),
-									current.getData().getEnvelopeInternal().getHeight() / 2, 
-									(current.getData().getEnvelopeInternal().getHeight() / 2) 
-										+ (current.getData().getEnvelopeInternal().getHeight() / 2)
-								)
-							)
-						)
-					);
-					// log.debug(String.format("Splitting node (%s) horizontal to (%s) and (%s) ", current.getData(),
-					// current.getLeft().getData(), current.getRight().getData()));
-				}
-			} while (tree.getLeafCount() < numServers);
-		}
-		return tree;
-	}
+    return result;
+  }
+
+  /**
+   * Returns the tree
+   *
+   * @param rootData Geometry
+   * @param numServers Number of servers
+   * @return BTree
+   */
+  public BTree<Geometry> getTree(Geometry rootData,
+    int numServers) {
+    BTree<Geometry> tree = new BTree<>();
+    tree.getRoot().setData(rootData);
+    if (numServers > 1) {
+      do {
+        BNode<Geometry> current = tree.getLowestLeaf();
+        // log.debug("Lowest leaf: " + current.getData());
+        if (current.getData().getEnvelopeInternal().getWidth() >= current.
+          getData().getEnvelopeInternal().getHeight()) {
+          // vertikal aufteilen
+          current.setLeft(
+            new BNode<Geometry>(
+              JTS.toGeometry(
+                new Envelope(
+                  current.getData().getEnvelopeInternal().getMinX(),
+                  current.getData().getEnvelopeInternal().getMinX()
+                  + (current.getData().getEnvelopeInternal().getWidth() / 2),
+                  current.getData().getEnvelopeInternal().getMinY(),
+                  current.getData().getEnvelopeInternal().getMinY()
+                  + current.getData().getEnvelopeInternal().getHeight()
+                )
+              )
+            )
+          );
+          current.setRight(
+            new BNode<Geometry>(
+              JTS.toGeometry(
+                new Envelope(
+                  current.getData().getEnvelopeInternal().getMinX()
+                  + (current.getData().getEnvelopeInternal().getWidth() / 2),
+                  (current.getData().getEnvelopeInternal().getWidth() / 2)
+                  + (current.getData().getEnvelopeInternal().getWidth() / 2),
+                  current.getData().getEnvelopeInternal().getMinY(),
+                  current.getData().getEnvelopeInternal().getMinY()
+                  + current.getData().getEnvelopeInternal().getHeight()
+                )
+              )
+            )
+          );
+          // log.debug(String.format("Splitting node (%s) vertical to (%s) and (%s) ", current.getData(),
+          // current.getLeft().getData(), current.getRight().getData()));
+        } else {
+          // horizontal aufteilen
+          current.setLeft(
+            new BNode<Geometry>(
+              JTS.toGeometry(
+                new Envelope(
+                  current.getData().getEnvelopeInternal().getMinX(),
+                  current.getData().getEnvelopeInternal().getMinX()
+                  + current.getData().getEnvelopeInternal().getWidth(),
+                  current.getData().getEnvelopeInternal().getMinY(),
+                  current.getData().getEnvelopeInternal().getMinY()
+                  + (current.getData().getEnvelopeInternal().getHeight() / 2)
+                )
+              )
+            )
+          );
+          current.setRight(
+            new BNode<Geometry>(
+              JTS.toGeometry(
+                new Envelope(
+                  current.getData().getEnvelopeInternal().getMinX(),
+                  current.getData().getEnvelopeInternal().getMinX()
+                  + current.getData().getEnvelopeInternal().getWidth(),
+                  current.getData().getEnvelopeInternal().getHeight() / 2,
+                  (current.getData().getEnvelopeInternal().getHeight() / 2)
+                  + (current.getData().getEnvelopeInternal().getHeight() / 2)
+                )
+              )
+            )
+          );
+          // log.debug(String.format("Splitting node (%s) horizontal to (%s) and (%s) ", current.getData(),
+          // current.getLeft().getData(), current.getRight().getData()));
+        }
+      } while (tree.getLeafCount() < numServers);
+    }
+    return tree;
+  }
 }

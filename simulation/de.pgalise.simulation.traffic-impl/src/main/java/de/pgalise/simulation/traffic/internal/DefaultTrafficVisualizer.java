@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal;
 
-import de.pgalise.simulation.traffic.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
 import java.awt.Color;
 import java.awt.Font;
@@ -25,24 +23,24 @@ import java.awt.Polygon;
 import java.util.List;
 
 import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.TrafficVisualizer;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.util.generic.async.AsyncHandler;
 import de.pgalise.util.generic.async.impl.ThreadPoolHandler;
 import de.pgalise.util.generic.function.Function;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
  * Default implementation of the TrafficVisualizer.
- * 
- * @param <D> 
+ *
+ * @param <D>
  * @author Mustafa
  * @author Marina
  */
-public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGraphVisualizer<D> implements TrafficVisualizer {
+public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGraphVisualizer<D>
+	implements TrafficVisualizer {
+
 	/**
 	 * Serial
 	 */
@@ -56,14 +54,22 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 
 	private TrafficGraphExtensions trafficGraphExtensions;
 
-	public DefaultTrafficVisualizer(int width, int height, TrafficGraphExtensions ee) {
-		super(width, height);
+	public DefaultTrafficVisualizer(int width,
+		int height,
+		TrafficGraphExtensions ee) {
+		super(width,
+			height);
 		this.trafficGraphExtensions = ee;
 		init();
 	}
 
-	public DefaultTrafficVisualizer(int width, int height, TrafficGraph graph, TrafficGraphExtensions ee) {
-		super(width, height, graph);
+	public DefaultTrafficVisualizer(int width,
+		int height,
+		TrafficGraph graph,
+		TrafficGraphExtensions ee) {
+		super(width,
+			height,
+			graph);
 		this.trafficGraphExtensions = ee;
 		init();
 	}
@@ -98,7 +104,7 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 		// wieder einkommentieren, wenn randomseedservice wieder korrekt übergeben wird
 		// for (final Node node : this.graph) {
 		// Vector2d pos = ne.getPosition(node);
-		// pos = new Vector2d((pos.x * transform.getScaleX() + transform.getTranslateX()), (pos.y
+		// pos = new Vector2d((pos.getX() * transform.getScaleX() + transform.getTranslateX()), (pos.y
 		// * transform.getScaleX() + transform.getTranslateY()));
 		// final TrafficRule trafficRule = ne.getTrafficRule(node);
 		// if (!(trafficRule instanceof TrafficLightSetof)) {
@@ -110,22 +116,22 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 		// g2d.setColor(Color.BLACK);
 		// }
 		//
-		// Ellipse2D.Double circle = new Ellipse2D.Double(pos.x - 5, pos.y - 5, 10, 10);
+		// Ellipse2D.Double circle = new Ellipse2D.Double(pos.getX() - 5, pos.getY() - 5, 10, 10);
 		// g2d.fill(circle);
 		// } else {
 		// TrafficLightSetof trafficLightSetof = (TrafficLightSetof) trafficRule;
 		// for (final Edge edge : node) {
 		// final Vector2d vec = ne.getVectorBetween(node, edge.getOpposite(node)).normalize();
 		// final double factor = 20;
-		// Rectangle2D.Double rect = new Rectangle2D.Double(pos.x - vec.normalize().x * factor - 5,
-		// pos.y - vec.normalize().y * factor - 10, 10, 22);
+		// Rectangle2D.Double rect = new Rectangle2D.Double(pos.getX() - vec.normalize().getX() * factor - 5,
+		// pos.getY() - vec.normalize().getY() * factor - 10, 10, 22);
 		//
-		// Ellipse2D.Double red = new Ellipse2D.Double(pos.x - vec.normalize().x * factor - 3,
-		// pos.y - vec.normalize().y * factor - 9, 6, 6);
-		// Ellipse2D.Double yellow = new Ellipse2D.Double(pos.x - vec.normalize().x * factor - 3,
-		// pos.y - vec.normalize().y * factor - 2, 6, 6);
-		// Ellipse2D.Double green = new Ellipse2D.Double(pos.x - vec.normalize().x * factor - 3,
-		// pos.y - vec.normalize().y * factor + 5, 6, 6);
+		// Ellipse2D.Double red = new Ellipse2D.Double(pos.getX() - vec.normalize().getX() * factor - 3,
+		// pos.getY() - vec.normalize().getY() * factor - 9, 6, 6);
+		// Ellipse2D.Double yellow = new Ellipse2D.Double(pos.getX() - vec.normalize().getX() * factor - 3,
+		// pos.getY() - vec.normalize().getY() * factor - 2, 6, 6);
+		// Ellipse2D.Double green = new Ellipse2D.Double(pos.getX() - vec.normalize().getX() * factor - 3,
+		// pos.getY() - vec.normalize().getY() * factor + 5, 6, 6);
 		//
 		// g2d.setColor(Color.BLACK);
 		// g2d.fill(rect);
@@ -157,28 +163,30 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 		// }
 		// }
 		// }
-
 		g2d.setColor(Color.BLACK);
 		for (Vehicle<?> v : vehicles) {
-			Vector2d pos = new Vector2d(v.getPosition().x, v.getPosition().y);
-			pos = new Vector2d((pos.x * transform.getScaleX() + transform.getTranslateX()), (pos.y
-					* transform.getScaleX() + transform.getTranslateY()));
+			JaxbVector2d pos = new JaxbVector2d(v.getPosition().getX(),
+				v.getPosition().getY());
+			pos = new JaxbVector2d((pos.getX() * transform.getScaleX() + transform.
+				getTranslateX()),
+				(pos.getY()
+				* transform.getScaleX() + transform.getTranslateY()));
 			// log.debug(String.format("Car %s pos: (%s, %s)", v.getName(),
-			// pos.x, pos.y));
+			// pos.getX(), pos.getY()));
 
 			// Vector2d opos = pos;
-
-			Vector2d dir = v.getDirection();
+			JaxbVector2d dir = v.getDirection();
 			// Orthogonale zeigt nach rechts
-			Vector2d ortho = new Vector2d(dir.y, dir.x * (-1));
-			Vector2d ortho2 = ortho;
+			JaxbVector2d ortho = new JaxbVector2d(dir.getY(),
+				dir.getX() * (-1));
+			JaxbVector2d ortho2 = ortho;
 			ortho2.scale(-1);
 
 			dir.normalize();
 			ortho.normalize();
 			ortho2.normalize();
 
-			Vector2d d = dir;
+			JaxbVector2d d = dir;
 			d.scale(12);
 			pos.sub(d);
 
@@ -193,24 +201,30 @@ public class DefaultTrafficVisualizer<D extends VehicleData> extends DefaultGrap
 
 			// Dreieck erstellen
 			Polygon p = new Polygon();
-			p.addPoint((int) ortho2.x, (int) ortho2.y);
-			p.addPoint((int) dir.x, (int) dir.y);
-			p.addPoint((int) ortho.x, (int) ortho.y);
+			p.addPoint((int) ortho2.getX(),
+				(int) ortho2.getY());
+			p.addPoint((int) dir.getX(),
+				(int) dir.getY());
+			p.addPoint((int) ortho.getX(),
+				(int) ortho.getY());
 
-			// log.debug(String.format("ortho: (%s, %s)", ortho.x,
-			// ortho.y));
-			// log.debug(String.format("ortho2: (%s, %s)", ortho2.x,
-			// ortho2.y));
-			// log.debug(String.format("dir: (%s, %s)", dir.x,
-			// dir.y));
-
+			// log.debug(String.format("ortho: (%s, %s)", ortho.getX(),
+			// ortho.getY()));
+			// log.debug(String.format("ortho2: (%s, %s)", ortho2.getX(),
+			// ortho2.getY()));
+			// log.debug(String.format("dir: (%s, %s)", dir.getX(),
+			// dir.getY()));
 			g2d.setPaint(Color.ORANGE);
 			g2d.fillPolygon(p);
 
 			g2d.setPaint(Color.RED);
-			Font font = new Font("Arial", Font.BOLD, 12);
+			Font font = new Font("Arial",
+				Font.BOLD,
+				12);
 			g2d.setFont(font);
-			g2d.drawString(v.getName(), (int) (pos.x + 5), (int) (pos.y - 5));
+			g2d.drawString(v.getName(),
+				(int) (pos.getX() + 5),
+				(int) (pos.getY() - 5));
 		}
 	}
 

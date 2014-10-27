@@ -1,0 +1,27 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	<h:form>
+		<p:menu>
+			<p:submenu label="Initial state"
+				rendered="#{mainCtrl.simulationControllerStatus ne controllerStatusEnum.STARTED}">
+				<p:menuitem value="Bus System" outcome="/busSystem.xhtml" />
+				<p:menuitem value="City" outcome="/city.xhtml" />
+				<p:menuitem value="General" outcome="/general.xhtml" />
+				<p:menuitem value="Infrastructure" outcome="/infrastructure.xhtml" />
+				<p:menuitem value="Interaction" outcome="/interaction.xhtml" />
+				<p:menuitem value="Weather" outcome="/weather.xhtml" />
+				<p:menuitem value="Start" outcome="/start.xhtml" />
+				<p:menuitem value="Traffic" outcome="/traffic.xhtml" />
+			</p:submenu>
+			<p:submenu label="Runtime state"
+				rendered="#{mainCtrl.simulationControllerStatus eq controllerStatusEnum.STARTED}">
+				<p:menuitem value="Message" />
+				<p:menuitem value="Random vehicles" />
+				<p:menuitem value="Sensor events" />
+				<p:menuitem value="Status" />
+			</p:submenu>
+		</p:menu>
+	</h:form>
+</ui:composition>

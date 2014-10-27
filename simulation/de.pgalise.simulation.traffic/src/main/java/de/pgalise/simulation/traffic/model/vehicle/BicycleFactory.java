@@ -13,37 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.model.vehicle;
-
-
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Interface to provide methods to create different types of {@link Bike}.
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
-public interface BicycleFactory {
+public interface BicycleFactory extends VehicleFactory<Bicycle> {
 
-	/**
-	 * Method to create a {@link Bike} with the given typeId.
-	 * 
-	 * @param id
-	 *            ID of the {@link Bike}
-	 * @param typeId
-	 *            ID of the {@link Bike} type
-	 * @return created {@link Bike}
-	 */
-	public Vehicle<BicycleData> createBicycle( SensorHelper gpsSensor);
-
-	/**
-	 * Method to create a random {@link Bike}.
-	 * 
-	 * @param id
-	 *            ID of the {@link Bike}
-	 * @return created {@link Bike}
-	 */
-	public Vehicle<BicycleData> createRandomBicycle( SensorHelper gpsSensor);
 }

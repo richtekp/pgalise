@@ -13,70 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.exception;
 
 import java.sql.Date;
+import javax.ejb.ApplicationException;
 
 /**
- * There are no weather data for the given date. Subclasses should specify whether service data or station data was required.
- * 
+ * There are no weather data for the given date. Subclasses should specify
+ * whether service data or station data was required.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 18, 2012)
  */
+@ApplicationException
 public abstract class NoWeatherDataFoundException extends RuntimeException {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -9210493828131108208L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -9210493828131108208L;
 
-	/**
-	 * Constructor
-	 */
-	public NoWeatherDataFoundException() {
-		super("No data can load because no date is given.");
-	}
+  /**
+   * Constructor
+   */
+  public NoWeatherDataFoundException() {
+    super("No data can load because no date is given.");
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param date
-	 *            Date
-	 */
-	public NoWeatherDataFoundException(Date date) {
-		super("No weather data for the date " + date + " can be found.");
-	}
+  /**
+   * Constructor
+   *
+   * @param date Date
+   */
+  public NoWeatherDataFoundException(Date date) {
+    super("No weather data for the date " + date + " can be found.");
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param startDate
-	 *            Date
-	 * @param endDate
-	 *            Date
-	 */
-	public NoWeatherDataFoundException(Date startDate, Date endDate) {
-		super("No weather data from  " + startDate + " to " + endDate + " can be found.");
-	}
+  /**
+   * Constructor
+   *
+   * @param startDate Date
+   * @param endDate Date
+   */
+  public NoWeatherDataFoundException(Date startDate,
+    Date endDate) {
+    super(
+      "No weather data from  " + startDate + " to " + endDate + " can be found.");
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 */
-	public NoWeatherDataFoundException(long timestamp) {
-		super("No weather data for the date " + new Date(timestamp) + " can be found.");
-	}
+  /**
+   * Constructor
+   *
+   * @param timestamp Timestamp
+   */
+  public NoWeatherDataFoundException(long timestamp) {
+    super(
+      "No weather data for the date " + new Date(timestamp) + " can be found.");
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param date
-	 *            Message as string
-	 */
-	public NoWeatherDataFoundException(String date) {
-		super(date);
-	}
+  /**
+   * Constructor
+   *
+   * @param date Message as string
+   */
+  public NoWeatherDataFoundException(String date) {
+    super(date);
+  }
 }

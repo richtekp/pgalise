@@ -13,38 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.energy;
 
-
-import com.vividsolutions.jts.geom.Coordinate;
 import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.energy.EnergyEvent;
-import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 
 /**
- * Interface for the energy controllers. An energy controller is able to give the energy consumption in kWh on a
- * specified point and timestamp. The energy consumption is asked by the smart meter sensors {@link SensorHelperSmartMeter}.
- * 
+ * Interface for the energy controllers. An energy controller is able to give
+ * the energy consumption in kWh on a specified point and timestamp. The energy
+ * consumption is asked by the smart meter sensors
+ * {@link SensorHelperSmartMeter}.
+ *
  * @author Timo
  */
-public interface EnergyController extends Controller<EnergyEvent, InfrastructureStartParameter, InfrastructureInitParameter> {
+public interface EnergyController extends
+  Controller<EnergyEvent, StartParameter, InitParameter> {
 
-	/**
-	 * Returns the current energy consumption on the given point.
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @param position
-	 *            Position on the graph
-	 * @param measureRadiusInMeter
-	 *            the measure radius around the given position
-	 * @return double value in KWh
-	 */
-	public double getEnergyConsumptionInKWh(long timestamp, Coordinate position, int measureRadiusInMeter);
+  /**
+   * Returns the current energy consumption on the given point.
+   *
+   * @param timestamp Timestamp
+   * @param position Position on the graph
+   * @param measureRadiusInMeter the measure radius around the given position
+   * @return double value in KWh
+   */
+  public double getEnergyConsumptionInKWh(long timestamp,
+    BaseCoordinate position,
+    int measureRadiusInMeter);
 
 }

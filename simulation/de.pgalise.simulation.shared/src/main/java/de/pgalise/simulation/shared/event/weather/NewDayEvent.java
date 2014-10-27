@@ -20,6 +20,7 @@ import de.pgalise.simulation.shared.event.EventType;
 import java.util.List;
 
 import de.pgalise.simulation.shared.event.EventTypeEnum;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Event for generating new weather data. Should be thrown by 23:59 of the day.
@@ -28,6 +29,7 @@ import de.pgalise.simulation.shared.event.EventTypeEnum;
  * @version 1.0 (Aug 30, 2012)
  */
 @Deprecated
+@XmlRootElement
 public class NewDayEvent extends WeatherEvent {
 	/**
 	 * Serial
@@ -37,7 +39,7 @@ public class NewDayEvent extends WeatherEvent {
 	/**
 	 * List with Strategies to modify weather data
 	 */
-	private final List<WeatherEventEnum> strategyList;
+	private final List<WeatherEventTypeEnum> strategyList;
 
 	/**
 	 * Constructor
@@ -46,18 +48,21 @@ public class NewDayEvent extends WeatherEvent {
 	 *            ID of the event
 	 * @param list
 	 *            List with Strategies to modify weather data
+	 * @param timestamp
 	 */
-	public NewDayEvent(List<WeatherEventEnum> list) {
-		super();
+	public NewDayEvent(Long id, List<WeatherEventTypeEnum> list, long timestamp) {
+		super(id,
+			timestamp,
+			0);
 		this.strategyList = list;
 	}
 
-	public List<WeatherEventEnum> getStrategyList() {
+	public List<WeatherEventTypeEnum> getStrategyList() {
 		return this.strategyList;
 	}
 
 	@Override
-	public EventType getType() {
-		return EventTypeEnum.NEW_DAY_EVENT;
+	public WeatherEventType getType() {
+		return WeatherEventTypeEnum.NEW_DAY_EVENT;
 	}
 }

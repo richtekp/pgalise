@@ -3,177 +3,194 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package de.pgalise.simulation.traffic.internal.server.sensor;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.energy.EnergyControllerLocal;
 import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.sensorFramework.SensorType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.shared.event.Event;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.staticsensor.AbstractSensorFactory;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.CompositeGpsInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsAtmosphereInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsClockInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsNoInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsReceiverInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.GpsWhiteNoiseInterferer;
+import de.pgalise.simulation.traffic.TrafficSensorFactory;
+import de.pgalise.simulation.traffic.TrafficSensorTypeEnum;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.CompositeGpsInterferer;
+import de.pgalise.simulation.traffic.internal.server.sensor.interferer.gps.DefaultGpsNoInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.CompositeInductionLoopInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopNoInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.inductionloop.InductionLoopWhiteNoiseInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.CompositeInfraredInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.InfraredNoInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.infrared.InfraredWhiteNoiseInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.CompositeTopoRadarInterferer;
 import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.TopoRadarNoInterferer;
-import de.pgalise.simulation.traffic.internal.server.sensor.interferer.toporadar.TopoRadarWhiteNoiseInterferer;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.sensor.interferer.GpsInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InductionLoopInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.InfraredInterferer;
-import de.pgalise.simulation.traffic.server.sensor.interferer.TopoRadarInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InductionLoopInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.InfraredInterferer;
+import de.pgalise.simulation.traffic.server.sensor.interferer.gps.TopoRadarInterferer;
+import de.pgalise.simulation.weather.service.WeatherController;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
+import de.pgalise.staticsensor.internal.AbstractEnergySensorFactory;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import javax.ejb.Local;
+import javax.ejb.Stateful;
 
 /**
  *
  * @author richter
  */
-public class DefaultTrafficSensorFactory extends AbstractSensorFactory {
+@Stateful
+@Local(TrafficSensorFactory.class)
+public class DefaultTrafficSensorFactory extends AbstractEnergySensorFactory
+  implements TrafficSensorFactory {
 
-	public DefaultTrafficSensorFactory() {
-		super(null);
-	}
+  public DefaultTrafficSensorFactory() {
+    super();
+  }
 
-	@Override
-	public Sensor<?> createSensor(
-		SensorHelper<?> sensorHelper,
-		Set<SensorType> allowedTypes
-	) {
-		if(sensorHelper.getSensorType().equals(SensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
-				// Can't be returned here, because of missing dependencies
-				return null;
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.INFRARED)) { // Infrared
-				InfraredInterferer infraredInterferer;
-				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
-					List<InfraredInterferer> infraredInterferers = new ArrayList<>();
-					infraredInterferer = new CompositeInfraredInterferer(infraredInterferers);
+  public DefaultTrafficSensorFactory(RandomSeedService rss,
+    IdGenerator idGenerator,
+    WeatherControllerLocal wctrl,
+    EnergyControllerLocal ectrl,
+    int updateLimit) {
+    super(rss,
+      idGenerator,
+      wctrl,
+      ectrl,
+      updateLimit);
+  }
 
-					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
-						switch (sensorInterfererType) {
-							case INFRARED_WHITE_NOISE_INTERFERER:
-								infraredInterferers.add(new InfraredWhiteNoiseInterferer(this.getRandomSeedService()));
-								break;
-							default:
-								break;
-						}
-					}
-				} else {
-					infraredInterferer = new InfraredNoInterferer();
-				}
+  @Override
+  public InductionLoopSensor createInductionLoopSensor(
+    List<InductionLoopInterferer> sensorInterfererTypes,
+    Output output) {
+    InductionLoopInterferer inductionLoopInterferer;
+    if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+      inductionLoopInterferer = new CompositeInductionLoopInterferer(
+        sensorInterfererTypes);
+    } else {
+      inductionLoopInterferer = new InductionLoopNoInterferer();
+    }
 
-				return new InfraredSensor(getSensorOutput(), null,
-						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
-						infraredInterferer);
+    BaseCoordinate position = createRandomPositionInductionLoopSensor();
+    return new InductionLoopSensor(getIdGenerator().getNextId(),
+      output,
+      null,
+      getUpdateLimit(),
+      inductionLoopInterferer
+    );
+  }
 
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.INDUCTIONLOOP)) { // Inductionloop
+  @Override
+  public TopoRadarSensor createTopoRadarSensor(
+    List<TopoRadarInterferer> sensorInterfererTypes,
+    Output output) {
+    TopoRadarInterferer toporadarInterferer;
+    if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+      toporadarInterferer = new CompositeTopoRadarInterferer(
+        sensorInterfererTypes);
+    } else {
+      toporadarInterferer = new TopoRadarNoInterferer();
+    }
 
-				InductionLoopInterferer inductionLoopInterferer;
-				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
-					List<InductionLoopInterferer> inductionLoopInterfers = new ArrayList<>();
-					inductionLoopInterferer = new CompositeInductionLoopInterferer(inductionLoopInterfers);
-					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
-						switch (sensorInterfererType) {
-							case INDUCTION_LOOP_WHITE_NOISE_INTERFERER:
-								inductionLoopInterfers.add(new InductionLoopWhiteNoiseInterferer(this.getRandomSeedService()));
-								break;
-							default:
-								break;
-						}
-					}
-				} else {
-					inductionLoopInterferer = new InductionLoopNoInterferer();
-				}
+    BaseCoordinate position = createRandomPositionTopoRadarSensor();
+    return new TopoRadarSensor(getIdGenerator().getNextId(),
+      output,
+      null,
+      getUpdateLimit(),
+      toporadarInterferer);
+  }
 
-				return new InductionLoopSensor(
-					null,
-					getSensorOutput(), 
-					sensorHelper.getPosition(), 
-					sensorHelper.getUpdateSteps(),
-					inductionLoopInterferer
-				);
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.TOPORADAR)) { // Toporadar
+  @Override
+  public InfraredSensor createInfraredSensor(
+    List<InfraredInterferer> sensorInterfererTypes,
+    Output output) {
+    InfraredInterferer infraredInterferer;
+    if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+      infraredInterferer = new CompositeInfraredInterferer(sensorInterfererTypes);
+    } else {
+      infraredInterferer = new InfraredNoInterferer();
+    }
 
-				TopoRadarInterferer toporadarInterferer;
-				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
-					List<TopoRadarInterferer> toporadarInterfers = new ArrayList<>();
-					toporadarInterferer = new CompositeTopoRadarInterferer(toporadarInterfers);
+    BaseCoordinate position = createRandomPositionInfraredSensor();
+    return new InfraredSensor(getIdGenerator().getNextId(),
+      output,
+      null,
+      position,
+      getUpdateLimit(),
+      infraredInterferer);
+  }
 
-					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
-						switch (sensorInterfererType) {
-							case TOPO_RADAR_WHITE_NOISE_INTERFERER:
-								toporadarInterfers.add(new TopoRadarWhiteNoiseInterferer(this.getRandomSeedService()));
-								break;
-							default:
-								break;
-						}
-					}
-				} else {
-					toporadarInterferer = new TopoRadarNoInterferer();
-				}
+  public final static List<GpsInterferer> DEFAULT_SENSOR_INTERFERER = new LinkedList<>();
 
-				return new TopoRadarSensor(null,getSensorOutput(), 
-						sensorHelper.getPosition(), sensorHelper.getUpdateSteps(),
-						toporadarInterferer);
+  @Override
+  public GpsSensor createGpsSensor(boolean withSensorInterferer,
+    Output output) {
+    return createGpsSensor(
+      withSensorInterferer ? DEFAULT_SENSOR_INTERFERER : new ArrayList<GpsInterferer>(
+        0),
+      output);
+  }
+  
+  @Override
+  public GpsSensor createGpsSensor(
+    List<GpsInterferer> sensorInterfererTypes,
+    Output output) {
+    GpsInterferer gpsInterferer;
+    if (sensorInterfererTypes != null && !sensorInterfererTypes.isEmpty()) {
+      gpsInterferer = new CompositeGpsInterferer(sensorInterfererTypes, getIdGenerator());
+    } else {
+      gpsInterferer = new DefaultGpsNoInterferer();
+    }
 
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_BIKE)) {
-				 throw new UnsupportedOperationException();// GPS
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_BUS)) {
-				 throw new UnsupportedOperationException();
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_CAR)) {
-				 throw new UnsupportedOperationException();
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_TRUCK)) {
-				 throw new UnsupportedOperationException();
-			 } else if(sensorHelper.getSensorType().equals(SensorTypeEnum.GPS_MOTORCYCLE)) {
+    return new GpsSensor(getIdGenerator().getNextId(),
+      output,
+      null,
+      getUpdateLimit(),
+      gpsInterferer);
+  }
 
-				GpsInterferer gpsInterferer;
-				if (sensorHelper.getSensorInterfererType() != null && !sensorHelper.getSensorInterfererType().isEmpty()) {
+  @Override
+  public Sensor<?, ?> createSensor(SensorType sensorType,
+    List<SensorInterfererType> sensorInterfererTypes,
+    Output output)
+    throws InterruptedException, ExecutionException {
+    if (sensorType.equals(TrafficSensorTypeEnum.TRAFFIC_LIGHT_INTERSECTION)) {
+      throw new UnsupportedOperationException(
+        "there's no traffic light intersection sensor yet");
+    } else if (sensorType.equals(TrafficSensorTypeEnum.INFRARED)) { // Infrared
 
-					List<GpsInterferer> gpsInterferes = new ArrayList<>();
-					gpsInterferer = new CompositeGpsInterferer(gpsInterferes);
+    } else if (sensorType.equals(TrafficSensorTypeEnum.INDUCTIONLOOP)) { // Inductionloop
 
-					for (SensorInterfererType sensorInterfererType : sensorHelper.getSensorInterfererType()) {
-						switch (sensorInterfererType) {
-							case GPS_ATMOSPHERE_INTERFERER:
-								gpsInterferes.add(new GpsAtmosphereInterferer(this.getRandomSeedService(), this.getWeatherController()));
-								break;
-							case GPS_CLOCK_INTERFERER:
-								gpsInterferes.add(new GpsClockInterferer(this.getRandomSeedService()));
-								break;
-							case GPS_RECEIVER_INTERFERER:
-								gpsInterferes.add(new GpsReceiverInterferer(this.getRandomSeedService()));
-								break;
-							case GPS_WHITE_NOISE_INTERFERER:
-								gpsInterferes.add(new GpsWhiteNoiseInterferer(this.getRandomSeedService()));
-								break;
-							default:
-								break;
-						}
-					}
+    } else if (sensorType.equals(TrafficSensorTypeEnum.TOPORADAR)) { // Toporadar
 
-				} else {
-					gpsInterferer = new GpsNoInterferer();
-				}
+    } else if (sensorType.
+      equals(TrafficSensorTypeEnum.GPS)) {
 
-				return new GpsSensor(getSensorOutput(), null,
-						sensorHelper.getUpdateSteps(), sensorHelper.getSensorType(), new Coordinate(0, 0), gpsInterferer);
-		}
-		throw new IllegalArgumentException();
-	}
+    }
+    throw new IllegalArgumentException();
+  }
+
+  @Override
+  public InfraredSensor createInfraredSensor(BaseCoordinate position,
+    List<InfraredInterferer> sensorInterfererTypes,
+    Output output) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public InductionLoopSensor createInductionLoopSensor(BaseCoordinate position,
+    List<InductionLoopInterferer> sensorInterfererTypes,
+    Output output) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public TopoRadarSensor createTopoRadarSensor(BaseCoordinate position,
+    List<TopoRadarInterferer> sensorInterfererTypes,
+    Output output) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

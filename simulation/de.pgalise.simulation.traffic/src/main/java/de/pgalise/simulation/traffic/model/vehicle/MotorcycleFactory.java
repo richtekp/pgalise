@@ -13,40 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.model.vehicle;
-
-import java.awt.Color;
-
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 
 /**
  * Interface to provide methods to create different types of {@link Motorcycle}.
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
-public interface MotorcycleFactory {
+public interface MotorcycleFactory extends VehicleFactory<Motorcycle> {
 
-	/**
-	 * Method to create a {@link Motorcycle} with the given typeId.
-	 * 
-	 * @param id
-	 *            ID of the {@link Motorcycle}
-	 * @param typeId
-	 *            ID of the {@link Motorcycle} type
-	 * @param color
-	 *            Color of the {@link Motorcycle}
-	 * @return created {@link Motorcycle}
-	 */
-	public Vehicle<MotorcycleData> createMotorcycle( Color color, SensorHelper gpsSensor);
-
-	/**
-	 * Method to create a random {@link Motorcycle}.
-	 * 
-	 * @param id
-	 *            ID of the {@link Motorcycle}
-	 * @return created {@link Motorcycle}
-	 */
-	public Vehicle<MotorcycleData>  createRandomMotorcycle( SensorHelper gpsSensor);
 }

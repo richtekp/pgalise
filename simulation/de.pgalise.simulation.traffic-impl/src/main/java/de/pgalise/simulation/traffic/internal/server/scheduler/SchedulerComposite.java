@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.scheduler;
 
 import java.util.ArrayList;
@@ -23,31 +22,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.pgalise.simulation.shared.traffic.VehicleTypeEnum;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleHandler;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleItem;
 import de.pgalise.simulation.traffic.server.scheduler.ScheduleModus;
 import de.pgalise.simulation.traffic.server.scheduler.Scheduler;
 
 /**
- * A TrafficServer may use a Scheduler for each type of vehicle. 
- * The SchedulerComposite can be used to manage these Scheduler easily.
- * 
- * @param <D> 
- * @param <N> 
- * @param <E> 
- * @param <V> 
- * @param <I> 
+ * A TrafficServer may use a Scheduler for each type of vehicle. The
+ * SchedulerComposite can be used to manage these Scheduler easily.
+ *
+ * @param <D>
  * @see Scheduler
  * @author mustafa
  *
  */
 public class SchedulerComposite<
-	D extends VehicleData
-> extends BaseScheduler {
+	D extends VehicleData> extends BaseScheduler {
+
+	private static final long serialVersionUID = 1L;
 	private EnumMap<VehicleTypeEnum, Scheduler> schedulerMap;
 	private List<Scheduler> list;
 
@@ -56,9 +50,11 @@ public class SchedulerComposite<
 		list = new LinkedList<>();
 	}
 
-	public void addScheduler(EnumSet<VehicleTypeEnum> criteria, Scheduler scheduler) {
+	public void addScheduler(EnumSet<VehicleTypeEnum> criteria,
+		Scheduler scheduler) {
 		for (VehicleTypeEnum e : criteria) {
-			schedulerMap.put(e, scheduler);
+			schedulerMap.put(e,
+				scheduler);
 		}
 		list.add(scheduler);
 	}

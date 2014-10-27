@@ -33,15 +33,15 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import de.pgalise.simulation.sensorFramework.Sensor;
 
 import de.pgalise.simulation.service.GsonService;
 import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
 import de.pgalise.simulation.shared.event.AbstractEvent;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
+import de.pgalise.simulation.shared.controller.StartParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class DefaultGsonService extends AbstractController implements GsonServic
 	@Override
 	public Gson getGson() {
 		return new GsonBuilder().
-				registerTypeAdapter(SensorHelper.class, new SensorHelperTypeDeserializer()).
+				registerTypeAdapter(Sensor.class, new SensorTypeDeserializer()).
 				registerTypeAdapter(AbstractEvent.class, new SimulationEventAdapter()).
 				create();
 	}
@@ -127,26 +127,26 @@ public class DefaultGsonService extends AbstractController implements GsonServic
 	 * Handles the deserialization of sensor helpers.
 	 * @author Timo
 	 */
-	private static class SensorHelperTypeDeserializer implements JsonDeserializer<SensorHelper>, JsonSerializer<SensorHelper> {
+	private static class SensorTypeDeserializer implements JsonDeserializer<Sensor>, JsonSerializer<Sensor> {
 		private Gson gson;
 
 		/**
 		 * Default
 		 */
-		private SensorHelperTypeDeserializer() {
+		private SensorTypeDeserializer() {
 			this.gson = new Gson();
 		}
 
 		@Override
-		public SensorHelper deserialize(JsonElement json, Type type,
+		public Sensor deserialize(JsonElement json, Type type,
 				JsonDeserializationContext context) throws JsonParseException {
 
-			SensorHelper sensorHelper = this.gson.fromJson(json, SensorHelper.class);
-			return (SensorHelper) this.gson.fromJson(json, sensorHelper.getSensorType().getSensorTypeClass());
+			Sensor sensorHelper = this.gson.fromJson(json, Sensor.class);
+			return (Sensor) this.gson.fromJson(json, sensorHelper.getSensorType().getSensorTypeClass());
 		}
 
 		@Override
-		public JsonElement serialize(SensorHelper src, Type typeOfSrc,
+		public JsonElement serialize(Sensor src, Type typeOfSrc,
 				JsonSerializationContext context) {
 			return this.gson.toJsonTree(src, src.getSensorType().getSensorTypeClass());
 		}

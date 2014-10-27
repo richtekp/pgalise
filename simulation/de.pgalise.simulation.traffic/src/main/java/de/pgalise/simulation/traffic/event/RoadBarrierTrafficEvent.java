@@ -13,103 +13,105 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.event;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The road barrier traffic event will block a route during the given time window.
- * 
- * @param <N> 
- * @param <E> 
+ * The road barrier traffic event will block a route during the given time
+ * window.
+ *
+ * @param <N>
+ * @param <E>
  * @author Timo
  */
+@XmlRootElement
 public class RoadBarrierTrafficEvent< D extends VehicleData> extends AbstractTrafficEvent<D, VehicleEvent> {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -6150317787250714891L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -6150317787250714891L;
 
-	/**
-	 * Start time of the event
-	 */
-	private long roadBarrierStartTimestamp;
+  /**
+   * Start time of the event
+   */
+  private long roadBarrierStartTimestamp;
 
-	/**
-	 * End time of the event
-	 */
-	private long roadBarrierEndTimestamp;
+  /**
+   * End time of the event
+   */
+  private long roadBarrierEndTimestamp;
 
-	/**
-	 * Position to block
-	 */
-	private Coordinate roadBarrierPoint;
+  /**
+   * Position to block
+   */
+  private BaseCoordinate roadBarrierPoint;
 
-	/**
-	 * node id in graph
-	 */
-	private TrafficNode nodeID;
+  /**
+   * node id in graph
+   */
+  private TrafficNode nodeID;
 
-	public RoadBarrierTrafficEvent(TrafficServerLocal<VehicleEvent> responsibleServer,
-		long simulationTimestamp,
-		long elapsedTime,
-		long roadBarrierStartTimestamp,
-		long roadBarrierEndTimestamp,
-		Coordinate roadBarrierPoint,
-		TrafficNode nodeID
-		) {
-		super(responsibleServer, simulationTimestamp, elapsedTime);
-		this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
-		this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
-		this.roadBarrierPoint = roadBarrierPoint;
-		this.nodeID = nodeID;
-	}
+  public RoadBarrierTrafficEvent(
+    TrafficControllerLocal<VehicleEvent> responsibleServer,
+    long simulationTimestamp,
+    long elapsedTime,
+    long roadBarrierStartTimestamp,
+    long roadBarrierEndTimestamp,
+    BaseCoordinate roadBarrierPoint,
+    TrafficNode nodeID
+  ) {
+    super(responsibleServer,
+      simulationTimestamp,
+      elapsedTime);
+    this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
+    this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
+    this.roadBarrierPoint = roadBarrierPoint;
+    this.nodeID = nodeID;
+  }
 
-	public long getRoadBarrierStartTimestamp() {
-		return roadBarrierStartTimestamp;
-	}
+  public long getRoadBarrierStartTimestamp() {
+    return roadBarrierStartTimestamp;
+  }
 
-	public void setRoadBarrierStartTimestamp(long roadBarrierStartTimestamp) {
-		this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
-	}
+  public void setRoadBarrierStartTimestamp(long roadBarrierStartTimestamp) {
+    this.roadBarrierStartTimestamp = roadBarrierStartTimestamp;
+  }
 
-	public long getRoadBarrierEndTimestamp() {
-		return roadBarrierEndTimestamp;
-	}
+  public long getRoadBarrierEndTimestamp() {
+    return roadBarrierEndTimestamp;
+  }
 
-	public void setRoadBarrierEndTimestamp(long roadBarrierEndTimestamp) {
-		this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
-	}
+  public void setRoadBarrierEndTimestamp(long roadBarrierEndTimestamp) {
+    this.roadBarrierEndTimestamp = roadBarrierEndTimestamp;
+  }
 
-	public Coordinate getRoadBarrierPoint() {
-		return roadBarrierPoint;
-	}
+  public BaseCoordinate getRoadBarrierPoint() {
+    return roadBarrierPoint;
+  }
 
-	public void setRoadBarrierPoint(Coordinate roadBarrierPoint) {
-		this.roadBarrierPoint = roadBarrierPoint;
-	}
+  public void setRoadBarrierPoint(BaseCoordinate roadBarrierPoint) {
+    this.roadBarrierPoint = roadBarrierPoint;
+  }
 
-	public TrafficNode getNodeID() {
-		return nodeID;
-	}
+  public TrafficNode getNodeID() {
+    return nodeID;
+  }
 
-	public void setNodeID(TrafficNode nodeID) {
-		this.nodeID = nodeID;
-	}
+  public void setNodeID(TrafficNode nodeID) {
+    this.nodeID = nodeID;
+  }
 
-	@Override
-	public EventType getType() {
-		return TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT;
-	}
+  @Override
+  public EventType getType() {
+    return TrafficEventTypeEnum.ROAD_BARRIER_TRAFFIC_EVENT;
+  }
 
 }

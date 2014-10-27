@@ -16,7 +16,7 @@
 // 
 //package de.pgalise.simulation.traffic.governor;
 //
-//import com.vividsolutions.jts.geom.Coordinate;
+//import de.pgalise.simulation.shared.city.Coordinate;
 //import com.vividsolutions.jts.geom.Polygon;
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertTrue;
@@ -82,10 +82,10 @@
 //		Coordinate referencePoint = new Coordinate(20, 20);
 //		Polygon referenceArea = GeoToolsBootstrapping.getGEOMETRY_FACTORY().createPolygon(
 //			new Coordinate[] {
-//				new Coordinate(referencePoint.x-1, referencePoint.y-1), 
-//				new Coordinate(referencePoint.x-1, referencePoint.y), 
-//				new Coordinate(referencePoint.x, referencePoint.y), 
-//				new Coordinate(referencePoint.x, referencePoint.y-1)
+//				new Coordinate(referencePoint.getX()-1, referencePoint.getY()-1), 
+//				new Coordinate(referencePoint.getX()-1, referencePoint.getY()), 
+//				new Coordinate(referencePoint.getX(), referencePoint.getY()), 
+//				new Coordinate(referencePoint.getX(), referencePoint.getY()-1)
 //			}
 //		);
 //		City city = new City("test_city", 200000, 100, true, true, referenceArea);

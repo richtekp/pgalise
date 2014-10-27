@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	<p:dialog id="trafficLightDialog">
+		<h:form>
+			<h:panelGrid>
+				Position:<p:gmap center="36.890257,30.707417" zoom="13"
+					type="HYBRID" model="#{trafficLightDialogCtrl.mapModel}"
+					style="width:600px;height:400px">
+					<p:ajax event="markerDrag"
+						listener="#{trafficLightDialogCtrl.onMarkerDrag}" />
+					<p:ajax event="stateChange"
+						listener="#{trafficLightDialogCtrl.onStateChange}"
+						update="messages" />
+				</p:gmap>
+				Update steps:<p:spinner
+					value="#{trafficLightDialogCtrl.chosenUpdateStep}">
+					<f:ajax />
+				</p:spinner>
+				<p:commandButton action="#{trafficLightDialogCtrl.saveSensor}">
+					<f:ajax />
+				</p:commandButton>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</ui:composition>

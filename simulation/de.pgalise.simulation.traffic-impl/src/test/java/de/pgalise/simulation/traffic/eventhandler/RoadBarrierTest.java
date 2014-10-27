@@ -60,7 +60,7 @@
 //import de.pgalise.simulation.traffic.event.RoadBarrierTrafficEvent;
 //import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
 //import de.pgalise.simulation.shared.exception.InitializationException;
-//import com.vividsolutions.jts.geom.Coordinate;
+//import de.pgalise.simulation.shared.city.Coordinate;
 //import de.pgalise.simulation.sensorFramework.SensorHelper;
 //import de.pgalise.simulation.shared.sensor.SensorInterfererType;
 //import de.pgalise.simulation.sensorFramework.SensorTypeEnum;

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
 import java.util.ArrayList;
@@ -28,71 +27,96 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 
 /**
  * Test of ReferenceCityDecorator
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 10, 2012)
  */
 public class ReferenceCityChart extends AbstractChartTest {
 
-	/**
-	 * For tests
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception {
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2012, 8, 20, 0, 0, 0);
-		long startTimestamp = cal.getTimeInMillis();
+  /**
+   * For tests
+   *
+   * @param args
+   */
+  public static void main(String[] args) throws Exception {
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2012,
+      8,
+      20,
+      0,
+      0,
+      0);
+    long startTimestamp = cal.getTimeInMillis();
 
-		// End
-		cal.set(2012, 8, 21, 0, 0, 0);
-		long endTimestamp = cal.getTimeInMillis();
-		WeatherParameterEnum parameter = WeatherParameterEnum.TEMPERATURE;
-		// WeatherParameterEnum parameter = WeatherParameterEnum.PERCEIVED_TEMPERATURE;
-		// WeatherParameterEnum parameter = WeatherParameterEnum.RELATIV_HUMIDITY;
-		// WeatherParameterEnum parameter = WeatherParameterEnum.WIND_VELOCITY;
-		String title = "Test of ReferenceCityDecorator";
+    // End
+    cal.set(2012,
+      8,
+      21,
+      0,
+      0,
+      0);
+    long endTimestamp = cal.getTimeInMillis();
+    WeatherParameterEnum parameter = WeatherParameterEnum.TEMPERATURE;
+    // WeatherParameterEnum parameter = WeatherParameterEnum.PERCEIVED_TEMPERATURE;
+    // WeatherParameterEnum parameter = WeatherParameterEnum.RELATIV_HUMIDITY;
+    // WeatherParameterEnum parameter = WeatherParameterEnum.WIND_VELOCITY;
+    String title = "Test of ReferenceCityDecorator";
 
-		// Test class
-		AbstractChartTest chart = new ReferenceCityChart(startTimestamp, endTimestamp, parameter);
+    // Test class
+    AbstractChartTest chart = new ReferenceCityChart(startTimestamp,
+      endTimestamp,
+      parameter);
 
-		// Add timeseries to list
-		final List<TimeSeries> series = new ArrayList<>();
-		series.add(chart.getReferenceTimeSerie());
-		series.add(chart.getDecoratorTimeSerie());
+    // Add timeseries to list
+    final List<TimeSeries> series = new ArrayList<>();
+    series.add(chart.getReferenceTimeSerie());
+    series.add(chart.getDecoratorTimeSerie());
 
-		// Show chart
-		TimeSeriesChart demo = new TimeSeriesChart(title, startTimestamp, parameter, series);
-		demo.showChart();
-	}
+    // Show chart
+    TimeSeriesChart demo = new TimeSeriesChart(title,
+      startTimestamp,
+      parameter,
+      series);
+    demo.showChart();
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param startdate
-	 *            Date as Timestamp
-	 * @param enddate
-	 *            Date as Timestamp
-	 * @param parameter
-	 *            WeatherParameterEnum
-	 */
-	public ReferenceCityChart(long startdate, long enddate, WeatherParameterEnum parameter) throws Exception {
-		super(startdate, enddate, parameter);
-	}
+  /**
+   * Constructor
+   *
+   * @param startdate Date as Timestamp
+   * @param enddate Date as Timestamp
+   * @param parameter WeatherParameterEnum
+   */
+  public ReferenceCityChart(long startdate,
+    long enddate,
+    WeatherParameterEnum parameter) throws Exception {
+    super(startdate,
+      enddate,
+      parameter);
+  }
 
-	@Override
-	protected TimeSeries getDecoratorTimeSerie() throws Exception {
-		// Deploy strategy
-		this.getService().deployStrategy(new ReferenceCityModifier(this.getRandom().getSeed(ReferenceCityChart.class.toString()), this.getProps(), this.getLoader()));
+  @Override
+  protected TimeSeries getDecoratorTimeSerie() throws Exception {
+    // Deploy strategy
+    this.getService().deployStrategy(new ReferenceCityModifier(getCity(),
+      this.getRandom().
+      getSeed(ReferenceCityChart.class.toString()),
+      this.getProps(),
+      this.getLoader()),
+      getCity());
 
-		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.getService().getReferenceValues(), this.getParameter());
-	}
+    // Create timeserie for JFreeChart
+    return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE,
+      this.getService().getReferenceValues(),
+      this.getParameter());
+  }
 
-	@Override
-	protected TimeSeries getReferenceTimeSerie() {
-		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.getService().getReferenceValues(), this.getParameter());
-	}
+  @Override
+  protected TimeSeries getReferenceTimeSerie() {
+    // Create timeserie for JFreeChart
+    return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE,
+      this.getService().getReferenceValues(),
+      this.getParameter());
+  }
 }

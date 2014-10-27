@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+	<title>Simulation Control Center</title>
+	<meta name="author" content="Dennis Höting"></meta>
+</h:head>
+<h:body>
+	<ui:include src="/partials/dialogs/initDialog.xhtml" />
+	<ui:composition template="/templates/template.xhtml">
+		<ui:define name="header_extension">
+			<ui:include src="/WEB-INF/templates/partials/header_extension.xhtml" />
+		</ui:define>
+		<ui:define name="menubar_west">
+			<ui:include src="/WEB-INF/templates/partials/menubar_west.xhtml" />
+		</ui:define>
+		<ui:define name="simulation_status">
+			<ui:include src="/WEB-INF/templates/partials/simulation_status.xhtml" />
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

@@ -28,6 +28,7 @@ import de.pgalise.simulation.shared.exception.ExceptionMessages;
  * @author Marcus
  */
 public class CompositeOutput implements Output {
+	private static final long serialVersionUID = 1L;
 	/**
 	 * {@link Set} with {@link Output}s
 	 */

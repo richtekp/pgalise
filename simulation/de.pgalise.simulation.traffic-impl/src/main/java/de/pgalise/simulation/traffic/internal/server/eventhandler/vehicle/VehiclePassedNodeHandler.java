@@ -13,64 +13,68 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import java.util.Random;
 
-import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
+import de.pgalise.simulation.shared.entity.NavigationNode;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.internal.server.sensor.InfraredSensor;
-import de.pgalise.simulation.traffic.model.vehicle.BusData;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.BusData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.sensor.AbstractStaticTrafficSensor;
 import de.pgalise.simulation.traffic.server.sensor.StaticTrafficSensor;
 
 /**
- * If a vehicle passes a node a VEHICLE_PASSED_NODE event is thrown. This handler handles 
- * the event and notifies all sensors which are registered on this node. Furthermore (if 
- * the vehicle is a bus) the value of the infrared sensor changes if the node is a busstop.
- * 
+ * If a vehicle passes a node a VEHICLE_PASSED_NODE event is thrown. This
+ * handler handles the event and notifies all sensors which are registered on
+ * this node. Furthermore (if the vehicle is a bus) the value of the infrared
+ * sensor changes if the node is a busstop.
+ *
  * @author Marcus
  * @author Andreas Rehfeldt
  * @author Lena
  */
-public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleData,VehicleEvent> {
-	
-	@Override
-	public EventType getTargetEventType() {
-		return VehicleEventTypeEnum.VEHICLE_PASSED_NODE;
-	}
+public class VehiclePassedNodeHandler extends AbstractVehicleEventHandler<VehicleData, VehicleEvent> {
 
-	@Override
-	public void handleEvent(VehicleEvent event) {
-		for (final StaticTrafficSensor sensor : event.getTrafficGraphExtensions().getSensors(event.getVehicle().getCurrentNode())) {
-			if (sensor instanceof AbstractStaticTrafficSensor) {
-				((AbstractStaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.getVehicle());
-			}
-		}
+  public VehiclePassedNodeHandler() {
+  }
 
-		if (event.getVehicle().getData() instanceof BusData) {
-			NavigationNode n = ((BusData) event.getVehicle().getData()).getBusStops().get(
-					event.getVehicle().getCurrentNode());
-			// only at busstops the amount of passengers can change
-			if (n != null) {
-				int lastBusStop = ((BusData) event.getVehicle().getData()).getBusStopOrder().indexOf(n.getId());
-				((BusData) event.getVehicle().getData()).setLastBusStop(lastBusStop);
-				Random random = new Random(event.getServiceDictionary().getRandomSeedService()
-						.getSeed(DefaultTrafficServer.class.getName()));
-				int max = ((BusData) event.getVehicle().getData()).getMaxPassengerCount();
-				BusData temp = (BusData) event.getVehicle().getData();
-				temp.setCurrentPassengerCount(random.nextInt(max));
+  @Override
+  public EventType getTargetEventType() {
+    return VehicleEventTypeEnum.VEHICLE_PASSED_NODE;
+  }
 
-				if (temp.getInfraredSensor() != null) {
-					((InfraredSensor) temp.getInfraredSensor()).sendDataOnNextUpdate();
-				}
-			}
-		}
-	}
+  @Override
+  public void handleEvent(VehicleEvent event) {
+    for (final StaticTrafficSensor sensor : event.getTrafficGraphExtensions().
+      getSensors(event.getVehicle().getCurrentNode())) {
+      if (sensor instanceof AbstractStaticTrafficSensor) {
+        ((AbstractStaticTrafficSensor) sensor).vehicleOnNodeRegistered(event.
+          getVehicle());
+      }
+    }
+
+    if (event.getVehicle().getData() instanceof BusData) {
+      NavigationNode n = event.getVehicle().getCurrentNode();
+      // only at busstops the amount of passengers can change
+      if (n != null) {
+        int lastBusStop = ((BusData) event.getVehicle().getData()).
+          getBusStopOrder().indexOf(n);
+        ((BusData) event.getVehicle().getData()).setLastBusStop(lastBusStop);
+        Random random = new Random(getRandomSeedService()
+          .getSeed(VehiclePassedNodeHandler.class.getName()));
+        int max = ((BusData) event.getVehicle().getData()).
+          getMaxPassengerCount();
+        BusData temp = (BusData) event.getVehicle().getData();
+        temp.setCurrentPassengerCount(random.nextInt(max));
+
+        if (temp.getInfraredSensor() != null) {
+          ((InfraredSensor) temp.getInfraredSensor()).sendDataOnNextUpdate();
+        }
+      }
+    }
+  }
 }

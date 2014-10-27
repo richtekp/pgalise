@@ -16,12 +16,7 @@
  
 package de.pgalise.simulation.sensorFramework;
 
-import de.pgalise.simulation.sensorFramework.SensorHelperSmartMeter;
-import de.pgalise.simulation.sensorFramework.SensorHelperTrafficLightIntersection;
-import de.pgalise.simulation.sensorFramework.SensorHelperWeather;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -43,125 +38,7 @@ import java.util.Arrays;
  */
 public enum SensorTypeEnum implements SensorType {
 
-	/**
-	 * {@link SensorType} for Anemometers
-	 */
-	ANEMOMETER(0, SensorHelperWeather.class, "m/s", SensorInterfererType.ANEMOMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for Barometers
-	 */
-	BAROMETER(1, SensorHelperWeather.class, "hPa", SensorInterfererType.BAROMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for GPS bike sensors
-	 */
-	GPS_BIKE(2, SensorHelper.class, "lat,lng", SensorInterfererType.GPS_ATMOSPHERE_INTERFERER, 
-			SensorInterfererType.GPS_CLOCK_INTERFERER, 
-			SensorInterfererType.GPS_RECEIVER_INTERFERER, 
-			SensorInterfererType.GPS_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for GPS bus sensors
-	 */
-	GPS_BUS(3, SensorHelper.class, "lat,lng", SensorInterfererType.GPS_ATMOSPHERE_INTERFERER, 
-			SensorInterfererType.GPS_CLOCK_INTERFERER, 
-			SensorInterfererType.GPS_RECEIVER_INTERFERER, 
-			SensorInterfererType.GPS_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for GPS car sensors
-	 */
-	GPS_CAR(4, SensorHelper.class, "lat,lng", SensorInterfererType.GPS_ATMOSPHERE_INTERFERER, 
-			SensorInterfererType.GPS_CLOCK_INTERFERER, 
-			SensorInterfererType.GPS_RECEIVER_INTERFERER, 
-			SensorInterfererType.GPS_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for hygrometers
-	 */
-	HYGROMETER(5, SensorHelperWeather.class, "%", SensorInterfererType.HYGROMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for induction loops
-	 */
-	INDUCTIONLOOP(6, SensorHelper.class, "amount", SensorInterfererType.INDUCTION_LOOP_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for infrared sensors
-	 */
-	INFRARED(7, SensorHelper.class, "amount", SensorInterfererType.INFRARED_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for luxmeters
-	 */
-	LUXMETER(8, SensorHelperWeather.class, "Lux", SensorInterfererType.LUXMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for pyranometers
-	 */
-	PYRANOMETER(10, SensorHelperWeather.class, "W/qm", SensorInterfererType.PYRANOMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for rain sensors
-	 */
-	RAIN(11, SensorHelperWeather.class, "mm", SensorInterfererType.RAINSENSOR_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for smartmeters
-	 */
-	SMARTMETER(12, SensorHelperSmartMeter.class, "kWh", SensorInterfererType.SMART_METER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for thermometers
-	 */
-	THERMOMETER(13, SensorHelperWeather.class, "°C", SensorInterfererType.THERMOMETER_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for traffic lights
-	 */
-	TRAFFICLIGHT_SENSOR(14, SensorHelper.class, ""),
-
-	/**
-	 * {@link SensorType} for wind flags
-	 */
-	WINDFLAG(15, SensorHelperWeather.class, "°", SensorInterfererType.WIND_FLAG_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for weather stations
-	 */
-	WEATHER_STATION(17, SensorHelper.class, ""),
-
-	/**
-	 * {@link SensorType} for topo radars
-	 */
-	TOPORADAR(18, SensorHelper.class, "amount"),
-
-	/**
-	 * {@link SensorType} for GPS truck sensors
-	 */
-	GPS_TRUCK(19, SensorHelper.class, "lat,lng", SensorInterfererType.GPS_ATMOSPHERE_INTERFERER, 
-			SensorInterfererType.GPS_CLOCK_INTERFERER, 
-			SensorInterfererType.GPS_RECEIVER_INTERFERER, 
-			SensorInterfererType.GPS_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for GPS motorcycle sensors
-	 */
-	GPS_MOTORCYCLE(20, SensorHelper.class, "lat,lng", SensorInterfererType.GPS_ATMOSPHERE_INTERFERER, 
-			SensorInterfererType.GPS_CLOCK_INTERFERER, 
-			SensorInterfererType.GPS_RECEIVER_INTERFERER, 
-			SensorInterfererType.GPS_WHITE_NOISE_INTERFERER),
-
-	/**
-	 * {@link SensorType} for traffic light intersections
-	 */
-	TRAFFIC_LIGHT_INTERSECTION(21, SensorHelperTrafficLightIntersection.class, "");
-
-	/**
-	 * GPS types
-	 */
-	public static final EnumSet<SensorTypeEnum> GPS = EnumSet.of(GPS_CAR, GPS_MOTORCYCLE, GPS_TRUCK, GPS_BIKE, GPS_BUS);
+;
 
 	/**
 	 * maps sensor type ids integers to {@link SensorType}
@@ -177,7 +54,7 @@ public enum SensorTypeEnum implements SensorType {
 		if (SensorTypeEnum.SENSOR_TYPE_IDS == null) {
 			SensorTypeEnum.SENSOR_TYPE_IDS = new HashMap<>();
 		}
-		return SensorTypeEnum.SENSOR_TYPE_IDS;
+		return SENSOR_TYPE_IDS;
 	}
 
 	/**
@@ -186,7 +63,7 @@ public enum SensorTypeEnum implements SensorType {
 	 * @return an unmodifiable {@link Map} of the sensorId/SensorType mapping
 	 */
 	public static Map<Integer, SensorType> getSensorTypeIdsAsUnmodifiable() {
-		return Collections.unmodifiableMap(SensorTypeEnum.getSensorTypeIds());
+		return SensorTypeEnum.getSensorTypeIds();
 	}
 
 	/**

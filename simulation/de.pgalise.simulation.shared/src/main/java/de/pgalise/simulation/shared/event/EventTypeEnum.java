@@ -38,17 +38,7 @@ public enum EventTypeEnum implements EventType {
 	/**
 	 * Changes the current weahter conditions
 	 */
-	CHANGE_WEATHER_EVENT(5, ChangeWeatherEvent.class),
-	/**
-	 * Prepares a new day
-	 */
-	@Deprecated
-	NEW_DAY_EVENT(6, NewDayEvent.class),
-
-	/**
-	 * Influences the energy consumption
-	 */
-	PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT(12, ChangeEnergyConsumptionEvent.class);
+	CHANGE_WEATHER_EVENT(5, ChangeWeatherEvent.class);
 
 	/**
 	 * ID of the event

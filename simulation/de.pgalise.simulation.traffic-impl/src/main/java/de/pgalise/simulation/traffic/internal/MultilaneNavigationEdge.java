@@ -1,6 +1,6 @@
 //package de.pgalise.simulation.traffic.internal;
 //
-//import com.vividsolutions.jts.geom.Coordinate;
+//import de.pgalise.simulation.shared.city.Coordinate;
 //import de.pgalise.simulation.traffic.NavigationEdge;
 //import de.pgalise.simulation.traffic.model.vehicle.BaseVehicle;
 //import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
@@ -52,7 +52,7 @@
 ////		Vector2D difference = new Vector2D(direction);
 ////		difference = difference.normalize();
 ////		difference = difference.multiply(VectorUtils.scaleFactorForLength(difference, distance));
-////		Vector2D currentPositionVector = new Vector2D(currentPosition.x, currentPosition.y);
+////		Vector2D currentPositionVector = new Vector2D(currentPosition.getX(), currentPosition.getY());
 ////		currentPositionVector.add(difference);
 ////		return currentPositionVector.toCoordinate();
 ////	}
@@ -94,8 +94,8 @@
 //	private double calculateDistanceInOrientation(Coordinate backwardsVehicle, Coordinate advancedVehicle) {
 //		throw new UnsupportedOperationException("");
 ////		return this.getEdgeLine().distance(backwardsVehicle, advancedVehicle);
-////		Vector2D position0Vector = new Vector2D(position0.x, position0.y);
-////		Vector2D position1Vector = new Vector2D(position1.x, position1.y);
+////		Vector2D position0Vector = new Vector2D(position0.getX(), position0.getY());
+////		Vector2D position1Vector = new Vector2D(position1.getX(), position1.getY());
 ////		position1Vector = position1Vector.subtract(position0Vector); //this.sub(t1) means this = this - t1
 ////		if(azimuth.angle(position1Vector) >= Math.PI/2) {
 ////			return -1;
@@ -193,12 +193,12 @@
 //	@Override
 //	public Map<BaseVehicle<D>, List<NavigationEdge>> updateVehicles(long timestamp) {
 ////		Vector2D targetSourceOrientationVector = new Vector2D(
-////			getTarget().getGeoLocation().x, 
+////			getTarget().getGeoLocation().getX(), 
 ////			getTarget().getGeoLocation().y
 ////		);
 ////		targetSourceOrientationVector = targetSourceOrientationVector.subtract(
 ////			new Vector2D(
-////				getSource().getGeoLocation().x, 
+////				getSource().getGeoLocation().getX(), 
 ////				getSource().getGeoLocation().y
 ////			)
 ////		);

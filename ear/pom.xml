@@ -1,192 +1,148 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>de.pgalise</groupId>
-		<artifactId>parent-pom</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
+  <parent>
+    <groupId>de.pgalise</groupId>
+    <artifactId>parent-pom</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
 
-	<groupId>de.pgalise</groupId>
-	<artifactId>simulation-ear</artifactId>
-	<version>${applicationVersion}</version>
-	<packaging>ear</packaging>
+  <groupId>de.pgalise</groupId>
+  <artifactId>simulation-ear</artifactId>
+  <version>2.0-SNAPSHOT</version>
+  <packaging>ear</packaging>
 
-	<name>PG Alise Component</name>
+  <name>PG Alise Component</name>
 
-	<dependencies>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>simulationController-impl</artifactId>
-			<type>ejb</type>
-			<!--<scope>provided</scope>-->
-		</dependency>
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>simulationController</artifactId>
-			<type>jar</type>
-		</dependency>-->
+  <dependencies>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>simulationController-impl</artifactId>
+      <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>weather-impl</artifactId>
+      <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>energy-impl</artifactId>
+      <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>traffic-impl</artifactId>
+      <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>shared-impl</artifactId>
+      <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>controlCenter-ejb</artifactId>
+      <type>ejb</type>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>operationCenter-ejb</artifactId>
+      <type>ejb</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>operationCenter</artifactId>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>controlCenter</artifactId>
+      <type>war</type>
+    </dependency>
+    <!--		<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+    </dependency>
+    <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+    </dependency>		-->
+  </dependencies>
 
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weather-impl</artifactId>
-			<type>ejb</type>
-			<!--<scope>provided</scope>-->
-		</dependency>
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>weather</artifactId>
-			<type>jar</type>
-		</dependency>-->
-
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>energy-impl</artifactId>
-			<type>ejb</type>
-			<!--<scope>provided</scope>-->
-		</dependency>
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>energy</artifactId>
-			<type>jar</type>
-		</dependency>-->
-		
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>staticSensors</artifactId>
-			<type>jar</type>
-		</dependency>-->
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>staticSensors-impl</artifactId>
-			<type>ejb</type>
-			<!--<scope>provided</scope>-->
-		</dependency>
-		
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>traffic</artifactId>
-			<type>jar</type>
-		</dependency>-->
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>traffic-impl</artifactId>
-			<type>ejb</type>
-			<!--<scope>provided</scope>-->
-		</dependency>
-				
-<!--		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared</artifactId>
-		</dependency>-->
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared-impl</artifactId>
-			<type>ejb</type>
-			<!--<scope>provided</scope>-->
-		</dependency>
-		
-		<dependency>
-		    <groupId>de.pgalise.simulation</groupId>
-		    <artifactId>operationCenter</artifactId>
-		    <version>${applicationVersion}</version>
-		    <type>war</type>
-		</dependency>
-		
-		<dependency>
-		    <groupId>de.pgalise.simulation</groupId>
-		    <artifactId>controlCenter</artifactId>
-		    <version>${applicationVersion}</version>
-		    <type>war</type>
-		</dependency>
-	</dependencies>
-
-	<build>
-		<finalName>simulation</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-ear-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<displayName>simulation</displayName>
-					<version>6</version>
-					<defaultLibBundleDir>lib</defaultLibBundleDir>
-					<!--<skinnyWars>true</skinnyWars>-->
-					<!-- <modules> <webModule> <groupId>de.pgalise.ejb</groupId> <artifactId>example-web</artifactId> 
-						<contextRoot>/example</contextRoot> </webModule> </modules> -->
-					<modules> 
-						<webModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>operationCenter</artifactId> 
-							<contextRoot>/operationCenter</contextRoot>
-							<moduleId>operation-center</moduleId>
-						</webModule>
-						<webModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>controlCenter</artifactId> 
-							<contextRoot>/controlCenter</contextRoot>
-							<moduleId>control-center</moduleId>
-						</webModule>
-						<ejbModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>energy-impl</artifactId>
-							<moduleId>energy-impl</moduleId>
+  <build>
+    <finalName>simulation</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ear-plugin</artifactId>
+        <version>2.6</version>
+        <configuration>
+          <displayName>simulation</displayName>
+          <version>6</version>
+          <defaultLibBundleDir>lib</defaultLibBundleDir>
+          <modules> 
+            <webModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>controlCenter</artifactId> 
+              <contextRoot>/controlCenter</contextRoot>
+              <moduleId>control-center</moduleId>
+            </webModule>
+            <webModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>operationCenter</artifactId> 
+              <contextRoot>/operationCenter</contextRoot>
+              <moduleId>operation-center</moduleId>
+            </webModule>
+            <ejbModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>energy-impl</artifactId>
+              <moduleId>energy-impl</moduleId>
             </ejbModule>
-						<ejbModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>simulationController-impl</artifactId>
-							<moduleId>simulationController-impl</moduleId>
+            <ejbModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>simulationController-impl</artifactId>
+              <moduleId>simulationController-impl</moduleId>
             </ejbModule>
-						<ejbModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>weather-impl</artifactId>
-							<moduleId>weather-impl</moduleId>
+            <ejbModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>weather-impl</artifactId>
+              <moduleId>weather-impl</moduleId>
             </ejbModule>
-						<ejbModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>staticSensors-impl</artifactId>
-							<moduleId>staticSensors-impl</moduleId>
+            <ejbModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>traffic-impl</artifactId>
+              <moduleId>traffic-impl</moduleId>
             </ejbModule>
-						<ejbModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>traffic-impl</artifactId>
-							<moduleId>traffic-impl</moduleId>
+            <ejbModule>
+              <groupId>de.pgalise.simulation</groupId>
+              <artifactId>shared-impl</artifactId>
+              <moduleId>shared-impl</moduleId>
             </ejbModule>
-						<ejbModule>
-							<groupId>de.pgalise.simulation</groupId>
-							<artifactId>shared-impl</artifactId>
-							<moduleId>shared-impl</moduleId>
-            </ejbModule>
-						
-<!--					<rarModule>
-						<groupId>de.pgalise.simulation</groupId>
-						<artifactId>shared-resources</artifactId>
-						<
-					</rarModule>-->
-					</modules>
-					
-        <archive>
+          </modules>
+          <archive>
             <manifest>
-                <addClasspath>false</addClasspath>
+              <addClasspath>false</addClasspath>
             </manifest>
-        </archive>
-					<!--<skinnyWars>true</skinnyWars>-->
-<!--					<libs>
-						<lib>org.eclipse.persistence:eclipselink:2.4.2</lib>
-					</libs>--><!--doesn't seem to work-->
-				</configuration>
-			</plugin>
-<!--			<plugin>
-				<groupId>org.apache.openejb.maven</groupId>
-				<artifactId>tomee-maven-plugin</artifactId>
-				<version>1.0.0</version>
-				<configuration>
-					<tomeeVersion>1.5.0</tomeeVersion>
-				</configuration>
-			</plugin>		-->
-		</plugins>		
-	</build>
+          </archive>
+        </configuration>
+      </plugin>
+      <!--			<plugin>
+              <groupId>org.apache.openejb.maven</groupId>
+              <artifactId>tomee-maven-plugin</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                      <tomeeVersion>1.5.0</tomeeVersion>
+              </configuration>
+      </plugin>		-->
+    </plugins>		
+  </build>
 </project>

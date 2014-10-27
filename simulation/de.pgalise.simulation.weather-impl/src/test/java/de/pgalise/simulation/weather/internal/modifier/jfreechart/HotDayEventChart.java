@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
 import java.util.ArrayList;
@@ -28,90 +27,121 @@ import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
 
 /**
  * Test of HotDayEvent
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 10, 2012)
  */
 public class HotDayEventChart extends AbstractChartTest {
 
-	/**
-	 * Test timestamp
-	 */
-	public static long testTimestamp;
+  /**
+   * Test timestamp
+   */
+  public static long testTimestamp;
 
-	/**
-	 * Test value
-	 */
-	public static float testValue = 30.0f;
+  /**
+   * Test value
+   */
+  public static float testValue = 30.0f;
 
-	/**
-	 * Test duration
-	 */
-	public static float testDuration = 4.0f;
+  /**
+   * Test duration
+   */
+  public static long testDuration = 4;
 
-	/**
-	 * For tests
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) throws Exception {
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2010, 6, 12, 0, 0, 0);
-		long startTimestamp = cal.getTimeInMillis();
+  /**
+   * For tests
+   *
+   * @param args
+   */
+  public static void main(String[] args) throws Exception {
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2010,
+      6,
+      12,
+      0,
+      0,
+      0);
+    long startTimestamp = cal.getTimeInMillis();
 
-		// End
-		cal.set(2010, 6, 13, 0, 0, 0);
-		long endTimestamp = cal.getTimeInMillis();
+    // End
+    cal.set(2010,
+      6,
+      13,
+      0,
+      0,
+      0);
+    long endTimestamp = cal.getTimeInMillis();
 
-		// Test time
-		cal.set(2010, 6, 12, 18, 0, 0);
-		HotDayEventChart.testTimestamp = cal.getTimeInMillis();
+    // Test time
+    cal.set(2010,
+      6,
+      12,
+      18,
+      0,
+      0);
+    HotDayEventChart.testTimestamp = cal.getTimeInMillis();
 
-		WeatherParameterEnum parameter = HotDayEvent.CHANGE_PARAMETER;
-		String title = "Test of HotDayEvent";
+    WeatherParameterEnum parameter = HotDayEvent.CHANGE_PARAMETER;
+    String title = "Test of HotDayEvent";
 
-		// Test class
-		AbstractChartTest chart = new HotDayEventChart(startTimestamp, endTimestamp, parameter);
+    // Test class
+    AbstractChartTest chart = new HotDayEventChart(startTimestamp,
+      endTimestamp,
+      parameter);
 
-		// Add timeseries to list
-		final List<TimeSeries> series = new ArrayList<>();
-		series.add(chart.getReferenceTimeSerie());
-		series.add(chart.getDecoratorTimeSerie());
+    // Add timeseries to list
+    final List<TimeSeries> series = new ArrayList<>();
+    series.add(chart.getReferenceTimeSerie());
+    series.add(chart.getDecoratorTimeSerie());
 
-		// Show chart
-		TimeSeriesChart demo = new TimeSeriesChart(title, startTimestamp, parameter, series);
-		demo.showChart();
-	}
+    // Show chart
+    TimeSeriesChart demo = new TimeSeriesChart(title,
+      startTimestamp,
+      parameter,
+      series);
+    demo.showChart();
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param startdate
-	 *            Date as Timestamp
-	 * @param enddate
-	 *            Date as Timestamp
-	 * @param parameter
-	 *            WeatherParameterEnum
-	 */
-	public HotDayEventChart(long startdate, long enddate, WeatherParameterEnum parameter) throws Exception {
-		super(startdate, enddate, parameter);
-	}
+  /**
+   * Constructor
+   *
+   * @param startdate Date as Timestamp
+   * @param enddate Date as Timestamp
+   * @param parameter WeatherParameterEnum
+   */
+  public HotDayEventChart(long startdate,
+    long enddate,
+    WeatherParameterEnum parameter) throws Exception {
+    super(startdate,
+      enddate,
+      parameter);
+  }
 
-	@Override
-	protected TimeSeries getDecoratorTimeSerie() throws Exception {
-		// Deploy strategy
-		this.getService().deployStrategy(new HotDayEvent(this.getRandom().getSeed(HotDayEventChart.class.toString()),
-				HotDayEventChart.testTimestamp, this.getProps(), HotDayEventChart.testValue, HotDayEventChart.testDuration,
-				this.getLoader()));
+  @Override
+  protected TimeSeries getDecoratorTimeSerie() throws Exception {
+    // Deploy strategy
+    this.getService().deployStrategy(new HotDayEvent(getCity(),
+      this.getRandom().getSeed(
+        HotDayEventChart.class.toString()),
+      HotDayEventChart.testTimestamp,
+      this.getProps(),
+      HotDayEventChart.testValue,
+      HotDayEventChart.testDuration,
+      this.getLoader()),
+      getCity());
 
-		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE, this.getService().getReferenceValues(), this.getParameter());
-	}
+    // Create timeserie for JFreeChart
+    return TimeSeriesChart.getTimeSerie(AbstractChartTest.DECORATOR_TITLE,
+      this.getService().getReferenceValues(),
+      this.getParameter());
+  }
 
-	@Override
-	protected TimeSeries getReferenceTimeSerie() {
-		// Create timeserie for JFreeChart
-		return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE, this.getService().getReferenceValues(), this.getParameter());
-	}
+  @Override
+  protected TimeSeries getReferenceTimeSerie() {
+    // Create timeserie for JFreeChart
+    return TimeSeriesChart.getTimeSerie(AbstractChartTest.REFERENCE_TITLE,
+      this.getService().getReferenceValues(),
+      this.getParameter());
+  }
 }

@@ -16,6 +16,7 @@
  
 package de.pgalise.simulation.operationCenter.internal.hqf.persistence;
 
+import de.pgalise.simulation.operationCenter.entity.HQFData;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

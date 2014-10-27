@@ -1,4 +1,4 @@
-/* 
+ /* 
  * Copyright 2013 PG Alise (http://www.pg-alise.de/)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,498 +13,392 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.internal;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-
-import org.easymock.EasyMock;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import de.pgalise.simulation.SimulationController;
 import de.pgalise.simulation.energy.EnergyController;
 import de.pgalise.simulation.event.EventInitiator;
-import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.manager.ServerConfigurationReader;
-import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
-import de.pgalise.simulation.service.Controller;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.service.ServerConfiguration;
+import de.pgalise.simulation.sensorFramework.Sensor;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.ControllerStatusEnum;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.Service;
 import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
 import de.pgalise.simulation.shared.exception.SensorException;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.service.Service;
-import de.pgalise.simulation.shared.event.Event;
-import de.pgalise.simulation.sensorFramework.SensorHelper;
-import de.pgalise.simulation.shared.sensor.SensorInterfererType;
-import de.pgalise.simulation.sensorFramework.SensorTypeEnum;
-import de.pgalise.simulation.staticsensor.StaticSensorController;
-import de.pgalise.simulation.traffic.InfrastructureInitParameter;
-import de.pgalise.simulation.traffic.InfrastructureStartParameter;
 import de.pgalise.simulation.traffic.TrafficController;
-import de.pgalise.simulation.traffic.TrafficInfrastructureData;
-import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.entity.TrafficCity;
+import de.pgalise.simulation.traffic.internal.server.rules.TrafficLightSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.InductionLoopSensor;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.weather.service.WeatherController;
-import javax.persistence.EntityManager;
-import org.junit.Ignore;
+import de.pgalise.simulation.weather.service.WeatherControllerLocal;
+import de.pgalise.simulation.weather.service.WeatherInitParameter;
+import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.traffic.TrafficTestUtils;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.naming.NamingException;
+import org.apache.openejb.api.LocalClient;
+import org.easymock.EasyMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * JUnit tests for {@link DefaultSimulationController}<br />
  * <br />
- * Tests if the states, create, delete sensors and the updates will be passed down to the other controllers correctly.
- * 
+ * Tests if the states, create, delete sensors and the updates will be passed
+ * down to the other controllers correctly.
+ *
  * @author Timo
  */
-@Ignore //@EasyMock setup stimmt noch nicht
+@ManagedBean
+@LocalClient
 public class DefaultSimulationControllerTest {
-	private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();
 
-	private static final long START_TIMESTAMP = 0;
-	private static final long END_TIMESTAMP = 100000;
-	private static final long INTERVAL = 1000;
-	private static final long CLOCK_GENERATOR_INTERVAL = 1000;
-	private static DefaultSimulationController testClass;
-	private static InfrastructureInitParameter initParameter;
-	private static InfrastructureStartParameter startParameter;
-//	private static EventInitiatorMock eventInitiator;
-	private static ServiceDictionary serviceDictionary;
-	private static OperationCenterController operationCenterController;
-	private static ControlCenterController controlCenterController;
-	private static TrafficController<?> trafficController;
-	private static StaticSensorController staticSensorController;
-	private static EnergyController energyController;
-	private static WeatherController weatherController;
-	private static EntityManager sensorPersistenceService;
-	private static ServerConfigurationReader<Controller<?,?,?>> serverConfigurationReader;
-	private static TrafficInfrastructureData cityInfrastructureData;
-	private static ServerConfiguration serverConfiguration;
+  private static final long START_TIMESTAMP = 0;
+  private static final long END_TIMESTAMP = 100000;
+  private static final long INTERVAL = 1000;
+  private static final long CLOCK_GENERATOR_INTERVAL = 1000;
+  @EJB
+  private DefaultSimulationController instance;
+  private TrafficInitParameter initParameter;
+  private TrafficStartParameter startParameter;
+  @EJB
+  private TrafficController<?> trafficController;
+  @EJB
+  private EnergyController energyController;
+  @EJB
+  private WeatherControllerLocal weatherController;
+  private TrafficCity city;
+  @EJB
+  private IdGenerator idGenerator;
+  private Output output = EasyMock.createNiceMock(Output.class);
 
-	@BeforeClass
-	public static void setUp() {
-		testClass = new DefaultSimulationController();
+  public DefaultSimulationControllerTest() {
+  }
 
-		/* Mock all controllers: */
-		operationCenterController = EasyMock.createNiceMock(OperationCenterController.class);
-		controlCenterController = EasyMock.createNiceMock(ControlCenterController.class);
-		trafficController = EasyMock.createNiceMock(TrafficController.class);
-		staticSensorController = EasyMock.createNiceMock(StaticSensorController.class);
-		energyController = EasyMock.createNiceMock(EnergyController.class);
-		weatherController = EasyMock.createNiceMock(WeatherController.class);
+  @Before
+  public void setUp() throws NamingException, MalformedURLException {
+    TestUtils.getContext().bind("inject",
+      this);
 
-		/* Mock all other services: */
-		sensorPersistenceService = EasyMock.createNiceMock(EntityManager.class);
-		serverConfigurationReader = EasyMock.createNiceMock(ServerConfigurationReader.class);
-		EventInitiator eventInitiator = EasyMock.createNiceMock(EventInitiator.class);
-		cityInfrastructureData = EasyMock.createNiceMock(TrafficInfrastructureData.class);
+    /* Mock all controllers: */
+    trafficController = EasyMock.createNiceMock(TrafficController.class);
+    energyController = EasyMock.createNiceMock(EnergyController.class);
+    weatherController = EasyMock.createNiceMock(WeatherControllerLocal.class);
 
-		/* Prepare service dictionary: */
-		serviceDictionary = EasyMock.createNiceMock(ServiceDictionary.class);
-		Collection<Service> controllerCollection = new LinkedList<>();
-		controllerCollection.add(energyController);
-		controllerCollection.add(trafficController);
-		controllerCollection.add(staticSensorController);
-		controllerCollection.add(weatherController);
-		controllerCollection.add(testClass);
-		EasyMock.expect(serviceDictionary.getControllers()).andStubReturn(controllerCollection);
-		EasyMock.expect(serviceDictionary.getController(TrafficController.class)).andStubReturn(trafficController);
-		EasyMock.expect(serviceDictionary.getController(StaticSensorController.class)).andStubReturn(
-				staticSensorController);
-		EasyMock.expect(serviceDictionary.getController(EnergyController.class)).andStubReturn(energyController);
-		EasyMock.expect(serviceDictionary.getController(WeatherController.class)).andStubReturn(weatherController);
-		EasyMock.expect(serviceDictionary.getController(SimulationController.class)).andStubReturn(testClass);
-		EasyMock.replay(serviceDictionary);
+    /* Mock all other services: */
+    EventInitiator eventInitiator = EasyMock.
+      createNiceMock(EventInitiator.class);
+    EasyMock.expect(eventInitiator.getStatus()).andReturn(
+      ControllerStatusEnum.STARTED);
+    city = TrafficTestUtils.createDefaultTestCityInstance(idGenerator);
+    /* Prepare service dictionary: */
+    Collection<Service> controllerCollection = new LinkedList<>();
+    controllerCollection.add(energyController);
+    controllerCollection.add(trafficController);
+    controllerCollection.add(weatherController);
+    controllerCollection.add(instance);
 
-		testClass._setEventInitiator(eventInitiator);
-		testClass._setServiceDictionary(serviceDictionary);
-		testClass.setOperationCenterController(operationCenterController);
-		testClass._setSensorPersistenceService(sensorPersistenceService);
-		testClass._setServerConfigurationReader(serverConfigurationReader);
-		testClass.setControlCenterController(controlCenterController);
+    instance.setEventInitiator(eventInitiator);
 
-		serverConfiguration = new ServerConfiguration();
+    initParameter = new TrafficInitParameter(city,
+      START_TIMESTAMP,
+      END_TIMESTAMP,
+      INTERVAL,
+      CLOCK_GENERATOR_INTERVAL,
+      new URL("http://localhost:8080/operationCenter"),
+      new URL("http://localhost:8080/controlCenter"),
+      new TrafficFuzzyData(0,
+        0.9,
+        1),
+      2,
+      output);
+  }
 
-		initParameter = new InfrastructureInitParameter(cityInfrastructureData, serverConfiguration, START_TIMESTAMP, END_TIMESTAMP,
-				INTERVAL, CLOCK_GENERATOR_INTERVAL, "", "", new TrafficFuzzyData(0, 0.9, 1), new Boundary(
-						new Coordinate(), new Coordinate()));
-	}
+  /**
+   * Sets state behavior for the mocks
+   *
+   * @throws InitializationException
+   * @throws IllegalStateException
+   */
+  private void initControllerMockStateBehavior() throws IllegalStateException, InitializationException {
+    trafficController.init(initParameter);
+    trafficController.start(startParameter);
+    trafficController.stop();
+    trafficController.reset();
+    EasyMock.replay(trafficController);
 
-	/**
-	 * Sets state behavior for the mocks
-	 * 
-	 * @throws InitializationException
-	 * @throws IllegalStateException
-	 */
-	private static void initControllerMockStateBehavior() throws IllegalStateException, InitializationException {
-		operationCenterController.init(initParameter);
-		operationCenterController.start(startParameter);
-		operationCenterController.stop();
-		operationCenterController.reset();
-		EasyMock.replay(operationCenterController);
+    weatherController.init(new WeatherInitParameter(initParameter.getCity(),
+      initParameter.getStartTimestamp().getTime(),
+      initParameter.getEndTimestamp().getTime(),
+      initParameter.getInterval(),
+      initParameter.getClockGeneratorInterval(),
+      initParameter.getControlCenterURL(),
+      initParameter.getOperationCenterURL(),
+      initParameter.getCityBoundary(),
+      output));
+    weatherController.start(startParameter);
+    weatherController.stop();
+    weatherController.reset();
+    EasyMock.replay(weatherController);
 
-		staticSensorController.init(initParameter);
-		staticSensorController.start(startParameter);
-		staticSensorController.stop();
-		staticSensorController.reset();
-		EasyMock.replay(staticSensorController);
+    energyController.init(initParameter);
+    energyController.start(startParameter);
+    energyController.stop();
+    energyController.reset();
+    EasyMock.replay(energyController);
+  }
 
-		trafficController.init(initParameter);
-		trafficController.start(startParameter);
-		trafficController.stop();
-		trafficController.reset();
-		EasyMock.replay(trafficController);
+  /**
+   * Resets the behavior for the controller mocks.
+   */
+  private void resetControllerMockBehavior() {
+    EasyMock.reset(trafficController);
+    EasyMock.reset(weatherController);
+    EasyMock.reset(energyController);
+  }
 
-		weatherController.init(initParameter);
-		weatherController.start(startParameter);
-		weatherController.stop();
-		weatherController.reset();
-		EasyMock.replay(weatherController);
+  @Test
+  public void testStates() throws IllegalStateException, InitializationException {
+    resetControllerMockBehavior();
 
-		energyController.init(initParameter);
-		energyController.start(startParameter);
-		energyController.stop();
-		energyController.reset();
-		EasyMock.replay(energyController);
-	}
+    /* First start: */
+    initControllerMockStateBehavior();
+    instance.init(initParameter);
+    instance.start(startParameter);
+    instance.stop();
+    instance.reset();
 
-	/**
-	 * Resets the behavior for the controller mocks.
-	 */
-	private static void resetControllerMockBehavior() {
-		EasyMock.reset(operationCenterController);
-		EasyMock.reset(staticSensorController);
-		EasyMock.reset(trafficController);
-		EasyMock.reset(weatherController);
-		EasyMock.reset(energyController);
-	}
+    /* Verify all controllers: */
+    EasyMock.verify(trafficController);
+    EasyMock.verify(weatherController);
+    EasyMock.verify(energyController);
 
-	@Test
-	public void testStates() throws IllegalStateException, InitializationException {
-		resetControllerMockBehavior();
+    /* Second start: */
+    resetControllerMockBehavior();
+    initControllerMockStateBehavior();
+    instance.init(initParameter);
+    instance.start(startParameter);
+    instance.stop();
+    instance.reset();
 
-		/* First start: */
-		initControllerMockStateBehavior();
-		testClass.init(initParameter);
-		testClass.start(startParameter);
-		testClass.stop();
-		testClass.reset();
+    /* Verify all controllers: */
+    EasyMock.verify(trafficController);
+    EasyMock.verify(weatherController);
+    EasyMock.verify(energyController);
+  }
 
-		/* Verify all controllers: */
-		EasyMock.verify(operationCenterController);
-		EasyMock.verify(trafficController);
-		EasyMock.verify(staticSensorController);
-		EasyMock.verify(weatherController);
-		EasyMock.verify(energyController);
+  /**
+   * Tests the create sensor method.
+   *
+   * @throws SensorException
+   * @throws InitializationException
+   * @throws IllegalStateException
+   */
+  @Test
+  public void testCreateSensor() throws SensorException, IllegalStateException, InitializationException {
+    resetControllerMockBehavior();
+    Sensor<?, ?> sensor = null;
+    TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
+      getNextId(),
+      output,
+      null,
+      null);
+    TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+      idGenerator.getNextId(),
+      output,
+      null,
+      null);
 
-		/* Second start: */
-		resetControllerMockBehavior();
-		initControllerMockStateBehavior();
-		testClass.init(initParameter);
-		testClass.start(startParameter);
-		testClass.stop();
-		testClass.reset();
+    /* The operation center will receive both sensors: */
 
-		/* Verify all controllers: */
-		EasyMock.verify(operationCenterController);
-		EasyMock.verify(trafficController);
-		EasyMock.verify(staticSensorController);
-		EasyMock.verify(weatherController);
-		EasyMock.verify(energyController);
-	}
+    /* The static sensor controller will receive only the static sensor: */
+    EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
 
-	/**
-	 * Tests the create sensor method.
-	 * 
-	 * @throws SensorException
-	 * @throws InitializationException
-	 * @throws IllegalStateException
-	 */
-	@Test
-	public void testCreateSensor() throws SensorException, IllegalStateException, InitializationException {
-		resetControllerMockBehavior();
-		Sensor<?> sensor = null;
-		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor, new Coordinate(), SensorTypeEnum.ANEMOMETER,
-				new LinkedList<SensorInterfererType>());
-		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>());
+    /* The traffic controller will receive only the traffic sensor: */
+    trafficController.createSensor(sensorHelperTrafficSensor);
+    trafficController.createSensor(sensorHelperStaticSensor);
+    EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
+    EasyMock.replay(trafficController);
 
-		/* The operation center will receive both sensors: */
-		operationCenterController.createSensor(sensorHelperStaticSensor);
-		operationCenterController.createSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
+    instance.init(initParameter);
+    instance.start(startParameter);
+    instance.createSensor(sensorHelperStaticSensor);
+    instance.createSensor(sensorHelperTrafficSensor);
 
-		/* The static sensor controller will receive only the static sensor: */
-		staticSensorController.createSensor(sensorHelperStaticSensor);
-		staticSensorController.createSensor(sensorHelperTrafficSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(staticSensorController);
+    EasyMock.verify(trafficController);
 
-		/* The traffic controller will receive only the traffic sensor: */
-		trafficController.createSensor(sensorHelperTrafficSensor);
-		trafficController.createSensor(sensorHelperStaticSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(trafficController);
+    instance.stop();
+    instance.reset();
+  }
 
-		testClass.init(initParameter);
-		testClass.start(startParameter);
-		testClass.createSensor(sensorHelperStaticSensor);
-		testClass.createSensor(sensorHelperTrafficSensor);
+  /**
+   * Tests the create sensors method.
+   *
+   * @throws SensorException
+   * @throws InitializationException
+   * @throws IllegalStateException
+   */
+  @Test
+  public void testCreateSensors() throws SensorException, IllegalStateException, InitializationException {
+    resetControllerMockBehavior();
+    Sensor<?, ?> sensor = null;
+    TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
+      getNextId(),
+      output,
+      null,
+      null);
+    TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+      idGenerator.getNextId(),
+      output,
+      null,
+      null);
+    Set<Sensor<?, ?>> sensorHelperList = new HashSet<>();
+    sensorHelperList.add(sensorHelperStaticSensor);
+    sensorHelperList.add(sensorHelperTrafficSensor);
 
-		EasyMock.verify(operationCenterController);
-		EasyMock.verify(trafficController);
-		EasyMock.verify(staticSensorController);
+    /* The operation center will receive both sensors: */
 
-		testClass.stop();
-		testClass.reset();
-	}
+    /* The static sensor controller will receive only the static sensor: */
 
-	/**
-	 * Tests the create sensors method.
-	 * 
-	 * @throws SensorException
-	 * @throws InitializationException
-	 * @throws IllegalStateException
-	 */
-	@Test
-	public void testCreateSensors() throws SensorException, IllegalStateException, InitializationException {
-		resetControllerMockBehavior();
-		Sensor<?> sensor = null;
-		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor, new Coordinate(), SensorTypeEnum.ANEMOMETER,
-				new LinkedList<SensorInterfererType>());
-		Sensor<?> sensor2 = null;
-		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor2, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>());
-		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
-		sensorHelperList.add(sensorHelperStaticSensor);
-		sensorHelperList.add(sensorHelperTrafficSensor);
+    /* The traffic controller will receive only the traffic sensor: */
+    trafficController.createSensor(sensorHelperTrafficSensor);
+    trafficController.createSensor(sensorHelperStaticSensor);
+    EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
+    EasyMock.replay(trafficController);
 
-		/* The operation center will receive both sensors: */
-		operationCenterController.createSensor(sensorHelperStaticSensor);
-		operationCenterController.createSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
+    instance.init(initParameter);
+    instance.start(startParameter);
+    instance.createSensors(sensorHelperList);
 
-		/* The static sensor controller will receive only the static sensor: */
-		staticSensorController.createSensor(sensorHelperStaticSensor);
-		staticSensorController.createSensor(sensorHelperTrafficSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(staticSensorController);
+    EasyMock.verify(trafficController);
 
-		/* The traffic controller will receive only the traffic sensor: */
-		trafficController.createSensor(sensorHelperTrafficSensor);
-		trafficController.createSensor(sensorHelperStaticSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(trafficController);
+    instance.stop();
+    instance.reset();
+  }
 
-		testClass.init(initParameter);
-		testClass.start(startParameter);
-		testClass.createSensors(sensorHelperList);
+  /**
+   * Tests the delete sensor method.
+   *
+   * @throws SensorException
+   * @throws InitializationException
+   * @throws IllegalStateException
+   */
+  @Test
+  public void testDeleteSensor() throws SensorException, IllegalStateException, InitializationException {
+    resetControllerMockBehavior();
+    Sensor<?, ?> sensor1 = null, sensor2 = null;
+    TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
+      getNextId(),
+      output,
+      null,
+      null);
+    TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+      idGenerator.getNextId(),
+      output,
+      null,
+      null);
 
-		EasyMock.verify(operationCenterController);
-		EasyMock.verify(trafficController);
-		EasyMock.verify(staticSensorController);
+    /* The operation center will receive both sensors: */
 
-		testClass.stop();
-		testClass.reset();
-	}
+    /* The static sensor controller will receive only the static sensor: */
 
-	/**
-	 * Tests the delete sensor method.
-	 * 
-	 * @throws SensorException
-	 * @throws InitializationException
-	 * @throws IllegalStateException
-	 */
-	@Test
-	public void testDeleteSensor() throws SensorException, IllegalStateException, InitializationException {
-		resetControllerMockBehavior();
-		Sensor<?> sensor1 = null, sensor2= null;
-		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor1, new Coordinate(), SensorTypeEnum.ANEMOMETER,
-				new LinkedList<SensorInterfererType>());
-		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor2, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>());
+    /* The traffic controller will receive only the traffic sensor: */
+    trafficController.deleteSensor(sensorHelperTrafficSensor);
+    trafficController.deleteSensor(sensorHelperStaticSensor);
+    EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
+    EasyMock.replay(trafficController);
 
-		/* The operation center will receive both sensors: */
-		operationCenterController.deleteSensor(sensorHelperStaticSensor);
-		operationCenterController.deleteSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
+    instance.init(initParameter);
+    instance.start(startParameter);
+    instance.deleteSensor(sensorHelperStaticSensor);
+    instance.deleteSensor(sensorHelperTrafficSensor);
 
-		/* The static sensor controller will receive only the static sensor: */
-		staticSensorController.deleteSensor(sensorHelperStaticSensor);
-		staticSensorController.deleteSensor(sensorHelperTrafficSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(staticSensorController);
+    EasyMock.verify(trafficController);
 
-		/* The traffic controller will receive only the traffic sensor: */
-		trafficController.deleteSensor(sensorHelperTrafficSensor);
-		trafficController.deleteSensor(sensorHelperStaticSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(trafficController);
+    instance.stop();
+    instance.reset();
+  }
 
-		testClass.init(initParameter);
-		testClass.start(startParameter);
-		testClass.deleteSensor(sensorHelperStaticSensor);
-		testClass.deleteSensor(sensorHelperTrafficSensor);
+  /**
+   * Tests the delete sensors method.
+   *
+   * @throws SensorException
+   * @throws InitializationException
+   * @throws IllegalStateException
+   */
+  @Test
+  public void testDeleteSensors() throws SensorException, IllegalStateException, InitializationException {
+    resetControllerMockBehavior();
+    Sensor<?, ?> sensor1 = null, sensor2 = null;
+    TrafficSensor sensorHelperStaticSensor = new TrafficLightSensor(idGenerator.
+      getNextId(),
+      output,
+      null,
+      null);
+    TrafficSensor sensorHelperTrafficSensor = new InductionLoopSensor(
+      idGenerator.getNextId(),
+      output,
+      null,
+      null);
+    Set<Sensor<?, ?>> sensorHelperList = new HashSet<>();
+    sensorHelperList.add(sensorHelperStaticSensor);
+    sensorHelperList.add(sensorHelperTrafficSensor);
 
-		EasyMock.verify(operationCenterController);
-		EasyMock.verify(trafficController);
-		EasyMock.verify(staticSensorController);
+    /* The traffic controller will receive only the traffic sensor: */
+    trafficController.deleteSensor(sensorHelperTrafficSensor);
+    trafficController.deleteSensor(sensorHelperStaticSensor);
+    EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
+    EasyMock.replay(trafficController);
 
-		testClass.stop();
-		testClass.reset();
-	}
+    instance.init(initParameter);
+    instance.start(startParameter);
+    instance.deleteSensors(sensorHelperList);
 
-	/**
-	 * Tests the delete sensors method.
-	 * 
-	 * @throws SensorException
-	 * @throws InitializationException
-	 * @throws IllegalStateException
-	 */
-	@Test
-	public void testDeleteSensors() throws SensorException, IllegalStateException, InitializationException {
-		resetControllerMockBehavior();
-		Sensor<?> sensor1 = null, sensor2 = null;
-		SensorHelper<?> sensorHelperStaticSensor = new SensorHelper<>(sensor1, new Coordinate(), SensorTypeEnum.ANEMOMETER,
-				new LinkedList<SensorInterfererType>());
-		SensorHelper<?> sensorHelperTrafficSensor = new SensorHelper<>(sensor2, new Coordinate(), SensorTypeEnum.INDUCTIONLOOP,
-				new LinkedList<SensorInterfererType>());
-		List<SensorHelper<?>> sensorHelperList = new LinkedList<>();
-		sensorHelperList.add(sensorHelperStaticSensor);
-		sensorHelperList.add(sensorHelperTrafficSensor);
+    EasyMock.verify(trafficController);
 
-		/* The operation center will receive both sensors: */
-		operationCenterController.deleteSensor(sensorHelperStaticSensor);
-		operationCenterController.deleteSensor(sensorHelperTrafficSensor);
-		EasyMock.replay(operationCenterController);
+    instance.stop();
+    instance.reset();
+  }
 
-		/* The static sensor controller will receive only the static sensor: */
-		staticSensorController.deleteSensor(sensorHelperStaticSensor);
-		staticSensorController.deleteSensor(sensorHelperTrafficSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(staticSensorController);
+  /**
+   * Tests the update method.
+   *
+   * @throws InitializationException
+   * @throws IllegalStateException
+   */
+  @Test
+  public void testUpdate() throws IllegalStateException, InitializationException {
+    instance.init(initParameter);
+    instance.start(startParameter);
 
-		/* The traffic controller will receive only the traffic sensor: */
-		trafficController.deleteSensor(sensorHelperTrafficSensor);
-		trafficController.deleteSensor(sensorHelperStaticSensor);
-		EasyMock.expectLastCall().andThrow(new SensorException()).anyTimes();
-		EasyMock.replay(trafficController);
+    EventInitiator eventInitiatorMock = EasyMock.createNiceMock(
+      EventInitiator.class);
+    EventList<Event> testSimulationEventList = new EventList<>(idGenerator.
+      getNextId(),
+      new LinkedList<Event>(),
+      0);
 
-		testClass.init(initParameter);
-		testClass.start(startParameter);
-		testClass.deleteSensors(sensorHelperList);
+    instance.update(testSimulationEventList);
 
-		EasyMock.verify(operationCenterController);
-		EasyMock.verify(trafficController);
-		EasyMock.verify(staticSensorController);
+    assertEquals(testSimulationEventList,
+      eventInitiatorMock.getEventList());
 
-		testClass.stop();
-		testClass.reset();
-	}
-
-	/**
-	 * Tests the update method.
-	 * 
-	 * @throws InitializationException
-	 * @throws IllegalStateException
-	 */
-	@Test
-	public void testUpdate() throws IllegalStateException, InitializationException {
-		testClass.init(initParameter);
-		testClass.start(startParameter);
-
-		EventInitiator eventInitiatorMock = EasyMock.createNiceMock(EventInitiator.class);
-		EventList<Event> testSimulationEventList = new EventList<>(new LinkedList<Event>(), 0,
-				UUID.randomUUID());
-
-		testClass.update(testSimulationEventList);
-
-		assertEquals(testSimulationEventList, eventInitiatorMock.getEventList());
-
-		testClass.stop();
-		testClass.reset();
-	}
-
-//	/**
-//	 * Event initiator mock for this test. It will save the last received simulationeventlist in simulationEventList.
-//	 * 
-//	 * @author Timo
-//	 */
-//	private static class EventInitiatorMock extends AbstractController implements EventInitiator {
-//
-//		private EventList simulationEventList;
-//
-//		@Override
-//		public Thread getEventThread() {
-//			return null;
-//		}
-//
-//		@Override
-//		public void addSimulationEventList(EventList simulationEventList) {
-//			this.simulationEventList = simulationEventList;
-//		}
-//
-//		@Override
-//		public long getCurrentTimestamp() {
-//			return 0;
-//		}
-//
-//		@Override
-//		public void setOperationCenterController(OperationCenterController operationCenterController) {
-//		}
-//
-//		@Override
-//		protected void onInit(InitParameter param) throws InitializationException {
-//		}
-//
-//		@Override
-//		protected void onReset() {
-//		}
-//
-//		@Override
-//		protected void onStart(StartParameter param) {
-//		}
-//
-//		@Override
-//		protected void onStop() {
-//		}
-//
-//		@Override
-//		protected void onResume() {
-//		}
-//
-//		@Override
-//		protected void onUpdate(EventList simulationEventList) {
-//			this.simulationEventList = simulationEventList;
-//		}
-//
-//		public EventList getSimulationEventList() {
-//			return simulationEventList;
-//		}
-//
-//		@Override
-//		public void setControlCenterController(ControlCenterController controlCenterController) {
-//		}
-//
-//		@Override
-//		public String getName() {
-//			return "EventInitiator";
-//		}
-//
-//		@Override
-//		public void setFrontController(List<Controller> controller) {
-//
-//		}
-//
-//	}
+    instance.stop();
+    instance.reset();
+  }
 }

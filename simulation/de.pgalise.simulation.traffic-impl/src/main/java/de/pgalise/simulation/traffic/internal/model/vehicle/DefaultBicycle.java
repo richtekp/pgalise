@@ -13,77 +13,102 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.model.vehicle;
 
-
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.traffic.TrafficGraphExtensions;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.model.vehicle.Bicycle;
+import de.pgalise.simulation.traffic.entity.BicycleData;
+import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.traffic.TrafficGraphExtensions;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.BicycleData;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-
 /**
  * Represents a bicycle
- * 
+ *
  * @author Mustafa
  * @version 1.0 (Feb 11, 2013)
  */
-public class DefaultBicycle extends BaseVehicle<BicycleData> {
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -7152958132550318840L;
+public class DefaultBicycle extends BaseVehicle<BicycleData> implements Bicycle {
 
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(DefaultBicycle.class);
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -7152958132550318840L;
 
-	/**
-	 * Default constructor
-	 * 
-	 * @param name
-	 *            Name
-	 * @param data
-	 *            Information
-	 * @param trafficGraphExtensions
-	 *            TrafficGraphExtensions
-	 */
-	public DefaultBicycle( String name, BicycleData data, TrafficGraphExtensions trafficGraphExtensions) {
-		super( name, data, trafficGraphExtensions);
-		this.setVelocity(15d / 360); // 15km/h // (15*1000/3600)/100 // durch 100 da 1vu 100m sind
-	}
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.
+    getLogger(DefaultBicycle.class);
 
-	@Override
-	protected void passedNode(TrafficNode node) {
-		if (this.getPreviousEdge() != null) {
-			log.debug("Unregistering bycicle " + this.getName() + " from edge: " + this.getPreviousEdge().getId());
-			this.getTrafficGraphExtensions().unregisterFromEdge(this.getPreviousEdge(), this.getPreviousNode(),
-					this.getCurrentNode(), this);
-		}
+  protected DefaultBicycle() {
+  }
 
-		if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.getVehicleState())) {
-			if (this.getCurrentEdge() != null) {
-				log.debug("Registering bycicle " + this.getName() + " on edge: " + this.getCurrentEdge().getId());
-				this.getTrafficGraphExtensions().registerOnEdge(this.getCurrentEdge(), this.getCurrentNode(),
-						this.getNextNode(), this);
-			}
-		}
-	}
+  /**
+   * Default constructor
+   *
+   * @param id
+   * @param data Information
+   * @param trafficGraphExtensions TrafficGraphExtensions
+   */
+  public DefaultBicycle(Long id,
+    BicycleData data,
+    TrafficGraphExtensions trafficGraphExtensions) {
+    super(id,
+      data,
+      trafficGraphExtensions);
+  }
 
-	@Override
-	protected void postUpdate(TrafficNode node) {
-	}
+  /**
+   * Default constructor
+   *
+   * @param id
+   * @param data Information
+   * @param trafficGraphExtensions TrafficGraphExtensions
+   * @param position
+   */
+  public DefaultBicycle(Long id,
+    BicycleData data,
+    TrafficGraphExtensions trafficGraphExtensions,
+    BaseCoordinate position) {
+    super(id,
+      data,
+      trafficGraphExtensions,
+      position);
+  }
 
-	@Override
-	protected void preUpdate(long elapsedTime) {
+  @Override
+  protected void passedNode(TrafficNode node) {
+    if (this.getPreviousEdge() != null) {
+      log.debug("Unregistering bycicle " + this.getName() + " from edge: "
+        + this.getPreviousEdge().getId());
+      this.getTrafficGraphExtensions().
+        unregisterFromEdge(this.getPreviousEdge(),
+          this.getPreviousNode(),
+          this.getCurrentNode(),
+          this);
+    }
 
-	}
+    if (VehicleStateEnum.UPDATEABLE_VEHICLES.contains(this.getVehicleState())) {
+      if (this.getCurrentEdge() != null) {
+        log.debug("Registering bycicle " + this.getName() + " on edge: " + this.
+          getCurrentEdge().getId());
+        this.getTrafficGraphExtensions().registerOnEdge(this.getCurrentEdge(),
+          this.getCurrentNode(),
+          this.getNextNode(),
+          this);
+      }
+    }
+  }
+
+  @Override
+  protected void postUpdate(TrafficNode node) {
+  }
+
+  @Override
+  protected void preUpdate(long elapsedTime) {
+
+  }
 }

@@ -1,0 +1,52 @@
+                                       
+##############################################################
+################## DEFAULT CACHE REGION  #####################
+# sets the default aux value for any non configured caches
+jcs.default=MYSQL,RCluster
+jcs.default.cacheattributes=org.apache.commons.jcs.engine.CompositeCacheAttributes
+jcs.default.cacheattributes.MaxObjects=5000
+jcs.default.cacheattributes.MemoryCacheName=org.apache.commons.jcs.engine.memory.lru.LRUMemoryCache
+jcs.default.cacheattributes.UseMemoryShrinker=true
+jcs.default.cacheattributes.MaxMemoryIdleTimeSeconds=7200
+jcs.default.cacheattributes.ShrinkerIntervalSeconds=60
+jcs.default.elementattributes=org.apache.commons.jcs.engine.ElementAttributes
+jcs.default.elementattributes.IsEternal=false
+jcs.default.elementattributes.MaxLifeSeconds=14400
+jcs.default.elementattributes.IdleTime=14400
+jcs.default.elementattributes.IsSpool=true
+jcs.default.elementattributes.IsRemote=true
+jcs.default.elementattributes.IsLateral=true
+
+##############################################################
+################## CACHE REGIONS AVAILABLE ###################
+
+##############################################################
+################## AUXILIARY CACHES AVAILABLE ################
+# MYSQL disk cache used for flight options
+jcs.auxiliary.MYSQL=org.apache.commons.jcs.auxiliary.disk.jdbc.JDBCDiskCacheFactory
+jcs.auxiliary.MYSQL.attributes=org.apache.commons.jcs.auxiliary.disk.jdbc.JDBCDiskCacheAttributes
+jcs.auxiliary.MYSQL.attributes.userName=myUsername
+jcs.auxiliary.MYSQL.attributes.password=myPassword
+jcs.auxiliary.MYSQL.attributes.url=${MYSQL}
+jcs.auxiliary.MYSQL.attributes.driverClassName=org.gjt.mm.mysql.Driver
+jcs.auxiliary.MYSQL.attributes.tableName=JCS_STORE
+jcs.auxiliary.MYSQL.attributes.testBeforeInsert=false
+jcs.auxiliary.MYSQL.attributes.maxActive=100
+jcs.auxiliary.MYSQL.attributes.MaxPurgatorySize=10000000
+jcs.auxiliary.MYSQL.attributes.UseDiskShrinker=true
+jcs.auxiliary.MYSQL.attributes.ShrinkerIntervalSeconds=1800
+jcs.auxiliary.MYSQL.attributes.allowRemoveAll=false
+jcs.auxiliary.MYSQL.attributes.EventQueueType=POOLED
+jcs.auxiliary.MYSQL.attributes.EventQueuePoolName=disk_cache_event_queue
+
+##############################################################
+################## OPTIONAL THREAD POOL CONFIGURATION #########
+# Disk Cache pool
+thread_pool.disk_cache_event_queue.useBoundary=true
+thread_pool.disk_cache_event_queue.boundarySize=1000
+thread_pool.disk_cache_event_queue.maximumPoolSize=50
+thread_pool.disk_cache_event_queue.minimumPoolSize=10
+thread_pool.disk_cache_event_queue.keepAliveTime=3500
+thread_pool.disk_cache_event_queue.whenBlockedPolicy=RUN
+thread_pool.disk_cache_event_queue.startUpSize=10
+        

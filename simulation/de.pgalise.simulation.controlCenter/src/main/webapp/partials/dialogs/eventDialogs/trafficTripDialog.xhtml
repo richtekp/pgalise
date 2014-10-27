@@ -1,0 +1,61 @@
+<!-- why are there name and type on path/TrafficTrip ? -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+	<script type="text/javascript">
+		function handlePointClick(event) {
+			var currentMarker = new google.maps.Marker({
+				position: new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+			});
+			PrimeFaces('map').addOverlay(currentMarker);
+		}
+	</script>
+	<p:dialog id="trafficTripDialog">
+		<f:view contentType="text/html">
+			<b>Create traffic trip</b>
+			<table>
+				<tr>
+					<td><b>Start time:</b></td>
+					<td><p:calendar
+							value="#{trafficTripDialogCtrl.chosenStartDate}" /></td>
+				</tr>
+				<tr>
+					<td><b>Start position:</b></td>
+					<td><p:gmap center="36.890257,30.707417" zoom="13"
+							type="HYBRID" model="#{trafficTripDialogCtrl.mapModel}"
+							style="width:600px;height:400px"
+							<p:ajax event="markerDrag"
+								listener="#{trafficTripDialogCtrl.onMarkerDrag}" />
+						</p:gmap></td>
+				</tr>
+				<tr>
+					<td colspan="2"><hr /></td>
+				</tr>
+			</table>
+			<div class="scrollable fullHeight">
+				<b>Add vehicles to traffic trip</b>
+				<p:dataTable selectionMode="multiple"
+					selection="#{trafficTripDialogCtrl.selectedVehilces}"
+					var="retrievedVehicle"
+					value="#{trafficTripDialogCtrl.retrieveVehicles}">
+					<p:column>
+						<f:facet name="header">ID</f:facet>
+							#{retrievedVehicle.id}
+					</p:column>
+					<p:column>
+						<f:facet name="header">TrafficTrip</f:facet>
+							#{retrievedVehicle.trafficTrip.id}
+					</p:column>
+					<p:column>
+						<f:facet name="header">Current position</f:facet>
+							#{retrievedVehicle.position}
+					</p:column>
+				</p:dataTable>
+			</div>
+			<h:commandButton action="#{trafficTripDialogCtrl.saveTrafficTrip}" />
+		</f:view>
+	</p:dialog>
+</ui:composition>

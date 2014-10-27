@@ -18,13 +18,9 @@ package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.shared.event.AbstractEvent;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.entity.VehicleData;
+import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * Superclass for all traffic events.
@@ -38,7 +34,7 @@ public abstract class AbstractTrafficEvent<D extends VehicleData,E extends Traff
 	 * Serial
 	 */
 	private static final long serialVersionUID = -8313844787624266589L;
-	private TrafficServerLocal<E> responsibleServer;
+  private TrafficControllerLocal<E> responsibleServer;
 	private final long simulationTime;
 	private final long elapsedTime;
 
@@ -49,7 +45,9 @@ public abstract class AbstractTrafficEvent<D extends VehicleData,E extends Traff
 	 * @param elapsedTime 
 	 * @param responsibleServer  
 	 */
-	public AbstractTrafficEvent(TrafficServerLocal<E> responsibleServer, long simulationTime, long elapsedTime) {
+  public AbstractTrafficEvent(TrafficControllerLocal<E> responsibleServer,
+    long simulationTime,
+    long elapsedTime) {
 		this.responsibleServer = responsibleServer;
 		this.simulationTime = simulationTime;
 		this.elapsedTime = elapsedTime;
@@ -66,12 +64,7 @@ public abstract class AbstractTrafficEvent<D extends VehicleData,E extends Traff
 	}
 	
 	@Override
-	public void setResponsibleServer(TrafficServerLocal<E> serverId) {
-		this.responsibleServer = serverId;
-	}
-	
-	@Override
-	public TrafficServerLocal<E> getResponsibleServer() {
+  public TrafficControllerLocal<E> getResponsibleServer() {
 		return this.responsibleServer;
 	}
 }

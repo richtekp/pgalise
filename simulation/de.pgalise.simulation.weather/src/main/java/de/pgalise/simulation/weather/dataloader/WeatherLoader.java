@@ -13,75 +13,70 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.dataloader;
 
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
-import de.pgalise.simulation.weather.model.ServiceDataForecast;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 
 /**
- * The aim and the purpose of the interface {@link WeatherLoader} is to get weather information from a source during
- * runtime. It is implemented as an EJB. The tasks of this interface are to load weather station values and to load
- * weather service values as well as reference cities.
- * 
- * @param <C> 
+ * The aim and the purpose of the interface {@link WeatherLoader} is to get
+ * weather information from a source during runtime. It is implemented as an
+ * EJB. The tasks of this interface are to load weather station values and to
+ * load weather service values as well as reference cities.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0
  */
-public interface WeatherLoader<C extends WeatherCondition> {
+public interface WeatherLoader {
 
 	/**
 	 * Checks if the weather informations for that day are correct
-	 * 
-	 * @param timestamp
-	 *            Timestamp
+	 *
+	 * @param timestamp Timestamp
 	 * @return true, if the data is correct
 	 */
 	public boolean checkStationDataForDay(long timestamp);
 
 	/**
-	 * Returns the current weather informations form the weather services for the given city and timestamp
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @param city
-	 *            ID to the city
+	 * Returns the current weather informations form the weather services for the
+	 * given city and timestamp
+	 *
+	 * @param timestamp Timestamp
+	 * @param city ID to the city
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataCurrent<C> loadCurrentServiceWeatherData(long timestamp, City city) ;
+	public ServiceDataCurrent loadCurrentServiceWeatherData(long timestamp,
+		City city);
 
 	/**
-	 * Returns the forecast weather informations form the weather services for the given city and timestamp
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @param city
-	 *            ID to the city
+	 * Returns the forecast weather informations form the weather services for the
+	 * given city and timestamp
+	 *
+	 * @param timestamp Timestamp
+	 * @param city ID to the city
 	 * @return ServiceWeather object
 	 */
-	public ServiceDataForecast<C> loadForecastServiceWeatherData(long timestamp, City city) ;
+	public ServiceDataForecast loadForecastServiceWeatherData(long timestamp,
+		City city);
 
 	/**
-	 * Returns the weather data of the weather station for the day of 
-	 * <tt>timestamp</tt>, as well as the preceeding and following day (at the 
-	 * same time of the day). They are sorted ascending. This method assumes that 
+	 * Returns the weather data of the weather station for the day of
+	 * <tt>timestamp</tt>, as well as the preceeding and following day (at the
+	 * same time of the day). They are sorted ascending. This method assumes that
 	 * the availability of weather data has been check before (using 
-	 * {@link #checkStationDataForDay(long) }). If the check didin't occur the 
+	 * {@link #checkStationDataForDay(long) }). If the check didin't occur the
 	 * returned <tt>WeatherMap</tt> possibly contains <code>null</code>.
-	 * 
-	 * @param timestamp
-	 *            Timestamp
+	 *
+	 * @param timestamp Timestamp
 	 * @return WeatherMap with weather data
 	 */
-	public WeatherMap loadStationData(long timestamp) ;
+	public WeatherMap loadStationData(long timestamp);
 
 	/**
 	 * Set the load option for station data
-	 * 
-	 * @param takeNormalData
-	 *            Option to take normal data
+	 *
+	 * @param takeNormalData Option to take normal data
 	 */
 	public void setLoadOption(boolean takeNormalData);
 

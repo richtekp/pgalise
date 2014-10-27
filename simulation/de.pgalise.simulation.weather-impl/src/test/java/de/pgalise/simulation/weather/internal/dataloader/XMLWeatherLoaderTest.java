@@ -13,171 +13,228 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.dataloader;
 
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.weather.dataloader.WeatherMap;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
+import de.pgalise.simulation.weather.entity.StationDataNormal;
+import de.pgalise.simulation.weather.model.StationDataMap;
+import de.pgalise.testutils.TestUtils;
 import java.io.File;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
+import javax.annotation.ManagedBean;
+import javax.ejb.EJB;
+import javax.measure.Measure;
+import javax.measure.unit.SI;
+import org.apache.openejb.api.LocalClient;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-
-import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.StationDataMap;
-import de.pgalise.simulation.weather.model.StationDataNormal;
-import de.pgalise.simulation.weather.model.MutableStationData;
-import java.sql.Date;
-import java.sql.Time;
-import javax.measure.Measure;
-import javax.measure.unit.SI;
 
 /**
  * Tests the class to load station data from a xml file.
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 26, 2012)
  */
+@LocalClient
+@ManagedBean
 public class XMLWeatherLoaderTest {
 
-	/**
-	 * False test timestamp
-	 */
-	public static long falseTimestamp;
+  /**
+   * False test timestamp
+   */
+  public static long falseTimestamp;
 
-	/**
-	 * Test class
-	 */
-	public static XMLFileWeatherLoader testClass;
+  /**
+   * Test class
+   */
+  public static XMLFileWeatherLoader testClass;
 
-	/**
-	 * Test timestamp
-	 */
-	public static long testTimestamp;
+  /**
+   * Test timestamp
+   */
+  public static long testTimestamp;
 
-	/**
-	 * Path of test file
-	 */
-	private static String testFilePath;
+  /**
+   * Path of test file
+   */
+  private static String testFilePath;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-		XMLWeatherLoaderTest.testClass = new XMLFileWeatherLoader();
+  @EJB
+  private IdGenerator idGenerator;
 
-		// Test
-		Calendar cal = new GregorianCalendar();
-		cal.set(2010, 1, 1, 20, 0, 0);
-		XMLWeatherLoaderTest.testTimestamp = cal.getTimeInMillis();
+  @Before
+  public void setUp() throws Exception {
+    XMLWeatherLoaderTest.testClass = new XMLFileWeatherLoader();
 
-		cal.set(2010, 2, 1, 20, 0, 0);
-		XMLWeatherLoaderTest.falseTimestamp = cal.getTimeInMillis();
+    // Test
+    Calendar cal = new GregorianCalendar();
+    cal.set(2010,
+      1,
+      1,
+      20,
+      0,
+      0);
+    XMLWeatherLoaderTest.testTimestamp = cal.getTimeInMillis();
 
-		// Set test file path
-		XMLWeatherLoaderTest.testFilePath = XMLWeatherLoaderTest.testClass
-				.getFilePath(XMLWeatherLoaderTest.testTimestamp);
-	}
+    cal.set(2010,
+      2,
+      1,
+      20,
+      0,
+      0);
+    XMLWeatherLoaderTest.falseTimestamp = cal.getTimeInMillis();
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		XMLWeatherLoaderTest.deleteFile();
-	}
+    // Set test file path
+    XMLWeatherLoaderTest.testFilePath = XMLWeatherLoaderTest.testClass
+      .getFilePath(XMLWeatherLoaderTest.testTimestamp);
 
-	/**
-	 * Deletes the test file
-	 */
-	private static void deleteFile() {
-		File file = new File(XMLWeatherLoaderTest.testFilePath);
-		if (file.exists()) {
-			file.delete();
-		}
-	}
+    TestUtils.getContext().bind("inject",
+      this);
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+  }
 
-	@After
-	public void tearDown() throws Exception {
-		XMLWeatherLoaderTest.deleteFile();
-	}
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception {
+    XMLWeatherLoaderTest.deleteFile();
+  }
 
-	@Test
-	public void testCheckStationDataForDay() throws Exception {
-		// XML not available
-		Assert.assertTrue(!(XMLWeatherLoaderTest.testClass.checkStationDataForDay(XMLWeatherLoaderTest.testTimestamp)));
+  /**
+   * Deletes the test file
+   */
+  private static void deleteFile() {
+    File file = new File(XMLWeatherLoaderTest.testFilePath);
+    if (file.exists()) {
+      file.delete();
+    }
+  }
 
-		/*
-		 * Test preparations
-		 */
-		if (!(new File(XMLWeatherLoaderTest.testFilePath).exists())) {
-			this.createTestFile();
-		}
+  @After
+  public void tearDown() throws Exception {
+    XMLWeatherLoaderTest.deleteFile();
+  }
 
-		// XML available
-		Assert.assertTrue(XMLWeatherLoaderTest.testClass.checkStationDataForDay(XMLWeatherLoaderTest.testTimestamp));
+  @Test
+  public void testCheckStationDataForDay() throws Exception {
+    // XML not available
+    Assert.assertTrue(!(XMLWeatherLoaderTest.testClass.checkStationDataForDay(
+      XMLWeatherLoaderTest.testTimestamp)));
 
-		// XML not available - wrong day
-		Assert.assertTrue(!XMLWeatherLoaderTest.testClass.checkStationDataForDay(XMLWeatherLoaderTest.falseTimestamp));
-	}
+    /*
+     * Test preparations
+     */
+    if (!(new File(XMLWeatherLoaderTest.testFilePath).exists())) {
+      this.createTestFile();
+    }
 
-	@Test
-	public void testLoadStationData() throws Exception {
-		WeatherMap map = null;
+    // XML available
+    Assert.assertTrue(XMLWeatherLoaderTest.testClass.checkStationDataForDay(
+      XMLWeatherLoaderTest.testTimestamp));
 
-		// Test load - fails (no file)
-		try {
-			map = XMLWeatherLoaderTest.testClass.loadStationData(XMLWeatherLoaderTest.testTimestamp);
-			Assert.assertTrue(false);
-		} catch (Exception e) {
-			Assert.assertTrue(true);
-		}
+    // XML not available - wrong day
+    Assert.assertTrue(!XMLWeatherLoaderTest.testClass.checkStationDataForDay(
+      XMLWeatherLoaderTest.falseTimestamp));
+  }
 
-		// Map is not available
-		Assert.assertNull(map);
+  @Test
+  public void testLoadStationData() throws Exception {
+    WeatherMap map = null;
 
-		/*
-		 * Test preparations
-		 */
-		if (!(new File(XMLWeatherLoaderTest.testFilePath).exists())) {
-			this.createTestFile();
-		}
+    // Test load - fails (no file)
+    try {
+      map = XMLWeatherLoaderTest.testClass.loadStationData(
+        XMLWeatherLoaderTest.testTimestamp);
+      Assert.assertTrue(false);
+    } catch (Exception e) {
+      Assert.assertTrue(true);
+    }
 
-		// Test load
-		try {
-			map = XMLWeatherLoaderTest.testClass.loadStationData(XMLWeatherLoaderTest.testTimestamp);
-			Assert.assertTrue(true);
-		} catch (Exception e) {
-			Assert.assertTrue(false);
-		}
+    // Map is not available
+    Assert.assertNull(map);
 
-		// Map is available
-		Assert.assertNotNull(map);
-	}
+    /*
+     * Test preparations
+     */
+    if (!(new File(XMLWeatherLoaderTest.testFilePath).exists())) {
+      this.createTestFile();
+    }
 
-	@Test
-	public void testSaveWeatherMapToXML() {
-		WeatherMap map = new StationDataMap();
-		MutableStationData weather = new StationDataNormal(new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), 1, 1, 1.0f, Measure.valueOf(1.0f, SI.CELSIUS), 1.0f, 1, 1.0f, 1.0f, 1.0f);
-		map.put(System.currentTimeMillis(), weather);
+    // Test load
+    try {
+      map = XMLWeatherLoaderTest.testClass.loadStationData(
+        XMLWeatherLoaderTest.testTimestamp);
+      Assert.assertTrue(true);
+    } catch (Exception e) {
+      Assert.assertTrue(false);
+    }
 
-		// Test save
-		try {
-			XMLWeatherLoaderTest.testClass.saveWeatherMapToXML(map, XMLWeatherLoaderTest.testTimestamp);
-			Assert.assertTrue(true);
-		} catch (Exception e) {
-			Assert.assertTrue(false);
-		}
-	}
+    // Map is available
+    Assert.assertNotNull(map);
+  }
 
-	/**
-	 * Creates a xml file for testing
-	 * 
-	 * @throws Exception
-	 */
-	private void createTestFile() throws Exception {
-		WeatherMap map = new StationDataMap();
-		MutableStationData weather = new StationDataNormal(new Date(System.currentTimeMillis()), new Time(System.currentTimeMillis()), 1, 1, 1.0f, Measure.valueOf(1.0f, SI.CELSIUS), 1.0f, 1, 1.0f, 1.0f, 1.0f);
-		map.put(System.currentTimeMillis(), weather);
+  @Test
+  public void testSaveWeatherMapToXML() {
+    WeatherMap map = new StationDataMap();
+    AbstractStationData weather = new StationDataNormal(idGenerator.getNextId(),
+      new Date(System.
+        currentTimeMillis()),
+      new Time(System.currentTimeMillis()),
+      1,
+      1,
+      1.0f,
+      Measure.valueOf(1.0f,
+        SI.CELSIUS),
+      1.0f,
+      1,
+      1.0f,
+      1.0f,
+      1.0f);
+    map.put(System.currentTimeMillis(),
+      weather);
 
-		XMLWeatherLoaderTest.testClass.saveWeatherMapToXML(map, XMLWeatherLoaderTest.testTimestamp);
-	}
+    // Test save
+    try {
+      XMLWeatherLoaderTest.testClass.saveWeatherMapToXML(map,
+        XMLWeatherLoaderTest.testTimestamp);
+      Assert.assertTrue(true);
+    } catch (Exception e) {
+      Assert.assertTrue(false);
+    }
+  }
+
+  /**
+   * Creates a xml file for testing
+   *
+   * @throws Exception
+   */
+  private void createTestFile() throws Exception {
+    WeatherMap map = new StationDataMap();
+    AbstractStationData weather = new StationDataNormal(idGenerator.getNextId(),
+      new Date(System.
+        currentTimeMillis()),
+      new Time(System.currentTimeMillis()),
+      1,
+      1,
+      1.0f,
+      Measure.valueOf(1.0f,
+        SI.CELSIUS),
+      1.0f,
+      1,
+      1.0f,
+      1.0f,
+      1.0f);
+    map.put(System.currentTimeMillis(),
+      weather);
+
+    XMLWeatherLoaderTest.testClass.saveWeatherMapToXML(map,
+      XMLWeatherLoaderTest.testTimestamp);
+  }
 }

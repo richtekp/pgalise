@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.dataloader;
 
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.File;
@@ -30,131 +29,137 @@ import java.util.Properties;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
-import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
 
 /**
  * This class loads the weather data from a xml file. <br />
  * <br />
- * The file weatherloader.properties provides the default file path of the {@link XMLFileWeatherLoader} in more detail.
- * 
+ * The file weatherloader.properties provides the default file path of the
+ * {@link XMLFileWeatherLoader} in more detail.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (17.09.2012)
  */
-public class XMLFileWeatherLoader implements WeatherLoader<DefaultWeatherCondition> {
+public class XMLFileWeatherLoader implements WeatherLoader {
 
-	/**
-	 * File extension of the file
-	 */
-	public static final String FILE_EXTENSION = ".xml";
+  /**
+   * File extension of the file
+   */
+  public static final String FILE_EXTENSION = ".xml";
 
-	/**
-	 * Prefix of the file
-	 */
-	public static final String PREFIX = "weather_";
+  /**
+   * Prefix of the file
+   */
+  public static final String PREFIX = "weather_";
 
-	/**
-	 * File path for property file
-	 */
-	private static final String PROPERTIES_FILE_PATH = "/weatherloader.properties";
+  /**
+   * File path for property file
+   */
+  private static final String PROPERTIES_FILE_PATH = "/weatherloader.properties";
 
-	/**
-	 * File path to the xml file
-	 */
-	private String filePath = "";
+  /**
+   * File path to the xml file
+   */
+  private String filePath = "";
 
-	/**
-	 * Constructor
-	 */
-	public XMLFileWeatherLoader() {
-		// Read props
-		Properties prop = null;
-		try (InputStream propInFile = XMLFileWeatherLoader.class
-				.getResourceAsStream(XMLFileWeatherLoader.PROPERTIES_FILE_PATH)) {
-			prop = new Properties();
-			prop.loadFromXML(propInFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+  /**
+   * Constructor
+   */
+  public XMLFileWeatherLoader() {
+    // Read props
+    Properties prop = null;
+    try (InputStream propInFile = XMLFileWeatherLoader.class
+      .getResourceAsStream(XMLFileWeatherLoader.PROPERTIES_FILE_PATH)) {
+      prop = new Properties();
+      prop.loadFromXML(propInFile);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
-		// Set xml file path
-		this.filePath = prop.getProperty("station_data_xml_filepath");
-	}
+    // Set xml file path
+    this.filePath = prop.getProperty("station_data_xml_filepath");
+  }
 
-	@Override
-	public boolean checkStationDataForDay(long timestamp) {
-		File file = new File(this.getFilePath(timestamp));
-		return (file.exists());
-	}
+  @Override
+  public boolean checkStationDataForDay(long timestamp) {
+    File file = new File(this.getFilePath(timestamp));
+    return (file.exists());
+  }
 
-	/**
-	 * Returns the file path
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @return file path
-	 */
-	public String getFilePath(long timestamp) {
-		DateFormat formatter = new SimpleDateFormat("YYYY_MM_dd");
-		String dateString = formatter.format(timestamp);
+  /**
+   * Returns the file path
+   *
+   * @param timestamp Timestamp
+   * @return file path
+   */
+  public String getFilePath(long timestamp) {
+    DateFormat formatter = new SimpleDateFormat("YYYY_MM_dd");
+    String dateString = formatter.format(timestamp);
 
-		return this.filePath + XMLFileWeatherLoader.PREFIX + dateString + XMLFileWeatherLoader.FILE_EXTENSION;
-	}
+    return this.filePath + XMLFileWeatherLoader.PREFIX + dateString + XMLFileWeatherLoader.FILE_EXTENSION;
+  }
 
-	@Override
-	public DefaultServiceDataCurrent loadCurrentServiceWeatherData(long timestamp, City city)  {
-		throw new RuntimeException("Not implemented!");
-	}
+  @Override
+  public ServiceDataCurrent loadCurrentServiceWeatherData(long timestamp,
+    City city) {
+    throw new RuntimeException("Not implemented!");
+  }
 
-	@Override
-	public DefaultServiceDataForecast loadForecastServiceWeatherData(long timestamp, City city) {
-		throw new RuntimeException("Not implemented!");
-	}
+  @Override
+  public ServiceDataForecast loadForecastServiceWeatherData(
+    long timestamp,
+    City city) {
+    throw new RuntimeException("Not implemented!");
+  }
 
-	@Override
-	public WeatherMap loadStationData(long timestamp) {
-		// Deserialize
-		WeatherMap map = null;
-		long loadeddate;
-		try (XMLDecoder dec = new XMLDecoder(new FileInputStream(this.getFilePath(timestamp)))) {
-			// Load map
-			loadeddate = (long) dec.readObject();
-			map = (WeatherMap) dec.readObject();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+  @Override
+  public WeatherMap loadStationData(long timestamp) {
+    // Deserialize
+    WeatherMap map = null;
+    long loadeddate;
+    try (XMLDecoder dec = new XMLDecoder(new FileInputStream(this.getFilePath(
+      timestamp)))) {
+      // Load map
+      loadeddate = (long) dec.readObject();
+      map = (WeatherMap) dec.readObject();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 
-		// Check if the date is correct
-		if (loadeddate == timestamp) {
-			return map;
-		} else {
-			throw new IllegalStateException(String.format("loaded timestamp %d doesn't correspond to the requested timestamp %d", loadeddate, timestamp));
-		}
-	}
+    // Check if the date is correct
+    if (loadeddate == timestamp) {
+      return map;
+    } else {
+      throw new IllegalStateException(String.format(
+        "loaded timestamp %d doesn't correspond to the requested timestamp %d",
+        loadeddate,
+        timestamp));
+    }
+  }
 
-	/**
-	 * Saves weather informations to XML
-	 * 
-	 * @param timestamp
-	 *            Timestamp
-	 * @param map
-	 *            WeatherMap
-	 */
-	public void saveWeatherMapToXML(WeatherMap map, long timestamp) {
-		// Serialize
-		try (XMLEncoder enc = new XMLEncoder(new FileOutputStream(this.getFilePath(timestamp)))) {
-			// Save map
-			enc.writeObject(timestamp);
-			enc.writeObject(map);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("timestamp");
-		}
-	}
+  /**
+   * Saves weather informations to XML
+   *
+   * @param timestamp Timestamp
+   * @param map WeatherMap
+   */
+  public void saveWeatherMapToXML(WeatherMap map,
+    long timestamp) {
+    // Serialize
+    try (XMLEncoder enc = new XMLEncoder(new FileOutputStream(this.getFilePath(
+      timestamp)))) {
+      // Save map
+      enc.writeObject(timestamp);
+      enc.writeObject(map);
+    } catch (IOException e) {
+      throw new IllegalArgumentException("timestamp");
+    }
+  }
 
-	@Override
-	public void setLoadOption(boolean takeNormalData) {
-		// Do nothing
-	}
+  @Override
+  public void setLoadOption(boolean takeNormalData) {
+    // Do nothing
+  }
 
 }

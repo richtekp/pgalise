@@ -5,13 +5,14 @@
 package de.pgalise.simulation.sensorFramework;
 
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  *
  * @author richter
  */
-public interface SensorType {
+public interface SensorType extends Serializable {
 	
 
 	/**

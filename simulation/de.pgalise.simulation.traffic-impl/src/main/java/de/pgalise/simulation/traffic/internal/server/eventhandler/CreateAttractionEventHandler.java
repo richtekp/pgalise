@@ -13,79 +13,85 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.TrafficTrip;
 import de.pgalise.simulation.traffic.event.TrafficEventTypeEnum;
 import de.pgalise.simulation.traffic.event.AttractionTrafficEvent;
 import de.pgalise.simulation.traffic.event.CreateRandomVehicleData;
-import de.pgalise.simulation.traffic.TrafficTrip;
+import de.pgalise.simulation.traffic.entity.TrafficTrip;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 
 /**
  * Create an attraction
- * 
+ *
  * @author Andreas
  * @version 1.0
  */
-public class CreateAttractionEventHandler<D extends VehicleData> extends CreateRandomVehicleEventHandler<D,AttractionTrafficEvent<D>> {
-	/**
-	 * Logger
-	 */
-	private static final Logger log = LoggerFactory.getLogger(CreateAttractionEventHandler.class);
+public class CreateAttractionEventHandler<D extends VehicleData> extends CreateRandomVehicleEventHandler<D, AttractionTrafficEvent<D>> {
 
-	/**
-	 * Simulation event type
-	 */
-	private static final EventType type = TrafficEventTypeEnum.ATTRACTION_TRAFFIC_EVENT;
+  /**
+   * Logger
+   */
+  private static final Logger log = LoggerFactory.getLogger(
+    CreateAttractionEventHandler.class);
 
-	/**
-	 * Constructor
-	 */
-	public CreateAttractionEventHandler() {
-	}
+  /**
+   * Simulation event type
+   */
+  private static final EventType type = TrafficEventTypeEnum.ATTRACTION_TRAFFIC_EVENT;
 
-	@Override
-	public EventType getTargetEventType() {
-		return CreateAttractionEventHandler.type;
-	}
+  /**
+   * Constructor
+   */
+  public CreateAttractionEventHandler() {
+  }
 
-	@Override
-	public void handleEvent(AttractionTrafficEvent<D> event) {
-		log.info("Processing ATTRACTION_TRAFFIC_EVENT: Vehicles=" + event.getCreateRandomVehicleDataList().size()
-				+ " ; Target=" + event.getNodeID());
+  @Override
+  public EventType getTargetEventType() {
+    return CreateAttractionEventHandler.type;
+  }
 
-		// Create two vehicles with the same ID and properties
-		for (CreateRandomVehicleData data : event.getCreateRandomVehicleDataList()) {
+  @Override
+  public void handleEvent(AttractionTrafficEvent<D> event) {
+    log.info("Processing ATTRACTION_TRAFFIC_EVENT: Vehicles=" + event.
+      getCreateRandomVehicleDataList().size()
+      + " ; Target=" + event.getNodeID());
 
-			/*
-			 * Way there: Create way from a random node to the target node ID
-			 */
+    // Create two vehicles with the same ID and properties
+    for (CreateRandomVehicleData data : event.getCreateRandomVehicleDataList()) {
 
-			// Calculate start time
-			long startTime = event.getAttractionStartTimestamp();
+      /*
+       * Way there: Create way from a random node to the target node ID
+       */
+      // Calculate start time
+      long startTime = event.getAttractionStartTimestamp();
 
-			// use node as target node
-			TrafficTrip trip = this.getResponsibleServer().createTrip(this.getResponsibleServer().getCityZone(), event.getNodeID(), startTime,
-					false);
+      // use node as target node
+      TrafficTrip trip = this.getResponsibleServer().createTrip(this.
+        getResponsibleServer().getCityZone(),
+        event.getNodeID(),
+        startTime,
+        false);
 
-			// Create vehicle
-			Vehicle<?> v = this.createVehicle(data, trip);
+      // Create vehicle
+      Vehicle<?> v = this.createVehicle(data,
+        trip);
 
-			if (v == null) {
-				continue;
-			}
+      if (v == null) {
+        continue;
+      }
 
-			// Schedule vehicle
-			this.scheduleVehicle(v, trip.getStartTime());
+      // Schedule vehicle
+      this.scheduleVehicle(v,
+        trip.getStartTime());
 
-			this.getResponsibleServer().getEventForVehicle().put(v.getId(), event);
-		}
-	}
+      this.getResponsibleServer().getEventForVehicle().put(v.getId(),
+        event);
+    }
+  }
 }

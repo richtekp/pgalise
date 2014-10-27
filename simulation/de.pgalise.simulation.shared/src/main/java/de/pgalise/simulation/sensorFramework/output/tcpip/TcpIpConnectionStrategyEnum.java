@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.sensorFramework.output.tcpip;
 
 /**
  * Enum for TcpIp opnening and closing connection
- * 
+ *
  * @author Marcus
- * 
+ *
  */
 public enum TcpIpConnectionStrategyEnum {
-	/**
-	 * Shows that {@link TcpIpKeepOpenStrategy} is used
-	 */
-	KEEP_OPEN,
 
-	/**
-	 * Shows that {@link TcpIpForceCloseStrategy} is used
-	 */
-	FORCE_CLOSE
+  /**
+   * Shows that {@link TcpIpKeepOpenStrategy} is used
+   */
+  KEEP_OPEN,
+  /**
+   * Shows that {@link TcpIpForceCloseStrategy} is used
+   */
+  FORCE_CLOSE
 }

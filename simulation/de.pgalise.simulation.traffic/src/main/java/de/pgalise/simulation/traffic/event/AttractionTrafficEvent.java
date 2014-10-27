@@ -13,88 +13,90 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import java.util.List;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The attraction traffic event will lead to more traffic on the given point in the given time window.
- * 
- * @param <D> 
+ * The attraction traffic event will lead to more traffic on the given point in
+ * the given time window.
+ *
+ * @param <D>
  * @author Timo
  */
+@XmlRootElement
 public class AttractionTrafficEvent<D extends VehicleData> extends CreateRandomVehiclesEvent<D> {
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -8298021404824259440L;
 
-	/**
-	 * when will the attraction start.
-	 */
-	private long attractionStartTimestamp;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -8298021404824259440L;
 
-	/**
-	 * when will the attraction end.
-	 */
-	private long attractionEndTimestamp;
-	
-	/**
-	 * Node id in graph
-	 */
-	private TrafficNode nodeID;
+  /**
+   * when will the attraction start.
+   */
+  private long attractionStartTimestamp;
 
-	public AttractionTrafficEvent(
-		TrafficServerLocal<VehicleEvent> server,
-		long simulationTimestamp,
-		long elapsedTime,
-		long attractionStartTimestamp,
-		long attractionEndTimestamp,
-		TrafficNode nodeID,
-		List<CreateRandomVehicleData> createRandomVehicleDataList) {
-		super(
-			server,simulationTimestamp, elapsedTime,
-			createRandomVehicleDataList);
-		this.attractionStartTimestamp = attractionStartTimestamp;
-		this.attractionEndTimestamp = attractionEndTimestamp;
-		this.nodeID = nodeID;
-	}
+  /**
+   * when will the attraction end.
+   */
+  private long attractionEndTimestamp;
 
-	public long getAttractionStartTimestamp() {
-		return attractionStartTimestamp;
-	}
+  /**
+   * Node id in graph
+   */
+  private TrafficNode nodeID;
 
-	public void setAttractionStartTimestamp(long attractionStartTimestamp) {
-		this.attractionStartTimestamp = attractionStartTimestamp;
-	}
+  public AttractionTrafficEvent(
+    TrafficControllerLocal<VehicleEvent> server,
+    long simulationTimestamp,
+    long elapsedTime,
+    long attractionStartTimestamp,
+    long attractionEndTimestamp,
+    TrafficNode nodeID,
+    List<CreateRandomVehicleData> createRandomVehicleDataList) {
+    super(
+      server,
+      simulationTimestamp,
+      elapsedTime,
+      createRandomVehicleDataList);
+    this.attractionStartTimestamp = attractionStartTimestamp;
+    this.attractionEndTimestamp = attractionEndTimestamp;
+    this.nodeID = nodeID;
+  }
 
-	public long getAttractionEndTimestamp() {
-		return attractionEndTimestamp;
-	}
+  public long getAttractionStartTimestamp() {
+    return attractionStartTimestamp;
+  }
 
-	public void setAttractionEndTimestamp(long attractionEndTimestamp) {
-		this.attractionEndTimestamp = attractionEndTimestamp;
-	}
+  public void setAttractionStartTimestamp(long attractionStartTimestamp) {
+    this.attractionStartTimestamp = attractionStartTimestamp;
+  }
 
-	public TrafficNode getNodeID() {
-		return nodeID;
-	}
+  public long getAttractionEndTimestamp() {
+    return attractionEndTimestamp;
+  }
 
-	public void setNodeID(TrafficNode nodeID) {
-		this.nodeID = nodeID;
-	}
+  public void setAttractionEndTimestamp(long attractionEndTimestamp) {
+    this.attractionEndTimestamp = attractionEndTimestamp;
+  }
 
-	@Override
-	public EventType getType() {
-		return TrafficEventTypeEnum.ATTRACTION_TRAFFIC_EVENT;
-	}
+  public TrafficNode getNodeID() {
+    return nodeID;
+  }
+
+  public void setNodeID(TrafficNode nodeID) {
+    this.nodeID = nodeID;
+  }
+
+  @Override
+  public EventType getType() {
+    return TrafficEventTypeEnum.ATTRACTION_TRAFFIC_EVENT;
+  }
 }

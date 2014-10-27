@@ -4,11 +4,12 @@
  */
 package de.pgalise.simulation.energy.sensor;
 
-import de.pgalise.simulation.energy.SensorHelperPhotovoltaik;
-import de.pgalise.simulation.energy.SensorHelperWindPower;
 import de.pgalise.simulation.sensorFramework.SensorType;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
 import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import de.pgalise.staticsensor.internal.sensor.energy.PhotovoltaikSensor;
+import de.pgalise.staticsensor.internal.sensor.energy.SmartMeterSensor;
+import de.pgalise.staticsensor.internal.sensor.energy.WindPowerSensor;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -18,17 +19,24 @@ import java.util.Set;
  *
  * @author richter
  */
-public enum EnergySensorTypeEnum implements SensorType {
+public enum EnergySensorTypeEnum implements EnergySensorType {
 	
 	/**
 	 * {@link SensorType} for photovoltaik plants
 	 */
-	PHOTOVOLTAIK(9, SensorHelperPhotovoltaik.class, "kWh", SensorInterfererType.PHOTOVOLTAIK_WHITE_NOISE_INTERFERER),
+	PHOTOVOLTAIK(9, PhotovoltaikSensor.class, "kWh", SensorInterfererType.PHOTOVOLTAIK_WHITE_NOISE_INTERFERER),
 	
 	/**
 	 * {@link SensorType} for wind power sensors
 	 */
-	WINDPOWERSENSOR(16, SensorHelperWindPower.class, "Watt", SensorInterfererType.WIND_POWER_WHITE_NOISE_INTERFERER);
+	WINDPOWERSENSOR(16, WindPowerSensor.class, "Watt", SensorInterfererType.WIND_POWER_WHITE_NOISE_INTERFERER),
+	
+	
+	/**
+	 * {@link SensorType} for smartmeters
+	 */
+	SMARTMETER(12, SmartMeterSensor.class, "kWh", SensorInterfererType.SMART_METER_WHITE_NOISE_INTERFERER),
+	;
 
 	/**
 	 * the integer sensor type id

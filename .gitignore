@@ -12,6 +12,7 @@ target
 *.exe
 *.o
 *.so
+*.pyc
 
 # Packages #
 ############
@@ -48,3 +49,34 @@ Thumbs.db
 /simulation/de.pgalise.simulation.shared-impl/nbproject/private/
 /simulation/de.pgalise.simulation.controlCenter/src/main/webapp/WEB-INF/glassfish-web.xml
 /data/hsqldb/hsqldb.lck
+/postgis_db
+postgis_db-9.2/
+/postgis_db-9.2/
+postgis_db-9.2/*
+
+# bootstrapping and external sources
+scripts/tmp
+scripts/tests/ftp-base
+pgalise-bootstrap
+tmp
+
+# script tests
+scripts/tests/lxc-btrfs.img
+scripts/tests/lxc/*
+
+# copied by mvn
+scripts/lib/mount_utils.py
+scripts/lib/sparse_file_utils.py
+scripts/osm_postgis_transform_prequisites.py
+scripts/osm_postgis_transform.py
+scripts/lib/postgis_utils.py
+scripts/osm_postgis_transform.py
+
+# purpose unclear
+pyftpdlib
+
+##########
+# IDE related
+##########
+.idea
+parent-pom.iml

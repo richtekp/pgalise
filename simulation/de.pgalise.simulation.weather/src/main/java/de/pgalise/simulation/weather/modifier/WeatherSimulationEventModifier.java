@@ -13,67 +13,85 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.modifier;
 
+import de.pgalise.simulation.shared.entity.City;
 import java.util.Properties;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.WeatherCondition;
 
 /**
- * The {@link WeatherMap} serves as the root for the weather modifiers that are all derived from the class
- * {@link WeatherMapModifier}. For that reason the decorator pattern is realized. Furthermore, the decorators can also
- * function as a {@link WeatherStrategy} because the strategy pattern is implemented. The different weather modifiers
- * are separated into two groups: Some are derived from the class {@link WeatherDayEventModifier} and others expand the
- * class {@link WeatherSimulationEventModifier}. The simulation event modifiers, which expand the
- * {@link WeatherSimulationEventModifier}, can be activated only once and are always active for the complete simulation
- * runtime.
- * 
- * @param <C> 
+ * The {@link WeatherMap} serves as the root for the weather modifiers that are
+ * all derived from the class {@link WeatherMapModifier}. For that reason the
+ * decorator pattern is realized. Furthermore, the decorators can also function
+ * as a {@link WeatherStrategy} because the strategy pattern is implemented. The
+ * different weather modifiers are separated into two groups: Some are derived
+ * from the class {@link WeatherDayEventModifier} and others expand the class
+ * {@link WeatherSimulationEventModifier}. The simulation event modifiers, which
+ * expand the {@link WeatherSimulationEventModifier}, can be activated only once
+ * and are always active for the complete simulation runtime.
+ *
+ * @param <C>
  * @author Andreas Rehfeldt
  * @version 1.0 (08.10.2012)
  */
-public abstract class WeatherSimulationEventModifier<C extends WeatherCondition> extends AbstractWeatherMapModifier<C> {
+public abstract class WeatherSimulationEventModifier extends AbstractWeatherMapModifier {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = 2214588605839775963L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = 2214588605839775963L;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param props
-	 *            Properties
-	 * @param seed
-	 *            Seed for random generators
-	 */
-	public WeatherSimulationEventModifier(long seed, Properties props, WeatherLoader weatherLoader) {
-		super(seed, props, weatherLoader);
-	}
+  /**
+   * Constructor
+   *
+   * @param city
+   * @param props Properties
+   * @param seed Seed for random generators
+   * @param weatherLoader
+   */
+  public WeatherSimulationEventModifier(City city,
+    long seed,
+    Properties props,
+    WeatherLoader weatherLoader) {
+    super(city,
+      seed,
+      props,
+      weatherLoader);
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param seed
-	 *            Seed for random generators
-	 */
-	public WeatherSimulationEventModifier(long seed, WeatherLoader weatherLoader) {
-		super(seed, weatherLoader);
-	}
+  /**
+   * Constructor
+   *
+   * @param city
+   * @param seed Seed for random generators
+   * @param weatherLoader
+   */
+  public WeatherSimulationEventModifier(City city,
+    long seed,
+    WeatherLoader weatherLoader) {
+    super(city,
+      seed,
+      weatherLoader);
+  }
 
-	/**
-	 * Constructor
-	 * 
-	 * @param map
-	 *            WeatherMap
-	 * @param seed
-	 *            Seed for random generators
-	 */
-	public WeatherSimulationEventModifier(WeatherMap map, long seed, WeatherLoader weatherLoader) {
-		super(map, seed, weatherLoader);
-	}
+  /**
+   * Constructor
+   *
+   * @param city
+   * @param map WeatherMap
+   * @param seed Seed for random generators
+   * @param weatherLoader
+   */
+  public WeatherSimulationEventModifier(City city,
+    WeatherMap map,
+    long seed,
+    WeatherLoader weatherLoader) {
+    super(city,
+      map,
+      seed,
+      weatherLoader);
+  }
 
 }

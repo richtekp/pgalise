@@ -13,27 +13,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.event.weather;
 
 import de.pgalise.simulation.shared.event.AbstractEvent;
 
 /**
- * Weather event super class.
- * 
+ * Weather type super class.
+ *
  * @author Timo
  * @version 1.0
  */
 public abstract class WeatherEvent extends AbstractEvent {
+
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -4700226520167357639L;
 
 	/**
-	 * Constructor
-	 * 
+	 * Timestamp of the type
 	 */
-	public WeatherEvent() {
+	private long timestamp;
+
+	/**
+	 * Specified duration
+	 */
+	private long duration;
+
+	protected WeatherEvent() {
+		super();
 	}
+
+	public WeatherEvent(
+		Long id,
+		long timestamp,
+		long duration) {
+		super(id);
+		this.timestamp = timestamp;
+		this.duration = duration;
+	}
+
+	public long getTimestamp() {
+		return this.timestamp;
+	}
+
+	public void setTimestamp(long timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public long getDuration() {
+		return duration;
+	}
+
+	public void setDuration(long duration) {
+		this.duration = duration;
+	}
+
+	@Override
+	public abstract WeatherEventType getType();
 }

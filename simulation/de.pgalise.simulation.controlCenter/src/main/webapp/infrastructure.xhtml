@@ -1,0 +1,82 @@
+<!-- INFRASTRUCTURE (INIT) -->
+<ui:composition template="/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="content">
+		<div class="contentDiv">
+			<h2>Infrastructure</h2>
+			<h3>Controllers</h3>
+
+			<h:form>
+				<div>The controller needs the IP address where the Simulation,
+					Weather and Traffic Controller are.</div>
+				<h:outputLabel for="controllerIP" value="Simulation Controller:" />
+				<h:inputText id="controllerIP"
+					title="enter the simulation controller ip"
+					value="#{mainCtrl.startParameter.ipSimulationController}">
+
+					<f:validator validatorId="IpValidator" />
+					<f:ajax />
+				</h:inputText>
+				Traffic Controller: 
+				<h:inputText title="enter the traffic controller ip"
+					value="#{mainCtrl.startParameter.ipTrafficController}">
+
+					<f:validator validatorId="IpValidator" />
+					<f:ajax />
+				</h:inputText>
+				Weather Controller:<h:inputText
+					title="enter the weather controller ip"
+					value="#{mainCtrl.startParameter.ipWeatherController}">
+
+					<f:validator validatorId="IpValidator" />
+					<f:ajax />
+				</h:inputText>
+				Static Sensor Controller:<h:inputText
+					title="enter the sensor controller ip"
+					value="#{mainCtrl.startParameter.ipStaticSensorController}">
+
+					<f:validator validatorId="IpValidator" />
+					<f:ajax />
+				</h:inputText>
+				Energy Controller:
+				<h:inputText validatorMessage="invalid IP"
+					title="enter the energy controller ip"
+					value="#{mainCtrl.startParameter.ipEnergyController}">
+					<f:validator validatorId="IpValidator" />
+					<f:ajax />
+				</h:inputText>
+			</h:form>
+			<h:form>
+				<h3>Traffic Servers</h3>
+				<div>Decide how much Traffic Servers will be used in the
+					Simulation.</div>
+				<p:spinner value="#{mainCtrl.initParameter.trafficServerCount}">
+					<f:ajax />
+				</p:spinner>
+			</h:form>
+			<h:form>
+				<h3>User Interfaces</h3>
+				<div>This defines the adresses of the user interfaces.</div>
+				Operation Center:
+				<h:inputText value="#{mainCtrl.initParameter.operationCenterURL}">
+					<f:ajax />
+					<f:validateRegex
+						pattern="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$" />
+				</h:inputText>
+			</h:form>
+		</div>
+	</ui:define>
+	<ui:define name="header_extension">
+		<ui:include src="/WEB-INF/templates/partials/header_extension.xhtml" />
+	</ui:define>
+	<ui:define name="menubar_west">
+		<ui:include src="/WEB-INF/templates/partials/menubar_west.xhtml" />
+	</ui:define>
+	<ui:define name="simulation_status">
+		<ui:include src="/WEB-INF/templates/partials/simulation_status.xhtml" />
+	</ui:define>
+</ui:composition>

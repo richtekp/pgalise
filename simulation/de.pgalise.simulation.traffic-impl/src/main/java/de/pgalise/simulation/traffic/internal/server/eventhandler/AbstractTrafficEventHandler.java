@@ -4,53 +4,73 @@
  */
 package de.pgalise.simulation.traffic.internal.server.eventhandler;
 
-import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.event.AbstractTrafficEvent;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
-import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
-import de.pgalise.simulation.traffic.internal.server.DefaultTrafficServer;
-import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.InitParameter;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEventHandler;
-import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 
 /**
  *
- * @param <D> 
+ * @param <D>
  * @author richter
  */
-public class AbstractTrafficEventHandler<D extends VehicleData,E extends TrafficEvent> implements TrafficEventHandler<E> {
-	/**
-	 * Traffic server
-	 */
-	private TrafficServerLocal<E> responsibleServer;
+public abstract class AbstractTrafficEventHandler<D extends VehicleData, E extends TrafficEvent>
+  implements TrafficEventHandler<E> {
 
-	@Override
-	public void init(TrafficServerLocal<E>  server) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  private RandomSeedService randomSeedService;
 
-	@Override
-	public EventType getTargetEventType() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  /**
+   * Traffic server
+   */
+  private TrafficControllerLocal<E> responsibleServer;
 
-	@Override
-	public void handleEvent(
-		E event) {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-	}
+  /**
+   * is set via {@link #init(de.pgalise.simulation.service.InitParameter) }
+   */
+  private Output output;
 
-	@Override
-	public TrafficServerLocal<E>  getResponsibleServer() {
-		return responsibleServer;
-	}
+  public Output getOutput() {
+    return output;
+  }
 
-	public void setResponsibleServer(TrafficServerLocal<E>  responsibleServer) {
-		this.responsibleServer = responsibleServer;
-	}
-	
+  public void init(InitParameter initParameter) {
+    this.output = initParameter.getOutput();
+  }
+
+  public AbstractTrafficEventHandler() {
+  }
+
+  public AbstractTrafficEventHandler(RandomSeedService randomSeedService,
+    TrafficControllerLocal<E> responsibleServer,
+    Output output) {
+    this.randomSeedService = randomSeedService;
+    this.responsibleServer = responsibleServer;
+    this.output = output;
+  }
+
+  @Override
+  public void init(RandomSeedService randomSeedService,
+    TrafficControllerLocal responsibleServer,
+    Output output) {
+    this.randomSeedService = randomSeedService;
+    this.responsibleServer = responsibleServer;
+    this.output = output;
+  }
+
+  public RandomSeedService getRandomSeedService() {
+    return randomSeedService;
+  }
+
+  @Override
+  public TrafficControllerLocal<E> getResponsibleServer() {
+    return responsibleServer;
+  }
+
+  public void setResponsibleServer(TrafficControllerLocal<E> responsibleServer) {
+    this.responsibleServer = responsibleServer;
+  }
+
 }

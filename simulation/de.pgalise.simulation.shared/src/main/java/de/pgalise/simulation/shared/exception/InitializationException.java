@@ -13,36 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.exception;
+
+import javax.ejb.ApplicationException;
 
 /**
  * This exception be be thrown on init.
+ *
  * @author Mustafa
  */
-public class InitializationException extends Exception {
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -7626034209492820329L;
+@ApplicationException
+public class InitializationException extends RuntimeException {
 
-	/**
-	 * Default constructor
-	 * 
-	 * @param msg
-	 *            Message
-	 */
-	public InitializationException(String msg) {
-		super(msg);
-	}
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -7626034209492820329L;
 
-	public InitializationException(Throwable cause) {
-		super(cause);
-	}
+  /**
+   * Default constructor
+   *
+   * @param msg Message
+   */
+  public InitializationException(String msg) {
+    super(msg);
+  }
 
-	public InitializationException(String message,
-		Throwable cause) {
-		super(message,
-			cause);
-	}
+  public InitializationException(Throwable cause) {
+    super(cause);
+  }
+
+  public InitializationException(String message,
+    Throwable cause) {
+    super(message,
+      cause);
+  }
 }

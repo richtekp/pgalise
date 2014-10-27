@@ -16,8 +16,8 @@
  
 package de.pgalise.util.weathercollector.model;
 
-import de.pgalise.simulation.weather.model.ServiceDataCurrent;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 
 /**
  * Interface to complete weather service data
@@ -34,6 +34,6 @@ public interface ServiceDataCompleter<C extends WeatherCondition> {
 	 * @param obj
 	 *            new obj
 	 */
-	public void complete(ServiceDataCurrent<C> obj);
+	public void complete(ServiceDataCurrent obj);
 
 }

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.pgalise.simulation.staticsensor.grid.GridDeployer;
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
  * Create random positions for sensors
@@ -48,8 +48,8 @@ public class RandomGridDeployer implements GridDeployer {
 	}
 
 	@Override
-	public List<Vector2d> getPositions(double width, double height, int number) {
-		List<Vector2d> positions = new ArrayList<>();
+	public List<JaxbVector2d> getPositions(double width, double height, int number) {
+		List<JaxbVector2d> positions = new ArrayList<>();
 
 		// Create positions
 		double x, y;
@@ -63,7 +63,7 @@ public class RandomGridDeployer implements GridDeployer {
 			} while ((x > width) && (y > height));
 
 			// Add to list
-			positions.add(new Vector2d(x, y));
+			positions.add(new JaxbVector2d(x, y));
 		}
 
 		// return list

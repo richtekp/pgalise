@@ -13,188 +13,219 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.modifier;
 
-import de.pgalise.testutils.TestUtils;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
-
-import org.junit.Assert;
-import org.junit.Test;
-
+import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.City;
+import de.pgalise.simulation.shared.entity.City;
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
-import de.pgalise.simulation.weather.internal.dataloader.DatabaseWeatherLoader;
-import de.pgalise.simulation.weather.model.StationDataNormal;
+import de.pgalise.simulation.weather.entity.ServiceDataCurrent;
+import de.pgalise.simulation.weather.entity.ServiceDataForecast;
+import de.pgalise.simulation.weather.entity.StationDataNormal;
 import de.pgalise.simulation.weather.internal.modifier.events.StormDayEvent;
-import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
-import de.pgalise.simulation.weather.model.DefaultServiceDataCurrent;
-import de.pgalise.simulation.weather.model.DefaultServiceDataForecast;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
 import de.pgalise.simulation.weather.modifier.AbstractWeatherMapModifier;
 import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import de.pgalise.simulation.weather.testutils.WeatherTestUtils;
+import de.pgalise.simulation.weather.persistence.WeatherPersistenceHelper;
+import de.pgalise.simulation.weather.service.WeatherService;
+import de.pgalise.testutils.TestUtils;
+import de.pgalise.testutils.weather.WeatherTestUtils;
 import java.sql.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 import org.apache.openejb.api.LocalClient;
-import org.junit.BeforeClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * JUnit test for StormDayEvent
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 10, 2012)
  */
-@LocalClient
 @ManagedBean
+@LocalClient
 public class StormDayEventTest {
-	@PersistenceUnit(unitName = "pgalise")
-	private EntityManagerFactory entityManagerFactory;
-	private static EJBContainer container;
 
-	/**
-	 * End timestamp
-	 */
-	private long endTimestamp;
+  @PersistenceContext(unitName = "pgalise-weather")
+  private EntityManager entityManagerFactory;
 
-	/**
-	 * Start timestamp
-	 */
-	private long startTimestamp;
+  /**
+   * End timestamp
+   */
+  private final long endTimestamp;
 
-	/**
-	 * Test timestamp
-	 */
-	private long testTimestamp;
+  /**
+   * Start timestamp
+   */
+  private final long startTimestamp;
 
-	/**
-	 * Test value
-	 */
-	private float testValue = 10.0f;
+  /**
+   * Test timestamp
+   */
+  private final long testTimestamp;
 
-	/**
-	 * Test duration
-	 */
-	private float testDuration = 4.0f;
+  /**
+   * Test value
+   */
+  private final float testValue = 10.0f;
 
-	/**
-	 * Service Class
-	 */
-	private DefaultWeatherService service;
+  /**
+   * Test duration
+   */
+  private final long testDuration = 4;
 
-	/**
-	 * Weather Loader
-	 */
-	private WeatherLoader<DefaultWeatherCondition> loader;
-	
-	private	City city;
-	
-	@Resource
-	private UserTransaction userTransaction;
+  /**
+   * Service Class
+   */
+  @EJB
+  private WeatherService service;
 
-	@SuppressWarnings("LeakingThisInConstructor")
-	public StormDayEventTest() throws NamingException {
-		container.getContext().bind("inject",
-			this);
-		
-		city = TestUtils.createDefaultTestCityInstance();
-		
-		Context ctx = container.getContext();
+  /**
+   * Weather Loader
+   */
+  @EJB
+  private WeatherLoader loader;
 
-		// Load EJB for Weather loader
-		loader = new DatabaseWeatherLoader(entityManagerFactory.createEntityManager());
+  private City city;
 
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2010, 5, 9, 0, 0, 0);
-		startTimestamp = cal.getTimeInMillis();
+  @Resource
+  private UserTransaction userTransaction;
+  @EJB
+  private IdGenerator idGenerator;
+  @EJB
+  private WeatherPersistenceHelper persistenceUtil;
 
-		// End
-		cal.set(2010, 5, 10, 0, 0, 0);
-		endTimestamp = cal.getTimeInMillis();
+  public StormDayEventTest() throws NamingException {
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2010,
+      5,
+      9,
+      0,
+      0,
+      0);
+    startTimestamp = cal.getTimeInMillis();
 
-		// Test time
-		cal.set(2010, 5, 9, 18, 0, 0);
-		testTimestamp = cal.getTimeInMillis();
+    // End
+    cal.set(2010,
+      5,
+      10,
+      0,
+      0,
+      0);
+    endTimestamp = cal.getTimeInMillis();
 
-		// Create service
-		service = new DefaultWeatherService(city, loader);
-	}
-	
-	@BeforeClass
-	public static void setUpClass() {
-		container = TestUtils.getContainer();
-	}
+    // Test time
+    cal.set(2010,
+      5,
+      9,
+      18,
+      0,
+      0);
+    testTimestamp = cal.getTimeInMillis();
+  }
 
-	@Test
-	public void testDeployChanges() throws Exception {
-		service = new DefaultWeatherService(city, loader);
-		
-		//preparation
-		Map<Date, StationDataNormal> entities = WeatherTestUtils.setUpWeatherStationData(startTimestamp,
-			endTimestamp,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataCurrent> entities0 = WeatherTestUtils.setUpWeatherServiceDataCurrent(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		Map<Date, DefaultServiceDataForecast> entities1 = WeatherTestUtils.setUpWeatherServiceDataForecast(startTimestamp,
-			endTimestamp,
-			city,
-			userTransaction,
-			entityManagerFactory);
-		service.addNewWeather(startTimestamp, endTimestamp, true,
-				null);
-		
-		// Get extrema of reference values
-		float refvalue = service.getValue(WeatherParameterEnum.WIND_VELOCITY,
-				testTimestamp).floatValue();
+  @Before
+  public void setUp() throws Exception {
+    TestUtils.getContext().bind("inject",
+      this);
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
+    userTransaction.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
-		// Deploy strategy
-		StormDayEvent event = new StormDayEvent(new DefaultRandomSeedService().getSeed(ColdDayEventTest.class
-				.toString()), testTimestamp, null, testValue,
-				testDuration, loader);
-		service.deployStrategy(event);
+  @Test
+  public void testDeployChanges() throws Exception {
+    userTransaction.begin();
+    try {
+      //preparation
+      Map<Date, StationDataNormal> entities = WeatherTestUtils.
+        setUpWeatherStationData(startTimestamp,
+          endTimestamp,
+          persistenceUtil,
+          entityManagerFactory,
+          idGenerator);
+      Map<Date, ServiceDataCurrent> entities0 = WeatherTestUtils.
+        setUpWeatherServiceDataCurrent(startTimestamp,
+          endTimestamp,
+          city,
+          persistenceUtil,
+          entityManagerFactory,
+          idGenerator);
+      Map<Date, ServiceDataForecast> entities1 = WeatherTestUtils.
+        setUpWeatherServiceDataForecast(startTimestamp,
+          endTimestamp,
+          city,
+          persistenceUtil,
+          entityManagerFactory,
+          idGenerator);
+      service.addNewWeather(startTimestamp,
+        endTimestamp,
+        true,
+        null);
 
-		// Get extrema of decorator values
-		float decvalue = service.getValue(WeatherParameterEnum.WIND_VELOCITY,
-				testTimestamp).floatValue();
+      // Get extrema of reference values
+      float refvalue = service.getValue(WeatherParameterEnum.WIND_VELOCITY,
+        testTimestamp,
+        city).floatValue();
 
-		/*
-		 * Testcase 1
-		 */
+      // Deploy strategy
+      StormDayEvent event = new StormDayEvent(city,
+        new DefaultRandomSeedService().
+        getSeed(ColdDayEventTest.class
+          .toString()),
+        testTimestamp,
+        null,
+        testValue,
+        testDuration,
+        loader);
+      service.deployStrategy(event,
+        city);
 
-		// Test 1: extrema are not equals
-		Assert.assertTrue(refvalue < decvalue);
+      // Get extrema of decorator values
+      float decvalue = service.getValue(WeatherParameterEnum.WIND_VELOCITY,
+        testTimestamp,
+        city).floatValue();
 
-		// Test 2: extrema are as high event
-		Assert.assertEquals(AbstractWeatherMapModifier.round(event.getMaxValue(), 3), AbstractWeatherMapModifier.round(decvalue, 3), 1);
-		
-		WeatherTestUtils.tearDownWeatherData(entities,StationDataNormal.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities0,
-			DefaultServiceDataCurrent.class,
-			userTransaction,
-			entityManagerFactory);
-		WeatherTestUtils.tearDownWeatherData(entities1,
-			DefaultServiceDataForecast.class,
-			userTransaction,
-			entityManagerFactory);
-	}
+      /*
+       * Testcase 1
+       */
+      // Test 1: extrema are not equals
+      Assert.assertTrue(refvalue < decvalue);
+
+      // Test 2: extrema are as high event
+      Assert.assertEquals(AbstractWeatherMapModifier.round(event.getMaxValue(),
+        3),
+        AbstractWeatherMapModifier.round(decvalue,
+          3),
+        1);
+
+      WeatherTestUtils.tearDownWeatherData(entities,
+        StationDataNormal.class,
+        entityManagerFactory);
+      WeatherTestUtils.tearDownWeatherData(entities0,
+        ServiceDataCurrent.class,
+        entityManagerFactory);
+      WeatherTestUtils.tearDownWeatherData(entities1,
+        ServiceDataForecast.class,
+        entityManagerFactory);
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
 }

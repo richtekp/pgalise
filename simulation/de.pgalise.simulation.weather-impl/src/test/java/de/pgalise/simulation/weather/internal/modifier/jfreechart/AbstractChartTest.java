@@ -13,253 +13,260 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.modifier.jfreechart;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Polygon;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.service.RandomSeedService;
+import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
+import de.pgalise.simulation.shared.entity.City;
+import de.pgalise.simulation.weather.dataloader.WeatherLoader;
+import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
+import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
+import de.pgalise.simulation.weather.service.WeatherService;
 import de.pgalise.testutils.TestUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import javax.ejb.embeddable.EJBContainer;
-import javax.naming.Context;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
-
+import javax.transaction.UserTransaction;
 import org.jfree.data.time.TimeSeries;
-
-import de.pgalise.simulation.service.RandomSeedService;
-import de.pgalise.simulation.service.internal.DefaultRandomSeedService;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.city.City;
-import de.pgalise.simulation.shared.geotools.GeoToolsBootstrapping;
-import de.pgalise.simulation.weather.dataloader.WeatherLoader;
-import de.pgalise.simulation.weather.internal.service.DefaultWeatherService;
-import de.pgalise.simulation.weather.model.DefaultWeatherCondition;
-import de.pgalise.simulation.weather.parameter.WeatherParameterEnum;
-import org.junit.BeforeClass;
+import org.junit.Before;
 
 /**
- * Abstract super class for chart tests. Theses tests are used to test the weather decorators.
- * 
+ * Abstract super class for chart tests. Theses tests are used to test the
+ * weather decorators.
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Sep 11, 2012)
  */
 public abstract class AbstractChartTest {
-	private static EJBContainer container;
 
-	/**
-	 * Title for decorator dataset
-	 */
-	public static final String DECORATOR_TITLE = "Decorator";
+  /**
+   * Title for decorator dataset
+   */
+  public static final String DECORATOR_TITLE = "Decorator";
 
-	/**
-	 * Title for reference dataset
-	 */
-	public static final String REFERENCE_TITLE = "Reference";
+  /**
+   * Title for reference dataset
+   */
+  public static final String REFERENCE_TITLE = "Reference";
 
-	/**
-	 * File path for property file
-	 */
-	private static final String PROPERTIES_FILE_PATH = "/weather_decorators.properties";
+  /**
+   * File path for property file
+   */
+  private static final String PROPERTIES_FILE_PATH = "/weather_decorators.properties";
 
-	/**
-	 * End timestamp
-	 */
-	private long endTimestamp;
+  /**
+   * End timestamp
+   */
+  private long endTimestamp;
 
-	/**
-	 * Parameter
-	 */
-	private WeatherParameterEnum parameter;
+  /**
+   * Parameter
+   */
+  private WeatherParameterEnum parameter;
 
-	/**
-	 * Properties
-	 */
-	private Properties props;
+  /**
+   * Properties
+   */
+  private Properties props;
 
-	/**
-	 * RandomSeedService
-	 */
-	private RandomSeedService random;
+  /**
+   * RandomSeedService
+   */
+  @EJB
+  private RandomSeedService random;
 
-	/**
-	 * Service Class
-	 */
-	private DefaultWeatherService service;
+  /**
+   * Service Class
+   */
+  @EJB
+  private WeatherService service;
 
-	/**
-	 * Start timestamp
-	 */
-	private long startTimestamp;
+  /**
+   * Start timestamp
+   */
+  private long startTimestamp;
 
-	/**
-	 * Weather Loader
-	 */
-	private WeatherLoader<DefaultWeatherCondition> loader;
+  /**
+   * Weather Loader
+   */
+  @EJB
+  private WeatherLoader loader;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param startdate
-	 *            Date as timestamp
-	 * @param enddate
-	 *            Date as timestamp
-	 * @param parameter
-	 *            WeatherParameterEnum
-	 * @throws IOException
-	 * @throws NamingException
-	 */
-	public AbstractChartTest(long startdate, long enddate, WeatherParameterEnum parameter)
-			throws IOException, NamingException {
-		this.random = new DefaultRandomSeedService();
-		this.startTimestamp = startdate;
-		this.endTimestamp = enddate;
-		this.parameter = parameter;
+  @Resource
+  private UserTransaction userTransaction;
+  @EJB
+  private IdGenerator idGenerator;
+  private City city;
 
-		// Read props
-		try {
-			InputStream propInFile = AbstractChartTest.class
-					.getResourceAsStream(AbstractChartTest.PROPERTIES_FILE_PATH);
-			this.props = new Properties();
-			this.props.loadFromXML(propInFile);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+  /**
+   * Constructor
+   *
+   * @param startdate Date as timestamp
+   * @param enddate Date as timestamp
+   * @param parameter WeatherParameterEnum
+   * @throws IOException
+   * @throws NamingException
+   */
+  public AbstractChartTest(long startdate,
+    long enddate,
+    WeatherParameterEnum parameter)
+    throws IOException, NamingException {
+    this.random = new DefaultRandomSeedService();
+    this.startTimestamp = startdate;
+    this.endTimestamp = enddate;
+    this.parameter = parameter;
 
-		Context ctx = container.getContext();
+    // Read props
+    try {
+      InputStream propInFile = AbstractChartTest.class
+        .getResourceAsStream(AbstractChartTest.PROPERTIES_FILE_PATH);
+      this.props = new Properties();
+      this.props.loadFromXML(propInFile);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
-		// City
-		City city = TestUtils.createDefaultTestCityInstance();
+  @Before
+  public void setUp() throws Exception {
+    TestUtils.getContext().bind("inject",
+      this);
+    TestUtils.getContainer().getContext().bind("inject",
+      this);
 
-		// Load EJB for Weather loader
-		this.loader = (WeatherLoader<DefaultWeatherCondition>) ctx
-				.lookup("java:global/de.pgalise.simulation.weather-impl/de.pgalise.simulation.weather.dataloader.WeatherLoader");
+    // City
+    userTransaction.begin();
+    try {
+      city = TestUtils.createDefaultTestCityInstance(idGenerator);
 
-		// Create service
-		this.service = new DefaultWeatherService(city, this.loader);
+      // Get reference weather informations
+      this.service.addNewWeather(this.startTimestamp,
+        this.endTimestamp,
+        true,
+        null);
+    } finally {
+      userTransaction.commit();
+    }
+  }
 
-		// Get reference weather informations
-		this.service.addNewWeather(this.startTimestamp, this.endTimestamp, true, null);
+  public WeatherLoader getLoader() {
+    return this.loader;
+  }
 
-	}
-	
-	@BeforeClass
-	public static void setUpClass() {
-		container = TestUtils.getContainer();
-	}
+  /**
+   * Get Timeserie for decorator values
+   *
+   * @return Timeserie
+   * @throws Exception
+   */
+  protected abstract TimeSeries getDecoratorTimeSerie() throws Exception;
 
-	public WeatherLoader<DefaultWeatherCondition> getLoader() {
-		return this.loader;
-	}
+  /**
+   * Get Timeserie for reference values
+   *
+   * @return Timeserie
+   */
+  protected abstract TimeSeries getReferenceTimeSerie();
 
-	/**
-	 * Get Timeserie for decorator values
-	 * 
-	 * @return Timeserie
-	 * @throws Exception
-	 */
-	protected abstract TimeSeries getDecoratorTimeSerie() throws Exception;
+  /**
+   * @return the random
+   */
+  public RandomSeedService getRandom() {
+    return random;
+  }
 
-	/**
-	 * Get Timeserie for reference values
-	 * 
-	 * @return Timeserie
-	 */
-	protected abstract TimeSeries getReferenceTimeSerie();
+  /**
+   * @param random the random to set
+   */
+  public void setRandom(RandomSeedService random) {
+    this.random = random;
+  }
 
-	/**
-	 * @return the random
-	 */
-	public RandomSeedService getRandom() {
-		return random;
-	}
+  /**
+   * @return the service
+   */
+  public WeatherService getService() {
+    return service;
+  }
 
-	/**
-	 * @param random the random to set
-	 */
-	public void setRandom(RandomSeedService random) {
-		this.random = random;
-	}
+  /**
+   * @param service the service to set
+   */
+  public void setService(
+    DefaultWeatherService service) {
+    this.service = service;
+  }
 
-	/**
-	 * @return the service
-	 */
-	public DefaultWeatherService getService() {
-		return service;
-	}
+  /**
+   * @return the startTimestamp
+   */
+  public long getStartTimestamp() {
+    return startTimestamp;
+  }
 
-	/**
-	 * @param service the service to set
-	 */
-	public void setService(
-		DefaultWeatherService service) {
-		this.service = service;
-	}
+  /**
+   * @param startTimestamp the startTimestamp to set
+   */
+  public void setStartTimestamp(long startTimestamp) {
+    this.startTimestamp = startTimestamp;
+  }
 
-	/**
-	 * @return the startTimestamp
-	 */
-	public long getStartTimestamp() {
-		return startTimestamp;
-	}
+  /**
+   * @param loader the loader to set
+   */
+  public void setLoader(
+    WeatherLoader loader) {
+    this.loader = loader;
+  }
 
-	/**
-	 * @param startTimestamp the startTimestamp to set
-	 */
-	public void setStartTimestamp(long startTimestamp) {
-		this.startTimestamp = startTimestamp;
-	}
+  /**
+   * @return the props
+   */
+  public Properties getProps() {
+    return props;
+  }
 
-	/**
-	 * @param loader the loader to set
-	 */
-	public void setLoader(
-		WeatherLoader<DefaultWeatherCondition> loader) {
-		this.loader = loader;
-	}
+  /**
+   * @param props the props to set
+   */
+  public void setProps(Properties props) {
+    this.props = props;
+  }
 
-	/**
-	 * @return the props
-	 */
-	public Properties getProps() {
-		return props;
-	}
+  /**
+   * @return the parameter
+   */
+  public WeatherParameterEnum getParameter() {
+    return parameter;
+  }
 
-	/**
-	 * @param props the props to set
-	 */
-	public void setProps(Properties props) {
-		this.props = props;
-	}
+  /**
+   * @param parameter the parameter to set
+   */
+  public void setParameter(
+    WeatherParameterEnum parameter) {
+    this.parameter = parameter;
+  }
 
-	/**
-	 * @return the parameter
-	 */
-	public WeatherParameterEnum getParameter() {
-		return parameter;
-	}
+  /**
+   * @return the endTimestamp
+   */
+  public long getEndTimestamp() {
+    return endTimestamp;
+  }
 
-	/**
-	 * @param parameter the parameter to set
-	 */
-	public void setParameter(
-		WeatherParameterEnum parameter) {
-		this.parameter = parameter;
-	}
+  /**
+   * @param endTimestamp the endTimestamp to set
+   */
+  public void setEndTimestamp(long endTimestamp) {
+    this.endTimestamp = endTimestamp;
+  }
 
-	/**
-	 * @return the endTimestamp
-	 */
-	public long getEndTimestamp() {
-		return endTimestamp;
-	}
-
-	/**
-	 * @param endTimestamp the endTimestamp to set
-	 */
-	public void setEndTimestamp(long endTimestamp) {
-		this.endTimestamp = endTimestamp;
-	}
+  public City getCity() {
+    return city;
+  }
 }

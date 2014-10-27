@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.sensorFramework.output.tcpip;
 
 import java.io.DataOutputStream;
@@ -21,46 +20,64 @@ import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
 /**
- * This class extends {@link TcpIpConnectionStrategy} and closes and recreates the socket after each tuple transmission.
- * 
+ * This class extends {@link TcpIpConnectionStrategy} and closes and recreates
+ * the socket after each tuple transmission.
+ *
+ * The class is designed as stateless singelton. Obtain the only instance with {@link #getInstance()
+ * }.
+ *
  * @author Marcus
  */
-public class TcpIpForceCloseStrategy extends TcpIpConnectionStrategy {
+public class TcpIpForceCloseStrategy extends AbstractTcpIpConnectionStrategy {
 
-	/**
-	 * Returns always TcpIpConnectionStrategyEnum.FORCE_CLOSE.
-	 * 
-	 * @return always TcpIpConnectionStrategyEnum.FORCE_CLOSE
-	 */
-	@Override
-	TcpIpConnectionStrategyEnum getConnectionStrategyEnum() {
-		return TcpIpConnectionStrategyEnum.FORCE_CLOSE;
-	}
+  /**
+   * Returns always TcpIpConnectionStrategyEnum.FORCE_CLOSE.
+   *
+   * @return always TcpIpConnectionStrategyEnum.FORCE_CLOSE
+   */
+  @Override
+  public TcpIpConnectionStrategyEnum getConnectionStrategyEnum() {
+    return TcpIpConnectionStrategyEnum.FORCE_CLOSE;
+  }
 
-	@Override
-	void handleOpen(final TcpIpOutput sensorOutput) {
-		try {
-			sensorOutput.setSocketChannel(SocketChannel.open(sensorOutput.getAddress()));
-			sensorOutput.setDataOutputStream(new DataOutputStream(sensorOutput.getSocketChannel().socket()
-					.getOutputStream()));
-		} catch (final Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+  private TcpIpForceCloseStrategy() {
+  }
 
-	@Override
-	void handleClose(final TcpIpOutput sensorOutput) {
-		if (sensorOutput == null) {
-			throw new IllegalArgumentException("sensorOutput may not be null");
-		}
-		if (sensorOutput.getSocketChannel() != null) {
-			try {
-				sensorOutput.getSocketChannel().close();
-			} catch (final IOException e) {
-				throw new RuntimeException(e);
-			}
-			sensorOutput.setSocketChannel(null);
-			sensorOutput.setDataOutputStream(null);
-		}
-	}
+  private static TcpIpForceCloseStrategy instance;
+
+  public static TcpIpForceCloseStrategy getInstance() {
+    if (instance == null) {
+      instance = new TcpIpForceCloseStrategy();
+    }
+    return instance;
+  }
+
+  @Override
+  public void handleOpen(final TcpIpOutput sensorOutput) {
+    try {
+      sensorOutput.setSocketChannel(SocketChannel.
+        open(sensorOutput.getAddress()));
+      sensorOutput.setDataOutputStream(new DataOutputStream(sensorOutput.
+        getSocketChannel().socket()
+        .getOutputStream()));
+    } catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void handleClose(final TcpIpOutput sensorOutput) {
+    if (sensorOutput == null) {
+      throw new IllegalArgumentException("sensorOutput may not be null");
+    }
+    if (sensorOutput.getSocketChannel() != null) {
+      try {
+        sensorOutput.getSocketChannel().close();
+      } catch (final IOException e) {
+        throw new RuntimeException(e);
+      }
+      sensorOutput.setSocketChannel(null);
+      sensorOutput.setDataOutputStream(null);
+    }
+  }
 }

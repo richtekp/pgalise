@@ -1,0 +1,50 @@
+<!-- WEATHER (RUNTIME) -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+	<!--usage of validation stack in former implementation not clear -->
+	<o:importConstants
+		type="de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum"
+		var="weatherEventTypes" />
+	<f:view contentType="text/html">
+		<div class="contentDiv">
+			<h:form>
+				<h2>Sent message overview</h2>
+				<div class="block">
+					<table class="noWrap">
+						<tr class="head">
+							<td colspan="2"><h3>Sent messages</h3></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div>Get an overview of the sent messages.</div>
+							</td>
+						</tr>
+						<tr>
+							<h:dataTable value="#{mainCtrl.sentMessages}" var="sentMessage">
+								<h:column>
+									<f:facet name="header">ID</f:facet>
+										#{sentMessage.id}
+								</h:column>
+								<h:column>
+									<f:facet name="header">Timestamp</f:facet>
+										#{sentMessage.timestamp}
+								</h:column>
+								<h:column>
+									<f:facet name="header">Type</f:facet>
+										#{sentMessage.messageType}
+								</h:column>
+								<h:column>
+									<f:facet name="header">Content</f:facet>
+										#{sentMessage.content}
+								</h:column>
+							</h:dataTable>
+						</tr>
+					</table>
+				</div>
+			</h:form>
+		</div>
+	</f:view>
+</ui:composition>

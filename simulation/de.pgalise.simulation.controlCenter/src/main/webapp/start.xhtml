@@ -1,0 +1,59 @@
+<!-- START (INIT) -->
+<ui:composition template="/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+	<!--usage of validation stack in former implementation not clear -->
+	<o:importConstants
+		type="de.pgalise.simulation.service.ControllerStatusEnum"
+		var="controllerStatusEnum" />
+	<ui:define name="content">
+		<div class="contentDiv">
+			<h:form>
+				<h3>Summary</h3>
+				Shows the XML start parameter as a hierarchic structure.
+				<p:tree value="#{mainCtrl.startParameterTreeRoot}" var="node">
+					<p:treeNode id="treeNode">
+						<h:outputText value="#{node}" id="lblNode" />
+					</p:treeNode>
+				</p:tree>
+				<h3>Export start parameter</h3>
+				Export the start parameter of the actual simulation as XML.
+				<h:form>
+					<p:commandButton id="downloadLink" value="Download" ajax="false"
+						onclick="PrimeFaces.monitorDownload(start, stop)"
+						icon="ui-icon-arrowthichk-s">
+						<p:fileDownload value="#{mainCtrl.retrieveExportDownloadLink()}" />
+					</p:commandButton>
+				</h:form>
+				<h3>Start Simulation Now</h3>
+				Click the button below to start the simulation with the chosen parameters.
+				<c:choose>
+					<c:when test="#{cityCtrl.city eq null}">
+					No information about city set up so far. Set up city at @TODO link.
+					</c:when>
+					<c:otherwise>
+						<h:commandLink type="button" value="Start"
+							title="start the simulation with your set parameter"
+							actionListener="#{mainCtrl.startSimulation}"
+							onclick="startWaitDialog.show();return true;"
+							disabled="#{mainCtrl.simulationControllerStatus eq controllerStatusEnum.STARTED}">
+						</h:commandLink>
+					</c:otherwise>
+				</c:choose>
+			</h:form>
+		</div>
+	</ui:define>
+	<ui:define name="header_extension">
+		<ui:include src="/WEB-INF/templates/partials/header_extension.xhtml" />
+	</ui:define>
+	<ui:define name="menubar_west">
+		<ui:include src="/WEB-INF/templates/partials/menubar_west.xhtml" />
+	</ui:define>
+	<ui:define name="simulation_status">
+		<ui:include src="/WEB-INF/templates/partials/simulation_status.xhtml" />
+	</ui:define>
+</ui:composition>

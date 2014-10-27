@@ -13,56 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation;
 
+import de.pgalise.simulation.energy.EnergySensorController;
 import de.pgalise.simulation.event.EventInitiator;
+import de.pgalise.simulation.sensorFramework.Sensor;
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
-import de.pgalise.simulation.service.InitParameter;
-import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.visualizationcontroller.ControlCenterController;
-import de.pgalise.simulation.visualizationcontroller.OperationCenterController;
+import de.pgalise.simulation.staticsensor.sensor.weather.WeatherSensorController;
+import de.pgalise.simulation.traffic.TrafficStartParameter;
+import de.pgalise.simulation.traffic.TrafficInitParameter;
+import de.pgalise.simulation.traffic.server.TrafficSensorController;
 
 /**
- * The simulation controller inits, starts, stops, resets and updates the whole simulation. 
- * It's the only touch point for the control center.
+ * The simulation controller inits, starts, stops, resets and updates the whole
+ * simulation. It's the only touch point for the control center.
+ *
  * @author Kamil
  * @auther Jens
  * @auther Timo
  */
-public interface SimulationController extends SensorManagerController<Event, StartParameter, InitParameter> {
+public interface SimulationController extends
+  SensorManagerController<Event, TrafficStartParameter, TrafficInitParameter, Sensor<?, ?>> {
 
-	/**
-	 * Adds an event list. The other controllers will be updated with the given events.
-	 * @param simulationEventList
-	 * 			an event list with a timestamp and events
-	 */
-	public void addSimulationEventList(EventList<?> simulationEventList);
+  /**
+   * Adds an event list. The other controllers will be updated with the given
+   * events.
+   *
+   * @param simulationEventList an event list with a timestamp and events
+   */
+  public void addSimulationEventList(EventList<?> simulationEventList);
 
-	/**
-	 * Returns the current simulation timestamp.
-	 * 
-	 * @return
-	 */
-	public long getSimulationTimestamp();
-	
-	/**
-	 * Use this only for testing.
-	 * @param operationCenterController
-	 */
-	public void setOperationCenterController(OperationCenterController operationCenterController);
-	
-	/**
-	 * Use this only for testing.
-	 * @param controlCenterController
-	 */
-	public void setControlCenterController(ControlCenterController controlCenterController);
-	
-	/**
-	 * Use this only for testing.
-	 * @return
-	 */
-	public EventInitiator getEventInitiator();
+  /**
+   * Returns the current simulation timestamp.
+   *
+   * @TODO: check usage (timestamps should be determined by System simply)
+   *
+   * @return
+   */
+  public long getSimulationTimestamp();
+
+  public long getElapsedTime();
+
+  /**
+   * Use this only for testing.
+   *
+   * @return
+   */
+  public EventInitiator getEventInitiator();
+
+  public WeatherSensorController getWeatherSensorController();
+
+  public EnergySensorController getEnergySensorController();
+
+  public TrafficSensorController getTrafficSensorController();
 }

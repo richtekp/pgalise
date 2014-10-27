@@ -13,31 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.sensorFramework;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
-import javax.persistence.Embedded;
-import javax.persistence.MappedSuperclass;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import java.util.List;
 import javax.persistence.Transient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract super class of a Sensor. To create a concrete sensor instantiate a SensorDomain and use the add-method to
- * pass the class object into the SensorDomain so that it can be created.
- * 
- * @param <E> 
+ * Abstract super class of a Sensor. To create a concrete sensor instantiate a
+ * SensorDomain and use the add-method to pass the class object into the
+ * SensorDomain so that it can be created.
+ *
+ * @param <E>
  * @author Marcus
  * @version 1.0
+ * @param <X>
  */
-@MappedSuperclass
-public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiable implements Sensor<E> {
-	private final static Logger LOGGER = LoggerFactory.getLogger(Sensor.class);
+public abstract class AbstractSensor<E extends Event, X extends SensorData>
+	extends Identifiable
+	implements Sensor<E, X> {
+
+	private final static Logger LOGGER = LoggerFactory.getLogger(
+		AbstractSensor.class);
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Determines whether the sensor is activated
@@ -45,9 +50,10 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 	private boolean activated = true;
 
 	/**
-	 * will be incremented on each update and be set to 0 after update limit has been reached
+	 * will be incremented on each update and be set to 0 after update limit has
+	 * been reached
 	 */
-	private int currentUpdateStep = 0;
+	private int updateSteps = 0;
 
 	/**
 	 * The number of measured values
@@ -61,50 +67,52 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 	private Output output;
 
 	/**
-	 * The position of the sensor in the environment
-	 */
-	@Embedded
-	private Coordinate position;
-
-	/**
 	 * Update limit
 	 */
 	private int updateLimit;
+
+	private X sensorData;
+
+	private List<SensorInterfererType> sensorInterferers;
 
 	protected AbstractSensor() {
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @throws IllegalArgumentException  
+	 *
+	 * @param output Output of the sensor
+	 * @param sensorType
+	 * @param sensorData
+	 * @throws IllegalArgumentException
 	 */
-	protected AbstractSensor(final Output output, final Coordinate position)
-			throws IllegalArgumentException {
-		this(output, position, 1);
+	public AbstractSensor(Long id,
+		final Output output,
+		X sensorData)
+		throws IllegalArgumentException {
+		this(id,
+			output,
+
+			1,
+			sensorData);
 	}
 
 	/**
 	 * Constructor
-	 * 
-	 * @param output
-	 *            Output of the sensor
-	 * @param sensorId
-	 *            ID of the sensor
-	 * @param position
-	 *            Position of the sensor
-	 * @param updateLimit
-	 *            Update limit
-	 * @throws IllegalArgumentException  
+	 *
+	 * @param id
+	 * @param output Output of the sensor
+	 * @param sensorType
+	 * @param updateLimit Update limit
+	 * @param sensorData
+	 * @throws IllegalArgumentException
 	 */
-	protected AbstractSensor(final Output output, final Coordinate position, final int updateLimit)
-			throws IllegalArgumentException {
+	public AbstractSensor(Long id,
+		final Output output,
+		final int updateLimit,
+		X sensorData)
+		throws IllegalArgumentException {
+		super(id);
 		if (output == null) {
 			throw new IllegalArgumentException("Argument 'output' must not be 'null'.");
 		}
@@ -112,18 +120,27 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 		// throw new IllegalArgumentException("Argument 'position' must have only positive values.");
 		// }
 		if (updateLimit < 1) {
-			throw new IllegalArgumentException("Argument 'updateLimit' must be greater than '0'.");
+			throw new IllegalArgumentException(
+				"Argument 'updateLimit' must be greater than '0'.");
 		}
 
 		this.output = output;
-		this.position = position;
 		this.updateLimit = updateLimit;
+		this.sensorData = sensorData;
+	}
 
+	@Override
+	public int getUpdateSteps() {
+		return updateSteps;
+	}
+
+	protected void setUpdateSteps(int updateSteps) {
+		this.updateSteps = updateSteps;
 	}
 
 	/**
 	 * returns the number of measured values of the sensor
-	 * 
+	 *
 	 * @return measuredValues
 	 */
 	@Override
@@ -133,7 +150,7 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 
 	/**
 	 * returns the output of the sensor
-	 * 
+	 *
 	 * @return output
 	 */
 	@Override
@@ -142,18 +159,8 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 	}
 
 	/**
-	 * Returns the position of the sensor in the environment
-	 * 
-	 * @return position
-	 */
-	@Override
-	public Coordinate getPosition() {
-		return this.position;
-	}
-
-	/**
 	 * determines whether the sensor is activated
-	 * 
+	 *
 	 * @return activated
 	 */
 	@Override
@@ -163,29 +170,19 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 
 	/**
 	 * sets the sensor activated
-	 * 
-	 * @param activated
-	 *            determines whether the sensor is activated
+	 *
+	 * @param activated determines whether the sensor is activated
 	 */
+	@Override
 	public void setActivated(final boolean activated) {
 		this.activated = activated;
 	}
 
 	/**
-	 * Sets the position of the sensor in the environment
-	 * 
-	 * @param position
-	 *            Position
-	 */
-	public void setPosition(final Coordinate position) {
-		this.position = position;
-	}
-
-	/**
-	 * Makes the sensor measure its environment and doing the transmission sequence if it is activated.
-	 * 
-	 * @param eventList
-	 *            List with SimulationEvents
+	 * Makes the sensor measure its environment and doing the transmission
+	 * sequence if it is activated.
+	 *
+	 * @param eventList List with SimulationEvents
 	 */
 	@Override
 	public void update(final EventList<E> eventList) {
@@ -199,19 +196,18 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 
 	/**
 	 * performs the whole transmission sequence
-	 * 
-	 * @param eventList
-	 *            List with SimulationEvents
+	 *
+	 * @param eventList List with SimulationEvents
 	 */
 	protected void transmitData(final EventList<E> eventList) {
-		if (++this.currentUpdateStep >= this.updateLimit) {
+		if (++this.updateSteps >= this.updateLimit) {
 
 			this.beginTransmit();
 			this.transmitMetaData(eventList);
 			this.transmitUsageData(eventList);
 			this.endTransmit();
 			this.measuredValues++;
-			this.currentUpdateStep = 0;
+			this.updateSteps = 0;
 		}
 		// else
 		// log.debug("Sensor " + this.getSensorType() + " is not allowed to send data because of the updateSteps");
@@ -220,7 +216,8 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 	}
 
 	protected void logValueToSend(EventList<E> eventList) {
-		LOGGER.debug("sending event list %s", eventList);
+		LOGGER.debug("sending event list %s",
+			eventList);
 	}
 
 	/**
@@ -238,10 +235,10 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 	}
 
 	/**
-	 * Transmits the metadata of the sensor. The current Timestamp (long), the sensorId (int) and the sensorTypeId (int)
-	 * 
-	 * @param eventList
-	 *            List with SimulationEvents
+	 * Transmits the metadata of the sensor. The current Timestamp (long), the
+	 * sensorId (int) and the sensorTypeId (int)
+	 *
+	 * @param eventList List with SimulationEvents
 	 */
 	private void transmitMetaData(final EventList<E> eventList) {
 		// Timestamp
@@ -250,5 +247,26 @@ public abstract class AbstractSensor<E extends Event> extends AbstractIdentifiab
 		this.getOutput().transmitLong(this.getId());
 		// SensorTypeId
 		this.getOutput().transmitByte((byte) this.getSensorType().getSensorTypeId());
+	}
+
+	@Override
+	public X getSensorData() {
+		return sensorData;
+	}
+
+	@Override
+	public void setSensorData(X sensorData) {
+		this.sensorData = sensorData;
+	}
+
+	@Override
+	public List<SensorInterfererType> getSensorInterfererTypes() {
+		return sensorInterferers;
+	}
+
+	@Override
+	public void setSensorInterfererTypes(
+		List<SensorInterfererType> sensorInterferer) {
+		this.sensorInterferers = sensorInterferer;
 	}
 }

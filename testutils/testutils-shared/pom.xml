@@ -4,7 +4,7 @@
 
 	<groupId>de.pgalise</groupId>
 	<artifactId>testutils-shared</artifactId>
-	<version>${applicationVersion}</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -15,11 +15,17 @@
 	<properties>
 			<endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
 			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	 <glassfish.embedded-static-shell.jar>/home/richter/glassfish-4.0/glassfish/lib/embedded/glassfish-embedded-static-shell.jar</glassfish.embedded-static-shell.jar>
 	</properties>
 
 	<name>de.pgalise.testutils-shared</name>
 
 	<dependencies>
+	 <dependency>
+	  <groupId>de.pgalise.simulation</groupId>
+	  <artifactId>shared</artifactId>
+	 </dependency>
+	 
 		<dependency>
 				<groupId>org.apache.openejb</groupId>
 				<artifactId>openejb-core</artifactId>
@@ -34,23 +40,14 @@
 					</exclusion>
 				</exclusions>
 		</dependency>
-		<dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-		</dependency>
-		<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -59,14 +56,10 @@
 			<groupId>org.postgis</groupId>
 			<artifactId>postgis-jdbc</artifactId>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>2.3.0</version>
-		</dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>shared</artifactId>
-	 </dependency>
+		</dependency>-->
 	</dependencies>
 </project>

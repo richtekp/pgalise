@@ -17,21 +17,16 @@ import java.util.Map;
  */
 public enum EnergyEventTypeEnum implements EnergyEventType {
 
-
 	/**
 	 * Changes the current weahter conditions
 	 */
-	CHANGE_WEATHER_EVENT(5, ChangeWeatherEvent.class),
-	/**
-	 * Prepares a new day
-	 */
-	@Deprecated
-	NEW_DAY_EVENT(6, NewDayEvent.class),
-
+	CHANGE_ENERGY_CONSUMPTION_EVENT(5,
+		ChangeEnergyConsumptionEvent.class),
 	/**
 	 * Influences the energy consumption
 	 */
-	PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT(12, ChangeEnergyConsumptionEvent.class);
+	PERCENTAGE_CHANGE_ENERGY_CONSUMPTION_EVENT(12,
+		ChangeEnergyConsumptionEvent.class);
 
 	/**
 	 * ID of the event
@@ -50,7 +45,7 @@ public enum EnergyEventTypeEnum implements EnergyEventType {
 
 	/**
 	 * Returns simulation event type ids.
-	 * 
+	 *
 	 * @return simulation event type ids.
 	 */
 	private static Map<Integer, EnergyEventTypeEnum> getSimulationEventTypeIds() {
@@ -61,29 +56,35 @@ public enum EnergyEventTypeEnum implements EnergyEventType {
 	}
 
 	public static Map<Integer, EnergyEventTypeEnum> getSimulationEventTypeMapAsUnmodifiable() {
-		return Collections.unmodifiableMap(EnergyEventTypeEnum.SIMULATION_EVENT_TYPE_IDS);
+		return Collections.unmodifiableMap(
+			EnergyEventTypeEnum.SIMULATION_EVENT_TYPE_IDS);
 	}
 
 	/**
 	 * Constructors
-	 * 
-	 * @param simulationEventID
-	 *            ID of the event
-	 * @param implementationClass
-	 *            class which implements this event.
+	 *
+	 * @param simulationEventID ID of the event
+	 * @param implementationClass class which implements this event.
 	 * @throws IllegalArgumentException
 	 * @throws IllegalStateException
 	 */
-	private EnergyEventTypeEnum(final int simulationEventID, final Class<?> implementationClass)
-			throws IllegalArgumentException, IllegalStateException {
+	private EnergyEventTypeEnum(final int simulationEventID,
+		final Class<?> implementationClass)
+		throws IllegalArgumentException, IllegalStateException {
 		if (simulationEventID < 0) {
-			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNegative("simulationEventID", true));
+			throw new IllegalArgumentException(ExceptionMessages.
+				getMessageForNotNegative("simulationEventID",
+					true));
 		}
-		if (EnergyEventTypeEnum.getSimulationEventTypeIds().containsKey(simulationEventID)) {
-			throw new IllegalStateException("Argument 'simulationEventID' = " + simulationEventID
-					+ " is already registered");
+		if (EnergyEventTypeEnum.getSimulationEventTypeIds().containsKey(
+			simulationEventID)) {
+			throw new IllegalStateException(
+				"Argument 'simulationEventID' = " + simulationEventID
+				+ " is already registered");
 		}
-		EnergyEventTypeEnum.getSimulationEventTypeIds().put(this.simulationEventID = simulationEventID, this);
+		EnergyEventTypeEnum.getSimulationEventTypeIds().put(
+			this.simulationEventID = simulationEventID,
+			this);
 		this.implementationClass = implementationClass;
 	}
 

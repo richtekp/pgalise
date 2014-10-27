@@ -15,10 +15,11 @@
  */
 package de.pgalise.simulation.traffic.server.rules;
 
+import de.pgalise.simulation.traffic.entity.TrafficRuleData;
 import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficEdge;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 

@@ -13,65 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.internal;
 
-import javax.ejb.EJB;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Remote;
-import javax.ejb.Singleton;
+import de.pgalise.simulation.sensorFramework.Sensor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.pgalise.simulation.sensorFramework.SensorFactory;
-import de.pgalise.simulation.sensorFramework.SensorRegistry;
-import de.pgalise.simulation.service.ServiceDictionary;
-import de.pgalise.simulation.service.Controller;
+import de.pgalise.simulation.service.FrontController;
 import de.pgalise.simulation.service.InitParameter;
 import de.pgalise.simulation.shared.controller.StartParameter;
 import de.pgalise.simulation.shared.controller.internal.AbstractController;
+import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
 import de.pgalise.simulation.shared.exception.InitializationException;
-import javax.persistence.EntityManager;
+import java.util.Set;
+import javax.ejb.Stateful;
 
 /**
- * The Front Controller exists on every server and inits the {@link SensorRegistry} and the {@link ServiceDictionary}.
+ * The Front Controller exists on every server and inits the
+ * {@link SensorRegistry} and the {@link ServiceDictionary}.
+ *
  * @author Mustafa
  */
-@Lock(LockType.READ)
-@Singleton(name = "de.pgalise.simulation.FrontController")
-public class DefaultFrontController extends AbstractController implements Controller {
+@Stateful
+public class DefaultFrontController extends AbstractController<Event, StartParameter, InitParameter> implements
+	FrontController {
+
 	/**
 	 * Logger
 	 */
-	private static final Logger log = LoggerFactory.getLogger(DefaultFrontController.class);
+	private static final Logger log = LoggerFactory.getLogger(
+		DefaultFrontController.class);
 	private static final String NAME = "FrontController";
-	
-	@EJB
-	private SensorRegistry sensorRegistry;
-	
-	private EntityManager sensorPersistenceService;
+	private static final long serialVersionUID = 1L;
 
-	@EJB
-	private ServiceDictionary serviceDictionary;
-	
-	@EJB
-	private SensorFactory sensorFactory;
+	private Set<Sensor> sensorRegistry;
 
 	@Override
 	protected void onInit(InitParameter param) throws InitializationException {
-		log.info("Initializing local ServiceDictionary");
-		serviceDictionary.init(param.getServerConfiguration());
-		
-		/* Init sensor registry: */
-		this.sensorRegistry.init();		
 	}
 
 	@Override
 	protected void onReset() {
-		sensorRegistry.removeAllSensors();
+		sensorRegistry.clear();
 	}
 
 	@Override
@@ -80,17 +65,23 @@ public class DefaultFrontController extends AbstractController implements Contro
 
 	@Override
 	protected void onStop() {
-		sensorRegistry.setSensorsActivated(false);
+		for (Sensor<?, ?> sensor : sensorRegistry) {
+			sensor.setActivated(false);
+		}
 	}
 
 	@Override
 	protected void onUpdate(EventList simulationEventList) {
-		sensorRegistry.update(simulationEventList);
+		for (Sensor<?, ?> sensor : sensorRegistry) {
+			sensor.update(simulationEventList);
+		}
 	}
 
 	@Override
 	protected void onResume() {
-		sensorRegistry.setSensorsActivated(true);
+		for (Sensor<?, ?> sensor : sensorRegistry) {
+			sensor.setActivated(true);
+		}
 	}
 
 	@Override

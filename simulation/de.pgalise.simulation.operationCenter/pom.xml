@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+				 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -12,83 +12,132 @@
 
 	<groupId>de.pgalise.simulation</groupId>
 	<artifactId>operationCenter</artifactId>
-	<version>${applicationVersion}</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>de.pgalise.simulation.operationCenter</name>
 
 	<dependencies>
 		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-resources</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise</groupId>
+			<artifactId>testutils-shared</artifactId>
+			<scope>test</scope>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>traffic-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>operationCenter-jar</artifactId>
+			<type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>operationCenter-ejb</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>shared-impl</artifactId>
+			<scope>test</scope>
+			<type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>de.pgalise.simulation</groupId>
+			<artifactId>web-shared</artifactId>
+		</dependency>
+    <dependency>
+      <groupId>de.pgalise.simulation</groupId>
+      <artifactId>controlCenter-jar</artifactId>
+    </dependency>
+	 
+		<dependency>
+			<groupId>gnu.cajo</groupId>
+			<artifactId>cajo</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.omnifaces</groupId>
+			<artifactId>omnifaces</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 		</dependency>
-		<dependency>
+		<!--		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-catalina</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-coyote</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>simulationController</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.ostermiller</groupId>
 			<artifactId>utils</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.inject</groupId>
-			<artifactId>guice</artifactId>
+			<groupId>com.vividsolutions</groupId>
+			<artifactId>jts</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.openejb</groupId>
+			<artifactId>openejb-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgis</groupId>
+			<artifactId>postgis-jdbc</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
+		</dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-faces</artifactId>
+      <version>4.2.3.GA</version>
+    </dependency>
 	 <dependency>
-	  <groupId>commons-lang</groupId>
-	  <artifactId>commons-lang</artifactId>
-	  <version>2.6</version>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>com.vividsolutions</groupId>
-	  <artifactId>jts</artifactId>
-	 </dependency>
-	 <dependency>
-	  <groupId>de.pgalise.simulation</groupId>
-	  <artifactId>traffic</artifactId>
-	 </dependency>
-				<dependency>
-					<groupId>de.pgalise.simulation</groupId>
-					<artifactId>shared-resources</artifactId>
-				</dependency>
-	 <dependency>
-	  <groupId>de.pgalise</groupId>
-	  <artifactId>testutils-shared</artifactId>
-	  <scope>test</scope>
-	  <type>jar</type>
-	 </dependency>
-	 <dependency>
-	  <groupId>org.springframework</groupId>
-	  <artifactId>spring</artifactId>
-	  <version>2.5.6</version>
-	  <type>jar</type>
+	  <groupId>storm</groupId>
+	  <artifactId>storm-core</artifactId>
+	  <version>0.9.0.1</version>
 	 </dependency>
 	</dependencies>
 	<build>
 		<finalName>de.pgalise.simulation.operationCenter</finalName>
 		<plugins>
 			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-dependency-plugin</artifactId> 
-				<executions> <execution> <phase>install</phase> <goals> <goal>copy-dependencies</goal> 
-				</goals> <configuration> <outputDirectory>${project.build.directory}/lib</outputDirectory> 
-				</configuration> </execution> </executions> </plugin> -->
+			<executions> <execution> <phase>install</phase> <goals> <goal>copy-dependencies</goal> 
+			</goals> <configuration> <outputDirectory>${project.build.directory}/lib</outputDirectory> 
+			</configuration> </execution> </executions> </plugin> -->
 		</plugins>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
+				only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>

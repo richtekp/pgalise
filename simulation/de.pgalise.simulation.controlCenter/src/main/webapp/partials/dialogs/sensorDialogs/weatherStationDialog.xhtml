@@ -1,0 +1,32 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	<p:dialog id="weatherStationDialog">
+		<h:panelGrid>
+			Position:<p:gmap center="36.890257,30.707417" zoom="13" type="HYBRID"
+				model="#{trafficLightDialogCtrl.mapModel}"
+				style="width:600px;height:400px">
+				<p:ajax event="markerDrag"
+					listener="#{trafficLightDialogCtrl.onMarkerDrag}" />
+			</p:gmap>
+			Update steps:<p:spinner
+				value="#{trafficLightDialogCtrl.chosenUpdateStep}" />
+			<p:dataTable
+				value="#{weatherStationDialogCtrl.retrieveWeatherSensors}"
+				var="weatherSensor"
+				selection="#{weatherStationDialogCtrl.selectedWeatherSensors}">
+				<p:column>
+					<f:facet name="header">ID</f:facet>
+					#{weatherSensor.id}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Position</f:facet>
+					#{weatherSensor.position}
+				</p:column>
+			</p:dataTable>
+			<p:commandButton action="#{trafficLightDialogCtrl.saveSensor}" />
+		</h:panelGrid>
+	</p:dialog>
+</ui:composition>

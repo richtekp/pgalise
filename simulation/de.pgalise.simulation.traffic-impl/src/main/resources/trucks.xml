@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trucks>
+		<truck>
+			<typeid>truck001</typeid>
+			<wheelDistanceWidth>1511</wheelDistanceWidth>
+			<wheelbase1>2496</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>4239</length>
+			<width>1790</width>
+			<height>1291</height>
+			<weight>14700</weight>
+			<power>135</power>
+			<maxSpeed>235</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>Coca Cola Truck</description>
+			<trailerCount>1</trailerCount>
+			<trailerDistance>300</trailerDistance>
+			<trailerLength>1000</trailerLength>
+		</truck>
+		<truck>
+			<typeid>truck002</typeid>
+			<wheelDistanceWidth>3150</wheelDistanceWidth>
+			<wheelbase1>3800</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>2054</length>
+			<width>1425</width>
+			<height>2000</height>
+			<weight>18000</weight>
+			<power>294</power>
+			<maxSpeed>80</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>DAF XF</description>
+			<trailerCount>1</trailerCount>
+			<trailerDistance>300</trailerDistance>
+			<trailerLength>8500</trailerLength>
+		</truck>
+		<truck>
+			<typeid>truck003</typeid>
+			<wheelDistanceWidth>3150</wheelDistanceWidth>
+			<wheelbase1>3500</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>1959</length>
+			<width>2530</width>
+			<height>2387</height>
+			<weight>18000</weight>
+			<power>294</power>
+			<maxSpeed>80</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>MAN TGX</description>
+			<trailerCount>1</trailerCount>
+			<trailerDistance>300</trailerDistance>
+			<trailerLength>8000</trailerLength>
+		</truck>
+		<truck>
+			<typeid>truck004</typeid>
+			<wheelDistanceWidth>3150</wheelDistanceWidth>
+			<wheelbase1>3600</wheelbase1>
+			<wheelbase2>0</wheelbase2>
+			<length>18780</length>
+			<width>2430</width>
+			<height>3050</height>
+			<weight>18000</weight>
+			<power>320</power>
+			<maxSpeed>80</maxSpeed>
+			<axleCount>2</axleCount>
+			<description>Mercedes Benz 2044</description>
+			<trailerCount>1</trailerCount>
+			<trailerDistance>300</trailerDistance>
+			<trailerLength>7000</trailerLength>
+		</truck>
+	</trucks>

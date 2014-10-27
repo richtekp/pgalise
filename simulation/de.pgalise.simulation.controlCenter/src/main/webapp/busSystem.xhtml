@@ -1,0 +1,16 @@
+<ui:composition template="/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<ui:define name="content">
+		<ui:include src="partials/content/busSystem.xhtml" />
+	</ui:define>
+	<ui:define name="header_extension">
+		<ui:include src="/WEB-INF/templates/partials/header_extension.xhtml" />
+	</ui:define>
+	<ui:define name="menubar_west">
+		<ui:include src="/WEB-INF/templates/partials/menubar_west.xhtml" />
+	</ui:define>
+	<ui:define name="simulation_status">
+		<ui:include src="/WEB-INF/templates/partials/simulation_status.xhtml" />
+	</ui:define>
+</ui:composition>

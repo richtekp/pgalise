@@ -13,57 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.controller;
 
 import java.io.Serializable;
+import javax.annotation.ManagedBean;
+
 /**
- * Settings for the fuzzy rules in traffic.
- * The updatesteps, tolerance and buffer can be set here.
+ * Settings for the fuzzy rules in traffic. The updatesteps, tolerance and
+ * timeBuffer can be set here.
+ *
  * @author Mischa
  */
+@ManagedBean
 public class TrafficFuzzyData implements Serializable {
-	private static final long serialVersionUID = 7976429010181411827L;
-	private int updateSteps;
-	private double tolerance;
-	private int buffer;
 
-	/**
-	 * Constructor
-	 * @param updateSteps
-	 * 			how often to ask the fuzzy rules
-	 * @param tolerance
-	 * 			what is the tolerance
-	 * @param buffer
-	 * 			how big is the buffer
-	 */
-	public TrafficFuzzyData(int updateSteps, double tolerance, int buffer) {
-		this.updateSteps = updateSteps;
-		this.tolerance = tolerance;
-		this.buffer = buffer;
-	}
+  private static final long serialVersionUID = 7976429010181411827L;
+  private int updateSteps = 10;
+  private double tolerance = 1.0;
+  private int timeBuffer = 10;
 
-	public int getUpdateSteps() {
-		return updateSteps;
-	}
+  public TrafficFuzzyData() {
+  }
 
-	public void setUpdateSteps(int updateSteps) {
-		this.updateSteps = updateSteps;
-	}
+  /**
+   * Constructor
+   *
+   * @param updateSteps how often to ask the fuzzy rules
+   * @param tolerance what is the tolerance
+   * @param buffer how big is the timeBuffer
+   */
+  public TrafficFuzzyData(int updateSteps,
+    double tolerance,
+    int buffer) {
+    this.updateSteps = updateSteps;
+    this.tolerance = tolerance;
+    this.timeBuffer = buffer;
+  }
 
-	public double getTolerance() {
-		return tolerance;
-	}
+  public int getUpdateSteps() {
+    return updateSteps;
+  }
 
-	public void setTolerance(double tolerance) {
-		this.tolerance = tolerance;
-	}
+  public void setUpdateSteps(int updateSteps) {
+    this.updateSteps = updateSteps;
+  }
 
-	public int getBuffer() {
-		return buffer;
-	}
+  public double getTolerance() {
+    return tolerance;
+  }
 
-	public void setBuffer(int buffer) {
-		this.buffer = buffer;
-	}
+  public void setTolerance(double tolerance) {
+    this.tolerance = tolerance;
+  }
+
+  public int getTimeBuffer() {
+    return timeBuffer;
+  }
+
+  public void setTimeBuffer(int timeBuffer) {
+    this.timeBuffer = timeBuffer;
+  }
 }

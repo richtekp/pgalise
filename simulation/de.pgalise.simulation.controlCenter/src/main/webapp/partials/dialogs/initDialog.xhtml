@@ -1,0 +1,56 @@
+<!--The init dialog enforces the specification of all parameters of the 
+simulation which require time consuming tasks which are best handled in 
+background tasks. All parameters can be changed in parts of the control center 
+after the dialog has been closed; it's task is simply to initialize the 
+background processes as early as possible. If parameters are changed, a new 
+background process is started and those for preceeding parameters are canceled. 
+Other tasks (like sensor setup) depend on background tasks (OSM parsing) and 
+won't be available until they are finished. The simulation can't be started 
+neither before background tasks are finished.-->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:ng="http://angularjs.org"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:cc="http://java.sun.com/jsf/composite"
+	xmlns:o="http://omnifaces.org/ui">
+	<o:importConstants
+		type="de.pgalise.simulation.controlCenter.ctrl.InitDialogCtrlInitialTypeEnum"
+		var="initDialogCtrlInitialTypeEnum" />
+	<p:dialog id="initialDialog" widgetVar="initialDialogWidget"
+		visible="true" modal="true" resizable="true" height="500" width="700">
+		<h:form>
+			<h:panelGrid>
+				<p:accordionPanel styleClass="scrollable">
+					<p:tab title="Create new szenario">
+						<ui:include src="/partials/content/city.xhtml" />
+						<ui:include src="/partials/content/busSystem.xhtml" />
+					</p:tab>
+					<p:tab title="Reuse recently started scenario">
+							Recent scenarios: 
+							<h:selectManyListbox>
+							<f:selectItems value="#{initDialogCtrl.recentScenarios}" />
+						</h:selectManyListbox>
+						<b>Current:</b>
+							File name: <h:outputText
+							value="#{initDialogCtrl.chosenRecentScenarioPath}" />
+							Date: <h:outputText
+							value="#{initDialogCtrl.chosenRecentScenario.startTimestamp}" />
+					</p:tab>
+					<p:tab title="Import existing scenario">
+							Load XML:
+							<p:fileUpload
+							fileUploadListener="#{mainCtrl.onStartParameterUpload}" />
+					</p:tab>
+				</p:accordionPanel>
+			</h:panelGrid>
+			<h:panelGrid>
+				<h:commandButton type="" value="Initialize simulation"
+					onclick="initialDialogWidget.hide();">
+					<f:ajax />
+				</h:commandButton>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</ui:composition>

@@ -13,94 +13,49 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.event.weather;
 
-import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
+import javax.faces.bean.ManagedBean;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Event for modifying the current weather
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.1 (Aug 30, 2012)
  */
-public class ChangeWeatherEvent extends WeatherEvent {
+@XmlRootElement
+public class ChangeWeatherEvent extends ValueWeatherEvent {
 
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = 2452503673933039973L;
-
-	/**
-	 * Timestamp of the max/min
-	 */
-	private long timestamp;
-
-	/**
-	 * Weather event to modify weather data
-	 */
-	private final WeatherEventEnum event;
-
-	/**
-	 * Specified value
-	 */
-	private Float value;
-
-	/**
-	 * Specified duration
-	 */
-	private Float duration;
+	private WeatherEventType eventType;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param strategy
-	 *            Strategy to modify weather data
-	 * @param eventTime 
-	 * @param value
-	 *            Specified value
-	 * @param duration
-	 *            Specified duration
+	 *
+	 * @param id
+	 * @param eventType
+	 * @param value Specified value
+	 * @param timestamp
+	 * @param duration Specified duration
 	 */
-	public ChangeWeatherEvent(WeatherEventEnum strategy, Float value, long eventTime, Float duration) {
-		this.event = strategy;
-		this.value = value;
-		this.timestamp = eventTime;
-		this.duration = duration;
-	}
-
-	public long getTimestamp() {
-		return timestamp;
-	}
-
-	public void setTimestamp(long timestamp) {
-		this.timestamp = timestamp;
-	}
-
-	public Float getValue() {
-		return value;
-	}
-
-	public void setValue(Float value) {
-		this.value = value;
-	}
-
-	public Float getDuration() {
-		return duration;
-	}
-
-	public void setDuration(Float duration) {
-		this.duration = duration;
-	}
-
-	public WeatherEventEnum getEvent() {
-		return event;
+	public ChangeWeatherEvent(Long id, WeatherEventType eventType,
+		float value,
+		long timestamp,
+		long duration) {
+		super(id,
+			timestamp,
+			duration,
+			value);
+		this.eventType = eventType;
 	}
 
 	@Override
-	public EventType getType() {
-		return EventTypeEnum.CHANGE_WEATHER_EVENT;
+	public WeatherEventType getType() {
+		return eventType;
 	}
 
 }

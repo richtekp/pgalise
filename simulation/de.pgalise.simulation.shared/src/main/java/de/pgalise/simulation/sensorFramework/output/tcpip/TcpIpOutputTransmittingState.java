@@ -24,7 +24,7 @@ import de.pgalise.simulation.sensorFramework.output.OutputStateEnum;
  * 
  * @author Marcus
  */
-class TcpIpOutputTransmittingState extends TcpIpOutputState {
+public class TcpIpOutputTransmittingState extends TcpIpOutputState {
 
 	/**
 	 * Creates an instance of {@link TcpIpOutputTransmittingState}.
@@ -86,7 +86,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitDouble(final double value) throws RuntimeException {
 		try {
-			this.getOutput().getSocketOutputStream().writeDouble(value);
+			this.getOutput().getDataOutputStream().writeDouble(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -103,7 +103,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitFloat(final float value) throws RuntimeException {
 		try {
-			this.getOutput().getSocketOutputStream().writeFloat(value);
+			this.getOutput().getDataOutputStream().writeFloat(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -120,7 +120,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitByte(final byte value) throws IllegalStateException {
 		try {
-			this.getOutput().getSocketOutputStream().writeByte(value);
+			this.getOutput().getDataOutputStream().writeByte(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -137,7 +137,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitInt(final int value) throws RuntimeException {
 		try {
-			this.getOutput().getSocketOutputStream().writeInt(value);
+			this.getOutput().getDataOutputStream().writeInt(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -154,7 +154,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitLong(final long value) throws RuntimeException {
 		try {
-			this.getOutput().getSocketOutputStream().writeLong(value);
+			this.getOutput().getDataOutputStream().writeLong(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -171,7 +171,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitShort(final short value) throws RuntimeException {
 		try {
-			this.getOutput().getSocketOutputStream().writeShort(value);
+			this.getOutput().getDataOutputStream().writeShort(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -193,7 +193,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 			throw new IllegalArgumentException("Argument \"value\" must not be \"null\".");
 		}
 		try {
-			this.getOutput().getSocketOutputStream().writeUTF(value);
+			this.getOutput().getDataOutputStream().writeUTF(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -210,7 +210,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitBoolean(final boolean value) throws IllegalStateException {
 		try {
-			this.getOutput().getSocketOutputStream().writeBoolean(value);
+			this.getOutput().getDataOutputStream().writeBoolean(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -219,7 +219,7 @@ class TcpIpOutputTransmittingState extends TcpIpOutputState {
 	@Override
 	void transmitByteArray(byte[] value) throws IllegalStateException {
 		try {
-			this.getOutput().getSocketOutputStream().write(value);
+			this.getOutput().getDataOutputStream().write(value);
 		} catch(final Exception ex) {
 			throw new RuntimeException(ex);
 		}

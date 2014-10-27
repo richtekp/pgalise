@@ -4,16 +4,20 @@
  */
 package de.pgalise.simulation.shared.event;
 
-import de.pgalise.simulation.shared.persistence.Identifiable;
+import java.util.Date;
 
 /**
  *
  * @author richter
  */
-public interface Event extends Identifiable {
+public interface Event {
+	
+	Long getId();
+	
 	/**
 	 * @return type of the events this EventHandler is able to process 
 	 */
-	public EventType getType();
+	EventType getType();
 	
+	Date getCommitDateTime();
 }

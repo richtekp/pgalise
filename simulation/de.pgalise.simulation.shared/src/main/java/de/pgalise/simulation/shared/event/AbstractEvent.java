@@ -13,24 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.event;
 
-import de.pgalise.simulation.shared.persistence.AbstractIdentifiable;
+import de.pgalise.simulation.shared.entity.Identifiable;
+import java.util.Date;
+import javolution.xml.XMLFormat;
+import javolution.xml.XMLSerializable;
+import javolution.xml.stream.XMLStreamException;
 
 /**
- * Superclass for every simulation event. It contains a uniqe
- * {@link UUID} and a value of {@link SimulationEventTypeEnum}, this is
- * useful for serializing and deserializing. This class can not be 
- * an interface nor be abstract, because google guice can not handle this.
- * 
+ * Superclass for every simulation event. It contains a uniqe {@link UUID} and a
+ * value of {@link SimulationEventTypeEnum}, this is useful for serializing and
+ * deserializing. This class can not be an interface nor be abstract, because
+ * google guice can not handle this.
+ *
  * @author Timo
  */
-public abstract class AbstractEvent extends AbstractIdentifiable implements Event {
+public abstract class AbstractEvent extends Identifiable implements
+	Event, XMLSerializable {
+
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = -7362721454716905390L;
+	private Date commitDateTime;
+
+	protected AbstractEvent() {
+		super();
+	}
+
+	public AbstractEvent(Long id) {
+		super(id);
+	}
+
+	public void setCommitDateTime(Date commitDateTime) {
+		this.commitDateTime = commitDateTime;
+	}
+
+	@Override
+	public Date getCommitDateTime() {
+		return commitDateTime;
+	}
 
 	@Override
 	public int hashCode() {
@@ -64,5 +87,23 @@ public abstract class AbstractEvent extends AbstractIdentifiable implements Even
 			return false;
 		}
 		return true;
+	}
+
+	public static class XML extends XMLFormat<AbstractEvent> {
+
+		@Override
+		public void write(AbstractEvent g,
+			XMLFormat.OutputElement xml) throws XMLStreamException {
+
+			xml.setAttribute("commitDateTime",
+				g.getCommitDateTime());
+		}
+
+		@Override
+		public void read(XMLFormat.InputElement xml,
+			AbstractEvent g) throws XMLStreamException {
+			//ignore type (is determined by class)
+			g.commitDateTime = xml.get("commitDateTime");
+		}
 	}
 }

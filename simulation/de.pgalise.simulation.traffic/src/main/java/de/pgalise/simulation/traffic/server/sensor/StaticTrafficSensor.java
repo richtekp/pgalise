@@ -6,16 +6,17 @@
 
 package de.pgalise.simulation.traffic.server.sensor;
 
-import de.pgalise.simulation.sensorFramework.Sensor;
-import de.pgalise.simulation.shared.persistence.Identifiable;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
-import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  *
  * @author richter
  */
-public interface StaticTrafficSensor extends Sensor<TrafficEvent> {
+public interface StaticTrafficSensor<X extends SensorData> extends TrafficSensor<X>{
+	BaseCoordinate getPosition();
 
 	/**
 	 * Register vehicle on the node

@@ -13,74 +13,75 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.internal.server.eventhandler.vehicle;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import de.pgalise.simulation.traffic.internal.model.vehicle.BaseVehicle;
-
-import de.pgalise.simulation.traffic.internal.model.vehicle.DefaultMotorizedVehicle;
 import de.pgalise.simulation.traffic.internal.server.eventhandler.AbstractVehicleEventHandler;
 import de.pgalise.simulation.traffic.model.vehicle.Vehicle;
 import de.pgalise.simulation.traffic.model.vehicle.VehicleStateEnum;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
 import de.pgalise.simulation.traffic.server.rules.TrafficRuleCallback;
 
 /**
  * ...
- * 
+ *
  * @author marcus
  */
-public class ExtendedVehiclePassedNodeHandler<D extends VehicleData> extends AbstractVehicleEventHandler<D,VehicleEvent> {
-	private VehiclePassedNodeHandler defaultHandler;
+public class ExtendedVehiclePassedNodeHandler<D extends VehicleData> extends AbstractVehicleEventHandler<D, VehicleEvent> {
 
-	public ExtendedVehiclePassedNodeHandler() {
-		defaultHandler = new VehiclePassedNodeHandler();
-	}
+  private VehiclePassedNodeHandler defaultHandler;
 
-	@Override
-	public EventType getTargetEventType() {
-		return VehicleEventTypeEnum.VEHICLE_PASSED_NODE;
-	}
+  public ExtendedVehiclePassedNodeHandler() {
+    super();
+    defaultHandler = new VehiclePassedNodeHandler();
+  }
 
-	@Override
-	public void handleEvent(VehicleEvent event) {
-		defaultHandler.handleEvent(event);
+  @Override
+  public EventType getTargetEventType() {
+    return VehicleEventTypeEnum.VEHICLE_PASSED_NODE;
+  }
 
-		final Vehicle<?> vehicle = event.getVehicle();
+  @Override
+  public void handleEvent(VehicleEvent event) {
+    defaultHandler.handleEvent(event);
 
-		if (vehicle instanceof BaseVehicle) {
-			if ((vehicle.getPreviousNode() == null) || (vehicle.getNextNode() == null)) {
-				// car eliminates the NPE
-				return;
-			}
+    final Vehicle<?> vehicle = event.getVehicle();
 
-			TrafficNode passedNode = vehicle.getCurrentNode();
-			vehicle.setPosition(event.getTrafficGraphExtensions().getPosition(passedNode));
-			final double vel = vehicle.getVelocity();
-			vehicle.setVelocity(0);
-			vehicle.setVehicleState(VehicleStateEnum.STOPPED);
-			event.getTrafficGraphExtensions().getTrafficRule(passedNode)
-					.register(vehicle, vehicle.getPreviousNode(), vehicle.getNextNode(), new TrafficRuleCallback() {
+    if (vehicle instanceof BaseVehicle) {
+      if ((vehicle.getPreviousNode() == null) || (vehicle.getNextNode() == null)) {
+        // car eliminates the NPE
+        return;
+      }
 
-						@Override
-						public boolean onEnter() {
-							// is allowed to drive
-							vehicle.setVehicleState(VehicleStateEnum.IN_TRAFFIC_RULE);
-							return true;
-						}
+      TrafficNode passedNode = vehicle.getCurrentNode();
+      vehicle.setPosition(passedNode);
+      final double vel = vehicle.getVelocity();
+      vehicle.setVelocity(0);
+      vehicle.setVehicleState(VehicleStateEnum.STOPPED);
+      event.getTrafficGraphExtensions().getTrafficRule(passedNode)
+        .register(vehicle,
+          vehicle.getPreviousNode(),
+          vehicle.getNextNode(),
+          new TrafficRuleCallback() {
 
-						@Override
-						public boolean onExit() {
-							// leaves the trafficRule
-							vehicle.setVehicleState(VehicleStateEnum.DRIVING);
-							vehicle.setVelocity(vel);
-							return true;
-						}
-					});
-		}
-	}
+            @Override
+            public boolean onEnter() {
+              // is allowed to drive
+              vehicle.setVehicleState(VehicleStateEnum.IN_TRAFFIC_RULE);
+              return true;
+            }
+
+            @Override
+            public boolean onExit() {
+              // leaves the trafficRule
+              vehicle.setVehicleState(VehicleStateEnum.DRIVING);
+              vehicle.setVelocity(vel);
+              return true;
+            }
+          });
+    }
+  }
 }

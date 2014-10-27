@@ -17,9 +17,7 @@
 package de.pgalise.simulation.traffic.event;
 
 import java.io.Serializable;
-import java.util.List;
 
-import de.pgalise.simulation.sensorFramework.SensorHelper;
 import de.pgalise.simulation.traffic.VehicleInformation;
 
 /**
@@ -27,17 +25,12 @@ import de.pgalise.simulation.traffic.VehicleInformation;
  * 
  * @author Timo
  */
-public class CreateRandomVehicleData implements Serializable {
+public abstract class CreateRandomVehicleData implements Serializable {
 
 	/**
 	 * Serial
 	 */
 	private static final long serialVersionUID = 8693442854311741057L;
-
-	/**
-	 * List of SensorHelper for sensors
-	 */
-	private List<SensorHelper<?>> sensorHelpers;
 
 	/**
 	 * Information about the vehicle
@@ -52,8 +45,7 @@ public class CreateRandomVehicleData implements Serializable {
 	 * @param vehicleInformation
 	 *            Information about the vehicle
 	 */
-	public CreateRandomVehicleData(List<SensorHelper<?>> sensorHelpers, VehicleInformation vehicleInformation) {
-		this.sensorHelpers = sensorHelpers;
+	public CreateRandomVehicleData(VehicleInformation vehicleInformation) {
 		this.vehicleInformation = vehicleInformation;
 	}
 
@@ -69,13 +61,6 @@ public class CreateRandomVehicleData implements Serializable {
 			return false;
 		}
 		CreateRandomVehicleData other = (CreateRandomVehicleData) obj;
-		if (sensorHelpers == null) {
-			if (other.sensorHelpers != null) {
-				return false;
-			}
-		} else if (!sensorHelpers.equals(other.sensorHelpers)) {
-			return false;
-		}
 		if (vehicleInformation == null) {
 			if (other.vehicleInformation != null) {
 				return false;
@@ -86,10 +71,6 @@ public class CreateRandomVehicleData implements Serializable {
 		return true;
 	}
 
-	public List<SensorHelper<?>> getSensorHelpers() {
-		return sensorHelpers;
-	}
-
 	public VehicleInformation getVehicleInformation() {
 		return vehicleInformation;
 	}
@@ -98,13 +79,8 @@ public class CreateRandomVehicleData implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((sensorHelpers == null) ? 0 : sensorHelpers.hashCode());
 		result = prime * result + ((vehicleInformation == null) ? 0 : vehicleInformation.hashCode());
 		return result;
-	}
-
-	public void setSensorHelpers(List<SensorHelper<?>> sensorHelpers) {
-		this.sensorHelpers = sensorHelpers;
 	}
 
 	public void setVehicleInformation(VehicleInformation vehicleInformation) {

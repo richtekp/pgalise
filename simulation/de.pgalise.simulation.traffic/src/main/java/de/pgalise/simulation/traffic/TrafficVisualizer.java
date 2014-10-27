@@ -26,10 +26,6 @@ import de.pgalise.util.graph.GraphVisualizer;
  * An extension of the GraphVisualizer adding features especially for the traffic 
  * aspect of the graph.
  *  
- * @param <N> 
- * @param <E> 
- * @param <D> 
- * @param <V> 
  * @author Marina, Mustafa
  */
 public interface TrafficVisualizer extends GraphVisualizer<TrafficGraph> {

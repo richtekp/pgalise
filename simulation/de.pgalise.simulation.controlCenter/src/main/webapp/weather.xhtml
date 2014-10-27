@@ -1,0 +1,91 @@
+<!-- WEATHER (INIT) -->
+<ui:composition template="/templates/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+	<!--usage of validation stack in former implementation not clear -->
+	<o:importConstants
+		type="de.pgalise.simulation.shared.event.weather.WeatherEventTypeEnum"
+		var="weatherEventTypes" />
+	<ui:define name="content">
+		<div class="contentDiv">
+			<h:form>
+				<h2>Weather</h2>
+				<h:panelGrid>
+					<h3>General settings</h3>
+					<div>Selecet the general settings. Choose if you like to use
+						aggregated data.</div>
+					<h:selectBooleanCheckbox label="Use aggregated weather data"
+						value="#{weatherCtrl.aggregatedWeatherDataEnabled}" />
+				</h:panelGrid>
+				<h3>Define weather event</h3>
+				<h:panelGrid>
+					<div>Choose a special weather event for a defined day. You
+						can set the max. temperature, the modifier and the time where this
+						event will start.</div>
+					Date:	<p:calendar value="#{weatherCtrl.chosenTimestamp}"
+						pattern="MM/dd/yyyy HH:mm:ss" />
+					Duration <i>[hh:mm]</i>:Duration in minutes: <p:spinner
+						value="#{weatherCtrl.chosenDurationMinutes}" min="0" max="43200" />
+					Modifier:
+					<h:selectOneListbox value="#{weatherCtrl.chosenWeatherEventType}">
+						<f:selectItems value="#{enumBean.getWeatherEventTypes()}" />
+						<f:ajax render="@form" />
+					</h:selectOneListbox>
+					Value <i>#{weatherCtrl.chosenWeatherEventType}]</i>:
+					<p:spinner value="#{weatherCtrl.chosenValue}"
+						min="#{weatherCtrl.chosenWeatherEventType.getMinValue()}"
+						max="#{weatherCtrl.chosenWeatherEventType.getMaxValue()}" />
+					<h:commandButton value="Add weather event to uncommitted events"
+						action="#{weatherCtrl.addWeatherEvent()}">
+						<f:ajax render="@form" />
+					</h:commandButton>
+				</h:panelGrid>
+				<h:panelGrid>
+					<h3>Defined weather events</h3>
+					<div>Shows a list of created uncommitted weather events.</div>
+					<h:dataTable id="weatherEventsTable"
+						value="#{weatherCtrl.weatherEvents}" var="weatherEvent">
+						<h:column>
+							<f:facet name="header">Date/Time</f:facet>
+								#{weatherEvent.id}
+						</h:column>
+						<h:column>
+							<f:facet name="header">Duration</f:facet>
+								#{weatherEvent.duration}
+						</h:column>
+						<h:column>
+							<f:facet name="header">Modifier</f:facet>
+								#{weatherEvent.type}
+						</h:column>
+						<h:column>
+							<f:facet name="header">Value</f:facet>
+								#{weatherEvent.value}
+						</h:column>
+						<h:column>
+							<f:facet name="header">Delete</f:facet>
+							<h:commandButton value="delete row entry"
+								action="#{weatherCtrl.deleteWeatherEvent(weatherEvent)}">
+								<f:ajax render="@all" />
+							</h:commandButton>
+						</h:column>
+					</h:dataTable>
+				</h:panelGrid>
+			</h:form>
+			Events have to be committed in <a
+				href="partials/content/runtimeState/sensorEvents.xhtml">Uncommitted
+				events section</a>.
+		</div>
+	</ui:define>
+	<ui:define name="header_extension">
+		<ui:include src="/WEB-INF/templates/partials/header_extension.xhtml" />
+	</ui:define>
+	<ui:define name="menubar_west">
+		<ui:include src="/WEB-INF/templates/partials/menubar_west.xhtml" />
+	</ui:define>
+	<ui:define name="simulation_status">
+		<ui:include src="/WEB-INF/templates/partials/simulation_status.xhtml" />
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,109 @@
+<!-- RANDOM VEHICLES (RUNTIME) -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:o="http://omnifaces.org/ui">
+	<f:view contentType="text/html">
+		<div class="contentDiv">
+			<h2>Random Vehicles</h2>
+			<div class="block">
+				<table class="noWrap">
+					<tr class="head">
+						<td colspan="2"><h3>Add random cars</h3></td>
+					</tr>
+					<tr>
+						<td>Random Cars:</td>
+						<td><p:spinner value="#{randomVehiclesCtrl.randomCars}"
+								title="set the initial car amount of the simulation" min="0"
+								max="100000" /></td>
+					</tr>
+					<tr>
+						<td>GPS Ratio (Cars) [%]:</td>
+						<td><p:spinner
+								value="#{randomVehiclesCtrl.randomCarGPSRatio}"
+								title="set the cars initial GPS Ratio of the simulation" min="0"
+								max="100" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><h:commandButton value="Add cars"
+								action="#{randomVehiclesCtrl.addCars}" /></td>
+					</tr>
+				</table>
+			</div>
+			<div class="block">
+				<table class="noWrap">
+					<tr class="head">
+						<td colspan="2"><h3>Add random trucks</h3></td>
+					</tr>
+					<tr>
+						<td>Random Trucks:</td>
+						<td><p:spinner value="#{randomVehiclesCtrl.randomTrucks}"
+								title="set the initial truck amount of the simulation" min="0"
+								max="1000" /></td>
+					</tr>
+					<tr>
+						<td>GPS Ratio (Trucks) [%]:</td>
+						<td><p:spinner
+								value="#{randomVehiclesCtrl.randomTruckGPSRatio}"
+								title="set the trucks initial GPS Ratio of the simulation"
+								min="0" max="100" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><h:commandButton value="Add trucks"
+								action="#{randomVehiclesCtrl.addTrucks}" /></td>
+					</tr>
+				</table>
+			</div>
+			<div class="block">
+				<table class="noWrap">
+					<tr class="head">
+						<td colspan="2"><h3>Add random motorcycles</h3></td>
+					</tr>
+					<tr>
+						<td>Random Motorcycles:</td>
+						<td><p:spinner
+								value="#{randomVehiclesCtrl.randomMotorcycles}"
+								title="set the initial motorcycle amount of the simulation"
+								min="0" max="10000" /></td>
+					</tr>
+					<tr>
+						<td>GPS Ratio (Motorcycles) [%]:</td>
+						<td><p:spinner
+								value="#{randomVehiclesCtrl.randomMotorcycleGPSRatio}"
+								title="set the motorcycles initial GPS Ratio of the simulation"
+								min="0" max="100" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><h:commandButton value="Add motorcycles"
+								action="#{randomVehiclesCtrl.addMotorcycles}" /></td>
+					</tr>
+				</table>
+			</div>
+			<div class="block">
+				<table class="noWrap">
+					<tr class="head">
+						<td colspan="2"><h3>Add random bikes</h3></td>
+					</tr>
+					<tr>
+						<td>Random Bikes:</td>
+						<td><p:spinner value="#{randomVehiclesCtrl.randomBikes}"
+								title="set the initial bike amount of the simulation" min="0"
+								max="100000" /></td>
+					</tr>
+					<tr>
+						<td>GPS Ratio (Bikes) [%]:</td>
+						<td><p:spinner
+								value="#{randomVehiclesCtrl.randomBikeGPSRatio}"
+								title="set the bikes initial GPS Ratio of the simulation"
+								min="0" max="100" /></td>
+					</tr>
+					<tr>
+						<td colspan="2"><h:commandButton value="Add bikes"
+								action="#{randomVehiclesCtrl.addBikes}" /></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</f:view>
+</ui:composition>

@@ -1,0 +1,43 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+	xmlns:geojsf="http://geojsf.org/ui">
+	<script lang="text/javascript">
+		function checkParsingFinished() {
+			
+		}
+	</script>
+	<p:dialog id="inductionLoopDialog" onShow="checkParsingFinished">
+		<c:set value="#{cityCtrl.initializeOsmParsing()}" />
+		<c:if test="#{cityCtrl.parseTask.done}">
+			Wait for parsing process to complete
+		</c:if>
+		<c:if test="#{not cityCtrl.parseTask.done}">
+			<h:form>
+				<h:panelGrid>
+				Position:
+				<geojsf:map id="map">
+						<geojsf:viewport lat="-103.7" lon="44.4" zoom="7" />
+						<geojsf:layer url="https://www.aht-group.com/geoserver/sf/wms"
+							layers="roads" />
+						<geojsf:layer url="http://vmap0.tiles.osgeo.org/wms/vmap0"
+							name="OSM" layers="basic" />
+					</geojsf:map>
+
+
+					<p:gmap center="36.890257,30.707417" zoom="13" type="HYBRID"
+						model="#{indutionLoopDialogCtrl.mapModel}"
+						style="width:600px;height:400px">
+						<p:ajax event="markerDrag"
+							listener="#{indutionLoopDialogCtrl.onMarkerDrag}" />
+					</p:gmap>
+				Update steps:<p:spinner
+						value="#{indutionLoopDialogCtrl.chosenUpdateStep}" />
+					<p:commandButton action="#{indutionLoopDialogCtrl.saveSensor}" />
+				</h:panelGrid>
+			</h:form>
+		</c:if>
+	</p:dialog>
+</ui:composition>

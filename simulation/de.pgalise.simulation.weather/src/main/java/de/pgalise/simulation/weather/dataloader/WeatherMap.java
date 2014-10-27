@@ -19,7 +19,7 @@
  */
 package de.pgalise.simulation.weather.dataloader;
 
-import de.pgalise.simulation.weather.model.MutableStationData;
+import de.pgalise.simulation.weather.entity.AbstractStationData;
 import java.util.HashMap;
 
 
@@ -31,7 +31,7 @@ import java.util.HashMap;
  * @author Andreas Rehfeldt
  * @version 1.0 (03.07.2012)
  */
-public abstract class WeatherMap extends HashMap<Long, MutableStationData> {
+public abstract class WeatherMap extends HashMap<Long, AbstractStationData> {
 
 	/**
 	 * Serial

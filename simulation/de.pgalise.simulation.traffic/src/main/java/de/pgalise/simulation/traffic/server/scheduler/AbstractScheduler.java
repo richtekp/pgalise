@@ -15,6 +15,7 @@ import java.util.List;
  */
 public abstract class AbstractScheduler implements Scheduler {
 	
+  private static final long serialVersionUID = 1L;
 
 	protected abstract void onAddScheduleHandler(ScheduleHandler handler);
 

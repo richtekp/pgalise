@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -21,111 +20,118 @@
 package de.pgalise.simulation.traffic.event;
 
 import de.pgalise.simulation.shared.event.EventType;
-import de.pgalise.simulation.traffic.model.vehicle.VehicleData;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
+import de.pgalise.simulation.traffic.entity.VehicleData;
 import java.util.List;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
 import de.pgalise.simulation.traffic.server.eventhandler.vehicle.VehicleEvent;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * The create random busses event will create random busses
- * for the given bus linves.
+ * The create random busses event will create random busses for the given bus
+ * linves.
+ *
  * @author Lena
  */
-public class CreateRandomBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D,VehicleEvent> {
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -6389011067355327482L;
+@XmlRootElement
+public class CreateRandomBussesEvent<D extends VehicleData> extends AbstractTrafficEvent<D, VehicleEvent> {
 
-	/**
-	 * List with bus lines
-	 */
-	private List<String> busLines;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -6389011067355327482L;
 
-	/**
-	 * Agency name
-	 */
-	private String agencyName;
+  /**
+   * List with bus lines
+   */
+  private List<String> busLines;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 *            ID of the event
-	 * @param busIDList
-	 *            List with bus lines
-	 * @param agencyName
-	 *            Agency name
-	 */
-	public CreateRandomBussesEvent(TrafficServerLocal<VehicleEvent> responsibleServer, long timestamp, long elapsedTime, List<String> busLines, String agencyName) {
-		super(responsibleServer, timestamp, elapsedTime);
-		this.busLines = busLines;
-		this.agencyName = agencyName;
-	}
+  /**
+   * Agency name
+   */
+  private String agencyName;
 
-	public List<String> getBusLines() {
-		return this.busLines;
-	}
+  /**
+   * Constructor
+   *
+   * @param id ID of the event
+   * @param busIDList List with bus lines
+   * @param agencyName Agency name
+   */
+  public CreateRandomBussesEvent(
+    TrafficControllerLocal<VehicleEvent> responsibleServer,
+    long timestamp,
+    long elapsedTime,
+    List<String> busLines,
+    String agencyName) {
+    super(responsibleServer,
+      timestamp,
+      elapsedTime);
+    this.busLines = busLines;
+    this.agencyName = agencyName;
+  }
 
-	public void setBusLines(List<String> busLines) {
-		this.busLines = busLines;
-	}
+  public List<String> getBusLines() {
+    return this.busLines;
+  }
 
-	/**
-	 * @return the agencyName
-	 */
-	public String getAgencyName() {
-		return agencyName;
-	}
+  public void setBusLines(List<String> busLines) {
+    this.busLines = busLines;
+  }
 
-	/**
-	 * @param agencyName
-	 *            the agencyName to set
-	 */
-	public void setAgencyName(String agencyName) {
-		this.agencyName = agencyName;
-	}
+  /**
+   * @return the agencyName
+   */
+  public String getAgencyName() {
+    return agencyName;
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((agencyName == null) ? 0 : agencyName.hashCode());
-		result = prime * result + ((busLines == null) ? 0 : busLines.hashCode());
-		return result;
-	}
+  /**
+   * @param agencyName the agencyName to set
+   */
+  public void setAgencyName(String agencyName) {
+    this.agencyName = agencyName;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		CreateRandomBussesEvent other = (CreateRandomBussesEvent) obj;
-		if (agencyName == null) {
-			if (other.agencyName != null) {
-				return false;
-			}
-		} else if (!agencyName.equals(other.agencyName)) {
-			return false;
-		}
-		if (busLines == null) {
-			if (other.busLines != null) {
-				return false;
-			}
-		} else if (!busLines.equals(other.busLines)) {
-			return false;
-		}
-		return true;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + ((agencyName == null) ? 0 : agencyName.hashCode());
+    result = prime * result + ((busLines == null) ? 0 : busLines.hashCode());
+    return result;
+  }
 
-	@Override
-	public EventType getType() {
-		return TrafficEventTypeEnum.CREATE_RANDOM_BUSSES_EVENT;
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!super.equals(obj)) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    CreateRandomBussesEvent other = (CreateRandomBussesEvent) obj;
+    if (agencyName == null) {
+      if (other.agencyName != null) {
+        return false;
+      }
+    } else if (!agencyName.equals(other.agencyName)) {
+      return false;
+    }
+    if (busLines == null) {
+      if (other.busLines != null) {
+        return false;
+      }
+    } else if (!busLines.equals(other.busLines)) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public EventType getType() {
+    return TrafficEventTypeEnum.CREATE_RANDOM_BUSSES_EVENT;
+  }
 }

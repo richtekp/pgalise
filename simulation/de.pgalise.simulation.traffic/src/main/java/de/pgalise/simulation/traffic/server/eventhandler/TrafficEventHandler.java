@@ -13,36 +13,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic.server.eventhandler;
 
+import de.pgalise.simulation.sensorFramework.output.Output;
+import de.pgalise.simulation.service.RandomSeedService;
 import de.pgalise.simulation.service.event.EventHandler;
-import de.pgalise.simulation.traffic.server.TrafficServer;
-import de.pgalise.simulation.traffic.server.TrafficServerLocal;
+import de.pgalise.simulation.traffic.TrafficControllerLocal;
 
 /**
- * A TrafficHandler handles a specific type of a TrafficEvent 
- * raised by the user of the simulation. 
- * 
- * @param <F> 
- * @param <N> 
- * @param <E> 
- * @param <D> 
- * @param <V> 
+ * A TrafficHandler handles a specific type of a TrafficEvent raised by the user
+ * of the simulation.
+ *
+ * @param <F>
+ * @param <N>
+ * @param <E>
+ * @param <D>
+ * @param <V>
  * @author Mustafa
  * @version 1.0 (Mar 21, 2013)
  */
 public interface TrafficEventHandler<
-	F extends TrafficEvent
-> extends EventHandler<F> {
+	F extends TrafficEvent> extends
+  EventHandler<F> {
 
-	/**
-	 * Inits the event handler
-	 * 
-	 * @param server
-	 *            Corresponding {@link TrafficServer}
-	 */
-	void init(TrafficServerLocal<F>  server);
-	
-	TrafficServerLocal<F>  getResponsibleServer();
+  /**
+   * Inits the event handler
+   *
+   * @param server Corresponding {@link TrafficServer}
+   */
+  void init(TrafficControllerLocal<F> server);
+
+  TrafficControllerLocal<F> getResponsibleServer();
+
+  /**
+   * initializes services after initialiazation with reflection
+   *
+   * @param randomSeedService
+   * @param responsibleServer
+   * @param output
+   */
+  void init(RandomSeedService randomSeedService,
+    TrafficControllerLocal responsibleServer,
+    Output output);
 }

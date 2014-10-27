@@ -6,18 +6,18 @@ package de.pgalise.simulation.weather.modifier;
 
 import de.pgalise.simulation.weather.dataloader.WeatherLoader;
 import de.pgalise.simulation.weather.dataloader.WeatherMap;
-import de.pgalise.simulation.weather.model.WeatherCondition;
+import de.pgalise.simulation.weather.entity.WeatherCondition;
 
 /**
  *
  * @param <C> 
  * @author richter
  */
-public interface WeatherMapModifier<C extends WeatherCondition> extends WeatherStrategy {
+public interface WeatherMapModifier extends WeatherStrategy {
 	WeatherMap getMap();
 
 
 	long getSimulationTimestamp();
 
-	WeatherLoader<C> getWeatherLoader();
+	WeatherLoader getWeatherLoader();
 }

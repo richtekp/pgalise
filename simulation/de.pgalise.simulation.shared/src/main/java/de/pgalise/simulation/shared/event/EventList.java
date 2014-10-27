@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.shared.event;
 
-import java.io.Serializable;
+import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.UUID;
 
 /**
- * A list with {@link SimulationEvent}. This is useful, because
- * the timestamp do not need to be sent every time. It's also possible,
- * that there is no {@link SimulationEvent} in this list. In this case, the instance
- * indicates only the simulation time progress.
- * 
- * @param <T> 
+ * A list with {@link SimulationEvent}. This is useful, because the timestamp do
+ * not need to be sent every time. It's also possible, that there is no
+ * {@link SimulationEvent} in this list. In this case, the instance indicates
+ * only the simulation time progress.
+ *
+ * @param <T>
  * @author Timo
  */
-public class EventList<T extends Event> implements Serializable {
+public class EventList<T extends Event> extends Identifiable {
 
 	/**
 	 * Serial
@@ -43,42 +41,31 @@ public class EventList<T extends Event> implements Serializable {
 	private List<T> eventList;
 
 	/**
-	 * ID of the event
-	 */
-	private UUID id;
-
-	/**
 	 * Timestamp
 	 */
 	private long timestamp;
 
 	/**
 	 * Constructor
-	 * 
-	 * @param eventList
-	 *            list with events
-	 * @param timestamp
-	 *            current timestamp
-	 * @param id
-	 *            ID of the event
+	 *
+	 * @param eventList list with events
+	 * @param timestamp current timestamp
+	 * @param id ID of the event
 	 */
-	public EventList(List<T> eventList, long timestamp, UUID id) {
-		super();
+	public EventList(Long id,
+		List<T> eventList,
+		long timestamp) {
+		super(id);
 		if (eventList != null) {
 			this.eventList = eventList;
 		} else {
 			this.eventList = new LinkedList<>();
 		}
 		this.timestamp = timestamp;
-		this.id = id;
 	}
 
 	public List<T> getEventList() {
 		return this.eventList;
-	}
-
-	public UUID getId() {
-		return this.id;
 	}
 
 	public long getTimestamp() {
@@ -87,10 +74,6 @@ public class EventList<T extends Event> implements Serializable {
 
 	public void setEventList(List<T> eventList) {
 		this.eventList = eventList;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public void setTimestamp(long timestamp) {
@@ -102,7 +85,6 @@ public class EventList<T extends Event> implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((eventList == null) ? 0 : eventList.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + (int) (timestamp ^ (timestamp >>> 32));
 		return result;
 	}
@@ -124,13 +106,6 @@ public class EventList<T extends Event> implements Serializable {
 				return false;
 			}
 		} else if (!eventList.equals(other.eventList)) {
-			return false;
-		}
-		if (id == null) {
-			if (other.id != null) {
-				return false;
-			}
-		} else if (!id.equals(other.id)) {
 			return false;
 		}
 		if (timestamp != other.timestamp) {

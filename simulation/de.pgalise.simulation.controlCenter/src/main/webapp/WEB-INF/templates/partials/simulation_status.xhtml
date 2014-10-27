@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+	<h:form>
+		Connection: <span class="connectionStateColor"><h:outputText
+				value="#{mainCtrl.connectionState}" /></span>
+		Simulation: <span class="simulationStateColor"><h:outputText
+				value="#{mainCtrl.simulationControllerStatus}" /></span>
+		Simulation Time: <h:outputText
+			value="#{simulationStatusCtrl.simulationDate}">
+			<f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+		</h:outputText>
+		OSM: <span class="osmParsedStateColor"><h:outputText
+				value="#{mainCtrl.mapParsedState}" /></span>
+	</h:form>
+</ui:composition>

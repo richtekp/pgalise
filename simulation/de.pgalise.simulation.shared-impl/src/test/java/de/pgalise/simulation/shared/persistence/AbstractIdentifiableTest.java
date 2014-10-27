@@ -4,6 +4,7 @@
  */
 package de.pgalise.simulation.shared.persistence;
 
+import de.pgalise.simulation.shared.entity.Identifiable;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -26,13 +27,13 @@ public class AbstractIdentifiableTest {
 	}
 
 	/**
-	 * Test of getId method, of class AbstractIdentifiable.
+	 * Test of getId method, of class Identifiable.
 	 * 
 	 * @throws InterruptedException 
 	 */
 	@Test
 	public void testInit() throws InterruptedException {
-		AbstractIdentifiable instance = new AbstractIdentifiableImpl();
+		Identifiable instance = new AbstractIdentifiableImpl();
 		final int count = 10;
 		int threadCount = 20;
 		final Set<Long> usedIds = new HashSet<>();
@@ -62,6 +63,6 @@ public class AbstractIdentifiableTest {
 	}
 
 	@SuppressWarnings("serial")
-	private class AbstractIdentifiableImpl extends AbstractIdentifiable {
+	private class AbstractIdentifiableImpl extends Identifiable {
 	}
 }

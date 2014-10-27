@@ -22,7 +22,5 @@
 		<module>de.pgalise.util.btree</module>
 		<module>de.pgalise.util.generic</module>
 		<module>de.pgalise.util.graph</module>
-		<module>de.pgalise.util.weathercollector</module>
-		<module>de.pgalise.util.weathercollector-impl</module>
 	</modules>
 </project>

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.weather.internal.util.comparator;
 
 import java.io.Serializable;
@@ -23,24 +22,26 @@ import de.pgalise.simulation.weather.modifier.WeatherStrategy;
 
 /**
  * Comparator for weather strategies
- * 
+ *
  * @author Andreas Rehfeldt
  * @version 1.0 (Aug 6, 2012)
  */
-public class WeatherStrategyComparator implements Comparator<WeatherStrategy>, Serializable {
+public class WeatherStrategyComparator implements Comparator<WeatherStrategy>,
+  Serializable {
 
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -2542679693118886936L;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -2542679693118886936L;
 
-	@Override
-	public int compare(WeatherStrategy o1, WeatherStrategy o2) {
-		float thisValue = o1.getOrderID();
-		float anotherValue = o2.getOrderID();
+  @Override
+  public int compare(WeatherStrategy o1,
+    WeatherStrategy o2) {
+    float thisValue = o1.getOrderID();
+    float anotherValue = o2.getOrderID();
 
-		// Order ID beachten
-		return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
-	}
+    // Order ID beachten
+    return (thisValue < anotherValue ? -1 : (thisValue == anotherValue ? 0 : 1));
+  }
 
 }

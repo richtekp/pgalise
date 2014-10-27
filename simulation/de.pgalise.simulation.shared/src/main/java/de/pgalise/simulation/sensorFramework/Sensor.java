@@ -16,12 +16,13 @@
  
 package de.pgalise.simulation.sensorFramework;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.operationCenter.internal.model.sensordata.SensorData;
 import de.pgalise.simulation.sensorFramework.output.Output;
 import de.pgalise.simulation.service.SimulationComponent;
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
-import de.pgalise.simulation.shared.persistence.Identifiable;
+import de.pgalise.simulation.shared.sensor.SensorInterfererType;
+import java.util.List;
 
 /**
  * Abstract super class of a Sensor. To create a concrete sensor instantiate a SensorDomain and use the add-method to
@@ -30,8 +31,12 @@ import de.pgalise.simulation.shared.persistence.Identifiable;
  * @param <E> 
  * @author Marcus
  * @version 1.0
+ * @param <X>
  */
-public interface Sensor<E extends Event> extends Identifiable, SimulationComponent<E> {
+/*
+position is managed in position field of StaticTrafficSensor (belongs to permanent properties) or in SensorData of mobile sensors (belongs to properties changing in every update step)
+*/
+public interface Sensor<E extends Event, X extends SensorData> extends SimulationComponent<E> {
 
 	/**
 	 * returns the number of measured values of the sensor
@@ -46,15 +51,6 @@ public interface Sensor<E extends Event> extends Identifiable, SimulationCompone
 	 * @return output
 	 */
 	public Output getOutput() ;
-
-	/**
-	 * Returns the position of the sensor in the environment
-	 * 
-	 * @return position
-	 */
-	public Coordinate getPosition();
-	
-	void setPosition(Coordinate position);
 
 	/**
 	 * Returns the sensortype
@@ -88,4 +84,14 @@ public interface Sensor<E extends Event> extends Identifiable, SimulationCompone
 	 *            List with SimulationEvents
 	 */
 	void transmitUsageData(EventList<E> eventList);
+	
+	int getUpdateSteps();
+	
+	X getSensorData();
+	
+	void setSensorData(X sensorData);
+	
+	List<SensorInterfererType> getSensorInterfererTypes();
+	
+	void setSensorInterfererTypes(List<SensorInterfererType> sensorInterferers);
 }

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.energy.test;
 
 import java.util.ArrayList;
@@ -26,18 +25,19 @@ import java.util.Map;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.pgalise.simulation.energy.EnergyConsumptionManager;
 import de.pgalise.simulation.energy.internal.CSVEnergyConsumptionManager;
-import de.pgalise.simulation.shared.city.CityInfrastructureData;
+import de.pgalise.simulation.service.IdGenerator;
+import de.pgalise.simulation.traffic.service.CityDataService;
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import com.vividsolutions.jts.geom.Coordinate;
+import de.pgalise.simulation.shared.entity.BaseBoundary;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.testutils.TestUtils;
-import de.pgalise.simulation.shared.city.Building;
+import de.pgalise.simulation.shared.entity.Building;
 import javax.annotation.ManagedBean;
-import javax.ejb.embeddable.EJBContainer;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
 import org.apache.openejb.api.LocalClient;
 import org.junit.Before;
@@ -45,132 +45,157 @@ import org.junit.Ignore;
 
 /**
  * Tests the synchronization of the {@link EnergyConsumptionManager}
- * 
+ *
  * @author Andreas Rehfeldt
  * @author Timo
  * @version 1.0 (Oct 29, 2012)
  */
 @LocalClient
 @ManagedBean
-@Ignore //@loads EnergyProfileLocal as EJB which doesn't have an implementation which is annotated as EJB (how did this work before?)
+@Ignore //@loads EnergyProfileLocal as EJB which doesn't have an implementation 
+  //which is annotated as EJB (how did this work before?)
 public class EnergyConsumptionManagerSyncTest {
-	private EJBContainer container;
-	/**
-	 * End timestamp
-	 */
-	private static long endTime = 0;
 
-	/**
-	 * Start timestamp
-	 */
-	private static long startTime = 0;
+  /**
+   * End timestamp
+   */
+  private static long endTime = 0;
 
-	/**
-	 * Test class
-	 */
-	private static EnergyConsumptionManager testclass;
+  /**
+   * Start timestamp
+   */
+  private static long startTime = 0;
 
-	/**
-	 * Test location as Geolocation
-	 */
-	private static final Coordinate testLocation = new Coordinate(53.136765, 8.216524);
+  /**
+   * Test class
+   */
+  private static EnergyConsumptionManager testclass;
 
-	/**
-	 * Test location as Vector2d
-	 */
-	private static final Coordinate testLocationAsV2d = EnergyConsumptionManagerSyncTest.testLocation;
-	/**
-	 * Number of test threads
-	 */
-	private static final int testNumberOfThreads = 100;
+  /**
+   * Test location as Geolocation
+   */
+  private BaseCoordinate testLocation ;
+  /**
+   * Number of test threads
+   */
+  private static final int testNumberOfThreads = 100;
+  @EJB
+  private IdGenerator idGenerator;
 
-	@SuppressWarnings("LeakingThisInConstructor")
-	public EnergyConsumptionManagerSyncTest() throws NamingException {
-		container = TestUtils.getContainer();
-		container.getContext().bind("inject", this);
-		
-		
-		Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
-		List<Building> buildingList = new ArrayList<>();
+  public EnergyConsumptionManagerSyncTest() {
+  }
 
-		for (int i = 0; i < 100; i++) {
-			buildingList.add(new Building(new Coordinate(53.136765, 8.216524), null));
-		}
+  @Before
+  public void setUp() throws NamingException {
+    TestUtils.getContext().bind("inject",
+      this);
+    testLocation = new BaseCoordinate(
+    53.136765,
+    8.216524);
 
-		CityInfrastructureData citydata = EasyMock.createNiceMock(CityInfrastructureData.class);
-		EasyMock.expect(citydata.getBuildings(EnergyConsumptionManagerSyncTest.testLocation, 5)).andStubReturn(map);
-		EasyMock.replay(citydata);
+    Map<EnergyProfileEnum, List<Building>> map = new HashMap<>();
+    List<Building> buildingList = new ArrayList<>();
 
-		EnergyConsumptionManagerSyncTest.testclass = new CSVEnergyConsumptionManager();
+    for (int i = 0; i < 100; i++) {
+      BaseCoordinate referencePoint = new BaseCoordinate( 53.136765,
+          8.216524);
+      buildingList.add(new Building(idGenerator.getNextId(),
+        new BaseBoundary(idGenerator.getNextId(), referencePoint, null)));
+    }
 
-		// Start
-		Calendar cal = new GregorianCalendar();
-		cal.set(2012, 1, 1, 0, 0, 0);
-		EnergyConsumptionManagerSyncTest.startTime = cal.getTimeInMillis();
+    CityDataService citydata = EasyMock.createNiceMock(
+      CityDataService.class);
+    EasyMock.expect(citydata.getBuildingEnergyProfileMap(
+      testLocation,
+      5)).andStubReturn(map);
+    EasyMock.replay(citydata);
 
-		// End
-		cal.set(2012, 1, 4, 0, 0, 0);
-		EnergyConsumptionManagerSyncTest.endTime = cal.getTimeInMillis();
+    EnergyConsumptionManagerSyncTest.testclass = new CSVEnergyConsumptionManager();
 
-		// Load new data
-		EnergyConsumptionManagerSyncTest.testclass.init(EnergyConsumptionManagerSyncTest.startTime,
-				EnergyConsumptionManagerSyncTest.endTime, null);
-	}
+    // Start
+    Calendar cal = new GregorianCalendar();
+    cal.set(2012,
+      1,
+      1,
+      0,
+      0,
+      0);
+    EnergyConsumptionManagerSyncTest.startTime = cal.getTimeInMillis();
 
-	/**
-	 * Exception
-	 */
-	private volatile Throwable throwable;
+    // End
+    cal.set(2012,
+      1,
+      4,
+      0,
+      0,
+      0);
+    EnergyConsumptionManagerSyncTest.endTime = cal.getTimeInMillis();
 
-	@After
-	public void tearDown() throws Throwable {
-		if (this.throwable != null) {
-			throw this.throwable;
-		}
-	}
+    // Load new data
+    EnergyConsumptionManagerSyncTest.testclass.init(
+      EnergyConsumptionManagerSyncTest.startTime,
+      EnergyConsumptionManagerSyncTest.endTime,
+      null);
+  }
 
-	@Test
-	public void testGetValue() throws InterruptedException {
-		// List with all threads
-		final List<Thread> threads = new ArrayList<>();
+  /**
+   * Exception
+   */
+  private volatile Throwable throwable;
 
-		// Creates 50 Threads
-		for (int i = 0; i < EnergyConsumptionManagerSyncTest.testNumberOfThreads; i++) {
-			final int y = i;
-			Thread thread = new Thread(new Runnable() {
-				@Override
-				public void run() {
+  @After
+  public void tearDown() throws Throwable {
+    if (this.throwable != null) {
+      throw this.throwable;
+    }
+  }
 
-					// Sleep with random value
-					try {
-						Thread.sleep((long) (Math.random() * 1000L));
-					} catch (InterruptedException e) {
-						EnergyConsumptionManagerSyncTest.this.throwable = e;
-						e.printStackTrace();
-					}
+  @Test
+  public void testGetValue() throws InterruptedException {
+    // List with all threads
+    final List<Thread> threads = new ArrayList<>();
 
-					if ((y % 50) == 0) {
-						// Every 20 thread add new weather
-						EnergyConsumptionManagerSyncTest.testclass.init(EnergyConsumptionManagerSyncTest.startTime,
-								EnergyConsumptionManagerSyncTest.endTime, null);
-					}
+    // Creates 50 Threads
+    for (int i = 0; i < EnergyConsumptionManagerSyncTest.testNumberOfThreads; i++) {
+      final int y = i;
+      Thread thread = new Thread(new Runnable() {
+        @Override
+        public void run() {
 
-					Assert.assertTrue(EnergyConsumptionManagerSyncTest.testclass.getEnergyConsumptionInKWh(
-							EnergyConsumptionManagerSyncTest.startTime, EnergyProfileEnum.HOUSEHOLD,
-							EnergyConsumptionManagerSyncTest.testLocationAsV2d) > 0);
-				}
-			});
+          // Sleep with random value
+          try {
+            Thread.sleep((long) (Math.random() * 1000L));
+          } catch (InterruptedException e) {
+            EnergyConsumptionManagerSyncTest.this.throwable = e;
+            e.printStackTrace();
+          }
 
-			// Save thread
-			threads.add(thread);
+          if ((y % 50) == 0) {
+            // Every 20 thread add new weather
+            EnergyConsumptionManagerSyncTest.testclass.init(
+              EnergyConsumptionManagerSyncTest.startTime,
+              EnergyConsumptionManagerSyncTest.endTime,
+              null);
+          }
 
-			// Start thread
-			thread.start();
-		}
+          Assert.assertTrue(EnergyConsumptionManagerSyncTest.testclass.
+            getEnergyConsumptionInKWh(
+              EnergyConsumptionManagerSyncTest.startTime,
+              EnergyProfileEnum.HOUSEHOLD,
+              testLocation) > 0);
+        }
+      });
 
-		// Wait for threads
-		for (Thread thread : threads) {
-			thread.join();
-		}
-	}
+      // Save thread
+      threads.add(thread);
+
+      // Start thread
+      thread.start();
+    }
+
+    // Wait for threads
+    for (Thread thread : threads) {
+      thread.join();
+    }
+  }
 }

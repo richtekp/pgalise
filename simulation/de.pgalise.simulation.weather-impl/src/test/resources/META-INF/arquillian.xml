@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<container qualifier="tomee" default="true">
+    <configuration>
+        <property name="httpPort">-1</property>
+        <property name="stopPort">-1</property>
+        <property name="tomee.httpPort">-1</property>
+        <property name="tomee.stopPort">-1</property>
+        <property name="tomee.embedded.httpPort">-1</property>
+        <property name="tomee.embedded.stopPort">-1</property>
+    </configuration>
+</container>

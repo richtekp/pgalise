@@ -16,13 +16,13 @@
  
 package de.pgalise.simulation.traffic.graphextension;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.city.NavigationNode;
-import de.pgalise.simulation.traffic.TrafficEdge;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import de.pgalise.simulation.shared.entity.NavigationNode;
+import de.pgalise.simulation.traffic.entity.TrafficEdge;
 import de.pgalise.simulation.traffic.TrafficGraph;
-import de.pgalise.simulation.traffic.TrafficNode;
+import de.pgalise.simulation.traffic.entity.TrafficNode;
 
-import javax.vecmath.Vector2d;
+import de.pgalise.simulation.shared.JaxbVector2d;
 
 /**
  * The TrafficGraphExtensions is an interface
@@ -43,7 +43,7 @@ public interface GraphExtensions {
 	 * @throws IllegalArgumentException
 	 *             if argument 'node' is 'null'
 	 */
-	public Coordinate getPosition(final NavigationNode node);
+	public BaseCoordinate getPosition(final NavigationNode node);
 
 	/**
 	 * Returns the vector between the two nodes as difference.
@@ -56,7 +56,7 @@ public interface GraphExtensions {
 	 * @exception IllegalArgumentException
 	 *                if node1 or node2 is null
 	 */
-	public Vector2d getVectorBetween(final TrafficNode from, final TrafficNode to);
+	public JaxbVector2d getVectorBetween(final TrafficNode from, final TrafficNode to);
 
 	/**
 	 * Checks whether the passed node has an attached position.
@@ -66,19 +66,7 @@ public interface GraphExtensions {
 	 * @return true if the node has an attached position property, otherwise false
 	 */
 	public boolean hasPosition(final TrafficNode node);
-
-	/**
-	 * Sets the position of the passed node argument. Additionally the new lengths and vectors for each edge of the
-	 * passed node are calculated.
-	 * 
-	 * @param node
-	 *            the node which positions shall be set
-	 * @param position
-	 *            the new position of the node
-	 * @return the passed node for method chaining
-	 */
-	public TrafficNode setPosition(final TrafficNode node, final Coordinate position);
-
+  
 	/**
 	 * Returns the length between two nodes.
 	 * @param node1
@@ -106,13 +94,14 @@ public interface GraphExtensions {
 	public Double getMaxSpeed(final TrafficEdge edge);
 
 	/**
-	 * Returns the street name of the passed edge.
+	 * Returns the way Identifier of the way which is associated with the passed 
+   * edge.
 	 * 
 	 * @param edge
 	 *            the edge which street name is asked
 	 * @return the street name of the passed edge or null if streetName havn't been set yet
 	 */
-	public String getStreetName(final TrafficEdge edge);
+	public String getWayIdentifier(final TrafficEdge edge);
 
 	/**
 	 * Returns the Vector of the passed edge.
@@ -121,7 +110,7 @@ public interface GraphExtensions {
 	 *            the edge which vector is asked.
 	 * @return the vector of the passed edge or null if at least one of the edge's node has no position
 	 */
-	public Vector2d getVector(final TrafficEdge edge);
+	public JaxbVector2d getVector(final TrafficEdge edge);
 
 	/**
 	 * Checks whether a passed edge has attached the maxSpeed property.
@@ -139,7 +128,7 @@ public interface GraphExtensions {
 	 *            the edge that has to be checked
 	 * @return true if the passed edge has attached the streetName property, otherwise false
 	 */
-	public boolean hasStreetName(final TrafficEdge edge);
+	public boolean hasWayIdentifier(final TrafficEdge edge);
 
 	/**
 	 * Sets the maximum speed of the passed edge.
@@ -148,6 +137,7 @@ public interface GraphExtensions {
 	 *            the edge which maximum speed has to be set
 	 * @param maxSpeed
 	 *            the new maximum speed of the edge
+	 * @return  
 	 */
 	public TrafficEdge setMaxSpeed(final TrafficEdge edge, final double maxSpeed);
 
@@ -156,10 +146,10 @@ public interface GraphExtensions {
 	 * 
 	 * @param edge
 	 *            the edge which street name has to be set
-	 * @param length
-	 *            the new street name of the edge
+	 * @param streetName 
+	 * @return  
 	 */
-	public TrafficEdge setStreetName(final TrafficEdge edge, final String streetName);
+	public TrafficEdge setWayIdentifier(final TrafficEdge edge, final String streetName);
 
 	/**
 	 * Determines whether the passed edge is a street for cars.

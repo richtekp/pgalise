@@ -17,15 +17,15 @@
 package de.pgalise.simulation.shared.event.energy;
 
 import de.pgalise.simulation.shared.energy.EnergyProfileEnum;
-import de.pgalise.simulation.shared.event.EventTypeEnum;
-import com.vividsolutions.jts.geom.Coordinate;
-import de.pgalise.simulation.shared.event.EventType;
+import de.pgalise.simulation.shared.entity.BaseCoordinate;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Changes the energy consumption in the measure radius by the given percentage.
  * 
  * @author Timo
  */
+@XmlRootElement
 public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	/**
 	 * Serial
@@ -35,7 +35,7 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	/**
 	 * Position
 	 */
-	private Coordinate position;
+	private BaseCoordinate position;
 
 	/**
 	 * Measure radius (in meter)
@@ -67,7 +67,7 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	 * End timestamp of the event
 	 */
 	
-	public ChangeEnergyConsumptionEvent(Coordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
+	public ChangeEnergyConsumptionEvent(BaseCoordinate position, int measureRadiusInMeter, long startTimestamp, long endTimestamp) {
 		if (measureRadiusInMeter <= 0.0) {
 			throw new IllegalArgumentException("measureRadiusInMeter is negative");
 		}
@@ -77,11 +77,11 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 		this.endTimestamp = endTimestamp;
 	}
 
-	public Coordinate getPosition() {
+	public BaseCoordinate getPosition() {
 		return position;
 	}
 
-	public void setPosition(Coordinate position) {
+	public void setPosition(BaseCoordinate position) {
 		this.position = position;
 	}
 
@@ -165,7 +165,7 @@ public class ChangeEnergyConsumptionEvent extends EnergyEvent {
 	}
 
 	@Override
-	public EventType getType() {
-		return EventTypeEnum.CHANGE_WEATHER_EVENT;
+	public EnergyEventType getType() {
+		return EnergyEventTypeEnum.CHANGE_ENERGY_CONSUMPTION_EVENT;
 	}
 }

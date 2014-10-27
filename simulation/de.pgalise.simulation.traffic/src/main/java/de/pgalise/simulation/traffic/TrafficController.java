@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.traffic;
 
 import de.pgalise.simulation.sensorFramework.SensorManagerController;
+import de.pgalise.simulation.traffic.internal.server.sensor.TrafficSensor;
 import de.pgalise.simulation.traffic.server.eventhandler.TrafficEvent;
 
 /**
  * Remote view of the TrafficController.<br/><br/>
- * The TrafficController is responsible for everything that has to do 
- * with the traffic aspect of the simulation. For instance it processes
- * incoming traffic events and generates traffic sensor data.
- * 
- * 
- * @param <D> 
- * @param <N> 
- * @param <E> 
- * @param <V> 
- * @param <F> 
+ * The TrafficController is responsible for everything that has to do with the
+ * traffic aspect of the simulation. For instance it processes incoming traffic
+ * events and generates traffic sensor data.
+ *
  * @author Mustafa
  * @version 1.0 (Oct 23, 2012)
  */
 public interface TrafficController<
-	F extends TrafficEvent
-> extends SensorManagerController<F, InfrastructureStartParameter, InfrastructureInitParameter> {
+	F extends TrafficEvent> extends
+  SensorManagerController<F, TrafficStartParameter, TrafficInitParameter, TrafficSensor> {
 
 }

@@ -13,25 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.service;
 
 import de.pgalise.simulation.shared.event.Event;
 import de.pgalise.simulation.shared.event.EventList;
+import java.io.Serializable;
 
 /**
  * Interface for every updateable simulation component.
- * @param <E> 
+ *
+ * @param <E>
  * @author Marcus
  * @author Timo
  */
-public interface SimulationComponent<E extends Event> {
+public interface SimulationComponent<E extends Event> extends Serializable {
 
-	/**
-	 * Updates the SimulationComponent
-	 * 
-	 * @param simulationEventList
-	 *            list with the current timestamp and possible events.
-	 */
-	public void update(EventList<E> simulationEventList);
+  Long getId();
+
+  /**
+   * Updates the SimulationComponent
+   *
+   * @param simulationEventList list with the current timestamp and possible
+   * events.
+   */
+  void update(EventList<E> simulationEventList);
 }

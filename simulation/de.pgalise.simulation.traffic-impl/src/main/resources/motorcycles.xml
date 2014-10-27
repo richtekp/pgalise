@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<motorcycles>
+		<motorcycle>
+			<typeid>motorcycle001</typeid>
+			<weight>191</weight>
+			<horsePower>178</horsePower>
+			<length>2085</length>	
+			<maxSpeed>295</maxSpeed>
+			<wheelbase>1400</wheelbase>
+			<axleCount>2</axleCount>
+			<description>Kawasaki Ninja</description>
+		</motorcycle>
+		<motorcycle>
+			<typeid>motorcycle002</typeid>
+			<weight>185</weight>
+			<horsePower>140</horsePower>
+			<length>2140</length>	
+			<maxSpeed>298</maxSpeed>
+			<wheelbase>1485</wheelbase>
+			<axleCount>2</axleCount>
+			<description>Suzuki Hayabusa</description>
+		</motorcycle>
+		<motorcycle>
+			<typeid>motorcycle003</typeid>
+			<weight>177</weight>
+			<horsePower>134</horsePower>
+			<length>2040</length>	
+			<maxSpeed>285</maxSpeed>
+			<wheelbase>1415</wheelbase>
+			<axleCount>2</axleCount>
+			<description>Yamaha YZF</description>
+		</motorcycle>
+	</motorcycles>

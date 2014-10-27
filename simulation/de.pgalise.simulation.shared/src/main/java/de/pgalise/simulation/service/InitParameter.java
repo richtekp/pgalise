@@ -13,187 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License. 
  */
- 
 package de.pgalise.simulation.service;
 
-import de.pgalise.simulation.service.ServerConfiguration;
-import java.io.Serializable;
+import de.pgalise.simulation.sensorFramework.output.Output;
 
-import de.pgalise.simulation.shared.city.Boundary;
-import de.pgalise.simulation.shared.controller.TrafficFuzzyData;
+import java.io.Serializable;
+import javax.faces.bean.ManagedBean;
 
 /**
- * The init parameters will be send to every controller on init.
- * It contains all information needed in the init state.
+ * The init parameters will be send to every controller on init. It contains all
+ * information needed in the init state.
+ *
  * @author Mustafa
  * @author Timo
  */
+@ManagedBean
 public class InitParameter implements Serializable {
-	/**
-	 * Serial
-	 */
-	private static final long serialVersionUID = -39986353888978216L;
 
-	/**
-	 * Information about the server configuration
-	 */
-	private ServerConfiguration serverConfiguration;
+  /**
+   * Serial
+   */
+  private static final long serialVersionUID = -39986353888978216L;
+  private Output output;
 
-	/**
-	 * Timestamp of the simulation start
-	 */
-	private long startTimestamp;
+  public InitParameter() {
+  }
 
-	/**
-	 * Timestamp of the simulation end
-	 */
-	private long endTimestamp;
+  public InitParameter(Output output) {
+    this.output = output;
+  }
 
-	/**
-	 * Simulation interval
-	 */
-	private long interval;
+  public Output getOutput() {
+    return output;
+  }
 
-	/**
-	 * Clock generator interval
-	 */
-	private long clockGeneratorInterval;
-
-	/**
-	 * URL to the operation center
-	 */
-	private String operationCenterURL;
-	
-	/**
-	 * URL to the control center
-	 */
-	private String controlCenterURL;
-
-	/**
-	 * Traffic fuzzy data
-	 */
-	private TrafficFuzzyData trafficFuzzyData;
-
-	/**
-	 * City boundary
-	 */
-	private Boundary cityBoundary;
-
-	/**
-	 * Default
-	 */
-	public InitParameter() {
-	}
-
-	/**
-	 * Constructor
-	 * 
-	 * @param cityInfrastructureData
-	 *            Information about the city infrastructure
-	 * @param serverConfiguration
-	 *            Information about the server configuration
-	 * @param startTimestamp
-	 *            Timestamp of the simulation start
-	 * @param endTimestamp
-	 *            Timestamp of the simulation end
-	 * @param interval
-	 *            Simulation interval
-	 * @param clockGeneratorInterval
-	 *            Clock generator interval
-	 * @param operationCenterURL
-	 *            URL to the operation center
-	 * @param controlCenterURL
-	 * 			  URL to the control center
-	 * @param trafficFuzzyData
-	 *            Traffic fuzzy data
-	 * @param cityBoundary
-	 *            City boundary
-	 */
-	public InitParameter(ServerConfiguration serverConfiguration,
-			long startTimestamp, long endTimestamp, long interval, long clockGeneratorInterval,
-			String operationCenterURL, String controlCenterURL,
-			TrafficFuzzyData trafficFuzzyData, Boundary cityBoundary) {
-		super();
-		this.serverConfiguration = serverConfiguration;
-		this.startTimestamp = startTimestamp;
-		this.endTimestamp = endTimestamp;
-		this.interval = interval;
-		this.clockGeneratorInterval = clockGeneratorInterval;
-		this.operationCenterURL = operationCenterURL;
-		this.trafficFuzzyData = trafficFuzzyData;
-		this.cityBoundary = cityBoundary;
-		this.controlCenterURL = controlCenterURL;
-	}
-
-	public long getClockGeneratorInterval() {
-		return this.clockGeneratorInterval;
-	}
-
-	public long getEndTimestamp() {
-		return this.endTimestamp;
-	}
-
-	public long getInterval() {
-		return this.interval;
-	}
-
-	public String getOperationCenterURL() {
-		return this.operationCenterURL;
-	}
-
-	public ServerConfiguration getServerConfiguration() {
-		return this.serverConfiguration;
-	}
-
-	public long getStartTimestamp() {
-		return this.startTimestamp;
-	}
-
-	public void setClockGeneratorInterval(long clockGeneratorInterval) {
-		this.clockGeneratorInterval = clockGeneratorInterval;
-	}
-
-	public void setEndTimestamp(long endTimestamp) {
-		this.endTimestamp = endTimestamp;
-	}
-
-	public void setInterval(long interval) {
-		this.interval = interval;
-	}
-
-	public void setOperationCenterURL(String operationCenterURL) {
-		this.operationCenterURL = operationCenterURL;
-	}
-
-	public void setServerConfiguration(ServerConfiguration serverConfiguration) {
-		this.serverConfiguration = serverConfiguration;
-	}
-
-	public void setStartTimestamp(long startTimestamp) {
-		this.startTimestamp = startTimestamp;
-	}
-
-	public TrafficFuzzyData getTrafficFuzzyData() {
-		return trafficFuzzyData;
-	}
-
-	public void setTrafficFuzzyData(TrafficFuzzyData trafficFuzzyData) {
-		this.trafficFuzzyData = trafficFuzzyData;
-	}
-
-	public Boundary getCityBoundary() {
-		return cityBoundary;
-	}
-
-	public void setCityBoundary(Boundary cityBoundary) {
-		this.cityBoundary = cityBoundary;
-	}
-
-	public String getControlCenterURL() {
-		return controlCenterURL;
-	}
-
-	public void setControlCenterURL(String controlCenterURL) {
-		this.controlCenterURL = controlCenterURL;
-	}
 }
