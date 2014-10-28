@@ -1,17 +1,20 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
+# binaries
+service = "service"
+mvn = "mvn"
+apt_get = "apt-get"
+pip = "pip"
+git = "git"
+
 import logging
 import sys
 import os
-sys.path.append(os.path.realpath(os.path.join(__file__, "..")))
-sys.path.append(os.path.realpath(os.path.join(__file__, "..", "lib")))
-import check_os
-import pm_utils
 import argparse
-import osm_postgis_transform_prequisites
+base_dir = os.path.realpath(os.path.join(__file__, ".."))
+sys.path.append(base_dir)
 import subprocess as sp
-import bootstrap_globals
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -19,11 +22,29 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
-# binaries
-service = "service"
-mvn = "mvn"
-apt_get = "apt-get"
-pip = "pip"
+try:
+    import check_os
+    import pm_utils
+    import argparse
+    import osm_postgis_transform_prequisites
+except ImportError:
+    checkout_target = os.path.join(base_dir, "python-essentials")
+    if os.path.exists(checkout_target):
+         try:
+             sp.check_call([git, "checkout", "master"]) # get on a branch because HEAD might be detached (then the following git pull without remote specification would fail)
+             sp.check_call([git, "pull", "origin", "master"]) # not 100 % sure why this is necessary
+         except Exception as ex:
+             logger.error("directory '%s' exists, but updating python-essentials failed (see the following exception for details), something has to be wrong. If you can't figure out what, remove '%s' and run the script again" % (checkout_target, checkout_target))
+             raise ex
+    else:
+        sp.check_call([git, "clone", "https://github.com/krichter722/python-essentials.git"], cwd=base_dir)
+    sys.path.append(checkout_target)
+    sys.path.append(os.path.join(checkout_target, "lib"))
+    import check_os
+    import pm_utils
+    import argparse
+    import osm_postgis_transform_prequisites
+import bootstrap_globals
 
 postgis_installs = ["source", "pm"]
 postgis_install_default = postgis_installs[1]
@@ -46,13 +67,12 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
     if not os.path.exists(bin_dir):
         os.makedirs(bin_dir)
     
-    if check_os.check_ubuntu() or check_os.check_debian():
+    if check_os.check_ubuntu() or check_os.check_debian() or check_os.check_linuxmint():
         pm_utils.install_packages(["maven", "openjdk-7-jdk", 
             "ant", # for postgis-jdbc
             "sudo", # very small probability that it is not installed, but it is a prequisite of the script...
             "software-properties-common", # provides add-apt-repository which is used by pm_utils module in osm_postgis_transform_prequisites.install_postgresql
             "python-software-properties", # provides add-apt-repository on Ubuntu 12.04.4, is available in Ubuntu 14.04
-            "subversion", # necessary in order to checkout openfuxml (as long as it is built in place rather than provided as binary)
         ], package_manager=apt_get, skip_apt_update=skip_apt_update)
     elif check_os.check_opensuse():
         # install maven
@@ -66,7 +86,7 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
             shutil.copytree(maven_bin_dir, maven_bin_dir_install_target)
             sp.check_call(chown, "-Rc", "%s:%s" %(user,user), dirpath)
         # install remaining prequisites
-        sp.check_call([zypper, "install", "java-1_7_0-openjdk", "java-1_7_0-openjdk-devel", "java-1_7_0-openjdk-src", "java-1_7_0-openjdk-javadoc", "subversion", ])
+        sp.check_call([zypper, "install", "java-1_7_0-openjdk", "java-1_7_0-openjdk-devel", "java-1_7_0-openjdk-src", "java-1_7_0-openjdk-javadoc"])
     else:
         # better to let the script fail here than to get some less comprehensive error message later
         raise RuntimeError("operating system not supported!")
@@ -102,12 +122,10 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
     ], package_manager="apt-get")
     sp.check_call([pip, "install", "--upgrade", "setuptools"]) # saves a lot of trouble and hurts much less than it helps
     sp.check_call([pip, "install", "subprocess32", "pexpect"]) # pip manages update of available import automatically so that import xxx can be invoked, already installed packages don't cause returncode != 0
-    sp.check_call([pip, "install", "plac"])
 
 if __name__ == "__main__":    
-    if os.getuid() != 0:
-        raise RuntimeError("installation script has to be invoked as privileged user with uid 0")
     args = vars(parser.parse_args())
     skip_apt_update = args[skip_apt_update_option_long]
     bootstrap_privileged(skip_apt_update=skip_apt_update)
+
 

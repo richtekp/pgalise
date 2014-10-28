@@ -61,6 +61,8 @@ postgis_db-9.2/*
 # bootstrapping and external sources
 scripts/tmp
 scripts/tests/ftp-base
+scripts/python-essentials
+# is a separate project now
 pgalise-bootstrap
 tmp
 
