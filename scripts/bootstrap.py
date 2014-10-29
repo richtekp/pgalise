@@ -42,19 +42,47 @@ logger.addHandler(ch)
 
 # imports with relative paths allow separation from source (script) and target directory which allows determination of default values for downloads URLs (and sharing them) based on pg_version and architecture (otherwise every combination has to be added as argument to bootstrap function)
 script_dir = os.path.dirname(__file__)
-sys.path.append(os.path.join(script_dir, "python-essentials"))
-sys.path.append(os.path.join(script_dir, "python-essentials", "lib"))
-import check_os
-import user_group_utils
-import postgis_utils
-import string
-import pm_utils
-import file_utils
-import bootstrap_globals
+python_essentials_dir_path = os.path.join(script_dir, "python-essentials")
+sys.path.append(python_essentials_dir_path)
+sys.path.append(os.path.join(python_essentials_dir_path, "lib"))
+
+# necessary build tools and helpers 
+# <ul>
+ant = "/home/richter/apache-ant-1.7.1/bin/ant"
+wget = "wget"
+unzip="unzip"
+mvn = "mvn"
+tar = "tar"
+bash = "dash" # bash and ksh cause error when running autogen.sh and configure
+make = "make"
+su = "su"
+psql = "/usr/lib/postgresql/%s/bin/psql" % string.join([str(x) for x in pg_version],".")
+initdb = "/usr/lib/postgresql/%s/bin/initdb" % string.join([str(x) for x in pg_version],".")
+createdb = "/usr/lib/postgresql/%s/bin/createdb" % string.join([str(x) for x in pg_version],".")
+postgres = "/usr/lib/postgresql/%s/bin/postgres" % string.join([str(x) for x in pg_version],".")
+apt_get = "apt-get"
+zypper = "zypper"
+dpkg = "dpkg"
+add_apt_repo = "add-apt-repository"
+cp="cp"
+chown = "chown"
+whoami = "whoami"
+git="git"
+svn="svn"
+# </ul>
+
+sp.check_call([git, "pull", "origin", "master"], cwd=python_essentials_dir_path) # we assume that python-essentials is always working and that critical development takes place on another branch than origin/master
 try:
+    import check_os
+    import user_group_utils
+    import postgis_utils
+    import string
+    import pm_utils
+    import file_utils
+    import bootstrap_globals
     import plac
 except ImportError as ex:
-    logger.error("Import of plac module failed. You definitely didn't run 'scripts/bootstrap_prerequisites.py' sucessfully! Do that, please, and rerun this script!")
+    logger.error("Import of an internal or external module failed. You definitely didn't run 'scripts/bootstrap_prerequisites.py' sucessfully! Do that, please, and rerun this script!")
     raise ex
 
 bin_dir = bootstrap_globals.bin_dir
@@ -125,31 +153,6 @@ postgis_src_archive_name = "postgis-2.1.1.tar.gz"
 postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
 openejb_jar_file_name = "openejb-core-4.7.0-20140619.040749-30.jar"
 openejb_api_jar_file_name = "openejb-api-4.7.0-20140619.040641-30.jar"
-
-# necessary build tools and helpers 
-# <ul>
-ant = "/home/richter/apache-ant-1.7.1/bin/ant"
-wget = "wget"
-unzip="unzip"
-mvn = "mvn"
-tar = "tar"
-bash = "dash" # bash and ksh cause error when running autogen.sh and configure
-make = "make"
-su = "su"
-psql = "/usr/lib/postgresql/%s/bin/psql" % string.join([str(x) for x in pg_version],".")
-initdb = "/usr/lib/postgresql/%s/bin/initdb" % string.join([str(x) for x in pg_version],".")
-createdb = "/usr/lib/postgresql/%s/bin/createdb" % string.join([str(x) for x in pg_version],".")
-postgres = "/usr/lib/postgresql/%s/bin/postgres" % string.join([str(x) for x in pg_version],".")
-apt_get = "apt-get"
-zypper = "zypper"
-dpkg = "dpkg"
-add_apt_repo = "add-apt-repository"
-cp="cp"
-chown = "chown"
-whoami = "whoami"
-git="git"
-svn="svn"
-# </ul>
 
 # some variables to be changed at will (would be more elegant to enable controll as options of this script)
 #postgres_user = sp.check_output(["id", "-u", "-n"]).strip()
