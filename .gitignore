@@ -86,3 +86,6 @@ pyftpdlib
 ##########
 .idea
 parent-pom.iml
+ear/nb-configuration.xml
+# maybe for saving the server to use
+
