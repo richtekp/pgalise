@@ -16,9 +16,11 @@ ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
-base_dir_path = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
-script_dir = os.path.join(base_dir_path, "scripts")
-sys.path.append(os.path.join(script_dir, "lib"))
+script_dir = os.path.dirname(__file__)
+sys.path.append(os.path.join(script_dir, "python-essentials"))
+sys.path.append(os.path.join(script_dir, "python-essentials", "lib"))
+
+base_dir_path = os.path.realpath(os.path.join(script_dir, ".."))
 import os_utils
 try:
     import subprocess32 as sp32 # subprocess32 is necessary in order to provide secure (preexec_fn has security issues) way of launching postgres processes and intercepting SIGINT without them getting killed
