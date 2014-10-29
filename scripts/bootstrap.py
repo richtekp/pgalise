@@ -41,8 +41,9 @@ ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 # imports with relative paths allow separation from source (script) and target directory which allows determination of default values for downloads URLs (and sharing them) based on pg_version and architecture (otherwise every combination has to be added as argument to bootstrap function)
-sys.path.append(os.path.realpath(os.path.join(__file__, "..")))
-sys.path.append(os.path.realpath(os.path.join(__file__, "..", "lib")))
+script_dir = os.path.dirname(__file__)
+sys.path.append(os.path.join(script_dir, "python-essentials"))
+sys.path.append(os.path.join(script_dir, "python-essentials", "lib"))
 import check_os
 import user_group_utils
 import postgis_utils
@@ -53,7 +54,7 @@ import bootstrap_globals
 try:
     import plac
 except ImportError as ex:
-    logger.error("Import of plac module failed. You definitely didn't run 'scripts/bootstrap_prerequisites.py' sucessfully!")
+    logger.error("Import of plac module failed. You definitely didn't run 'scripts/bootstrap_prerequisites.py' sucessfully! Do that, please, and rerun this script!")
     raise ex
 
 bin_dir = bootstrap_globals.bin_dir
