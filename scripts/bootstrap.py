@@ -46,6 +46,8 @@ python_essentials_dir_path = os.path.join(script_dir, "python-essentials")
 sys.path.append(python_essentials_dir_path)
 sys.path.append(os.path.join(python_essentials_dir_path, "lib"))
 
+pg_version=(9,2) # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
+
 # necessary build tools and helpers 
 # <ul>
 ant = "/home/richter/apache-ant-1.7.1/bin/ant"
@@ -56,10 +58,10 @@ tar = "tar"
 bash = "dash" # bash and ksh cause error when running autogen.sh and configure
 make = "make"
 su = "su"
-psql = "/usr/lib/postgresql/%s/bin/psql" % string.join([str(x) for x in pg_version],".")
-initdb = "/usr/lib/postgresql/%s/bin/initdb" % string.join([str(x) for x in pg_version],".")
-createdb = "/usr/lib/postgresql/%s/bin/createdb" % string.join([str(x) for x in pg_version],".")
-postgres = "/usr/lib/postgresql/%s/bin/postgres" % string.join([str(x) for x in pg_version],".")
+psql = "/usr/lib/postgresql/%s/bin/psql" % str.join(".", [str(x) for x in pg_version])
+initdb = "/usr/lib/postgresql/%s/bin/initdb" % str.join(".", [str(x) for x in pg_version])
+createdb = "/usr/lib/postgresql/%s/bin/createdb" % str.join(".", [str(x) for x in pg_version])
+postgres = "/usr/lib/postgresql/%s/bin/postgres" % str.join(".", [str(x) for x in pg_version])
 apt_get = "apt-get"
 zypper = "zypper"
 dpkg = "dpkg"
@@ -71,6 +73,7 @@ git="git"
 svn="svn"
 # </ul>
 
+logger.info("updating python-essentials in '%s'" % (python_essentials_dir_path,)) 
 sp.check_call([git, "pull", "origin", "master"], cwd=python_essentials_dir_path) # we assume that python-essentials is always working and that critical development takes place on another branch than origin/master
 try:
     import check_os
@@ -88,7 +91,6 @@ except ImportError as ex:
 bin_dir = bootstrap_globals.bin_dir
 base_dir = bootstrap_globals.base_dir
 bootstrap_dir_default = os.path.realpath(os.path.join(base_dir, "pgalise-bootstrap"))
-pg_version=(9,2) # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
 arch = check_os.findout_architecture()
 if pg_version == (9,2):
     postgresql_jdbc_name = "postgresql-9.2-1004.jdbc4.jar"
