@@ -103,6 +103,7 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
             "sudo", # very small probability that it is not installed, but it is a prequisite of the script...
             "software-properties-common", # provides add-apt-repository which is used by pm_utils module in osm_postgis_transform_prequisites.install_postgresql
             "python-software-properties", # provides add-apt-repository on Ubuntu 12.04.4, is available in Ubuntu 14.04
+            "xterm", 
         ], package_manager=apt_get, skip_apt_update=skip_apt_update)
     elif check_os.check_opensuse():
         # install maven
