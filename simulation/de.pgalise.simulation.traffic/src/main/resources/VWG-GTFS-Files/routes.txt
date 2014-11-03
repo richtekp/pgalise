@@ -1,0 +1,33 @@
+route_id,route_short_name,route_long_name,route_type
+301a,301,Eversten,3
+301b,301,Ofenerfeld,3
+302a,302,Borchersweg,3
+302b,302,Infanterieweg,3
+303a,303,Krusenbusch,3
+303b,303,Ofenerfeld,3
+304a,304,Bümmerstede,3
+304b,304,Feldahornweg,3
+306a,306,Carl-v.-Ossietzky-Str.,3
+306b,306,ZOB-A,3
+307a,307,Drielake,3
+307b,307,ZOB-A,3
+308a,308,BBS Wechloy,3
+308b,308,ZOB-B,3
+309a,309,Am Nordkreuz,3
+309b,309,Petersfehn,3
+310a,310,Wehnen,3
+310b,310,ZOB-A,3
+312a,312,Stralsunder Straße,3
+312b,312,ZOB-A,3
+314a,314,Am Vogelbusch,3
+314b,314,Patentbusch,3
+315a,315,Hatterwüsting,3
+315b,315,ZOB-B,3
+316a,316,Neuenwege,3
+316b,316,Nordstraße,3
+317a,317,IKEA,3
+317b,317,ZOB-A,3
+322a,322,BBS Wechloy,3
+322b,322,Eibenweg,3
+324a,324,Infanterieweg,3
+324b,324,Patentbusch,3
