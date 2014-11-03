@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
+# This script intends to provide a wrapper around different pathes of 
+# PostgreSQL binaries (e.g. in OpenSUSE and Ubuntu) and to provide default 
+# values for PostgreSQL connection parameters
+
 import os
 import sys
 import datetime
@@ -44,7 +48,7 @@ postgresql_osm_version_option_long = "postgresql-osm-version"
 pgalise_data_dir_default = os.path.join(base_dir_path, "postgis_db-%s" % postgresql_pgalise_version_default_string)
 pgalise_data_dir_option = "b"
 pgalise_data_dir_option_long = "pgalise-data-dir"
-osm_data_dir_default = "/mnt/osm_postgis/postgis_db-%s" % postgresql_pgalise_version_default_string
+osm_data_dir_default = os.path.join(os.environ["HOME"], "osm_postgis/postgis_db-%s" % postgresql_pgalise_version_default_string)
 osm_data_dir_option = "a"
 osm_data_dir_option_long = "osm-data-dir"
 
