@@ -1178,6 +1178,9 @@ public class OSMFileBasedCityDataService implements
       boundaryCoordinates.add(new BaseCoordinate(
         boundaryCoordinate));
     }
+    if(this.city.getBoundary() == null) {
+        this.city.setBoundary(new BaseBoundary(idGenerator.getNextId()));
+    }
     this.city.getBoundary().setBoundary(
       new BasePolygon(idGenerator.getNextId(),
         GeoToolsBootstrapping.getGeometryFactory().createPolygon(
