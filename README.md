@@ -6,7 +6,7 @@ A fork for contributions of Humboldt University/Berlin to the ALISE project of t
   * stricter unit testing (EJBs with Apache OpenEJB 4.6)
 
 == Getting started ==
-Development is currently on the `fix_bin` branch which we hope to be able to merge into master ASAP, meanwhile, please stick with it.
+The main development activity is as usual (for git projects) going on on the `master` branch (again).
 
 Currently there's a bunch of `python` scripts which serve a very straight-forward setup. A recommended set of commands is:
 
@@ -19,7 +19,7 @@ Currently there's a bunch of `python` scripts which serve a very straight-forwar
     python scripts/deploy_glassfish.py # interactively asks you to specify a location for an installation of an Oracle GlassFish instance
     # point your browser to http://localhost:8081/controlCenter
 
-Furthermore you might be interested in the `osm_postgis_transform.py` script which facilitates the creation of PostGIS databases from OSM data, see `python osm_postgis_transform.py --help` for details and instructions.
+Furthermore you might be interested in the `osm_postgis_transform.py` script which facilitates the creation of PostGIS databases from OSM data, see [python-essentials' README](https://github.com/krichter722/python-essentials) and/or `python osm_postgis_transform.py --help` for details and instructions.
 
 == Further information ==
 If you have any questions about the cooperation between Humboldt University and Carl v. Ossietzky University please contact the institute for databases and information system (DBIS) of the Humboldt University (mjsax@informatik.hu-berlin.de or richtekp@informatik.hu-berlin.de).
