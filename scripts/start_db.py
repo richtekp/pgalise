@@ -78,7 +78,7 @@ def start_db(postgresql_pgalise_version=postgresql_pgalise_version_default, post
         os.makedirs(tmp_dir)
     postgresql_pgalise_version_string = string.join([str(x) for x in postgresql_pgalise_version], ".")
     postgresql_osm_version_string = string.join([str(x) for x in postgresql_osm_version], ".")
-    if check_os.check_ubuntu() or check_os.check_debian():
+    if check_os.check_ubuntu() or check_os.check_debian() or check_os.check_linuxmint():
         pgalise_psql = "/usr/lib/postgresql/%s/bin/psql" % postgresql_pgalise_version_string
         pgalise_initdb = "/usr/lib/postgresql/%s/bin/initdb" % postgresql_pgalise_version_string
         pgalise_createdb = "/usr/lib/postgresql/%s/bin/createdb" % postgresql_pgalise_version_string

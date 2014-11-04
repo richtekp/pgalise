@@ -127,8 +127,9 @@ def bootstrap_privileged(skip_apt_update=skip_apt_update_default, postgis_instal
         
     # install postgis (demote for source installation)
     if postgis_install == "pm":
-        if check_os.check_ubuntu() or check_os.check_debian():
+        if check_os.check_ubuntu() or check_os.check_debian() or check_os.check_linuxmint():
             packages = ["postgis"] # 'postgis-2.1' interpreted as regular expression in apt!
+            # versions for which conditions exist are not necessarily supported!
             if pg_version == (9,2):
                 packages += ["postgresql-9.2-postgis-2.1", "postgresql-contrib-9.2", "postgresql-9.2-postgis-2.1-scripts"]
             elif pg_version == (9,3):
