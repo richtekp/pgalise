@@ -15,14 +15,10 @@
  */
 package de.pgalise.simulation.traffic.server.sensor.interferer.gps;
 
-import de.pgalise.simulation.service.IdGenerator;
 import de.pgalise.simulation.shared.entity.BaseCoordinate;
 import de.pgalise.simulation.shared.exception.ExceptionMessages;
-import de.pgalise.simulation.traffic.server.sensor.interferer.gps.GpsInterferer;
 import java.util.LinkedList;
 import java.util.List;
-import javax.ejb.EJB;
-import javax.ejb.Stateful;
 
 /**
  * Implementation of an {@link GpsInterferer} that hold several other
@@ -35,21 +31,26 @@ import javax.ejb.Stateful;
 not an EJB because instance handling of stateful EJB is too complicated with 
 no advantage over this POJO
 */
+/*
+internal implementation notes:
+- a CompositeGpsInterferer is not an EJB because it needs to be created with 
+new opertor. It holds references to singleton GPS interferers which can differ 
+in their implementation and exchanged through injected as usual.
+*/
 public class CompositeGpsInterferer implements GpsInterferer {
 	private static final long serialVersionUID = 1L;
-  private IdGenerator idGenerator;
 
 	/**
 	 * the composite {@link GpsInterferer}s
 	 */
-	private final List<GpsInterferer> interferers;
+	private List<GpsInterferer> interferers;
 
 	/**
 	 * Creates a {@link CompositeGpsInterferer} with no composite
 	 * {@link GpsInterferer}s attached.
 	 */
-	public CompositeGpsInterferer(IdGenerator idGenerator) {
-		this(new LinkedList<GpsInterferer>(), idGenerator);
+	public CompositeGpsInterferer() {
+		this(new LinkedList<GpsInterferer>());
 	}
 
 	/**
@@ -59,14 +60,17 @@ public class CompositeGpsInterferer implements GpsInterferer {
 	 * @param interferers the {@link CompositeGpsInterferer}s to attach
 	 * @throws IllegalArgumentException if argument 'interferers' is 'null'
 	 */
-	public CompositeGpsInterferer(List<GpsInterferer> interferers, IdGenerator idGenerator) throws IllegalArgumentException {
+	public CompositeGpsInterferer(List<GpsInterferer> interferers) throws IllegalArgumentException {
 		if (interferers == null) {
 			throw new IllegalArgumentException(ExceptionMessages.getMessageForNotNull(
 				"interferers"));
 		}
 		this.interferers = new LinkedList<>(interferers);
-    this.idGenerator = idGenerator;
 	}
+        
+        public void init(List<GpsInterferer> gpsInterferers) {
+            this.interferers = gpsInterferers;
+        }
 
 	/**
 	 * Attaches an {@link GpsInterferer} to this {@link CompositeGpsInterferer}

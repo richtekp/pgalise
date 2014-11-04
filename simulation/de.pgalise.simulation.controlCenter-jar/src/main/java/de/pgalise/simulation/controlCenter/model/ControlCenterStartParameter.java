@@ -162,6 +162,8 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 	private Map<Class<? extends Sensor>, Long> specificUpdateSteps = new HashMap<>();
   @Min(1024) @Max(65536)
   private int outputPort = TcpIpOutput.PORT_DEFAULT;
+        
+        private TrafficFuzzyData trafficFuzzyData;
 
 	public ControlCenterStartParameter() {
 		for (Class<? extends Sensor> supportedSensorType : SUPPORTED_SENSOR_TYPES) {
@@ -242,6 +244,7 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		this.name = city.getName();
 		this.mapAndBusstopFileData = mapAndBusstopFileData;
 		this.trafficServerCount = trafficServerCount;
+                this.trafficFuzzyData = trafficFuzzyData;
 	}
 
 	/**
@@ -486,4 +489,12 @@ public class ControlCenterStartParameter extends TrafficStartParameter
 		String importedInstanceFileContent) {
 		this.importedInstanceFileContent = importedInstanceFileContent;
 	}
+
+    public void setTrafficFuzzyData(TrafficFuzzyData trafficFuzzyData) {
+        this.trafficFuzzyData = trafficFuzzyData;
+    }
+
+    public TrafficFuzzyData getTrafficFuzzyData() {
+        return trafficFuzzyData;
+    }
 }

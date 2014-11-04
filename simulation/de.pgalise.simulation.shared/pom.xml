@@ -68,7 +68,16 @@
 			<artifactId>javolution</artifactId>
 			<version>5.2.3</version>
 		</dependency>
-		<dependency>
+	 <dependency>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-api</artifactId>
+	 </dependency>
+	 <dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	  <scope>test</scope>
+	 </dependency>
+	 <dependency>
 			<groupId>javax</groupId>
 			<artifactId>javaee-api</artifactId>
 		</dependency>

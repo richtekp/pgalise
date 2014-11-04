@@ -30,32 +30,67 @@ import subprocess as sp
 import time
 import re
 import sys
-import argparse
 # further imports below
 import logging
 import multiprocessing
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("bootstrap")
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 logger.addHandler(ch)
 
 # imports with relative paths allow separation from source (script) and target directory which allows determination of default values for downloads URLs (and sharing them) based on pg_version and architecture (otherwise every combination has to be added as argument to bootstrap function)
-sys.path.append(os.path.realpath(os.path.join(__file__, "..")))
-sys.path.append(os.path.realpath(os.path.join(__file__, "..", "lib")))
-import check_os
-import user_group_utils
-import postgis_utils
-import string
-import pm_utils
-import file_utils
-import bootstrap_globals
+script_dir = os.path.dirname(__file__)
+python_essentials_dir_path = os.path.join(script_dir, "python-essentials")
+sys.path.append(python_essentials_dir_path)
+sys.path.append(os.path.join(python_essentials_dir_path, "lib"))
+
+pg_version=(9,2) # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
+
+# necessary build tools and helpers 
+# <ul>
+ant = "/home/richter/apache-ant-1.7.1/bin/ant"
+wget = "wget"
+unzip="unzip"
+mvn = "mvn"
+tar = "tar"
+bash = "dash" # bash and ksh cause error when running autogen.sh and configure
+make = "make"
+su = "su"
+psql = "/usr/lib/postgresql/%s/bin/psql" % str.join(".", [str(x) for x in pg_version])
+initdb = "/usr/lib/postgresql/%s/bin/initdb" % str.join(".", [str(x) for x in pg_version])
+createdb = "/usr/lib/postgresql/%s/bin/createdb" % str.join(".", [str(x) for x in pg_version])
+postgres = "/usr/lib/postgresql/%s/bin/postgres" % str.join(".", [str(x) for x in pg_version])
+apt_get = "apt-get"
+zypper = "zypper"
+dpkg = "dpkg"
+add_apt_repo = "add-apt-repository"
+cp="cp"
+chown = "chown"
+whoami = "whoami"
+git="git"
+svn="svn"
+# </ul>
+
+logger.info("updating python-essentials in '%s'" % (python_essentials_dir_path,)) 
+sp.check_call([git, "pull", "origin", "master"], cwd=python_essentials_dir_path) # we assume that python-essentials is always working and that critical development takes place on another branch than origin/master
+try:
+    import check_os
+    import user_group_utils
+    import postgis_utils
+    import string
+    import pm_utils
+    import file_utils
+    import bootstrap_globals
+    import plac
+except ImportError as ex:
+    logger.error("Import of an internal or external module failed. You definitely didn't run 'scripts/bootstrap_prerequisites.py' sucessfully! Do that, please, and rerun this script!")
+    raise ex
 
 bin_dir = bootstrap_globals.bin_dir
 base_dir = bootstrap_globals.base_dir
 bootstrap_dir_default = os.path.realpath(os.path.join(base_dir, "pgalise-bootstrap"))
-pg_version=(9,2) # provides best compatibility with OpenSUSE because in Ubuntu and Debian OpenDSG repository can be used
 arch = check_os.findout_architecture()
 if pg_version == (9,2):
     postgresql_jdbc_name = "postgresql-9.2-1004.jdbc4.jar"
@@ -119,29 +154,7 @@ postgis_url_default = "http://download.osgeo.org/postgis/source/postgis-2.1.1.ta
 postgis_src_archive_name = "postgis-2.1.1.tar.gz"
 postgis_src_archive_md5 = "4af86a39e2e9dbf10fe894e03c2c7027"
 openejb_jar_file_name = "openejb-core-4.7.0-20140619.040749-30.jar"
-
-# necessary build tools and helpers 
-# <ul>
-ant = "/home/richter/apache-ant-1.7.1/bin/ant"
-wget = "wget"
-unzip="unzip"
-mvn = "mvn"
-tar = "tar"
-bash = "dash" # bash and ksh cause error when running autogen.sh and configure
-make = "make"
-su = "su"
-psql = "/usr/lib/postgresql/%s/bin/psql" % string.join([str(x) for x in pg_version],".")
-initdb = "/usr/lib/postgresql/%s/bin/initdb" % string.join([str(x) for x in pg_version],".")
-createdb = "/usr/lib/postgresql/%s/bin/createdb" % string.join([str(x) for x in pg_version],".")
-postgres = "/usr/lib/postgresql/%s/bin/postgres" % string.join([str(x) for x in pg_version],".")
-apt_get = "apt-get"
-zypper = "zypper"
-dpkg = "dpkg"
-add_apt_repo = "add-apt-repository"
-cp="cp"
-chown = "chown"
-whoami = "whoami"
-# </ul>
+openejb_api_jar_file_name = "openejb-api-4.7.0-20140619.040641-30.jar"
 
 # some variables to be changed at will (would be more elegant to enable controll as options of this script)
 #postgres_user = sp.check_output(["id", "-u", "-n"]).strip()
@@ -150,29 +163,16 @@ postgres_pw = "somepw"
 postgres_datadir_path_default = os.path.join(base_dir, "postgis_db-%s" % string.join([str(x) for x in pg_version],"."))
 postgres_datadir_path_option = "p"
 postgres_datadir_path_option_long = "postgres-datadir"
-force_overwrite_postgres_datadir_option = "o"
-force_overwrite_postgres_datadir_option_long = "force-overwrite-datadir"
 postgres_port = "5201"
 postgres_host = "localhost"
 pgalise_db_name = "pgalise"
 pgalise_db_test_name = "pgalise_test"
-skip_tests_default = False
-skip_tests_option = "s"
-skip_tests_option_long = "skip-tests"
-
-parser = argparse.ArgumentParser(description="Bootstrap the PGALISE simulation, including installation of dependencies (those which can't be fetched by maven), binaries (postgresql, postgis, etc.), setup of database in ")
-parser.add_argument("-%s" % postgres_datadir_path_option, "--%s" % postgres_datadir_path_option_long, type=str, nargs='?',
-                   help='', dest=postgres_datadir_path_option_long, default = postgres_datadir_path_default)
-parser.add_argument("-%s" % force_overwrite_postgres_datadir_option, "--%s" % force_overwrite_postgres_datadir_option_long, type=bool, nargs='?',
-                   help='', dest=force_overwrite_postgres_datadir_option_long)
-parser.add_argument("-%s" % skip_tests_option, "--%s" % skip_tests_option_long, type=bool, nargs='?',
-                   help='Whether tests for maven build actions ought to be skipped', dest=skip_tests_option_long)
 
 # provides a wrapper around the <code>mvn install</code> command for source builds to handle 
 # conditional invokation with <code>-DskipTests=true</code> 
-def mvn_install(dir_path, skip_tests=skip_tests_default):
+def mvn_install(dir_path, skip_tests):
     cmds = [mvn, "install"]
-    if not skip_tests:
+    if skip_tests:
         cmds += ["-DskipTests=true"]
     sp.check_call(cmds, cwd=dir_path)
 
@@ -182,7 +182,17 @@ def do_wget(url, target):
 
 # @args skip_build skip building of packages if directories exist
 # @args remove_datadir <code>True</code> or <code>False</code> for removal of stored data in <tt>postgres_datadir_path</tt> or <code>None</code> to interact with the user with a prompt 
-def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, postgres_datadir_path=postgres_datadir_path_default, force_overwrite_postgres_datadir=None, postgresql_jdbc_url=postgresql_jdbc_url_default, postgresql_deb_url=postgresql_deb_url_default, geotools_url=geotools_url_default, jgrapht_url=jgrapht_url_default, jfuzzy_url=jfuzzy_url_default, maven_bin_archive_url=maven_bin_archive_url_default, commons_src_archive_url=commons_src_archive_url_default, skip_tests=skip_tests_default, postgis_install="pm", postgis_url=postgis_url_default):
+@plac.annotations(
+    ignore_root_warning=("Overwrite abortion of script when invoking the script as root", 'flag', 'I'),
+    force_overwrite_postgres_datadir=("If a postgresql data directory already exists, it is only overwritten if this flag is specified; otherwise a warning is given", 'flag', 'O'),
+    skip_tests=("Some dependencies are fetched and compiled. You can skip the tests during compilation by specifying this flag", 'flag', 'S'),
+)
+def bootstrap(ignore_root_warning, force_overwrite_postgres_datadir, skip_tests, bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, initdb=initdb, createdb=createdb, postgres=postgres, postgres_datadir_path=postgres_datadir_path_default, postgresql_jdbc_url=postgresql_jdbc_url_default, postgresql_deb_url=postgresql_deb_url_default, geotools_url=geotools_url_default, jgrapht_url=jgrapht_url_default, jfuzzy_url=jfuzzy_url_default, maven_bin_archive_url=maven_bin_archive_url_default, commons_src_archive_url=commons_src_archive_url_default, postgis_install="pm", postgis_url=postgis_url_default, ):
+    "Bootstrap the PGALISE simulation, including installation of dependencies (those which can't be fetched by maven), binaries (postgresql, postgis, etc.), setup of database in "
+
+    # force specification of flag if script is invoked as root
+    if os.getuid() == 0 and not ignore_root_warning:
+        raise RuntimeError("Script is invoked as root which is strongly discouraged. Specify the -I/--ignore-root-warning in order to overwrite. You have been warned!")
     # setup directories
     script_dir = os.path.join(base_dir, "scripts")
     external_dir = os.path.join(bootstrap_dir, "external")
@@ -210,8 +220,9 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     java_home = os.getenv("JAVA_HOME") # necessary for mvn
     if java_home is None or java_home == "":
         raise RuntimeError("JAVA_HOME is not set")
-    if not os.path.exists(os.path.join(java_home, "bin/java")):
-        raise RuntimeError("JAVA_HOME %s doesn't seem to point to a valid JDK" % java_home)
+    java_binary = os.path.join(java_home, "bin/java")
+    if not os.path.exists(java_binary):
+        raise RuntimeError("JAVA_HOME %s doesn't seem to point to a valid JDK (java binary '%s' doesn't exist)" % (java_home, java_binary))
         
     # install postgresql jdbc driver
     postgresql_jdbc_file = os.path.join(external_bin_dir, postgresql_jdbc_name)
@@ -314,6 +325,14 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
     sp.check_call([mvn, "install:install-file", \
         "-Dfile=%s" % (openejb_jar_file_path,), "-DartifactId=openejb-core", 
         "-DgroupId=org.apache.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
+    openejb_api_jar_file_path = os.path.join(bin_dir, openejb_api_jar_file_name)
+    if not os.path.exists(openejb_api_jar_file_path):
+        raise RuntimeError("OpenEJB API jar %s doesn't exist, can't continue, consider fetching it manually" % (openejb_api_jar_file_path,))
+    sp.check_call([mvn, "install:install-file", 
+        "-Dfile=%s" % (openejb_api_jar_file_path,), "-DartifactId=openejb-api", 
+        "-DgroupId=org.apache.openejb", "-Dversion=4.7.0-SNAPSHOT", "-Dpackaging=jar"], cwd=bin_dir)
+        
+    #openejb_snapshot_ahtutils_workaround(external_src_dir)
         
     # setup postgis datadir and configuration    
     if not file_utils.check_dir(postgres_datadir_path) or force_overwrite_postgres_datadir:
@@ -322,12 +341,41 @@ def bootstrap(bootstrap_dir=bootstrap_dir_default, skip_build=False, psql=psql, 
         postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
         postgis_utils.bootstrap_database(postgres_datadir_path, postgres_port, postgres_host, postgres_user, pgalise_db_test_name, password=postgres_pw, initdb=initdb, postgres=postgres, createdb=createdb, psql=psql)
     else:
-        logger.info("Postgres datadir %s has not been overwritten. You do it by invoking the script with -%s (--%s)" % (postgres_datadir_path, force_overwrite_postgres_datadir_option, force_overwrite_postgres_datadir_option_long))
+        logger.info("Postgres datadir %s has not been overwritten. Check output of script invoked with -h/--help on how to do that." % (postgres_datadir_path, ))
 # internal implementation notes:
 # - passing base_dir as argument of the bootstrap function or in another way doesn't necessarily make sense (default values can be set based on base_dir=source root though)
-        
+
+# I forgot which openejb version has been used originally and after skipping of 
+# 4.6.2-SNAPSHOT in favor of 4.7-SNAPSHOT it is hard to reconstruct (the 
+# easiest way of dealing with this is to keep this function until 4.7 is 
+# released)
+def openejb_snapshot_ahtutils_workaround(external_src_dir):
+    # @TODO: need to use mvn_install funciton in order to skip tests and determine working tags (i.e. their equivalent in subversion)!!
+    metachart_path = os.path.join(external_src_dir, "metachart")
+    if not os.path.exists(metachart_path) or len(os.listdir(metachart_path)) == 0:
+        logger.info("cloning metachart")
+        sp.check_call([git, "clone", "https://github.com/metachart/metachart.git"], cwd=external_src_dir)
+    logger.info("building metachart")
+    sp.check_call([mvn, "install"], cwd=metachart_path)
+    openfuxml_path = os.path.join(external_src_dir, "openfuxml")    
+    if not os.path.exists(openfuxml_path) or len(os.listdir(openfuxml_path)) == 0:
+        logger.info("checking out openfuxml")
+        sp.check_call([svn, "checkout", "svn://svn.code.sf.net/p/openfuxml/code/trunk", openfuxml_path], cwd=external_src_dir)
+    logger.info("building openfuxml")
+    sp.check_call([mvn, "install"], cwd=openfuxml_path)
+    exlp_path = os.path.join(external_src_dir, "exlp")
+    if not os.path.exists(exlp_path) or len(os.listdir(exlp_path)) == 0:
+        logger.info("checking out exlp")
+        sp.check_call([svn, "checkout", "svn://svn.code.sf.net/p/exlp/code/trunk", exlp_path], cwd=external_src_dir)
+    logger.info("building exlp")
+    sp.check_call([mvn, "install"], cwd=exlp_path)
+    ahtutils_path = os.path.join(external_src_dir, "ahtutils")
+    if not os.path.exists(ahtutils_path) or len(os.listdir(ahtutils_path)) == 0:
+        logger.info("checking out ahtutils")
+        sp.check_call([svn, "checkout", "svn://svn.code.sf.net/p/ahtutils/code/trunk", ahtutils_path], cwd=external_src_dir)
+    logger.info("building ahtutils")
+    sp.check_call([mvn, "install"], cwd=ahtutils_path)
+
 if __name__ == "__main__":
-    args = vars(parser.parse_args())
-    skip_tests = args[skip_tests_option_long]
-    bootstrap(postgres_datadir_path=args[postgres_datadir_path_option_long], force_overwrite_postgres_datadir=args[force_overwrite_postgres_datadir_option_long], skip_tests=skip_tests)
+    plac.call(bootstrap)
 

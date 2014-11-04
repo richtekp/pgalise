@@ -20,21 +20,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>de.pgalise.util</groupId>
-			<artifactId>btree</artifactId>
-		</dependency>	
-		<dependency>
-			<groupId>de.pgalise.simulation</groupId>
-			<artifactId>shared</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>de.pgalise.util</groupId>
 			<artifactId>generic</artifactId>
 		</dependency>
 			
 		<dependency>
 			<groupId>java3d</groupId>
 			<artifactId>vecmath</artifactId>
-			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
@@ -45,7 +36,10 @@
 					<artifactId>vecmath</artifactId>
 				</exclusion>
 			</exclusions>
-			<type>jar</type>
 		</dependency>
+	 <dependency>
+	  <groupId>org.jgrapht</groupId>
+	  <artifactId>jgrapht-core</artifactId>
+	 </dependency>
 	</dependencies>
 </project>

@@ -25,7 +25,11 @@ target
 *.rar
 *.tar
 *.zip
-*.jar
+
+# @TODO
+# *.jar # we need script/bin/*.jar
+simulation/de.pgalise.simulation.shared-resources/lib/unknown/ # what is this
+
 *.war
 *.ear
 
@@ -57,6 +61,8 @@ postgis_db-9.2/*
 # bootstrapping and external sources
 scripts/tmp
 scripts/tests/ftp-base
+scripts/python-essentials
+# is a separate project now
 pgalise-bootstrap
 tmp
 
@@ -80,3 +86,6 @@ pyftpdlib
 ##########
 .idea
 parent-pom.iml
+ear/nb-configuration.xml
+# maybe for saving the server to use
+
