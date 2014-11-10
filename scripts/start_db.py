@@ -26,6 +26,8 @@ sys.path.append(os.path.join(script_dir, "python-essentials", "lib"))
 
 base_dir_path = os.path.realpath(os.path.join(script_dir, ".."))
 import os_utils
+import python_essentials
+import python_essentials_globals
 try:
     import subprocess32 as sp32 # subprocess32 is necessary in order to provide secure (preexec_fn has security issues) way of launching postgres processes and intercepting SIGINT without them getting killed
 except ImportError as ex:
@@ -48,7 +50,9 @@ postgresql_osm_version_option_long = "postgresql-osm-version"
 pgalise_data_dir_default = os.path.join(base_dir_path, "postgis_db-%s" % postgresql_pgalise_version_default_string)
 pgalise_data_dir_option = "b"
 pgalise_data_dir_option_long = "pgalise-data-dir"
-osm_data_dir_default = os.path.join(os.environ["HOME"], "osm_postgis/postgis_db-%s" % postgresql_pgalise_version_default_string)
+
+config = python_essentials.create_config_parser()
+osm_data_dir_default = os.path.join(os.environ["HOME"], "osm_postgis_db-9.2") # config.get("pathes", "osm_postgis_dir_path", python_essentials_globals.osm_postgis_dir_path)
 osm_data_dir_option = "a"
 osm_data_dir_option_long = "osm-data-dir"
 
